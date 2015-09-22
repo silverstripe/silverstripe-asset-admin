@@ -1,9 +1,3 @@
-/**
- * @file A single item in the gallery.
- * @module Item
- * @requires module:react
- */
-
 import React from 'react';
 
 class Item extends React.Component {

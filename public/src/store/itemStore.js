@@ -1,11 +1,3 @@
-/**
- * @file The gallery's item store.
- * @module ItemStore
- * @requires module:../dispatcher/galleryDispatcher
- * @requires module:events
- * @requires ../constants
- */
-
 import galleryDispatcher from '../dispatcher/galleryDispatcher';
 import EventEmitter from 'events';
 import CONSTANTS from '../constants';

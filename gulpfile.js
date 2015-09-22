@@ -4,23 +4,23 @@ var gulp = require('gulp'),
     source = require('vinyl-source-stream');
 
 var paths = {
-    javascript: ['./javascript/src/**/*.js']
+    src: ['./public/src/**/*.js']
 };
 
 gulp.task('watch', function () {
-    gulp.watch(paths.javascript, ['build']);
+    gulp.watch(paths.src, ['build']);
 });
 
 gulp.task('build', function () {
     browserify({
-        entries: './javascript/src/main.js',
+        entries: './public/src/main.js',
         extensions: ['.js'],
         debug: true
     })
     .transform(babelify)
     .bundle()
     .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./javascript/dist'));
+    .pipe(gulp.dest('./public/dist'));
 });
 
 gulp.task('default', ['watch', 'build']);
