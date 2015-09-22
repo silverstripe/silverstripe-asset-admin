@@ -1,15 +1,7 @@
-/**
- * @file Actions for the gallery.
- * @module GalleryActions
- * @requires module:../dispatcher/galleryDispatcher
- * @requires ../constants
- */
-
 import galleryDispatcher from '../dispatcher/galleryDispatcher';
 import CONSTANTS from '../constants';
 
 let galleryActions = {
-
     /**
      * @func create
      * @param {object} data
@@ -51,7 +43,6 @@ let galleryActions = {
             }
         });
     }
-
 };
 
 export default galleryActions;
