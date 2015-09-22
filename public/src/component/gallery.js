@@ -1,11 +1,3 @@
-/**
- * @file Root component.
- * @module Gallery
- * @requires module:react
- * @requires module:./item
- * @requires module:../store/itemStore
- */
-
 import React from 'react';
 import Item from './item';
 import itemActions from '../action/galleryActions';

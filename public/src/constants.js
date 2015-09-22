@@ -1,7 +1,3 @@
-/**
- * @file Constants for the gallery.
- */
-
 const CONSTANTS = {
     ITEM_STORE: {
         CHANGE: 'change',
