@@ -1,17 +1,20 @@
 var gulp = require('gulp'),
     browserify = require('browserify'),
     babelify = require('babelify'),
-    source = require('vinyl-source-stream');
+    source = require('vinyl-source-stream'),
+    sass = require('gulp-sass');
 
 var paths = {
-    src: ['./public/src/**/*.js']
+    dist: './public/dist',
+    js: ['./public/src/**/*.js'],
+    scss: ['./public/src/**/*.scss']
 };
 
-gulp.task('watch', function () {
-    gulp.watch(paths.src, ['build']);
+gulp.task('js:watch', function () {
+    gulp.watch(paths.js, ['js']);
 });
 
-gulp.task('build', function () {
+gulp.task('js', function () {
     browserify({
         entries: './public/src/main.js',
         extensions: ['.js'],
@@ -20,7 +23,17 @@ gulp.task('build', function () {
     .transform(babelify)
     .bundle()
     .pipe(source('bundle.js'))
-    .pipe(gulp.dest('./public/dist'));
+    .pipe(gulp.dest(paths.dist));
 });
 
-gulp.task('default', ['watch', 'build']);
+gulp.task('sass', function () {
+    gulp.src('./public/src/styles/main.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest(paths.dist));
+});
+ 
+gulp.task('sass:watch', function () {
+    gulp.watch(paths.scss, ['sass']);
+});
+
+gulp.task('default', ['js:watch', 'sass:watch', 'js', 'sass']);
