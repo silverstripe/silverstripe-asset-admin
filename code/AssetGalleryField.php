@@ -141,6 +141,7 @@ class AssetGalleryField extends FormField {
 		$name = $this->getName();
 		$data = json_encode($this->getData());
 
+		Requirements::css(ASSET_GALLERY_FIELD_DIR . "/public/dist/main.css");
 		Requirements::javascript(ASSET_GALLERY_FIELD_DIR . "/public/dist/bundle.js");
 		Requirements::customScript("var asset_gallery_{$name} = {$data};");
 
