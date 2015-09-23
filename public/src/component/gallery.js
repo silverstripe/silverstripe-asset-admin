@@ -55,7 +55,7 @@ class Gallery extends React.Component {
                 size: '300kb',
                 title: 'Bus',
                 type: 'Image',
-                url: '/assets/Uploads/magic-bus.png'
+                url: '/assets/Uploads/sausage.jpg'
             }
         ];
 
@@ -69,11 +69,15 @@ class Gallery extends React.Component {
     }
 
     componentDidMount () {
-        itemStore.addChangeListener(this.onChange);
+        // Explicitly bind the current context to the callback.
+        // Node event emitters (the item store) bind their context when the callback it's invoked.
+        itemStore.addChangeListener(this.onChange.bind(this));
     }
 
     componentDidUnmount () {
-        itemStore.removeChangeListener(this.onChange);
+        // Explicitly bind the current context to the callback.
+        // Node event emitters (the item store) bind their context when the callback it's invoked.
+        itemStore.removeChangeListener(this.onChange.bind(this));
     }
 
     render() {
@@ -89,13 +93,17 @@ class Gallery extends React.Component {
     }
 
     onChange() {
-        this.setState(getComponentState());
+        this.setState(getGalleryState());
     }
 
     getItemComponents() {
-        return Object.keys(this.state.items).map((item, i) => {
+        var self = this;
+
+        return Object.keys(this.state.items).map((key) => {
+            var item = self.state.items[key];
+
             return (
-                <Item key={i} itemTitle={item.title} />
+                <Item key={key} title={item.title} url={item.url} />
             );
         });
     }
