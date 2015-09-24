@@ -7,10 +7,11 @@ let galleryActions = {
      * @param {object} data
      * @desc Creates a gallery item.
      */
-    create: function (data) {
+    create: function (data, silent) {
         galleryDispatcher.dispatch({
             action: CONSTANTS.ITEM_STORE.CREATE,
-            data: data
+            data: data,
+            silent: silent
         });
     },
 
@@ -19,12 +20,13 @@ let galleryActions = {
      * @param {string} id
      * @desc destroys a gallery item.
      */
-    destroy: function (id) {
+    destroy: function (id, silent) {
         galleryDispatcher.dispatch({
             action: CONSTANTS.ITEM_STORE.DESTROY,
             data: {
                 id: id
-            }
+            },
+            silent: silent
         });
     },
 
@@ -34,13 +36,14 @@ let galleryActions = {
      * @param {string} key
      * @desc Updates a gallery item.
      */
-    update: function (id, updates) {
+    update: function (id, updates, silent) {
         galleryDispatcher.dispatch({
             action: CONSTANTS.ITEM_STORE.UPDATE,
             data: {
                 id: id,
                 updates: updates
-            }
+            },
+            silent: silent
         });
     }
 };
