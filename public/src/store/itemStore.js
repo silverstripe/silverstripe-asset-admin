@@ -21,7 +21,7 @@ function create(itemData) {
  * @desc Removes a gallery item from the store.
  */
 function destroy(id) {
-    // TODO:
+    delete _items[id];
 }
 
 
@@ -84,17 +84,23 @@ galleryDispatcher.register(function (payload) {
     switch(payload.action) {
         case CONSTANTS.ITEM_STORE.CREATE:
             create(payload.data);
-            _itemStore.emitChange();
+            if (!payload.silent) {
+                _itemStore.emitChange(payload.silent);
+            }
             break;
 
         case CONSTANTS.ITEM_STORE.DESTROY:
             destroy(payload.data.id);
-            _itemStore.emitChange();
+            if (!payload.silent) {
+                _itemStore.emitChange(payload.silent);
+            }
             break;
 
         case CONSTANTS.ITEM_STORE.UPDATE:
             update(payload.data.id, payload.data.updates);
-            _itemStore.emitChange();
+            if (!payload.silent) {
+                _itemStore.emitChange();
+            }
             break;
     }
 
