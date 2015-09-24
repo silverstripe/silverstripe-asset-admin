@@ -1,6 +1,6 @@
 import React from 'react';
 import Item from './item';
-import itemActions from '../action/galleryActions';
+import galleryActions from '../action/galleryActions';
 import itemStore from '../store/itemStore';
 
 /**
@@ -20,11 +20,11 @@ class Gallery extends React.Component {
     constructor(props) {
         super(props);
 
-        var items = this.fetch();
+        var items = window.SS_ASSET_GALLERY[this.props.name];
 
         // Populate the store.
         for (let i = 0; i < items.length; i += 1) {
-            itemActions.create(items[i]);
+            galleryActions.create(items[i], true);
         }
 
         // Set the initial state of the gallery.
@@ -80,10 +80,15 @@ class Gallery extends React.Component {
         var self = this;
 
         return Object.keys(this.state.items).map((key) => {
-            var item = self.state.items[key];
+            var item = self.state.items[key],
+                props = {};
+
+            props.id = item.id;
+            props.title = item.title;
+            props.url = item.url;
 
             return (
-                <Item key={key} title={item.title} url={item.url} />
+                <Item key={key} {...props} />
             );
         });
     }
@@ -93,188 +98,17 @@ class Gallery extends React.Component {
      * @desc Gets the latest data from the server.
      */
     fetch() {
-        return [
-            {
-                attributes: {
-                    altText: 'Bus',
-                    caption: 'Me and my magic bus',
-                    dimensions: {
-                        original: {
-                            height: 200,
-                            width: 400
-                        },
-                        resized: {
-                            height: 100,
-                            width: 200
-                        }
-                    },
-                    extraClasses: 'img',
-                    titleText: 'Magic bus'
-                },
-                created: '',
-                extension: 'png',
-                filename: 'magic-bus',
-                id: '1',
-                lastUpdated: '',
-                owner: {
-                    id: '1',
-                    title: 'David Craig'
-                },
-                parent: {
-                    id: '1',
-                    title: 'Uploads'
-                },
-                relations: [],
-                size: '300kb',
-                title: 'Bus',
-                type: 'Image',
-                url: '/assets/Uploads/sausage.jpg'
-            },
-            {
-                attributes: {
-                    altText: 'Bus',
-                    caption: 'Me and my magic bus',
-                    dimensions: {
-                        original: {
-                            height: 200,
-                            width: 400
-                        },
-                        resized: {
-                            height: 100,
-                            width: 200
-                        }
-                    },
-                    extraClasses: 'img',
-                    titleText: 'Magic bus'
-                },
-                created: '',
-                extension: 'png',
-                filename: 'magic-bus',
-                id: '2',
-                lastUpdated: '',
-                owner: {
-                    id: '1',
-                    title: 'David Craig'
-                },
-                parent: {
-                    id: '1',
-                    title: 'Uploads'
-                },
-                relations: [],
-                size: '300kb',
-                title: 'Bus',
-                type: 'Image',
-                url: '/assets/Uploads/sausage.jpg'
-            },
-            {
-                attributes: {
-                    altText: 'Bus',
-                    caption: 'Me and my magic bus',
-                    dimensions: {
-                        original: {
-                            height: 200,
-                            width: 400
-                        },
-                        resized: {
-                            height: 100,
-                            width: 200
-                        }
-                    },
-                    extraClasses: 'img',
-                    titleText: 'Magic bus'
-                },
-                created: '',
-                extension: 'png',
-                filename: 'magic-bus',
-                id: '3',
-                lastUpdated: '',
-                owner: {
-                    id: '1',
-                    title: 'David Craig'
-                },
-                parent: {
-                    id: '1',
-                    title: 'Uploads'
-                },
-                relations: [],
-                size: '300kb',
-                title: 'Bus',
-                type: 'Image',
-                url: '/assets/Uploads/sausage.jpg'
-            },
-            {
-                attributes: {
-                    altText: 'Bus',
-                    caption: 'Me and my magic bus',
-                    dimensions: {
-                        original: {
-                            height: 200,
-                            width: 400
-                        },
-                        resized: {
-                            height: 100,
-                            width: 200
-                        }
-                    },
-                    extraClasses: 'img',
-                    titleText: 'Magic bus'
-                },
-                created: '',
-                extension: 'png',
-                filename: 'magic-bus',
-                id: '4',
-                lastUpdated: '',
-                owner: {
-                    id: '1',
-                    title: 'David Craig'
-                },
-                parent: {
-                    id: '1',
-                    title: 'Uploads'
-                },
-                relations: [],
-                size: '300kb',
-                title: 'Bus',
-                type: 'Image',
-                url: '/assets/Uploads/sausage.jpg'
-            },
-            {
-                attributes: {
-                    altText: 'Bus',
-                    caption: 'Me and my magic bus',
-                    dimensions: {
-                        original: {
-                            height: 200,
-                            width: 400
-                        },
-                        resized: {
-                            height: 100,
-                            width: 200
-                        }
-                    },
-                    extraClasses: 'img',
-                    titleText: 'Magic bus'
-                },
-                created: '',
-                extension: 'png',
-                filename: 'magic-bus',
-                id: '5',
-                lastUpdated: '',
-                owner: {
-                    id: '1',
-                    title: 'David Craig'
-                },
-                parent: {
-                    id: '1',
-                    title: 'Uploads'
-                },
-                relations: [],
-                size: '300kb',
-                title: 'Bus',
-                type: 'Image',
-                url: '/assets/Uploads/sausage.jpg'
-            }
-        ];
+        return jQuery
+            .get(this.props.url)
+            .error(() => {
+                console.log('error fetching data');
+            })
+            .done((data) => {
+                for (let i = 0; i < data.files.length; i += 1) {
+                    galleryActions.create(data.files[i], true);
+                    this.state = getGalleryState();
+                }
+            });
     }
 
 }
