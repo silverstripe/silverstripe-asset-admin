@@ -1,2 +1,31 @@
+$transition-speed: .3s;
+
+$breakpoint-small: 50em;
+$breakpoint-medium: 75em;
+$breakpoint-large: 87.5em;
+
+@mixin breakpoint($media) {
+    @if $media == small {
+        @media all and (min-width: $breakpoint-small) { @content; }
+    }
+    @else if $media == medium {
+        @media all and (min-width: $breakpoint-medium) { @content; }
+    }
+    @else if $media == large {
+        @media all and (min-width: $breakpoint-large) { @content; }
+    }
+}
+
+// Reset some annoying CMS styles.
+.asset-gallery {
+    .left {
+        display: none !important;
+    }
+
+    .middleColumn {
+        margin-left: 0;
+    }
+}
+
 @import 'gallery';
 @import 'item';

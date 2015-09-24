@@ -1,31 +1,80 @@
-.item {
-    background: green;
-}
+.asset-gallery {
 
-.item__actions {
+    .item {
+        position: relative;
+        width: 50%;
+        height: 174px;
+        margin: 0 auto 24px;
+        text-align: center;
+        background: #fff;
 
-}
+        @include breakpoint(small) {
+            float: left;
+            width: 45%;
+            margin: 0 2.5% 24px;
+        }
 
-.item__actions__action {
+        @include breakpoint(medium) {
+            width: 28.3%;
+        }
 
-}
+        @include breakpoint(large) {
+            width: 20%;
+        }
 
-.item__actions__action--toggle {
+        &:hover,
+        &:focus {
+            .item__actions {
+                opacity: 1;
+            }
+        }
+    }
 
-}
+    .item__thumbnail {
+        height: 150px;
+        background-color: #666;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
 
-.item__actions__action--edit {
+    .item__actions {
+        position: absolute;
+        top: 0px;
+        right: 0;
+        left: 0;
+        height: 2.5em;
+        padding: .3em .5em;
+        background: rgba(0,0,0,.5);
+        opacity: 0;
+        transition: opacity $transition-speed;
+    }
 
-}
+    .item__actions__action {
+        float: right;
+        margin: 0;
+        padding: .25em;
+        font-size: 1.5em;
+        line-height: .5em;
+        color: #fff;
+        background-color: transparent;
+        border: 0;
 
-.item__actions__action--remove {
+        &:hover {
+            cursor: pointer;
+            opacity: .6;
+        }
+    }
 
-}
+    .item__actions__action--edit {
 
-.item__thumbnail {
+    }
 
-}
+    .item__actions__action--remove {
 
-.item__title {
+    }
+
+    .item__title {
+
+    }
 
 }
