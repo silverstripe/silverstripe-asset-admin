@@ -10,13 +10,14 @@ use Member;
 use Requirements;
 use SS_HTTPRequest;
 use SS_HTTPResponse;
+use SS_List;
 
 class AssetGalleryField extends FormField {
 	/**
 	 * @var array
 	 */
 	private static $allowed_actions = array(
-		'files',
+		'data',
 	);
 
 	/**
@@ -50,8 +51,22 @@ class AssetGalleryField extends FormField {
 	 *
 	 * @return SS_HTTPResponse
 	 */
-	public function files(SS_HTTPRequest $request) {
-		$data = $this->getData();
+	public function data(SS_HTTPRequest $request) {
+		$filters = array();
+
+		if ($name = $request->getVar('name')) {
+			$filters['name'] = $name;
+		}
+
+		if ($created_from = $request->getVar('created_from')) {
+			$filters['created_from'] = $created_from;
+		}
+
+		if ($created_to = $request->getVar('created-to')) {
+			$filters['created_to'] = $created_to;
+		}
+
+		$data = $this->getData($filters);
 
 		$response = new SS_HTTPResponse();
 		$response->addHeader('Content-Type', 'application/json');
@@ -61,56 +76,72 @@ class AssetGalleryField extends FormField {
 	}
 
 	/**
+	 * @param SS_HTTPRequest $request
+	 *
+	 * @return SS_HTTPResponse
+	 */
+	public function update(SS_HTTPRequest $request) {
+		// TODO
+
+		$response = new SS_HTTPResponse();
+		$response->addHeader('Content-Type', 'application/json');
+		$response->setBody(json_encode(null));
+
+		return $response;
+	}
+
+	/**
+	 * @param SS_HTTPRequest $request
+	 *
+	 * @return SS_HTTPResponse
+	 */
+	public function delete(SS_HTTPRequest $request) {
+		// TODO
+
+		$response = new SS_HTTPResponse();
+		$response->addHeader('Content-Type', 'application/json');
+		$response->setBody(json_encode(null));
+
+		return $response;
+	}
+
+	/**
+	 * @param array $filters
+	 *
 	 * @return array
 	 */
-	protected function getData() {
+	protected function getData($filters = array()) {
 		$data = array();
 
 		$folder = $this->getFolder();
 
 		if($folder->hasChildren()) {
-			/** @var File[] $files */
+			/** @var File[]|SS_List $files */
 			$files = $folder->myChildren();
 
+			if (isset($filters['name'])) {
+				$files = $files->filterAny(array(
+					'Name:PartialMatch' => $filters['name'],
+					'Title:PartialMatch' => $filters['name']
+				));
+			}
+
+			if(!empty($params['created_from'])) {
+				$fromDate = new DateField(null, null, $params['created_from']);
+				$files = $files->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
+			}
+
+			if(!empty($params['created_to'])) {
+				$toDate = new DateField(null, null, $params['created_to']);
+				$files = $files->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
+			}
+
+			$files = $files->sort(
+				'(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"'
+			);
+
 			foreach($files as $file) {
-				$object = array(
-					'id' => $file->ID,
-					'created' => $file->Created,
-					'lastUpdated' => $file->LastEdited,
-					'owner' => null,
-					'parent' => null,
-					'title' => $file->getTitle(),
-					'type' => $file->getFileType(),
-					'filename' => $file->getFilename(),
-					'extension' => $file->getExtension(),
-					// @todo
-					// 'attributes' => null,
-					// 'size' => $file->getSize(),
-					// 'url' => $file->getAbsoluteURL(),
-				);
-
-				/** @var Member $owner */
-				$owner = $file->Owner();
-
-				if($owner) {
-					$object['owner'] = array(
-						'id' => $owner->ID,
-						'title' => trim($owner->FirstName . ' ' . $owner->Surname),
-					);
-				}
-
-				/** @var Folder $parent */
-				$parent = $file->Parent();
-
-				if($parent) {
-					$object['parent'] = array(
-						'id' => $parent->ID,
-						'title' => $parent->getTitle(),
-						'path' => $parent->getFilename(),
-					);
-				}
-
-				$data[] = $object;
+				$data[] = $this->getObjectFromData($file);
 			}
 		}
 
@@ -149,16 +180,38 @@ class AssetGalleryField extends FormField {
 JS
 		);
 
-		$url = $this->getFilesURL();
+		$dataURL = $this->getDataURL();
+		$updateURL = $this->getUpdateURL();
+		$deleteURL = $this->getDeleteURL();
 
-		return "<div class='asset-gallery' data-asset-gallery-name='{$name}' data-asset-gallery-url='{$url}'></div>";
+		return "<div
+			class='asset-gallery'
+			data-asset-gallery-name='{$name}'
+			data-asset-gallery-data-url='{$dataURL}'
+			data-asset-gallery-update-url='{$updateURL}'
+			data-asset-gallery-delete-url='{$deleteURL}'
+			></div>";
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function getFilesURL() {
-		return Controller::join_links($this->Link(), 'files');
+	protected function getDataURL() {
+		return Controller::join_links($this->Link(), 'data');
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getUpdateURL() {
+		return Controller::join_links($this->Link(), 'update');
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getDeleteURL() {
+		return Controller::join_links($this->Link(), 'delete');
 	}
 
 	/**
@@ -177,5 +230,58 @@ JS
 		$this->currentPath = $currentPath;
 
 		return $this;
+	}
+
+	/**
+	 * @param File $file
+	 *
+	 * @return array
+	 */
+	protected function getObjectFromData(File $file) {
+		$object = array(
+			'id' => $file->ID,
+			'created' => $file->Created,
+			'lastUpdated' => $file->LastEdited,
+			'owner' => null,
+			'parent' => null,
+			'attributes' => array(
+				'dimensions' => array(),
+			),
+			'title' => $file->getTitle(),
+			'type' => $file->getFileType(),
+			'filename' => $file->getFilename(),
+			'extension' => $file->getExtension(),
+			'size' => $file->getSize(),
+			'url' => $file->getAbsoluteURL(),
+		);
+
+		/** @var Member $owner */
+		$owner = $file->Owner();
+
+		if($owner) {
+			$object['owner'] = array(
+				'id' => $owner->ID,
+				'title' => trim($owner->FirstName . ' ' . $owner->Surname),
+			);
+		}
+
+		/** @var Folder $parent */
+		$parent = $file->Parent();
+
+		if($parent) {
+			$object['parent'] = array(
+				'id' => $parent->ID,
+				'title' => $parent->getTitle(),
+				'path' => $parent->getFilename(),
+			);
+		}
+
+		/** @var File $file */
+		if($file->hasMethod('getWidth') && $file->hasMethod('getHeight')) {
+			$object['attributes']['dimensions']['width'] = $file->getWidth();
+			$object['attributes']['dimensions']['height'] = $file->getHeight();
+		}
+
+		return $object;
 	}
 }

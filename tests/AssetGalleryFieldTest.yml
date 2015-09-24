@@ -1,0 +1,34 @@
+Member:
+  Member1:
+    FirstName: Christopher
+    LastName: Pitt
+  Member2:
+    FirstName: Damian
+    LastName: Mooyman
+Folder:
+  Folder1:
+    Title: Folder1
+  Folder2:
+    Title: Folder2
+File:
+  File1:
+    Created: 2015-08-19 00:00:00
+    LastUpdated: 2015-08-27 00:00:00
+    Owner: =>Member.Member1
+    Parent: =>Folder.Folder1
+    Name: file1.jpg
+    Title: The First File
+  File2:
+    Created: 2015-08-20 00:00:00
+    LastUpdated: 2015-08-28 00:00:00
+    Owner: =>Member.Member2
+    Parent: =>Folder.Folder2
+    Name: file2.jpg
+    Title: The Second File
+  File3:
+    Created: 2015-08-21 00:00:00
+    LastUpdated: 2015-08-29 00:00:00
+    Owner: =>Member.Member2
+    Parent: =>Folder.Folder2
+    Name: file3.jpg
+    Title: The Third File
