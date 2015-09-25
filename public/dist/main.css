@@ -10,38 +10,61 @@
   height: 174px;
   margin: 0 auto 24px;
   text-align: center;
-  background: #fff; }
-  @media all and (min-width: 50em) {
+  min-width: 200px; }
+  @media all and (min-width: 40.625em) {
     .asset-gallery .item {
       float: left;
-      width: 45%;
-      margin: 0 2.5% 24px; } }
-  @media all and (min-width: 75em) {
+      width: 48%;
+      margin: 0 1% 20px; } }
+  @media all and (min-width: 55em) {
     .asset-gallery .item {
-      width: 28.3%; } }
-  @media all and (min-width: 87.5em) {
+      width: 31.333%; } }
+  @media all and (min-width: 69em) {
     .asset-gallery .item {
-      width: 20%; } }
+      width: 23%; } }
+  @media all and (min-width: 86.25em) {
+    .asset-gallery .item {
+      width: 18%; } }
+  @media all and (min-width: 100em) {
+    .asset-gallery .item {
+      width: 14.666%; } }
+  @media all and (min-width: 115em) {
+    .asset-gallery .item {
+      width: 12.258%; } }
+  @media all and (min-width: 132.125em) {
+    .asset-gallery .item {
+      width: 10.5%; } }
+  @media all and (min-width: 150.125em) {
+    .asset-gallery .item {
+      width: 9.111%; } }
+  @media all and (min-width: 170em) {
+    .asset-gallery .item {
+      width: 8%; } }
   .asset-gallery .item:hover .item__actions,
   .asset-gallery .item:focus .item__actions {
-    opacity: 1; }
+    opacity: 1;
+    transition: opacity 0.3s; }
 
 .asset-gallery .item__thumbnail {
   height: 150px;
+  width: 200px;
+  margin: 0 auto;
   background-color: #666;
   background-repeat: no-repeat;
   background-size: cover; }
 
 .asset-gallery .item__actions {
   position: absolute;
-  top: 0px;
+  width: 200px;
+  box-sizing: border-box;
+  margin: auto;
+  top: 0;
   right: 0;
   left: 0;
   height: 2.5em;
   padding: 0.3em 0.5em;
   background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 0.3s; }
+  opacity: 0; }
 
 .asset-gallery .item__actions__action {
   float: right;
@@ -51,7 +74,18 @@
   line-height: .5em;
   color: #fff;
   background-color: transparent;
-  border: 0; }
+  border: 0;
+  opacity: .8; }
   .asset-gallery .item__actions__action:hover {
     cursor: pointer;
-    opacity: .6; }
+    opacity: 1; }
+
+.asset-gallery .item__title {
+  color: #0073C1;
+  padding: 4px 8px;
+  width: 200px;
+  margin: auto;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
