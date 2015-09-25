@@ -1,7 +1,7 @@
-.asset-gallery .left {
+.asset-gallery > .left {
   display: none !important; }
 
-.asset-gallery .middleColumn {
+.asset-gallery > .middleColumn {
   margin-left: 0; }
 
 .asset-gallery .item {
