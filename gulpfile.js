@@ -20,6 +20,8 @@ gulp.task('js', function () {
         extensions: ['.js'],
         debug: true
     })
+    .external('react')
+    .external('flux')
     .transform(babelify)
     .bundle()
     .pipe(source('bundle.js'))
