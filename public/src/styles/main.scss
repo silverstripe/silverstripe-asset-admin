@@ -42,11 +42,11 @@ $breakpoint-xxxlarge: 170em;
 
 // Reset some annoying CMS styles.
 .asset-gallery {
-    .left {
+    > .left {
         display: none !important;
     }
 
-    .middleColumn {
+    > .middleColumn {
         margin-left: 0;
     }
 }

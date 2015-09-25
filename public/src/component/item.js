@@ -5,9 +5,11 @@ import CONSTANTS from '../constants';
 class Item extends React.Component {
 
     render() {
+        var styles = {backgroundImage: 'url(' + this.props.url + ')'};
+
         return (
             <div className='item'>
-                <div className='item__thumbnail'>
+                <div className='item__thumbnail' style={styles}>
                     <div className='item__actions'>
                         <button
                             className='item__actions__action item__actions__action--remove [ font-icon-cancel-circled ]'
@@ -31,7 +33,7 @@ class Item extends React.Component {
      * @desc Event handler for the 'edit' button.
      */
     handleEdit() {
-        // TODO: Will we have an editing React component or render a form server-side?
+        this.props.setEditing(true, this.props.id);
     }
 
     /**
@@ -46,6 +48,7 @@ class Item extends React.Component {
 
 Item.propTypes = {
     id: React.PropTypes.string,
+    setEditing: React.PropTypes.func,
     title: React.PropTypes.string
 };
 
