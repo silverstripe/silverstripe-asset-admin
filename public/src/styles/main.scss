@@ -1,11 +1,26 @@
 $transition-speed: .3s;
 
-$breakpoint-small: 50em;
-$breakpoint-medium: 75em;
-$breakpoint-large: 87.5em;
+$breakpoint-xxxsmall: 40.625em;
+$breakpoint-xxsmall: 55em;
+$breakpoint-xsmall: 69em;
+$breakpoint-small: 86.25em;
+$breakpoint-medium: 100em;
+$breakpoint-large: 115em;
+$breakpoint-xlarge: 132.125em;
+$breakpoint-xxlarge: 150.125em;
+$breakpoint-xxxlarge: 170em;
 
 @mixin breakpoint($media) {
-    @if $media == small {
+    @if $media == xxxsmall {
+        @media all and (min-width: $breakpoint-xxxsmall) { @content; }
+    }
+    @else if $media == xxsmall {
+        @media all and (min-width: $breakpoint-xxsmall) { @content; }
+    }
+    @else if $media == xsmall {
+        @media all and (min-width: $breakpoint-xsmall) { @content; }
+    }
+    @else if $media == small {
         @media all and (min-width: $breakpoint-small) { @content; }
     }
     @else if $media == medium {
@@ -13,6 +28,15 @@ $breakpoint-large: 87.5em;
     }
     @else if $media == large {
         @media all and (min-width: $breakpoint-large) { @content; }
+    }
+    @else if $media == xlarge {
+        @media all and (min-width: $breakpoint-xlarge) { @content; }
+    }
+    @else if $media == xxlarge {
+        @media all and (min-width: $breakpoint-xxlarge) { @content; }
+    }
+    @else if $media == xxxlarge {
+        @media all and (min-width: $breakpoint-xxxlarge) { @content; }
     }
 }
 
