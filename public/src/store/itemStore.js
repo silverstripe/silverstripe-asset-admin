@@ -1,8 +1,11 @@
 import galleryDispatcher from '../dispatcher/galleryDispatcher';
+import galleryActions from '../action/galleryActions';
 import EventEmitter from 'events';
 import CONSTANTS from '../constants';
 
-let _items = {};
+var _items = {};
+var _folders = [];
+var _currentFolder = null;
 
 /**
  * @func create
@@ -36,6 +39,39 @@ function destroy(id, callback) {
 	});
 }
 
+/**
+ * Navigates to a new folder.
+ *
+ * @private
+ *
+ * @param {string} folder
+ * @param {function} callback
+ */
+function navigate(folder, callback) {
+	jQuery.ajax({
+		'url': _itemStore.data_url,
+		'dataType': 'json',
+		'data': {
+			'folder': folder
+		},
+		'success': function(data) {
+			_items = {};
+
+			if (folder !== _itemStore.initial_folder) {
+				_folders.push([folder, _currentFolder || _itemStore.initial_folder]);
+			}
+
+			_currentFolder = folder;
+
+			data.files.forEach((item) => {
+				galleryActions.create(item, true);
+			});
+
+			callback && callback();
+		}
+	})
+}
+
 
 /**
  * @func destroy
@@ -49,6 +85,20 @@ function update(id, itemData) {
 }
 
 class ItemStore extends EventEmitter {
+
+	/**
+	 * Checks if the gallery has been navigated.
+	 */
+	hasNavigated() {
+		return _folders.length > 0;
+	}
+
+	/**
+	 * Gets the folder stack.
+	 */
+	popNavigation() {
+		return _folders.pop();
+	}
 
 	/**
 	 * @return {object}
@@ -93,18 +143,25 @@ class ItemStore extends EventEmitter {
 let _itemStore = new ItemStore(); // Singleton
 
 galleryDispatcher.register(function (payload) {
-	switch(payload.action) {
-		case CONSTANTS.ITEM_STORE.CREATE:
-			create(payload.data);
+    switch(payload.action) {
+        case CONSTANTS.ITEM_STORE.CREATE:
+            create(payload.data);
+            if (!payload.silent) {
+                _itemStore.emitChange(payload.silent);
+            }
+            break;
 
-			if (!payload.silent) {
-				_itemStore.emitChange(payload.silent);
-			}
+        case CONSTANTS.ITEM_STORE.DESTROY:
+            destroy(payload.data.id, () => {
+				if (!payload.silent) {
+					_itemStore.emitChange(payload.silent);
+				}
+			});
 
-			break;
+            break;
 
-		case CONSTANTS.ITEM_STORE.DESTROY:
-			destroy(payload.data.id, () => {
+		case CONSTANTS.ITEM_STORE.NAVIGATE:
+			navigate(payload.data.folder, () => {
 				if (!payload.silent) {
 					_itemStore.emitChange(payload.silent);
 				}

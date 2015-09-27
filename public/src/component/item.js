@@ -7,8 +7,16 @@ class Item extends React.Component {
     render() {
         var styles = {backgroundImage: 'url(' + this.props.url + ')'};
 
+        var navigate = function(){
+            console.log('not a folder');
+        };
+
+        if (this.props.type === 'folder') {
+            navigate = this.handleNavigate.bind(this);
+        }
+
         return (
-            <div className='item'>
+            <div className='item' onClick={navigate}>
                 <div className='item__thumbnail' style={styles}>
                     <div className='item__actions'>
                         <button
@@ -37,8 +45,14 @@ class Item extends React.Component {
     }
 
     /**
-     * @func handleDelete
-     * @desc Event handler for the 'remove' button.
+     * Event handler for the 'edit' button.
+     */
+    handleNavigate() {
+        galleryActions.navigate(this.props.filename);
+    }
+
+    /**
+     * Event handler for the 'remove' button.
      */
     handleDelete() {
         galleryActions.destroy(this.props.id);

@@ -32,15 +32,35 @@ var galleryActions = {
 		});
 	},
 
+    /**
+     * @func update
+     * @param {string} id
+     * @param {string} key
+     * @desc Updates a gallery item.
+     */
+    update: function (id, updates, silent) {
+        galleryDispatcher.dispatch({
+            action: CONSTANTS.ITEM_STORE.UPDATE,
+            data: {
+                id: id,
+                updates: updates
+            },
+            silent: silent
+        });
+    },
+
 	/**
-	 * Updates a gallery item.
+	 * Navigates to a new folder.
 	 *
-	 * @param {object} props
+	 * @param {string} folder
+	 * @param {bool} silent
 	 */
-	update: function (props, silent) {
+	navigate: function (folder, silent) {
 		galleryDispatcher.dispatch({
-			action: CONSTANTS.ITEM_STORE.UPDATE,
-			data: props,
+			action: CONSTANTS.ITEM_STORE.NAVIGATE,
+			data: {
+				'folder': folder
+			},
 			silent: silent
 		});
 	}

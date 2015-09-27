@@ -26,6 +26,7 @@ class Gallery extends React.Component {
         itemStore.data_url = props.data_url;
         itemStore.update_url = props.update_url;
         itemStore.delete_url = props.delete_url;
+        itemStore.initial_folder = props.initial_folder;
 
         // Populate the store.
         for (let i = 0; i < items.length; i += 1) {
@@ -70,15 +71,31 @@ class Gallery extends React.Component {
             );
         } else {
             let items = this.getItemComponents();
+            let button = null;
+
+            if (itemStore.hasNavigated()) {
+                button = <button
+                    type='button'
+                    onClick={this.handleNavigate.bind(this)}>
+                    Back
+                </button>;
+            }
 
             return (
                 <div className='gallery'>
+                    {button}
                     <div className='gallery__items'>
                         {items}
                     </div>
                 </div>
             );
         }
+    }
+
+    handleNavigate() {
+        let navigation = itemStore.popNavigation();
+
+        galleryActions.navigate(navigation[1]);
     }
 
     /**
@@ -139,6 +156,8 @@ class Gallery extends React.Component {
             props.setEditing = this.setEditing.bind(this);
             props.title = item.title;
             props.url = item.url;
+            props.type = item.type;
+            props.filename = item.filename;
 
             return (
                 <Item key={key} {...props} />
