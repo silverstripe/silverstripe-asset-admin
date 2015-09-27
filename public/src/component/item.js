@@ -14,7 +14,7 @@ class Item extends React.Component {
                         <button
                             className='item__actions__action item__actions__action--remove [ font-icon-cancel-circled ]'
                             type='button'
-                            onClick={this.handleRemove.bind(this)}>
+                            onClick={this.handleDelete.bind(this)}>
                             </button>
                         <button
                             className='item__actions__action item__actions__action--edit [ font-icon-pencil ]'
@@ -37,10 +37,10 @@ class Item extends React.Component {
     }
 
     /**
-     * @func handleRemove
+     * @func handleDelete
      * @desc Event handler for the 'remove' button.
      */
-    handleRemove() {
+    handleDelete() {
         galleryActions.destroy(this.props.id);
     }
 
