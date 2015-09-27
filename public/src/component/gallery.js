@@ -1,15 +1,16 @@
 import React from 'react';
+import Editor from './editor';
 import Item from './item';
 import galleryActions from '../action/galleryActions';
 import itemStore from '../store/itemStore';
 
 /**
- * @func getGalleryState
+ * @func getItemStoreState
  * @private
  * @return {object}
- * @desc Factory for the gallery's state object.
+ * @desc Factory for getting the current state of the ItemStore.
  */
-function getGalleryState() {
+function getItemStoreState() {
     return {
         items: itemStore.getAll()
     };
@@ -28,7 +29,9 @@ class Gallery extends React.Component {
         }
 
         // Set the initial state of the gallery.
-        this.state = getGalleryState();
+        this.state = getItemStoreState();
+        this.state.editing = false;
+        this.state.currentItem = null;
     }
 
     componentDidMount () {
@@ -42,26 +45,36 @@ class Gallery extends React.Component {
         }
 
         // Explicitly bind the current context to the callback.
-        // Node event emitters (the item store) bind their context when the callback it's invoked.
+        // Node event emitters (the item store) bind their context when the callback is invoked.
         itemStore.addChangeListener(this.onChange.bind(this));
     }
 
     componentDidUnmount () {
         // Explicitly bind the current context to the callback.
-        // Node event emitters (the item store) bind their context when the callback it's invoked.
+        // Node event emitters (the item store) bind their context when the callback is invoked.
         itemStore.removeChangeListener(this.onChange.bind(this));
     }
 
     render() {
-        var items = this.getItemComponents();
+        if (this.state.editing) {
+            let editorComponent = this.getEditorComponent();
 
-        return (
-            <div className='gallery'>
-                <div className='gallery__items'>
-                    {items}
+            return (
+                <div className='gallery'>
+                    {editorComponent}
                 </div>
-            </div>
-        );
+            );
+        } else {
+            let items = this.getItemComponents();
+
+            return (
+                <div className='gallery'>
+                    <div className='gallery__items'>
+                        {items}
+                    </div>
+                </div>
+            );
+        }
     }
 
     /**
@@ -69,7 +82,42 @@ class Gallery extends React.Component {
      * @desc Updates the gallery state when somethnig changes in the store.
      */
     onChange() {
-        this.setState(getGalleryState());
+        this.setState(getItemStoreState());
+    }
+
+    /**
+     * @func setEditing
+     * @param {boolean} isEditing
+     * @param {string} [id]
+     * @desc Switches between editing and gallery states.
+     */
+    setEditing(isEditing, id) {
+        var newState = { editing: isEditing };
+
+        if (id !== void 0) {
+            let currentItem = itemStore.getById(id);
+
+            if (currentItem !== void 0) {
+                this.setState(jQuery.extend(newState, { currentItem: currentItem }));
+            }
+        } else {
+            this.setState(newState);
+        }
+    }
+
+    /**
+     * @func getEditorComponent
+     * @desc Generates the editor component.
+     */
+    getEditorComponent() {
+        var props = {};
+
+        props.item = this.state.currentItem;
+        props.setEditing = this.setEditing.bind(this);
+
+        return (
+            <Editor {...props} />
+        );
     }
 
     /**
@@ -84,6 +132,7 @@ class Gallery extends React.Component {
                 props = {};
 
             props.id = item.id;
+            props.setEditing = this.setEditing.bind(this);
             props.title = item.title;
             props.url = item.url;
 
@@ -106,7 +155,7 @@ class Gallery extends React.Component {
             .done((data) => {
                 for (let i = 0; i < data.files.length; i += 1) {
                     galleryActions.create(data.files[i], true);
-                    this.state = getGalleryState();
+                    this.state = getItemStoreState();
                 }
             });
     }
