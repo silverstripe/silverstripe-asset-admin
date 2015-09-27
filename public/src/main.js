@@ -9,6 +9,7 @@ jQuery('.asset-gallery').entwine({
 		props.data_url = this[0].getAttribute('data-asset-gallery-data-url');
 		props.update_url = this[0].getAttribute('data-asset-gallery-update-url');
 		props.delete_url = this[0].getAttribute('data-asset-gallery-delete-url');
+		props.initial_folder = this[0].getAttribute('data-asset-gallery-initial-folder');
 
 		if (props.name === null || props.url === null) {
 			return;

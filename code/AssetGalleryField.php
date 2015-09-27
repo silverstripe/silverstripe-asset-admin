@@ -57,6 +57,10 @@ class AssetGalleryField extends FormField {
 	public function data(SS_HTTPRequest $request) {
 		$filters = array();
 
+		if ($folder = $request->getVar('folder')) {
+			$filters['folder'] = $folder;
+		}
+
 		if ($name = $request->getVar('name')) {
 			$filters['name'] = $name;
 		}
@@ -129,7 +133,13 @@ class AssetGalleryField extends FormField {
 	protected function getData($filters = array()) {
 		$data = array();
 
-		$folder = $this->getFolder();
+		$folder = null;
+
+		if (isset($filters['folder'])) {
+			$folder = $filters['folder'];
+		}
+
+		$folder = $this->getFolder($folder);
 
 		if($folder->hasChildren()) {
 			/** @var File[]|SS_List $files */
@@ -165,12 +175,18 @@ class AssetGalleryField extends FormField {
 	}
 
 	/**
-	 * @return Folder
+	 * @param null|string $folder
+	 *
+	 * @return null|Folder
 	 */
-	protected function getFolder() {
+	protected function getFolder($folder = null) {
+		if ($folder) {
+			return Folder::find_or_make($folder);
+		}
+
 		$path = $this->config()->defaultPath;
 
-		if($this->getCurrentPath()) {
+		if($this->getCurrentPath() !== null) {
 			$path = $this->getCurrentPath();
 		}
 
@@ -198,6 +214,7 @@ class AssetGalleryField extends FormField {
 		$dataURL = $this->getDataURL();
 		$updateURL = $this->getUpdateURL();
 		$deleteURL = $this->getDeleteURL();
+		$initialFolder = $this->getCurrentPath();
 
 		return "<div
 			class='asset-gallery'
@@ -205,6 +222,7 @@ class AssetGalleryField extends FormField {
 			data-asset-gallery-data-url='{$dataURL}'
 			data-asset-gallery-update-url='{$updateURL}'
 			data-asset-gallery-delete-url='{$deleteURL}'
+			data-asset-gallery-initial-folder='{$initialFolder}'
 			></div>";
 	}
 
@@ -263,7 +281,7 @@ class AssetGalleryField extends FormField {
 				'dimensions' => array(),
 			),
 			'title' => $file->getTitle(),
-			'type' => $file->getFileType(),
+			'type' => $file->is_a('Folder') ? 'folder' : $file->getFileType(),
 			'filename' => $file->getFilename(),
 			'extension' => $file->getExtension(),
 			'size' => $file->getSize(),
