@@ -3,6 +3,7 @@
 namespace SilverStripe\Forms;
 
 use Controller;
+use Exception;
 use File;
 use Folder;
 use FormField;
@@ -18,6 +19,8 @@ class AssetGalleryField extends FormField {
 	 */
 	private static $allowed_actions = array(
 		'data',
+		'update',
+		'delete',
 	);
 
 	/**
@@ -96,11 +99,24 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function delete(SS_HTTPRequest $request) {
-		// TODO
+		$file = File::get()->filter("id", (int) $request->getVar("id"))->first();
 
 		$response = new SS_HTTPResponse();
 		$response->addHeader('Content-Type', 'application/json');
-		$response->setBody(json_encode(null));
+
+		if ($file) {
+			$file->delete();
+
+			$response->setBody(json_encode(array(
+				'status' => 'file was deleted',
+			)));
+		} else {
+			$response->setStatusCode(500);
+
+			$response->setBody(json_encode(array(
+				'status' => 'could not find the file',
+			)));
+		}
 
 		return $response;
 	}
@@ -174,11 +190,10 @@ class AssetGalleryField extends FormField {
 
 		Requirements::css(ASSET_GALLERY_FIELD_DIR . "/public/dist/main.css");
 		Requirements::javascript(ASSET_GALLERY_FIELD_DIR . "/public/dist/bundle.js");
-		Requirements::customScript(<<<JS
+		Requirements::customScript("
 			window.SS_ASSET_GALLERY = window.SS_ASSET_GALLEY || {};
 			window.SS_ASSET_GALLERY['{$name}'] = {$data};
-JS
-		);
+		");
 
 		$dataURL = $this->getDataURL();
 		$updateURL = $this->getUpdateURL();

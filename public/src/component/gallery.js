@@ -23,6 +23,10 @@ class Gallery extends React.Component {
 
         var items = window.SS_ASSET_GALLERY[this.props.name];
 
+        itemStore.data_url = props.data_url;
+        itemStore.update_url = props.update_url;
+        itemStore.delete_url = props.delete_url;
+
         // Populate the store.
         for (let i = 0; i < items.length; i += 1) {
             galleryActions.create(items[i], true);
@@ -148,7 +152,7 @@ class Gallery extends React.Component {
      */
     fetch() {
         return jQuery
-            .get(this.props.url)
+            .get(this.props.data_url)
             .error(() => {
                 console.log('error fetching data');
             })
