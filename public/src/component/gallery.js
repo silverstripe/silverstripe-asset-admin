@@ -27,6 +27,7 @@ class Gallery extends React.Component {
         itemStore.update_url = props.update_url;
         itemStore.delete_url = props.delete_url;
         itemStore.initial_folder = props.initial_folder;
+        itemStore.limit = props.limit;
 
         // Populate the store.
         for (let i = 0; i < items.length; i += 1) {
@@ -40,12 +41,17 @@ class Gallery extends React.Component {
     }
 
     componentDidMount () {
-        // Interface with the form so we can update state based on changes in the outside world.
-        var $form = jQuery(React.findDOMNode(this)).closest('form');
+        // @todo
+        // if we want to hook into dirty checking, we need to find a way of refreshing
+        // all loaded data not just the first page again...
 
-        if ($form.length) {
-            $form.on('dirty', () => {
-                this.fetch();
+        var $content = jQuery('.cms-content-fields');
+
+        if ($content.length) {
+            $content.on('scroll', (event) => {
+                if ($content[0].scrollHeight - $content[0].scrollTop === $content[0].clientHeight) {
+                    galleryActions.page();
+                }
             });
         }
 
@@ -164,25 +170,6 @@ class Gallery extends React.Component {
             );
         });
     }
-
-    /**
-     * @func fetch
-     * @desc Gets the latest data from the server.
-     */
-    fetch() {
-        return jQuery
-            .get(this.props.data_url)
-            .error(() => {
-                console.log('error fetching data');
-            })
-            .done((data) => {
-                for (let i = 0; i < data.files.length; i += 1) {
-                    galleryActions.create(data.files[i], true);
-                    this.state = getItemStoreState();
-                }
-            });
-    }
-
 }
 
 export default Gallery;

@@ -4,7 +4,8 @@ const CONSTANTS = {
 		CREATE: 'create',
 		UPDATE: 'update',
 		DESTROY: 'destroy',
-		NAVIGATE: 'navigate'
+		NAVIGATE: 'navigate',
+		PAGE: 'page'
 	}
 };
 
