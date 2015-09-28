@@ -63,6 +63,18 @@ var galleryActions = {
 			},
 			silent: silent
 		});
+	},
+
+	/**
+	 * Loads another page of items into the gallery.
+	 *
+	 * @param {bool} silent
+	 */
+	page: function (silent) {
+		galleryDispatcher.dispatch({
+			action: CONSTANTS.ITEM_STORE.PAGE,
+			silent: silent
+		});
 	}
 };
 

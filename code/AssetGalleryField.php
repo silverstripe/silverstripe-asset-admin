@@ -36,6 +36,11 @@ class AssetGalleryField extends FormField {
 	protected $currentPath;
 
 	/**
+	 * @var int
+	 */
+	protected $limit = 10;
+
+	/**
 	 * @return $this
 	 */
 	public function performReadonlyTransformation() {
@@ -73,11 +78,25 @@ class AssetGalleryField extends FormField {
 			$filters['created_to'] = $created_to;
 		}
 
+		$filters['page'] = 1;
+		$filters['limit'] = 10;
+
+		if ($page = $request->getVar('page')) {
+			$filters['page'] = $page;
+		}
+
+		if ($limit = $request->getVar('limit')) {
+			$filters['limit'] = $limit;
+		}
+
 		$data = $this->getData($filters);
 
 		$response = new SS_HTTPResponse();
 		$response->addHeader('Content-Type', 'application/json');
-		$response->setBody(json_encode(array('files' => $data)));
+		$response->setBody(json_encode(array(
+			'files' => $data['items'],
+			'count' => $data['count'],
+		)));
 
 		return $response;
 	}
@@ -131,7 +150,7 @@ class AssetGalleryField extends FormField {
 	 * @return array
 	 */
 	protected function getData($filters = array()) {
-		$data = array();
+		$items = array();
 
 		$folder = null;
 
@@ -166,12 +185,27 @@ class AssetGalleryField extends FormField {
 				'(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"'
 			);
 
+			$count = $files->count();
+
+			if (isset($filters['page']) && isset($filters['limit'])) {
+				$page = $filters['page'];
+				$limit = $filters['limit'];
+
+				$offset = ($page - 1) * $limit;
+
+
+				$files = $files->limit($limit, $offset);
+			}
+
 			foreach($files as $file) {
-				$data[] = $this->getObjectFromData($file);
+				$items[] = $this->getObjectFromData($file);
 			}
 		}
 
-		return $data;
+		return array(
+			"items" => $items,
+			"count" => $count,
+		);
 	}
 
 	/**
@@ -202,19 +236,21 @@ class AssetGalleryField extends FormField {
 	 */
 	public function Field($properties = array()) {
 		$name = $this->getName();
-		$data = json_encode($this->getData());
+		$data = $this->getData();
+		$items = json_encode($data['items']);
 
 		Requirements::css(ASSET_GALLERY_FIELD_DIR . "/public/dist/main.css");
 		Requirements::javascript(ASSET_GALLERY_FIELD_DIR . "/public/dist/bundle.js");
 		Requirements::customScript("
 			window.SS_ASSET_GALLERY = window.SS_ASSET_GALLEY || {};
-			window.SS_ASSET_GALLERY['{$name}'] = {$data};
+			window.SS_ASSET_GALLERY['{$name}'] = {$items};
 		");
 
 		$dataURL = $this->getDataURL();
 		$updateURL = $this->getUpdateURL();
 		$deleteURL = $this->getDeleteURL();
 		$initialFolder = $this->getCurrentPath();
+		$limit = $this->getLimit();
 
 		return "<div
 			class='asset-gallery'
@@ -223,6 +259,7 @@ class AssetGalleryField extends FormField {
 			data-asset-gallery-update-url='{$updateURL}'
 			data-asset-gallery-delete-url='{$deleteURL}'
 			data-asset-gallery-initial-folder='{$initialFolder}'
+			data-asset-gallery-limit='{$limit}'
 			></div>";
 	}
 
@@ -316,5 +353,23 @@ class AssetGalleryField extends FormField {
 		}
 
 		return $object;
+	}
+
+	/**
+	 * @param int $limit
+	 *
+	 * @return $this
+	 */
+	public function setLimit($limit) {
+		$this->limit = $limit;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getLimit() {
+		return $this->limit;
 	}
 }
