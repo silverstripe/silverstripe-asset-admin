@@ -158,6 +158,7 @@ class Gallery extends React.Component {
             var item = self.state.items[key],
                 props = {};
 
+            props.attributes = item.attributes;
             props.id = item.id;
             props.setEditing = this.setEditing.bind(this);
             props.title = item.title;
