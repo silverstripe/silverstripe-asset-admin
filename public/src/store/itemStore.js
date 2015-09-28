@@ -7,6 +7,11 @@ var _items = [];
 var _folders = [];
 var _currentFolder = null;
 
+var _filters = {
+	'page': 1,
+	'limit': 10
+};
+
 /**
  * @func create
  * @private
@@ -64,14 +69,21 @@ function destroy(id, callback) {
  * @param {function} callback
  */
 function navigate(folder, callback) {
+	_filters.page = 1;
+	_filters.folder = folder;
+
 	jQuery.ajax({
 		'url': _itemStore.data_url,
 		'dataType': 'json',
 		'data': {
-			'folder': folder
+			'folder': _filters.folder,
+			'page': _filters.page++,
+			'limit': _itemStore.limit
 		},
 		'success': function(data) {
-			_items = {};
+			_items = [];
+
+			_filters.count = data.count;
 
 			if (folder !== _itemStore.initial_folder) {
 				_folders.push([folder, _currentFolder || _itemStore.initial_folder]);
@@ -86,6 +98,27 @@ function navigate(folder, callback) {
 			callback && callback();
 		}
 	})
+}
+
+function page(callback) {
+	if (_items.length < _filters.count) {
+		jQuery.ajax({
+			'url': _itemStore.data_url,
+			'dataType': 'json',
+			'data': {
+				'folder': _filters.folder,
+				'page': _filters.page++,
+				'limit': _itemStore.limit
+			},
+			'success': function(data) {
+				data.files.forEach((item) => {
+					galleryActions.create(item, true);
+				});
+
+				callback && callback();
+			}
+		});
+	}
 }
 
 
@@ -202,6 +235,15 @@ galleryDispatcher.register(function (payload) {
 			if (!payload.silent) {
 				_itemStore.emitChange();
 			}
+
+			break;
+
+		case CONSTANTS.ITEM_STORE.PAGE:
+			page(() => {
+				if (!payload.silent) {
+					_itemStore.emitChange();
+				}
+			});
 
 			break;
 	}
