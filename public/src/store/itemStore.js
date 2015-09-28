@@ -3,7 +3,7 @@ import galleryActions from '../action/galleryActions';
 import EventEmitter from 'events';
 import CONSTANTS from '../constants';
 
-var _items = {};
+var _items = [];
 var _folders = [];
 var _currentFolder = null;
 
@@ -14,7 +14,7 @@ var _currentFolder = null;
  * @desc Adds a gallery item to the store.
  */
 function create(itemData) {
-	_items[itemData.id] = itemData;
+	_items.push(itemData);
 }
 
 /**
@@ -33,7 +33,23 @@ function destroy(id, callback) {
 		'dataType': 'json',
 		'method': 'GET',
 		'success': (data) => {
-			delete _items[id];
+			var itemIndex = -1;
+
+			// Get the index of the item we have deleted
+			// so it can be removed from the store.
+			for (let i = 0; i < _items.length; i += 1) {
+				if (_items[i].id === id) {
+					itemIndex = i;
+					break;
+				}
+			}
+
+			if (itemIndex === -1) {
+				return;
+			}
+
+			_items.splice(itemIndex, 1);
+
 			callback && callback();
 		}
 	});
@@ -74,7 +90,7 @@ function navigate(folder, callback) {
 
 
 /**
- * @func destroy
+ * @func update
  * @private
  * @param {string} id
  * @param {object} itemData
@@ -114,7 +130,16 @@ class ItemStore extends EventEmitter {
 	 * @return {object}
 	 */
 	getById(id) {
-		return _items[id];
+		var item = null;
+
+		for (let i = 0; i < _items.length; i += 1) {
+			if (_items[i].id === id) {
+				item = _items[i];
+				break;
+			}
+		}
+
+		return item;
 	}
 
 	/**
@@ -143,22 +168,24 @@ class ItemStore extends EventEmitter {
 let _itemStore = new ItemStore(); // Singleton
 
 galleryDispatcher.register(function (payload) {
-    switch(payload.action) {
-        case CONSTANTS.ITEM_STORE.CREATE:
-            create(payload.data);
-            if (!payload.silent) {
-                _itemStore.emitChange(payload.silent);
-            }
-            break;
+	switch(payload.action) {
+		case CONSTANTS.ITEM_STORE.CREATE:
+			create(payload.data);
 
-        case CONSTANTS.ITEM_STORE.DESTROY:
-            destroy(payload.data.id, () => {
+			if (!payload.silent) {
+				_itemStore.emitChange(payload.silent);
+			}
+
+			break;
+
+		case CONSTANTS.ITEM_STORE.DESTROY:
+			destroy(payload.data.id, () => {
 				if (!payload.silent) {
 					_itemStore.emitChange(payload.silent);
 				}
 			});
 
-            break;
+			break;
 
 		case CONSTANTS.ITEM_STORE.NAVIGATE:
 			navigate(payload.data.folder, () => {
@@ -171,9 +198,11 @@ galleryDispatcher.register(function (payload) {
 
 		case CONSTANTS.ITEM_STORE.UPDATE:
 			update(payload.data.id, payload.data.updates);
+
 			if (!payload.silent) {
 				_itemStore.emitChange();
 			}
+
 			break;
 	}
 
