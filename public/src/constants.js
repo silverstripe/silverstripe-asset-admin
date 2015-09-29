@@ -6,6 +6,11 @@ const CONSTANTS = {
 		DESTROY: 'destroy',
 		NAVIGATE: 'navigate',
 		PAGE: 'page'
+	},
+	EDITOR: {
+		CHANGE: 'change',
+		UPDATE: 'update',
+		CLEAR: 'clear'
 	}
 };
 
