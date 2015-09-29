@@ -32,22 +32,22 @@ var galleryActions = {
 		});
 	},
 
-    /**
-     * @func update
-     * @param {string} id
-     * @param {string} key
-     * @desc Updates a gallery item.
-     */
-    update: function (id, updates, silent) {
-        galleryDispatcher.dispatch({
-            action: CONSTANTS.ITEM_STORE.UPDATE,
-            data: {
-                id: id,
-                updates: updates
-            },
-            silent: silent
-        });
-    },
+	/**
+	 * @func update
+	 * @param {string} id
+	 * @param {string} key
+	 * @desc Updates a gallery item.
+	 */
+	update: function (id, updates, silent) {
+		galleryDispatcher.dispatch({
+			action: CONSTANTS.ITEM_STORE.UPDATE,
+			data: {
+				id: id,
+				updates: updates
+			},
+			silent: silent
+		});
+	},
 
 	/**
 	 * Navigates to a new folder.

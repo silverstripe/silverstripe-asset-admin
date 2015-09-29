@@ -23,6 +23,9 @@ class Gallery extends React.Component {
 
         var items = window.SS_ASSET_GALLERY[this.props.name];
 
+        // Manually bind so listeners are removed correctly
+        this.onChange = this.onChange.bind(this);
+
         itemStore.data_url = props.data_url;
         itemStore.update_url = props.update_url;
         itemStore.delete_url = props.delete_url;
@@ -55,15 +58,11 @@ class Gallery extends React.Component {
             });
         }
 
-        // Explicitly bind the current context to the callback.
-        // Node event emitters (the item store) bind their context when the callback is invoked.
-        itemStore.addChangeListener(this.onChange.bind(this));
+        itemStore.addChangeListener(this.onChange);
     }
 
-    componentDidUnmount () {
-        // Explicitly bind the current context to the callback.
-        // Node event emitters (the item store) bind their context when the callback is invoked.
-        itemStore.removeChangeListener(this.onChange.bind(this));
+    componentWillUnmount () {
+        itemStore.removeChangeListener(this.onChange);
     }
 
     render() {

@@ -19,6 +19,12 @@ var _filters = {
  * @desc Adds a gallery item to the store.
  */
 function create(itemData) {
+	var itemExists = _items.filter((item) => { return item.id === itemData.id; }).length > 0;
+
+	if (itemExists) {
+		return;
+	}
+
 	_items.push(itemData);
 }
 
@@ -206,7 +212,7 @@ galleryDispatcher.register(function (payload) {
 			create(payload.data);
 
 			if (!payload.silent) {
-				_itemStore.emitChange(payload.silent);
+				_itemStore.emitChange();
 			}
 
 			break;
@@ -214,7 +220,7 @@ galleryDispatcher.register(function (payload) {
 		case CONSTANTS.ITEM_STORE.DESTROY:
 			destroy(payload.data.id, () => {
 				if (!payload.silent) {
-					_itemStore.emitChange(payload.silent);
+					_itemStore.emitChange();
 				}
 			});
 
@@ -223,7 +229,7 @@ galleryDispatcher.register(function (payload) {
 		case CONSTANTS.ITEM_STORE.NAVIGATE:
 			navigate(payload.data.folder, () => {
 				if (!payload.silent) {
-					_itemStore.emitChange(payload.silent);
+					_itemStore.emitChange();
 				}
 			});
 
