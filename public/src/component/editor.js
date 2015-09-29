@@ -1,4 +1,19 @@
 import React from 'react';
+import InputField from './inputField';
+import editorActions from '../action/editorActions';
+import editorStore from '../store/editorStore';
+
+/**
+ * @func getEditorStoreState
+ * @private
+ * @return {object}
+ * @desc Factory for getting the current state of the ItemStore.
+ */
+function getEditorStoreState() {
+    return {
+        fields: editorStore.getAll()
+    };
+}
 
 /**
  * @func Editor
@@ -6,7 +21,30 @@ import React from 'react';
  */
 class Editor extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        // Manually bind so listeners are removed correctly
+        this.onChange = this.onChange.bind(this);
+
+        // Populate the store.
+        editorActions.create({ name: 'title', value: props.item.title }, true);
+        editorActions.create({ name: 'filename', value: props.item.filename }, true);
+
+        this.state = getEditorStoreState();
+    }
+
+    componentDidMount () {
+        editorStore.addChangeListener(this.onChange);
+    }
+
+    componentWillUnmount () {
+        editorStore.removeChangeListener(this.onChange);
+    }
+
     render() {
+        var textFields = this.getTextFieldComponents();
+
         return (
             <div className='editor'>
                 <button
@@ -63,17 +101,11 @@ class Editor extends React.Component {
                         </div>
                     </div>
 
-                    <div className='field text'>
-                        <label className='left'>Title</label>
-                        <div className='middleColumn'>
-                            <input className='text' type='text' name='Title' value={this.props.item.title} />
-                        </div>
-                    </div>
-                    <div className='field text'>
-                        <label className='left'>Filename</label>
-                        <div className='middleColumn'>
-                            <input className='text' type='text' name='Name' value={this.props.item.filename} />
-                        </div>
+                    {textFields}
+
+                    <div>
+                        <button type='submit'>Save</button>
+                        <button type='button' onClick={this.handleCancel.bind(this)} >Cancel</button>
                     </div>
                 </form>
             </div>
@@ -81,11 +113,57 @@ class Editor extends React.Component {
     }
 
     /**
+     * @func getTextFieldComponents
+     * @desc Generates the editable text field components for the form.
+     */
+    getTextFieldComponents() {
+        return Object.keys(this.state.fields).map((key) => {
+            var field = this.state.fields[key];
+
+            return (
+                <div className='field text' key={key}>
+                    <label className='left'>{field.name}</label>
+                    <div className='middleColumn'>
+                        <InputField name={field.name} value={field.value} />
+                    </div>
+                </div>
+            )
+        });
+    }
+
+    /**
+     * @func onChange
+     * @desc Updates the editor state when something changes in the store.
+     */
+    onChange() {
+        this.setState(getEditorStoreState());
+    }
+
+    /**
      * @func handleBack
      * @desc Handles clicks on the back button. Switches back to the 'gallery' view.
      */
     handleBack() {
+        editorActions.clear(true);
         this.props.setEditing(false);
+    }
+
+    /**
+     * @func handleSave
+     * @desc Handles clicks on the save button
+     */
+    handleSave() {
+        // TODO:
+    }
+
+    /**
+     * @func handleCancel
+     * @param {object} event
+     * @desc Resets the form to it's origional state.
+     */
+    handleCancel() {
+        editorActions.update({ name: 'title', value: this.props.item.title });
+        editorActions.update({ name: 'filename', value: this.props.item.filename });
     }
 
 }
