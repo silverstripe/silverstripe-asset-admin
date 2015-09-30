@@ -1,4 +1,5 @@
 import React from 'react';
+import $ from 'jquery';
 import Editor from './editor';
 import Item from './item';
 import galleryActions from '../action/galleryActions';
@@ -48,7 +49,7 @@ class Gallery extends React.Component {
         // if we want to hook into dirty checking, we need to find a way of refreshing
         // all loaded data not just the first page again...
 
-        var $content = jQuery('.cms-content-fields');
+        var $content = $('.cms-content-fields');
 
         if ($content.length) {
             $content.on('scroll', (event) => {
@@ -124,7 +125,7 @@ class Gallery extends React.Component {
             let currentItem = itemStore.getById(id);
 
             if (currentItem !== void 0) {
-                this.setState(jQuery.extend(newState, { currentItem: currentItem }));
+                this.setState($.extend(newState, { currentItem: currentItem }));
             }
         } else {
             this.setState(newState);
