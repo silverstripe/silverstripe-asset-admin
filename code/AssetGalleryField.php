@@ -242,7 +242,7 @@ class AssetGalleryField extends FormField {
 		Requirements::css(ASSET_GALLERY_FIELD_DIR . "/public/dist/main.css");
 		Requirements::javascript(ASSET_GALLERY_FIELD_DIR . "/public/dist/bundle.js");
 		Requirements::customScript("
-			window.SS_ASSET_GALLERY = window.SS_ASSET_GALLEY || {};
+			window.SS_ASSET_GALLERY = window.SS_ASSET_GALLERY || {};
 			window.SS_ASSET_GALLERY['{$name}'] = {$items};
 		");
 
