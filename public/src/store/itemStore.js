@@ -1,6 +1,7 @@
 import galleryDispatcher from '../dispatcher/galleryDispatcher';
 import galleryActions from '../action/galleryActions';
 import EventEmitter from 'events';
+import $ from 'jquery';
 import CONSTANTS from '../constants';
 
 var _items = [];
@@ -36,7 +37,7 @@ function create(itemData) {
  * @desc Removes a gallery item from the store.
  */
 function destroy(id, callback) {
-	jQuery.ajax({ // @todo fix this junk
+	$.ajax({ // @todo fix this junk
 		'url': _itemStore.delete_url,
 		'data': {
 			'id': id
@@ -78,7 +79,7 @@ function navigate(folder, callback) {
 	_filters.page = 1;
 	_filters.folder = folder;
 
-	jQuery.ajax({
+	$.ajax({
 		'url': _itemStore.data_url,
 		'dataType': 'json',
 		'data': {
@@ -108,7 +109,7 @@ function navigate(folder, callback) {
 
 function page(callback) {
 	if (_items.length < _filters.count) {
-		jQuery.ajax({
+		$.ajax({
 			'url': _itemStore.data_url,
 			'dataType': 'json',
 			'data': {

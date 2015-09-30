@@ -1,7 +1,8 @@
+import $ from 'jquery';
 import React from 'react';
 import Gallery from './component/gallery';
 
-jQuery('.asset-gallery').entwine({
+$('.asset-gallery').entwine({
 	'onadd': function () {
 		var props = {};
 
