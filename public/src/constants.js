@@ -1,5 +1,6 @@
 const CONSTANTS = {
 	ITEM_STORE: {
+		INIT: 'init',
 		CHANGE: 'change',
 		CREATE: 'create',
 		UPDATE: 'update',
