@@ -58,35 +58,37 @@
         height: 150px;
         width: 200px;
         margin: 0 auto;
-        background-color: #666;
         background-repeat: no-repeat;
-        background-size: cover;
+        background-position: center center;
+
+        &.large {
+            background-size: contain;
+        }
     }
 
     .item__actions {
         position: absolute;
         width: 200px;
+        height: 150px;
         box-sizing: border-box;
         margin: auto;
         top: 0;
         right: 0;
         left: 0;
-        height: 2.5em;
-        padding: .3em .5em;
-        background: rgba(0,0,0,.5);
+        background: rgba(0,0,0,.7);
         opacity: 0;
+        text-align: center;
+        padding: 44px 0;
     }
 
     .item__actions__action {
-        float: right;
         margin: 0;
         padding: .25em;
-        font-size: 1.5em;
-        line-height: .5em;
+        font-size: 3em;
         color: #fff;
         background-color: transparent;
         border: 0;
-        opacity: .8;
+        opacity: .9;
 
         &:hover {
             cursor: pointer;

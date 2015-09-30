@@ -5,7 +5,12 @@ import CONSTANTS from '../constants';
 class Item extends React.Component {
 
     render() {
-        var styles = {backgroundImage: 'url(' + this.props.url + ')'};
+        var styles = {backgroundImage: 'url(' + this.props.url + ')'},
+            thumbnailClassNames = 'item__thumbnail';
+
+        if (this.imageLargerThanThumbnail()) {
+            thumbnailClassNames += ' large';
+        }
 
         var navigate = function(){
             console.log('not a folder');
@@ -17,17 +22,17 @@ class Item extends React.Component {
 
         return (
             <div className='item' onClick={navigate}>
-                <div className='item__thumbnail' style={styles}>
+                <div className={thumbnailClassNames} style={styles}>
                     <div className='item__actions'>
-                        <button
-                            className='item__actions__action item__actions__action--remove [ font-icon-cancel-circled ]'
-                            type='button'
-                            onClick={this.handleDelete.bind(this)}>
-                            </button>
                         <button
                             className='item__actions__action item__actions__action--edit [ font-icon-pencil ]'
                             type='button'
                             onClick={this.handleEdit.bind(this)}>
+                            </button>
+                        <button
+                            className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
+                            type='button'
+                            onClick={this.handleDelete.bind(this)}>
                             </button>
                     </div>
                 </div>
@@ -55,15 +60,28 @@ class Item extends React.Component {
      * Event handler for the 'remove' button.
      */
     handleDelete() {
-        galleryActions.destroy(this.props.id);
+        //TODO internationalise confirmation message with transifex if/when merged into core
+        if (confirm('Are you sure you want to delete this record?')) {
+            galleryActions.destroy(this.props.id);
+        }
     }
 
+    /**
+     * @func imageLargerThanThumbnail
+     * @desc Check if an image is larger than the thumbnail container.
+     */
+    imageLargerThanThumbnail() {
+        return this.props.attributes.dimensions.height > CONSTANTS.ITEM_COMPONENT.THUMBNAIL_HEIGHT || 
+               this.props.attributes.dimensions.width > CONSTANTS.ITEM_COMPONENT.THUMBNAIL_WIDTH;
+    }
 }
 
 Item.propTypes = {
-    id: React.PropTypes.string,
+    attributes: React.PropTypes.object,
+    id: React.PropTypes.number,
     setEditing: React.PropTypes.func,
-    title: React.PropTypes.string
+    title: React.PropTypes.string,
+    url: React.PropTypes.string
 };
 
 export default Item;
