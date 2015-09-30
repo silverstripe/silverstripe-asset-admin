@@ -14,6 +14,18 @@ var _filters = {
 };
 
 /**
+ * @func init
+ * @private
+ * @param {object} data
+ * @desc Sets properties on the store.
+ */
+function init(data) {
+	Object.keys(data).map((key) => {
+		_itemStore[key] = data[key];
+	});
+}
+
+/**
  * @func create
  * @private
  * @param {object} itemData
@@ -209,6 +221,15 @@ let _itemStore = new ItemStore(); // Singleton
 
 galleryDispatcher.register(function (payload) {
 	switch(payload.action) {
+		case CONSTANTS.ITEM_STORE.INIT:
+			init(payload.data);
+
+			if (!payload.silent) {
+				_itemStore.emitChange();
+			}
+
+			break;
+
 		case CONSTANTS.ITEM_STORE.CREATE:
 			create(payload.data);
 

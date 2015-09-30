@@ -27,11 +27,13 @@ class Gallery extends React.Component {
         // Manually bind so listeners are removed correctly
         this.onChange = this.onChange.bind(this);
 
-        itemStore.data_url = props.data_url;
-        itemStore.update_url = props.update_url;
-        itemStore.delete_url = props.delete_url;
-        itemStore.initial_folder = props.initial_folder;
-        itemStore.limit = props.limit;
+        galleryActions.setStoreProps({
+            data_url: props.data_url,
+            update_url: props.update_url,
+            delete_url: props.delete_url,
+            initial_folder: props.initial_folder,
+            limit: props.limit
+        });
 
         // Populate the store.
         for (let i = 0; i < items.length; i += 1) {
@@ -39,9 +41,7 @@ class Gallery extends React.Component {
         }
 
         // Set the initial state of the gallery.
-        this.state = getItemStoreState();
-        this.state.editing = false;
-        this.state.currentItem = null;
+        this.state = $.extend(getItemStoreState(), { editing: false, currentItem: null });
     }
 
     componentDidMount () {
