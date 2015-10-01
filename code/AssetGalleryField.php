@@ -159,6 +159,7 @@ class AssetGalleryField extends FormField {
 		}
 
 		$folder = $this->getFolder($folder);
+		$count = 0;
 
 		if($folder->hasChildren()) {
 			/** @var File[]|SS_List $files */
