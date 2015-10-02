@@ -216,7 +216,7 @@ class AssetGalleryField extends FormField {
 	 */
 	protected function getFolder($folder = null) {
 		if ($folder) {
-			return Folder::find_or_make($folder);
+			return Folder::find_or_make(preg_replace('/^'.ASSETS_DIR.'\//', '', $folder));
 		}
 
 		$path = $this->config()->defaultPath;
