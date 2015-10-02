@@ -1,94 +1,30 @@
 import galleryDispatcher from '../dispatcher/galleryDispatcher';
-import CONSTANTS from '../constants';
+import ActionSet from './ActionSet';
+import API from '../api/API';
 
-var galleryActions = {
+const galleryActions = new ActionSet (
+	'galleryActions', 
+	galleryDispatcher
+);
 
-	/**
-	 * @func setStoreProps
-	 * @desc Initialises the store
-	 */
-	setStoreProps(data, silent) {
-		galleryDispatcher.dispatch({
-			action: CONSTANTS.ITEM_STORE.INIT,
-			data: data,
-			silent: silent
-		});
-	},
+galleryActions.addAction('setStoreProps');
 
-	/**
-	 * @func create
-	 * @param {object} data
-	 * @desc Creates a gallery item.
-	 */
-	create(data, silent) {
-		galleryDispatcher.dispatch({
-			action: CONSTANTS.ITEM_STORE.CREATE,
-			data: data,
-			silent: silent
-		});
-	},
+galleryActions.addAction('create');
 
-	/**
-	 * @func destroy
-	 * @param {string} id
-	 * @param {string} delete_url
-	 * @param {bool} silent
-	 * @desc destroys a gallery item.
-	 */
-	destroy(id, silent) {
-		galleryDispatcher.dispatch({
-			action: CONSTANTS.ITEM_STORE.DESTROY,
-			data: {
-				id: id
-			},
-			silent: silent
-		});
-	},
+galleryActions.addAsyncAction('destroy', id => {
+	API.destroyItem(id, galleryActions.destroy.completed)
+});
 
-	/**
-	 * @func update
-	 * @param {string} id
-	 * @param {string} key
-	 * @desc Updates a gallery item.
-	 */
-	update(id, updates, silent) {
-		galleryDispatcher.dispatch({
-			action: CONSTANTS.ITEM_STORE.UPDATE,
-			data: {
-				id: id,
-				updates: updates
-			},
-			silent: silent
-		});
-	},
+galleryActions.addAsyncAction('update', () => {
+	console.log('todo');
+});
 
-	/**
-	 * Navigates to a new folder.
-	 *
-	 * @param {string} folder
-	 * @param {bool} silent
-	 */
-	navigate(folder, silent) {
-		galleryDispatcher.dispatch({
-			action: CONSTANTS.ITEM_STORE.NAVIGATE,
-			data: {
-				'folder': folder
-			},
-			silent: silent
-		});
-	},
+galleryActions.addAsyncAction('navigate', folder => {
+	API.getFolderData({folder}, galleryActions.navigate.completed);
+});
 
-	/**
-	 * Loads another page of items into the gallery.
-	 *
-	 * @param {bool} silent
-	 */
-	page(silent) {
-		galleryDispatcher.dispatch({
-			action: CONSTANTS.ITEM_STORE.PAGE,
-			silent: silent
-		});
-	}
-};
+galleryActions.addAsyncAction('page', params => {
+	API.getFolderData(params, galleryActions.page.completed);
+});
 
 export default galleryActions;

@@ -1,31 +1,16 @@
 import editorDispatcher from '../dispatcher/editorDispatcher';
-import CONSTANTS from '../constants';
+import ActionSet from './ActionSet';
+import API from '../api/API';
 
-var editorActions = {
+const editorActions = new ActionSet (
+	'editorActions', 
+	editorDispatcher
+);
 
-	create(data, silent) {
-		editorDispatcher.dispatch({
-			action: CONSTANTS.EDITOR.CREATE,
-			data: data,
-			silent: silent
-		});
-	},
+editorActions.addAction('create');
 
-	update(data, silent) {
-		editorDispatcher.dispatch({
-			action: CONSTANTS.EDITOR.UPDATE,
-			data: data,
-			silent: silent
-		});
-	},
+editorActions.addAction('update');
 
-	clear(silent) {
-		editorDispatcher.dispatch({
-			action: CONSTANTS.EDITOR.CLEAR,
-			silent: silent
-		});
-	}
-
-}
+editorActions.addAction('clear');
 
 export default editorActions;
