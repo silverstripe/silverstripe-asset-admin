@@ -4,7 +4,7 @@ import Editor from './editor';
 import Item from './item';
 import galleryActions from '../action/galleryActions';
 import itemStore from '../store/itemStore';
-
+import API from '../api/API';
 /**
  * @func getItemStoreState
  * @private
@@ -28,11 +28,14 @@ class Gallery extends React.Component {
         this.onChange = this.onChange.bind(this);
 
         galleryActions.setStoreProps({
-            data_url: props.data_url,
-            update_url: props.update_url,
-            delete_url: props.delete_url,
             initial_folder: props.initial_folder,
             limit: props.limit
+        });
+        
+        API.setURLs({
+            data_url: props.data_url,
+            update_url: props.update_url,
+            delete_url: props.delete_url,        	
         });
 
         // Populate the store.
@@ -59,7 +62,7 @@ class Gallery extends React.Component {
             });
         }
 
-        itemStore.addChangeListener(this.onChange);
+        itemStore.addChangeListener(this.onChange);        
     }
 
     componentWillUnmount () {

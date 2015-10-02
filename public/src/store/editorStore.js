@@ -1,38 +1,46 @@
 import editorDispatcher from '../dispatcher/editorDispatcher';
 import editorActions from '../action/editorActions';
-import EventEmitter from 'events';
-import CONSTANTS from '../constants';
+import BaseStore from './baseStore';
 
-var _fields = [];
+let _fields = [];
 
-function create(data) {
-	var fieldExists = _fields.filter((field) => { return field.name === data.name; }).length > 0;
+class EditorStore extends BaseStore {
 
-	if (fieldExists) {
-		return;
+	static getActionSets () {
+		return [editorActions]
 	}
 
-	_fields.push({
-		name: data.name,
-		value: data.value
-	});
-}
+	onCreate (data) {
+		const fieldExists = _fields.some(field => field.name === data.name);
 
-function update(data) {
-	for (let i = 0; i < _fields.length; i += 1) {
-		if (_fields[i].name === data.name) {
-			_fields[i] = data;
-			break;
+		if (fieldExists) {
+			return;
 		}
+
+		_fields.push({
+			name: data.name,
+			value: data.value
+		});
+
+		this.emitChange();
 	}
-}
 
-function clear() {
-	_fields = [];
-}
+	onUpdate (data) {
+		for (let i = 0; i < _fields.length; i += 1) {
+			if (_fields[i].name === data.name) {
+				_fields[i] = data;
+				break;
+			}
+		}
 
-class EditorStore extends EventEmitter {
+		this.emitChange();
+	}
 
+	onClear () {
+		_fields = [];
+
+		this.emitChange();
+	}
 	/**
 	 * @return {object}
 	 * @desc Gets the entire collection of items.
@@ -68,36 +76,9 @@ class EditorStore extends EventEmitter {
 let _editorStore = new EditorStore(); // Singleton.
 
 editorDispatcher.register(function (payload) {
+	_editorStore.handleAction(payload.action, payload.params);
 
-	switch(payload.action) {
-		case CONSTANTS.EDITOR.CREATE:
-			create(payload.data);
-
-			if (!payload.silent) {
-				_editorStore.emitChange();
-			}
-
-			break;
-
-		case CONSTANTS.EDITOR.UPDATE:
-			update(payload.data);
-
-			if (!payload.silent) {
-				_editorStore.emitChange();
-			}
-
-			break;
-
-		case CONSTANTS.EDITOR.CLEAR:
-			clear();
-
-			if (!payload.silent) {
-				_editorStore.emitChange();
-			}
-	}
-
-	return true; // No errors. Needed by promise in Dispatcher.
-
+	return true;
 });
 
 export default _editorStore;
