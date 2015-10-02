@@ -6,9 +6,7 @@ import CONSTANTS from '../constants';
 var _fields = [];
 
 function create(data) {
-	var fieldExists = _fields.filter((field) => { return field.name === data.name; }).length > 0;
-
-	if (fieldExists) {
+	if(_fields.some(field => field.name === data.name)) {
 		return;
 	}
 

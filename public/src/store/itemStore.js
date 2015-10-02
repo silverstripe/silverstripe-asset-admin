@@ -32,9 +32,7 @@ function init(data) {
  * @desc Adds a gallery item to the store.
  */
 function create(itemData) {
-	var itemExists = _items.filter((item) => { return item.id === itemData.id; }).length > 0;
-
-	if (itemExists) {
+	if(_items.some(item => item.id === itemData.id)) {
 		return;
 	}
 
@@ -57,22 +55,7 @@ function destroy(id, callback) {
 		'dataType': 'json',
 		'method': 'GET',
 		'success': (data) => {
-			var itemIndex = -1;
-
-			// Get the index of the item we have deleted
-			// so it can be removed from the store.
-			for (let i = 0; i < _items.length; i += 1) {
-				if (_items[i].id === id) {
-					itemIndex = i;
-					break;
-				}
-			}
-
-			if (itemIndex === -1) {
-				return;
-			}
-
-			_items.splice(itemIndex, 1);
+			_items = _items.filter(item => item.id !== id);
 
 			callback && callback();
 		}
