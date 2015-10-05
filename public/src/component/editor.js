@@ -49,6 +49,7 @@ class Editor extends React.Component {
             <div className='editor'>
                 <button
                     type='button'
+                    className='ss-ui-button ui-corner-all font-icon-level-up'
                     onClick={this.handleBack.bind(this)}>
                     Back to gallery
                     </button>
@@ -104,8 +105,8 @@ class Editor extends React.Component {
                     {textFields}
 
                     <div>
-                        <button type='submit'>Save</button>
-                        <button type='button' onClick={this.handleCancel.bind(this)} >Cancel</button>
+                        <button type='submit' className="ss-ui-button ui-corner-all font-icon-check-mark">Save</button>
+                        <button type='button' className="ss-ui-button ui-corner-all font-icon-cancel-circled" onClick={this.handleCancel.bind(this)} >Cancel</button>
                     </div>
                 </form>
             </div>

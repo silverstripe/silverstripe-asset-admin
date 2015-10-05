@@ -25,14 +25,14 @@ class Item extends React.Component {
                 <div className={thumbnailClassNames} style={styles}>
                     <div className='item__actions'>
                         <button
-                            className='item__actions__action item__actions__action--edit [ font-icon-pencil ]'
-                            type='button'
-                            onClick={this.handleEdit.bind(this)}>
-                            </button>
-                        <button
                             className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
                             type='button'
                             onClick={this.handleDelete.bind(this)}>
+                            </button>
+                        <button
+                            className='item__actions__action item__actions__action--edit [ font-icon-edit ]'
+                            type='button'
+                            onClick={this.handleEdit.bind(this)}>
                             </button>
                     </div>
                 </div>
