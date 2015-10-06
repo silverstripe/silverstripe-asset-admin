@@ -82,7 +82,7 @@ class Gallery extends React.Component {
             if (itemStore.hasNavigated()) {
                 button = <button
                     type='button'
-                    className='ss-ui-button ui-corner-all font-icon-level-up'
+                    className='ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
                     onClick={this.handleNavigate.bind(this)}>
                     Back
                 </button>;
@@ -160,6 +160,7 @@ class Gallery extends React.Component {
                 props = {};
 
             props.attributes = item.attributes;
+            props.category = item.category;
             props.id = item.id;
             props.setEditing = this.setEditing.bind(this);
             props.title = item.title;
