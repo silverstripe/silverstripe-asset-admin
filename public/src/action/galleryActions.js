@@ -88,6 +88,21 @@ var galleryActions = {
 			action: CONSTANTS.ITEM_STORE.PAGE,
 			silent: silent
 		});
+	},
+
+	/**
+	 * Sorts the items in the gallery.
+	 *
+	 * @param {bool} silent
+	 */
+	sort(name, silent) {
+		galleryDispatcher.dispatch({
+			action: CONSTANTS.ITEM_STORE.SORT,
+			data: {
+				'name': name
+			},
+			silent: silent
+		});
 	}
 };
 
