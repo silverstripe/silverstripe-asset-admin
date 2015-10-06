@@ -49,6 +49,10 @@
     .asset-gallery .item:hover .item__actions__action:hover,
     .asset-gallery .item:focus .item__actions__action:hover {
       background: rgba(34, 56, 91, 0.7); }
+  .asset-gallery .item.folder {
+    cursor: pointer; }
+    .asset-gallery .item.folder .item__thumbnail {
+      background-image: url(img/folder.png); }
 
 .asset-gallery .item__thumbnail {
   height: 150px;

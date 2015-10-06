@@ -1,12 +1,17 @@
 import React from 'react';
 import galleryActions from '../action/galleryActions';
 import CONSTANTS from '../constants';
+import classNames from 'classnames';
 
 class Item extends React.Component {
 
     render() {
-        var styles = {backgroundImage: 'url(' + this.props.url + ')'},
-            thumbnailClassNames = 'item__thumbnail';
+        var styles = this.getImageURL(),
+            thumbnailClassNames = 'item__thumbnail',
+            itemClassNames = classNames({
+                'item': true,
+                'folder': this.props.type === 'folder'
+            });
 
         if (this.imageLargerThanThumbnail()) {
             thumbnailClassNames += ' large';
@@ -21,7 +26,7 @@ class Item extends React.Component {
         }
 
         return (
-            <div className='item' onClick={navigate}>
+            <div className={itemClassNames + ' ' + this.props.type} onClick={navigate}>
                 <div className={thumbnailClassNames} style={styles}>
                     <div className='item__actions'>
                         <button
@@ -67,6 +72,18 @@ class Item extends React.Component {
     }
 
     /**
+     * @func getImageURL
+     * @desc Return the URL of the image, determined by it's type. 
+     */
+    getImageURL() {
+        if (this.props.type.toLowerCase().indexOf('image') > -1) {
+            return {backgroundImage: 'url(' + this.props.url + ')'};
+        } else {
+            return {};
+        }
+    }
+
+    /**
      * @func imageLargerThanThumbnail
      * @desc Check if an image is larger than the thumbnail container.
      */
@@ -81,6 +98,7 @@ Item.propTypes = {
     id: React.PropTypes.number,
     setEditing: React.PropTypes.func,
     title: React.PropTypes.string,
+    type: React.PropTypes.string,
     url: React.PropTypes.string
 };
 
