@@ -8,11 +8,6 @@ var _items = [];
 var _folders = [];
 var _currentFolder = null;
 
-var _filters = {
-	'page': 1,
-	'limit': 10
-};
-
 /**
  * @func init
  * @private
@@ -20,9 +15,33 @@ var _filters = {
  * @desc Sets properties on the store.
  */
 function init(data) {
+	_itemStore.page = 1;
+	_itemStore.limit = 10;
+	_itemStore.sort = 'title';
+	_itemStore.direction = 'asc';
+
+	if (data.filter_folder && data.initial_folder && data.filter_folder !== data.initial_folder) {
+		_folders.push([data.filter_folder, data.initial_folder]);
+	}
+
 	Object.keys(data).map((key) => {
 		_itemStore[key] = data[key];
 	});
+}
+
+function sort(name, callback) {
+	if (_itemStore.sort.toLowerCase() == name.toLowerCase()) {
+		if (_itemStore.direction.toLowerCase() == 'asc') {
+			_itemStore.direction = 'desc';
+		} else {
+			_itemStore.direction = 'asc';
+		}
+	} else {
+		_itemStore.sort = name.toLowerCase();
+		_itemStore.direction = 'asc';
+	}
+
+	callback && callback();
 }
 
 /**
@@ -88,21 +107,40 @@ function destroy(id, callback) {
  * @param {function} callback
  */
 function navigate(folder, callback) {
-	_filters.page = 1;
-	_filters.folder = folder;
+	_itemStore.page = 1;
+	_itemStore.filter_folder = folder;
+
+	let data = {
+		'page': _itemStore.page++,
+		'limit': _itemStore.limit,
+	};
+
+	['filter_folder', 'filter_name', 'filter_type', 'filter_created_from', 'filter_created_to'].forEach((type) => {
+		if (_itemStore[type]) {
+			data[type] = _itemStore[type];
+		}
+	});
 
 	$.ajax({
 		'url': _itemStore.data_url,
 		'dataType': 'json',
-		'data': {
-			'folder': _filters.folder,
-			'page': _filters.page++,
-			'limit': _itemStore.limit
-		},
+		'data': data,
 		'success': function(data) {
 			_items = [];
 
-			_filters.count = data.count;
+			_itemStore.count = data.count;
+
+			let $search = $('.cms-search-form');
+
+			if ($search.find('[type=hidden][name="q[Folder]"]').length == 0) {
+				$search.append('<input type="hidden" name="q[Folder]" />');
+			}
+
+			if(folder.substr(-1) === '/') {
+				folder = folder.substr(0, folder.length - 1);
+			}
+
+			$search.find('[type=hidden][name="q[Folder]"]').val(encodeURIComponent(folder));
 
 			if (folder !== _itemStore.initial_folder) {
 				_folders.push([folder, _currentFolder || _itemStore.initial_folder]);
@@ -120,15 +158,22 @@ function navigate(folder, callback) {
 }
 
 function page(callback) {
-	if (_items.length < _filters.count) {
+	if (_items.length < _itemStore.count) {
+		let data = {
+			'page': _itemStore.page++,
+			'limit': _itemStore.limit,
+		};
+
+		['filter_folder', 'filter_name', 'filter_type', 'filter_created_from', 'filter_created_to'].forEach((type) => {
+			if (_itemStore[type]) {
+				data[type] = _itemStore[type];
+			}
+		});
+
 		$.ajax({
 			'url': _itemStore.data_url,
 			'dataType': 'json',
-			'data': {
-				'folder': _filters.folder,
-				'page': _filters.page++,
-				'limit': _itemStore.limit
-			},
+			'data': data,
 			'success': function(data) {
 				data.files.forEach((item) => {
 					galleryActions.create(item, true);
@@ -173,7 +218,32 @@ class ItemStore extends EventEmitter {
 	 * @desc Gets the entire collection of items.
 	 */
 	getAll() {
-		return _items;
+		return _items.sort(function(a, b) {
+			let sort = _itemStore.sort.toLowerCase();
+			let direction = _itemStore.direction.toLowerCase();
+
+			if (direction == 'asc') {
+				if (a[sort] < b[sort]) {
+					return -1;
+				}
+
+				if (a[sort] > b[sort]) {
+					return 1;
+				}
+
+				return 0
+			}
+
+			if (a[sort] > b[sort]) {
+				return -1;
+			}
+
+			if (a[sort] < b[sort]) {
+				return 1;
+			}
+
+			return 0
+		});
 	}
 
 	/**
@@ -268,6 +338,15 @@ galleryDispatcher.register(function (payload) {
 
 		case CONSTANTS.ITEM_STORE.PAGE:
 			page(() => {
+				if (!payload.silent) {
+					_itemStore.emitChange();
+				}
+			});
+
+			break;
+
+		case CONSTANTS.ITEM_STORE.SORT:
+			sort(payload.data.name, () => {
 				if (!payload.silent) {
 					_itemStore.emitChange();
 				}

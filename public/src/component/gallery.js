@@ -32,12 +32,19 @@ class Gallery extends React.Component {
             update_url: props.update_url,
             delete_url: props.delete_url,
             initial_folder: props.initial_folder,
-            limit: props.limit
+            limit: props.limit,
+            filter_folder: props.filter_folder,
+            filter_name: props.filter_name,
+            filter_type: props.filter_type,
+            filter_created_from: props.filter_created_from,
+            filter_created_to: props.filter_created_to
         });
 
         // Populate the store.
-        for (let i = 0; i < items.length; i += 1) {
-            galleryActions.create(items[i], true);
+        if (items && items.length > 0) {
+            for (let i = 0; i < items.length; i += 1) {
+                galleryActions.create(items[i], true);
+            }
         }
 
         // Set the initial state of the gallery.
@@ -88,9 +95,22 @@ class Gallery extends React.Component {
                 </button>;
             }
 
+            var sorts = <div>
+                <a onClick={this.handleSortTitle.bind(this)}>
+                    sort by name
+                </a>
+                <a onClick={this.handleSortCreated.bind(this)}>
+                    sort by created
+                </a>
+                <a onClick={this.handleSortType.bind(this)}>
+                    sort by type
+                </a>
+            </div>;
+
             return (
                 <div className='gallery'>
                     {button}
+                    {sorts}
                     <div className='gallery__items'>
                         {items}
                     </div>
@@ -105,9 +125,21 @@ class Gallery extends React.Component {
         galleryActions.navigate(navigation[1]);
     }
 
+    handleSortTitle() {
+        galleryActions.sort("title");
+    }
+
+    handleSortCreated() {
+        galleryActions.sort("created");
+    }
+
+    handleSortType() {
+        galleryActions.sort("type");
+    }
+
     /**
      * @func onChange
-     * @desc Updates the gallery state when somethnig changes in the store.
+     * @desc Updates the gallery state when something changes in the store.
      */
     onChange() {
         this.setState(getItemStoreState());

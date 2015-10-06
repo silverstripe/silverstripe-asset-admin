@@ -18,7 +18,7 @@ class Item extends React.Component {
         }
 
         var navigate = function(){
-            console.log('not a folder');
+
         };
 
         if (this.props.type === 'folder') {
