@@ -82,6 +82,7 @@ class Gallery extends React.Component {
             if (itemStore.hasNavigated()) {
                 button = <button
                     type='button'
+                    className='ss-ui-button ui-corner-all font-icon-level-up'
                     onClick={this.handleNavigate.bind(this)}>
                     Back
                 </button>;

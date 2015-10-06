@@ -7,7 +7,8 @@ var gulp = require('gulp'),
 var paths = {
 	dist: './public/dist',
 	js: ['./public/src/**/*.js'],
-	scss: ['./public/src/**/*.scss']
+	scss: ['./public/src/**/*.scss'],
+	image: ['./public/src/img/**']
 };
 
 gulp.task('js:watch', function () {
@@ -39,4 +40,9 @@ gulp.task('sass:watch', function () {
 	gulp.watch(paths.scss, ['sass']);
 });
 
-gulp.task('default', ['js:watch', 'sass:watch', 'js', 'sass']);
+gulp.task('images', function () {
+	gulp.src(paths.image)
+		.pipe(gulp.dest(paths.dist + '/img'));
+});
+
+gulp.task('default', ['js:watch', 'sass:watch', 'js', 'sass', 'images']);

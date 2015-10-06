@@ -59,6 +59,14 @@
                 }
             }
         }
+
+        &.folder {
+            cursor: pointer;
+            
+            .item__thumbnail {
+                background-image: url(img/folder.png)
+            }
+        }
     }
 
     .item__thumbnail {
