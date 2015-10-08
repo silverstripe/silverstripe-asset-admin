@@ -1,17 +1,12 @@
 import React from 'react';
 import galleryActions from '../action/galleryActions';
 import CONSTANTS from '../constants';
-import classNames from 'classnames';
 
 class Item extends React.Component {
 
     render() {
         var styles = this.getImageURL(),
-            thumbnailClassNames = 'item__thumbnail',
-            itemClassNames = classNames({
-                'item': true,
-                'folder': this.props.type === 'folder'
-            });
+            thumbnailClassNames = 'item__thumbnail';
 
         if (this.imageLargerThanThumbnail()) {
             thumbnailClassNames += ' large';
@@ -26,7 +21,7 @@ class Item extends React.Component {
         }
 
         return (
-            <div className={itemClassNames + ' ' + this.props.type} onClick={navigate}>
+            <div className={'item ' + this.props.category} onClick={navigate}>
                 <div className={thumbnailClassNames} style={styles}>
                     <div className='item__actions'>
                         <button
@@ -73,7 +68,7 @@ class Item extends React.Component {
 
     /**
      * @func getImageURL
-     * @desc Return the URL of the image, determined by it's type. 
+     * @desc Return the URL of the image, determined by it's type.
      */
     getImageURL() {
         if (this.props.type.toLowerCase().indexOf('image') > -1) {
@@ -88,13 +83,14 @@ class Item extends React.Component {
      * @desc Check if an image is larger than the thumbnail container.
      */
     imageLargerThanThumbnail() {
-        return this.props.attributes.dimensions.height > CONSTANTS.ITEM_COMPONENT.THUMBNAIL_HEIGHT || 
+        return this.props.attributes.dimensions.height > CONSTANTS.ITEM_COMPONENT.THUMBNAIL_HEIGHT ||
                this.props.attributes.dimensions.width > CONSTANTS.ITEM_COMPONENT.THUMBNAIL_WIDTH;
     }
 }
 
 Item.propTypes = {
     attributes: React.PropTypes.object,
+    category: React.PropTypes.category,
     id: React.PropTypes.number,
     setEditing: React.PropTypes.func,
     title: React.PropTypes.string,
