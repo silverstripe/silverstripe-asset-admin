@@ -48,7 +48,6 @@ export default class extends React.Component {
 			});
 		});
 
-
 		if (this.props.initial_folder !== this.props.current_folder) {
 			this.onNavigate(this.props.current_folder);
 		} else {
@@ -70,8 +69,8 @@ export default class extends React.Component {
 		let fileComponents = this.getFileComponents();
 
 		let sorts = [
-			{'field': 'title', 'direction': 'asc', 'label': 'a-z'},
-			{'field': 'title', 'direction': 'desc', 'label': 'z-a'},
+			{'field': 'title', 'direction': 'asc', 'label': 'title a-z'},
+			{'field': 'title', 'direction': 'desc', 'label': 'title z-a'},
 			{'field': 'created', 'direction': 'desc', 'label': 'newest'},
 			{'field': 'created', 'direction': 'asc', 'label': 'oldest'}
 		];
@@ -108,7 +107,7 @@ export default class extends React.Component {
 				});
 			};
 
-			return <button onClick={onSort}>{sort.label}</button>;
+			return <option onClick={onSort}>{sort.label}</option>;
 		});
 
 		var moreButton = null;
@@ -122,12 +121,18 @@ export default class extends React.Component {
 		if (this.folders.length > 1) {
 			backButton = <button
 				className='ss-ui-button ui-corner-all font-icon-level-up'
-				onClick={this.onBackClick.bind(this)}>back</button>;
+				onClick={this.onBackClick.bind(this)}>Back</button>;
 		}
 
 		return <div className='gallery'>
-			{backButton}
-			{sortButtons}
+			<div className='gallery__header'>
+				{backButton}
+				<div className="gallery__header__sort fieldholder-small" style={{width: '160px'}}>
+					<select className="dropdown no-change-track">
+						{sortButtons}
+					</select>
+				</div>
+			</div>
 			<div className='gallery__items'>
 				{fileComponents}
 			</div>
