@@ -4,6 +4,35 @@
 .asset-gallery > .middleColumn {
   margin-left: 0; }
 
+.asset-gallery .gallery__header {
+  margin: -46px 12px 0 0; }
+  .asset-gallery .gallery__header > button {
+    float: left;
+    margin-left: 8px; }
+
+.asset-gallery .gallery__header__sort {
+  float: right; }
+  .asset-gallery .gallery__header__sort .chzn-single {
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    margin-top: -2px; }
+    .asset-gallery .gallery__header__sort .chzn-single > span {
+      text-align: right;
+      color: inherit; }
+      .asset-gallery .gallery__header__sort .chzn-single > span::before {
+        content: 'Sort by '; }
+  .asset-gallery .gallery__header__sort .chzn-drop {
+    border-radius: 3px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+    border: 0; }
+  .asset-gallery .gallery__header__sort .chzn-results .active-result {
+    text-transform: capitalize; }
+
+.asset-gallery .gallery__items {
+  padding-top: 48px; }
+
 .asset-gallery .item {
   position: relative;
   width: 50%;

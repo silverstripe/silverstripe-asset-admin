@@ -64,5 +64,7 @@ $('.asset-gallery').entwine({
 			<GalleryComponent {...props} />,
 			this[0]
 		);
+
+		$('.gallery__header__sort .dropdown').change(() => React.addons.TestUtils.Simulate.click($(this).find(':selected')[0]));
 	}
 });
