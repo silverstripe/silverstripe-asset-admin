@@ -58,8 +58,8 @@ export default class extends React.Component {
 				{textInputs}
 
 				<div>
-					<button type='submit' className="ss-ui-button ui-corner-all font-icon-check-mark">Save</button>
-					<button type='button' className="ss-ui-button ui-corner-all font-icon-cancel-circled" onClick={this.props.onListClick}>Cancel</button>
+					<button type='submit' className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-check-mark">Save</button>
+					<button type='button' className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-cancel-circled" onClick={this.props.onListClick}>Cancel</button>
 				</div>
 			</form>
 		</div>;

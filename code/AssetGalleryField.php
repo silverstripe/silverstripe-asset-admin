@@ -333,6 +333,7 @@ class AssetGalleryField extends FormField {
 			),
 			'title' => $file->getTitle(),
 			'type' => $file->is_a('Folder') ? 'folder' : $file->getFileType(),
+			'category' => $file->is_a('Folder') ? 'folder' : $file->appCategory(),
 			'filename' => $file->getFilename(),
 			'extension' => $file->getExtension(),
 			'size' => $file->getSize(),

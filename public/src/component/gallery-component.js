@@ -110,25 +110,23 @@ export default class extends React.Component {
 		var moreButton = null;
 
 		if (this.state.count > this.state.files.length) {
-			moreButton = <button onClick={this.onMoreClick.bind(this)}>more</button>;
+			moreButton = <button className="load-more" onClick={this.onMoreClick.bind(this)}>Load more</button>;
 		}
 
 		var backButton = null;
 
 		if (this.folders.length > 1) {
 			backButton = <button
-				className='ss-ui-button ui-corner-all font-icon-level-up'
+				className='ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
 				onClick={this.onBackClick.bind(this)}>Back</button>;
 		}
 
 		return <div className='gallery'>
-			<div className='gallery__header'>
-				{backButton}
-				<div className="gallery__header__sort fieldholder-small" style={{width: '160px'}}>
-					<select className="dropdown no-change-track">
-						{sortButtons}
-					</select>
-				</div>
+			{backButton}
+			<div className="gallery__sort fieldholder-small" style={{width: '160px'}}>
+				<select className="dropdown no-change-track">
+					{sortButtons}
+				</select>
 			</div>
 			<div className='gallery__items'>
 				{fileComponents}

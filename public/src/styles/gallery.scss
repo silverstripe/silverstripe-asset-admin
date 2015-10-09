@@ -3,17 +3,16 @@
 
     }
 
-    .gallery__header {
-        margin: -46px 12px 0 0;
-
-        > button {
-            float: left;
-            margin-left: 8px;
-        }
+    .font-icon-level-up {
+        position: absolute;
+        top: 13px;
+        left: 212px;
     }
 
-    .gallery__header__sort {
-        float: right;
+    .gallery__sort {
+        position: absolute;
+        top: 12px;
+        right: 40px;
 
         .chzn-single {
             border: 0;
@@ -46,6 +45,20 @@
     }
 
     .gallery__items {
-        padding-top: 48px;
+
+    }
+
+    .load-more {
+        display: block;
+        color: white;
+        cursor: pointer;
+        margin: 8px auto 24px;
+        padding: 4px;
+        width: 200px;
+        font-size: 16px;
+        height: 44px;
+        background-color: #338DC1;
+        border: 0;
+        border-radius: 4px
     }
 }
