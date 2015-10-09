@@ -1,11 +1,9 @@
 import $ from 'jquery';
 import React from 'react';
-import classNames from 'classnames';
 import constants from '../constants';
 
 export default class extends React.Component {
 	render() {
-		let itemClassNames = this.getItemClassNames();
 		let thumbnailStyles = this.getThumbnailStyles();
 		let thumbnailClassNames = this.getThumbnailClassNames();
 
@@ -25,7 +23,7 @@ export default class extends React.Component {
 			this.props.onFileEdit(this.props, event);
 		};
 
-		return <div className={itemClassNames} onClick={onFileNavigate}>
+		return <div className={'item ' + this.props.category} onClick={onFileNavigate}>
 			<div className={thumbnailClassNames} style={thumbnailStyles}>
 				<div className='item__actions'>
 					<button
