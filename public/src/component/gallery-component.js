@@ -211,11 +211,13 @@ export default class extends React.Component {
 		this.props.store.emit('navigate', folder);
 	}
 
-	onMoreClick() {
+	onMoreClick(event) {
+		event.preventDefault(); //Prevent submission of insert media dialog
 		this.props.store.emit('more');
 	}
 
-	onBackClick() {
+	onBackClick(event) {
+		event.preventDefault(); //Prevent submission of insert media dialog
 		if (this.folders.length > 1) {
 			this.folders.pop();
 			this.props.store.emit('navigate', this.folders[this.folders.length - 1]);
