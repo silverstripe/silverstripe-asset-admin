@@ -4,6 +4,46 @@
 .asset-gallery > .middleColumn {
   margin-left: 0; }
 
+.asset-gallery .font-icon-level-up {
+  position: absolute;
+  top: 13px;
+  left: 212px; }
+
+.asset-gallery .gallery__sort {
+  position: absolute;
+  top: 12px;
+  right: 40px; }
+  .asset-gallery .gallery__sort .chzn-single {
+    border: 0;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    margin-top: -2px; }
+    .asset-gallery .gallery__sort .chzn-single > span {
+      text-align: right;
+      color: inherit; }
+      .asset-gallery .gallery__sort .chzn-single > span::before {
+        content: 'Sort by '; }
+  .asset-gallery .gallery__sort .chzn-drop {
+    border-radius: 3px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+    border: 0; }
+  .asset-gallery .gallery__sort .chzn-results .active-result {
+    text-transform: capitalize; }
+
+.asset-gallery .load-more {
+  display: block;
+  color: white;
+  cursor: pointer;
+  margin: 8px auto 24px;
+  padding: 4px;
+  width: 200px;
+  font-size: 16px;
+  height: 44px;
+  background-color: #338DC1;
+  border: 0;
+  border-radius: 4px; }
+
 .asset-gallery .item {
   position: relative;
   width: 50%;
@@ -52,7 +92,23 @@
   .asset-gallery .item.folder {
     cursor: pointer; }
     .asset-gallery .item.folder .item__thumbnail {
-      background-image: url(img/folder.png); }
+      background: url(img/folder.png) center center no-repeat; }
+  .asset-gallery .item.zip .item__thumbnail {
+    background: #fff url(img/icon_zip.png) center center no-repeat; }
+  .asset-gallery .item.audio .item__thumbnail {
+    background: #fff url(img/icon_audio.png) center center no-repeat; }
+  .asset-gallery .item.mov .item__thumbnail {
+    background: #fff url(img/icon_video.png) center center no-repeat; }
+  .asset-gallery .item.doc .item__thumbnail {
+    background: #fff url(img/icon_doc.png) center center no-repeat; }
+  .asset-gallery .item.false .item__thumbnail {
+    background: #fff url(img/icon_file.png) center center no-repeat; }
+  .asset-gallery .item.zip .item__thumbnail,
+  .asset-gallery .item.audio .item__thumbnail,
+  .asset-gallery .item.mov .item__thumbnail,
+  .asset-gallery .item.doc .item__thumbnail,
+  .asset-gallery .item.false .item__thumbnail {
+    border-radius: 3px; }
 
 .asset-gallery .item__thumbnail {
   height: 150px;
@@ -95,10 +151,20 @@
 
 .asset-gallery .item__title {
   color: #0073C1;
-  padding: 4px 8px;
+  padding: 6px 8px 2px;
   width: 200px;
   margin: auto;
   box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
+
+.cms .ss-uploadfield-view-allowed-extensions {
+  margin-top: 0;
+  top: -42px;
+  right: 0; }
+  .cms .ss-uploadfield-view-allowed-extensions h4 {
+    padding-right: 0; }
+  .cms .ss-uploadfield-view-allowed-extensions .description {
+    margin-top: 28px;
+    text-align: right; }

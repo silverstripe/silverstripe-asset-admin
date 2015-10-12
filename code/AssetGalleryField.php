@@ -3,7 +3,6 @@
 namespace SilverStripe\Forms;
 
 use Controller;
-use Exception;
 use File;
 use Folder;
 use FormField;
@@ -18,7 +17,7 @@ class AssetGalleryField extends FormField {
 	 * @var array
 	 */
 	private static $allowed_actions = array(
-		'data',
+		'search',
 		'update',
 		'delete',
 	);
@@ -59,23 +58,31 @@ class AssetGalleryField extends FormField {
 	 *
 	 * @return SS_HTTPResponse
 	 */
-	public function data(SS_HTTPRequest $request) {
+	public function search(SS_HTTPRequest $request) {
 		$filters = array();
-
-		if ($folder = $request->getVar('folder')) {
-			$filters['folder'] = $folder;
-		}
 
 		if ($name = $request->getVar('name')) {
 			$filters['name'] = $name;
 		}
 
-		if ($created_from = $request->getVar('created_from')) {
-			$filters['created_from'] = $created_from;
+		if ($folder = $request->getVar('folder')) {
+			$filters['folder'] = $folder;
 		}
 
-		if ($created_to = $request->getVar('created-to')) {
-			$filters['created_to'] = $created_to;
+		if ($folder = $request->getVar('type')) {
+			$filters['type'] = $folder;
+		}
+
+		if ($createdFrom = $request->getVar('createdFrom')) {
+			$filters['createdFrom'] = $createdFrom;
+		}
+
+		if ($createdTo = $request->getVar('createdTo')) {
+			$filters['createdTo'] = $createdTo;
+		}
+
+		if ($onlySearchInFolder = $request->getVar('onlySearchInFolder')) {
+			$filters['onlySearchInFolder'] = $onlySearchInFolder;
 		}
 
 		$filters['page'] = 1;
@@ -107,11 +114,38 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function update(SS_HTTPRequest $request) {
-		// TODO
+		$id = $request->getVar('id');
+		$file = File::get()->filter('id', (int) $id)->first();
 
-		$response = new SS_HTTPResponse();
+		$code = 500;
+
+		$body = array(
+			'status' => 'error'
+		);
+
+		if ($file) {
+			$title = $request->getVar('title');
+			$basename = $request->getVar('basename');
+
+			if (!empty($title)) {
+				$file->Title = $title;
+			}
+
+			if (!empty($basename)) {
+				$file->Name = $basename;
+			}
+
+			$file->write();
+
+			$code = 200;
+
+			$body = array(
+				'status' => 'ok'
+			);
+		}
+
+		$response = new SS_HTTPResponse(json_encode($body), $code);
 		$response->addHeader('Content-Type', 'application/json');
-		$response->setBody(json_encode(null));
 
 		return $response;
 	}
@@ -151,35 +185,48 @@ class AssetGalleryField extends FormField {
 	 */
 	protected function getData($filters = array()) {
 		$items = array();
+		$files = null;
 
-		$folder = null;
+		if ((!empty($filters['folder']) && isset($filters['onlySearchInFolder']) && $filters['onlySearchInFolder'] == '1') || (empty($filters["name"]) && empty($filters["type"]) && empty($filters["createdFrom"]) && empty($filters["createdTo"]))) {
+			$folder = null;
 
-		if (isset($filters['folder'])) {
-			$folder = $filters['folder'];
+			if (isset($filters['folder'])) {
+				$folder = $filters['folder'];
+			}
+
+			$folder = $this->getFolder($folder);
+
+			if ($folder && $folder->hasChildren()) {
+				/** @var File[]|SS_List $files */
+				$files = $folder->myChildren();
+			}
+		} else {
+			$files = File::get();
 		}
 
-		$folder = $this->getFolder($folder);
 		$count = 0;
 
-		if($folder->hasChildren()) {
-			/** @var File[]|SS_List $files */
-			$files = $folder->myChildren();
-
-			if (isset($filters['name'])) {
+		if($files) {
+			if (!empty($filters['name'])) {
 				$files = $files->filterAny(array(
 					'Name:PartialMatch' => $filters['name'],
 					'Title:PartialMatch' => $filters['name']
 				));
 			}
 
-			if(!empty($params['created_from'])) {
-				$fromDate = new DateField(null, null, $params['created_from']);
+			if(!empty($filters['createdFrom'])) {
+				$fromDate = new DateField(null, null, $filters['createdFrom']);
 				$files = $files->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
 			}
 
-			if(!empty($params['created_to'])) {
-				$toDate = new DateField(null, null, $params['created_to']);
+			if(!empty($filters['createdTo'])) {
+				$toDate = new DateField(null, null, $filters['createdTo']);
 				$files = $files->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
+			}
+
+			if(!empty($filters['type']) && !empty(File::config()->app_categories[$filters['type']])) {
+				$extensions = File::config()->app_categories[$filters['type']];
+				$files = $files->filter('Name:PartialMatch', $extensions);
 			}
 
 			$files = $files->sort(
@@ -193,7 +240,6 @@ class AssetGalleryField extends FormField {
 				$limit = $filters['limit'];
 
 				$offset = ($page - 1) * $limit;
-
 
 				$files = $files->limit($limit, $offset);
 			}
@@ -237,17 +283,11 @@ class AssetGalleryField extends FormField {
 	 */
 	public function Field($properties = array()) {
 		$name = $this->getName();
-		$data = $this->getData();
-		$items = json_encode($data['items']);
 
 		Requirements::css(ASSET_GALLERY_FIELD_DIR . "/public/dist/main.css");
 		Requirements::javascript(ASSET_GALLERY_FIELD_DIR . "/public/dist/bundle.js");
-		Requirements::customScript("
-			window.SS_ASSET_GALLERY = window.SS_ASSET_GALLERY || {};
-			window.SS_ASSET_GALLERY['{$name}'] = {$items};
-		");
 
-		$dataURL = $this->getDataURL();
+		$searchURL = $this->getSearchURL();
 		$updateURL = $this->getUpdateURL();
 		$deleteURL = $this->getDeleteURL();
 		$initialFolder = $this->getCurrentPath();
@@ -256,19 +296,19 @@ class AssetGalleryField extends FormField {
 		return "<div
 			class='asset-gallery'
 			data-asset-gallery-name='{$name}'
-			data-asset-gallery-data-url='{$dataURL}'
+			data-asset-gallery-limit='{$limit}'
+			data-asset-gallery-search-url='{$searchURL}'
 			data-asset-gallery-update-url='{$updateURL}'
 			data-asset-gallery-delete-url='{$deleteURL}'
 			data-asset-gallery-initial-folder='{$initialFolder}'
-			data-asset-gallery-limit='{$limit}'
 			></div>";
 	}
 
 	/**
 	 * @return string
 	 */
-	protected function getDataURL() {
-		return Controller::join_links($this->Link(), 'data');
+	protected function getSearchURL() {
+		return Controller::join_links($this->Link(), 'search');
 	}
 
 	/**
@@ -318,12 +358,14 @@ class AssetGalleryField extends FormField {
 			'attributes' => array(
 				'dimensions' => array(),
 			),
-			'title' => $file->getTitle(),
-			'type' => $file->is_a('Folder') ? 'folder' : $file->getFileType(),
-			'filename' => $file->getFilename(),
-			'extension' => $file->getExtension(),
-			'size' => $file->getSize(),
-			'url' => $file->getAbsoluteURL(),
+			'title' => $file->Title,
+			'type' => $file->is_a('Folder') ? 'folder' : $file->FileType,
+			'category' => $file->is_a('Folder') ? 'folder' : $file->AppCategory,
+			'basename' => $file->Name,
+			'filename' => $file->Filename,
+			'extension' => $file->Extension,
+			'size' => $file->Size,
+			'url' => $file->AbsoluteURL,
 		);
 
 		/** @var Member $owner */
@@ -342,15 +384,15 @@ class AssetGalleryField extends FormField {
 		if($parent) {
 			$object['parent'] = array(
 				'id' => $parent->ID,
-				'title' => $parent->getTitle(),
-				'path' => $parent->getFilename(),
+				'title' => $parent->Title,
+				'filename' => $parent->Filename,
 			);
 		}
 
 		/** @var File $file */
 		if($file->hasMethod('getWidth') && $file->hasMethod('getHeight')) {
-			$object['attributes']['dimensions']['width'] = $file->getWidth();
-			$object['attributes']['dimensions']['height'] = $file->getHeight();
+			$object['attributes']['dimensions']['width'] = $file->Width;
+			$object['attributes']['dimensions']['height'] = $file->Height;
 		}
 
 		return $object;

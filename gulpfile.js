@@ -23,7 +23,6 @@ gulp.task('js', function () {
 	})
 	.transform(babelify)
 	.external('react')
-	.external('flux')
 	.external('jquery')
 	.bundle()
 	.pipe(source('bundle.js'))
