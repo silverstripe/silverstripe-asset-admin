@@ -31,7 +31,11 @@
   .asset-gallery .gallery__sort .chzn-results .active-result {
     text-transform: capitalize; }
 
-.asset-gallery .load-more {
+.asset-gallery .gallery__load {
+  width: 100%;
+  display: inline-block; }
+
+.asset-gallery .gallery__load__more {
   display: block;
   color: white;
   cursor: pointer;
@@ -117,7 +121,7 @@
   background-repeat: no-repeat;
   background-position: center center; }
   .asset-gallery .item__thumbnail.large {
-    background-size: contain; }
+    background-size: cover; }
 
 .asset-gallery .item__actions {
   position: absolute;
@@ -158,6 +162,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
+
+.cms .AssetAdmin .cms-content-fields .cms-edit-form.AssetAdmin {
+  overflow-y: visible; }
 
 .cms .ss-uploadfield-view-allowed-extensions {
   margin-top: 0;
