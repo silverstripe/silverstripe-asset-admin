@@ -123,7 +123,7 @@ export default class FileStore extends Events {
 			'url': url,
 			'method': method,
 			'dataType': 'json',
-			'data': $.extend(data, defaults)
+			'data': $.extend(defaults, data)
 		});
 	}
 }

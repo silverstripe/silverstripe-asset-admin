@@ -77,8 +77,6 @@ export default class extends React.Component {
 			{'name': 'basename', 'value': this.props.file.basename}
 		];
 
-		console.log(fields);
-
 		return fields.map((field) => {
 			let handler = (event) => {
 				this.onFieldChange.call(this, event, field.name);
