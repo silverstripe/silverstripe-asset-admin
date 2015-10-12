@@ -23,7 +23,7 @@ export default class extends React.Component {
 			this.props.onFileEdit(this.props, event);
 		};
 
-		return <div className={'item ' + this.props.category} onClick={onFileNavigate}>
+		return <div className={'item ' + this.props.category} data-id={this.props.id} onClick={onFileNavigate}>
 			<div className={thumbnailClassNames} style={thumbnailStyles}>
 				<div className='item__actions'>
 					<button
