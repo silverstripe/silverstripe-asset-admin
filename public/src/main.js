@@ -41,12 +41,12 @@ $('.asset-gallery').entwine({
 		}
 
 		props.store = FileStore.create(
-				this[0].getAttribute('data-asset-gallery-search-url'),
-				this[0].getAttribute('data-asset-gallery-update-url'),
-				this[0].getAttribute('data-asset-gallery-delete-url'),
-				this[0].getAttribute('data-asset-gallery-limit'),
-				$search.find('[type=hidden][name="q[Folder]"]')
-		).addEventListeners();
+			this[0].getAttribute('data-asset-gallery-search-url'),
+			this[0].getAttribute('data-asset-gallery-update-url'),
+			this[0].getAttribute('data-asset-gallery-delete-url'),
+			this[0].getAttribute('data-asset-gallery-limit'),
+			$search.find('[type=hidden][name="q[Folder]"]')
+		);
 
 		props.store.emit(
 			'filter',
