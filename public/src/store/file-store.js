@@ -132,10 +132,12 @@ export default class FileStore extends Events {
 	}
 
 	showLoadingIndicator() {
-		$('.cms-content').addClass('loading');
+		$('.cms-content, .ui-dialog').addClass('loading');
+		$('.ui-dialog-content').css('opacity', '.1');
 	}
 
 	hideLoadingIndicator() {
-		$('.cms-content').removeClass('loading');
+		$('.cms-content, .ui-dialog').removeClass('loading');
+		$('.ui-dialog-content').css('opacity', '1');
 	}
 }
