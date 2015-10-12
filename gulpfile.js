@@ -2,7 +2,9 @@ var gulp = require('gulp'),
 	browserify = require('browserify'),
 	babelify = require('babelify'),
 	source = require('vinyl-source-stream'),
-	sass = require('gulp-sass');
+	sass = require('gulp-sass'),
+	packageJSON = require('./package.json'),
+	semver = require('semver');
 
 var paths = {
 	dist: './public/dist',
@@ -10,6 +12,13 @@ var paths = {
 	scss: ['./public/src/**/*.scss'],
 	image: ['./public/src/img/**']
 };
+
+var nodeVersionIsValid = semver.satisfies(packageJSON.engines.node.substring(1), process.versions.node);
+
+if (!nodeVersionIsValid) {
+	console.error('Invalid Node.js version. You need to be using ' + packageJSON.engines.node);
+	process.exit();
+}
 
 gulp.task('js:watch', function () {
 	gulp.watch(paths.js, ['js']);
