@@ -119,11 +119,23 @@ export default class FileStore extends Events {
 			defaults.onlySearchInFolder = decodeURIComponent(this.onlySearchInFolder);
 		}
 
+		this.showLoadingIndicator();
+
 		return $.ajax({
 			'url': url,
 			'method': method,
 			'dataType': 'json',
 			'data': $.extend(defaults, data)
+		}).always(() => {
+			this.hideLoadingIndicator();
 		});
+	}
+
+	showLoadingIndicator() {
+		$('.cms-content').addClass('loading');
+	}
+
+	hideLoadingIndicator() {
+		$('.cms-content').removeClass('loading');
 	}
 }
