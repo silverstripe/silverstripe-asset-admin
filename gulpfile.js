@@ -12,7 +12,7 @@ var paths = {
 	scss: ['./public/src/**/*.scss'],
 	image: ['./public/src/img/**']
 };
-console.log(process.versions.node);
+
 var nodeVersionIsValid = semver.satisfies(process.versions.node, packageJSON.engines.node);
 
 if (!nodeVersionIsValid) {
