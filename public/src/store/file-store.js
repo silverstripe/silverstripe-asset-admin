@@ -10,12 +10,14 @@ export default class FileStore extends Events {
 		super();
 
 		this.search_url = search_url;
-		this.update_url = update_url; // @todo
+		this.update_url = update_url;
 		this.delete_url = delete_url;
 		this.limit = limit;
 		this.$folder = $folder;
 
 		this.page = 1;
+
+		this.addEventListeners();
 	}
 
 	addEventListeners() {
@@ -24,16 +26,7 @@ export default class FileStore extends Events {
 		this.on('navigate', this.onNavigate.bind(this));
 		this.on('delete', this.onDelete.bind(this));
 		this.on('filter', this.onFilter.bind(this));
-
-		return this;
-	}
-
-	removeEventListeners() {
-		this.removeListener('search');
-		this.removeListener('more');
-		this.removeListener('navigate');
-		this.removeListener('delete');
-		this.removeListener('filter');
+		this.on('save', this.onSave.bind(this));
 
 		return this;
 	}
@@ -90,6 +83,14 @@ export default class FileStore extends Events {
 		this.onlySearchInFolder = onlySearchInFolder;
 
 		this.onSearch();
+	}
+
+	onSave(id, values) {
+		values['id'] = id;
+
+		this.request('POST', this.update_url, values).then(() => {
+			this.emit('onSaveData', id, values);
+		});
 	}
 
 	request(method, url, data = {}) {

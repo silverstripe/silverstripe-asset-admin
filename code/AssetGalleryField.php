@@ -114,11 +114,38 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function update(SS_HTTPRequest $request) {
-		// TODO
+		$id = $request->getVar('id');
+		$file = File::get()->filter('id', (int) $id)->first();
 
-		$response = new SS_HTTPResponse();
+		$code = 500;
+
+		$body = array(
+			'status' => 'error'
+		);
+
+		if ($file) {
+			$title = $request->getVar('title');
+			$basename = $request->getVar('basename');
+
+			if (!empty($title)) {
+				$file->Title = $title;
+			}
+
+			if (!empty($basename)) {
+				$file->Name = $basename;
+			}
+
+			$file->write();
+
+			$code = 200;
+
+			$body = array(
+				'status' => 'ok'
+			);
+		}
+
+		$response = new SS_HTTPResponse(json_encode($body), $code);
 		$response->addHeader('Content-Type', 'application/json');
-		$response->setBody(json_encode(null));
 
 		return $response;
 	}
@@ -331,13 +358,14 @@ class AssetGalleryField extends FormField {
 			'attributes' => array(
 				'dimensions' => array(),
 			),
-			'title' => $file->getTitle(),
-			'type' => $file->is_a('Folder') ? 'folder' : $file->getFileType(),
-			'category' => $file->is_a('Folder') ? 'folder' : $file->appCategory(),
-			'filename' => $file->getFilename(),
-			'extension' => $file->getExtension(),
-			'size' => $file->getSize(),
-			'url' => $file->getAbsoluteURL(),
+			'title' => $file->Title,
+			'type' => $file->is_a('Folder') ? 'folder' : $file->FileType,
+			'category' => $file->is_a('Folder') ? 'folder' : $file->AppCategory,
+			'basename' => $file->Name,
+			'filename' => $file->Filename,
+			'extension' => $file->Extension,
+			'size' => $file->Size,
+			'url' => $file->AbsoluteURL,
 		);
 
 		/** @var Member $owner */
@@ -356,15 +384,15 @@ class AssetGalleryField extends FormField {
 		if($parent) {
 			$object['parent'] = array(
 				'id' => $parent->ID,
-				'title' => $parent->getTitle(),
-				'path' => $parent->getFilename(),
+				'title' => $parent->Title,
+				'filename' => $parent->Filename,
 			);
 		}
 
 		/** @var File $file */
 		if($file->hasMethod('getWidth') && $file->hasMethod('getHeight')) {
-			$object['attributes']['dimensions']['width'] = $file->getWidth();
-			$object['attributes']['dimensions']['height'] = $file->getHeight();
+			$object['attributes']['dimensions']['width'] = $file->Width;
+			$object['attributes']['dimensions']['height'] = $file->Height;
 		}
 
 		return $object;

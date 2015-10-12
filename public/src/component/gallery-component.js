@@ -48,6 +48,27 @@ export default class extends React.Component {
 			});
 		});
 
+		this.props.store.on('onSaveData', (id, values) => {
+			let files = this.state.files;
+
+			files.forEach((file) => {
+				if (file.id == id) {
+					if (values.title) {
+						file.title = values.title;
+					}
+
+					if (values.basename) {
+						file.basename = values.basename;
+					}
+				}
+			});
+
+			this.setState({
+				'files': files,
+				'editing': false
+			});
+		});
+
 		if (this.props.initial_folder !== this.props.current_folder) {
 			this.onNavigate(this.props.current_folder);
 		} else {
@@ -59,6 +80,7 @@ export default class extends React.Component {
 		if (this.state.editing) {
 			return <div className='gallery'>
 				<EditorComponent file={this.state.editing}
+					onFileSave={this.onFileSave.bind(this)}
 					onListClick={this.onListClick.bind(this)} />
 			</div>
 		}
@@ -187,5 +209,12 @@ export default class extends React.Component {
 			this.folders.pop();
 			this.props.store.emit('navigate', this.folders[this.folders.length - 1]);
 		}
+	}
+
+	onFileSave(id, state, event) {
+		this.props.store.emit('save', id, state);
+
+		event.stopPropagation();
+		event.preventDefault();
 	}
 }
