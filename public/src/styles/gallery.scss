@@ -48,7 +48,12 @@
 
     }
 
-    .load-more {
+    .gallery__load {
+        width: 100%;
+        display: inline-block;
+    }
+
+    .gallery__load__more {
         display: block;
         color: white;
         cursor: pointer;

@@ -1,4 +1,12 @@
 .cms {
+    .AssetAdmin {
+    	.cms-content-fields {
+    		.cms-edit-form.AssetAdmin {
+    			overflow-y: visible;
+    		}
+        }
+    }
+
     .ss-uploadfield-view-allowed-extensions {
         margin-top: 0;
         top: -42px;
