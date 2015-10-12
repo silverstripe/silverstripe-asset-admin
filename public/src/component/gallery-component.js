@@ -18,61 +18,70 @@ export default class extends React.Component {
 		this.direction = 'asc';
 	}
 
-	componentDidMount() {
-		this.props.store.on('onSearchData', (data) => {
-			this.setState({
-				'count': data.count,
-				'files': data.files
-			});
-		});
+	getListeners() {
+		return {
+			'onSearchData': (data) => {
+				this.setState({
+					'count': data.count,
+					'files': data.files
+				});
+			},
+			'onMoreData': (data) => {
+				this.setState({
+					'count': data.count,
+					'files': this.state.files.concat(data.files)
+				});
+			},
+			'onNavigateData': (data) => {
+				this.setState({
+					'count': data.count,
+					'files': data.files
+				});
+			},
+			'onDeleteData': (data) => {
+				this.setState({
+					'files': this.state.files.filter((file) => {
+						return data !== file.id;
+					})
+				});
+			},
+			'onSaveData': (id, values) => {
+				let files = this.state.files;
 
-		this.props.store.on('onMoreData', (data) => {
-			this.setState({
-				'count': data.count,
-				'files': this.state.files.concat(data.files)
-			});
-		});
-
-		this.props.store.on('onNavigateData', (data) => {
-			this.setState({
-				'count': data.count,
-				'files': data.files
-			});
-		});
-
-		this.props.store.on('onDeleteData', (data) => {
-			this.setState({
-				'files': this.state.files.filter((file) => {
-					return data !== file.id;
-				})
-			});
-		});
-
-		this.props.store.on('onSaveData', (id, values) => {
-			let files = this.state.files;
-
-			files.forEach((file) => {
-				if (file.id == id) {
-					if (values.title) {
+				files.forEach((file) => {
+					if (file.id == id) {
 						file.title = values.title;
-					}
-
-					if (values.basename) {
 						file.basename = values.basename;
 					}
-				}
-			});
+				});
 
-			this.setState({
-				'files': files,
-				'editing': false
-			});
-		});
+				this.setState({
+					'files': files,
+					'editing': false
+				});
+			}
+		};
+	}
+
+	componentDidMount() {
+		let listeners = this.getListeners();
+
+		for (let event in listeners) {
+			this.props.store.on(event, listeners[event]);
+		}
 
 		if (this.props.initial_folder !== this.props.current_folder) {
 			this.onNavigate(this.props.current_folder);
 		} else {
 			this.props.store.emit('search');
+		}
+	}
+
+	componentWillUnmount() {
+		let listeners = this.getListeners();
+
+		for (let event in listeners) {
+			this.props.store.removeListener(event, listeners[event]);
 		}
 	}
 
