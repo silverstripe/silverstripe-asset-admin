@@ -1,0 +1,52 @@
+//Styles for the insert media dialog
+.htmleditorfield-from-gallery {
+    .asset-gallery {
+        .gallery {
+            padding-top: 12px;
+        }
+
+        .gallery__sort {
+            top: 72px;
+            right: 20px;
+        }
+
+        .font-icon-level-up {
+            top: 72px;
+            left: 16px;
+        }
+
+        .item {
+            @include breakpoint(xxsmall) {
+                width: 31.333%;
+            }
+
+            @include breakpoint(xsmall) {
+                width: 31.333%;
+            }
+
+            @include breakpoint(small) {
+                width: 31.333%;
+            }
+
+            @include breakpoint(medium) {
+                width: 31.333%;
+            }
+
+            @include breakpoint(large) {
+                width: 31.333%;
+            }
+
+            @include breakpoint(xlarge) {
+                width: 31.333%;
+            }
+
+            @include breakpoint(xxlarge) {
+                width: 31.333%;
+            }
+
+            @include breakpoint(xxxlarge) {
+                width: 31.333%;
+            }
+        }
+    }
+}
