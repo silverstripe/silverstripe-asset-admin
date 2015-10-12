@@ -12,8 +12,8 @@ var paths = {
 	scss: ['./public/src/**/*.scss'],
 	image: ['./public/src/img/**']
 };
-
-var nodeVersionIsValid = semver.satisfies(packageJSON.engines.node.substring(1), process.versions.node);
+console.log(process.versions.node);
+var nodeVersionIsValid = semver.satisfies(process.versions.node, packageJSON.engines.node);
 
 if (!nodeVersionIsValid) {
 	console.error('Invalid Node.js version. You need to be using ' + packageJSON.engines.node);
@@ -43,7 +43,7 @@ gulp.task('sass', function () {
 		.pipe(sass().on('error', sass.logError))
 		.pipe(gulp.dest(paths.dist));
 });
- 
+
 gulp.task('sass:watch', function () {
 	gulp.watch(paths.scss, ['sass']);
 });
