@@ -23,11 +23,15 @@
       "email": "chris@silverstripe.com"
     }
   ],
+  "engines": {
+    "node": "^4.0.0"
+  },
   "devDependencies": {
     "babelify": "^6.3.0",
     "browserify": "^11.1.0",
     "gulp": "^3.9.0",
     "gulp-sass": "^2.0.4",
+    "semver": "^5.0.3",
     "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
