@@ -360,7 +360,7 @@ class AssetGalleryField extends FormField {
 			),
 			'title' => $file->Title,
 			'type' => $file->is_a('Folder') ? 'folder' : $file->FileType,
-			'category' => $file->is_a('Folder') ? 'folder' : $file->AppCategory,
+			'category' => $file->is_a('Folder') ? 'folder' : $file->appCategory(),
 			'basename' => $file->Name,
 			'filename' => $file->Filename,
 			'extension' => $file->Extension,
