@@ -16,7 +16,11 @@ before_script:
     - cd ~/builds/ss
 
 script:
-    - vendor/bin/phpunit asset-gallery-field/tests
+    - vendor/bin/phpunit asset-gallery-field/tests/php
+    - cd asset-gallery-field
+    - nvm install 4.1
+    - npm install
+    - npm run test
 
 branches:
     only:

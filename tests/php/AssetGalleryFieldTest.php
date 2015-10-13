@@ -8,7 +8,7 @@ class AssetGalleryFieldTest extends SapphireTest {
 	/**
 	 * @var string
 	 */
-	public static $fixture_file = 'asset-gallery-field/tests/AssetGalleryFieldTest.yml';
+	public static $fixture_file = 'asset-gallery-field/tests/php/AssetGalleryFieldTest.yml';
 
 	public function testHasAttributes() {
 		$field = new AssetGalleryField("Files1");
