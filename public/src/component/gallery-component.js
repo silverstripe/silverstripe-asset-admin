@@ -141,7 +141,7 @@ export default class extends React.Component {
 		var moreButton = null;
 
 		if (this.state.count > this.state.files.length) {
-			moreButton = <button className="load-more" onClick={this.onMoreClick.bind(this)}>Load more</button>;
+			moreButton = <button className="gallery__load__more" onClick={this.onMoreClick.bind(this)}>Load more</button>;
 		}
 
 		var backButton = null;
@@ -162,7 +162,9 @@ export default class extends React.Component {
 			<div className='gallery__items'>
 				{fileComponents}
 			</div>
-			{moreButton}
+			<div className="gallery__load">
+				{moreButton}
+			</div>
 		</div>;
 	}
 
@@ -209,11 +211,13 @@ export default class extends React.Component {
 		this.props.store.emit('navigate', folder);
 	}
 
-	onMoreClick() {
+	onMoreClick(event) {
+		event.preventDefault(); //Prevent submission of insert media dialog
 		this.props.store.emit('more');
 	}
 
-	onBackClick() {
+	onBackClick(event) {
+		event.preventDefault(); //Prevent submission of insert media dialog
 		if (this.folders.length > 1) {
 			this.folders.pop();
 			this.props.store.emit('navigate', this.folders[this.folders.length - 1]);
