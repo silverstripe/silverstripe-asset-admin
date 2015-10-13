@@ -85,6 +85,20 @@ export default class extends React.Component {
 		}
 	}
 
+	componentDidUpdate() {
+		var $select = $(React.findDOMNode(this)).find('.gallery__sort .dropdown');
+
+		// We opt-out of letting the CMS handle Chosen because it doesn't re-apply the behaviour correctly.
+		// So after the gallery has been rendered we apply Chosen ourself.
+		$select.chosen({
+			'allow_single_deselect': true,
+			'disable_search_threshold': 20
+		});
+
+		// Chosen stops the change event from reaching React so we have to simulate a click.
+		$select.change(() => React.addons.TestUtils.Simulate.click($select.find(':selected')[0]));
+	}
+
 	render() {
 		if (this.state.editing) {
 			return <div className='gallery'>
@@ -155,7 +169,7 @@ export default class extends React.Component {
 		return <div className='gallery'>
 			{backButton}
 			<div className="gallery__sort fieldholder-small" style={{width: '160px'}}>
-				<select className="dropdown no-change-track">
+				<select className="dropdown no-change-track no-chzn">
 					{sortButtons}
 				</select>
 			</div>
