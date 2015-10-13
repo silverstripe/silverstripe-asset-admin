@@ -2,8 +2,46 @@ import $ from 'jquery';
 import React from 'react';
 import FileComponent from './file-component';
 import EditorComponent from './editor-component';
+import BaseComponent from './base-component';
 
-export default class extends React.Component {
+function getComparator(field, direction) {
+	return (a, b) => {
+		if (direction === 'asc') {
+			if (a[field] < b[field]) {
+				return -1;
+			}
+
+			if (a[field] > b[field]) {
+				return 1;
+			}
+		} else {
+			if (a[field] > b[field]) {
+				return -1;
+			}
+
+			if (a[field] < b[field]) {
+				return 1;
+			}
+		}
+
+		return 0;
+	};
+}
+
+function getSort(field, direction) {
+	let comparator = getComparator(field, direction);
+
+	return () => {
+		let folders = this.state.files.filter(file => file.type === 'folder');
+		let files = this.state.files.filter(file => file.type !== 'folder');
+
+		this.setState({
+			'files': folders.sort(comparator).concat(files.sort(comparator))
+		});
+	}
+}
+
+export default class extends BaseComponent {
 	constructor(props) {
 		super(props);
 
@@ -17,10 +55,35 @@ export default class extends React.Component {
 
 		this.sort = 'name';
 		this.direction = 'asc';
-	}
 
-	getListeners() {
-		return {
+		this.sorters = [
+			{
+				'field': 'title',
+				'direction': 'asc',
+				'label': ss.i18n._t('AssetGalleryField.FILTER_TITLE_ASC'),
+				'onSort': getSort.call(this, 'title', 'asc')
+			},
+			{
+				'field': 'title',
+				'direction': 'desc',
+				'label': ss.i18n._t('AssetGalleryField.FILTER_TITLE_DESC'),
+				'onSort': getSort.call(this, 'title', 'desc')
+			},
+			{
+				'field': 'created',
+				'direction': 'desc',
+				'label': ss.i18n._t('AssetGalleryField.FILTER_DATE_DESC'),
+				'onSort': getSort.call(this, 'created', 'desc')
+			},
+			{
+				'field': 'created',
+				'direction': 'asc',
+				'label': ss.i18n._t('AssetGalleryField.FILTER_DATE_ASC'),
+				'onSort': getSort.call(this, 'created', 'asc')
+			}
+		];
+
+		this.listeners = {
 			'onSearchData': (data) => {
 				this.setState({
 					'count': data.count,
@@ -63,13 +126,22 @@ export default class extends React.Component {
 				});
 			}
 		};
+
+		this.bind(
+			'onFileSave',
+			'onFileNavigate',
+			'onFileEdit',
+			'onFileDelete',
+			'onBackClick',
+			'onMoreClick',
+			'onNavigate',
+			'onCancel'
+		);
 	}
 
 	componentDidMount() {
-		let listeners = this.getListeners();
-
-		for (let event in listeners) {
-			this.props.backend.on(event, listeners[event]);
+		for (let event in this.listeners) {
+			this.props.backend.on(event, this.listeners[event]);
 		}
 
 		if (this.props.initial_folder !== this.props.current_folder) {
@@ -80,10 +152,8 @@ export default class extends React.Component {
 	}
 
 	componentWillUnmount() {
-		let listeners = this.getListeners();
-
-		for (let event in listeners) {
-			this.props.backend.removeListener(event, listeners[event]);
+		for (let event in this.listeners) {
+			this.props.backend.removeListener(event, this.listeners[event]);
 		}
 	}
 
@@ -91,7 +161,7 @@ export default class extends React.Component {
 		var $select = $(React.findDOMNode(this)).find('.gallery__sort .dropdown');
 
 		// We opt-out of letting the CMS handle Chosen because it doesn't re-apply the behaviour correctly.
-		// So after the gallery has been rendered we apply Chosen ourself.
+		// So after the gallery has been rendered we apply Chosen.
 		$select.chosen({
 			'allow_single_deselect': true,
 			'disable_search_threshold': 20
@@ -101,120 +171,79 @@ export default class extends React.Component {
 		$select.change(() => React.addons.TestUtils.Simulate.click($select.find(':selected')[0]));
 	}
 
+	getBackButton() {
+		if (this.folders.length > 1) {
+			return <button
+				className='ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
+				onClick={this.onBackClick}>{ss.i18n._t('AssetGalleryField.BACK')}</button>;
+		}
+
+		return null;
+	}
+
+	getMoreButton() {
+		if (this.state.count > this.state.files.length) {
+			return <button
+				className="gallery__load__more"
+				onClick={this.onMoreClick}>{ss.i18n._t('AssetGalleryField.LOADMORE')}</button>;
+		}
+
+		return null;
+	}
+
 	render() {
 		if (this.state.editing) {
 			return <div className='gallery'>
-				<EditorComponent file={this.state.editing}
-					onFileSave={this.onFileSave.bind(this)}
-					onListClick={this.onListClick.bind(this)} />
-			</div>
-		}
-
-		let fileComponents = this.getFileComponents();
-
-		let sorts = [
-			{'field': 'title', 'direction': 'asc', 'label': ss.i18n._t('AssetGalleryField.FILTER_TITLE_ASC')},
-			{'field': 'title', 'direction': 'desc', 'label': ss.i18n._t('AssetGalleryField.FILTER_TITLE_DESC')},
-			{'field': 'created', 'direction': 'desc', 'label': ss.i18n._t('AssetGalleryField.FILTER_DATE_DESC')},
-			{'field': 'created', 'direction': 'asc', 'label': ss.i18n._t('AssetGalleryField.FILTER_DATE_ASC')}
-		];
-
-		let sortButtons = sorts.map((sort) => {
-			let onSort = () => {
-				let folders = this.state.files.filter(file => file.type === 'folder');
-				let files = this.state.files.filter(file => file.type !== 'folder');
-
-				let comparator = (a, b) => {
-					if (sort.direction === 'asc') {
-						if (a[sort.field] < b[sort.field]) {
-							return -1;
-						}
-
-						if (a[sort.field] > b[sort.field]) {
-							return 1;
-						}
-					} else {
-						if (a[sort.field] > b[sort.field]) {
-							return -1;
-						}
-
-						if (a[sort.field] < b[sort.field]) {
-							return 1;
-						}
-					}
-
-					return 0;
-				};
-
-				this.setState({
-					'files': folders.sort(comparator).concat(files.sort(comparator))
-				});
-			};
-
-			return <option onClick={onSort}>{sort.label}</option>;
-		});
-
-		var moreButton = null;
-
-		if (this.state.count > this.state.files.length) {
-			moreButton = <button className="gallery__load__more" onClick={this.onMoreClick.bind(this)}>{ss.i18n._t('AssetGalleryField.LOADMORE')}</button>;
-		}
-
-		var backButton = null;
-
-		if (this.folders.length > 1) {
-			backButton = <button
-				className='ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
-				onClick={this.onBackClick.bind(this)}>{ss.i18n._t('AssetGalleryField.BACK')}</button>;
+				<EditorComponent
+					file={this.state.editing}
+					onFileSave={this.onFileSave}
+					onCancel={this.onCancel} />
+			</div>;
 		}
 
 		return <div className='gallery'>
-			{backButton}
+			{this.getBackButton()}
 			<div className="gallery__sort fieldholder-small" style={{width: '160px'}}>
-				<select className="dropdown no-change-track no-chzn">
-					{sortButtons}
+				<select className="dropdown no-change-track no-chzn">=
+					{this.sorters.map((sorter, i) => {
+						return <option key={i} onClick={sorter.onSort}>{sorter.label}</option>;
+					})}
 				</select>
 			</div>
 			<div className='gallery__items'>
-				{fileComponents}
+				{this.state.files.map((file, i) => {
+					return <FileComponent key={i} {...file}
+						onFileDelete={this.onFileDelete}
+						onFileEdit={this.onFileEdit}
+						onFileNavigate={this.onFileNavigate} />;
+				})}
 			</div>
 			<div className="gallery__load">
-				{moreButton}
+				{this.getMoreButton()}
 			</div>
 		</div>;
 	}
 
-	onListClick() {
+	onCancel() {
 		this.setState({
 			'editing': null
 		});
 	}
 
-	getFileComponents() {
-		return this.state.files.map((file) => {
-			return <FileComponent
-					{...file}
-					onFileDelete={this.onFileDelete.bind(this)}
-					onFileEdit={this.onFileEdit.bind(this)}
-					onFileNavigate={this.onFileNavigate.bind(this)}
-			/>;
-		});
-	}
-
 	onFileDelete(file, event) {
-		event.stopPropagation();
-
 		if (confirm(ss.i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
 			this.props.backend.delete(file.id);
 		}
+
+		event.stopPropagation();
 	}
 
 	onFileEdit(file, event) {
-		event.stopPropagation();
-
 		this.setState({
 			'editing': file
 		});
+
+		event.stopPropagation();
 	}
 
 	onFileNavigate(file) {
@@ -228,16 +257,18 @@ export default class extends React.Component {
 	}
 
 	onMoreClick(event) {
-		event.preventDefault(); //Prevent submission of insert media dialog
 		this.props.backend.more();
+
+		event.preventDefault();
 	}
 
 	onBackClick(event) {
-		event.preventDefault(); //Prevent submission of insert media dialog
 		if (this.folders.length > 1) {
 			this.folders.pop();
 			this.props.backend.navigate(this.folders[this.folders.length - 1]);
 		}
+
+		event.preventDefault();
 	}
 
 	onFileSave(id, state, event) {
