@@ -1,7 +1,8 @@
 import $ from 'jquery';
 import React from 'react';
+import BaseComponent from './base-component';
 
-export default class extends React.Component {
+class EditorComponent extends BaseComponent {
 	constructor(props) {
 		super(props);
 
@@ -9,10 +10,40 @@ export default class extends React.Component {
 			'title': this.props.file.title,
 			'basename': this.props.file.basename
 		};
-	}
-	render() {
-		let textInputs = this.getTextInputs();
 
+		this.fields = [
+			{
+				'label': 'Title',
+				'name': 'title',
+				'value': this.props.file.title,
+				'onChange': (event) => this.onFieldChange('title', event)
+			},
+			{
+				'label': 'Filename',
+				'name': 'basename',
+				'value': this.props.file.basename,
+				'onChange': (event) => this.onFieldChange('basename', event)
+			}
+		];
+
+		this.bind('onFieldChange', 'onFileSave', 'onCancel');
+	}
+
+	onFieldChange(name, event) {
+		this.setState({
+			[name]: event.target.value
+		});
+	}
+
+	onFileSave(event) {
+		this.props.onFileSave(this.props.file.id, this.state, event);
+	}
+
+	onCancel(event) {
+		this.props.onCancel(event);
+	}
+
+	render() {
 		return <div className='editor'>
 			<div className='CompositeField composite cms-file-info nolabel'>
 				<div className='CompositeField composite cms-file-info-preview nolabel'>
@@ -61,53 +92,48 @@ export default class extends React.Component {
 					</div>
 				</div>
 			</div>
-
-			{textInputs}
-
+			{this.fields.map((field, i) => {
+				return <div className='field text' key={i}>
+					<label className='left'>{field.label}</label>
+					<div className='middleColumn'>
+						<input className="text" type='text' onChange={field.onChange} value={this.state[field.name]} />
+					</div>
+				</div>
+			})}
 			<div>
 				<button
 					type='submit'
 					className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-check-mark"
-					onClick={this.onFileSave.bind(this)}>
+					onClick={this.onFileSave}>
 					{ss.i18n._t('AssetGalleryField.SAVE')}
 				</button>
 				<button
 					type='button'
 					className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-cancel-circled"
-					onClick={this.props.onListClick}>
+					onClick={this.onCancel}>
 					{ss.i18n._t('AssetGalleryField.CANCEL')}
 				</button>
 			</div>
 		</div>;
 	}
-
-	getTextInputs() {
-		let fields = [
-			{'label': ss.i18n._t('AssetGalleryField.TITLE'), 'name': 'title', 'value': this.props.file.title},
-			{'label': ss.i18n._t('AssetGalleryField.FILENAME'), 'name': 'basename', 'value': this.props.file.basename}
-		];
-
-		return fields.map((field) => {
-			let handler = (event) => {
-				this.onFieldChange.call(this, event, field.name);
-			};
-
-			return <div className='field text'>
-				<label className='left'>{field.label}</label>
-				<div className='middleColumn'>
-					<input className="text" type='text' onChange={handler} value={this.state[field.name]} />
-				</div>
-			</div>
-		});
-	}
-
-	onFieldChange(event, name) {
-		this.setState({
-			[name]: event.target.value
-		});
-	}
-
-	onFileSave(event) {
-		this.props.onFileSave(this.props.file.id, this.state, event);
-	}
 }
+
+EditorComponent.propTypes = {
+	'file': React.PropTypes.shape({
+		'id': React.PropTypes.number,
+		'title': React.PropTypes.string,
+		'basename': React.PropTypes.string,
+		'url': React.PropTypes.string,
+		'size': React.PropTypes.string,
+		'created': React.PropTypes.string,
+		'lastUpdated': React.PropTypes.string,
+		'dimensions': React.PropTypes.shape({
+			'width': React.PropTypes.number,
+			'height': React.PropTypes.number
+		})
+	}),
+	'onFileSave': React.PropTypes.func,
+	'onCancel':React.PropTypes.func
+};
+
+export default EditorComponent;

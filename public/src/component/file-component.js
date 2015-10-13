@@ -1,55 +1,39 @@
 import $ from 'jquery';
 import React from 'react';
 import constants from '../constants';
+import BaseComponent from './base-component';
 
-export default class extends React.Component {
-	render() {
-		let thumbnailStyles = this.getThumbnailStyles();
-		let thumbnailClassNames = this.getThumbnailClassNames();
+class FileComponent extends BaseComponent {
+	constructor(props) {
+		super(props);
 
-		var onFileNavigate = () => null;
-
-		if (this.props.type === 'folder') {
-			onFileNavigate = (event) => {
-				this.props.onFileNavigate(this.props, event);
-			}
-		}
-
-		let onFileDelete = (event) => {
-			this.props.onFileDelete(this.props, event);
-		};
-
-		let onFileEdit = (event) => {
-			this.props.onFileEdit(this.props, event);
-		};
-
-		return <div className={'item ' + this.props.category} data-id={this.props.id} onClick={onFileNavigate}>
-			<div className={thumbnailClassNames} style={thumbnailStyles}>
-				<div className='item__actions'>
-					<button
-						className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
-						type='button'
-						onClick={onFileDelete}>
-					</button>
-					<button
-						className='item__actions__action item__actions__action--edit [ font-icon-edit ]'
-						type='button'
-						onClick={onFileEdit}>
-					</button>
-				</div>
-			</div>
-			<p className='item__title'>{this.props.title}</p>
-		</div>;
+		this.bind('onFileNavigate', 'onFileEdit', 'onFileDelete');
 	}
 
-	getItemClassNames() {
-		var itemClassNames = 'item ' + this.props.type;
+	onFileNavigate(event) {
+		if (this.isFolder()) {
+			this.props.onFileNavigate(this.props, event)
+		}
+	}
 
-		if (this.props.type === 'folder') {
-			itemClassNames += ' folder';
+	onFileEdit(event) {
+		this.props.onFileEdit(this.props, event);
+	}
+
+	onFileDelete(event) {
+		this.props.onFileDelete(this.props, event)
+	}
+
+	isFolder() {
+		return this.props.category === 'folder';
+	}
+
+	getThumbnailStyles() {
+		if (this.props.category === 'image') {
+			return {'backgroundImage': 'url(' + this.props.url + ')'};
 		}
 
-		return itemClassNames;
+		return {};
 	}
 
 	getThumbnailClassNames() {
@@ -68,13 +52,43 @@ export default class extends React.Component {
 		return dimensions.height > constants.THUMBNAIL_HEIGHT || dimensions.width > constants.THUMBNAIL_WIDTH;
 	}
 
-	getThumbnailStyles() {
-		if (this.props.type.toLowerCase().indexOf('image') > -1) {
-			return {
-				'backgroundImage': 'url(' + this.props.url + ')'
-			};
-		}
+	getItemClassNames() {
+		return 'item ' + this.props.category;
+	}
 
-		return {};
+	render() {
+		return <div className={this.getItemClassNames()} data-id={this.props.id} onClick={this.onFileNavigate}>
+			<div className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()}>
+				<div className='item__actions'>
+					<button
+						className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
+						type='button'
+						onClick={this.onFileDelete}>
+					</button>
+					<button
+						className='item__actions__action item__actions__action--edit [ font-icon-edit ]'
+						type='button'
+						onClick={this.onFileEdit}>
+					</button>
+				</div>
+			</div>
+			<p className='item__title'>{this.props.title}</p>
+		</div>;
 	}
 }
+
+FileComponent.propTypes = {
+	'id': React.PropTypes.number,
+	'title': React.PropTypes.string,
+	'category': React.PropTypes.string,
+	'url': React.PropTypes.string,
+	'dimensions': React.PropTypes.shape({
+		'width': React.PropTypes.number,
+		'height': React.PropTypes.number
+	}),
+	'onFileNavigate': React.PropTypes.func,
+	'onFileEdit': React.PropTypes.func,
+	'onFileDelete': React.PropTypes.func
+};
+
+export default FileComponent;
