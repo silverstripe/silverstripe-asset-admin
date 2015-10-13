@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import Events from 'events';
 
-export default class FileStore extends Events {
+export default class FileBackend extends Events {
 	static create(...parameters) {
-		return new FileStore(...parameters);
+		return new FileBackend(...parameters);
 	}
 
 	constructor(search_url, update_url, delete_url, limit, $folder) {
