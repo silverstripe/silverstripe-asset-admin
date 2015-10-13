@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import React from 'react';
 import GalleryComponent from './component/gallery-component';
-import FileStore from './store/file-store';
+import FileBackend from './backend/file-backend';
 
 function getVar(name) {
 	var parts = window.location.href.split('?');
@@ -40,7 +40,7 @@ $('.asset-gallery').entwine({
 			$search.append('<input type="hidden" name="q[Folder]" />');
 		}
 
-		props.store = FileStore.create(
+		props.backend = FileBackend.create(
 			this[0].getAttribute('data-asset-gallery-search-url'),
 			this[0].getAttribute('data-asset-gallery-update-url'),
 			this[0].getAttribute('data-asset-gallery-delete-url'),
@@ -48,7 +48,7 @@ $('.asset-gallery').entwine({
 			$search.find('[type=hidden][name="q[Folder]"]')
 		);
 
-		props.store.emit(
+		props.backend.emit(
 			'filter',
 			getVar('q[Name]'),
 			getVar('q[AppCategory]'),
