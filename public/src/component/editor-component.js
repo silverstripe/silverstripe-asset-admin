@@ -73,8 +73,8 @@ export default class extends React.Component {
 
 	getTextInputs() {
 		let fields = [
-			{'name': 'title', 'value': this.props.file.title},
-			{'name': 'basename', 'value': this.props.file.basename}
+			{'label': 'Title', 'name': 'title', 'value': this.props.file.title},
+			{'label': 'Filename', 'name': 'basename', 'value': this.props.file.basename}
 		];
 
 		return fields.map((field) => {
@@ -83,9 +83,9 @@ export default class extends React.Component {
 			};
 
 			return <div className='field text'>
-				<label className='left'>{field.name}</label>
+				<label className='left'>{field.label}</label>
 				<div className='middleColumn'>
-					<input type='text' onChange={handler} value={this.state[field.name]} />
+					<input className="text" type='text' onChange={handler} value={this.state[field.name]} />
 				</div>
 			</div>
 		});
