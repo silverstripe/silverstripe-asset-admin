@@ -8,6 +8,7 @@ export default class extends React.Component {
 		super(props);
 
 		this.state = {
+			'count': 0, // The number of files in the current view
 			'files': [],
 			'editing': null
 		};
@@ -40,6 +41,7 @@ export default class extends React.Component {
 			},
 			'onDeleteData': (data) => {
 				this.setState({
+					'count': this.state.count - 1,
 					'files': this.state.files.filter((file) => {
 						return data !== file.id;
 					})
