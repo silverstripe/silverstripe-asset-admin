@@ -16,16 +16,16 @@ class AssetGalleryFieldTest extends SapphireTest {
 		new Form(
 			new AssetGalleryFieldTestController(),
 			'Foo',
-			new FieldList([
+			new FieldList(array(
 				$field
-			]),
+			)),
 			new FieldList()
 		);
 
 		$markup = $field->Field();
 
 		$this->assertContains("name='Files1'", $markup);
-		$this->assertContains("data-asset-gallery-data-url=", $markup);
+		$this->assertContains("data-asset-gallery-search-url=", $markup);
 		$this->assertContains("data-asset-gallery-update-url=", $markup);
 		$this->assertContains("data-asset-gallery-delete-url=", $markup);
 	}
@@ -52,30 +52,13 @@ class AssetGalleryFieldTest extends SapphireTest {
 	/**
 	 * @test
 	 */
-	public function itDefinesInitialData() {
-		$this->objFromFixture('File', 'File2');
-
-		$field = $this->getNewField();
-		$field->setCurrentPath('Folder2');
-
-		$field->Field();
-
-		$scripts = Requirements::get_custom_scripts();
-
-		$this->assertContains('"title":"The Second File"', $scripts);
-		$this->assertNotContains('"title":"The First File"', $scripts);
-	}
-
-	/**
-	 * @test
-	 */
 	public function itGetsNewData() {
 		$this->objFromFixture('File', 'File1');
 
 		$field = $this->getNewField();
 		$field->setCurrentPath('Folder1');
 
-		$response = $field->data(new SS_HTTPRequest('GET', 'http://example.com'));
+		$response = $field->search(new SS_HTTPRequest('GET', 'http://example.com'));
 
 		$files = json_decode($response->getBody(), true);
 
@@ -96,7 +79,7 @@ class AssetGalleryFieldTest extends SapphireTest {
 
 		$request = new SS_HTTPRequest('GET', 'http://example.com');
 
-		$response = $field->data($request);
+		$response = $field->search($request);
 		$files = json_decode($response->getBody(), true);
 
 		$this->assertArrayHasKey('files', $files);
@@ -104,7 +87,7 @@ class AssetGalleryFieldTest extends SapphireTest {
 
 		$request = new SS_HTTPRequest('GET', 'http://example.com', array('name' => 'Third'));
 
-		$response = $field->data($request);
+		$response = $field->search($request);
 		$files = json_decode($response->getBody(), true);
 
 		$this->assertArrayHasKey('files', $files);

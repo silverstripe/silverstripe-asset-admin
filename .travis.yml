@@ -16,10 +16,7 @@ before_script:
     - cd ~/builds/ss
 
 script:
-    - vendor/bin/phpunit --coverage-clover asset-gallery-field/coverage.clover asset-gallery-field/tests
-    - cd asset-gallery-field
-    - wget https://scrutinizer-ci.com/ocular.phar
-    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    - vendor/bin/phpunit asset-gallery-field/tests
 
 branches:
     only:
