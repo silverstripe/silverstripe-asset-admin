@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[silverstripe-asset-gallery.master-js]
+file_filter = javascript/lang/src/<lang>.js
+source_file = javascript/lang/src/en.js
+source_lang = en
+type = KEYVALUEJSON
