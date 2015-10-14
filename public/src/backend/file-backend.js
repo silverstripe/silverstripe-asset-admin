@@ -16,22 +16,9 @@ export default class FileBackend extends Events {
 		this.$folder = $folder;
 
 		this.page = 1;
-
-		this.addEventListeners();
 	}
 
-	addEventListeners() {
-		this.on('search', this.onSearch.bind(this));
-		this.on('more', this.onMore.bind(this));
-		this.on('navigate', this.onNavigate.bind(this));
-		this.on('delete', this.onDelete.bind(this));
-		this.on('filter', this.onFilter.bind(this));
-		this.on('save', this.onSave.bind(this));
-
-		return this;
-	}
-
-	onSearch() {
+	search() {
 		this.page = 1;
 
 		this.request('GET', this.search_url).then((json) => {
@@ -39,7 +26,7 @@ export default class FileBackend extends Events {
 		});
 	}
 
-	onMore() {
+	more() {
 		this.page++;
 
 		this.request('GET', this.search_url).then((json) => {
@@ -47,7 +34,7 @@ export default class FileBackend extends Events {
 		});
 	}
 
-	onNavigate(folder) {
+	navigate(folder) {
 		this.page = 1;
 		this.folder = folder;
 
@@ -66,7 +53,7 @@ export default class FileBackend extends Events {
 		this.$folder.val(folder);
 	}
 
-	onDelete(id) {
+	delete(id) {
 		this.request('GET', this.delete_url, {
 			'id': id
 		}).then(() => {
@@ -74,7 +61,7 @@ export default class FileBackend extends Events {
 		});
 	}
 
-	onFilter(name, type, folder, createdFrom, createdTo, onlySearchInFolder) {
+	filter(name, type, folder, createdFrom, createdTo, onlySearchInFolder) {
 		this.name = name;
 		this.type = type;
 		this.folder = folder;
@@ -82,10 +69,10 @@ export default class FileBackend extends Events {
 		this.createdTo = createdTo;
 		this.onlySearchInFolder = onlySearchInFolder;
 
-		this.onSearch();
+		this.search();
 	}
 
-	onSave(id, values) {
+	save(id, values) {
 		values['id'] = id;
 
 		this.request('POST', this.update_url, values).then(() => {
