@@ -75,7 +75,7 @@ export default class extends React.Component {
 		if (this.props.initial_folder !== this.props.current_folder) {
 			this.onNavigate(this.props.current_folder);
 		} else {
-			this.props.backend.emit('search');
+			this.props.backend.search();
 		}
 	}
 
@@ -205,7 +205,7 @@ export default class extends React.Component {
 		event.stopPropagation();
 
 		if (confirm('Are you sure you want to delete this record?')) {
-			this.props.backend.emit('delete', file.id);
+			this.props.backend.delete(file.id);
 		}
 	}
 
@@ -219,29 +219,29 @@ export default class extends React.Component {
 
 	onFileNavigate(file) {
 		this.folders.push(file.filename);
-		this.props.backend.emit('navigate', file.filename);
+		this.props.backend.navigate(file.filename);
 	}
 
 	onNavigate(folder) {
 		this.folders.push(folder);
-		this.props.backend.emit('navigate', folder);
+		this.props.backend.navigate(folder);
 	}
 
 	onMoreClick(event) {
 		event.preventDefault(); //Prevent submission of insert media dialog
-		this.props.backend.emit('more');
+		this.props.backend.more();
 	}
 
 	onBackClick(event) {
 		event.preventDefault(); //Prevent submission of insert media dialog
 		if (this.folders.length > 1) {
 			this.folders.pop();
-			this.props.backend.emit('navigate', this.folders[this.folders.length - 1]);
+			this.props.backend.navigate(this.folders[this.folders.length - 1]);
 		}
 	}
 
 	onFileSave(id, state, event) {
-		this.props.backend.emit('save', id, state);
+		this.props.backend.save(id, state);
 
 		event.stopPropagation();
 		event.preventDefault();
