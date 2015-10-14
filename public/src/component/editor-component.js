@@ -21,20 +21,20 @@ export default class extends React.Component {
 				<div className='CompositeField composite cms-file-info-data nolabel'>
 					<div className='CompositeField composite nolabel'>
 						<div className='field readonly'>
-							<label className='left'>File type:</label>
+							<label className='left'>{ss.i18n._t('AssetGalleryField.TYPE')}:</label>
 							<div className='middleColumn'>
 								<span className='readonly'>{this.props.file.type}</span>
 							</div>
 						</div>
 					</div>
 					<div className='field readonly'>
-						<label className='left'>File size:</label>
+						<label className='left'>{ss.i18n._t('AssetGalleryField.SIZE')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>{this.props.file.size}</span>
 						</div>
 					</div>
 					<div className='field readonly'>
-						<label className='left'>URL:</label>
+						<label className='left'>{ss.i18n._t('AssetGalleryField.URL')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>
 								<a href={this.props.file.url} target='_blank'>{this.props.file.url}</a>
@@ -42,19 +42,19 @@ export default class extends React.Component {
 						</div>
 					</div>
 					<div className='field date_disabled readonly'>
-						<label className='left'>First uploaded:</label>
+						<label className='left'>{ss.i18n._t('AssetGalleryField.CREATED')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>{this.props.file.created}</span>
 						</div>
 					</div>
 					<div className='field date_disabled readonly'>
-						<label className='left'>Last changed:</label>
+						<label className='left'>{ss.i18n._t('AssetGalleryField.LASTEDIT')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>{this.props.file.lastUpdated}</span>
 						</div>
 					</div>
 					<div className='field readonly'>
-						<label className='left'>Dimensions:</label>
+						<label className='left'>{ss.i18n._t('AssetGalleryField.DIM')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>{this.props.file.attributes.dimensions.width} x {this.props.file.attributes.dimensions.height}px</span>
 						</div>
@@ -65,16 +65,26 @@ export default class extends React.Component {
 			{textInputs}
 
 			<div>
-				<button type='submit' className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-check-mark" onClick={this.onFileSave.bind(this)}>Save</button>
-				<button type='button' className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-cancel-circled" onClick={this.props.onListClick}>Cancel</button>
+				<button
+					type='submit'
+					className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-check-mark"
+					onClick={this.onFileSave.bind(this)}>
+					{ss.i18n._t('AssetGalleryField.SAVE')}
+				</button>
+				<button
+					type='button'
+					className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-cancel-circled"
+					onClick={this.props.onListClick}>
+					{ss.i18n._t('AssetGalleryField.CANCEL')}
+				</button>
 			</div>
 		</div>;
 	}
 
 	getTextInputs() {
 		let fields = [
-			{'label': 'Title', 'name': 'title', 'value': this.props.file.title},
-			{'label': 'Filename', 'name': 'basename', 'value': this.props.file.basename}
+			{'label': ss.i18n._t('AssetGalleryField.TITLE'), 'name': 'title', 'value': this.props.file.title},
+			{'label': ss.i18n._t('AssetGalleryField.FILENAME'), 'name': 'basename', 'value': this.props.file.basename}
 		];
 
 		return fields.map((field) => {
