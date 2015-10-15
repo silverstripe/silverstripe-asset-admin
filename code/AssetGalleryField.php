@@ -199,6 +199,8 @@ class AssetGalleryField extends FormField {
 			if ($folder && $folder->hasChildren()) {
 				/** @var File[]|SS_List $files */
 				$files = $folder->myChildren();
+			} else {
+				$files = File::get()->filter('ParentID', 0);
 			}
 		} else {
 			$files = File::get();
@@ -269,6 +271,10 @@ class AssetGalleryField extends FormField {
 
 		if($this->getCurrentPath() !== null) {
 			$path = $this->getCurrentPath();
+		}
+
+		if (empty($path)) {
+			return null;
 		}
 
 		return Folder::find_or_make($path);
