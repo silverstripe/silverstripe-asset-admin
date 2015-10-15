@@ -113,10 +113,10 @@ export default class extends React.Component {
 		let fileComponents = this.getFileComponents();
 
 		let sorts = [
-			{'field': 'title', 'direction': 'asc', 'label': 'title a-z'},
-			{'field': 'title', 'direction': 'desc', 'label': 'title z-a'},
-			{'field': 'created', 'direction': 'desc', 'label': 'newest'},
-			{'field': 'created', 'direction': 'asc', 'label': 'oldest'}
+			{'field': 'title', 'direction': 'asc', 'label': ss.i18n._t('AssetGalleryField.FILTER_TITLE_ASC')},
+			{'field': 'title', 'direction': 'desc', 'label': ss.i18n._t('AssetGalleryField.FILTER_TITLE_DESC')},
+			{'field': 'created', 'direction': 'desc', 'label': ss.i18n._t('AssetGalleryField.FILTER_DATE_DESC')},
+			{'field': 'created', 'direction': 'asc', 'label': ss.i18n._t('AssetGalleryField.FILTER_DATE_ASC')}
 		];
 
 		let sortButtons = sorts.map((sort) => {
@@ -157,7 +157,7 @@ export default class extends React.Component {
 		var moreButton = null;
 
 		if (this.state.count > this.state.files.length) {
-			moreButton = <button className="gallery__load__more" onClick={this.onMoreClick.bind(this)}>Load more</button>;
+			moreButton = <button className="gallery__load__more" onClick={this.onMoreClick.bind(this)}>{ss.i18n._t('AssetGalleryField.LOADMORE')}</button>;
 		}
 
 		var backButton = null;
@@ -165,7 +165,7 @@ export default class extends React.Component {
 		if (this.folders.length > 1) {
 			backButton = <button
 				className='ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
-				onClick={this.onBackClick.bind(this)}>Back</button>;
+				onClick={this.onBackClick.bind(this)}>{ss.i18n._t('AssetGalleryField.BACK')}</button>;
 		}
 
 		return <div className='gallery'>
@@ -204,7 +204,7 @@ export default class extends React.Component {
 	onFileDelete(file, event) {
 		event.stopPropagation();
 
-		if (confirm('Are you sure you want to delete this record?')) {
+		if (confirm(ss.i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
 			this.props.backend.delete(file.id);
 		}
 	}

@@ -285,6 +285,7 @@ class AssetGalleryField extends FormField {
 		$name = $this->getName();
 
 		Requirements::css(ASSET_GALLERY_FIELD_DIR . "/public/dist/main.css");
+		Requirements::add_i18n_javascript(ASSET_GALLERY_FIELD_DIR . "/javascript/lang");
 		Requirements::javascript(ASSET_GALLERY_FIELD_DIR . "/public/dist/bundle.js");
 
 		$searchURL = $this->getSearchURL();
