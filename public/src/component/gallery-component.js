@@ -131,6 +131,7 @@ export default class extends BaseComponent {
 		};
 
 		this.bind(
+			'onGalleryClick',
 			'onFileSave',
 			'onFileNavigate',
 			'onFileSelect',
@@ -221,6 +222,12 @@ export default class extends BaseComponent {
 	getSelectedFiles() {
 		return this.state.selectedFiles;
 	}
+	
+	onGalleryClick(event) {
+		// this.setState({
+		// 	'selectedFiles': []
+		// })
+	}
 
 	render() {
 		if (this.state.editing) {
@@ -232,7 +239,7 @@ export default class extends BaseComponent {
 			</div>;
 		}
 
-		return <div className='gallery'>
+		return <div className='gallery' onClick={this.onGalleryClick}>
 			{this.getBackButton()}
 			{this.getBulkActionsComponent()}
 			<div className="gallery__sort fieldholder-small">
@@ -245,6 +252,8 @@ export default class extends BaseComponent {
 			<div className='gallery__items'>
 				{this.state.files.map((file, i) => {
 					return <FileComponent key={i} {...file}
+						onFileSelect={this.onFileSelect}
+						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
 						onFileSelect={this.onFileSelect}
 						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
 						onFileDelete={this.onFileDelete}
@@ -267,7 +276,7 @@ export default class extends BaseComponent {
 
 	onFileSelect(file, event) {
 		event.stopPropagation();
-
+		
 		var currentlySelected = this.state.selectedFiles,
 			fileIndex = currentlySelected.indexOf(file.id);
 

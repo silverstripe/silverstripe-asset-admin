@@ -10,6 +10,10 @@ export default class BulkActionsComponent extends BaseComponent {
 		this.bind(
 			'onChangeValue'
 		);
+
+		this.state = {
+			'value': ''
+		};
 	}
 
 	componentDidMount() {
@@ -75,6 +79,8 @@ export default class BulkActionsComponent extends BaseComponent {
 		if (option === null) {
 			return;
 		}
+		
+		this.setState({ value: option.value });
 
 		if (option.destructive === true) {
 			if (confirm(ss.i18n.sprintf(ss.i18n._t('AssetGalleryField.BULK_ACTIONS_CONFIRM'), option.label))) {
