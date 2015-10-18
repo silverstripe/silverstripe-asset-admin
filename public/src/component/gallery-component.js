@@ -3,6 +3,7 @@ import React from 'react';
 import FileComponent from './file-component';
 import EditorComponent from './editor-component';
 import BaseComponent from './base-component';
+import CONSTANTS from '../constants';
 
 function getComparator(field, direction) {
 	return (a, b) => {
@@ -203,8 +204,8 @@ export default class extends BaseComponent {
 
 		return <div className='gallery'>
 			{this.getBackButton()}
-			<div className="gallery__sort fieldholder-small" style={{width: '160px'}}>
-				<select className="dropdown no-change-track no-chzn">=
+			<div className="gallery__sort fieldholder-small">
+				<select className="dropdown no-change-track no-chzn" style={{width: '160px'}}>
 					{this.sorters.map((sorter, i) => {
 						return <option key={i} onClick={sorter.onSort}>{sorter.label}</option>;
 					})}
@@ -213,6 +214,7 @@ export default class extends BaseComponent {
 			<div className='gallery__items'>
 				{this.state.files.map((file, i) => {
 					return <FileComponent key={i} {...file}
+						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
 						onFileDelete={this.onFileDelete}
 						onFileEdit={this.onFileEdit}
 						onFileNavigate={this.onFileNavigate} />;
