@@ -16,16 +16,35 @@ class FileComponent extends BaseComponent {
 			'onFileNavigate',
 			'onFileEdit',
 			'onFileDelete',
+			'onFileSelect',
+			'handleDoubleClick',
 			'handleKeyDown',
 			'handleFocus',
-			'handleBlur'
+			'handleBlur',
+			'onFileSelect'
 		);
+	}
+
+	handleDoubleClick(event) {
+		if (event.target !== this.refs.title.getDOMNode() && event.target !== this.refs.thumbnail.getDOMNode()) {
+			return;
+		}
+
+		this.onFileNavigate(event);
 	}
 
 	onFileNavigate(event) {
 		if (this.isFolder()) {
 			this.props.onFileNavigate(this.props, event)
+			return;
 		}
+
+		this.onFileEdit(event);
+	}
+
+	onFileSelect(event) {
+		event.stopPropagation(); //stop triggering click on root element
+		this.props.onFileSelect(this.props, event);
 	}
 
 	onFileEdit(event) {
@@ -67,6 +86,10 @@ class FileComponent extends BaseComponent {
 			itemClassNames += ' focussed';
 		}
 
+		if (this.props.selected) {
+			itemClassNames += ' selected';
+		}
+
 		return itemClassNames;
 	}
 
@@ -104,9 +127,17 @@ class FileComponent extends BaseComponent {
 	}
 
 	render() {
-		return <div className={this.getItemClassNames()} data-id={this.props.id} tabIndex="0" onClick={this.onFileNavigate} onKeyDown={this.handleKeyDown}>
-			<div className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()}>
+		return <div className={this.getItemClassNames()} data-id={this.props.id} tabIndex="0" onKeyDown={this.handleKeyDown} onDoubleClick={this.handleDoubleClick}>
+			<div ref="thumbnail" className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()} onClick={this.onFileSelect}>
 				<div className='item__actions'>
+					<button
+						className='item__actions__action item__actions__action--select [ font-icon-tick ]'
+						type='button'
+						title={i18n._t('AssetGalleryField.SELECT')}
+						onClick={this.onFileSelect}
+						onFocus={this.handleFocus}
+						onBlur={this.handleBlur}>
+					</button>
 					<button
 						className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
 						type='button'
@@ -125,7 +156,7 @@ class FileComponent extends BaseComponent {
 					</button>
 				</div>
 			</div>
-			<p className='item__title'>{this.props.title}</p>
+			<p className='item__title' ref="title">{this.props.title}</p>
 		</div>;
 	}
 }
@@ -142,7 +173,9 @@ FileComponent.propTypes = {
 	'onFileNavigate': React.PropTypes.func,
 	'onFileEdit': React.PropTypes.func,
 	'onFileDelete': React.PropTypes.func,
-	'selectKeys': React.PropTypes.array
+	'selectKeys': React.PropTypes.array,
+	'onFileSelect': React.PropTypes.func,
+	'selected': React.PropTypes.bool
 };
 
 export default FileComponent;
