@@ -20,6 +20,8 @@ if(typeof(ss) == 'undefined' || typeof(ss.i18n) == 'undefined') {
 	"AssetGalleryField.SAVE": "Save",
 	"AssetGalleryField.CANCEL": "Cancel",
 	"AssetGalleryField.TITLE": "Title",
-	"AssetGalleryField.FILENAME": "Filename"
+	"AssetGalleryField.FILENAME": "Filename",
+	"AssetGalleryField.BULK_ACTIONS_PLACEHOLDER": "Select an action...",
+	"AssetGalleryField.BULK_ACTIONS_CONFIRM": "Are you sure you want to %s these files?",
 });
 }

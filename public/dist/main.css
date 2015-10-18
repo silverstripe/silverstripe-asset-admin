@@ -4,6 +4,55 @@
 .asset-gallery > .middleColumn {
   margin-left: 0; }
 
+@keyframes actionsAdded {
+  0% {
+    transform: scale(0.9); }
+  45% {
+    transform: scale(1.05); }
+  55% {
+    transform: scale(1.05); }
+  100% {
+    transform: scale(1); } }
+
+.asset-gallery .gallery__bulk {
+  position: absolute;
+  top: 12px;
+  animation: actionsAdded 0.3s ease-in-out;
+  z-index: 100; }
+  .asset-gallery .gallery__bulk .chzn-single {
+    border-radius: 5px 0 0 5px;
+    border: 0;
+    filter: none;
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    margin-top: -1px; }
+    .asset-gallery .gallery__bulk .chzn-single > span {
+      text-align: left;
+      display: inline-block;
+      margin-right: 0; }
+    .asset-gallery .gallery__bulk .chzn-single > div {
+      position: static;
+      display: inline-block; }
+  .asset-gallery .gallery__bulk .chzn-drop {
+    border-radius: 3px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+    border: 0; }
+  .asset-gallery .gallery__bulk .search-choice-close {
+    display: none; }
+  .asset-gallery .gallery__bulk .chzn-results li {
+    padding-left: 22px;
+    position: relative; }
+    .asset-gallery .gallery__bulk .chzn-results li::before {
+      position: absolute;
+      font-family: silverstripe;
+      left: 4px;
+      font-size: 14px;
+      vertical-align: middle;
+      margin-right: 4px; }
+    .asset-gallery .gallery__bulk .chzn-results li:nth-child(1)::before {
+      content: 'g'; }
+
 .asset-gallery .font-icon-level-up {
   position: absolute;
   top: 13px; }
@@ -17,7 +66,8 @@
     filter: none;
     background: none;
     box-shadow: none;
-    color: inherit; }
+    color: inherit;
+    margin-top: -1px; }
     .asset-gallery .gallery__sort .chzn-single > span {
       text-align: right;
       color: inherit; }
@@ -83,17 +133,25 @@
   @media all and (min-width: 170em) {
     .asset-gallery .item {
       width: 8%; } }
+  .asset-gallery .item .item__thumbnail:hover .item__actions,
   .asset-gallery .item:hover .item__actions,
   .asset-gallery .item.focussed .item__actions {
     background: rgba(34, 56, 91, 0.7); }
+  .asset-gallery .item .item__thumbnail:hover .item__actions__action,
   .asset-gallery .item:hover .item__actions__action,
   .asset-gallery .item.focussed .item__actions__action {
     opacity: 1; }
+    .asset-gallery .item .item__thumbnail:hover .item__actions__action:hover,
+    .asset-gallery .item .item__thumbnail:hover .item__actions__action:focus,
     .asset-gallery .item:hover .item__actions__action:hover,
     .asset-gallery .item:hover .item__actions__action:focus,
     .asset-gallery .item.focussed .item__actions__action:hover,
     .asset-gallery .item.focussed .item__actions__action:focus {
       background: rgba(34, 56, 91, 0.7); }
+  .asset-gallery .item .item__thumbnail:hover .item__actions__action--select,
+  .asset-gallery .item:hover .item__actions__action--select,
+  .asset-gallery .item.focussed .item__actions__action--select {
+    background: none; }
   .asset-gallery .item.folder {
     cursor: pointer; }
     .asset-gallery .item.folder .item__thumbnail {
@@ -114,6 +172,16 @@
   .asset-gallery .item.doc .item__thumbnail,
   .asset-gallery .item.false .item__thumbnail {
     border-radius: 3px; }
+
+.asset-gallery .selected .item__actions__action--select {
+  color: #72c34b;
+  opacity: 1;
+  background: rgba(34, 56, 91, 0.7); }
+  .asset-gallery .selected .item__actions__action--select::before {
+    border-color: #72c34b; }
+
+.asset-gallery .selected .item__thumbnail {
+  box-shadow: 0 0 0 3px #72c34b; }
 
 .asset-gallery .item__thumbnail {
   height: 150px;
@@ -154,6 +222,16 @@
   padding: 12px 6px 10px;
   font-size: 16px; }
 
+.asset-gallery .item__actions__action--select {
+  float: left;
+  padding: 8px 10px 10px;
+  color: transparent; }
+  .asset-gallery .item__actions__action--select::before {
+    border: 1px solid white;
+    border-radius: 50%;
+    font-size: 12px;
+    padding: 3px; }
+
 .asset-gallery .item__title {
   color: #0073C1;
   padding: 6px 8px 2px;
@@ -163,6 +241,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
+
+@keyframes animate {
+  0% {
+    margin: -10px; }
+  100% {
+    margin: 100px; } }
+
+.element {
+  animation: animate 1s infinite; }
 
 .htmleditorfield-from-gallery .asset-gallery .gallery {
   padding-top: 12px; }

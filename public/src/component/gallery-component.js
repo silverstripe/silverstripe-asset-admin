@@ -2,6 +2,7 @@ import $ from 'jquery';
 import React from 'react';
 import FileComponent from './file-component';
 import EditorComponent from './editor-component';
+import BulkActionsComponent from './bulk-actions-component';
 import BaseComponent from './base-component';
 import CONSTANTS from '../constants';
 
@@ -49,6 +50,7 @@ export default class extends BaseComponent {
 		this.state = {
 			'count': 0, // The number of files in the current view
 			'files': [],
+			'selectedFiles': [],
 			'editing': null
 		};
 
@@ -129,8 +131,10 @@ export default class extends BaseComponent {
 		};
 
 		this.bind(
+			'onGalleryClick',
 			'onFileSave',
 			'onFileNavigate',
+			'onFileSelect',
 			'onFileEdit',
 			'onFileDelete',
 			'onBackClick',
@@ -192,6 +196,16 @@ export default class extends BaseComponent {
 		return null;
 	}
 
+	getBulkActionsComponent() {
+		if (this.state.selectedFiles.length > 0) {
+			return <BulkActionsComponent
+				options={CONSTANTS.BULK_ACTIONS}
+				placeholder={ss.i18n._t('AssetGalleryField.BULK_ACTIONS_PLACEHOLDER')} />;
+		}
+
+		return null;
+	}
+
 	getMoreButton() {
 		if (this.state.count > this.state.files.length) {
 			return <button
@@ -200,6 +214,12 @@ export default class extends BaseComponent {
 		}
 
 		return null;
+	}
+
+	onGalleryClick(event) {
+		// this.setState({
+		// 	'selectedFiles': []
+		// })
 	}
 
 	render() {
@@ -212,8 +232,9 @@ export default class extends BaseComponent {
 			</div>;
 		}
 
-		return <div className='gallery'>
+		return <div className='gallery' onClick={this.onGalleryClick}>
 			{this.getBackButton()}
+			{this.getBulkActionsComponent()}
 			<div className="gallery__sort fieldholder-small">
 				<select className="dropdown no-change-track no-chzn" style={{width: '160px'}}>
 					{this.sorters.map((sorter, i) => {
@@ -225,9 +246,12 @@ export default class extends BaseComponent {
 				{this.state.files.map((file, i) => {
 					return <FileComponent key={i} {...file}
 						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
+						onFileSelect={this.onFileSelect}
+						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
 						onFileDelete={this.onFileDelete}
 						onFileEdit={this.onFileEdit}
-						onFileNavigate={this.onFileNavigate} />;
+						onFileNavigate={this.onFileNavigate}
+						selected={this.state.selectedFiles.indexOf(file.id) > -1} />;
 				})}
 			</div>
 			<div className="gallery__load">
@@ -239,6 +263,23 @@ export default class extends BaseComponent {
 	onCancel() {
 		this.setState({
 			'editing': null
+		});
+	}
+
+	onFileSelect(file, event) {
+		event.stopPropagation();
+		
+		var currentlySelected = this.state.selectedFiles,
+			fileIndex = currentlySelected.indexOf(file.id);
+
+		if (fileIndex > -1) {
+			currentlySelected.splice(fileIndex, 1);
+		} else {
+			currentlySelected.push(file.id);
+		}
+
+		this.setState({
+			'selectedFiles': currentlySelected
 		});
 	}
 
@@ -269,6 +310,8 @@ export default class extends BaseComponent {
 	}
 
 	onMoreClick(event) {
+		event.stopPropagation();
+
 		this.props.backend.more();
 
 		event.preventDefault();
