@@ -17,5 +17,9 @@
 	"AssetGalleryField.TITLE": "Title",
 	"AssetGalleryField.FILENAME": "Filename",
 	"AssetGalleryField.EDIT": "Edit",
-	"AssetGalleryField.DELETE": "Delete"
+	"AssetGalleryField.DELETE": "Delete",
+	"AssetGalleryField.SELECT": "Select",
+	"AssetGalleryField.BULK_ACTIONS_PLACEHOLDER": "Select an action...",
+	"AssetGalleryField.BULK_ACTIONS_CONFIRM": "Are you sure you want to %s these files?",
+	"AssetGalleryField.BULK_ACTIONS_DELETE": "Delete"
 }

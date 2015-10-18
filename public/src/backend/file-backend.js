@@ -6,13 +6,14 @@ export default class FileBackend extends Events {
 		return new FileBackend(...parameters);
 	}
 
-	constructor(search_url, update_url, delete_url, limit, $folder) {
+	constructor(search_url, update_url, delete_url, limit, bulkActions, $folder) {
 		super();
 
 		this.search_url = search_url;
 		this.update_url = update_url;
 		this.delete_url = delete_url;
 		this.limit = limit;
+		this.bulkActions = bulkActions;
 		this.$folder = $folder;
 
 		this.page = 1;
@@ -53,11 +54,25 @@ export default class FileBackend extends Events {
 		this.$folder.val(folder);
 	}
 
-	delete(id) {
+	delete(ids) {
+		var filesToDelete = [];
+
+		// Allows users to pass one or more ids to delete.
+		if (Object.prototype.toString.call(ids) !== '[object Array]') {
+			filesToDelete.push(ids);
+		} else {
+			filesToDelete = ids;
+		}
+
 		this.request('GET', this.delete_url, {
-			'id': id
+			'ids': filesToDelete
 		}).then(() => {
-			this.emit('onDeleteData', id);
+			// Using for loop cos IE10 doesn't handle 'for of',
+			// which gets transcompiled into a function which uses Symbol,
+			// the thing IE10 dies on.
+			for (let i = 0; i < filesToDelete.length; i += 1) {
+				this.emit('onDeleteData', filesToDelete[i]);
+			}
 		});
 	}
 
