@@ -6,8 +6,7 @@
 
 .asset-gallery .font-icon-level-up {
   position: absolute;
-  top: 13px;
-  left: 212px; }
+  top: 13px; }
 
 .asset-gallery .gallery__sort {
   position: absolute;
@@ -18,8 +17,7 @@
     filter: none;
     background: none;
     box-shadow: none;
-    color: inherit;
-    margin-top: -2px; }
+    color: inherit; }
     .asset-gallery .gallery__sort .chzn-single > span {
       text-align: right;
       color: inherit; }
