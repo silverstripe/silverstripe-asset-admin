@@ -46,7 +46,7 @@
         }
 
         &:hover,
-        &:focus {
+        &.focussed {
             .item__actions {
                 background: rgba(34, 56, 91, .7);
             }
@@ -54,7 +54,8 @@
             .item__actions__action {
                 opacity: 1;
 
-                &:hover {
+                &:hover,
+                &:focus {
                     background: rgba(34, 56, 91, .7);
                 }
             }
