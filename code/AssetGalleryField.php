@@ -197,9 +197,14 @@ class AssetGalleryField extends FormField {
 			$folder = $this->getFolder($folder);
 
 			if ($folder && $folder->hasChildren()) {
+				// When there's a folder with stuff in it.
 				/** @var File[]|SS_List $files */
 				$files = $folder->myChildren();
+			} else if ($folder && !$folder->hasChildren()) {
+				// When there's an empty folder
+				$files = array();
 			} else {
+				// When there's no folder (we're at the top level).
 				$files = File::get()->filter('ParentID', 0);
 			}
 		} else {
