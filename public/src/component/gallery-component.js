@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import i18n from 'i18n';
 import React from 'react';
 import FileComponent from './file-component';
 import EditorComponent from './editor-component';
@@ -61,25 +62,25 @@ export default class extends BaseComponent {
 			{
 				'field': 'title',
 				'direction': 'asc',
-				'label': ss.i18n._t('AssetGalleryField.FILTER_TITLE_ASC'),
+				'label': i18n._t('AssetGalleryField.FILTER_TITLE_ASC'),
 				'onSort': getSort.call(this, 'title', 'asc')
 			},
 			{
 				'field': 'title',
 				'direction': 'desc',
-				'label': ss.i18n._t('AssetGalleryField.FILTER_TITLE_DESC'),
+				'label': i18n._t('AssetGalleryField.FILTER_TITLE_DESC'),
 				'onSort': getSort.call(this, 'title', 'desc')
 			},
 			{
 				'field': 'created',
 				'direction': 'desc',
-				'label': ss.i18n._t('AssetGalleryField.FILTER_DATE_DESC'),
+				'label': i18n._t('AssetGalleryField.FILTER_DATE_DESC'),
 				'onSort': getSort.call(this, 'created', 'desc')
 			},
 			{
 				'field': 'created',
 				'direction': 'asc',
-				'label': ss.i18n._t('AssetGalleryField.FILTER_DATE_ASC'),
+				'label': i18n._t('AssetGalleryField.FILTER_DATE_ASC'),
 				'onSort': getSort.call(this, 'created', 'asc')
 			}
 		];
@@ -186,7 +187,7 @@ export default class extends BaseComponent {
 			return <button
 				className='ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
 				onClick={this.onBackClick}
-				ref="backButton">{ss.i18n._t('AssetGalleryField.BACK')}</button>;
+				ref="backButton">{i18n._t('AssetGalleryField.BACK')}</button>;
 		}
 
 		return null;
@@ -196,7 +197,7 @@ export default class extends BaseComponent {
 		if (this.state.count > this.state.files.length) {
 			return <button
 				className="gallery__load__more"
-				onClick={this.onMoreClick}>{ss.i18n._t('AssetGalleryField.LOADMORE')}</button>;
+				onClick={this.onMoreClick}>{i18n._t('AssetGalleryField.LOADMORE')}</button>;
 		}
 
 		return null;
@@ -243,7 +244,7 @@ export default class extends BaseComponent {
 	}
 
 	onFileDelete(file, event) {
-		if (confirm(ss.i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
+		if (confirm(i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
 			this.props.backend.delete(file.id);
 		}
 

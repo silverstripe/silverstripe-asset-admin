@@ -33,6 +33,7 @@ gulp.task('js', function () {
 	.transform(babelify)
 	.external('react')
 	.external('jquery')
+	.external('i18n')
 	.bundle()
 	.pipe(source('bundle.js'))
 	.pipe(gulp.dest(paths.dist));
