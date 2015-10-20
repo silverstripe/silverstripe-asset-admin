@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import i18n from 'i18n';
 import React from 'react';
 import constants from '../constants';
 import BaseComponent from './base-component';
@@ -109,6 +110,7 @@ class FileComponent extends BaseComponent {
 					<button
 						className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
 						type='button'
+						title={i18n._t('AssetGalleryField.DELETE')}
 						onClick={this.onFileDelete}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
@@ -116,6 +118,7 @@ class FileComponent extends BaseComponent {
 					<button
 						className='item__actions__action item__actions__action--edit [ font-icon-edit ]'
 						type='button'
+						title={i18n._t('AssetGalleryField.EDIT')}
 						onClick={this.onFileEdit}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
