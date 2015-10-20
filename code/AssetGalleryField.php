@@ -13,6 +13,44 @@ use SS_HTTPResponse;
 use SS_List;
 
 class AssetGalleryField extends FormField {
+
+	/**
+	 * @var SS_List
+	 */
+	protected $source = null;
+
+	/**
+	 * Create a new AssetGalleryField
+	 *
+	 * @param string $name The internal field name, passed to forms.
+	 * @param null|string $title The human-readable field label.
+	 * @param SS_List $source Data source
+	 */
+	public function __construct($name, $title = null, SS_List $source = null) {
+		parent::__construct($name, $title);
+		if($source) {
+			$this->setSource($source);
+		}
+	}
+
+	/**
+	 * Get datasource for this list.
+	 *
+	 * @return SS_List
+	 */
+	public function getSource() {
+		return $this->source ?: File::get();
+	}
+
+	/**
+	 * Assign a new datasource
+	 *
+	 * @param SS_List $source
+	 */
+	public function setSource(SS_List $source) {
+		$this->source = $source;
+	}
+
 	/**
 	 * @var array
 	 */
@@ -27,7 +65,7 @@ class AssetGalleryField extends FormField {
 	 *
 	 * @var string
 	 */
-	private static $defaultPath = 'uploads';
+	private static $defaultPath = 'Uploads';
 
 	/**
 	 * @var string
@@ -61,28 +99,8 @@ class AssetGalleryField extends FormField {
 	public function search(SS_HTTPRequest $request) {
 		$filters = array();
 
-		if ($name = $request->getVar('name')) {
-			$filters['name'] = $name;
-		}
-
 		if ($folder = $request->getVar('folder')) {
 			$filters['folder'] = $folder;
-		}
-
-		if ($folder = $request->getVar('type')) {
-			$filters['type'] = $folder;
-		}
-
-		if ($createdFrom = $request->getVar('createdFrom')) {
-			$filters['createdFrom'] = $createdFrom;
-		}
-
-		if ($createdTo = $request->getVar('createdTo')) {
-			$filters['createdTo'] = $createdTo;
-		}
-
-		if ($onlySearchInFolder = $request->getVar('onlySearchInFolder')) {
-			$filters['onlySearchInFolder'] = $onlySearchInFolder;
 		}
 
 		$filters['page'] = 1;
@@ -184,76 +202,34 @@ class AssetGalleryField extends FormField {
 	 * @return array
 	 */
 	protected function getData($filters = array()) {
-		$items = array();
-		$files = null;
+		// Re-apply folder filter to search
+		$files = $this->getSource();
 
-		if ((!empty($filters['folder']) && isset($filters['onlySearchInFolder']) && $filters['onlySearchInFolder'] == '1') || (empty($filters["name"]) && empty($filters["type"]) && empty($filters["createdFrom"]) && empty($filters["createdTo"]))) {
-			$folder = null;
+		// @todo - make sure that AssetAdmin::currentPageID returns the ID of the folder in
+		// the 'folder' querystring. Otherwise this filter won't work
+		if (isset($filters['folder'])) {
+			$folder = $this->getFolder($filters['folder']);
+			$files = $files->filter('ParentID', $folder->ID);
+		}
+		
+		$files = $files->sort(
+			'(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"'
+		);
 
-			if (isset($filters['folder'])) {
-				$folder = $filters['folder'];
-			}
+		// Total count before applying limit
+		$count = $files->count();
 
-			$folder = $this->getFolder($folder);
-
-			if ($folder && $folder->hasChildren()) {
-				// When there's a folder with stuff in it.
-				/** @var File[]|SS_List $files */
-				$files = $folder->myChildren();
-			} else if ($folder && !$folder->hasChildren()) {
-				// When there's an empty folder
-				$files = array();
-			} else {
-				// When there's no folder (we're at the top level).
-				$files = File::get()->filter('ParentID', 0);
-			}
-		} else {
-			$files = File::get();
+		// Page this list
+		if (isset($filters['page']) && isset($filters['limit'])) {
+			$page = $filters['page'];
+			$limit = $filters['limit'];
+			$offset = ($page - 1) * $limit;
+			$files = $files->limit($limit, $offset);
 		}
 
-		$count = 0;
-
-		if($files) {
-			if (!empty($filters['name'])) {
-				$files = $files->filterAny(array(
-					'Name:PartialMatch' => $filters['name'],
-					'Title:PartialMatch' => $filters['name']
-				));
-			}
-
-			if(!empty($filters['createdFrom'])) {
-				$fromDate = new DateField(null, null, $filters['createdFrom']);
-				$files = $files->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
-			}
-
-			if(!empty($filters['createdTo'])) {
-				$toDate = new DateField(null, null, $filters['createdTo']);
-				$files = $files->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
-			}
-
-			if(!empty($filters['type']) && !empty(File::config()->app_categories[$filters['type']])) {
-				$extensions = File::config()->app_categories[$filters['type']];
-				$files = $files->filter('Name:PartialMatch', $extensions);
-			}
-
-			$files = $files->sort(
-				'(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"'
-			);
-
-			$count = $files->count();
-
-			if (isset($filters['page']) && isset($filters['limit'])) {
-				$page = $filters['page'];
-				$limit = $filters['limit'];
-
-				$offset = ($page - 1) * $limit;
-
-				$files = $files->limit($limit, $offset);
-			}
-
-			foreach($files as $file) {
-				$items[] = $this->getObjectFromData($file);
-			}
+		$items = array();
+		foreach($files as $file) {
+			$items[] = $this->getObjectFromData($file);
 		}
 
 		return array(
