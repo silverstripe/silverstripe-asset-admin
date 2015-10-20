@@ -95,9 +95,9 @@ class EditorComponent extends BaseComponent {
 			</div>
 			{this.fields.map((field, i) => {
 				return <div className='field text' key={i}>
-					<label className='left'>{field.label}</label>
+					<label className='left' htmlFor={'gallery_' + field.name}>{field.label}</label>
 					<div className='middleColumn'>
-						<input className="text" type='text' onChange={field.onChange} value={this.state[field.name]} />
+						<input id={'gallery_' + field.name} className="text" type='text' onChange={field.onChange} value={this.state[field.name]} />
 					</div>
 				</div>
 			})}
