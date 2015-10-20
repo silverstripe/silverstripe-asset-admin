@@ -139,6 +139,7 @@ class FileComponent extends BaseComponent {
 					<button
 						className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
 						type='button'
+						title={constants.ACTION_TITLE_DELETE}
 						onClick={this.onFileDelete}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
@@ -146,6 +147,7 @@ class FileComponent extends BaseComponent {
 					<button
 						className='item__actions__action item__actions__action--edit [ font-icon-edit ]'
 						type='button'
+						title={constants.ACTION_TITLE_EDIT}
 						onClick={this.onFileEdit}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
