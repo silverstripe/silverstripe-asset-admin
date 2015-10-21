@@ -131,7 +131,6 @@ export default class extends BaseComponent {
 		};
 
 		this.bind(
-			'onGalleryClick',
 			'onFileSave',
 			'onFileNavigate',
 			'onFileSelect',
@@ -140,7 +139,8 @@ export default class extends BaseComponent {
 			'onBackClick',
 			'onMoreClick',
 			'onNavigate',
-			'onCancel'
+			'onCancel',
+			'getSelectedFiles'
 		);
 	}
 
@@ -200,7 +200,9 @@ export default class extends BaseComponent {
 		if (this.state.selectedFiles.length > 0) {
 			return <BulkActionsComponent
 				options={CONSTANTS.BULK_ACTIONS}
-				placeholder={ss.i18n._t('AssetGalleryField.BULK_ACTIONS_PLACEHOLDER')} />;
+				placeholder={ss.i18n._t('AssetGalleryField.BULK_ACTIONS_PLACEHOLDER')}
+				backend={this.props.backend}
+				getSelectedFiles={this.getSelectedFiles} />;
 		}
 
 		return null;
@@ -216,10 +218,8 @@ export default class extends BaseComponent {
 		return null;
 	}
 
-	onGalleryClick(event) {
-		// this.setState({
-		// 	'selectedFiles': []
-		// })
+	getSelectedFiles() {
+		return this.state.selectedFiles;
 	}
 
 	render() {
@@ -232,7 +232,7 @@ export default class extends BaseComponent {
 			</div>;
 		}
 
-		return <div className='gallery' onClick={this.onGalleryClick}>
+		return <div className='gallery'>
 			{this.getBackButton()}
 			{this.getBulkActionsComponent()}
 			<div className="gallery__sort fieldholder-small">

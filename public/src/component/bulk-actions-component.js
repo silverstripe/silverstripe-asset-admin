@@ -10,10 +10,6 @@ export default class BulkActionsComponent extends BaseComponent {
 		this.bind(
 			'onChangeValue'
 		);
-
-		this.state = {
-			'value': ''
-		};
 	}
 
 	componentDidMount() {
@@ -60,7 +56,13 @@ export default class BulkActionsComponent extends BaseComponent {
 	}
 
 	applyAction(value) {
-		// Delete the files...
+		// We only have 'delete' right now...
+		switch (value) {
+			case 'delete':
+				this.props.backend.delete(this.props.getSelectedFiles());
+			default:
+				return false;
+		}
 	}
 
 	onChangeValue(event) {
@@ -71,8 +73,6 @@ export default class BulkActionsComponent extends BaseComponent {
 			return;
 		}
 
-		this.setState({ value: option.value });
-
 		if (option.destructive === true) {
 			if (confirm(ss.i18n.sprintf(ss.i18n._t('AssetGalleryField.BULK_ACTIONS_CONFIRM'), option.label))) {
 				this.applyAction(option.value);
@@ -80,5 +80,8 @@ export default class BulkActionsComponent extends BaseComponent {
 		} else {
 			this.applyAction(option.value);
 		}
+
+		// Reset the dropdown to it's placeholder value.
+		$(React.findDOMNode(this)).find('.dropdown').val('').trigger('liszt:updated');
 	}
 };

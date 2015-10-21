@@ -156,13 +156,24 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function delete(SS_HTTPRequest $request) {
-		$file = File::get()->filter("id", (int) $request->getVar("id"))->first();
+		$fileIds = $request->getVar("ids");
+		$files = array();
 
 		$response = new SS_HTTPResponse();
 		$response->addHeader('Content-Type', 'application/json');
 
-		if ($file) {
-			$file->delete();
+		if($fileIds) {
+			foreach ($fileIds as $id) {
+				if ($file = File::get()->filter("id", (int) $id)->first()) {
+					array_push($files, $file);
+				}
+			}
+		}
+
+		if(count($files)) {
+			foreach ($files as $file) {
+				$file->delete();
+			}
 
 			$response->setBody(json_encode(array(
 				'status' => 'file was deleted',
