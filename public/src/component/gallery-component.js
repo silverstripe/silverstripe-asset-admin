@@ -164,7 +164,7 @@ export default class extends BaseComponent {
 
 	componentDidUpdate() {
 		var $select = $(React.findDOMNode(this)).find('.gallery__sort .dropdown'),
-			leftVal = $('.cms-content-toolbar:visible').width() + 24;
+			leftVal = $('.cms-content-toolbar:visible').width() + 12;
 
 		if (this.folders.length > 1) {
 			let backButton = this.refs.backButton.getDOMNode();
@@ -268,7 +268,7 @@ export default class extends BaseComponent {
 
 	onFileSelect(file, event) {
 		event.stopPropagation();
-		
+
 		var currentlySelected = this.state.selectedFiles,
 			fileIndex = currentlySelected.indexOf(file.id);
 
@@ -302,6 +302,10 @@ export default class extends BaseComponent {
 	onFileNavigate(file) {
 		this.folders.push(file.filename);
 		this.props.backend.navigate(file.filename);
+
+		this.setState({
+			'selectedFiles': []
+		})
 	}
 
 	onNavigate(folder) {
@@ -322,6 +326,10 @@ export default class extends BaseComponent {
 			this.folders.pop();
 			this.props.backend.navigate(this.folders[this.folders.length - 1]);
 		}
+
+		this.setState({
+			'selectedFiles': []
+		})
 
 		event.preventDefault();
 	}
