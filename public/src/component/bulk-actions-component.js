@@ -40,7 +40,7 @@ export default class BulkActionsComponent extends BaseComponent {
 
 	render() {
 		return <div className="gallery__bulk fieldholder-small">
-			<select className="dropdown no-change-track no-chzn" data-placeholder={this.props.placeholder} style={{width: '160px'}}>
+			<select className="dropdown no-change-track no-chzn" tabIndex="0" data-placeholder={this.props.placeholder} style={{width: '160px'}}>
 				<option selected disabled hidden value=''></option>
 				{this.props.options.map((option, i) => {
 					return <option key={i} onClick={this.onChangeValue} value={option.value}>{option.label}</option>;

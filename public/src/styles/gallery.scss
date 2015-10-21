@@ -12,7 +12,7 @@
 
     .gallery__bulk {
         position: absolute;
-        top: 12px;
+        top: 11px;
         animation: actionsAdded .3s ease-in-out;
         z-index: 100;
 
@@ -23,7 +23,10 @@
             background: none;
             box-shadow: none;
             color: inherit;
-            margin-top: -1px;
+
+            &:focus {
+                box-shadow: 0 0 3px 0 rgba(0,0,0,.2);
+            }
 
             > span {
                 text-align: left;
@@ -85,7 +88,7 @@
 
     .gallery__sort {
         position: absolute;
-        top: 12px;
+        top: 11px;
         right: 24px;
 
         .chzn-single {
@@ -94,7 +97,10 @@
             background: none;
             box-shadow: none;
             color: inherit;
-            margin-top: -1px;
+
+            &:focus {
+                box-shadow: 0 0 3px 0 rgba(0,0,0,.2);
+            }
 
             > span {
                 text-align: right;

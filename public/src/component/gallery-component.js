@@ -236,7 +236,7 @@ export default class extends BaseComponent {
 			{this.getBackButton()}
 			{this.getBulkActionsComponent()}
 			<div className="gallery__sort fieldholder-small">
-				<select className="dropdown no-change-track no-chzn" style={{width: '160px'}}>
+				<select className="dropdown no-change-track no-chzn" tabIndex="0" style={{width: '160px'}}>
 					{this.sorters.map((sorter, i) => {
 						return <option key={i} onClick={sorter.onSort}>{sorter.label}</option>;
 					})}

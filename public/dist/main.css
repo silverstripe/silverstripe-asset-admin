@@ -16,7 +16,7 @@
 
 .asset-gallery .gallery__bulk {
   position: absolute;
-  top: 12px;
+  top: 11px;
   animation: actionsAdded 0.3s ease-in-out;
   z-index: 100; }
   .asset-gallery .gallery__bulk .chzn-single {
@@ -25,8 +25,9 @@
     filter: none;
     background: none;
     box-shadow: none;
-    color: inherit;
-    margin-top: -1px; }
+    color: inherit; }
+    .asset-gallery .gallery__bulk .chzn-single:focus {
+      box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2); }
     .asset-gallery .gallery__bulk .chzn-single > span {
       text-align: left;
       display: inline-block;
@@ -59,15 +60,16 @@
 
 .asset-gallery .gallery__sort {
   position: absolute;
-  top: 12px;
+  top: 11px;
   right: 24px; }
   .asset-gallery .gallery__sort .chzn-single {
     border: 0;
     filter: none;
     background: none;
     box-shadow: none;
-    color: inherit;
-    margin-top: -1px; }
+    color: inherit; }
+    .asset-gallery .gallery__sort .chzn-single:focus {
+      box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2); }
     .asset-gallery .gallery__sort .chzn-single > span {
       text-align: right;
       color: inherit; }
