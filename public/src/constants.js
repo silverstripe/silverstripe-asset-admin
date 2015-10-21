@@ -5,7 +5,7 @@ export default {
 	'BULK_ACTIONS': [
 		{
 			value: 'delete',
-			label: 'Delete',
+			label: ss.i18n._t('AssetGalleryField.BULK_ACTIONS_DELETE'),
 			destructive: true
 		}
 	]
