@@ -45,6 +45,7 @@ $('.asset-gallery').entwine({
 			this[0].getAttribute('data-asset-gallery-update-url'),
 			this[0].getAttribute('data-asset-gallery-delete-url'),
 			this[0].getAttribute('data-asset-gallery-limit'),
+			this[0].getAttribute('data-asset-gallery-bulk-actions'),
 			$search.find('[type=hidden][name="q[Folder]"]')
 		);
 

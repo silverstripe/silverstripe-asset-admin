@@ -6,13 +6,14 @@ export default class FileBackend extends Events {
 		return new FileBackend(...parameters);
 	}
 
-	constructor(search_url, update_url, delete_url, limit, $folder) {
+	constructor(search_url, update_url, delete_url, limit, bulkActions, $folder) {
 		super();
 
 		this.search_url = search_url;
 		this.update_url = update_url;
 		this.delete_url = delete_url;
 		this.limit = limit;
+		this.bulkActions = bulkActions;
 		this.$folder = $folder;
 
 		this.page = 1;

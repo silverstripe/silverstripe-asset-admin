@@ -197,7 +197,7 @@ export default class extends BaseComponent {
 	}
 
 	getBulkActionsComponent() {
-		if (this.state.selectedFiles.length > 0) {
+		if (this.state.selectedFiles.length > 0 && this.props.backend.bulkActions) {
 			return <BulkActionsComponent
 				options={CONSTANTS.BULK_ACTIONS}
 				placeholder={ss.i18n._t('AssetGalleryField.BULK_ACTIONS_PLACEHOLDER')}

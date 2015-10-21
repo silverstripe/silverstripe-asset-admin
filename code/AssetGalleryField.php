@@ -40,6 +40,11 @@ class AssetGalleryField extends FormField {
 	protected $limit = 10;
 
 	/**
+	 * @var boolean
+	 */
+	protected $bulkActions = true;
+
+	/**
 	 * @return $this
 	 */
 	public function performReadonlyTransformation() {
@@ -315,10 +320,12 @@ class AssetGalleryField extends FormField {
 		$deleteURL = $this->getDeleteURL();
 		$initialFolder = $this->getCurrentPath();
 		$limit = $this->getLimit();
+		$bulkActions = $this->getBulkActions();
 
 		return "<div
 			class='asset-gallery'
 			data-asset-gallery-name='{$name}'
+			data-asset-gallery-bulk-actions='{$bulkActions}'
 			data-asset-gallery-limit='{$limit}'
 			data-asset-gallery-search-url='{$searchURL}'
 			data-asset-gallery-update-url='{$updateURL}'
@@ -438,4 +445,22 @@ class AssetGalleryField extends FormField {
 	public function getLimit() {
 		return $this->limit;
 	}
+
+	/**
+	 * @param boolean $bulkActions
+	 *
+	 * @return $this
+	 */
+	public function disableBulkActions() {
+		$this->bulkActions = false;
+
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getBulkActions() {
+		return $this->bulkActions;
+	}	
 }
