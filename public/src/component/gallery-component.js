@@ -131,7 +131,6 @@ export default class extends BaseComponent {
 		};
 
 		this.bind(
-			'onGalleryClick',
 			'onFileSave',
 			'onFileNavigate',
 			'onFileSelect',
@@ -239,7 +238,7 @@ export default class extends BaseComponent {
 			</div>;
 		}
 
-		return <div className='gallery' onClick={this.onGalleryClick}>
+		return <div className='gallery'>
 			{this.getBackButton()}
 			{this.getBulkActionsComponent()}
 			<div className="gallery__sort fieldholder-small">

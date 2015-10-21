@@ -10,10 +10,6 @@ export default class BulkActionsComponent extends BaseComponent {
 		this.bind(
 			'onChangeValue'
 		);
-
-		this.state = {
-			'value': ''
-		};
 	}
 
 	componentDidMount() {
