@@ -276,7 +276,7 @@ export default class extends BaseComponent {
 
 	onFileSelect(file, event) {
 		event.stopPropagation();
-		
+
 		var currentlySelected = this.state.selectedFiles,
 			fileIndex = currentlySelected.indexOf(file.id);
 
