@@ -66,8 +66,11 @@ export default class FileBackend extends Events {
 		this.request('GET', this.delete_url, {
 			'ids': filesToDelete
 		}).then(() => {
-			for (let id of filesToDelete) {
-				this.emit('onDeleteData', id);
+			// Using for loop cos IE10 doesn't handle 'for of',
+			// which gets transcompiled into a function which uses Symbol,
+			// the thing IE10 dies on.
+			for (let i = 0; i < filesToDelete.length; i += 1) {
+				this.emit('onDeleteData', filesToDelete[i]);
 			}
 		});
 	}

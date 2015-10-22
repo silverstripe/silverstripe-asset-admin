@@ -46,9 +46,12 @@ export default class BulkActionsComponent extends BaseComponent {
 	}
 
 	getOptionByValue(value) {
-		for (let option of this.props.options) {
-			if (option.value === value) {
-				return option;
+		// Using for loop cos IE10 doesn't handle 'for of',
+		// which gets transcompiled into a function which uses Symbol,
+		// the thing IE10 dies on.
+		for (let i = 0; i < this.props.options.length; i += 1) {
+			if (this.props.options[i].value === value) {
+				return this.props.options[i];
 			}
 		}
 

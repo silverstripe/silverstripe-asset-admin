@@ -245,7 +245,6 @@ export default class extends BaseComponent {
 			<div className='gallery__items'>
 				{this.state.files.map((file, i) => {
 					return <FileComponent key={i} {...file}
-						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
 						onFileSelect={this.onFileSelect}
 						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
 						onFileDelete={this.onFileDelete}
