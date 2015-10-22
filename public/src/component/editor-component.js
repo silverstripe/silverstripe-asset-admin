@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import i18n from 'i18n';
 import React from 'react';
 import BaseComponent from './base-component';
 
@@ -52,20 +53,20 @@ class EditorComponent extends BaseComponent {
 				<div className='CompositeField composite cms-file-info-data nolabel'>
 					<div className='CompositeField composite nolabel'>
 						<div className='field readonly'>
-							<label className='left'>{ss.i18n._t('AssetGalleryField.TYPE')}:</label>
+							<label className='left'>{i18n._t('AssetGalleryField.TYPE')}:</label>
 							<div className='middleColumn'>
 								<span className='readonly'>{this.props.file.type}</span>
 							</div>
 						</div>
 					</div>
 					<div className='field readonly'>
-						<label className='left'>{ss.i18n._t('AssetGalleryField.SIZE')}:</label>
+						<label className='left'>{i18n._t('AssetGalleryField.SIZE')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>{this.props.file.size}</span>
 						</div>
 					</div>
 					<div className='field readonly'>
-						<label className='left'>{ss.i18n._t('AssetGalleryField.URL')}:</label>
+						<label className='left'>{i18n._t('AssetGalleryField.URL')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>
 								<a href={this.props.file.url} target='_blank'>{this.props.file.url}</a>
@@ -73,19 +74,19 @@ class EditorComponent extends BaseComponent {
 						</div>
 					</div>
 					<div className='field date_disabled readonly'>
-						<label className='left'>{ss.i18n._t('AssetGalleryField.CREATED')}:</label>
+						<label className='left'>{i18n._t('AssetGalleryField.CREATED')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>{this.props.file.created}</span>
 						</div>
 					</div>
 					<div className='field date_disabled readonly'>
-						<label className='left'>{ss.i18n._t('AssetGalleryField.LASTEDIT')}:</label>
+						<label className='left'>{i18n._t('AssetGalleryField.LASTEDIT')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>{this.props.file.lastUpdated}</span>
 						</div>
 					</div>
 					<div className='field readonly'>
-						<label className='left'>{ss.i18n._t('AssetGalleryField.DIM')}:</label>
+						<label className='left'>{i18n._t('AssetGalleryField.DIM')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>{this.props.file.attributes.dimensions.width} x {this.props.file.attributes.dimensions.height}px</span>
 						</div>
@@ -105,13 +106,13 @@ class EditorComponent extends BaseComponent {
 					type='submit'
 					className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-check-mark"
 					onClick={this.onFileSave}>
-					{ss.i18n._t('AssetGalleryField.SAVE')}
+					{i18n._t('AssetGalleryField.SAVE')}
 				</button>
 				<button
 					type='button'
 					className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-cancel-circled"
 					onClick={this.onCancel}>
-					{ss.i18n._t('AssetGalleryField.CANCEL')}
+					{i18n._t('AssetGalleryField.CANCEL')}
 				</button>
 			</div>
 		</div>;
