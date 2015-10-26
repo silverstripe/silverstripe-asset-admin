@@ -40,6 +40,11 @@ class AssetGalleryField extends FormField {
 	protected $limit = 10;
 
 	/**
+	 * @var boolean
+	 */
+	protected $bulkActions = true;
+
+	/**
 	 * @return $this
 	 */
 	public function performReadonlyTransformation() {
@@ -156,13 +161,24 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function delete(SS_HTTPRequest $request) {
-		$file = File::get()->filter("id", (int) $request->getVar("id"))->first();
+		$fileIds = $request->getVar("ids");
+		$files = array();
 
 		$response = new SS_HTTPResponse();
 		$response->addHeader('Content-Type', 'application/json');
 
-		if ($file) {
-			$file->delete();
+		if($fileIds) {
+			foreach ($fileIds as $id) {
+				if ($file = File::get()->filter("id", (int) $id)->first()) {
+					array_push($files, $file);
+				}
+			}
+		}
+
+		if(count($files)) {
+			foreach ($files as $file) {
+				$file->delete();
+			}
 
 			$response->setBody(json_encode(array(
 				'status' => 'file was deleted',
@@ -304,10 +320,12 @@ class AssetGalleryField extends FormField {
 		$deleteURL = $this->getDeleteURL();
 		$initialFolder = $this->getCurrentPath();
 		$limit = $this->getLimit();
+		$bulkActions = $this->getBulkActions();
 
 		return "<div
 			class='asset-gallery'
 			data-asset-gallery-name='{$name}'
+			data-asset-gallery-bulk-actions='{$bulkActions}'
 			data-asset-gallery-limit='{$limit}'
 			data-asset-gallery-search-url='{$searchURL}'
 			data-asset-gallery-update-url='{$updateURL}'
@@ -427,4 +445,22 @@ class AssetGalleryField extends FormField {
 	public function getLimit() {
 		return $this->limit;
 	}
+
+	/**
+	 * @param boolean $bulkActions
+	 *
+	 * @return $this
+	 */
+	public function disableBulkActions() {
+		$this->bulkActions = false;
+
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getBulkActions() {
+		return $this->bulkActions;
+	}	
 }
