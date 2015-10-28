@@ -22,7 +22,8 @@ class FileComponent extends BaseComponent {
 			'handleKeyDown',
 			'handleFocus',
 			'handleBlur',
-			'onFileSelect'
+			'onFileSelect',
+			'preventFocus'
 		);
 	}
 
@@ -136,10 +137,15 @@ class FileComponent extends BaseComponent {
 			'buttonTabIndex': -1
 		});
 	}
+	
+	preventFocus(event) {
+		//To avoid browser's default focus state when selecting an item
+		event.preventDefault();
+	}
 
 	render() {
 		return <div className={this.getItemClassNames()} data-id={this.props.id} tabIndex="0" onKeyDown={this.handleKeyDown} onDoubleClick={this.handleDoubleClick}>
-			<div ref="thumbnail" className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()} onClick={this.onFileSelect}>
+			<div ref="thumbnail" className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()} onClick={this.onFileSelect} onMouseDown={this.preventFocus}>
 				<div className='item__actions'>
 					<button
 						className='item__actions__action item__actions__action--select [ font-icon-tick ]'
