@@ -165,7 +165,7 @@ export default class extends BaseComponent {
 
 	componentDidUpdate() {
 		var $select = $(React.findDOMNode(this)).find('.gallery__sort .dropdown'),
-			leftVal = $('.cms-content-toolbar:visible').width() + 12;
+			leftVal = $('.AssetAdmin .cms-content-toolbar:visible').width() + 12;
 
 		if (this.folders.length > 1) {
 			let backButton = this.refs.backButton.getDOMNode();
