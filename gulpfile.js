@@ -34,6 +34,7 @@ gulp.task('js', function () {
 	.external('react')
 	.external('jquery')
 	.external('i18n')
+	.external('silverstripe-component')
 	.bundle()
 	.pipe(source('bundle.js'))
 	.pipe(gulp.dest(paths.dist));

@@ -146,6 +146,8 @@ export default class extends BaseComponent {
 	}
 
 	componentDidMount() {
+		super.componentDidMount();
+
 		for (let event in this.listeners) {
 			this.props.backend.on(event, this.listeners[event]);
 		}
@@ -158,6 +160,8 @@ export default class extends BaseComponent {
 	}
 
 	componentWillUnmount() {
+		super.componentWillUnmount();
+
 		for (let event in this.listeners) {
 			this.props.backend.removeListener(event, this.listeners[event]);
 		}
@@ -221,12 +225,6 @@ export default class extends BaseComponent {
 
 	getSelectedFiles() {
 		return this.state.selectedFiles;
-	}
-	
-	onGalleryClick(event) {
-		// this.setState({
-		// 	'selectedFiles': []
-		// })
 	}
 
 	render() {
