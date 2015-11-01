@@ -323,7 +323,7 @@ class AssetGalleryField extends FormField {
 		$bulkActions = $this->getBulkActions();
 
 		return "<div
-			class='asset-gallery'
+			class='asset-gallery-component-wrapper'
 			data-asset-gallery-name='{$name}'
 			data-asset-gallery-bulk-actions='{$bulkActions}'
 			data-asset-gallery-limit='{$limit}'
