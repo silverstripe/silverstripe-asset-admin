@@ -23,47 +23,63 @@ function getVar(name) {
 	return null;
 }
 
-$('.asset-gallery').entwine({
-	'onadd': function () {
-		let props = {
-			'name': this[0].getAttribute('data-asset-gallery-name'),
-			'initial_folder': this[0].getAttribute('data-asset-gallery-initial-folder')
-		};
+$.entwine('ss', function ($) {
+	$('.asset-gallery').entwine({
+		/**
+		 * @func getProps
+		 * @param object props - Used to augment defaults.
+		 * @desc The initial props passed into the GalleryComponent. Can be overridden by other Entwine components.
+		 */
+		'getProps': function (props) {
+			var $componentWrapper = this.find('.asset-gallery-component-wrapper'),
+				$search = $('.cms-search-form'),
+				currentFolder = getVar('q[Folder]') || props.initial_folder,
+				backend,
+				defaults;
 
-		if (props.name === null) {
-			return;
+			if ($search.find('[type=hidden][name="q[Folder]"]').length == 0) {
+				$search.append('<input type="hidden" name="q[Folder]" />');
+			}
+
+			// Do we need to set up a default backend?
+			if (typeof this.props === 'undefined' || this.props.backend === 'undefined') {
+				backend = FileBackend.create(
+					$componentWrapper.data('asset-gallery-search-url'),
+					$componentWrapper.data('asset-gallery-update-url'),
+					$componentWrapper.data('asset-gallery-delete-url'),
+					$componentWrapper.data('asset-gallery-limit'),
+					$componentWrapper.data('asset-gallery-bulk-actions'),
+					$search.find('[type=hidden][name="q[Folder]"]')
+				);
+
+				backend.emit(
+					'filter',
+					getVar('q[Name]'),
+					getVar('q[AppCategory]'),
+					getVar('q[Folder]'),
+					getVar('q[CreatedFrom]'),
+					getVar('q[CreatedTo]'),
+					getVar('q[CurrentFolderOnly]')
+				);
+			}
+
+			defaults = {
+				backend: backend,
+				current_folder: currentFolder,
+				cmsEvents: {},
+				initial_folder: this.data('asset-gallery-initial-folder'),
+				name: this.data('asset-gallery-name')
+			};
+
+			return $.extend(true, defaults, props);
+		},
+		'onadd': function () {
+			var props = this.getProps();
+
+			React.render(
+				<GalleryComponent {...props} />,
+				this.find('.asset-gallery-component-wrapper')[0]
+			);
 		}
-
-		let $search = $('.cms-search-form');
-
-		if ($search.find('[type=hidden][name="q[Folder]"]').length == 0) {
-			$search.append('<input type="hidden" name="q[Folder]" />');
-		}
-
-		props.backend = FileBackend.create(
-			this[0].getAttribute('data-asset-gallery-search-url'),
-			this[0].getAttribute('data-asset-gallery-update-url'),
-			this[0].getAttribute('data-asset-gallery-delete-url'),
-			this[0].getAttribute('data-asset-gallery-limit'),
-			this[0].getAttribute('data-asset-gallery-bulk-actions'),
-			$search.find('[type=hidden][name="q[Folder]"]')
-		);
-
-		props.backend.emit(
-			'filter',
-			getVar('q[Name]'),
-			getVar('q[AppCategory]'),
-			getVar('q[Folder]'),
-			getVar('q[CreatedFrom]'),
-			getVar('q[CreatedTo]'),
-			getVar('q[CurrentFolderOnly]')
-		);
-
-		props.current_folder = getVar('q[Folder]') || props.initial_folder;
-
-		React.render(
-			<GalleryComponent {...props} />,
-			this[0]
-		);
-	}
+	});
 });
