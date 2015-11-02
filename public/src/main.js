@@ -33,7 +33,7 @@ $.entwine('ss', function ($) {
 		'getProps': function (props) {
 			var $componentWrapper = this.find('.asset-gallery-component-wrapper'),
 				$search = $('.cms-search-form'),
-				initialFolder = this.data('asset-gallery-initial-folder'),
+				initialFolder = $componentWrapper.data('asset-gallery-initial-folder'),
 				currentFolder = getVar('q[Folder]') || initialFolder,
 				backend,
 				defaults;
@@ -67,7 +67,12 @@ $.entwine('ss', function ($) {
 			defaults = {
 				backend: backend,
 				current_folder: currentFolder,
-				cmsEvents: {},
+				cmsEvents: {
+					'cms.fileAdded': function () {
+						// Reload the gallery
+						this.props.backend.navigate(this.props.current_folder);
+					}
+				},
 				initial_folder: initialFolder,
 				name: this.data('asset-gallery-name')
 			};
