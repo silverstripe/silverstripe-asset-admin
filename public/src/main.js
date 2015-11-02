@@ -63,7 +63,8 @@ $.entwine('ss', function ($) {
 		'getProps': function (props) {
 			var $componentWrapper = this.find('.asset-gallery-component-wrapper'),
 				$search = $('.cms-search-form'),
-				currentFolder = this.getCurrentFolder(),
+				initialFolder = this.data('asset-gallery-initial-folder'),
+				currentFolder = getVar('q[Folder]') || initialFolder,
 				backend,
 				defaults;
 
@@ -98,15 +99,9 @@ $.entwine('ss', function ($) {
 			defaults = {
 				backend: backend,
 				current_folder: currentFolder,
-				cmsEvents: {
-					'asset-admin.reload-gallery': function () {
-						// Reload the gallery
-						this.props.backend.navigate(this.props.current_folder);
-					}
-				},
-				hasSessionStorage: hasSessionStorage,
-				initial_folder: $componentWrapper.data('asset-gallery-initial-folder'),
-				name: $componentWrapper.data('asset-gallery-name')
+				cmsEvents: {},
+				initial_folder: initialFolder,
+				name: this.data('asset-gallery-name')
 			};
 
 			return $.extend(true, defaults, props);

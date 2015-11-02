@@ -188,11 +188,10 @@ class GalleryComponent extends BaseComponent {
 	}
 
 	getFileById(id) {
-		var folder = null,
-			idInt = parseInt(id, 10);
+		var folder = null;
 
 		for (let i = 0; i < this.state.files.length; i += 1) {
-			if (this.state.files[i].id === idInt) {
+			if (this.state.files[i].id === id) {
 				folder = this.state.files[i];
 				break;
 			}
