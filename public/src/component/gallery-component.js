@@ -190,6 +190,19 @@ export default class extends BaseComponent {
 		$select.change(() => React.addons.TestUtils.Simulate.click($select.find(':selected')[0]));
 	}
 
+	getFileById(id) {
+		var folder = null;
+
+		for (let i = 0; i < this.state.files.length; i += 1) {
+			if (this.state.files[i].id === id) {
+				folder = this.state.files[i];
+				break;
+			}
+		}
+
+		return folder;
+	}
+
 	getBackButton() {
 		if (this.folders.length > 1) {
 			return <button
