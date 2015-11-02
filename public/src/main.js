@@ -33,7 +33,8 @@ $.entwine('ss', function ($) {
 		'getProps': function (props) {
 			var $componentWrapper = this.find('.asset-gallery-component-wrapper'),
 				$search = $('.cms-search-form'),
-				currentFolder = getVar('q[Folder]') || props.initial_folder,
+				initialFolder = this.data('asset-gallery-initial-folder'),
+				currentFolder = getVar('q[Folder]') || initialFolder,
 				backend,
 				defaults;
 
@@ -67,7 +68,7 @@ $.entwine('ss', function ($) {
 				backend: backend,
 				current_folder: currentFolder,
 				cmsEvents: {},
-				initial_folder: this.data('asset-gallery-initial-folder'),
+				initial_folder: initialFolder,
 				name: this.data('asset-gallery-name')
 			};
 
