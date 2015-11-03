@@ -12,7 +12,7 @@
 
     .gallery__bulk {
         position: absolute;
-        top: 11px;
+        top: 14px;
         animation: actionsAdded .3s ease-in-out;
         z-index: 100;
 
@@ -81,14 +81,18 @@
         }
     }
 
-    .font-icon-level-up {
+    .gallery__back {
         position: absolute;
         top: 13px;
+        
+        &.ss-ui-button::before {
+            font-size: 23px;
+        }
     }
 
     .gallery__sort {
         position: absolute;
-        top: 11px;
+        top: 14px;
         right: 24px;
 
         .chzn-single {

@@ -13,17 +13,7 @@ export default class BulkActionsComponent extends BaseComponent {
 	}
 
 	componentDidMount() {
-		var $select = $(React.findDOMNode(this)).find('.dropdown'),
-			leftVal = leftVal = $('.cms-content-toolbar:visible').width() + 12,
-			backButton = $('.gallery .font-icon-level-up');
-
-		if (backButton.length > 0) {
-			leftVal += backButton.width() + 24;
-		}
-
-		$(React.findDOMNode(this)).css({
-			left: leftVal
-		});
+		var $select = $(React.findDOMNode(this)).find('.dropdown');
 
 		$select.chosen({
 			'allow_single_deselect': true,
