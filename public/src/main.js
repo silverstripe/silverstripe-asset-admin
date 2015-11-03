@@ -88,6 +88,11 @@ $.entwine('ss', function ($) {
 						this.setState({
 							'selectedFiles': currentlySelected
 						});
+					},
+					'cms.clearSelected': function() {
+						this.setState({
+							'selectedFiles': []
+						})
 					}
 				},
 				initial_folder: initialFolder,
