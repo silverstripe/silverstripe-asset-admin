@@ -16,7 +16,7 @@
 
 .asset-gallery .gallery__bulk {
   position: absolute;
-  top: 11px;
+  top: 14px;
   animation: actionsAdded 0.3s ease-in-out;
   z-index: 100; }
   .asset-gallery .gallery__bulk .chzn-single {
@@ -54,13 +54,15 @@
     .asset-gallery .gallery__bulk .chzn-results li:nth-child(1)::before {
       content: 'g'; }
 
-.asset-gallery .font-icon-level-up {
+.asset-gallery .gallery__back {
   position: absolute;
   top: 13px; }
+  .asset-gallery .gallery__back.ss-ui-button::before {
+    font-size: 23px; }
 
 .asset-gallery .gallery__sort {
   position: absolute;
-  top: 11px;
+  top: 14px;
   right: 24px; }
   .asset-gallery .gallery__sort .chzn-single {
     border: 0;
