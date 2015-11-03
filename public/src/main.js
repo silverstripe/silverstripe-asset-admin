@@ -23,8 +23,37 @@ function getVar(name) {
 	return null;
 }
 
+function hasSessionStorage() {
+	return typeof window.sessionStorage !== 'undefined' && window.sessionStorage !== null;
+}
+
 $.entwine('ss', function ($) {
+
 	$('.asset-gallery').entwine({
+
+		Component: null,
+
+		'getCurrentFolder': function () {
+			var currentFolder = '',
+				initialFolder = this.find('.asset-gallery-component-wrapper').data('asset-gallery-initial-folder'),
+				qFolder = getVar('q[Folder]'),
+				sessionFolder;
+
+			if (qFolder !== null) {
+				currentFolder = qFolder;
+			} else if (hasSessionStorage()) {
+				sessionFolder = window.sessionStorage.getItem(this[0].id);
+
+				if (sessionFolder !== null) {
+					currentFolder = sessionFolder;
+				}
+			} else {
+				currentFolder = initialFolder;
+			}
+
+			return currentFolder;
+		},
+
 		/**
 		 * @func getProps
 		 * @param object props - Used to augment defaults.
@@ -33,8 +62,7 @@ $.entwine('ss', function ($) {
 		'getProps': function (props) {
 			var $componentWrapper = this.find('.asset-gallery-component-wrapper'),
 				$search = $('.cms-search-form'),
-				initialFolder = $componentWrapper.data('asset-gallery-initial-folder'),
-				currentFolder = getVar('q[Folder]') || initialFolder,
+				currentFolder = this.getCurrentFolder(),
 				backend,
 				defaults;
 
@@ -43,7 +71,7 @@ $.entwine('ss', function ($) {
 			}
 
 			// Do we need to set up a default backend?
-			if (typeof this.props === 'undefined' || this.props.backend === 'undefined') {
+			if (typeof props === 'undefined' || typeof props.backend === 'undefined') {
 				backend = FileBackend.create(
 					$componentWrapper.data('asset-gallery-search-url'),
 					$componentWrapper.data('asset-gallery-update-url'),
@@ -73,19 +101,21 @@ $.entwine('ss', function ($) {
 						this.props.backend.navigate(this.props.current_folder);
 					}
 				},
-				initial_folder: initialFolder,
-				name: this.data('asset-gallery-name')
+				hasSessionStorage: hasSessionStorage,
+				initial_folder: $componentWrapper.data('asset-gallery-initial-folder'),
+				name: $componentWrapper.data('asset-gallery-name')
 			};
 
 			return $.extend(true, defaults, props);
 		},
+
 		'onadd': function () {
 			var props = this.getProps();
 
-			React.render(
+			this.setComponent(React.render(
 				<GalleryComponent {...props} />,
 				this.find('.asset-gallery-component-wrapper')[0]
-			);
+			));
 		}
 	});
 });
