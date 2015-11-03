@@ -292,7 +292,7 @@ class GalleryComponent extends BaseComponent {
 			'selectedFiles': currentlySelected
 		});
 		
-		this._emitCmsEvent('gallery-component.file-select', file);
+		this._emitCmsEvent('asset-gallery-field.file-select', file);
 	}
 
 	onFileDelete(file, event) {
@@ -377,8 +377,6 @@ class GalleryComponent extends BaseComponent {
 		this.saveFolderNameInSession();
 
 		event.preventDefault();
-		
-		this._emitCmsEvent('gallery-component.navigate');
 	}
 
 	onFileSave(id, state, event) {
