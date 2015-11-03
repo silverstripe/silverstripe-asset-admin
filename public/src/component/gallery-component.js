@@ -291,6 +291,8 @@ class GalleryComponent extends BaseComponent {
 		this.setState({
 			'selectedFiles': currentlySelected
 		});
+		
+		this._emitCmsEvent('gallery-component.file-select', file);
 	}
 
 	onFileDelete(file, event) {
@@ -375,6 +377,8 @@ class GalleryComponent extends BaseComponent {
 		this.saveFolderNameInSession();
 
 		event.preventDefault();
+		
+		this._emitCmsEvent('gallery-component.navigate');
 	}
 
 	onFileSave(id, state, event) {
