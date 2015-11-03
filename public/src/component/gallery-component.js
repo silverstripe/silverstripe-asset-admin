@@ -164,16 +164,7 @@ export default class extends BaseComponent {
 	}
 
 	componentDidUpdate() {
-		var $select = $(React.findDOMNode(this)).find('.gallery__sort .dropdown'),
-			leftVal = $('.AssetAdmin .cms-content-toolbar:visible').width() + 12;
-
-		if (this.folders.length > 1) {
-			let backButton = this.refs.backButton.getDOMNode();
-
-			$(backButton).css({
-				left: leftVal
-			});
-		}
+		var $select = $(React.findDOMNode(this)).find('.gallery__sort .dropdown');
 
 		// We opt-out of letting the CMS handle Chosen because it doesn't re-apply the behaviour correctly.
 		// So after the gallery has been rendered we apply Chosen.
@@ -189,7 +180,7 @@ export default class extends BaseComponent {
 	getBackButton() {
 		if (this.folders.length > 1) {
 			return <button
-				className='ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
+				className='gallery__back ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
 				onClick={this.onBackClick}
 				ref="backButton">{i18n._t('AssetGalleryField.BACK')}</button>;
 		}
@@ -337,7 +328,7 @@ export default class extends BaseComponent {
 
 		this.setState({
 			'selectedFiles': []
-		})
+		});
 
 		event.preventDefault();
 	}
