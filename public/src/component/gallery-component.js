@@ -44,7 +44,7 @@ function getSort(field, direction) {
 	}
 }
 
-export default class extends BaseComponent {
+class GalleryComponent extends BaseComponent {
 	constructor(props) {
 		super(props);
 
@@ -182,10 +182,11 @@ export default class extends BaseComponent {
 	}
 
 	getFileById(id) {
-		var folder = null;
+		var folder = null,
+			idInt = parseInt(id, 10);
 
 		for (let i = 0; i < this.state.files.length; i += 1) {
-			if (this.state.files[i].id === id) {
+			if (this.state.files[i].id === idInt) {
 				folder = this.state.files[i];
 				break;
 			}
@@ -314,12 +315,42 @@ export default class extends BaseComponent {
 
 		this.setState({
 			'selectedFiles': []
-		})
+		});
+
+		this.emitFolderChangedCmsEvent();
+		this.saveFolderNameInSession();
 	}
 
-	onNavigate(folder) {
+	emitFolderChangedCmsEvent() {
+		var folderId = 0;
+
+		// The current folder is stored by it's name in our component.
+		// We need to get it's id because that's how Entwine components (GridField) reference it.
+		for (let i = 0; i < this.state.files.length; i += 1) {
+			if (this.state.files[i].filename === this.props.backend.folder) {
+				folderId = this.state.files[i].id;
+				break;
+			}
+		}
+
+		this._emitCmsEvent('asset-gallery-field.folder-changed', folderId);
+	}
+
+	saveFolderNameInSession() {
+		if (this.props.hasSessionStorage()) {
+			window.sessionStorage.setItem($(React.findDOMNode(this)).closest('.asset-gallery')[0].id, this.props.backend.folder);
+		}
+	}
+
+	onNavigate(folder, silent = false) {
 		this.folders.push(folder);
 		this.props.backend.navigate(folder);
+
+		if (!silent) {
+			this.emitFolderChangedCmsEvent();
+		}
+
+		this.saveFolderNameInSession();
 	}
 
 	onMoreClick(event) {
@@ -340,6 +371,9 @@ export default class extends BaseComponent {
 			'selectedFiles': []
 		});
 
+		this.emitFolderChangedCmsEvent();
+		this.saveFolderNameInSession();
+
 		event.preventDefault();
 	}
 
@@ -350,3 +384,10 @@ export default class extends BaseComponent {
 		event.preventDefault();
 	}
 }
+
+GalleryComponent.propTypes = {
+	'hasSessionStorage': React.PropTypes.func.isRequired,
+	'backend': React.PropTypes.object.isRequired
+};
+
+export default GalleryComponent;
