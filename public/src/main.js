@@ -71,6 +71,28 @@ $.entwine('ss', function ($) {
 					'cms.fileAdded': function () {
 						// Reload the gallery
 						this.props.backend.navigate(this.props.current_folder);
+					},
+					'cms.updateSelected': function(event, selectedFiles) {
+						selectedFiles = selectedFiles || [];
+
+						this.setState({
+							'selectedFiles': selectedFiles
+						});
+					},
+					'cms.deselectFolder': function(event, file) {
+						var currentlySelected = this.state.selectedFiles,
+							fileIndex = currentlySelected.indexOf(file.id);
+						
+						currentlySelected.splice(fileIndex, 1);
+						
+						this.setState({
+							'selectedFiles': currentlySelected
+						});
+					},
+					'cms.clearSelected': function() {
+						this.setState({
+							'selectedFiles': []
+						})
 					}
 				},
 				initial_folder: initialFolder,

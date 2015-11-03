@@ -300,6 +300,8 @@ export default class extends BaseComponent {
 		this.setState({
 			'selectedFiles': currentlySelected
 		});
+		
+		this._emitCmsEvent('gallery-component.file-select', file);
 	}
 
 	onFileDelete(file, event) {
@@ -324,7 +326,9 @@ export default class extends BaseComponent {
 
 		this.setState({
 			'selectedFiles': []
-		})
+		});
+		
+		this._emitCmsEvent('gallery-component.navigate');
 	}
 
 	onNavigate(folder) {
@@ -351,6 +355,8 @@ export default class extends BaseComponent {
 		})
 
 		event.preventDefault();
+		
+		this._emitCmsEvent('gallery-component.navigate');
 	}
 
 	onFileSave(id, state, event) {
