@@ -198,9 +198,9 @@ class GalleryComponent extends BaseComponent {
 	getBackButton() {
 		if (this.folders.length > 1) {
 			return <button
-				className='gallery__back ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
+				className='gallery__back ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up no-text'
 				onClick={this.onBackClick}
-				ref="backButton">{i18n._t('AssetGalleryField.BACK')}</button>;
+				ref="backButton"></button>;
 		}
 
 		return null;
