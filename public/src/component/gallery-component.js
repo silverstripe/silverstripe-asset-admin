@@ -298,6 +298,7 @@ class GalleryComponent extends BaseComponent {
 	onFileDelete(file, event) {
 		if (confirm(i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
 			this.props.backend.delete(file.id);
+			this.emitFileDeletedCmsEvent();
 		}
 
 		event.stopPropagation();
@@ -336,6 +337,10 @@ class GalleryComponent extends BaseComponent {
 		}
 
 		this._emitCmsEvent('asset-gallery-field.folder-changed', folderId);
+	}
+
+	emitFileDeletedCmsEvent() {
+		this._emitCmsEvent('asset-gallery-field.file-deleted');
 	}
 
 	saveFolderNameInSession() {
