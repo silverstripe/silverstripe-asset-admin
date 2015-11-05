@@ -126,7 +126,7 @@ class GalleryComponent extends BaseComponent {
 
 				this.setState({
 					'files': files,
-					'editing': false
+					'editing': null
 				});
 			}
 		};
@@ -233,7 +233,7 @@ class GalleryComponent extends BaseComponent {
 	}
 
 	render() {
-		if (this.state.editing) {
+		if (this.state.editing !== null) {
 			return <div className='gallery'>
 				<EditorComponent
 					file={this.state.editing}
@@ -274,6 +274,8 @@ class GalleryComponent extends BaseComponent {
 		this.setState({
 			'editing': null
 		});
+
+		this.emitExitFileViewCmsEvent();
 	}
 
 	onFileSelect(file, event) {
@@ -309,6 +311,8 @@ class GalleryComponent extends BaseComponent {
 			'editing': file
 		});
 
+		this.emitEnterFileViewCmsEvent(file);
+
 		event.stopPropagation();
 	}
 
@@ -341,6 +345,16 @@ class GalleryComponent extends BaseComponent {
 
 	emitFileDeletedCmsEvent() {
 		this._emitCmsEvent('asset-gallery-field.file-deleted');
+	}
+
+	emitEnterFileViewCmsEvent(file) {
+		var id = 0;
+
+		this._emitCmsEvent('asset-gallery-field.enter-file-view', file.id);
+	}
+
+	emitExitFileViewCmsEvent() {
+		this._emitCmsEvent('asset-gallery-field.exit-file-view');
 	}
 
 	saveFolderNameInSession() {
@@ -386,6 +400,8 @@ class GalleryComponent extends BaseComponent {
 
 	onFileSave(id, state, event) {
 		this.props.backend.save(id, state);
+
+		this.emitExitFileViewCmsEvent();
 
 		event.stopPropagation();
 		event.preventDefault();
