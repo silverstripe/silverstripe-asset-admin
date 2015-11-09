@@ -9,7 +9,8 @@ class FileComponent extends BaseComponent {
 		super(props);
 
 		this.state = {
-			'focussed': false
+			'focussed': false,
+			'buttonTabIndex': -1
 		};
 
 		this.bind(
@@ -106,24 +107,34 @@ class FileComponent extends BaseComponent {
 		if (event.target !== React.findDOMNode(this)) {
 			return;
 		}
+		
+		//If space is pressed, allow focus on buttons
+		if (this.props.spaceKey === event.keyCode) {
+			event.preventDefault(); //Stop page from scrolling
+			this.setState({
+				'buttonTabIndex': 0
+			});
+			$(React.findDOMNode(this)).find('.item__actions__action').first().focus();
+		}
 
-		//If space or enter is pressed
-		if (this.props.selectKeys.indexOf(event.keyCode) > -1) {
-			event.preventDefault(); //Stop page from scrolling when space is clicked
+		//If return is pressed, navigate folder
+		if (this.props.returnKey === event.keyCode) {
 			this.onFileNavigate();
 		}
 	}
 
 	handleFocus() {
 		this.setState({
-			'focussed': true
-		})
+			'focussed': true,
+			'buttonTabIndex': 0
+		});
 	}
 
 	handleBlur() {
 		this.setState({
-			'focussed': false
-		})
+			'focussed': false,
+			'buttonTabIndex': -1
+		});
 	}
 
 	render() {
@@ -134,6 +145,7 @@ class FileComponent extends BaseComponent {
 						className='item__actions__action item__actions__action--select [ font-icon-tick ]'
 						type='button'
 						title={i18n._t('AssetGalleryField.SELECT')}
+						tabIndex={this.state.buttonTabIndex}
 						onClick={this.onFileSelect}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
@@ -142,6 +154,7 @@ class FileComponent extends BaseComponent {
 						className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
 						type='button'
 						title={i18n._t('AssetGalleryField.DELETE')}
+						tabIndex={this.state.buttonTabIndex}
 						onClick={this.onFileDelete}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
@@ -150,6 +163,7 @@ class FileComponent extends BaseComponent {
 						className='item__actions__action item__actions__action--edit [ font-icon-edit ]'
 						type='button'
 						title={i18n._t('AssetGalleryField.EDIT')}
+						tabIndex={this.state.buttonTabIndex}
 						onClick={this.onFileEdit}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
@@ -173,7 +187,8 @@ FileComponent.propTypes = {
 	'onFileNavigate': React.PropTypes.func,
 	'onFileEdit': React.PropTypes.func,
 	'onFileDelete': React.PropTypes.func,
-	'selectKeys': React.PropTypes.array,
+	'spaceKey': React.PropTypes.number,
+	'returnKey': React.PropTypes.number,
 	'onFileSelect': React.PropTypes.func,
 	'selected': React.PropTypes.bool
 };
