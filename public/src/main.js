@@ -37,11 +37,12 @@ $.entwine('ss', function ($) {
 			var currentFolder = '',
 				initialFolder = this.find('.asset-gallery-component-wrapper').data('asset-gallery-initial-folder'),
 				qFolder = getVar('q[Folder]'),
+				urlParts = window.location.pathname.split('/'),
 				sessionFolder;
 
 			if (qFolder !== null) {
 				currentFolder = qFolder;
-			} else if (hasSessionStorage()) {
+			} else if (hasSessionStorage() && urlParts.indexOf('show') === -1) {
 				sessionFolder = window.sessionStorage.getItem(this[0].id);
 
 				if (sessionFolder !== null) {
@@ -78,7 +79,8 @@ $.entwine('ss', function ($) {
 					$componentWrapper.data('asset-gallery-delete-url'),
 					$componentWrapper.data('asset-gallery-limit'),
 					$componentWrapper.data('asset-gallery-bulk-actions'),
-					$search.find('[type=hidden][name="q[Folder]"]')
+					$search.find('[type=hidden][name="q[Folder]"]'),
+					currentFolder
 				);
 
 				backend.emit(
