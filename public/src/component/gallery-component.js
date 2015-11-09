@@ -244,9 +244,8 @@ export default class extends BaseComponent {
 				{this.state.files.map((file, i) => {
 					return <FileComponent key={i} {...file}
 						onFileSelect={this.onFileSelect}
-						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
-						onFileSelect={this.onFileSelect}
-						selectKeys={CONSTANTS.FILE_SELECT_KEYS}
+						spaceKey={CONSTANTS.SPACE_KEY_CODE}
+						returnKey={CONSTANTS.RETURN_KEY_CODE}
 						onFileDelete={this.onFileDelete}
 						onFileEdit={this.onFileEdit}
 						onFileNavigate={this.onFileNavigate}
