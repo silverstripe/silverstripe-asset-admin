@@ -63,7 +63,7 @@
 .asset-gallery .gallery__sort {
   position: absolute;
   top: 14px;
-  right: 24px; }
+  right: 40px; }
   .asset-gallery .gallery__sort .chzn-single {
     border: 0;
     filter: none;
@@ -298,16 +298,3 @@
 @media all and (min-width: 170em) {
   .htmleditorfield-from-gallery .asset-gallery .item {
     width: 31.333%; } }
-
-.cms .AssetAdmin .cms-content-fields .cms-edit-form.AssetAdmin {
-  overflow-y: visible; }
-
-.cms .ss-uploadfield-view-allowed-extensions {
-  margin-top: 0;
-  top: -42px;
-  right: 0; }
-  .cms .ss-uploadfield-view-allowed-extensions h4 {
-    padding-right: 0; }
-  .cms .ss-uploadfield-view-allowed-extensions .description {
-    margin-top: 28px;
-    text-align: right; }
