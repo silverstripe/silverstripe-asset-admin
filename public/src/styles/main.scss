@@ -2,14 +2,14 @@ $transition-speed: .3s;
 $selectedColor: #72c34b;
 
 $breakpoint-xxxsmall: 40.625em;
-$breakpoint-xxsmall: 55em;
-$breakpoint-xsmall: 69em;
-$breakpoint-small: 86.25em;
-$breakpoint-medium: 100em;
-$breakpoint-large: 115em;
-$breakpoint-xlarge: 132.125em;
-$breakpoint-xxlarge: 150.125em;
-$breakpoint-xxxlarge: 170em;
+$breakpoint-xxsmall: 51.25em;
+$breakpoint-xsmall: 63.25em;
+$breakpoint-small: 75.5em;
+$breakpoint-medium: 88em;
+$breakpoint-large: 100.5em;
+$breakpoint-xlarge: 113em;
+$breakpoint-xxlarge: 125.5em;
+$breakpoint-xxxlarge: 138em;
 
 @mixin breakpoint($media) {
     @if $media == xxxsmall {
