@@ -2,47 +2,47 @@
     .item {
         position: relative;
         width: 50%;
-        height: 174px;
+        height: 156px;
         margin: 0 auto 24px;
         text-align: center;
         min-width: 200px;
 
         @include breakpoint(xxxsmall) {
             float: left;
-            width: 48%;
-            margin: 0 1% 20px;
+            width: 50%;
+            margin: 0 0 20px;
         }
 
         @include breakpoint(xxsmall) {
-            width: 31.333%;
+            width: 33.333%;
         }
 
         @include breakpoint(xsmall) {
-            width: 23%;
+            width: 25%;
         }
 
         @include breakpoint(small) {
-            width: 18%;
+            width: 20%;
         }
 
         @include breakpoint(medium) {
-            width: 14.666%;
+            width: 16.666%;
         }
 
         @include breakpoint(large) {
-            width: 12.258%;
+            width: 14.257%;
         }
 
         @include breakpoint(xlarge) {
-            width: 10.5%;
+            width: 12.5%;
         }
 
         @include breakpoint(xxlarge) {
-            width: 9.111%;
+            width: 11.111%;
         }
 
         @include breakpoint(xxxlarge) {
-            width: 8%;
+            width: 10%;
         }
 
         & .item__thumbnail:hover,
@@ -71,10 +71,11 @@
 
             .item__thumbnail {
                 background: url(img/folder.png) center center no-repeat;
+                background-size: contain;
             }
         }
 
-        &.zip {
+        &.archive {
             .item__thumbnail {
                 background: #fff url(img/icon_zip.png) center center no-repeat;
             }
@@ -86,13 +87,13 @@
             }
         }
 
-        &.mov {
+        &.video {
             .item__thumbnail {
                 background: #fff url(img/icon_video.png) center center no-repeat;
             }
         }
 
-        &.doc {
+        &.document {
             .item__thumbnail {
                 background: #fff url(img/icon_doc.png) center center no-repeat;
             }
@@ -132,8 +133,8 @@
     }
 
     .item__thumbnail {
-        height: 150px;
-        width: 200px;
+        height: 132px;
+        width: 176px;
         margin: 0 auto;
         background-repeat: no-repeat;
         background-position: center center;
@@ -145,7 +146,7 @@
 
     .item__actions {
         position: absolute;
-        width: 200px;
+        width: 176px;
         height: 40px;
         box-sizing: border-box;
         margin: auto;
