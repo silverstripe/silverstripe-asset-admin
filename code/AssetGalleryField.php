@@ -313,7 +313,7 @@ class AssetGalleryField extends FormField {
 		$params = Controller::curr()->getURLParams();
 
 		if ($params['Action'] == 'show' && $params['ID'] && $file = File::get()->byId($params['ID'])) {
-			$this->setCurrentPath($file->Name);
+			$this->setCurrentPath($file->getFilename());
 		}
 
 		Requirements::css(ASSET_GALLERY_FIELD_DIR . "/public/dist/main.css");
@@ -467,5 +467,5 @@ class AssetGalleryField extends FormField {
 	 */
 	public function getBulkActions() {
 		return $this->bulkActions;
-	}	
+	}
 }
