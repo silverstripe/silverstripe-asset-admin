@@ -310,11 +310,6 @@ class AssetGalleryField extends FormField {
 	 */
 	public function Field($properties = array()) {
 		$name = $this->getName();
-		$params = Controller::curr()->getURLParams();
-
-		if ($params['Action'] == 'show' && $params['ID'] && $file = File::get()->byId($params['ID'])) {
-			$this->setCurrentPath($file->getFilename());
-		}
 
 		Requirements::css(ASSET_GALLERY_FIELD_DIR . "/public/dist/main.css");
 		Requirements::add_i18n_javascript(ASSET_GALLERY_FIELD_DIR . "/javascript/lang");
