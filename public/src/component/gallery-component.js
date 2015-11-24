@@ -322,9 +322,15 @@ class GalleryComponent extends BaseComponent {
 	}
 
 	onFileEdit(file, event) {
-		this.setState({
-			'editing': file
-		});
+		// Allow component users to inject behaviour.
+		// Temporary solution until the CMS is fully React based,
+		// at which point we can work with ES6 subclasses.
+		var cb = this.props._onFileEditCallback;
+		if(!cb || cb(file, event) !== false) {
+			this.setState({
+				'editing': file
+			});
+		}
 
 		this.emitEnterFileViewCmsEvent(file);
 
