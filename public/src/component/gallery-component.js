@@ -213,12 +213,6 @@ export default class extends BaseComponent {
 	getSelectedFiles() {
 		return this.state.selectedFiles;
 	}
-	
-	onGalleryClick(event) {
-		// this.setState({
-		// 	'selectedFiles': []
-		// })
-	}
 
 	render() {
 		if (this.state.editing) {
