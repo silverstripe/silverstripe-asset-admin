@@ -17,7 +17,7 @@
 .asset-gallery .gallery__bulk {
   position: absolute;
   top: 14px;
-  animation: actionsAdded 0.3s ease-in-out;
+  animation: actionsAdded .3s ease-in-out;
   z-index: 100; }
   .asset-gallery .gallery__bulk .chzn-single {
     border-radius: 5px 0 0 5px;
@@ -138,24 +138,13 @@
   @media all and (min-width: 138em) {
     .asset-gallery .item {
       width: 10%; } }
-  .asset-gallery .item .item__thumbnail:hover .item__actions,
-  .asset-gallery .item:hover .item__actions,
-  .asset-gallery .item.focussed .item__actions {
+  .asset-gallery .item .item__thumbnail:hover .item__actions, .asset-gallery .item:hover .item__actions, .asset-gallery .item.focussed .item__actions {
     background: rgba(34, 56, 91, 0.7); }
-  .asset-gallery .item .item__thumbnail:hover .item__actions__action,
-  .asset-gallery .item:hover .item__actions__action,
-  .asset-gallery .item.focussed .item__actions__action {
+  .asset-gallery .item .item__thumbnail:hover .item__actions__action, .asset-gallery .item:hover .item__actions__action, .asset-gallery .item.focussed .item__actions__action {
     opacity: 1; }
-    .asset-gallery .item .item__thumbnail:hover .item__actions__action:hover,
-    .asset-gallery .item .item__thumbnail:hover .item__actions__action:focus,
-    .asset-gallery .item:hover .item__actions__action:hover,
-    .asset-gallery .item:hover .item__actions__action:focus,
-    .asset-gallery .item.focussed .item__actions__action:hover,
-    .asset-gallery .item.focussed .item__actions__action:focus {
+    .asset-gallery .item .item__thumbnail:hover .item__actions__action:hover, .asset-gallery .item .item__thumbnail:hover .item__actions__action:focus, .asset-gallery .item:hover .item__actions__action:hover, .asset-gallery .item:hover .item__actions__action:focus, .asset-gallery .item.focussed .item__actions__action:hover, .asset-gallery .item.focussed .item__actions__action:focus {
       background: rgba(34, 56, 91, 0.7); }
-  .asset-gallery .item .item__thumbnail:hover .item__actions__action--select,
-  .asset-gallery .item:hover .item__actions__action--select,
-  .asset-gallery .item.focussed .item__actions__action--select {
+  .asset-gallery .item .item__thumbnail:hover .item__actions__action--select, .asset-gallery .item:hover .item__actions__action--select, .asset-gallery .item.focussed .item__actions__action--select {
     background: none; }
   .asset-gallery .item.folder {
     cursor: pointer; }
@@ -172,11 +161,7 @@
     background: #fff url(img/icon_doc.png) center center no-repeat; }
   .asset-gallery .item.false .item__thumbnail {
     background: #fff url(img/icon_file.png) center center no-repeat; }
-  .asset-gallery .item.zip .item__thumbnail,
-  .asset-gallery .item.audio .item__thumbnail,
-  .asset-gallery .item.mov .item__thumbnail,
-  .asset-gallery .item.doc .item__thumbnail,
-  .asset-gallery .item.false .item__thumbnail {
+  .asset-gallery .item.zip .item__thumbnail, .asset-gallery .item.audio .item__thumbnail, .asset-gallery .item.mov .item__thumbnail, .asset-gallery .item.doc .item__thumbnail, .asset-gallery .item.false .item__thumbnail {
     border-radius: 3px; }
 
 .asset-gallery .selected .item__actions__action--select {
