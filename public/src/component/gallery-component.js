@@ -199,6 +199,14 @@ class GalleryComponent extends BaseComponent {
 
 		return folder;
 	}
+	
+	getNoItemsNotice() {
+		if (this.state.count < 1) {
+			return <p className="no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
+		}
+		
+		return null;
+	}
 
 	getBackButton() {
 		if (this.folders.length > 1) {
