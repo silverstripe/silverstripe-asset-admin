@@ -177,6 +177,14 @@ export default class extends BaseComponent {
 		$select.change(() => React.addons.TestUtils.Simulate.click($select.find(':selected')[0]));
 	}
 
+	getNoItemsNotice() {
+		if (this.state.count < 1) {
+			return <p className="no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
+		}
+		
+		return null;
+	}
+
 	getBackButton() {
 		if (this.folders.length > 1) {
 			return <button
@@ -246,6 +254,7 @@ export default class extends BaseComponent {
 						selected={this.state.selectedFiles.indexOf(file.id) > -1} />;
 				})}
 			</div>
+			{this.getNoItemsNotice()}
 			<div className="gallery__load">
 				{this.getMoreButton()}
 			</div>
