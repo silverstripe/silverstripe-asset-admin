@@ -6,9 +6,10 @@ export default class FileBackend extends Events {
 		return new FileBackend(...parameters);
 	}
 
-	constructor(search_url, update_url, delete_url, limit, bulkActions, $folder, currentFolder) {
+	constructor(fetch_url, search_url, update_url, delete_url, limit, bulkActions, $folder, currentFolder) {
 		super();
 
+		this.fetch_url = fetch_url;
 		this.search_url = search_url;
 		this.update_url = update_url;
 		this.delete_url = delete_url;
@@ -18,6 +19,23 @@ export default class FileBackend extends Events {
 		this.folder = currentFolder;
 
 		this.page = 1;
+	}
+
+	/**
+	 * @func fetch
+	 * @param number id
+	 * @desc Fetches a collection of Files by ParentID.
+	 */
+	fetch(id) {
+		if (typeof id === 'undefined') {
+			return;
+		}
+
+		this.page = 1;
+
+		this.request('POST', this.fetch_url, { id: id }).then((json) => {
+			this.emit('onFetchData', json);
+		});
 	}
 
 	search() {

@@ -128,6 +128,12 @@ class GalleryComponent extends BaseComponent {
 					'files': files,
 					'editing': null
 				});
+			},
+			'onFetchData': (data) => {
+				this.setState({
+					'count': data.count,
+					'files': data.files
+				});
 			}
 		};
 
