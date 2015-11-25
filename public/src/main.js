@@ -74,6 +74,7 @@ $.entwine('ss', function ($) {
 			// Do we need to set up a default backend?
 			if (typeof props === 'undefined' || typeof props.backend === 'undefined') {
 				backend = FileBackend.create(
+					$componentWrapper.data('asset-gallery-fetch-url'),
 					$componentWrapper.data('asset-gallery-search-url'),
 					$componentWrapper.data('asset-gallery-update-url'),
 					$componentWrapper.data('asset-gallery-delete-url'),
