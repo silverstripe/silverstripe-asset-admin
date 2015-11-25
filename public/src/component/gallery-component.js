@@ -270,6 +270,7 @@ class GalleryComponent extends BaseComponent {
 						selected={this.state.selectedFiles.indexOf(file.id) > -1} />;
 				})}
 			</div>
+			{this.getNoItemsNotice()}
 			<div className="gallery__load">
 				{this.getMoreButton()}
 			</div>
