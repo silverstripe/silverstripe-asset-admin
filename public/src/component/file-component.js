@@ -105,7 +105,7 @@ class FileComponent extends BaseComponent {
 		event.stopPropagation();
 
 		//if event doesn't come from the root element, do nothing
-		if (event.target !== React.findDOMNode(this)) {
+		if (event.target !== React.findDOMNode(this.refs.thumbnail)) {
 			return;
 		}
 		
@@ -144,8 +144,8 @@ class FileComponent extends BaseComponent {
 	}
 
 	render() {
-		return <div className={this.getItemClassNames()} data-id={this.props.id} tabIndex="0" onKeyDown={this.handleKeyDown} onDoubleClick={this.handleDoubleClick}>
-			<div ref="thumbnail" className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()} onClick={this.onFileSelect} onMouseDown={this.preventFocus}>
+		return <div className={this.getItemClassNames()} data-id={this.props.id} onDoubleClick={this.handleDoubleClick}>
+			<div ref="thumbnail" className={this.getThumbnailClassNames()} tabIndex="0" onKeyDown={this.handleKeyDown} style={this.getThumbnailStyles()} onClick={this.onFileSelect} onMouseDown={this.preventFocus}>
 				<div className='item__actions'>
 					<button
 						className='item__actions__action item__actions__action--select [ font-icon-tick ]'
