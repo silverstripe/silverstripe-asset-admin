@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import i18n from 'i18n';
 import React from 'react';
 import BaseComponent from './base-component';
 
@@ -69,7 +70,7 @@ export default class BulkActionsComponent extends BaseComponent {
 		this.setState({ value: option.value });
 
 		if (option.destructive === true) {
-			if (confirm(ss.i18n.sprintf(ss.i18n._t('AssetGalleryField.BULK_ACTIONS_CONFIRM'), option.label))) {
+			if (confirm(i18n.sprintf(i18n._t('AssetGalleryField.BULK_ACTIONS_CONFIRM'), option.label))) {
 				this.applyAction(option.value);
 			}
 		} else {

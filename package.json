@@ -32,7 +32,7 @@
     "browserify": "^11.1.0",
     "gulp": "^3.9.0",
     "gulp-sass": "^2.0.4",
-    "jest-cli": "^0.5.10",
+    "jest-cli": "^0.8.0",
     "jquery": "^2.1.4",
     "react": "^0.13.3",
     "semver": "^5.0.3",
@@ -48,6 +48,7 @@
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react"
     ],
-    "bail": true
+    "bail": true,
+    "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
   }
 }

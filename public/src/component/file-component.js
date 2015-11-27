@@ -22,7 +22,6 @@ class FileComponent extends BaseComponent {
 			'handleKeyDown',
 			'handleFocus',
 			'handleBlur',
-			'onFileSelect',
 			'preventFocus'
 		);
 	}
@@ -108,7 +107,7 @@ class FileComponent extends BaseComponent {
 		if (event.target !== React.findDOMNode(this.refs.thumbnail)) {
 			return;
 		}
-		
+
 		//If space is pressed, allow focus on buttons
 		if (this.props.spaceKey === event.keyCode) {
 			event.preventDefault(); //Stop page from scrolling
@@ -187,8 +186,8 @@ FileComponent.propTypes = {
 	'category': React.PropTypes.string,
 	'url': React.PropTypes.string,
 	'dimensions': React.PropTypes.shape({
-		'width': React.PropTypes.number,
-		'height': React.PropTypes.number
+		'width': React.PropTypes.number.isRequired,
+		'height': React.PropTypes.number.isRequired
 	}),
 	'onFileNavigate': React.PropTypes.func,
 	'onFileEdit': React.PropTypes.func,

@@ -1,3 +1,5 @@
+import i18n from 'i18n';
+
 export default {
 	'THUMBNAIL_HEIGHT': 150,
 	'THUMBNAIL_WIDTH': 200,
@@ -6,7 +8,7 @@ export default {
 	'BULK_ACTIONS': [
 		{
 			value: 'delete',
-			label: ss.i18n._t('AssetGalleryField.BULK_ACTIONS_DELETE'),
+			label: i18n._t('AssetGalleryField.BULK_ACTIONS_DELETE'),
 			destructive: true
 		}
 	]
