@@ -335,18 +335,22 @@ class GalleryComponent extends BaseComponent {
 	}
 
 	emitFolderChangedCmsEvent() {
-		var folderId = 0;
+		var folder = {
+			parentId: 0,
+			id: 0
+		};
 
 		// The current folder is stored by it's name in our component.
 		// We need to get it's id because that's how Entwine components (GridField) reference it.
 		for (let i = 0; i < this.state.files.length; i += 1) {
 			if (this.state.files[i].filename === this.props.backend.folder) {
-				folderId = this.state.files[i].id;
+				folder.parentId = this.state.files[i].parent.id;
+				folder.id = this.state.files[i].id;
 				break;
 			}
 		}
 
-		this._emitCmsEvent('asset-gallery-field.folder-changed', folderId);
+		this._emitCmsEvent('asset-gallery-field.folder-changed', folder);
 	}
 
 	emitFileDeletedCmsEvent() {
@@ -370,7 +374,11 @@ class GalleryComponent extends BaseComponent {
 	}
 
 	onNavigate(folder, silent = false) {
-		this.folders.push(folder);
+		// Don't the folder if it exists already.
+		if (this.folders.indexOf(folder) === -1) {
+			this.folders.push(folder);
+		}
+
 		this.props.backend.navigate(folder);
 
 		if (!silent) {
