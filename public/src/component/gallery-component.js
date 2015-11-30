@@ -301,7 +301,7 @@ class GalleryComponent extends BaseComponent {
 			'selectedFiles': currentlySelected
 		});
 		
-		this._emitCmsEvent('asset-gallery-field.file-select', file);
+		this._emitCmsEvent('file-select.asset-gallery-field', file);
 	}
 
 	onFileDelete(file, event) {
@@ -351,21 +351,21 @@ class GalleryComponent extends BaseComponent {
 			}
 		}
 
-		this._emitCmsEvent('asset-gallery-field.folder-changed', folder);
+		this._emitCmsEvent('folder-changed.asset-gallery-field', folder);
 	}
 
 	emitFileDeletedCmsEvent() {
-		this._emitCmsEvent('asset-gallery-field.file-deleted');
+		this._emitCmsEvent('file-deleted.asset-gallery-field');
 	}
 
 	emitEnterFileViewCmsEvent(file) {
 		var id = 0;
 
-		this._emitCmsEvent('asset-gallery-field.enter-file-view', file.id);
+		this._emitCmsEvent('enter-file-view.asset-gallery-field', file.id);
 	}
 
 	emitExitFileViewCmsEvent() {
-		this._emitCmsEvent('asset-gallery-field.exit-file-view');
+		this._emitCmsEvent('exit-file-view.asset-gallery-field');
 	}
 
 	saveFolderNameInSession() {
