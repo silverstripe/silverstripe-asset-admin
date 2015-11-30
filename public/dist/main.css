@@ -14,10 +14,14 @@
   100% {
     transform: scale(1); } }
 
+.asset-gallery .no-item-notice {
+  width: 100%;
+  text-align: center; }
+
 .asset-gallery .gallery__bulk {
   position: absolute;
   top: 14px;
-  animation: actionsAdded 0.3s ease-in-out;
+  animation: actionsAdded .3s ease-in-out;
   z-index: 100; }
   .asset-gallery .gallery__bulk .chzn-single {
     border-radius: 5px 0 0 5px;
@@ -105,77 +109,63 @@
 .asset-gallery .item {
   position: relative;
   width: 50%;
-  height: 174px;
+  height: 156px;
   margin: 0 auto 24px;
   text-align: center;
   min-width: 200px; }
   @media all and (min-width: 40.625em) {
     .asset-gallery .item {
       float: left;
-      width: 48%;
-      margin: 0 1% 20px; } }
-  @media all and (min-width: 55em) {
+      width: 50%;
+      margin: 0 0 20px; } }
+  @media all and (min-width: 51.25em) {
     .asset-gallery .item {
-      width: 31.333%; } }
-  @media all and (min-width: 69em) {
+      width: 33.333%; } }
+  @media all and (min-width: 63.25em) {
     .asset-gallery .item {
-      width: 23%; } }
-  @media all and (min-width: 86.25em) {
+      width: 25%; } }
+  @media all and (min-width: 75.5em) {
     .asset-gallery .item {
-      width: 18%; } }
-  @media all and (min-width: 100em) {
+      width: 20%; } }
+  @media all and (min-width: 88em) {
     .asset-gallery .item {
-      width: 14.666%; } }
-  @media all and (min-width: 115em) {
+      width: 16.666%; } }
+  @media all and (min-width: 100.5em) {
     .asset-gallery .item {
-      width: 12.258%; } }
-  @media all and (min-width: 132.125em) {
+      width: 14.257%; } }
+  @media all and (min-width: 113em) {
     .asset-gallery .item {
-      width: 10.5%; } }
-  @media all and (min-width: 150.125em) {
+      width: 12.5%; } }
+  @media all and (min-width: 125.5em) {
     .asset-gallery .item {
-      width: 9.111%; } }
-  @media all and (min-width: 170em) {
+      width: 11.111%; } }
+  @media all and (min-width: 138em) {
     .asset-gallery .item {
-      width: 8%; } }
-  .asset-gallery .item .item__thumbnail:hover .item__actions,
-  .asset-gallery .item:hover .item__actions,
-  .asset-gallery .item.focussed .item__actions {
+      width: 10%; } }
+  .asset-gallery .item .item__thumbnail:hover .item__actions, .asset-gallery .item:hover .item__actions, .asset-gallery .item.focussed .item__actions {
     background: rgba(34, 56, 91, 0.7); }
-  .asset-gallery .item .item__thumbnail:hover .item__actions__action,
-  .asset-gallery .item:hover .item__actions__action,
-  .asset-gallery .item.focussed .item__actions__action {
+  .asset-gallery .item .item__thumbnail:hover .item__actions__action, .asset-gallery .item:hover .item__actions__action, .asset-gallery .item.focussed .item__actions__action {
     opacity: 1; }
-    .asset-gallery .item .item__thumbnail:hover .item__actions__action:hover,
-    .asset-gallery .item .item__thumbnail:hover .item__actions__action:focus,
-    .asset-gallery .item:hover .item__actions__action:hover,
-    .asset-gallery .item:hover .item__actions__action:focus,
-    .asset-gallery .item.focussed .item__actions__action:hover,
-    .asset-gallery .item.focussed .item__actions__action:focus {
+    .asset-gallery .item .item__thumbnail:hover .item__actions__action:hover, .asset-gallery .item .item__thumbnail:hover .item__actions__action:focus, .asset-gallery .item:hover .item__actions__action:hover, .asset-gallery .item:hover .item__actions__action:focus, .asset-gallery .item.focussed .item__actions__action:hover, .asset-gallery .item.focussed .item__actions__action:focus {
       background: rgba(34, 56, 91, 0.7); }
-  .asset-gallery .item .item__thumbnail:hover .item__actions__action--select,
-  .asset-gallery .item:hover .item__actions__action--select,
-  .asset-gallery .item.focussed .item__actions__action--select {
+  .asset-gallery .item .item__thumbnail:hover .item__actions__action--select, .asset-gallery .item:hover .item__actions__action--select, .asset-gallery .item.focussed .item__actions__action--select {
     background: none; }
   .asset-gallery .item.folder {
     cursor: pointer; }
     .asset-gallery .item.folder .item__thumbnail {
-      background: url(img/folder.png) center center no-repeat; }
-  .asset-gallery .item.zip .item__thumbnail {
+      background: url(img/folder.png) center center no-repeat;
+      background-size: contain; }
+  .asset-gallery .item.archive .item__thumbnail {
     background: #fff url(img/icon_zip.png) center center no-repeat; }
   .asset-gallery .item.audio .item__thumbnail {
     background: #fff url(img/icon_audio.png) center center no-repeat; }
-  .asset-gallery .item.mov .item__thumbnail {
+  .asset-gallery .item.video .item__thumbnail {
     background: #fff url(img/icon_video.png) center center no-repeat; }
-  .asset-gallery .item.doc .item__thumbnail {
+  .asset-gallery .item.document .item__thumbnail {
     background: #fff url(img/icon_doc.png) center center no-repeat; }
   .asset-gallery .item.false .item__thumbnail {
     background: #fff url(img/icon_file.png) center center no-repeat; }
-  .asset-gallery .item.zip .item__thumbnail,
-  .asset-gallery .item.audio .item__thumbnail,
-  .asset-gallery .item.mov .item__thumbnail,
-  .asset-gallery .item.doc .item__thumbnail,
-  .asset-gallery .item.false .item__thumbnail {
+  .asset-gallery .item.zip .item__thumbnail, .asset-gallery .item.audio .item__thumbnail, .asset-gallery .item.mov .item__thumbnail, .asset-gallery .item.doc .item__thumbnail, .asset-gallery .item.false .item__thumbnail {
     border-radius: 3px; }
 
 .asset-gallery .selected .item__actions__action--select {
@@ -189,8 +179,8 @@
   box-shadow: 0 0 0 3px #72c34b; }
 
 .asset-gallery .item__thumbnail {
-  height: 150px;
-  width: 200px;
+  height: 132px;
+  width: 176px;
   margin: 0 auto;
   background-repeat: no-repeat;
   background-position: center center; }
@@ -199,7 +189,7 @@
 
 .asset-gallery .item__actions {
   position: absolute;
-  width: 200px;
+  width: 176px;
   height: 40px;
   box-sizing: border-box;
   margin: auto;
