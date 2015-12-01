@@ -144,6 +144,7 @@ export default class FileBackend extends Events {
 
 		return $.ajax({
 			'url': url,
+			'type': method,
 			'method': method,
 			'dataType': 'json',
 			'data': $.extend(defaults, data)

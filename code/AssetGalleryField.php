@@ -12,7 +12,8 @@ use SS_HTTPRequest;
 use SS_HTTPResponse;
 use SS_List;
 
-class AssetGalleryField extends FormField {
+class AssetGalleryField extends FormField
+{
 	/**
 	 * @var array
 	 */
@@ -48,14 +49,16 @@ class AssetGalleryField extends FormField {
 	/**
 	 * @return $this
 	 */
-	public function performReadonlyTransformation() {
+	public function performReadonlyTransformation()
+	{
 		return $this;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function Type() {
+	public function Type()
+	{
 		return 'asset-gallery';
 	}
 
@@ -97,7 +100,8 @@ class AssetGalleryField extends FormField {
 	 *
 	 * @return SS_HTTPResponse
 	 */
-	public function search(SS_HTTPRequest $request) {
+	public function search(SS_HTTPRequest $request)
+	{
 		$filters = array();
 
 		if ($name = $request->getVar('name')) {
@@ -140,8 +144,8 @@ class AssetGalleryField extends FormField {
 		$response = new SS_HTTPResponse();
 		$response->addHeader('Content-Type', 'application/json');
 		$response->setBody(json_encode(array(
-			'files' => $data['items'],
-			'count' => $data['count'],
+				'files' => $data['items'],
+				'count' => $data['count'],
 		)));
 
 		return $response;
@@ -152,41 +156,38 @@ class AssetGalleryField extends FormField {
 	 *
 	 * @return SS_HTTPResponse
 	 */
-	public function update(SS_HTTPRequest $request) {
-		$id = $request->getVar('id');
-		$file = File::get()->filter('id', (int) $id)->first();
-
-		$code = 500;
-
-		$body = array(
-			'status' => 'error'
-		);
-
-		if ($file) {
-			$title = $request->getVar('title');
-			$basename = $request->getVar('basename');
-
-			if (!empty($title)) {
-				$file->Title = $title;
-			}
-
-			if (!empty($basename)) {
-				$file->Name = $basename;
-			}
-
-			$file->write();
-
-			$code = 200;
-
-			$body = array(
-				'status' => 'ok'
-			);
+	public function update(SS_HTTPRequest $request)
+	{
+		if (!$request->isPOST()) {
+			return $this->respondWith('invalid request', 400);
 		}
 
-		$response = new SS_HTTPResponse(json_encode($body), $code);
-		$response->addHeader('Content-Type', 'application/json');
+		$id = $request->postVar('id');
+		$file = File::get()->byID((int)$id);
 
-		return $response;
+		// Validate file to be modified
+		if (!$file) {
+			return $this->respondWith('file not found', 500);
+		}
+
+		if (!$file->canEdit()) {
+			return $this->respondWith('permission denied', 403);
+		}
+
+		$title = $request->postVar('title');
+		$basename = $request->postVar('basename');
+
+		if (!empty($title)) {
+			$file->Title = $title;
+		}
+
+		if (!empty($basename)) {
+			$file->Name = $basename;
+		}
+
+		$file->write();
+
+		return $this->respondWith('ok');
 	}
 
 	/**
@@ -194,37 +195,45 @@ class AssetGalleryField extends FormField {
 	 *
 	 * @return SS_HTTPResponse
 	 */
-	public function delete(SS_HTTPRequest $request) {
+	public function delete(SS_HTTPRequest $request)
+	{
 		$fileIds = $request->getVar("ids");
 		$files = array();
 
-		$response = new SS_HTTPResponse();
-		$response->addHeader('Content-Type', 'application/json');
-
-		if($fileIds) {
+		if ($fileIds) {
 			foreach ($fileIds as $id) {
-				if ($file = File::get()->filter("id", (int) $id)->first()) {
+				if ($file = File::get()->filter("id", (int)$id)->first()) {
 					array_push($files, $file);
 				}
 			}
 		}
 
-		if(count($files)) {
+		if (count($files)) {
 			foreach ($files as $file) {
 				$file->delete();
 			}
 
-			$response->setBody(json_encode(array(
-				'status' => 'file was deleted',
-			)));
+			return $this->respondWith('file was deleted');
 		} else {
-			$response->setStatusCode(500);
-
-			$response->setBody(json_encode(array(
-				'status' => 'could not find the file',
-			)));
+			return $this->respondWith('could not find the file', 500);
 		}
+	}
 
+	/**
+	 * Generate a HTTP response with a message and HTTP code, and content-type set
+	 * to application/json
+	 *
+	 * @param string $status Status message
+	 * @param int $code HTTP status code
+	 * @return SS_HTTPResponse
+	 */
+	protected function respondWith($status, $code = 200) {
+		$response = new SS_HTTPResponse();
+		$response->addHeader('Content-Type', 'application/json');
+		$response->setStatusCode($code);
+		$response->setBody(json_encode(array(
+			'status' => $status,
+		)));
 		return $response;
 	}
 
