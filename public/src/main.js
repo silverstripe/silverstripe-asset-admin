@@ -23,47 +23,102 @@ function getVar(name) {
 	return null;
 }
 
-$('.asset-gallery').entwine({
-	'onadd': function () {
-		let props = {
-			'name': this[0].getAttribute('data-asset-gallery-name'),
-			'initial_folder': this[0].getAttribute('data-asset-gallery-initial-folder')
-		};
+function hasSessionStorage() {
+	return typeof window.sessionStorage !== 'undefined' && window.sessionStorage !== null;
+}
 
-		if (props.name === null) {
-			return;
+$.entwine('ss', function ($) {
+
+	$('.asset-gallery').entwine({
+
+		Component: null,
+
+		'getCurrentFolder': function () {
+			var currentFolder = '',
+				initialFolder = this.find('.asset-gallery-component-wrapper').data('asset-gallery-initial-folder'),
+				qFolder = getVar('q[Folder]'),
+				urlParts = window.location.pathname.split('/'),
+				sessionFolder;
+
+			if (qFolder !== null) {
+				currentFolder = qFolder;
+			} else if (hasSessionStorage() && urlParts.indexOf('show') === -1) {
+				sessionFolder = window.sessionStorage.getItem(this[0].id);
+
+				if (sessionFolder !== null) {
+					currentFolder = sessionFolder;
+				}
+			} else {
+				currentFolder = initialFolder;
+			}
+
+			return currentFolder;
+		},
+
+		/**
+		 * @func getProps
+		 * @param object props - Used to augment defaults.
+		 * @desc The initial props passed into the GalleryComponent. Can be overridden by other Entwine components.
+		 */
+		'getProps': function (props) {
+			var $componentWrapper = this.find('.asset-gallery-component-wrapper'),
+				$search = $('.cms-search-form'),
+				currentFolder = this.getCurrentFolder(),
+				backend,
+				defaults;
+
+			if ($search.find('[type=hidden][name="q[Folder]"]').length == 0) {
+				$search.append('<input type="hidden" name="q[Folder]" />');
+			}
+
+			// Do we need to set up a default backend?
+			if (typeof props === 'undefined' || typeof props.backend === 'undefined') {
+				backend = FileBackend.create(
+					$componentWrapper.data('asset-gallery-fetch-url'),
+					$componentWrapper.data('asset-gallery-search-url'),
+					$componentWrapper.data('asset-gallery-update-url'),
+					$componentWrapper.data('asset-gallery-delete-url'),
+					$componentWrapper.data('asset-gallery-limit'),
+					$componentWrapper.data('asset-gallery-bulk-actions'),
+					$search.find('[type=hidden][name="q[Folder]"]'),
+					currentFolder
+				);
+
+				backend.emit(
+					'filter',
+					getVar('q[Name]'),
+					getVar('q[AppCategory]'),
+					getVar('q[Folder]'),
+					getVar('q[CreatedFrom]'),
+					getVar('q[CreatedTo]'),
+					getVar('q[CurrentFolderOnly]')
+				);
+			}
+
+			defaults = {
+				backend: backend,
+				current_folder: currentFolder,
+				cmsEvents: {
+					'asset-admin.reload-gallery': function () {
+						// Reload the gallery
+						this.props.backend.navigate(this.props.current_folder);
+					}
+				},
+				hasSessionStorage: hasSessionStorage,
+				initial_folder: $componentWrapper.data('asset-gallery-initial-folder'),
+				name: $componentWrapper.data('asset-gallery-name')
+			};
+
+			return $.extend(true, defaults, props);
+		},
+
+		'onadd': function () {
+			var props = this.getProps();
+
+			this.setComponent(React.render(
+				<GalleryComponent {...props} />,
+				this.find('.asset-gallery-component-wrapper')[0]
+			));
 		}
-
-		let $search = $('.cms-search-form');
-
-		if ($search.find('[type=hidden][name="q[Folder]"]').length == 0) {
-			$search.append('<input type="hidden" name="q[Folder]" />');
-		}
-
-		props.backend = FileBackend.create(
-			this[0].getAttribute('data-asset-gallery-search-url'),
-			this[0].getAttribute('data-asset-gallery-update-url'),
-			this[0].getAttribute('data-asset-gallery-delete-url'),
-			this[0].getAttribute('data-asset-gallery-limit'),
-			this[0].getAttribute('data-asset-gallery-bulk-actions'),
-			$search.find('[type=hidden][name="q[Folder]"]')
-		);
-
-		props.backend.emit(
-			'filter',
-			getVar('q[Name]'),
-			getVar('q[AppCategory]'),
-			getVar('q[Folder]'),
-			getVar('q[CreatedFrom]'),
-			getVar('q[CreatedTo]'),
-			getVar('q[CurrentFolderOnly]')
-		);
-
-		props.current_folder = getVar('q[Folder]') || props.initial_folder;
-
-		React.render(
-			<GalleryComponent {...props} />,
-			this[0]
-		);
-	}
+	});
 });

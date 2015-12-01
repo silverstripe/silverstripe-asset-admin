@@ -44,7 +44,7 @@ function getSort(field, direction) {
 	}
 }
 
-export default class extends BaseComponent {
+class GalleryComponent extends BaseComponent {
 	constructor(props) {
 		super(props);
 
@@ -126,7 +126,13 @@ export default class extends BaseComponent {
 
 				this.setState({
 					'files': files,
-					'editing': false
+					'editing': null
+				});
+			},
+			'onFetchData': (data) => {
+				this.setState({
+					'count': data.count,
+					'files': data.files
 				});
 			}
 		};
@@ -146,6 +152,8 @@ export default class extends BaseComponent {
 	}
 
 	componentDidMount() {
+		super.componentDidMount();
+
 		for (let event in this.listeners) {
 			this.props.backend.on(event, this.listeners[event]);
 		}
@@ -158,6 +166,8 @@ export default class extends BaseComponent {
 	}
 
 	componentWillUnmount() {
+		super.componentWillUnmount();
+
 		for (let event in this.listeners) {
 			this.props.backend.removeListener(event, this.listeners[event]);
 		}
@@ -177,12 +187,34 @@ export default class extends BaseComponent {
 		$select.change(() => React.addons.TestUtils.Simulate.click($select.find(':selected')[0]));
 	}
 
+	getFileById(id) {
+		var folder = null,
+			idInt = parseInt(id, 10);
+
+		for (let i = 0; i < this.state.files.length; i += 1) {
+			if (this.state.files[i].id === idInt) {
+				folder = this.state.files[i];
+				break;
+			}
+		}
+
+		return folder;
+	}
+
+	getNoItemsNotice() {
+		if (this.state.count < 1) {
+			return <p className="no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
+		}
+		
+		return null;
+	}
+
 	getBackButton() {
 		if (this.folders.length > 1) {
 			return <button
-				className='gallery__back ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up'
+				className='gallery__back ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-level-up no-text'
 				onClick={this.onBackClick}
-				ref="backButton">{i18n._t('AssetGalleryField.BACK')}</button>;
+				ref="backButton"></button>;
 		}
 
 		return null;
@@ -215,7 +247,7 @@ export default class extends BaseComponent {
 	}
 
 	render() {
-		if (this.state.editing) {
+		if (this.state.editing !== null) {
 			return <div className='gallery'>
 				<EditorComponent
 					file={this.state.editing}
@@ -246,6 +278,7 @@ export default class extends BaseComponent {
 						selected={this.state.selectedFiles.indexOf(file.id) > -1} />;
 				})}
 			</div>
+			{this.getNoItemsNotice()}
 			<div className="gallery__load">
 				{this.getMoreButton()}
 			</div>
@@ -256,6 +289,8 @@ export default class extends BaseComponent {
 		this.setState({
 			'editing': null
 		});
+
+		this.emitExitFileViewCmsEvent();
 	}
 
 	onFileSelect(file, event) {
@@ -273,20 +308,31 @@ export default class extends BaseComponent {
 		this.setState({
 			'selectedFiles': currentlySelected
 		});
+		
+		this._emitCmsEvent('file-select.asset-gallery-field', file);
 	}
 
 	onFileDelete(file, event) {
 		if (confirm(i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
 			this.props.backend.delete(file.id);
+			this.emitFileDeletedCmsEvent();
 		}
 
 		event.stopPropagation();
 	}
 
 	onFileEdit(file, event) {
-		this.setState({
-			'editing': file
-		});
+		// Allow component users to inject behaviour.
+		// Temporary solution until the CMS is fully React based,
+		// at which point we can work with ES6 subclasses.
+		var cb = this.props._onFileEditCallback;
+		if(!cb || cb(file, event) !== false) {
+			this.setState({
+				'editing': file
+			});
+		}
+
+		this.emitEnterFileViewCmsEvent(file);
 
 		event.stopPropagation();
 	}
@@ -297,12 +343,64 @@ export default class extends BaseComponent {
 
 		this.setState({
 			'selectedFiles': []
-		})
+		});
+
+		this.emitFolderChangedCmsEvent();
+		this.saveFolderNameInSession();
 	}
 
-	onNavigate(folder) {
-		this.folders.push(folder);
+	emitFolderChangedCmsEvent() {
+		var folder = {
+			parentId: 0,
+			id: 0
+		};
+
+		// The current folder is stored by it's name in our component.
+		// We need to get it's id because that's how Entwine components (GridField) reference it.
+		for (let i = 0; i < this.state.files.length; i += 1) {
+			if (this.state.files[i].filename === this.props.backend.folder) {
+				folder.parentId = this.state.files[i].parent.id;
+				folder.id = this.state.files[i].id;
+				break;
+			}
+		}
+
+		this._emitCmsEvent('folder-changed.asset-gallery-field', folder);
+	}
+
+	emitFileDeletedCmsEvent() {
+		this._emitCmsEvent('file-deleted.asset-gallery-field');
+	}
+
+	emitEnterFileViewCmsEvent(file) {
+		var id = 0;
+
+		this._emitCmsEvent('enter-file-view.asset-gallery-field', file.id);
+	}
+
+	emitExitFileViewCmsEvent() {
+		this._emitCmsEvent('exit-file-view.asset-gallery-field');
+	}
+
+	saveFolderNameInSession() {
+		if (this.props.hasSessionStorage()) {
+			window.sessionStorage.setItem($(React.findDOMNode(this)).closest('.asset-gallery')[0].id, this.props.backend.folder);
+		}
+	}
+
+	onNavigate(folder, silent = false) {
+		// Don't the folder if it exists already.
+		if (this.folders.indexOf(folder) === -1) {
+			this.folders.push(folder);
+		}
+
 		this.props.backend.navigate(folder);
+
+		if (!silent) {
+			this.emitFolderChangedCmsEvent();
+		}
+
+		this.saveFolderNameInSession();
 	}
 
 	onMoreClick(event) {
@@ -323,13 +421,25 @@ export default class extends BaseComponent {
 			'selectedFiles': []
 		});
 
+		this.emitFolderChangedCmsEvent();
+		this.saveFolderNameInSession();
+
 		event.preventDefault();
 	}
 
 	onFileSave(id, state, event) {
 		this.props.backend.save(id, state);
 
+		this.emitExitFileViewCmsEvent();
+
 		event.stopPropagation();
 		event.preventDefault();
 	}
 }
+
+GalleryComponent.propTypes = {
+	'hasSessionStorage': React.PropTypes.func.isRequired,
+	'backend': React.PropTypes.object.isRequired
+};
+
+export default GalleryComponent;

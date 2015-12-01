@@ -17,6 +17,7 @@ class AssetGalleryField extends FormField {
 	 * @var array
 	 */
 	private static $allowed_actions = array(
+		'fetch',
 		'search',
 		'update',
 		'delete',
@@ -56,6 +57,39 @@ class AssetGalleryField extends FormField {
 	 */
 	public function Type() {
 		return 'asset-gallery';
+	}
+
+	/**
+	 * Fetches a collection of files by ParentID.
+	 *
+	 * @param SS_HTTPRequest $request
+	 *
+	 * @return SS_HTTPResponse
+	 */
+	public function fetch(SS_HTTPRequest $request) {
+		$params = $request->getVars();
+		$items = array();
+
+		if (empty($params['id'])) {
+			$this->httpError(400);
+		}
+
+		$files = File::get()->filter('ParentID', $params['id']);
+
+		if ($files) {
+			foreach($files as $file) {
+				$items[] = $this->getObjectFromData($file);
+			}
+		}
+
+		$response = new SS_HTTPResponse();
+		$response->addHeader('Content-Type', 'application/json');
+		$response->setBody(json_encode(array(
+			'files' => $items,
+			'count' => count($items),
+		)));
+
+		return $response;
 	}
 
 	/**
@@ -315,6 +349,7 @@ class AssetGalleryField extends FormField {
 		Requirements::add_i18n_javascript(ASSET_GALLERY_FIELD_DIR . "/javascript/lang");
 		Requirements::javascript(ASSET_GALLERY_FIELD_DIR . "/public/dist/bundle.js");
 
+		$fetchURL = $this->getFetchURL();
 		$searchURL = $this->getSearchURL();
 		$updateURL = $this->getUpdateURL();
 		$deleteURL = $this->getDeleteURL();
@@ -323,15 +358,23 @@ class AssetGalleryField extends FormField {
 		$bulkActions = $this->getBulkActions();
 
 		return "<div
-			class='asset-gallery'
+			class='asset-gallery-component-wrapper'
 			data-asset-gallery-name='{$name}'
 			data-asset-gallery-bulk-actions='{$bulkActions}'
 			data-asset-gallery-limit='{$limit}'
+			data-asset-gallery-fetch-url='{$fetchURL}'
 			data-asset-gallery-search-url='{$searchURL}'
 			data-asset-gallery-update-url='{$updateURL}'
 			data-asset-gallery-delete-url='{$deleteURL}'
 			data-asset-gallery-initial-folder='{$initialFolder}'
 			></div>";
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getFetchURL() {
+		return Controller::join_links($this->Link(), 'fetch');
 	}
 
 	/**
@@ -462,5 +505,5 @@ class AssetGalleryField extends FormField {
 	 */
 	public function getBulkActions() {
 		return $this->bulkActions;
-	}	
+	}
 }
