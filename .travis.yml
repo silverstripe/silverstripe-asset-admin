@@ -14,8 +14,8 @@ before_script:
     - cd ~/builds/ss
 
 script:
-    - vendor/bin/phpunit asset-gallery-field/tests/php
-    - cd asset-gallery-field
+    - vendor/bin/phpunit asset-admin/tests/php
+    - cd asset-admin
     - nvm install 4.1
     - npm install
     - npm run test

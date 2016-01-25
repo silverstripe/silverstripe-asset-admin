@@ -1,19 +1,12 @@
 {
-	"name": "silverstripe/asset-gallery-field",
-	"description": "Gallery field for managing SilverStripe assets",
+	"name": "silverstripe/asset-admin",
+	"description": "Asset management for the SilverStripe CMS",
 	"type": "silverstripe-module",
 	"require": {
 		"php": ">=5.4.0",
 		"silverstripe/cms": "^4.0",
-		"silverstripe/framework": "^4.0",
-		"silverstripe/reactjs-common": "dev-master"
+		"silverstripe/framework": "^4.0"
 	},
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/open-sausages/silverstripe-reactjs-common"
-		}
-	],
 	"require-dev": {
 		"phpunit/PHPUnit": "^3.7"
 	},

@@ -1,9 +1,9 @@
 # Asset Gallery Field
 
-[![Build Status](http://img.shields.io/travis/open-sausages/silverstripe-asset-gallery-field.svg?style=flat-square)](https://travis-ci.org/open-sausages/silverstripe-asset-gallery-field)
-[![Code Quality](http://img.shields.io/scrutinizer/g/open-sausages/silverstripe-asset-gallery-field.svg?style=flat-square)](https://scrutinizer-ci.com/g/open-sausages/silverstripe-asset-gallery-field)
-[![Version](http://img.shields.io/packagist/v/silverstripe/asset-gallery-field.svg?style=flat-square)](https://packagist.org/packages/silverstripe/silverstripe-asset-gallery-field)
-[![License](http://img.shields.io/packagist/l/silverstripe/asset-gallery-field.svg?style=flat-square)](LICENSE.md)
+[![Build Status](http://img.shields.io/travis/open-sausages/silverstripe-asset-admin.svg?style=flat-square)](https://travis-ci.org/open-sausages/silverstripe-asset-admin)
+[![Code Quality](http://img.shields.io/scrutinizer/g/open-sausages/silverstripe-asset-admin.svg?style=flat-square)](https://scrutinizer-ci.com/g/open-sausages/silverstripe-asset-admin)
+[![Version](http://img.shields.io/packagist/v/silverstripe/asset-admin.svg?style=flat-square)](https://packagist.org/packages/silverstripe/silverstripe-asset-admin)
+[![License](http://img.shields.io/packagist/l/silverstripe/asset-admin.svg?style=flat-square)](LICENSE.md)
 
 ## Example
 
@@ -30,7 +30,7 @@ public function getCMSFields() {
 ## Installation
 
 ```
-$ composer require silverstripe/asset-gallery-field
+$ composer require silverstripe/asset-admin
 ```
 
 You'll also need to run `dev/build`.
@@ -47,4 +47,4 @@ All methods, with `public` visibility, are part of the public API. All other met
 
 ## Reporting Issues
 
-Please [create an issue](http://github.com/open-sausages/silverstripe-asset-gallery-field/issues) for any bugs you've found, or features you're missing.
+Please [create an issue](http://github.com/open-sausages/silverstripe-asset-admin/issues) for any bugs you've found, or features you're missing.

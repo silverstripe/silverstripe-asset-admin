@@ -1,4 +1,4 @@
 <?php
 
-define('ASSET_GALLERY_FIELD_PATH', __DIR__);
-define('ASSET_GALLERY_FIELD_DIR', basename(__DIR__));
+define('ASSET_ADMIN_PATH', __DIR__);
+define('ASSET_ADMIN_DIR', basename(__DIR__));

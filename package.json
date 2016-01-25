@@ -1,16 +1,16 @@
 {
-  "name": "silverstripe-asset-gallery",
+  "name": "silverstripe-asset-admin",
   "version": "0.0.0",
-  "description": "Gallery view for the assets area.",
+  "description": "Asset management for the SilverStripe CMS",
   "main": "./javascript/src/main.js",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/open-sausages/silverstripe-assets-gallery.git"
+    "url": "git+https://github.com/open-sausages/silverstripe-asset-admin.git"
   },
-  "homepage": "https://github.com/open-sausages/silverstripe-assets-gallery",
+  "homepage": "https://github.com/open-sausages/silverstripe-asset-admin",
   "bugs": {
-    "url": "https://github.com/open-sausages/silverstripe-assets-gallery/issues"
+    "url": "https://github.com/open-sausages/silverstripe-asset-admin/issues"
   },
   "author": "SilverStripe Ltd",
   "contributors": [
