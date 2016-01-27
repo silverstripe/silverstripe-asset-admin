@@ -1,0 +1,58 @@
+fa_IR:
+  AssetAdmin:
+    ADDFILES: 'اضافه کردن فایل'
+    ActionAdd: 'اضافه کردن پوشه'
+    AppCategoryArchive: بایگانی
+    AppCategoryAudio: صوتی
+    AppCategoryDocument: اسناد
+    AppCategoryFlash: فلش
+    AppCategoryImage: تصویر
+    AppCategoryVideo: ویدئو
+    BackToFolder: 'بازگشت به پوشه'
+    CREATED: تاریخ
+    CurrentFolderOnly: 'محدود به پوشه‌ی کنونی؟'
+    DetailsView: جزییات
+    FILES: فایل‌ها
+    FILESYSTEMSYNC: 'همگام‌سازی فایل‌ها'
+    FILESYSTEMSYNCTITLE: 'به روز رسانی مداخل پایگاه داده CMS از فایل‌های روی فایل‌سیستم. مفید برای وقتی که فایل‌های جدید خارج از CMS بارگذاری شده‌اند، مثلاً از طریقFTP.'
+    FROMTHEINTERNET: 'از اینترنت'
+    FROMYOURCOMPUTER: 'از کامپیوتر شما'
+    Filetype: 'نوع فایل'
+    ListView: 'نمایش لیستی'
+    MENUTITLE: فایل‌ها
+    NEWFOLDER: پوشه جديد
+    SIZE: حجم
+    THUMBSDELETED: '{count} تصویر انگشتی بلااستفاده حذف گردید'
+    TreeView: 'نمایش درختی'
+    Upload: بارگذاری
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'حذف پوشه‌ها'
+  AssetAdmin_left_ss:
+    GO: برو
+  CMSMAIN:
+    ACCESS: 'دسترسی به بخش ''{title}'''
+  CMSMain_left_ss:
+    APPLY_FILTER: جستجو
+    CLEAR_FILTER: پاک‌کردن
+    RESET: تنظیم مجدد
+  CMSPagesController_Tools_ss:
+    FILTER: پالایش
+  CMSSearch:
+    FILTERDATEFROM: از
+    FILTERDATEHEADING: تاریخ
+    FILTERDATETO: تا
+    FILTERLABELTEXT: جستجو
+    PAGEFILTERDATEHEADING: 'آخرین ویرایش'
+  Folder:
+    AddFolderButton: 'افزودن پوشه'
+    DELETEUNUSEDTHUMBNAILS: 'حذف تصاویر انگشتی بلااستفاده'
+    UNUSEDFILESTITLE: 'فایل‌های بلااستفاده'
+    UNUSEDTHUMBNAILSTITLE: 'تصاویر انگشتی بلااستفاده'
+    UploadFilesButton: بارگذاری
+  LeftAndMain:
+    DELETED: حذف شده
+    PreviewButton: پیش‌نمایش
+    SAVEDUP: ذخیره شده
+    SearchResults: 'نتایج جستجو'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'دسترسی CMS'

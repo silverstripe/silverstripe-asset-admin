@@ -1,0 +1,37 @@
+gl_ES:
+  AssetAdmin:
+    ADDFILES: 'Engadir Ficheiros'
+    ActionAdd: 'Engadir cartafol'
+    AppCategoryArchive: Arquivo
+    AppCategoryImage: Imaxe
+    BackToFolder: 'Retornar ao cartafol'
+    CREATED: Data
+    CurrentFolderOnly: 'Limitar ao cartafol actual?'
+    DetailsView: Detalles
+    FROMTHEINTERNET: 'Dende a Internet'
+    FROMYOURCOMPUTER: 'Dende o teu Computador'
+    Filetype: 'Tipo ficheiro'
+    ListView: 'Vista en Listado'
+    MENUTITLE: Ficheiros
+    SIZE: Tamaño
+    TreeView: 'Vista en Árbore'
+    Upload: Subir
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Eliminar cartafoles'
+  AssetAdmin_left_ss:
+    GO: Ir
+  CMSMain_left_ss:
+    RESET: Reiniciar
+  CMSPagesController_Tools_ss:
+    FILTER: Filtro
+  Folder:
+    AddFolderButton: 'Engadir cartafol'
+    DELETEUNUSEDTHUMBNAILS: 'Eliminar as miniaturas sen usar'
+    UNUSEDFILESTITLE: 'Ficheiros sen usar'
+    UNUSEDTHUMBNAILSTITLE: 'Miniaturas sen usar'
+    UploadFilesButton: Subir
+  LeftAndMain:
+    PreviewButton: Previsualizar
+    SearchResults: 'Resultados Busca'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Acceso CMS'

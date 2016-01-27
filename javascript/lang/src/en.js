@@ -1,5 +1,7 @@
 {
-	"AssetGalleryField.FILTER_TITLE_ASC": "title a-z",
+    "AssetAdmin.ConfirmDelete": "Do you really want to delete this folder and all contained files?",
+    "Folder.Name": "Folder name",
+    "AssetGalleryField.FILTER_TITLE_ASC": "title a-z",
 	"AssetGalleryField.FILTER_TITLE_DESC": "title z-a",
 	"AssetGalleryField.FILTER_DATE_DESC": "newest",
 	"AssetGalleryField.FILTER_DATE_ASC": "oldest",

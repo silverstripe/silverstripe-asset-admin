@@ -1,0 +1,60 @@
+sk:
+  AssetAdmin:
+    ADDFILES: 'Pridať súbory'
+    ActionAdd: 'Pridať priečinok'
+    AppCategoryArchive: Archív
+    AppCategoryAudio: Zvuk
+    AppCategoryDocument: Dokument
+    AppCategoryFlash: Flash
+    AppCategoryImage: Obrázok
+    AppCategoryVideo: Video
+    BackToFolder: 'Späť na priečinok'
+    CREATED: Dátum
+    CurrentFolderOnly: 'Obmedziť na aktuálny priečinok?'
+    DetailsView: Detaily
+    FILES: Súbory
+    FILESYSTEMSYNC: 'Synchronizovať súbory'
+    FILESYSTEMSYNCTITLE: 'Aktualizuje záznamy súborov databázy CMS na súborovom systéme. Užitočné, keď sú nové súbory nahrané mimo CMS, napr cez FTP.'
+    FROMTHEINTERNET: 'Z internetu'
+    FROMYOURCOMPUTER: 'Z vášho počitača'
+    Filetype: 'Typ súboru'
+    ListView: 'Zobraziť zoznam'
+    MENUTITLE: Súbory
+    NEWFOLDER: Nový priečinok
+    SIZE: Veľkosť
+    THUMBSDELETED: '{count} nepoužitých miniatúr bolo smazaných'
+    TreeView: 'Zobraziť strom'
+    Upload: Nahrať
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Vymazať priečinky'
+  DELETE AssetAdmin_Tools:
+    FILTER: Filtrovať
+  AssetAdmin_left_ss:
+    GO: Choď
+  CMSMAIN:
+    ACCESS: 'Pristup k ''{title}'' sekcii'
+  CMSMain_left_ss:
+    APPLY_FILTER: Hľadať
+    CLEAR_FILTER: Vyčistiť
+    RESET: Reset
+  CMSPagesController_Tools_ss:
+    FILTER: Filtrovať
+  CMSSearch:
+    FILTERDATEFROM: Od
+    FILTERDATEHEADING: Dátum
+    FILTERDATETO: Do
+    FILTERLABELTEXT: Hľadať
+    PAGEFILTERDATEHEADING: 'Posledne zmenené'
+  Folder:
+    AddFolderButton: 'Pridať priečinok'
+    DELETEUNUSEDTHUMBNAILS: 'Vymazať nepoužité miniatúry'
+    UNUSEDFILESTITLE: 'Nepoužité súbory'
+    UNUSEDTHUMBNAILSTITLE: 'Nepoužité miniatúry'
+    UploadFilesButton: Nahrať
+  LeftAndMain:
+    DELETED: Smazané.
+    PreviewButton: Zobrazenie
+    SAVEDUP: Uložené.
+    SearchResults: 'Výsledky vyhľadávania'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Prístup do CMS'

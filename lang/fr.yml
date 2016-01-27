@@ -1,0 +1,54 @@
+fr:
+  AssetAdmin:
+    ADDFILES: 'Ajouter des fichiers'
+    ActionAdd: 'Ajouter un dossier'
+    AppCategoryArchive: Archive
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Document
+    AppCategoryFlash: Flash
+    AppCategoryImage: Image
+    AppCategoryVideo: Vidéo
+    BackToFolder: 'Revenir au dossier'
+    CREATED: Date
+    CurrentFolderOnly: 'Limiter au dossier actuel ?'
+    DetailsView: Détails
+    FILES: Fichiers
+    FILESYSTEMSYNC: 'Synchroniser les fichiers'
+    FILESYSTEMSYNCTITLE: 'Met à jour la base de données du système de fichiers, de façon à prendre en compte des fichiers téléchargés en dehors du CMS (p. ex. par FTP).'
+    FROMTHEINTERNET: 'En ligne'
+    FROMYOURCOMPUTER: 'Depuis votre ordinateur'
+    Filetype: 'Type de fichier'
+    ListView: 'Liste'
+    MENUTITLE: Fichiers
+    NEWFOLDER: Nouveau dossier
+    SIZE: Taille
+    THUMBSDELETED: '{count} miniatures inutilisées ont été supprimées'
+    TreeView: 'Arbre'
+    Upload: Télécharger
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Supprimer dossiers'
+  AssetAdmin_left_ss:
+    GO: Accéder
+  CMSMAIN:
+    ACCESS: 'Droits d’accès à la section « {title} »'
+  CMSMain_left_ss:
+    RESET: Réinitialiser
+  CMSPagesController_Tools_ss:
+    FILTER: Filtrer
+  CMSSearch:
+    FILTERDATEFROM: De
+    FILTERDATEHEADING: Date
+    FILTERDATETO: A
+  Folder:
+    AddFolderButton: 'Ajouter un dossier'
+    DELETEUNUSEDTHUMBNAILS: 'Supprimer les miniatures inutilisées'
+    UNUSEDFILESTITLE: 'Fichiers inutilisés'
+    UNUSEDTHUMBNAILSTITLE: 'Miniatures inutilisées'
+    UploadFilesButton: Télécharger
+  LeftAndMain:
+    DELETED: Supprimée.
+    PreviewButton: Aperçu
+    SAVEDUP: Sauvegardée.
+    SearchResults: 'Résultats de la recherche'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Accès au CMS'

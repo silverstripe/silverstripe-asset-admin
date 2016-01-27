@@ -1,0 +1,58 @@
+eo:
+  AssetAdmin:
+    ADDFILES: 'Enmeti dosierojn'
+    ActionAdd: 'Aldoni dosierujon'
+    AppCategoryArchive: Arkivo
+    AppCategoryAudio: Sono
+    AppCategoryDocument: Dokumento
+    AppCategoryFlash: Flash
+    AppCategoryImage: Bildo
+    AppCategoryVideo: Video
+    BackToFolder: 'Retroe al dosierujo'
+    CREATED: Dato
+    CurrentFolderOnly: 'Limigo de aktuala dosierujo'
+    DetailsView: Detaloj
+    FILES: Dosieroj
+    FILESYSTEMSYNC: 'Sinkronigaj dosieroj'
+    FILESYSTEMSYNCTITLE: 'Aktualigi la CMS-datumbazerojn de dosieroj en la dosiera sistemo. Utile kiam novaj dosieroj estas alŝutitaj ekster la CMS, ekzemple per FTP.'
+    FROMTHEINTERNET: 'De la interreto'
+    FROMYOURCOMPUTER: 'El via komputilo'
+    Filetype: 'Tipo de dosiero'
+    ListView: 'Lista vido'
+    MENUTITLE: Dosieroj
+    NEWFOLDER: Nova dosierujo
+    SIZE: Grando
+    THUMBSDELETED: '{count} neuzitaj miniaturoj estas forigitaj'
+    TreeView: 'Arba vido'
+    Upload: Alŝuti
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Forigi dosierujojn'
+  AssetAdmin_left_ss:
+    GO: Ek
+  CMSMAIN:
+    ACCESS: 'Aliro al sekcio ''{title}'''
+  CMSMain_left_ss:
+    APPLY_FILTER: Serĉi
+    CLEAR_FILTER: Vakigi
+    RESET: Restartigi
+  CMSPagesController_Tools_ss:
+    FILTER: Filtri
+  CMSSearch:
+    FILTERDATEFROM: De
+    FILTERDATEHEADING: Dato
+    FILTERDATETO: Al
+    FILTERLABELTEXT: Serĉi
+    PAGEFILTERDATEHEADING: 'Laste redaktita'
+  Folder:
+    AddFolderButton: 'Aldoni dosierujon'
+    DELETEUNUSEDTHUMBNAILS: 'Forigi neuzitajn miniaturojn'
+    UNUSEDFILESTITLE: 'Neuzitaj dosieroj'
+    UNUSEDTHUMBNAILSTITLE: 'Neuzitaj miniaturoj'
+    UploadFilesButton: Alŝuti
+  LeftAndMain:
+    DELETED: Forigita.
+    PreviewButton: Aspekto
+    SAVEDUP: Konservita.
+    SearchResults: 'Serĉaj rezultoj'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'CMS-aliro'

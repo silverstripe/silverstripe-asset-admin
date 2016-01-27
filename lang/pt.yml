@@ -1,0 +1,53 @@
+pt:
+  AssetAdmin:
+    ADDFILES: 'Adicionar ficheiros'
+    ActionAdd: 'Adicionar pasta'
+    AppCategoryArchive: Arquivar
+    AppCategoryDocument: Documento
+    AppCategoryFlash: Inserir flash
+    AppCategoryImage: Imagem
+    AppCategoryVideo: Vídeo
+    BackToFolder: 'Voltar para a pasta'
+    CREATED: Data
+    CurrentFolderOnly: 'Limitar à pasta actual?'
+    DetailsView: Detalhes
+    FILES: Ficheiros
+    FILESYSTEMSYNC: 'Sincronizar ficheiros'
+    FILESYSTEMSYNCTITLE: 'Actualize a base de dados de ficheiros do CMS. É recomendado quando são adicionados novos arquivos externamente, por exemplo, através de FTP.'
+    FROMTHEINTERNET: 'Da internet'
+    FROMYOURCOMPUTER: 'Do computador'
+    Filetype: 'Tipo de ficheiro'
+    ListView: 'Vista em lista'
+    MENUTITLE: Ficheiros
+    NEWFOLDER: Nova Pasta
+    SIZE: Tamanho
+    THUMBSDELETED: '{count} miniaturas não utilizadas foram removidas'
+    TreeView: 'Vista em árvore'
+    Upload: Enviar
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Apagar pastas'
+  AssetAdmin_left_ss:
+    GO: Ir
+  CMSMAIN:
+    ACCESS: 'Acesso à secção ''{title}'''
+  CMSMain_left_ss:
+    RESET: Redefinir
+  CMSPagesController_Tools_ss:
+    FILTER: Filtrar
+  CMSSearch:
+    FILTERDATEFROM: De
+    FILTERDATEHEADING: Data
+    FILTERDATETO: Para
+  Folder:
+    AddFolderButton: 'Adicionar pasta'
+    DELETEUNUSEDTHUMBNAILS: 'Apagar miniaturas não utilizadas'
+    UNUSEDFILESTITLE: 'Ficheiros não utilizados'
+    UNUSEDTHUMBNAILSTITLE: 'Miniaturas não utilizadas'
+    UploadFilesButton: Submeter
+  LeftAndMain:
+    DELETED: Apagada
+    PreviewButton: Pré-visualização
+    SAVEDUP: Guardado
+    SearchResults: 'Resultados da pesquisa'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Acesso ao CMS'

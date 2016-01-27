@@ -1,0 +1,54 @@
+nl:
+  AssetAdmin:
+    ADDFILES: 'Bestanden toevoegen'
+    ActionAdd: 'Map toevoegen'
+    AppCategoryArchive: Archiveren
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Document
+    AppCategoryFlash: Flash
+    AppCategoryImage: Afbeelding
+    AppCategoryVideo: Video
+    BackToFolder: 'Terug naar map'
+    CREATED: Datum
+    CurrentFolderOnly: 'Tot de huidige map beperken?'
+    DetailsView: Details
+    FILES: Bestanden
+    FILESYSTEMSYNC: 'Bestanden synchroniseren'
+    FILESYSTEMSYNCTITLE: 'Zoek naar nieuwe of verwijderde bestanden op de schijf, om de database van het CMS bij te werken. Dit is nodig als er bestanden via FTP (of andere wijze) zijn toegevoegd.'
+    FROMTHEINTERNET: 'Van het internet'
+    FROMYOURCOMPUTER: 'Vanaf computer'
+    Filetype: 'Bestandstype'
+    ListView: 'Lijstweergave'
+    MENUTITLE: Bestanden
+    NEWFOLDER: Nieuwe map
+    SIZE: Omvang
+    THUMBSDELETED: '{count} ongebruikte miniatuurafbeeldingen zijn verwijderd'
+    TreeView: 'Boomstructuur'
+    Upload: Uploaden
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Verwijder mappen'
+  AssetAdmin_left_ss:
+    GO: Doen
+  CMSMAIN:
+    ACCESS: 'Toegang tot het ''{title}'' gedeelte'
+  CMSMain_left_ss:
+    RESET: Reset
+  CMSPagesController_Tools_ss:
+    FILTER: Filteren
+  CMSSearch:
+    FILTERDATEFROM: Van
+    FILTERDATEHEADING: Datum
+    FILTERDATETO: Tot
+  Folder:
+    AddFolderButton: 'Map toevoegen'
+    DELETEUNUSEDTHUMBNAILS: 'Verwijder ongebruikte miniatuurafbeeldingen'
+    UNUSEDFILESTITLE: 'Ongebruikte bestanden'
+    UNUSEDTHUMBNAILSTITLE: 'Ongebruikte miniatuurafbeeldingen'
+    UploadFilesButton: Uploaden
+  LeftAndMain:
+    DELETED: Verwijderd.
+    PreviewButton: Voorbeeld bekijken
+    SAVEDUP: Opgeslagen.
+    SearchResults: 'Zoekresultaten'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'CMS toegang'

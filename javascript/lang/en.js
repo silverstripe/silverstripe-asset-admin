@@ -4,6 +4,8 @@ if(typeof(ss) == 'undefined' || typeof(ss.i18n) == 'undefined') {
 	if(typeof(console) != 'undefined') console.error('Class ss.i18n not defined');
 } else {
 	ss.i18n.addDictionary('en', {
+	"AssetAdmin.ConfirmDelete": "Do you really want to delete this folder and all contained files?",
+    "Folder.Name": "Folder name",
 	"AssetGalleryField.FILTER_TITLE_ASC": "title a-z",
 	"AssetGalleryField.FILTER_TITLE_DESC": "title z-a",
 	"AssetGalleryField.FILTER_DATE_DESC": "newest",

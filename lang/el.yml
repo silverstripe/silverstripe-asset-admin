@@ -1,0 +1,51 @@
+el:
+  AssetAdmin:
+    ADDFILES: 'Προσθήκη Αρχείων'
+    ActionAdd: 'Προσθήκη φακέλου'
+    AppCategoryArchive: Αρχείο
+    AppCategoryAudio: Ήχος
+    AppCategoryDocument: Έγγραφο
+    AppCategoryImage: Εικόνα
+    AppCategoryVideo: Βίντεο
+    BackToFolder: 'Πίσω στο φάκελο'
+    CREATED: Ημερομηνία
+    CurrentFolderOnly: 'Μόνο στον τρέχοντα φάκελο;'
+    DetailsView: Λεπτομέρειες
+    FILES: Αρχεία
+    FILESYSTEMSYNC: 'Συγχρονισμός αρχείων'
+    FILESYSTEMSYNCTITLE: 'Ενημέρωση των καταχωρήσεων της βάσης δεδομένων του CMS για αρχεία τα οποία υπάρχουν στο σύστημα. Χρήσιμο όταν οι νέα αρχεία έχουν φορτωθεί εκτός CMS, π.χ. μέσω FTP.'
+    FROMTHEINTERNET: 'Από το Internet'
+    FROMYOURCOMPUTER: 'Από τον υπολογιστή σας'
+    Filetype: 'Τύπος αρχείου'
+    ListView: 'Προβολή Λίστας'
+    MENUTITLE: Αρχεία
+    NEWFOLDER: ΝέοςΦάκελος
+    SIZE: Μέγεθος
+    THUMBSDELETED: '{count} αχρησιμοποίητα εικονίδια έχουν διαγραφεί'
+    TreeView: 'Προβολή Δέντρου'
+    Upload: Μεταφόρτωση
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Διαγραφή φακέλων'
+  AssetAdmin_left_ss:
+    GO: Μετάβαση
+  CMSMain_left_ss:
+    RESET: Επαναφορά
+  CMSPagesController_Tools_ss:
+    FILTER: Φίλτρο
+  CMSSearch:
+    FILTERDATEFROM: Από
+    FILTERDATEHEADING: Ημερομηνία
+    FILTERDATETO: Έως
+  Folder:
+    AddFolderButton: 'Προσθήκη φακέλου'
+    DELETEUNUSEDTHUMBNAILS: 'Διαγραφή αχρησιμοποίητων εικονιδίων'
+    UNUSEDFILESTITLE: 'Αχρησιμοποίητα αρχεία'
+    UNUSEDTHUMBNAILSTITLE: 'Αχρησιμοποίητα εικονίδια'
+    UploadFilesButton: Μεταφόρτωση
+  LeftAndMain:
+    DELETED: Έγινε Διαγραφή.
+    PreviewButton: Προεπισκόπιση
+    SAVEDUP: Έγινε Αποθήκευση.
+    SearchResults: 'Αναζήτηση Αποτελεσμάτων'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Πρόσβαση στο CMS'

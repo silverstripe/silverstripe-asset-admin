@@ -1,0 +1,52 @@
+en:
+  AssetAdmin:
+    ADDFILES: 'Add Files'
+    ActionAdd: 'Add folder'
+    AppCategoryArchive: Archive
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Document
+    AppCategoryFlash: Flash
+    AppCategoryImage: Image
+    AppCategoryVideo: Video
+    BackToFolder: 'Back to folder'
+    CREATED: Date
+    CurrentFolderOnly: 'Limit to current folder?'
+    DetailsView: Details
+    FILES: Files
+    FILESYSTEMSYNC: 'Sync files'
+    FILESYSTEMSYNCTITLE: 'Update the CMS database entries of files on the filesystem. Useful when new files have been uploaded outside of the CMS, e.g. through FTP.'
+    FROMTHEINTERNET: 'From the internet'
+    FROMYOURCOMPUTER: 'From your computer'
+    Filetype: 'File type'
+    ListView: 'List View'
+    MENUTITLE: Files
+    NEWFOLDER: NewFolder
+    SIZE: Size
+    THUMBSDELETED: '{count} unused thumbnails have been deleted'
+    TreeView: 'Tree View'
+    Upload: Upload
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Delete folders'
+  AssetAdmin_left_ss:
+    GO: Go
+  CMSMAIN:
+    ACCESS: 'Access to ''{title}'' section'
+  CMSMain_left_ss:
+    APPLY_FILTER: Search
+    CLEAR_FILTER: Clear
+    RESET: Reset
+  CMSPagesController_Tools_ss:
+    FILTER: Filter
+  CMSSearch:
+    FILTERDATEFROM: From
+    FILTERDATEHEADING: Date
+    FILTERDATETO: To
+  File:
+    Title: Title
+  Folder:
+    AddFolderButton: 'Add folder'
+  LeftAndMain:
+    DELETED: Deleted.
+    PreviewButton: Preview
+  Permission:
+    CMS_ACCESS_CATEGORY: 'CMS Access'

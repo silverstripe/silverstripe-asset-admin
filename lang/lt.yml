@@ -1,0 +1,58 @@
+lt:
+  AssetAdmin:
+    ADDFILES: 'Įkelti bylas'
+    ActionAdd: 'Naujas katalogas'
+    AppCategoryArchive: Archyvas
+    AppCategoryAudio: Garsas
+    AppCategoryDocument: Dokumentas
+    AppCategoryFlash: Flash byla
+    AppCategoryImage: Paveikslėlis
+    AppCategoryVideo: Video byla
+    BackToFolder: 'Atgal į katalogą'
+    CREATED: Data
+    CurrentFolderOnly: 'Apriboti iki šio katalogo?'
+    DetailsView: Detalesnė informacija
+    FILES: Bylos
+    FILESYSTEMSYNC: 'Sinchronizuoti bylas'
+    FILESYSTEMSYNCTITLE: 'Atnaujinti TVS bylų sarašo duomenų bazę. Naudotina, kai naujos bylos buvo įkeltos naudojant trečios šalies programinę įrangą, pvz. FTP.'
+    FROMTHEINTERNET: 'Iš interneto'
+    FROMYOURCOMPUTER: 'Iš jūsų kompiuterio'
+    Filetype: 'Bylos tipas'
+    ListView: 'Sąrašo rodinys'
+    MENUTITLE: Bylos
+    NEWFOLDER: Naujas katalogas
+    SIZE: Dydis
+    THUMBSDELETED: 'Ištrinta {count} nenaudojamų paveikslėlių miniatiūrų.'
+    TreeView: 'Medžio rodinys'
+    Upload: Įkelti
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Ištrinti katalogus'
+  AssetAdmin_left_ss:
+    GO: Vykdyti
+  CMSMAIN:
+    ACCESS: 'Priėjimas prie ''{title}'' dalies'
+  CMSMain_left_ss:
+    APPLY_FILTER: Ieškoti
+    CLEAR_FILTER: Išvalyti filtrą
+    RESET: Atstatyti
+  CMSPagesController_Tools_ss:
+    FILTER: Filtras
+  CMSSearch:
+    FILTERDATEFROM: Nuo
+    FILTERDATEHEADING: Data
+    FILTERDATETO: Iki
+    FILTERLABELTEXT: Ieškoti
+    PAGEFILTERDATEHEADING: 'Redaguota'
+  Folder:
+    AddFolderButton: 'Naujas katalogas'
+    DELETEUNUSEDTHUMBNAILS: 'Ištrinti nenaudojamas paveikslėlių miniatūras'
+    UNUSEDFILESTITLE: 'Nenaudojamos bylos'
+    UNUSEDTHUMBNAILSTITLE: 'Nenaudojamos paveikslėlių miniatiūros'
+    UploadFilesButton: Įkelti
+  LeftAndMain:
+    DELETED: Ištrinta.
+    PreviewButton: Peržiūra
+    SAVEDUP: Išsaugota.
+    SearchResults: 'Paieškos rezultatai'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'TVS prieiga'

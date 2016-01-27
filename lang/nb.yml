@@ -1,0 +1,54 @@
+nb:
+  AssetAdmin:
+    ADDFILES: 'Legg til filer'
+    ActionAdd: 'Legg til mappe'
+    AppCategoryArchive: Arkiv
+    AppCategoryAudio: Lyd
+    AppCategoryDocument: Dokument
+    AppCategoryFlash: Flash
+    AppCategoryImage: Bilde
+    AppCategoryVideo: Video
+    BackToFolder: 'Tilbake til mappe'
+    CREATED: Dato
+    CurrentFolderOnly: 'Begrens til nåværende mappe'
+    DetailsView: Detaljer
+    FILES: Filer
+    FILESYSTEMSYNC: 'Synkroniser filer'
+    FILESYSTEMSYNCTITLE: 'Oppdaterer publiseringssystemets database av filene på nettstedet. Nyttig når nye filer har blitt lastet opp utenfor publiseringssystemet, for eksempel gjennom FTP.'
+    FROMTHEINTERNET: 'Fra internett'
+    FROMYOURCOMPUTER: 'Fra din PC'
+    Filetype: 'Filtype'
+    ListView: 'Listevisning'
+    MENUTITLE: Filer
+    NEWFOLDER: Ny mappe
+    SIZE: Størrelse
+    THUMBSDELETED: '{count} ubrukte miniatyrbilder har blitt slettet.'
+    TreeView: 'Trevisning'
+    Upload: Last opp
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Slett mapper'
+  AssetAdmin_left_ss:
+    GO: Utfør
+  CMSMAIN:
+    ACCESS: 'Adgang til seksjon for ''{title}'''
+  CMSMain_left_ss:
+    RESET: Tilbakestill
+  CMSPagesController_Tools_ss:
+    FILTER: Filter
+  CMSSearch:
+    FILTERDATEFROM: Fra
+    FILTERDATEHEADING: Dato
+    FILTERDATETO: Til
+  Folder:
+    AddFolderButton: 'Legg til mappe'
+    DELETEUNUSEDTHUMBNAILS: 'Slett miniatyrbilder som ikke er i bruk'
+    UNUSEDFILESTITLE: 'Filer ikke i bruk'
+    UNUSEDTHUMBNAILSTITLE: 'Miniatyrbilder ikke i bruk'
+    UploadFilesButton: Last opp
+  LeftAndMain:
+    DELETED: Slettet.
+    PreviewButton: Forhåndsvisning
+    SAVEDUP: Lagret.
+    SearchResults: 'Søkeresultater'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Tilgang til publiseringssystemet'

@@ -1,0 +1,11 @@
+es_MX:
+  AssetAdmin:
+    NEWFOLDER: Nueva Carpeta
+  AssetAdmin_left_ss:
+    GO: Ir
+  Folder:
+    DELETEUNUSEDTHUMBNAILS: 'Eliminar  miniaturas de imágenes sin utilizar'
+    UNUSEDFILESTITLE: 'Archivo sin utilizar'
+    UNUSEDTHUMBNAILSTITLE: 'Miniaturas de imágenes sin utilizar'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Acceder al CMS'

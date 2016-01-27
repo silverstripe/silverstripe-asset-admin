@@ -1,0 +1,53 @@
+it:
+  AssetAdmin:
+    ADDFILES: 'Aggiungi File'
+    ActionAdd: 'Aggiungi cartella'
+    AppCategoryArchive: Archivia
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Documento
+    AppCategoryFlash: Flash
+    AppCategoryImage: Immagine
+    AppCategoryVideo: Video
+    BackToFolder: 'Torna alla cartella'
+    CREATED: Data creazione
+    CurrentFolderOnly: 'Limita alla cartella corrente?'
+    DetailsView: Dettagli
+    FILES: Files
+    FILESYSTEMSYNC: 'Sincronizza file'
+    FILESYSTEMSYNCTITLE: 'Aggiorna il database dei file. Utile quando nuovi file sono stati caricati fuori dal CMS, es. via FTP.'
+    FROMTHEINTERNET: 'Da Internet'
+    FROMYOURCOMPUTER: 'Dal tuo computer'
+    Filetype: 'Tipo di file'
+    ListView: 'Visualizzazione a lista'
+    MENUTITLE: Files
+    NEWFOLDER: NuovaCartella
+    SIZE: Dimensione
+    THUMBSDELETED: '{count} miniature inutilizzate sono state eliminate'
+    TreeView: 'Visualizzazione a albero'
+    Upload: Carica
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Elimina cartelle'
+  AssetAdmin_left_ss:
+    GO: Vai
+  CMSMAIN:
+    ACCESS: 'Accesso alla sezione ''{title}'''
+  CMSMain_left_ss:
+    RESET: Azzera
+  CMSSearch:
+    FILTERDATEFROM: Da
+    FILTERDATEHEADING: Data
+    FILTERDATETO: A
+  Folder:
+    AddFolderButton: 'Aggiungi cartella'
+    DELETEUNUSEDTHUMBNAILS: 'Elimina anteprime inutilizzate'
+    UNUSEDFILESTITLE: 'File inutilizzati'
+    UNUSEDTHUMBNAILSTITLE: 'Anteprime inutilizzate'
+    UploadFilesButton: Carica
+  LeftAndMain:
+    DELETED: Eliminata.
+    PreviewButton: Anteprima
+    SAVEDUP: Salvata.
+    SearchResults: 'Risultati della ricerca'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Accesso CMS'
+    

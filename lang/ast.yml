@@ -1,0 +1,9 @@
+ast:
+  AssetAdmin:
+    SIZE: Tamañu
+  LeftAndMain:
+    SearchResults: 'Resultaos de la busca'
+  VirtualPage:
+    HEADER: 'Esto ye una páxina virtual'
+    PLURALNAME: 'Páxines virtuales'
+    SINGULARNAME: 'Páxina virtual'

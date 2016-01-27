@@ -1,0 +1,39 @@
+bg:
+  AssetAdmin:
+    ADDFILES: 'Добави файлове'
+    ActionAdd: 'Добави директория'
+    AppCategoryArchive: Архив
+    AppCategoryAudio: Аудио
+    AppCategoryImage: Изображение
+    AppCategoryVideo: Видео
+    BackToFolder: 'Обратно към директорията'
+    CREATED: Дата на създаване
+    CurrentFolderOnly: 'Ограничи в текущата директория?'
+    DetailsView: Детайли
+    FILES: Файлове
+    FILESYSTEMSYNCTITLE: 'Актуализира базата данни с файловете от файловата система. Полезно когато файлове са били качени не през системата, а например през FTP.'
+    FROMTHEINTERNET: 'От интернет'
+    ListView: 'Изглед в списък'
+    MENUTITLE: Файлове
+    NEWFOLDER: Нова директория
+    SIZE: Размер
+    TreeView: 'Дървовиден изглед'
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Изтрити папки'
+  AssetAdmin_left_ss:
+    GO: Давай
+  CMSMAIN:
+    ACCESS: 'Достъп до ''{title}'' секция'
+  CMSPagesController_Tools_ss:
+    FILTER: Филтър
+  CMSSearch:
+    FILTERDATEFROM: От
+  Folder:
+    AddFolderButton: 'Добави папка'
+    DELETEUNUSEDTHUMBNAILS: 'Изтрий неизползвани миниатури'
+    UNUSEDFILESTITLE: 'Неизползвани файлове'
+    UNUSEDTHUMBNAILSTITLE: 'Неизползвани миниатури'
+    UploadFilesButton: 'Качи '
+  LeftAndMain:
+    PreviewButton: Изглед
+    SearchResults: 'Резултати от търсенето'

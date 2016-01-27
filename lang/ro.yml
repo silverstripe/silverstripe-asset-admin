@@ -1,0 +1,54 @@
+ro:
+  AssetAdmin:
+    ADDFILES: 'Adăugați fișiere'
+    ActionAdd: 'Adăugați dosarul'
+    AppCategoryArchive: Arhivă
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Document
+    AppCategoryFlash: Flash
+    AppCategoryImage: Imagine
+    AppCategoryVideo: Video
+    BackToFolder: 'Înapoi la dosar'
+    CREATED: Dată
+    CurrentFolderOnly: 'Limitare la directorul curent?'
+    DetailsView: Detalii
+    FILES: Fişiere
+    FILESYSTEMSYNC: 'Sincronizare fişiere'
+    FILESYSTEMSYNCTITLE: 'Actualizează intrările din baza de date a fișierelor CMS-ului. Util când nu s-au upload-uit fișiere prin intermediul CMS-ului, de ex. prin FTP.'
+    FROMTHEINTERNET: 'Din internet'
+    FROMYOURCOMPUTER: 'De pe calculator'
+    Filetype: 'Tip fişier'
+    ListView: 'Vizualizare listă'
+    MENUTITLE: Fişiere
+    NEWFOLDER: Dosar nou
+    SIZE: Mărime
+    THUMBSDELETED: '{count} pictograme nefolosite au fost șterse'
+    TreeView: 'Vizualizare arborescentă'
+    Upload: Upload
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Ştergere dosare'
+  AssetAdmin_left_ss:
+    GO: Start
+  CMSMAIN:
+    ACCESS: 'Acces la secţiunea ''{title}'' '
+  CMSMain_left_ss:
+    RESET: Resetează
+  CMSPagesController_Tools_ss:
+    FILTER: Filtru
+  CMSSearch:
+    FILTERDATEFROM: De la
+    FILTERDATEHEADING: Data
+    FILTERDATETO: La
+  Folder:
+    AddFolderButton: 'Adaugă director'
+    DELETEUNUSEDTHUMBNAILS: 'Șterger pictograme nefolosite'
+    UNUSEDFILESTITLE: 'Fișiere nefolosite'
+    UNUSEDTHUMBNAILSTITLE: 'Pictograme nefolosite'
+    UploadFilesButton: Upload
+  LeftAndMain:
+    DELETED: Șters.
+    PreviewButton: Previzualizare
+    SAVEDUP: Salvat.
+    SearchResults: 'Rezultate căutare'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Acces CMS'

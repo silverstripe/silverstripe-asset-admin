@@ -1,0 +1,52 @@
+da:
+  AssetAdmin:
+    ADDFILES: 'Tilføj filer'
+    ActionAdd: 'Tilføj mappe'
+    AppCategoryArchive: Arkiv
+    AppCategoryAudio: Lyd
+    AppCategoryDocument: Dokument
+    AppCategoryFlash: Flash
+    AppCategoryImage: Billeder
+    AppCategoryVideo: Video
+    BackToFolder: 'Tilbage til mappen'
+    CREATED: Dato
+    CurrentFolderOnly: 'Begræns til den nuværende mappe'
+    DetailsView: Detaljer
+    FILES: Filer
+    FILESYSTEMSYNC: 'Synkronisér filer'
+    FILESYSTEMSYNCTITLE: 'Opdater poster over filer i filsystemet i CMS-databasen. Dette kan være nyttigt når nye filer er blevet overført uden for CMS, f.eks. via FTP.'
+    FROMTHEINTERNET: 'Fra internettet'
+    FROMYOURCOMPUTER: 'Fra din computer'
+    Filetype: 'Filtype'
+    ListView: 'Listevisning'
+    MENUTITLE: Filer
+    NEWFOLDER: Ny mappe
+    SIZE: Størrelse
+    THUMBSDELETED: '{count} ubrugte miniaturer er blevet slettet'
+    TreeView: 'Trævisning'
+    Upload: Overfør
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Slet mapper'
+  CMSMAIN:
+    ACCESS: 'Adgang til ''{title}'' sektionen'
+  CMSMain_left_ss:
+    RESET: Nulstil
+  CMSPagesController_Tools_ss:
+    FILTER: Filtre
+  CMSSearch:
+    FILTERDATEFROM: Fra
+    FILTERDATEHEADING: Dato
+    FILTERDATETO: Til
+  Folder:
+    AddFolderButton: 'Tilføj mappe'
+    DELETEUNUSEDTHUMBNAILS: 'Slet ubrugte miniaturer'
+    UNUSEDFILESTITLE: 'Ubrugte filer'
+    UNUSEDTHUMBNAILSTITLE: 'Ubrugte miniaturer'
+    UploadFilesButton: Overfør
+  LeftAndMain:
+    DELETED: Slettet.
+    PreviewButton: Forhåndsvisning
+    SAVEDUP: Gemt.
+    SearchResults: 'Søgeresultater'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'CMS Adgang'

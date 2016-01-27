@@ -1,0 +1,11 @@
+zh_TW:
+  AssetAdmin:
+    NEWFOLDER: 新資料夾
+  AssetAdmin_left_ss:
+    GO: 執行
+  Folder:
+    AddFolderButton: '新增資料夾'
+    DELETEUNUSEDTHUMBNAILS: '刪除未使用的縮圖'
+    UNUSEDFILESTITLE: '未使用的檔案'
+    UNUSEDTHUMBNAILSTITLE: '未使用的縮圖'
+    UploadFilesButton: 上傳

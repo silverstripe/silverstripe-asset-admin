@@ -1,0 +1,54 @@
+sr:
+  AssetAdmin:
+    ADDFILES: 'Додај датотеке'
+    ActionAdd: 'Додај фасциклу'
+    AppCategoryArchive: Архива
+    AppCategoryAudio: Аудио
+    AppCategoryDocument: Документ
+    AppCategoryFlash: Flash
+    AppCategoryImage: Слика
+    AppCategoryVideo: Видео
+    BackToFolder: 'Повратак у фасциклу'
+    CREATED: Датум
+    CurrentFolderOnly: 'Само у овој фасцикли?'
+    DetailsView: Детаљи
+    FILES: Датотеке
+    FILESYSTEMSYNC: 'Синхронизуј датотеке'
+    FILESYSTEMSYNCTITLE: 'Ажурирање уноса у базу података CMS-a везаних за датотеке из датотечког система. Опција је корисна када је вршено постављање датотека изван CMS-а, нпр. путем FTP-а.'
+    FROMTHEINTERNET: 'Са интернета'
+    FROMYOURCOMPUTER: 'Са Вашег рачунара'
+    Filetype: 'Тип датотеке'
+    ListView: 'Приказ у виду листе'
+    MENUTITLE: Датотеке
+    NEWFOLDER: Нова фасцикла
+    SIZE: Величина
+    THUMBSDELETED: '{count} некоришћених сличицâ је обрисано'
+    TreeView: 'Преглед у виду стабла'
+    Upload: Постави
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Обриши фасцикле'
+  AssetAdmin_left_ss:
+    GO: Иди
+  CMSMAIN:
+    ACCESS: 'Приступ ''{title}'' секцији'
+  CMSMain_left_ss:
+    RESET: Врати у пређашње стање
+  CMSPagesController_Tools_ss:
+    FILTER: Филтер
+  CMSSearch:
+    FILTERDATEFROM: Од
+    FILTERDATEHEADING: Датум
+    FILTERDATETO: За
+  Folder:
+    AddFolderButton: 'Додај фасциклу'
+    DELETEUNUSEDTHUMBNAILS: 'Избриши некоришћене сличице'
+    UNUSEDFILESTITLE: 'Некоришћене датотеке'
+    UNUSEDTHUMBNAILSTITLE: 'Некоришћени умањени прикази'
+    UploadFilesButton: Постави
+  LeftAndMain:
+    DELETED: Избрисано.
+    PreviewButton: Претходни преглед
+    SAVEDUP: Сачувано.
+    SearchResults: 'Резултати претраживања'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Приступ CMS-у'

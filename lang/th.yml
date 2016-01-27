@@ -1,0 +1,50 @@
+th:
+  AssetAdmin:
+    ADDFILES: 'เพิ่มไฟล์'
+    ActionAdd: 'เพิ่มโฟลเดอร์'
+    AppCategoryArchive: รายการ
+    AppCategoryAudio: ไฟล์เสียง
+    AppCategoryDocument: เอกสาร
+    AppCategoryFlash: แฟลช
+    AppCategoryImage: รูปภาพ
+    AppCategoryVideo: วีดีโอ
+    BackToFolder: 'ย้อนกลับไปที่โฟลเดอร์'
+    CREATED: วันที่
+    CurrentFolderOnly: 'จำกัดเฉพาะโฟลเดอร์นี้?'
+    DetailsView: รายละเอียด
+    FILES: ไฟล์
+    FILESYSTEMSYNC: 'ผสานไฟล์'
+    FILESYSTEMSYNCTITLE: 'อัพเดทรายการไฟลในฐานข้อมูล CMS ในระบบไฟล์ มีประโยชน์สำหรับการอัพโหลดไฟล์ใหม่นอกระบบ CMS เช่น ผ่านทาง FTP'
+    FROMTHEINTERNET: 'จากอินเทอร์เน็ต'
+    FROMYOURCOMPUTER: 'จากเครื่องคอมพิวเตอร์ของคุณ'
+    Filetype: 'ชนิดของไฟล์'
+    ListView: 'มุมมองแบบแสดงรายการ'
+    MENUTITLE: ไฟล์
+    NEWFOLDER: สร้างโฟลเดอร์ใหม่
+    SIZE: ขนาด
+    THUMBSDELETED: '{count} รูปย่อที่ไม่ได้ถูกใช้งานได้ถูกลบทิ้งแล้ว'
+    TreeView: 'มุมมองแบบ Tree'
+    Upload: อัพโหลด
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'ลบโฟลเดอร์'
+  AssetAdmin_left_ss:
+    GO: ไป
+  CMSMAIN:
+    ACCESS: 'เข้าถึงเซ็กชั่น ''{title}'''
+  CMSMain_left_ss:
+    RESET: รีเซ็ต
+  CMSPagesController_Tools_ss:
+    FILTER: ตัวกรองข้อมูล
+  CMSSearch:
+    FILTERDATEHEADING: วันที่
+  Folder:
+    AddFolderButton: 'เพิ่มโฟลเดอร์'
+    DELETEUNUSEDTHUMBNAILS: 'ลบรูปย่อที่ไม่ได้ใช้งาน'
+    UNUSEDFILESTITLE: 'ไฟล์ที่ไม่ได้ใช้งาน'
+    UNUSEDTHUMBNAILSTITLE: 'รูปย่อที่ไม่ได้ใช้งาน'
+    UploadFilesButton: อัพโหลด
+  LeftAndMain:
+    DELETED: ถูกลบแล้ว
+    SAVEDUP: บันทึกแล้ว
+  Permission:
+    CMS_ACCESS_CATEGORY: 'การเข้าถึง CMS'

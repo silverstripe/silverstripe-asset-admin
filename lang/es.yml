@@ -1,0 +1,54 @@
+es:
+  AssetAdmin:
+    ADDFILES: 'Añadir Archivos'
+    ActionAdd: 'Añadir carpeta'
+    AppCategoryArchive: Archivar
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Documento
+    AppCategoryFlash: Flash
+    AppCategoryImage: Imagen
+    AppCategoryVideo: Vídeo
+    BackToFolder: 'Volver a la carpeta'
+    CREATED: Fecha
+    CurrentFolderOnly: '¿Límite a la carpeta actual?'
+    DetailsView: Detalles
+    FILES: Archivos
+    FILESYSTEMSYNC: 'Sincronizar archivos'
+    FILESYSTEMSYNCTITLE: 'Actualizar las entradas de base de datos del CMS de archivos en el sistema de archivos. Es útil cuando los nuevos archivos se han subido desde fuera del CMS, p.e., a través de FTP.'
+    FROMTHEINTERNET: 'Desde internet'
+    FROMYOURCOMPUTER: 'Desde tu ordenador'
+    Filetype: 'Tipo de archivo'
+    ListView: 'Vista de Lista'
+    MENUTITLE: Archivos
+    NEWFOLDER: NuevaCarpeta
+    SIZE: Tamaño
+    THUMBSDELETED: '{count} miniaturas no utilizadas han sido eliminadas'
+    TreeView: 'Vista en árbol'
+    Upload: Subir
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Eliminar carpetas'
+  AssetAdmin_left_ss:
+    GO: Ir
+  CMSMAIN:
+    ACCESS: 'Acceso a la sección ''{title}'''
+  CMSMain_left_ss:
+    RESET: Restablecer
+  CMSPagesController_Tools_ss:
+    FILTER: Filtro
+  CMSSearch:
+    FILTERDATEFROM: De
+    FILTERDATEHEADING: Fecha
+    FILTERDATETO: Hasta
+  Folder:
+    AddFolderButton: 'Añadir carpeta'
+    DELETEUNUSEDTHUMBNAILS: 'Borrar miniaturas sin usar'
+    UNUSEDFILESTITLE: 'Archivos sin usar'
+    UNUSEDTHUMBNAILSTITLE: 'Miniaturas sin usar'
+    UploadFilesButton: Subir
+  LeftAndMain:
+    DELETED: Borrado.
+    PreviewButton: Previsualizar
+    SAVEDUP: Guardado
+    SearchResults: 'Resultados de la búsqueda'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Acceso CMS'

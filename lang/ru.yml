@@ -1,0 +1,54 @@
+ru:
+  AssetAdmin:
+    ADDFILES: 'Добавить файлы'
+    ActionAdd: 'Добавить папку'
+    AppCategoryArchive: Архив
+    AppCategoryAudio: Аудио
+    AppCategoryDocument: Документ
+    AppCategoryFlash: Flash
+    AppCategoryImage: Изображение
+    AppCategoryVideo: Видео
+    BackToFolder: 'Вернуться к папке'
+    CREATED: Дата
+    CurrentFolderOnly: 'Только в этой папке?'
+    DetailsView: Детали
+    FILES: Файлы
+    FILESYSTEMSYNC: 'Синхронизировать'
+    FILESYSTEMSYNCTITLE: 'Обновление базы данных файлов в файловой системе. Стоит использовать, если новые файлы были загружены без использования CMS, например, через FTP.'
+    FROMTHEINTERNET: 'Из интернета'
+    FROMYOURCOMPUTER: 'С диска'
+    Filetype: 'Тип файла'
+    ListView: 'В виде списка'
+    MENUTITLE: Файлы
+    NEWFOLDER: Новая папка
+    SIZE: Размер
+    THUMBSDELETED: '{count} неиспользуемых миниатюр удалено'
+    TreeView: 'В виде дерева'
+    Upload: Загрузить
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Удалить папки'
+  AssetAdmin_left_ss:
+    GO: Выбрать
+  CMSMAIN:
+    ACCESS: 'Доступ к разделу ''{title}'''
+  CMSMain_left_ss:
+    RESET: Восстановить
+  CMSPagesController_Tools_ss:
+    FILTER: Фильтр
+  CMSSearch:
+    FILTERDATEFROM: От
+    FILTERDATEHEADING: Дата
+    FILTERDATETO: До
+  Folder:
+    AddFolderButton: 'Добавить папку'
+    DELETEUNUSEDTHUMBNAILS: 'Удалить неиспользуемые миниатюры'
+    UNUSEDFILESTITLE: 'Неиспользуемые файлы'
+    UNUSEDTHUMBNAILSTITLE: 'Неиспользуемые миниатюры'
+    UploadFilesButton: Загрузить
+  LeftAndMain:
+    DELETED: Удалено.
+    PreviewButton: Просмотр
+    SAVEDUP: Сохранено.
+    SearchResults: 'Результаты поиска'
+  Permission:
+    CMS_ACCESS_CATEGORY: 'Доступ к CMS'
