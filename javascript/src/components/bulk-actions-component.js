@@ -1,6 +1,8 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import BaseComponent from './base-component';
+import ReactTestUtils from 'react-addons-test-utils';
 
 export default class BulkActionsComponent extends BaseComponent {
 
@@ -13,7 +15,7 @@ export default class BulkActionsComponent extends BaseComponent {
 	}
 
 	componentDidMount() {
-		var $select = $(React.findDOMNode(this)).find('.dropdown');
+		var $select = $(ReactDOM.findDOMNode(this)).find('.dropdown');
 
 		$select.chosen({
 			'allow_single_deselect': true,
@@ -21,7 +23,7 @@ export default class BulkActionsComponent extends BaseComponent {
 		});
 
 		// Chosen stops the change event from reaching React so we have to simulate a click.
-		$select.change(() => React.addons.TestUtils.Simulate.click($select.find(':selected')[0]));
+		$select.change(() => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
 	}
 
 	render() {
@@ -77,6 +79,6 @@ export default class BulkActionsComponent extends BaseComponent {
 		}
 
 		// Reset the dropdown to it's placeholder value.
-		$(React.findDOMNode(this)).find('.dropdown').val('').trigger('liszt:updated');
+		$(ReactDOM.findDOMNode(this)).find('.dropdown').val('').trigger('liszt:updated');
 	}
 };

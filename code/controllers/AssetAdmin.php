@@ -1,6 +1,7 @@
 <?php
 
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
+use SilverStripe\Forms\AssetGalleryField;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -63,10 +64,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider{
 	public function init() {
 		parent::init();
 
-
+		Requirements::javascript(FRAMEWORK_DIR . "/admin/javascript/dist/bundle-lib.js");
 		Requirements::javascript(ASSET_ADMIN_DIR . "/javascript/AssetAdmin.js");
 		Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . '/javascript/lang', false, true);
-		Requirements::css(ASSET_ADMIN_DIR . "/public/dist/main.css");
+		Requirements::css(ASSET_ADMIN_DIR . "/javascript/dist/main.css");
 
 		CMSBatchActionHandler::register('delete', 'AssetAdmin_DeleteBatchAction', 'Folder');
 	}
@@ -245,6 +246,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider{
 		asort($exts);
 		$uploadField->Extensions = implode(', ', $exts);
 
+		$galleryField = AssetGalleryField::create('Files')->setCurrentPath('')->setLimit(15);
 		// List view
 		$fields->addFieldsToTab('Root.ListView', array(
 			$actionsComposite = CompositeField::create(
@@ -252,7 +254,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider{
 			)->addExtraClass('cms-content-toolbar field'),
 			$uploadField,
 			new HiddenField('ID'),
-			$gridField
+			$galleryField
 		));
 		
 		// Tree view

@@ -1,8 +1,10 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
+import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
 import constants from '../constants';
-import BaseComponent from './base-component';
+import BaseComponent from '../components/base-component';
 
 class FileComponent extends BaseComponent {
 	constructor(props) {
@@ -28,7 +30,7 @@ class FileComponent extends BaseComponent {
 	}
 
 	handleDoubleClick(event) {
-		if (event.target !== this.refs.title.getDOMNode() && event.target !== this.refs.thumbnail.getDOMNode()) {
+		if (event.target !== ReactDOM.findDOMNode(this.refs.title) && event.target !== ReactDOM.findDOMNode(this.refs.thumbnail)) {
 			return;
 		}
 
@@ -105,7 +107,7 @@ class FileComponent extends BaseComponent {
 		event.stopPropagation();
 
 		//if event doesn't come from the root element, do nothing
-		if (event.target !== React.findDOMNode(this.refs.thumbnail)) {
+		if (event.target !== ReactDOM.findDOMNode(this.refs.thumbnail)) {
 			return;
 		}
 		
@@ -115,7 +117,7 @@ class FileComponent extends BaseComponent {
 			this.setState({
 				'buttonTabIndex': 0
 			});
-			$(React.findDOMNode(this)).find('.item__actions__action').first().focus();
+			$(ReactDOM.findDOMNode(this)).find('.item__actions__action').first().focus();
 		}
 
 		//If return is pressed, navigate folder

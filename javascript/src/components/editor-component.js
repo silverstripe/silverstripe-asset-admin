@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
 import BaseComponent from './base-component';

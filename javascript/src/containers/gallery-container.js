@@ -1,10 +1,13 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
-import FileComponent from './file-component';
-import EditorComponent from './editor-component';
-import BulkActionsComponent from './bulk-actions-component';
-import BaseComponent from './base-component';
+import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import ReactTestUtils from 'react-addons-test-utils';
+import FileComponent from './file-container';
+import EditorComponent from '../components/editor-component';
+import BulkActionsComponent from '../components/bulk-actions-component';
+import BaseComponent from '../components/base-component';
 import CONSTANTS from '../constants';
 
 function getComparator(field, direction) {
@@ -174,7 +177,7 @@ class GalleryComponent extends BaseComponent {
 	}
 
 	componentDidUpdate() {
-		var $select = $(React.findDOMNode(this)).find('.gallery__sort .dropdown');
+		var $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
 
 		// We opt-out of letting the CMS handle Chosen because it doesn't re-apply the behaviour correctly.
 		// So after the gallery has been rendered we apply Chosen.
@@ -184,7 +187,7 @@ class GalleryComponent extends BaseComponent {
 		});
 
 		// Chosen stops the change event from reaching React so we have to simulate a click.
-		$select.change(() => React.addons.TestUtils.Simulate.click($select.find(':selected')[0]));
+		$select.change(() => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
 	}
 
 	getFileById(id) {
@@ -345,7 +348,7 @@ class GalleryComponent extends BaseComponent {
 		});
 
 		this.emitFolderChangedCmsEvent();
-		this.saveFolderNameInSession();
+		// this.saveFolderNameInSession();
 	}
 
 	emitFolderChangedCmsEvent() {
@@ -381,11 +384,11 @@ class GalleryComponent extends BaseComponent {
 		this._emitCmsEvent('exit-file-view.asset-gallery-field');
 	}
 
-	saveFolderNameInSession() {
-		if (this.props.hasSessionStorage()) {
-			window.sessionStorage.setItem($(React.findDOMNode(this)).closest('.asset-gallery')[0].id, this.props.backend.folder);
-		}
-	}
+	// saveFolderNameInSession() {
+	// 	if (this.props.hasSessionStorage()) {
+	// 		window.sessionStorage.setItem($(ReactDOM.findDOMNode(this)).closest('.asset-gallery')[0].id, this.props.backend.folder);
+	// 	}
+	// }
 
 	onNavigate(folder, silent = false) {
 		// Don't the folder if it exists already.
@@ -399,7 +402,7 @@ class GalleryComponent extends BaseComponent {
 			this.emitFolderChangedCmsEvent();
 		}
 
-		this.saveFolderNameInSession();
+		// this.saveFolderNameInSession();
 	}
 
 	onMoreClick(event) {
@@ -421,7 +424,7 @@ class GalleryComponent extends BaseComponent {
 		});
 
 		this.emitFolderChangedCmsEvent();
-		this.saveFolderNameInSession();
+		// this.saveFolderNameInSession();
 
 		event.preventDefault();
 	}
@@ -437,7 +440,7 @@ class GalleryComponent extends BaseComponent {
 }
 
 GalleryComponent.propTypes = {
-	'hasSessionStorage': React.PropTypes.func.isRequired,
+	// 'hasSessionStorage': React.PropTypes.func.isRequired,
 	'backend': React.PropTypes.object.isRequired
 };
 

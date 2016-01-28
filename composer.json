@@ -13,6 +13,9 @@
 	"config": {
 		"process-timeout": 600
 	},
+	"autoload": {
+		"classmap": ["tests/behat/"]
+	},
 	"minimum-stability": "dev",
 	"prefer-stable": true
 }
