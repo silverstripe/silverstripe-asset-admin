@@ -8,7 +8,9 @@ export function addFile(file) {
 	return (dispatch, getState) => {
 		return dispatch ({
 			type: FILES.ADD_FILE,
-			file
+			payload: {
+				id: file.props.id
+			}
 		});
 	}
 }

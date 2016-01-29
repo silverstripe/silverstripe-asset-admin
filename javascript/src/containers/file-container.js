@@ -15,8 +15,7 @@ class FileComponent extends BaseComponent {
 
 		this.state = {
 			'focussed': false,
-			'buttonTabIndex': -1,
-			'selected': false
+			'buttonTabIndex': -1
 		};
 
 		this.bind(
@@ -55,10 +54,10 @@ class FileComponent extends BaseComponent {
 
 	onFileSelect(event) {
 		event.stopPropagation(); //stop triggering click on root element
-		this.setState({
-			'selected': !this.state.selected
-		})
-		this.props.actions.selectFile(this);
+		this.props.actions.selectFile({
+			id: this.props.id,
+			selected: !this.props.selected
+		});
 	}
 
 	onFileEdit(event) {
@@ -92,6 +91,10 @@ class FileComponent extends BaseComponent {
 
 		return thumbnailClassNames;
 	}
+	
+	isSelected() {
+		return this.props.selectedFiles.indexOf(this.props.id) > -1;
+	}
 
 	getItemClassNames() {
 		var itemClassNames = 'item ' + this.props.category;
@@ -100,7 +103,7 @@ class FileComponent extends BaseComponent {
 			itemClassNames += ' focussed';
 		}
 
-		if (this.state.selected) {
+		if (this.isSelected()) {
 			itemClassNames += ' selected';
 		}
 
@@ -213,7 +216,7 @@ FileComponent.propTypes = {
 
 function mapStateToProps(state) {
 	return {
-		selectedFiles: state.selectedFiles
+		selectedFiles: state.selectedFiles.selectedFiles
 	}
 }
 

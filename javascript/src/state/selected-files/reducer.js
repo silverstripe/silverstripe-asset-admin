@@ -3,9 +3,11 @@
  */
 
 import { SELECTED_FILES } from '../action-types';
+import deepFreeze from 'deep-freeze';
 
 const initialState = {
-	selectedFiles: new Array()
+	selectedFiles: [],
+	selected: false
 };
 
 /**
@@ -19,26 +21,19 @@ const initialState = {
 export default function selectedFilesReducer(state = initialState, action) {
 	switch (action.type) {
 		case SELECTED_FILES.SELECT_FILE:
-			var newSelectedFiles = state.selectedFiles,
-				fileIndex = -1;
-			
-			//Check if file is already in selectedFiles array
-			for (var i = 0; i < newSelectedFiles.length; i++) {
-				if (newSelectedFiles[i].props.id === action.file.props.id) {
-					fileIndex = i;
-				}
-			}
+			var newSelectedFiles = [],
+				fileIndex = state.selectedFiles.indexOf(action.payload.id);
 
 			//Remove file if its already in array, else add it to the array
 			if (fileIndex > -1) {
-				newSelectedFiles.splice(fileIndex, 1);
+				newSelectedFiles = state.selectedFiles.filter((id) => id !== action.payload.id);
 			} else {
-				newSelectedFiles.push(action.file);
+				newSelectedFiles = state.selectedFiles.concat(action.payload.id);
 			}
 
-			return Object.assign({}, state, {
+			return deepFreeze(Object.assign({}, state, {
 				selectedFiles: newSelectedFiles
-			});
+			}));
 
 		default:
 			return state;

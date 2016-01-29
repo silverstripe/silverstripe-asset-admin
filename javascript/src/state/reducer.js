@@ -15,8 +15,8 @@ import filesReducer from './files/reducer.js';
  * @desc Operates on the Redux store to update application state.
  */
 const rootReducer = combineReducers({
-	filesReducer,
-	selectedFilesReducer
+	files: filesReducer,
+	selectedFiles: selectedFilesReducer
 });
 
 export default rootReducer;
