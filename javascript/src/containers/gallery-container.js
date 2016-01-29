@@ -3,6 +3,7 @@ import i18n from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
 import FileComponent from './file-container';
 import EditorComponent from '../components/editor-component';
@@ -143,7 +144,6 @@ class GalleryComponent extends BaseComponent {
 		this.bind(
 			'onFileSave',
 			'onFileNavigate',
-			'onFileSelect',
 			'onFileEdit',
 			'onFileDelete',
 			'onBackClick',
@@ -271,7 +271,6 @@ class GalleryComponent extends BaseComponent {
 			<div className='gallery__items'>
 				{this.state.files.map((file, i) => {
 					return <FileComponent key={i} {...file}
-						onFileSelect={this.onFileSelect}
 						spaceKey={CONSTANTS.SPACE_KEY_CODE}
 						returnKey={CONSTANTS.RETURN_KEY_CODE}
 						onFileDelete={this.onFileDelete}
@@ -293,25 +292,6 @@ class GalleryComponent extends BaseComponent {
 		});
 
 		this.emitExitFileViewCmsEvent();
-	}
-
-	onFileSelect(file, event) {
-		event.stopPropagation();
-
-		var currentlySelected = this.state.selectedFiles,
-			fileIndex = currentlySelected.indexOf(file.id);
-
-		if (fileIndex > -1) {
-			currentlySelected.splice(fileIndex, 1);
-		} else {
-			currentlySelected.push(file.id);
-		}
-
-		this.setState({
-			'selectedFiles': currentlySelected
-		});
-		
-		this._emitCmsEvent('file-select.asset-gallery-field', file);
 	}
 
 	onFileDelete(file, event) {
@@ -444,4 +424,14 @@ GalleryComponent.propTypes = {
 	'backend': React.PropTypes.object.isRequired
 };
 
-export default GalleryComponent;
+function mapStateToProps(state) {
+	return {}
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		actions: bindActionCreators(dispatch)
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(GalleryComponent);

@@ -3,19 +3,8 @@
  */
 
 import { combineReducers } from 'redux';
-
-
-function exampleReducer(state = {}, action) {
-	switch (action.type) {
-		case 'foo':
-			return Object.assign({}, state, {
-				updated: true
-			});
-			break;
-		default:
-			return state;
-	}
-}
+import selectedFilesReducer from './selected-files/reducer.js';
+import filesReducer from './files/reducer.js';
 
 /**
  * @func rootReducer
@@ -26,7 +15,8 @@ function exampleReducer(state = {}, action) {
  * @desc Operates on the Redux store to update application state.
  */
 const rootReducer = combineReducers({
-	exampleReducer
+	filesReducer,
+	selectedFilesReducer
 });
 
 export default rootReducer;

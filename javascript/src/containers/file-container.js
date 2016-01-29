@@ -1,8 +1,11 @@
 import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
+import * as selectedFilesActions from '../state/selected-files/actions'
+import * as filesActions from '../state/files/actions'
 import constants from '../constants';
 import BaseComponent from '../components/base-component';
 
@@ -12,21 +15,25 @@ class FileComponent extends BaseComponent {
 
 		this.state = {
 			'focussed': false,
-			'buttonTabIndex': -1
+			'buttonTabIndex': -1,
+			'selected': false
 		};
 
 		this.bind(
 			'onFileNavigate',
 			'onFileEdit',
 			'onFileDelete',
-			'onFileSelect',
 			'handleDoubleClick',
 			'handleKeyDown',
 			'handleFocus',
 			'handleBlur',
-			'onFileSelect',
-			'preventFocus'
+			'preventFocus',
+			'onFileSelect'
 		);
+	}
+	
+	componentDidMount() {
+		this.props.actions.addFile(this);
 	}
 
 	handleDoubleClick(event) {
@@ -48,7 +55,10 @@ class FileComponent extends BaseComponent {
 
 	onFileSelect(event) {
 		event.stopPropagation(); //stop triggering click on root element
-		this.props.onFileSelect(this.props, event);
+		this.setState({
+			'selected': !this.state.selected
+		})
+		this.props.actions.selectFile(this);
 	}
 
 	onFileEdit(event) {
@@ -90,7 +100,7 @@ class FileComponent extends BaseComponent {
 			itemClassNames += ' focussed';
 		}
 
-		if (this.props.selected) {
+		if (this.state.selected) {
 			itemClassNames += ' selected';
 		}
 
@@ -201,4 +211,16 @@ FileComponent.propTypes = {
 	'selected': React.PropTypes.bool
 };
 
-export default FileComponent;
+function mapStateToProps(state) {
+	return {
+		selectedFiles: state.selectedFiles
+	}
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		actions: bindActionCreators(Object.assign(filesActions, selectedFilesActions), dispatch)
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FileComponent);

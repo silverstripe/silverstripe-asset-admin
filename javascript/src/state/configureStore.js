@@ -24,7 +24,7 @@ const createStoreWithMiddleware = applyMiddleware(
  * @param object initialState
  * @return object - A Redux store that lets you read the state, dispatch actions and subscribe to changes.
  */
-export default function configureStore(initialState) {
+export default function configureStore(initialState = {}) {
 	const store = createStoreWithMiddleware(rootReducer, initialState);
 
 	return store;

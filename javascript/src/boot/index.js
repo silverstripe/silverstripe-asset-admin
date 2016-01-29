@@ -77,12 +77,8 @@ function getProps(props) {
 	return $.extend(true, defaults, props);
 }
 
-var props = getProps();
-const initialState = {
-	selectedFiles: []
-}
-
-const store = configureStore(initialState); //Create the redux store
+let props = getProps();
+const store = configureStore(); //Create the redux store
 
 
 ReactDOM.render(
@@ -91,7 +87,6 @@ ReactDOM.render(
     </Provider>,
     $('.asset-gallery-component-wrapper')[0]
 );
-console.log(store.getState())
 
 // $.entwine('ss', function ($) {
 // 
