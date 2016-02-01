@@ -17,6 +17,7 @@ class FileComponent extends SilverStripeComponent {
 			'buttonTabIndex': -1
 		};
 
+        this.getButtonTabIndex = this.getButtonTabIndex.bind(this);
 		this.onFileNavigate = this.onFileNavigate.bind(this);
 		this.onFileEdit = this.onFileEdit.bind(this);
 		this.onFileDelete = this.onFileDelete.bind(this);
@@ -92,11 +93,23 @@ class FileComponent extends SilverStripeComponent {
 	isSelected() {
 		return this.props.gallery.selectedFiles.indexOf(this.props.id) > -1;
 	}
+    
+    isFocussed() {
+        return this.props.gallery.focus === this.props.id;
+    }
+    
+    getButtonTabIndex() {
+        if (this.isFocussed()) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
 
 	getItemClassNames() {
 		var itemClassNames = 'item ' + this.props.category;
 
-		if (this.state.focussed) {
+		if (this.isFocussed()) {
 			itemClassNames += ' focussed';
 		}
 
@@ -124,30 +137,21 @@ class FileComponent extends SilverStripeComponent {
 		//If space is pressed, allow focus on buttons
 		if (this.props.spaceKey === event.keyCode) {
 			event.preventDefault(); //Stop page from scrolling
-			this.setState({
-				'buttonTabIndex': 0
-			});
 			$(ReactDOM.findDOMNode(this)).find('.item__actions__action').first().focus();
 		}
 
 		//If return is pressed, navigate folder
 		if (this.props.returnKey === event.keyCode) {
-			this.onFileNavigate();
+			this.onFileNavigate(event);
 		}
 	}
 
 	handleFocus() {
-		this.setState({
-			'focussed': true,
-			'buttonTabIndex': 0
-		});
+        this.props.actions.setFocus(this.props.id);
 	}
 
 	handleBlur() {
-		this.setState({
-			'focussed': false,
-			'buttonTabIndex': -1
-		});
+        this.props.actions.setFocus(false);
 	}
 	
 	preventFocus(event) {
@@ -163,7 +167,7 @@ class FileComponent extends SilverStripeComponent {
 						className='item__actions__action item__actions__action--select [ font-icon-tick ]'
 						type='button'
 						title={i18n._t('AssetGalleryField.SELECT')}
-						tabIndex={this.state.buttonTabIndex}
+						tabIndex={this.getButtonTabIndex()}
 						onClick={this.onFileSelect}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
@@ -172,7 +176,7 @@ class FileComponent extends SilverStripeComponent {
 						className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
 						type='button'
 						title={i18n._t('AssetGalleryField.DELETE')}
-						tabIndex={this.state.buttonTabIndex}
+						tabIndex={this.getButtonTabIndex()}
 						onClick={this.onFileDelete}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>
@@ -181,7 +185,7 @@ class FileComponent extends SilverStripeComponent {
 						className='item__actions__action item__actions__action--edit [ font-icon-edit ]'
 						type='button'
 						title={i18n._t('AssetGalleryField.EDIT')}
-						tabIndex={this.state.buttonTabIndex}
+						tabIndex={this.getButtonTabIndex()}
 						onClick={this.onFileEdit}
 						onFocus={this.handleFocus}
 						onBlur={this.handleBlur}>

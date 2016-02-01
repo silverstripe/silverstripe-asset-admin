@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
-import FileComponent from './file-container';
+import FileComponent from '../components/file-component';
 import EditorComponent from '../components/editor-component';
 import BulkActionsComponent from '../components/bulk-actions-component';
 import SilverStripeComponent from 'silverstripe-component';

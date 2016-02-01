@@ -4,7 +4,8 @@ import { GALLERY } from '../action-types';
 const initialState = {
     files: [],
     selectedFiles: [],
-    editing: false
+    editing: false,
+    focus: false
 };
 
 /**
@@ -40,6 +41,10 @@ export default function galleryReducer(state = initialState, action) {
 			return Object.assign({}, state, {
 				editing: action.payload
 			});
+        case GALLERY.SET_FOCUS:
+            return Object.assign({}, state, {
+                focus: action.payload.id
+            })
         default:
             return state;
     }

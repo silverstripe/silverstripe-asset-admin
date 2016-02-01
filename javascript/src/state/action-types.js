@@ -2,4 +2,5 @@ export const GALLERY = {
     ADD_FILE: 'ADD_FILE',
     SELECT_FILE: 'SELECT_FILE',
 	SET_EDITING: 'SET_EDITING',
+    SET_FOCUS: 'SET_FOCUS'
 }
