@@ -1,8 +1,13 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
+import { bindActionCreators } from 'redux';
+import ReactDOM from 'react-dom';
+import { connect } from 'react-redux';
+import * as selectedFilesActions from '../state/selected-files/actions'
+import * as filesActions from '../state/files/actions'
 import constants from '../constants';
-import BaseComponent from './base-component';
+import BaseComponent from '../components/base-component';
 
 class FileComponent extends BaseComponent {
 	constructor(props) {
@@ -17,18 +22,21 @@ class FileComponent extends BaseComponent {
 			'onFileNavigate',
 			'onFileEdit',
 			'onFileDelete',
-			'onFileSelect',
 			'handleDoubleClick',
 			'handleKeyDown',
 			'handleFocus',
 			'handleBlur',
-			'onFileSelect',
-			'preventFocus'
+			'preventFocus',
+			'onFileSelect'
 		);
+	}
+	
+	componentDidMount() {
+		this.props.actions.addFile(this);
 	}
 
 	handleDoubleClick(event) {
-		if (event.target !== this.refs.title.getDOMNode() && event.target !== this.refs.thumbnail.getDOMNode()) {
+		if (event.target !== ReactDOM.findDOMNode(this.refs.title) && event.target !== ReactDOM.findDOMNode(this.refs.thumbnail)) {
 			return;
 		}
 
@@ -46,7 +54,10 @@ class FileComponent extends BaseComponent {
 
 	onFileSelect(event) {
 		event.stopPropagation(); //stop triggering click on root element
-		this.props.onFileSelect(this.props, event);
+		this.props.actions.selectFile({
+			id: this.props.id,
+			selected: !this.props.selected
+		});
 	}
 
 	onFileEdit(event) {
@@ -80,6 +91,10 @@ class FileComponent extends BaseComponent {
 
 		return thumbnailClassNames;
 	}
+	
+	isSelected() {
+		return this.props.selectedFiles.indexOf(this.props.id) > -1;
+	}
 
 	getItemClassNames() {
 		var itemClassNames = 'item ' + this.props.category;
@@ -88,7 +103,7 @@ class FileComponent extends BaseComponent {
 			itemClassNames += ' focussed';
 		}
 
-		if (this.props.selected) {
+		if (this.isSelected()) {
 			itemClassNames += ' selected';
 		}
 
@@ -105,7 +120,7 @@ class FileComponent extends BaseComponent {
 		event.stopPropagation();
 
 		//if event doesn't come from the root element, do nothing
-		if (event.target !== React.findDOMNode(this.refs.thumbnail)) {
+		if (event.target !== ReactDOM.findDOMNode(this.refs.thumbnail)) {
 			return;
 		}
 		
@@ -115,7 +130,7 @@ class FileComponent extends BaseComponent {
 			this.setState({
 				'buttonTabIndex': 0
 			});
-			$(React.findDOMNode(this)).find('.item__actions__action').first().focus();
+			$(ReactDOM.findDOMNode(this)).find('.item__actions__action').first().focus();
 		}
 
 		//If return is pressed, navigate folder
@@ -199,4 +214,16 @@ FileComponent.propTypes = {
 	'selected': React.PropTypes.bool
 };
 
-export default FileComponent;
+function mapStateToProps(state) {
+	return {
+		selectedFiles: state.selectedFiles.selectedFiles
+	}
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		actions: bindActionCreators(Object.assign(filesActions, selectedFilesActions), dispatch)
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FileComponent);

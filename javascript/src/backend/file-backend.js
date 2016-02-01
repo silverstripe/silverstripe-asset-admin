@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import $ from 'jQuery';
 import Events from 'events';
 
 export default class FileBackend extends Events {
