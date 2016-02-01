@@ -49,6 +49,7 @@ function getSort(field, direction) {
 }
 
 class GalleryComponent extends SilverStripeComponent {
+
 	constructor(props) {
 		super(props);
 

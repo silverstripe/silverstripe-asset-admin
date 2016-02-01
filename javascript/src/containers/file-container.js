@@ -1,11 +1,10 @@
 import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
-import { bindActionCreators } from 'redux';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import * as selectedFilesActions from '../state/selected-files/actions'
-import * as filesActions from '../state/files/actions'
+import { bindActionCreators } from 'redux';
+import * as galleryActions from '../state/gallery/actions'
 import constants from '../constants';
 import SilverStripeComponent from 'silverstripe-component';
 
@@ -214,13 +213,13 @@ FileComponent.propTypes = {
 
 function mapStateToProps(state) {
 	return {
-		selectedFiles: state.selectedFiles.selectedFiles
+		selectedFiles: state.assetAdmin.gallery.selectedFiles
 	}
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		actions: bindActionCreators(Object.assign(filesActions, selectedFilesActions), dispatch)
+		actions: bindActionCreators(Object.assign(galleryActions), dispatch)
 	}
 }
 

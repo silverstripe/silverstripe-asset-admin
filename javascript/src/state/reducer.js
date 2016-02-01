@@ -3,20 +3,20 @@
  */
 
 import { combineReducers } from 'redux';
-import selectedFilesReducer from './selected-files/reducer.js';
-import filesReducer from './files/reducer.js';
+import galleryReducer from './gallery/reducer.js';
 
 /**
- * @func rootReducer
+ * Operates on the Redux store to update application state.
+ *
  * @param object state - The current state.
  * @param object action - The dispatched action.
  * @param string action.type - The type of action that has been dispatched.
  * @param object [action.payload] - Optional data passed with the action.
- * @desc Operates on the Redux store to update application state.
  */
 const rootReducer = combineReducers({
-	files: filesReducer,
-	selectedFiles: selectedFilesReducer
+    assetAdmin: combineReducers({
+        gallery: galleryReducer
+    })
 });
 
 export default rootReducer;

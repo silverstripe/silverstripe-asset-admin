@@ -1,0 +1,11 @@
+{
+  "name": "silverstripe-asset-admin",
+  "version": "0.0.0",
+  "dependencies": {
+    "deep-freeze": {
+      "version": "0.0.1",
+      "from": "deep-freeze@0.0.1",
+      "resolved": "https://registry.npmjs.org/deep-freeze/-/deep-freeze-0.0.1.tgz"
+    }
+  }
+}
