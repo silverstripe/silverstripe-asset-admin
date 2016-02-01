@@ -18,14 +18,15 @@ export function addFile(file) {
 /**
  * Selects a file.
  *
- * @param object file
  * @param number file.id - The file id.
  */
-export function selectFile(file) {
+export function selectFile(id) {
     return (dispatch, getState) => {
         return dispatch ({
             type: GALLERY.SELECT_FILE,
-            payload: file
+            payload: {
+                id
+            }
         });
     }
 }

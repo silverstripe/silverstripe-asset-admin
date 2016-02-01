@@ -117,6 +117,11 @@ class GalleryComponent extends SilverStripeComponent {
 						return data !== file.id;
 					})
 				});
+                
+                //Deselect item if it was selected
+                if (this.props.gallery.selectedFiles.indexOf(data) > -1) {
+                    this.props.actions.selectFile(data)
+                }
 			},
 			'onSaveData': (id, values) => {
 				let files = this.state.files;
@@ -148,7 +153,6 @@ class GalleryComponent extends SilverStripeComponent {
 		this.onBackClick = this.onBackClick.bind(this);
 		this.onMoreClick = this.onMoreClick.bind(this);
 		this.onNavigate = this.onNavigate.bind(this);
-		this.getSelectedFiles = this.getSelectedFiles.bind(this);
 	}
 
 	componentDidMount() {
@@ -222,10 +226,7 @@ class GalleryComponent extends SilverStripeComponent {
 	getBulkActionsComponent() {
 		if (this.props.gallery.selectedFiles.length > 0 && this.props.backend.bulkActions) {
 			return <BulkActionsComponent
-				options={CONSTANTS.BULK_ACTIONS}
-				placeholder={ss.i18n._t('AssetGalleryField.BULK_ACTIONS_PLACEHOLDER')}
-				backend={this.props.backend}
-				getSelectedFiles={this.getSelectedFiles} />;
+				backend={this.props.backend} />;
 		}
 
 		return null;
@@ -239,10 +240,6 @@ class GalleryComponent extends SilverStripeComponent {
 		}
 
 		return null;
-	}
-
-	getSelectedFiles() {
-		return this.props.gallery.selectedFiles;
 	}
 
 	render() {

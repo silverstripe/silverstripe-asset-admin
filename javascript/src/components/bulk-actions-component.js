@@ -3,6 +3,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'silverstripe-component';
 import ReactTestUtils from 'react-addons-test-utils';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as galleryActions from '../state/gallery/actions';
+import i18n from 'i18n';
 
 export default class BulkActionsComponent extends SilverStripeComponent {
 
@@ -26,9 +30,9 @@ export default class BulkActionsComponent extends SilverStripeComponent {
 
 	render() {
 		return <div className="gallery__bulk fieldholder-small">
-			<select className="dropdown no-change-track no-chzn" tabIndex="0" data-placeholder={this.props.placeholder} style={{width: '160px'}}>
+			<select className="dropdown no-change-track no-chzn" tabIndex="0" data-placeholder={this.props.gallery.bulkActions.placeholder} style={{width: '160px'}}>
 				<option selected disabled hidden value=''></option>
-				{this.props.options.map((option, i) => {
+				{this.props.gallery.bulkActions.options.map((option, i) => {
 					return <option key={i} onClick={this.onChangeValue} value={option.value}>{option.label}</option>;
 				})}
 			</select>
@@ -36,23 +40,27 @@ export default class BulkActionsComponent extends SilverStripeComponent {
 	}
 
 	getOptionByValue(value) {
-		// Using for loop cos IE10 doesn't handle 'for of',
+		// Using for loop because IE10 doesn't handle 'for of',
 		// which gets transcompiled into a function which uses Symbol,
 		// the thing IE10 dies on.
-		for (let i = 0; i < this.props.options.length; i += 1) {
-			if (this.props.options[i].value === value) {
-				return this.props.options[i];
+		for (let i = 0; i < this.props.gallery.bulkActions.options.length; i += 1) {
+			if (this.props.gallery.bulkActions.options[i].value === value) {
+				return this.props.gallery.bulkActions.options[i];
 			}
 		}
 
 		return null;
 	}
+    
+    getSelectedFiles() {
+        return this.props.gallery.selectedFiles;
+    }
 
 	applyAction(value) {
 		// We only have 'delete' right now...
 		switch (value) {
 			case 'delete':
-				this.props.backend.delete(this.props.getSelectedFiles());
+				this.props.backend.delete(this.getSelectedFiles());
 			default:
 				return false;
 		}
@@ -65,11 +73,9 @@ export default class BulkActionsComponent extends SilverStripeComponent {
 		if (option === null) {
 			return;
 		}
-		
-		this.setState({ value: option.value });
 
 		if (option.destructive === true) {
-			if (confirm(ss.i18n.sprintf(ss.i18n._t('AssetGalleryField.BULK_ACTIONS_CONFIRM'), option.label))) {
+			if (confirm(i18n.sprintf(i18n._t('AssetGalleryField.BULK_ACTIONS_CONFIRM'), option.label))) {
 				this.applyAction(option.value);
 			}
 		} else {
@@ -80,3 +86,17 @@ export default class BulkActionsComponent extends SilverStripeComponent {
 		$(ReactDOM.findDOMNode(this)).find('.dropdown').val('').trigger('liszt:updated');
 	}
 };
+
+function mapStateToProps(state) {
+	return {
+		gallery: state.assetAdmin.gallery
+	}
+}
+
+function mapDispatchToProps(dispatch) {
+	return {
+		actions: bindActionCreators(galleryActions, dispatch)
+	}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BulkActionsComponent);

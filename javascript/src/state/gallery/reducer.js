@@ -1,11 +1,16 @@
 import deepFreeze from 'deep-freeze';
 import { GALLERY } from '../action-types';
+import CONSTANTS from '../../constants.js';
 
 const initialState = {
     files: [],
     selectedFiles: [],
     editing: false,
-    focus: false
+    focus: false,
+    bulkActions: {
+        placeholder: CONSTANTS.BULK_ACTIONS_PLACEHOLDER,
+        options: CONSTANTS.BULK_ACTIONS
+    }
 };
 
 /**
@@ -44,7 +49,7 @@ export default function galleryReducer(state = initialState, action) {
         case GALLERY.SET_FOCUS:
             return Object.assign({}, state, {
                 focus: action.payload.id
-            })
+            });
         default:
             return state;
     }

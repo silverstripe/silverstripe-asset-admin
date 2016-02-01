@@ -12,11 +12,6 @@ class FileComponent extends SilverStripeComponent {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			'focussed': false,
-			'buttonTabIndex': -1
-		};
-
         this.getButtonTabIndex = this.getButtonTabIndex.bind(this);
 		this.onFileNavigate = this.onFileNavigate.bind(this);
 		this.onFileEdit = this.onFileEdit.bind(this);
@@ -52,10 +47,7 @@ class FileComponent extends SilverStripeComponent {
 
 	onFileSelect(event) {
 		event.stopPropagation(); //stop triggering click on root element
-		this.props.actions.selectFile({
-			id: this.props.id,
-			selected: !this.props.selected
-		});
+		this.props.actions.selectFile(this.props.id);
 	}
 
 	onFileEdit(event) {
@@ -223,7 +215,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
 	return {
-		actions: bindActionCreators(Object.assign(galleryActions), dispatch)
+		actions: bindActionCreators(galleryActions, dispatch)
 	}
 }
 
