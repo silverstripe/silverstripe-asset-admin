@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import * as selectedFilesActions from '../state/selected-files/actions'
 import * as filesActions from '../state/files/actions'
 import constants from '../constants';
-import BaseComponent from '../components/base-component';
+import SilverStripeComponent from 'silverstripe-component';
 
-class FileComponent extends BaseComponent {
+class FileComponent extends SilverStripeComponent {
 	constructor(props) {
 		super(props);
 
@@ -18,17 +18,15 @@ class FileComponent extends BaseComponent {
 			'buttonTabIndex': -1
 		};
 
-		this.bind(
-			'onFileNavigate',
-			'onFileEdit',
-			'onFileDelete',
-			'handleDoubleClick',
-			'handleKeyDown',
-			'handleFocus',
-			'handleBlur',
-			'preventFocus',
-			'onFileSelect'
-		);
+		this.onFileNavigate = this.onFileNavigate.bind(this);
+		this.onFileEdit = this.onFileEdit.bind(this);
+		this.onFileDelete = this.onFileDelete.bind(this);
+		this.handleDoubleClick = this.handleDoubleClick.bind(this);
+		this.handleKeyDown = this.handleKeyDown.bind(this);
+		this.handleFocus = this.handleFocus.bind(this);
+		this.handleBlur = this.handleBlur.bind(this);
+		this.preventFocus = this.preventFocus.bind(this);
+		this.onFileSelect = this.onFileSelect.bind(this);
 	}
 	
 	componentDidMount() {

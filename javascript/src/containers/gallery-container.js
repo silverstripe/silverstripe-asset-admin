@@ -8,7 +8,7 @@ import ReactTestUtils from 'react-addons-test-utils';
 import FileComponent from './file-container';
 import EditorComponent from '../components/editor-component';
 import BulkActionsComponent from '../components/bulk-actions-component';
-import BaseComponent from '../components/base-component';
+import SilverStripeComponent from 'silverstripe-component';
 import CONSTANTS from '../constants';
 
 function getComparator(field, direction) {
@@ -48,7 +48,7 @@ function getSort(field, direction) {
 	}
 }
 
-class GalleryComponent extends BaseComponent {
+class GalleryComponent extends SilverStripeComponent {
 	constructor(props) {
 		super(props);
 
@@ -141,17 +141,15 @@ class GalleryComponent extends BaseComponent {
 			}
 		};
 
-		this.bind(
-			'onFileSave',
-			'onFileNavigate',
-			'onFileEdit',
-			'onFileDelete',
-			'onBackClick',
-			'onMoreClick',
-			'onNavigate',
-			'onCancel',
-			'getSelectedFiles'
-		);
+		this.onFileSave = this.onFileSave.bind(this);
+		this.onFileNavigate = this.onFileNavigate.bind(this);
+		this.onFileEdit = this.onFileEdit.bind(this);
+		this.onFileDelete = this.onFileDelete.bind(this);
+		this.onBackClick = this.onBackClick.bind(this);
+		this.onMoreClick = this.onMoreClick.bind(this);
+		this.onNavigate = this.onNavigate.bind(this);
+		this.onCancel = this.onCancel.bind(this);
+		this.getSelectedFiles = this.getSelectedFiles.bind(this);
 	}
 
 	componentDidMount() {

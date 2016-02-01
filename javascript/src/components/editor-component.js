@@ -1,9 +1,9 @@
 import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
-import BaseComponent from './base-component';
+import SilverStripeComponent from 'silverstripe-component';
 
-class EditorComponent extends BaseComponent {
+class EditorComponent extends SilverStripeComponent {
 	constructor(props) {
 		super(props);
 
@@ -27,7 +27,9 @@ class EditorComponent extends BaseComponent {
 			}
 		];
 
-		this.bind('onFieldChange', 'onFileSave', 'onCancel');
+		this.onFieldChange = this.onFieldChange.bind(this);
+		this.onFileSave = this.onFileSave.bind(this);
+		this.onCancel = this.onCancel.bind(this);
 	}
 
 	onFieldChange(name, event) {

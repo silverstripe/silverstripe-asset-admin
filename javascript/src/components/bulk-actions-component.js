@@ -1,17 +1,15 @@
 import $ from 'jQuery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import BaseComponent from './base-component';
+import SilverStripeComponent from 'silverstripe-component';
 import ReactTestUtils from 'react-addons-test-utils';
 
-export default class BulkActionsComponent extends BaseComponent {
+export default class BulkActionsComponent extends SilverStripeComponent {
 
 	constructor(props) {
 		super(props);
 
-		this.bind(
-			'onChangeValue'
-		);
+		this.onChangeValue = this.onChangeValue.bind(this);
 	}
 
 	componentDidMount() {
