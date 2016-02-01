@@ -10,6 +10,7 @@ import EditorComponent from '../components/editor-component';
 import BulkActionsComponent from '../components/bulk-actions-component';
 import SilverStripeComponent from 'silverstripe-component';
 import CONSTANTS from '../constants';
+import * as galleryActions from '../state/gallery/actions';
 
 function getComparator(field, direction) {
 	return (a, b) => {
@@ -56,8 +57,6 @@ class GalleryComponent extends SilverStripeComponent {
 		this.state = {
 			'count': 0, // The number of files in the current view
 			'files': [],
-			'selectedFiles': [],
-			'editing': null
 		};
 
 		this.folders = [props.initial_folder];
@@ -128,10 +127,11 @@ class GalleryComponent extends SilverStripeComponent {
 						file.basename = values.basename;
 					}
 				});
+				
+				this.props.actions.setEditing(false);
 
 				this.setState({
-					'files': files,
-					'editing': null
+					'files': files
 				});
 			},
 			'onFetchData': (data) => {
@@ -144,12 +144,10 @@ class GalleryComponent extends SilverStripeComponent {
 
 		this.onFileSave = this.onFileSave.bind(this);
 		this.onFileNavigate = this.onFileNavigate.bind(this);
-		this.onFileEdit = this.onFileEdit.bind(this);
 		this.onFileDelete = this.onFileDelete.bind(this);
 		this.onBackClick = this.onBackClick.bind(this);
 		this.onMoreClick = this.onMoreClick.bind(this);
 		this.onNavigate = this.onNavigate.bind(this);
-		this.onCancel = this.onCancel.bind(this);
 		this.getSelectedFiles = this.getSelectedFiles.bind(this);
 	}
 
@@ -222,7 +220,7 @@ class GalleryComponent extends SilverStripeComponent {
 	}
 
 	getBulkActionsComponent() {
-		if (this.state.selectedFiles.length > 0 && this.props.backend.bulkActions) {
+		if (this.props.gallery.selectedFiles.length > 0 && this.props.backend.bulkActions) {
 			return <BulkActionsComponent
 				options={CONSTANTS.BULK_ACTIONS}
 				placeholder={ss.i18n._t('AssetGalleryField.BULK_ACTIONS_PLACEHOLDER')}
@@ -244,14 +242,14 @@ class GalleryComponent extends SilverStripeComponent {
 	}
 
 	getSelectedFiles() {
-		return this.state.selectedFiles;
+		return this.props.gallery.selectedFiles;
 	}
 
 	render() {
-		if (this.state.editing !== null) {
+		if (this.props.gallery.editing !== false) {
 			return <div className='gallery'>
 				<EditorComponent
-					file={this.state.editing}
+					file={this.props.gallery.editing}
 					onFileSave={this.onFileSave}
 					onCancel={this.onCancel} />
 			</div>;
@@ -273,9 +271,7 @@ class GalleryComponent extends SilverStripeComponent {
 						spaceKey={CONSTANTS.SPACE_KEY_CODE}
 						returnKey={CONSTANTS.RETURN_KEY_CODE}
 						onFileDelete={this.onFileDelete}
-						onFileEdit={this.onFileEdit}
-						onFileNavigate={this.onFileNavigate}
-						selected={this.state.selectedFiles.indexOf(file.id) > -1} />;
+						onFileNavigate={this.onFileNavigate} />;
 				})}
 			</div>
 			{this.getNoItemsNotice()}
@@ -285,35 +281,11 @@ class GalleryComponent extends SilverStripeComponent {
 		</div>;
 	}
 
-	onCancel() {
-		this.setState({
-			'editing': null
-		});
-
-		this.emitExitFileViewCmsEvent();
-	}
-
 	onFileDelete(file, event) {
 		if (confirm(i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
 			this.props.backend.delete(file.id);
 			this.emitFileDeletedCmsEvent();
 		}
-
-		event.stopPropagation();
-	}
-
-	onFileEdit(file, event) {
-		// Allow component users to inject behaviour.
-		// Temporary solution until the CMS is fully React based,
-		// at which point we can work with ES6 subclasses.
-		var cb = this.props._onFileEditCallback;
-		if(!cb || cb(file, event) !== false) {
-			this.setState({
-				'editing': file
-			});
-		}
-
-		this.emitEnterFileViewCmsEvent(file);
 
 		event.stopPropagation();
 	}
@@ -411,8 +383,6 @@ class GalleryComponent extends SilverStripeComponent {
 	onFileSave(id, state, event) {
 		this.props.backend.save(id, state);
 
-		this.emitExitFileViewCmsEvent();
-
 		event.stopPropagation();
 		event.preventDefault();
 	}
@@ -424,12 +394,14 @@ GalleryComponent.propTypes = {
 };
 
 function mapStateToProps(state) {
-	return {}
+	return {
+		gallery: state.assetAdmin.gallery
+	}
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		actions: bindActionCreators(dispatch)
+		actions: bindActionCreators(galleryActions, dispatch)
 	}
 }
 

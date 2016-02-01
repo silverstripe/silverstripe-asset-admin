@@ -59,7 +59,7 @@ class FileComponent extends SilverStripeComponent {
 
 	onFileEdit(event) {
 		event.stopPropagation(); //stop triggering click on root element
-		this.props.onFileEdit(this.props, event);
+		this.props.actions.setEditing(this);
 	}
 
 	onFileDelete(event) {
@@ -90,7 +90,7 @@ class FileComponent extends SilverStripeComponent {
 	}
 	
 	isSelected() {
-		return this.props.selectedFiles.indexOf(this.props.id) > -1;
+		return this.props.gallery.selectedFiles.indexOf(this.props.id) > -1;
 	}
 
 	getItemClassNames() {
@@ -213,7 +213,7 @@ FileComponent.propTypes = {
 
 function mapStateToProps(state) {
 	return {
-		selectedFiles: state.assetAdmin.gallery.selectedFiles
+		gallery: state.assetAdmin.gallery
 	}
 }
 

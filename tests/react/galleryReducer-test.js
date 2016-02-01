@@ -45,4 +45,32 @@ describe('galleryReducer', () => {
             expect(nextState.selectedFiles.length).toBe(0);
         });
     });
+    
+    describe('SET_EDITING', () => {
+        it('should start editing the given file', () => {
+			const initialState = {
+				editing: false
+			};
+
+			const nextState = galleryReducer(initialState, { 
+				type: 'SET_EDITING',
+				payload: { id: 1 }
+			});
+
+            expect(JSON.stringify(nextState.editing)).toBe(JSON.stringify({id:1}));
+		});
+		
+		it('should stop editing', () => {
+			const initialState = {
+				editing: { id: 1 }
+			};
+
+			const nextState = galleryReducer(initialState, { 
+				type: 'SET_EDITING',
+                payload: false
+			});
+
+			expect(nextState.editing).toBe(false);
+		});
+	});
 });

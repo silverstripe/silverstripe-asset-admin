@@ -3,7 +3,8 @@ import { GALLERY } from '../action-types';
 
 const initialState = {
     files: [],
-    selectedFiles: []
+    selectedFiles: [],
+    editing: false
 };
 
 /**
@@ -35,6 +36,10 @@ export default function galleryReducer(state = initialState, action) {
             return Object.assign({}, state, {
                 selectedFiles: newSelectedFiles
             });
+        case GALLERY.SET_EDITING:
+			return Object.assign({}, state, {
+				editing: action.payload
+			});
         default:
             return state;
     }
