@@ -40,12 +40,10 @@ function getSort(field, direction) {
 	let comparator = getComparator(field, direction);
 
 	return () => {
-		let folders = this.state.files.filter(file => file.type === 'folder');
-		let files = this.state.files.filter(file => file.type !== 'folder');
+		let folders = this.props.gallery.files.filter(file => file.type === 'folder');
+		let files = this.props.gallery.files.filter(file => file.type !== 'folder');
 
-		this.setState({
-			'files': folders.sort(comparator).concat(files.sort(comparator))
-		});
+		this.props.actions.addFile(folders.sort(comparator).concat(files.sort(comparator)));
 	}
 }
 
@@ -53,11 +51,6 @@ class GalleryComponent extends SilverStripeComponent {
 
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			'count': 0, // The number of files in the current view
-			'files': [],
-		};
 
 		this.folders = [props.initial_folder];
 
@@ -91,62 +84,15 @@ class GalleryComponent extends SilverStripeComponent {
 			}
 		];
 
-		this.listeners = {
-			'onSearchData': (data) => {
-				this.setState({
-					'count': data.count,
-					'files': data.files
-				});
-			},
-			'onMoreData': (data) => {
-				this.setState({
-					'count': data.count,
-					'files': this.state.files.concat(data.files)
-				});
-			},
-			'onNavigateData': (data) => {
-				this.setState({
-					'count': data.count,
-					'files': data.files
-				});
-			},
-			'onDeleteData': (data) => {
-				this.setState({
-					'count': this.state.count - 1,
-					'files': this.state.files.filter((file) => {
-						return data !== file.id;
-					})
-				});
-                
-                //Deselect item if it was selected
-                if (this.props.gallery.selectedFiles.indexOf(data) > -1) {
-                    this.props.actions.selectFile(data)
-                }
-			},
-			'onSaveData': (id, values) => {
-				let files = this.state.files;
+		// Backend event listeners
+		this.onFetchData = this.onFetchData.bind(this);
+		this.onSaveData = this.onSaveData.bind(this);
+		this.onDeleteData = this.onDeleteData.bind(this);
+		this.onNavigateData = this.onNavigateData.bind(this);
+		this.onMoreData = this.onMoreData.bind(this);
+		this.onSearchData = this.onSearchData.bind(this);
 
-				files.forEach((file) => {
-					if (file.id == id) {
-						file.title = values.title;
-						file.basename = values.basename;
-					}
-				});
-				
-				this.props.actions.setEditing(false);
-
-				this.setState({
-					'files': files
-				});
-			},
-			'onFetchData': (data) => {
-				this.setState({
-					'count': data.count,
-					'files': data.files
-				});
-			}
-		};
-
+		// User event listeners
 		this.onFileSave = this.onFileSave.bind(this);
 		this.onFileNavigate = this.onFileNavigate.bind(this);
 		this.onFileDelete = this.onFileDelete.bind(this);
@@ -158,23 +104,29 @@ class GalleryComponent extends SilverStripeComponent {
 	componentDidMount() {
 		super.componentDidMount();
 
-		for (let event in this.listeners) {
-			this.props.backend.on(event, this.listeners[event]);
-		}
-
 		if (this.props.initial_folder !== this.props.current_folder) {
 			this.onNavigate(this.props.current_folder);
 		} else {
 			this.props.backend.search();
 		}
+
+		this.props.backend.on('onFetchData', this.onFetchData);
+		this.props.backend.on('onSaveData', this.onSaveData);
+		this.props.backend.on('onDeleteData', this.onDeleteData);
+		this.props.backend.on('onNavigateData', this.onNavigateData);
+		this.props.backend.on('onMoreData', this.onMoreData);
+		this.props.backend.on('onSearchData', this.onSearchData);
 	}
 
 	componentWillUnmount() {
 		super.componentWillUnmount();
 
-		for (let event in this.listeners) {
-			this.props.backend.removeListener(event, this.listeners[event]);
-		}
+		this.props.backend.removeListener('onFetchData', this.onFetchData);
+		this.props.backend.removeListener('onSaveData', this.onSaveData);
+		this.props.backend.removeListener('onDeleteData', this.onDeleteData);
+		this.props.backend.removeListener('onNavigateData', this.onNavigateData);
+		this.props.backend.removeListener('onMoreData', this.onMoreData);
+		this.props.backend.removeListener('onSearchData', this.onSearchData);
 	}
 
 	componentDidUpdate() {
@@ -194,9 +146,9 @@ class GalleryComponent extends SilverStripeComponent {
 	getFileById(id) {
 		var folder = null;
 
-		for (let i = 0; i < this.state.files.length; i += 1) {
-			if (this.state.files[i].id === id) {
-				folder = this.state.files[i];
+		for (let i = 0; i < this.props.gallery.files.length; i += 1) {
+			if (this.props.gallery.files[i].id === id) {
+				folder = this.props.gallery.files[i];
 				break;
 			}
 		}
@@ -205,7 +157,7 @@ class GalleryComponent extends SilverStripeComponent {
 	}
 	
 	getNoItemsNotice() {
-		if (this.state.count < 1) {
+		if (this.props.gallery.count < 1) {
 			return <p className="no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
 		}
 		
@@ -233,7 +185,7 @@ class GalleryComponent extends SilverStripeComponent {
 	}
 
 	getMoreButton() {
-		if (this.state.count > this.state.files.length) {
+		if (this.props.gallery.count > this.props.gallery.files.length) {
 			return <button
 				className="gallery__load__more"
 				onClick={this.onMoreClick}>{i18n._t('AssetGalleryField.LOADMORE')}</button>;
@@ -263,7 +215,7 @@ class GalleryComponent extends SilverStripeComponent {
 				</select>
 			</div>
 			<div className='gallery__items'>
-				{this.state.files.map((file, i) => {
+				{this.props.gallery.files.map((file, i) => {
 					return <FileComponent key={i} {...file}
 						spaceKey={CONSTANTS.SPACE_KEY_CODE}
 						returnKey={CONSTANTS.RETURN_KEY_CODE}
@@ -276,6 +228,35 @@ class GalleryComponent extends SilverStripeComponent {
 				{this.getMoreButton()}
 			</div>
 		</div>;
+	}
+
+	onFetchData(data) {
+		this.props.actions.addFile(data.files, data.count);
+	}
+
+	onSaveData(id, values) {
+		this.props.actions.setEditing(false);
+		this.props.actions.updateFile(id, { title: values.title, basename: values.basename });
+	}
+
+	onDeleteData(data) {
+		const files = this.props.gallery.files.filter((file) => {
+			return data !== file.id;
+		});
+
+		this.props.actions.addFile(files, this.props.gallery.count - 1);
+	}
+
+	onNavigateData(data) {
+		this.props.actions.addFile(data.files, data.count);
+	}
+
+	onMoreData(data) {
+		this.props.actions.addFile(this.props.gallery.files.concat(data.files), data.count);
+	}
+
+	onSearchData(data) {
+		this.props.actions.addFile(data.files, data.count);
 	}
 
 	onFileDelete(file, event) {
@@ -291,12 +272,9 @@ class GalleryComponent extends SilverStripeComponent {
 		this.folders.push(file.filename);
 		this.props.backend.navigate(file.filename);
 
-		this.setState({
-			'selectedFiles': []
-		});
+		this.actions.deselectFiles();
 
 		this.emitFolderChangedCmsEvent();
-		// this.saveFolderNameInSession();
 	}
 
 	emitFolderChangedCmsEvent() {
@@ -307,10 +285,10 @@ class GalleryComponent extends SilverStripeComponent {
 
 		// The current folder is stored by it's name in our component.
 		// We need to get it's id because that's how Entwine components (GridField) reference it.
-		for (let i = 0; i < this.state.files.length; i += 1) {
-			if (this.state.files[i].filename === this.props.backend.folder) {
-				folder.parentId = this.state.files[i].parent.id;
-				folder.id = this.state.files[i].id;
+		for (let i = 0; i < this.props.gallery.files.length; i += 1) {
+			if (this.props.gallery.files[i].filename === this.props.backend.folder) {
+				folder.parentId = this.props.gallery.files[i].parent.id;
+				folder.id = this.props.gallery.files[i].id;
 				break;
 			}
 		}
@@ -332,12 +310,6 @@ class GalleryComponent extends SilverStripeComponent {
 		this._emitCmsEvent('exit-file-view.asset-gallery-field');
 	}
 
-	// saveFolderNameInSession() {
-	// 	if (this.props.hasSessionStorage()) {
-	// 		window.sessionStorage.setItem($(ReactDOM.findDOMNode(this)).closest('.asset-gallery')[0].id, this.props.backend.folder);
-	// 	}
-	// }
-
 	onNavigate(folder, silent = false) {
 		// Don't the folder if it exists already.
 		if (this.folders.indexOf(folder) === -1) {
@@ -349,8 +321,6 @@ class GalleryComponent extends SilverStripeComponent {
 		if (!silent) {
 			this.emitFolderChangedCmsEvent();
 		}
-
-		// this.saveFolderNameInSession();
 	}
 
 	onMoreClick(event) {
@@ -367,12 +337,9 @@ class GalleryComponent extends SilverStripeComponent {
 			this.props.backend.navigate(this.folders[this.folders.length - 1]);
 		}
 
-		this.setState({
-			'selectedFiles': []
-		});
+		this.props.actions.deselectFiles();
 
 		this.emitFolderChangedCmsEvent();
-		// this.saveFolderNameInSession();
 
 		event.preventDefault();
 	}
@@ -386,7 +353,6 @@ class GalleryComponent extends SilverStripeComponent {
 }
 
 GalleryComponent.propTypes = {
-	// 'hasSessionStorage': React.PropTypes.func.isRequired,
 	'backend': React.PropTypes.object.isRequired
 };
 

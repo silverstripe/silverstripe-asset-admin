@@ -11,21 +11,21 @@ class EditorComponent extends SilverStripeComponent {
 		super(props);
 
 		this.state = {
-			'title': this.props.gallery.editing.props.title,
-			'basename': this.props.gallery.editing.props.basename
+			'title': this.props.gallery.editing.title,
+			'basename': this.props.gallery.editing.basename
 		};
 
 		this.fields = [
 			{
 				'label': 'Title',
 				'name': 'title',
-				'value': this.props.gallery.editing.props.title,
+				'value': this.props.gallery.editing.title,
 				'onChange': (event) => this.onFieldChange('title', event)
 			},
 			{
 				'label': 'Filename',
 				'name': 'basename',
-				'value': this.props.gallery.editing.props.basename,
+				'value': this.props.gallery.editing.basename,
 				'onChange': (event) => this.onFieldChange('basename', event)
 			}
 		];
@@ -42,7 +42,7 @@ class EditorComponent extends SilverStripeComponent {
 	}
 
 	onFileSave(event) {
-		this.props.onFileSave(this.props.gallery.editing.props.id, this.state, event);
+		this.props.onFileSave(this.props.gallery.editing.id, this.state, event);
 	}
 
 	onCancel(event) {
@@ -53,47 +53,47 @@ class EditorComponent extends SilverStripeComponent {
 		return <div className='editor'>
 			<div className='CompositeField composite cms-file-info nolabel'>
 				<div className='CompositeField composite cms-file-info-preview nolabel'>
-					<img className='thumbnail-preview' src={this.props.gallery.editing.props.url} />
+					<img className='thumbnail-preview' src={this.props.gallery.editing.url} />
 				</div>
 				<div className='CompositeField composite cms-file-info-data nolabel'>
 					<div className='CompositeField composite nolabel'>
 						<div className='field readonly'>
 							<label className='left'>{i18n._t('AssetGalleryField.TYPE')}:</label>
 							<div className='middleColumn'>
-								<span className='readonly'>{this.props.gallery.editing.props.type}</span>
+								<span className='readonly'>{this.props.gallery.editing.type}</span>
 							</div>
 						</div>
 					</div>
 					<div className='field readonly'>
 						<label className='left'>{i18n._t('AssetGalleryField.SIZE')}:</label>
 						<div className='middleColumn'>
-							<span className='readonly'>{this.props.gallery.editing.props.size}</span>
+							<span className='readonly'>{this.props.gallery.editing.size}</span>
 						</div>
 					</div>
 					<div className='field readonly'>
 						<label className='left'>{i18n._t('AssetGalleryField.URL')}:</label>
 						<div className='middleColumn'>
 							<span className='readonly'>
-								<a href={this.props.gallery.editing.props.url} target='_blank'>{this.props.gallery.editing.props.url}</a>
+								<a href={this.props.gallery.editing.url} target='_blank'>{this.props.gallery.editing.url}</a>
 							</span>
 						</div>
 					</div>
 					<div className='field date_disabled readonly'>
 						<label className='left'>{i18n._t('AssetGalleryField.CREATED')}:</label>
 						<div className='middleColumn'>
-							<span className='readonly'>{this.props.gallery.editing.props.created}</span>
+							<span className='readonly'>{this.props.gallery.editing.created}</span>
 						</div>
 					</div>
 					<div className='field date_disabled readonly'>
 						<label className='left'>{i18n._t('AssetGalleryField.LASTEDIT')}:</label>
 						<div className='middleColumn'>
-							<span className='readonly'>{this.props.gallery.editing.props.lastUpdated}</span>
+							<span className='readonly'>{this.props.gallery.editing.lastUpdated}</span>
 						</div>
 					</div>
 					<div className='field readonly'>
 						<label className='left'>{i18n._t('AssetGalleryField.DIM')}:</label>
 						<div className='middleColumn'>
-							<span className='readonly'>{this.props.gallery.editing.props.attributes.dimensions.width} x {this.props.gallery.editing.props.attributes.dimensions.height}px</span>
+							<span className='readonly'>{this.props.gallery.editing.attributes.dimensions.width} x {this.props.gallery.editing.attributes.dimensions.height}px</span>
 						</div>
 					</div>
 				</div>

@@ -44,7 +44,7 @@ function getProps(props) {
 
 	// Do we need to set up a default backend?
 	if (typeof props === 'undefined' || typeof props.backend === 'undefined') {
-		backend = FileBackend.create(
+		backend = new FileBackend(
 			$componentWrapper.data('asset-gallery-fetch-url'),
 			$componentWrapper.data('asset-gallery-search-url'),
 			$componentWrapper.data('asset-gallery-update-url'),

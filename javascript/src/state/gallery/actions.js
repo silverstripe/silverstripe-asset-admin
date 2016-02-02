@@ -3,14 +3,29 @@ import { GALLERY } from '../action-types';
 /**
  * Adds a file to state.
  *
- * @param object file
- * @param number file.id - The file id.
+ * @param object|array file - File object or array of file objects.
+ * @param number [count] - The number of files in the current view.
  */
-export function addFile(file) {
+export function addFile(file, count) {
     return (dispatch, getState) => {
         return dispatch ({
             type: GALLERY.ADD_FILE,
-            payload: file
+            payload: { file, count }
+        });
+    }
+}
+
+/**
+ * Updates a file with new data.
+ *
+ * @param number id - The id of the file to update.
+ * @param object updates - The new values.
+ */
+export function updateFile(id, updates) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.UPDATE_FILE,
+            payload: { id, updates }
         });
     }
 }
@@ -22,11 +37,23 @@ export function addFile(file) {
  */
 export function selectFile(id) {
     return (dispatch, getState) => {
-        return dispatch ({
+        return dispatch({
             type: GALLERY.SELECT_FILE,
-            payload: {
-                id
-            }
+            payload: { id }
+        });
+    }
+}
+
+/**
+ * Deselects a file or files. If no param is passed all files are deselected.
+ *
+ * @param number|array ids - An id or array of ids to deselect.
+ */
+export function deselectFiles(ids = null) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.DESELECT_FILES,
+            payload: { ids }
         });
     }
 }
@@ -37,12 +64,12 @@ export function selectFile(id) {
  * @param object|boolean file - The file to edit.
  */
 export function setEditing(file) {
-	return (dispatch, getState) => {
-		return dispatch ({
-			type: GALLERY.SET_EDITING,
-			payload: file
-		});
-	}
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.SET_EDITING,
+            payload: { file }
+        });
+    }
 }
 
 /**
@@ -52,11 +79,11 @@ export function setEditing(file) {
  */
 export function setFocus(id) {
     return (dispatch, getState) => {
-		return dispatch ({
-			type: GALLERY.SET_FOCUS,
-			payload: {
+        return dispatch({
+            type: GALLERY.SET_FOCUS,
+            payload: {
                 id
             }
-		});
-	}
+        });
+    }
 }

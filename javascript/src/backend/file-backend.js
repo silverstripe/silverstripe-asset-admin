@@ -2,9 +2,6 @@ import $ from 'jQuery';
 import Events from 'events';
 
 export default class FileBackend extends Events {
-	static create(...parameters) {
-		return new FileBackend(...parameters);
-	}
 
 	constructor(fetch_url, search_url, update_url, delete_url, limit, bulkActions, $folder, currentFolder) {
 		super();

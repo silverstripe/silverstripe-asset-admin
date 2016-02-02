@@ -3,6 +3,8 @@ import { GALLERY } from '../action-types';
 import CONSTANTS from '../../constants.js';
 
 const initialState = {
+    count: 0, // The number of files in the current view
+    editing: false,
     files: [],
     selectedFiles: [],
     editing: false,
@@ -23,33 +25,68 @@ const initialState = {
  */
 export default function galleryReducer(state = initialState, action) {
 
+    var nextState;
+
     switch (action.type) {
         case GALLERY.ADD_FILE:
-            return Object.assign({}, state, {
-                files: state.files.concat(action.payload)
-            });
-        case GALLERY.SELECT_FILE:
-            var newSelectedFiles = [],
-                fileIndex = state.selectedFiles.indexOf(action.payload.id);
+            return deepFreeze(Object.assign({}, state, {
+                count: action.payload.count !== 'undefined' ? action.payload.count : state.count,
+                files: state.files.concat(action.payload.file)
+            }));
 
-            // Add the file if it doesn't exist, otherwise remove it.
-            if (fileIndex > -1) {
-                newSelectedFiles = state.selectedFiles.filter((id) => id !== action.payload.id);
+        case GALLERY.UPDATE_FILE:
+            let fileIndex = state.files.map(file => file.id).indexOf(action.payload.id);
+            let updatedFile = Object.assign({}, state.files[fileIndex], action.payload.updates);
+
+            return deepFreeze(Object.assign({}, state, {
+                files: state.files.map(file => file.id === updatedFile.id ? updatedFile : file)
+            }));
+
+        case GALLERY.SELECT_FILE:
+            // Add the file if it doesn't exist.
+            if (state.selectedFiles.indexOf(action.payload.id) === -1) {
+                nextState = deepFreeze(Object.assign({}, state, {
+                    selectedFiles: state.selectedFiles.concat(action.payload.id)
+                }));
             } else {
-                newSelectedFiles = state.selectedFiles.concat(action.payload.id);
+                // The file is already selected, so return the current state.
+                nextState = state;
             }
 
-            return Object.assign({}, state, {
-                selectedFiles: newSelectedFiles
-            });
+            return nextState;
+
+        case GALLERY.DESELECT_FILES:
+            let selectedFiles = [];
+
+            if (action.payload.ids === null) {
+                // No param was passed, deselect everything.
+                nextState = deepFreeze(Object.assign({}, state, { selectedFiles: [] }));
+            } else if (typeof action.payload.ids === 'number') {
+                // We're dealing with a single id we need to deselect.
+                let fileIndex = state.selectedFiles.indexOf(action.payload.ids);
+
+                nextState = deepFreeze(Object.assign({}, state, {
+                    selectedFiles: state.selectedFiles.slice(0, fileIndex).concat(state.selectedFiles.slice(fileIndex + 1))
+                }));
+            } else {
+                // We're dealing with an array if ids which we need to deselect.
+                nextState = deepFreeze(Object.assign({}, state, {
+                    selectedFiles: state.selectedFiles.filter(id => action.payload.ids.indexOf(id) === -1)
+                }));
+            }
+
+            return nextState;
+
         case GALLERY.SET_EDITING:
-			return Object.assign({}, state, {
-				editing: action.payload
-			});
+            return deepFreeze(Object.assign({}, state, {
+                editing: action.payload.file
+            }));
+
         case GALLERY.SET_FOCUS:
-            return Object.assign({}, state, {
+            return deepFreeze(Object.assign({}, state, {
                 focus: action.payload.id
-            });
+            }));
+
         default:
             return state;
     }

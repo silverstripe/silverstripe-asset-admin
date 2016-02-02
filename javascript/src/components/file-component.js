@@ -23,10 +23,6 @@ class FileComponent extends SilverStripeComponent {
 		this.preventFocus = this.preventFocus.bind(this);
 		this.onFileSelect = this.onFileSelect.bind(this);
 	}
-	
-	componentDidMount() {
-		this.props.actions.addFile(this);
-	}
 
 	handleDoubleClick(event) {
 		if (event.target !== ReactDOM.findDOMNode(this.refs.title) && event.target !== ReactDOM.findDOMNode(this.refs.thumbnail)) {
@@ -47,12 +43,17 @@ class FileComponent extends SilverStripeComponent {
 
 	onFileSelect(event) {
 		event.stopPropagation(); //stop triggering click on root element
-		this.props.actions.selectFile(this.props.id);
+
+		if (this.props.gallery.selectedFiles.indexOf(this.props.id) === -1) {
+			this.props.actions.selectFile(this.props.id);
+		} else {
+			this.props.actions.deselectFiles(this.props.id);
+		}
 	}
 
 	onFileEdit(event) {
 		event.stopPropagation(); //stop triggering click on root element
-		this.props.actions.setEditing(this);
+		this.props.actions.setEditing(this.props.gallery.files.find(file => file.id === this.props.id));
 	}
 
 	onFileDelete(event) {
