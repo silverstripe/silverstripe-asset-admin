@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from '../state/configureStore';
-import GalleryComponent from '../containers/gallery-container';
+import GalleryContainer from '../containers/gallery-container';
 import FileBackend from '../backend/file-backend';
 
 function getVar(name) {
@@ -83,7 +83,7 @@ const store = configureStore(); //Create the redux store
 
 ReactDOM.render(
     <Provider store={store}>
-        <GalleryComponent {...props} />
+        <GalleryContainer {...props} />
     </Provider>,
     $('.asset-gallery-component-wrapper')[0]
 );
