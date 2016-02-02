@@ -85,15 +85,42 @@ describe('galleryReducer', () => {
         });
     });
 
-    describe('SELECT_FILE', () => {
-        const type = 'SELECT_FILE';
-        const payload = { id: 1 };
-        
-        it('should add the file to selectedFiles state', () => {
+    describe('SELECT_FILES', () => {
+        const type = 'SELECT_FILES';
+
+        it('should select all files when no param is passed', () => {
+            const initialState = {
+                files: [{ id: 1 }, { id: 2 }, { id: 3 }],
+                selectedFiles: [1]
+            };
+            const payload = { ids: null };
+            const nextState = galleryReducer(initialState, { type, payload });
+
+            expect(nextState.selectedFiles.length).toBe(3);
+        });
+
+        it('should select a single file when a file id is passed', () => {
             const initialState = { selectedFiles: [] };
+            const payload = { ids: 1 };
             const nextState = galleryReducer(initialState, { type, payload });
 
             expect(nextState.selectedFiles.length).toBe(1);
+        });
+
+        it('should not select an already selected file', () => {
+            const initialState = { selectedFiles: [1] };
+            const payload = { ids: 1 };
+            const nextState = galleryReducer(initialState, { type, payload });
+
+            expect(nextState.selectedFiles.length).toBe(1);
+        })
+
+        it('should select multiple files when an array of ids is passed', () => {
+            const initialState = { selectedFiles: [1] };
+            const payload = { ids: [1, 2] };
+            const nextState = galleryReducer(initialState, { type, payload });
+
+            expect(nextState.selectedFiles.length).toBe(2);
         });
     });
 

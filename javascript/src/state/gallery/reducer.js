@@ -42,34 +42,45 @@ export default function galleryReducer(state = initialState, action) {
                 files: state.files.map(file => file.id === updatedFile.id ? updatedFile : file)
             }));
 
-        case GALLERY.SELECT_FILE:
-            // Add the file if it doesn't exist.
-            if (state.selectedFiles.indexOf(action.payload.id) === -1) {
+        case GALLERY.SELECT_FILES:
+            if (action.payload.ids === null) {
+                // No param was passed, add everything that isn't currently selected, to the selectedFiles array.
                 nextState = deepFreeze(Object.assign({}, state, {
-                    selectedFiles: state.selectedFiles.concat(action.payload.id)
+                    selectedFiles: state.selectedFiles.concat(state.files.map(file => file.id).filter(id => state.selectedFiles.indexOf(id) === -1))
                 }));
+            } else if (typeof action.payload.ids === 'number') {
+                // We're dealing with a single id to select.
+                // Add the file if it's not already selected.
+                if (state.selectedFiles.indexOf(action.payload.ids) === -1) {
+                    nextState = deepFreeze(Object.assign({}, state, {
+                        selectedFiles: state.selectedFiles.concat(action.payload.ids)
+                    }));
+                } else {
+                    // The file is already selected, so return the current state.
+                    nextState = state;
+                }
             } else {
-                // The file is already selected, so return the current state.
-                nextState = state;
+                // We're dealing with an array if ids to select.
+                nextState = deepFreeze(Object.assign({}, state, {
+                    selectedFiles: state.selectedFiles.concat(action.payload.ids.filter(id => state.selectedFiles.indexOf(id) === -1))
+                }));
             }
 
             return nextState;
 
         case GALLERY.DESELECT_FILES:
-            let selectedFiles = [];
-
             if (action.payload.ids === null) {
                 // No param was passed, deselect everything.
                 nextState = deepFreeze(Object.assign({}, state, { selectedFiles: [] }));
             } else if (typeof action.payload.ids === 'number') {
-                // We're dealing with a single id we need to deselect.
+                // We're dealing with a single id to deselect.
                 let fileIndex = state.selectedFiles.indexOf(action.payload.ids);
 
                 nextState = deepFreeze(Object.assign({}, state, {
                     selectedFiles: state.selectedFiles.slice(0, fileIndex).concat(state.selectedFiles.slice(fileIndex + 1))
                 }));
             } else {
-                // We're dealing with an array if ids which we need to deselect.
+                // We're dealing with an array if ids to deselect.
                 nextState = deepFreeze(Object.assign({}, state, {
                     selectedFiles: state.selectedFiles.filter(id => action.payload.ids.indexOf(id) === -1)
                 }));

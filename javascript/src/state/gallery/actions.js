@@ -31,15 +31,15 @@ export function updateFile(id, updates) {
 }
 
 /**
- * Selects a file.
+ * Selects a file or files. If no param is passed all files are selected.
  *
- * @param number file.id - The file id.
+ * @param number|array ids - File id or array of file ids to select.
  */
-export function selectFile(id) {
+export function selectFiles(ids = null) {
     return (dispatch, getState) => {
         return dispatch({
-            type: GALLERY.SELECT_FILE,
-            payload: { id }
+            type: GALLERY.SELECT_FILES,
+            payload: { ids }
         });
     }
 }
@@ -47,7 +47,7 @@ export function selectFile(id) {
 /**
  * Deselects a file or files. If no param is passed all files are deselected.
  *
- * @param number|array ids - An id or array of ids to deselect.
+ * @param number|array ids - File id or array of file ids to deselect.
  */
 export function deselectFiles(ids = null) {
     return (dispatch, getState) => {
