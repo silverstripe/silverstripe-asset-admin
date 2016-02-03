@@ -104,10 +104,14 @@ export default class FileBackend extends Events {
 	}
 
 	save(id, values) {
-		values['id'] = id;
+		var updates = { id };
+		
+		values.forEach(field => {
+			updates[field.name] = field.value;
+		});
 
-		this.request('POST', this.update_url, values).then(() => {
-			this.emit('onSaveData', id, values);
+		this.request('POST', this.update_url, updates).then(() => {
+			this.emit('onSaveData', id, updates);
 		});
 	}
 

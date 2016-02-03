@@ -194,7 +194,7 @@ describe('galleryReducer', () => {
 
             expect(nextState.focus).toBe(1);
         });
-        
+
         it('should remove', () => {
             const initialState = {
                 focus: 1
@@ -206,6 +206,55 @@ describe('galleryReducer', () => {
             });
 
             expect(nextState.focus).toBe(false);
+        });
+    });
+
+    describe('SET_EDITOR_FIELDS', () => {
+        it('should set the state for the editor fields', () => {
+            const initialState = {
+                editorFields: []
+            };
+
+            const nextState = galleryReducer(initialState, { 
+                type: 'SET_EDITOR_FIELDS',
+                payload: {
+                    editorFields: [{
+                        name: 'filename',
+                        title: 'name'
+                    }]
+                }
+            });
+            
+            expect(JSON.stringify(nextState.editorFields)).toBe(JSON.stringify([{
+                name: 'filename',
+                title: 'name'
+            }]));
+        });
+    });
+
+    describe('UPDATE_EDITOR_FIELD', () => {
+        it('should update the value of the given field', () => {
+            const initialState = {
+                editorFields: [{
+                    name: 'filename',
+                    title: 'name'
+                }]
+            };
+
+            const nextState = galleryReducer(initialState, { 
+                type: 'UPDATE_EDITOR_FIELD',
+                payload: {
+                    updates: {
+                        name: 'filename',
+                        title: 'filename.jpg'
+                    }
+                }
+            });
+
+            expect(JSON.stringify(nextState.editorFields)).toBe(JSON.stringify([{
+                name: 'filename',
+                title: 'filename.jpg'
+            }]));
         });
     });
 });

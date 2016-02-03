@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
 import FileComponent from '../components/file-component';
-import EditorComponent from '../components/editor-component';
+import EditorContainer from './editor-container';
 import BulkActionsComponent from '../components/bulk-actions-component';
 import SilverStripeComponent from 'silverstripe-component';
 import CONSTANTS from '../constants';
@@ -47,7 +47,7 @@ function getSort(field, direction) {
 	}
 }
 
-class GalleryComponent extends SilverStripeComponent {
+class GalleryContainer extends SilverStripeComponent {
 
 	constructor(props) {
 		super(props);
@@ -197,7 +197,7 @@ class GalleryComponent extends SilverStripeComponent {
 	render() {
 		if (this.props.gallery.editing !== false) {
 			return <div className='gallery'>
-				<EditorComponent
+				<EditorContainer
 					file={this.props.gallery.editing}
 					onFileSave={this.onFileSave}
 					onCancel={this.onCancel} />
@@ -352,7 +352,7 @@ class GalleryComponent extends SilverStripeComponent {
 	}
 }
 
-GalleryComponent.propTypes = {
+GalleryContainer.propTypes = {
 	'backend': React.PropTypes.object.isRequired
 };
 
@@ -368,4 +368,4 @@ function mapDispatchToProps(dispatch) {
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GalleryComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(GalleryContainer);

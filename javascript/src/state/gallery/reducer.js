@@ -12,7 +12,8 @@ const initialState = {
     bulkActions: {
         placeholder: CONSTANTS.BULK_ACTIONS_PLACEHOLDER,
         options: CONSTANTS.BULK_ACTIONS
-    }
+    },
+    editorFields: []
 };
 
 /**
@@ -98,6 +99,19 @@ export default function galleryReducer(state = initialState, action) {
                 focus: action.payload.id
             }));
 
+        case GALLERY.SET_EDITOR_FIELDS:
+            return deepFreeze(Object.assign({}, state, {
+                editorFields: action.payload.editorFields
+            }));
+        
+        case GALLERY.UPDATE_EDITOR_FIELD:
+            let fieldIndex = state.editorFields.map(field => field.name).indexOf(action.payload.updates.name);
+            let updatedField = Object.assign({}, state.editorFields[fieldIndex], action.payload.updates);
+
+            return deepFreeze(Object.assign({}, state, {
+                editorFields: state.editorFields.map(field => field.name === updatedField.name ? updatedField : field)
+            }));
+                    
         default:
             return state;
     }
