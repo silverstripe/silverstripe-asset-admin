@@ -4,7 +4,8 @@ import React from 'react';
 import SilverStripeComponent from 'silverstripe-component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as galleryActions from '../state/gallery/actions';
+import * as galleryActions from '../../state/gallery/actions';
+import TextFieldComponent from '../../components/text-field/index'
 
 class EditorContainer extends SilverStripeComponent {
 	constructor(props) {
@@ -105,12 +106,12 @@ class EditorContainer extends SilverStripeComponent {
 				</div>
 			</div>
 			{this.props.gallery.editorFields.map((field, i) => {
-				return <div className='field text' key={i}>
-					<label className='left' htmlFor={'gallery_' + field.name}>{field.label}</label>
-					<div className='middleColumn'>
-						<input id={'gallery_' + field.name} className="text" type='text' name={field.name} onChange={this.onFieldChange} value={field.value} />
-					</div>
-				</div>
+				return <TextFieldComponent
+						key={i}
+						label={field.label}
+						name={field.name}
+						value={field.value}
+						onChange={this.onFieldChange} />
 			})}
 			<div>
 				<button
@@ -131,21 +132,21 @@ class EditorContainer extends SilverStripeComponent {
 }
 
 EditorContainer.propTypes = {
-	'file': React.PropTypes.shape({
-		'id': React.PropTypes.number,
-		'title': React.PropTypes.string,
-		'basename': React.PropTypes.string,
-		'url': React.PropTypes.string,
-		'size': React.PropTypes.string,
-		'created': React.PropTypes.string,
-		'lastUpdated': React.PropTypes.string,
-		'dimensions': React.PropTypes.shape({
-			'width': React.PropTypes.number,
-			'height': React.PropTypes.number
+	file: React.PropTypes.shape({
+		id: React.PropTypes.number,
+		title: React.PropTypes.string,
+		basename: React.PropTypes.string,
+		url: React.PropTypes.string,
+		size: React.PropTypes.string,
+		created: React.PropTypes.string,
+		lastUpdated: React.PropTypes.string,
+		dimensions: React.PropTypes.shape({
+			width: React.PropTypes.number,
+			height: React.PropTypes.number
 		})
 	}),
-	'onFileSave': React.PropTypes.func,
-	'onCancel':React.PropTypes.func
+	onFileSave: React.PropTypes.func,
+	onCancel:React.PropTypes.func
 };
 
 function mapStateToProps(state) {

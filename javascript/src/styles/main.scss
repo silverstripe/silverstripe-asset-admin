@@ -1,46 +1,3 @@
-$transition-speed: .3s;
-$selectedColor: #72c34b;
-
-$breakpoint-xxxsmall: 40.625em;
-$breakpoint-xxsmall: 51.25em;
-$breakpoint-xsmall: 63.25em;
-$breakpoint-small: 75.5em;
-$breakpoint-medium: 88em;
-$breakpoint-large: 100.5em;
-$breakpoint-xlarge: 113em;
-$breakpoint-xxlarge: 125.5em;
-$breakpoint-xxxlarge: 138em;
-
-@mixin breakpoint($media) {
-    @if $media == xxxsmall {
-        @media all and (min-width: $breakpoint-xxxsmall) { @content; }
-    }
-    @else if $media == xxsmall {
-        @media all and (min-width: $breakpoint-xxsmall) { @content; }
-    }
-    @else if $media == xsmall {
-        @media all and (min-width: $breakpoint-xsmall) { @content; }
-    }
-    @else if $media == small {
-        @media all and (min-width: $breakpoint-small) { @content; }
-    }
-    @else if $media == medium {
-        @media all and (min-width: $breakpoint-medium) { @content; }
-    }
-    @else if $media == large {
-        @media all and (min-width: $breakpoint-large) { @content; }
-    }
-    @else if $media == xlarge {
-        @media all and (min-width: $breakpoint-xlarge) { @content; }
-    }
-    @else if $media == xxlarge {
-        @media all and (min-width: $breakpoint-xxlarge) { @content; }
-    }
-    @else if $media == xxxlarge {
-        @media all and (min-width: $breakpoint-xxxlarge) { @content; }
-    }
-}
-
 // Reset some annoying CMS styles.
 .asset-gallery {
     > .left {
@@ -52,6 +9,8 @@ $breakpoint-xxxlarge: 138em;
     }
 }
 
-@import 'gallery';
-@import 'item';
-@import '_AssetAdmin'
+@import 'variables';
+@import 'mixins';
+@import '../sections/gallery/styles';
+@import '../components/file/styles';
+@import 'AssetAdmin'

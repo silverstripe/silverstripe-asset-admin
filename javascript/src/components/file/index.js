@@ -4,8 +4,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as galleryActions from '../state/gallery/actions'
-import constants from '../constants';
+import * as galleryActions from '../../state/gallery/actions';
+import constants from '../../constants';
 import SilverStripeComponent from 'silverstripe-component';
 
 class FileComponent extends SilverStripeComponent {
@@ -191,21 +191,21 @@ class FileComponent extends SilverStripeComponent {
 }
 
 FileComponent.propTypes = {
-	'id': React.PropTypes.number,
-	'title': React.PropTypes.string,
-	'category': React.PropTypes.string,
-	'url': React.PropTypes.string,
-	'dimensions': React.PropTypes.shape({
-		'width': React.PropTypes.number,
-		'height': React.PropTypes.number
+	id: React.PropTypes.number,
+	title: React.PropTypes.string,
+	category: React.PropTypes.string,
+	url: React.PropTypes.string,
+	dimensions: React.PropTypes.shape({
+		width: React.PropTypes.number,
+		height: React.PropTypes.number
 	}),
-	'onFileNavigate': React.PropTypes.func,
-	'onFileEdit': React.PropTypes.func,
-	'onFileDelete': React.PropTypes.func,
-	'spaceKey': React.PropTypes.number,
-	'returnKey': React.PropTypes.number,
-	'onFileSelect': React.PropTypes.func,
-	'selected': React.PropTypes.bool
+	onFileNavigate: React.PropTypes.func,
+	onFileEdit: React.PropTypes.func,
+	onFileDelete: React.PropTypes.func,
+	spaceKey: React.PropTypes.number,
+	returnKey: React.PropTypes.number,
+	onFileSelect: React.PropTypes.func,
+	selected: React.PropTypes.bool
 };
 
 function mapStateToProps(state) {

@@ -5,12 +5,12 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
-import FileComponent from '../components/file-component';
-import EditorContainer from './editor-container';
-import BulkActionsComponent from '../components/bulk-actions-component';
+import FileComponent from '../../components/file/index';
+import EditorContainer from '../editor/controller.js';
+import BulkActionsComponent from '../../components/bulk-actions/index';
 import SilverStripeComponent from 'silverstripe-component';
-import CONSTANTS from '../constants';
-import * as galleryActions from '../state/gallery/actions';
+import CONSTANTS from '../../constants';
+import * as galleryActions from '../../state/gallery/actions';
 
 function getComparator(field, direction) {
 	return (a, b) => {
@@ -272,7 +272,7 @@ class GalleryContainer extends SilverStripeComponent {
 		this.folders.push(file.filename);
 		this.props.backend.navigate(file.filename);
 
-		this.actions.deselectFiles();
+		this.props.actions.deselectFiles();
 
 		this.emitFolderChangedCmsEvent();
 	}
@@ -353,7 +353,7 @@ class GalleryContainer extends SilverStripeComponent {
 }
 
 GalleryContainer.propTypes = {
-	'backend': React.PropTypes.object.isRequired
+	backend: React.PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {

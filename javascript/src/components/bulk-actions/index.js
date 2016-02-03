@@ -5,7 +5,7 @@ import SilverStripeComponent from 'silverstripe-component';
 import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as galleryActions from '../state/gallery/actions';
+import * as galleryActions from '../../state/gallery/actions';
 import i18n from 'i18n';
 
 export default class BulkActionsComponent extends SilverStripeComponent {

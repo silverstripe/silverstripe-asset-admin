@@ -34,6 +34,8 @@
     "gulp-notify": "^2.2.0",
     "gulp-sass": "^2.0.4",
     "jest-cli": "^0.8.0",
+    "react": "^0.14.7",
+    "react-addons-test-utils": "^0.14.7",
     "redux-logger": "^2.4.0",
     "semver": "^5.0.3",
     "vinyl-source-stream": "^1.1.0"
