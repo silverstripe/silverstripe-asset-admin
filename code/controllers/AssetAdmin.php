@@ -137,7 +137,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider{
 	}
 
 	public function getEditForm($id = null, $fields = null) {
-		Requirements::javascript(FRAMEWORK_DIR . '/javascript/AssetUploadField.js');
+		Requirements::javascript(FRAMEWORK_DIR . '/javascript/dist/AssetUploadField.js');
 		Requirements::css(FRAMEWORK_DIR . '/css/AssetUploadField.css');
 
 		$form = parent::getEditForm($id, $fields);
