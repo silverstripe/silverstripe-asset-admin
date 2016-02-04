@@ -77,7 +77,7 @@ class FileComponent extends SilverStripeComponent {
 		var thumbnailClassNames = 'item__thumbnail';
 
 		if (this.isImageLargerThanThumbnail()) {
-			thumbnailClassNames += ' large';
+			thumbnailClassNames += ' item__thumbnail--large';
 		}
 
 		return thumbnailClassNames;
@@ -100,14 +100,14 @@ class FileComponent extends SilverStripeComponent {
     }
 
 	getItemClassNames() {
-		var itemClassNames = 'item ' + this.props.category;
+		var itemClassNames = 'item item--' + this.props.category;
 
 		if (this.isFocussed()) {
-			itemClassNames += ' focussed';
+			itemClassNames += ' item--focussed';
 		}
 
 		if (this.isSelected()) {
-			itemClassNames += ' selected';
+			itemClassNames += ' item--selected';
 		}
 
 		return itemClassNames;

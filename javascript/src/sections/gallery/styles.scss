@@ -10,12 +10,12 @@
 
     }
     
-    .no-item-notice {
+    .gallery__no-item-notice {
         width: 100%;
         text-align: center;
     }
 
-    .gallery__bulk {
+    .gallery__bulk-actions {
         position: absolute;
         top: 14px;
         animation: actionsAdded .3s ease-in-out;

@@ -158,7 +158,7 @@ class GalleryContainer extends SilverStripeComponent {
 	
 	getNoItemsNotice() {
 		if (this.props.gallery.count < 1) {
-			return <p className="no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
+			return <p className="gallery__no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
 		}
 		
 		return null;
