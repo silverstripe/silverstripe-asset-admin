@@ -1,4 +1,5 @@
 import { GALLERY } from '../action-types';
+import CONSTANTS from '../../constants';
 
 /**
  * Adds files to state.
@@ -18,7 +19,7 @@ export function addFiles(files, count) {
 /**
  * Removes files from the state. If no param is passed all files are removed
  *
- * @param Array id - Array of file ids.
+ * @param array ids - Array of file ids.
  */
 export function removeFiles(ids) {
     return (dispatch, getState) => {
@@ -93,11 +94,11 @@ export function setEditing(file) {
  */
 export function setEditorFields(editorFields = []) {
     return (dispatch, getState) => {
-		return dispatch ({
-			type: GALLERY.SET_EDITOR_FIELDS,
-			payload: { editorFields }
-		});
-	}
+        return dispatch({
+            type: GALLERY.SET_EDITOR_FIELDS,
+            payload: { editorFields }
+        });
+    }
 }
 
 /**
@@ -110,11 +111,26 @@ export function setEditorFields(editorFields = []) {
  */
 export function updateEditorField(updates) {
     return (dispatch, getState) => {
-		return dispatch ({
-			type: GALLERY.UPDATE_EDITOR_FIELD,
-			payload: { updates }
-		});
-	}
+        return dispatch({
+            type: GALLERY.UPDATE_EDITOR_FIELD,
+            payload: { updates }
+        });
+    }
+}
+
+/**
+ * Updates push state (invoking any registered page.js handlers) and sets the route in state.
+ * Components which define routes are rendered based on the `route` value stored in state.
+ *
+ * @param string path - The path for pushState.
+ */
+export function setPath(path) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.SET_PATH,
+            payload: { path }
+        });
+    }
 }
 
 /**
@@ -127,6 +143,34 @@ export function sortFiles(comparator) {
         return dispatch({
             type: GALLERY.SORT_FILES,
             payload: { comparator }
+        });
+    }
+}
+
+/**
+ * Sets wether or not the user is currently inside a folder.
+ *
+ * @param boolean viewingFolder
+ */
+export function setViewingFolder(viewingFolder) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.SET_VIEWING_FOLDER,
+            payload: { viewingFolder }
+        });
+    }
+}
+
+/**
+ * Sets the parentID for the currently viewed folder.
+ *
+ * @param id parentID
+ */
+export function setParentFolderId(parentFolderID) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.SET_PARENT_FOLDER_ID,
+            payload: { parentFolderID }
         });
     }
 }
