@@ -4,8 +4,8 @@
 	"type": "silverstripe-module",
 	"require": {
 		"php": ">=5.4.0",
-		"silverstripe/cms": "^4.0",
-		"silverstripe/framework": "^4.0"
+		"silverstripe/cms": "dev-integrate-react",
+		"silverstripe/framework": "dev-integrate-react"
 	},
 	"require-dev": {
 		"phpunit/PHPUnit": "^3.7"
@@ -17,5 +17,15 @@
 		"classmap": ["tests/behat/"]
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true
+	"prefer-stable": true,
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/open-sausages/silverstripe-cms.git"
+		},
+		{
+			"type": "vcs",
+			"url": "https://github.com/open-sausages/silverstripe-framework.git"
+		}
+	]
 }
