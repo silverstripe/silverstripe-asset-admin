@@ -58,15 +58,37 @@ describe('galleryReducer', () => {
 
             expect(nextState.count).toBe(1);
 
-            const nextNextState = galleryReducer(initialState, {
+            const nextNextState = galleryReducer(nextState, {
                 type,
                 payload: {
                     file: { id: 2 }
                 }
             });
 
-            expect(nextState.count).toBe(1);
+            expect(nextNextState.count).toBe(1);
         });
+        
+        it('should not add the same file twice', () => {
+            const nextState = galleryReducer(initialState, {
+                type,
+                payload: {
+                    count: 1,
+                    file: { id: 1 }
+                }
+            });
+            
+            expect(nextState.files.length).toBe(1);
+            
+            const nextNextState = galleryReducer(nextState, {
+                type,
+                payload: {
+                    count: 1,
+                    file: { id: 1 }
+                }
+            });
+
+            expect(nextNextState.files.length).toBe(1);
+        })
     });
 
     describe('UPDATE_FILE', () => {

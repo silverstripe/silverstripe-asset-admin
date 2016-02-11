@@ -30,9 +30,45 @@ export default function galleryReducer(state = initialState, action) {
 
     switch (action.type) {
         case GALLERY.ADD_FILE:
+            let nextFilesState = []; // Clone the state.files array
+
+            if (Object.prototype.toString.call(action.payload.file) === '[object Array]') {
+                // If an array of object is given
+                action.payload.file.forEach((payloadFile) => {
+                    let fileInState = false;
+
+                    state.files.forEach((stateFile) => {
+                        // Check if each file given is already in the state
+                        if (stateFile.id === payloadFile.id) {
+                            fileInState = true;
+                        };
+                    });
+
+                    // Only add the file if it isn't already in the state
+                    if (!fileInState) {
+                        nextFilesState.push(payloadFile)
+                    }
+                });
+            } else if (typeof action.payload.file === 'object') {
+                // Else if a single item is given
+                let fileInState = false;
+
+                state.files.forEach((file) => {
+                    // Check if the file given is already in the state
+                    if (file.id === action.payload.file.id) {
+                        fileInState = true;
+                    };
+                });
+
+                // Only add the file if it isn't already in the state
+                if (!fileInState) {
+                    nextFilesState.push(action.payload.file);
+                }
+            }
+
             return deepFreeze(Object.assign({}, state, {
-                count: action.payload.count !== 'undefined' ? action.payload.count : state.count,
-                files: state.files.concat(action.payload.file)
+                count: typeof action.payload.count !== 'undefined' ? action.payload.count : state.count,
+                files: state.files.concat(nextFilesState)
             }));
 
         case GALLERY.UPDATE_FILE:
