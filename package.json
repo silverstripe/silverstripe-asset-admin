@@ -24,12 +24,13 @@
     }
   ],
   "engines": {
-    "node": "5.x"
+    "node": "4.x"
   },
   "dependencies": {
     "babel-jest": "^5.3.0",
     "babelify": "^6.3.0",
     "browserify": "^11.1.0",
+    "deep-freeze": "0.0.1",
     "gulp": "^3.9.0",
     "gulp-notify": "^2.2.0",
     "gulp-sass": "^2.0.4",
@@ -38,8 +39,7 @@
     "react-addons-test-utils": "^0.14.7",
     "redux-logger": "^2.4.0",
     "semver": "^5.0.3",
-    "vinyl-source-stream": "^1.1.0",
-    "deep-freeze": "0.0.1"
+    "vinyl-source-stream": "^1.1.0"
   },
   "scripts": {
     "build": "gulp",
