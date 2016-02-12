@@ -90,6 +90,59 @@ describe('galleryReducer', () => {
             expect(nextNextState.files.length).toBe(1);
         })
     });
+    
+    describe('REMOVE_FILE', () => {
+        const type = 'REMOVE_FILE';
+        const initialState = {
+            count: 2,
+            files: [{ id: 1 }, { id: 2 }, { id: 3 }]
+        }
+
+        it('should remove all files and set count to 0 if no param is given', () => {
+            const nextState = galleryReducer(initialState, {
+                type,
+                payload: {
+                    id: undefined
+                }
+            });
+
+            expect(nextState.files.length).toBe(0);
+            expect(nextState.count).toBe(0);
+        })
+
+        it('should remove a single file from state', () => {
+            const nextState = galleryReducer(initialState, {
+                type,
+                payload: {
+                    id: 1
+                }
+            });
+
+            expect(nextState.files.length).toBe(2);
+        });
+
+        it('should remove multiple files from the state', () =>{
+            const nextState = galleryReducer(initialState, {
+                type,
+                payload: {
+                    id: [1, 2]
+                }
+            });
+        
+            expect(nextState.files.length).toBe(1);
+        });
+
+        it('should do nothing if the given id is not in the state', () => {
+            const nextState = galleryReducer(initialState, {
+                type,
+                payload: {
+                    id: 4
+                }
+            });
+            
+            expect(nextState.files.length).toBe(3);
+        })
+    });
 
     describe('UPDATE_FILE', () => {
         const type = 'UPDATE_FILE';
@@ -277,6 +330,94 @@ describe('galleryReducer', () => {
                 name: 'filename',
                 title: 'filename.jpg'
             }]));
+        });
+    });
+    
+    describe('SORT_FILES', () => {
+        const type = 'SORT_FILES';
+        const initialState = {
+            files: [
+                {
+                    id: 1,
+                    title: 'a',
+                    created: '1'
+                },
+                {
+                    id: 2,
+                    title: 'b',
+                    created: '2'
+                }]
+        }
+        
+        function getComparator(field, direction) {
+            return (a, b) => {
+                const fieldA = a[field].toLowerCase();
+                const fieldB = b[field].toLowerCase();
+
+                if (direction === 'asc') {
+                    if (fieldA < fieldB) {
+                        return -1;
+                    }
+
+                    if (fieldA > fieldB) {
+                        return 1;
+                    }
+                } else {
+                    if (fieldA > fieldB) {
+                        return -1;
+                    }
+
+                    if (fieldA < fieldB) {
+                        return 1;
+                    }
+                }
+
+                return 0;
+            };
+        }
+
+        it('should sort files by title ascending order', () => {
+            const nextState = galleryReducer(initialState, { 
+                type: 'SORT_FILES',
+                payload: {
+                    comparator: getComparator('title', 'asc')
+                }
+            });
+
+            expect(nextState.files[0].title).toBe('a');
+        });
+        
+        it('should sort files by title ascending order', () => {
+            const nextState = galleryReducer(initialState, { 
+                type: 'SORT_FILES',
+                payload: {
+                    comparator: getComparator('title', 'desc')
+                }
+            });
+
+            expect(nextState.files[0].title).toBe('b');
+        });
+        
+        it('should sort files by created date ascending order', () => {
+            const nextState = galleryReducer(initialState, { 
+                type: 'SORT_FILES',
+                payload: {
+                    comparator: getComparator('created', 'asc')
+                }
+            });
+
+            expect(nextState.files[0].created).toBe('1');
+        });
+        
+        it('should sort files by created date descending order', () => {
+            const nextState = galleryReducer(initialState, { 
+                type: 'SORT_FILES',
+                payload: {
+                    comparator: getComparator('created', 'desc')
+                }
+            });
+
+            expect(nextState.files[0].created).toBe('2');
         });
     });
 });

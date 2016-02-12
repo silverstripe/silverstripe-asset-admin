@@ -16,6 +16,20 @@ export function addFile(file, count) {
 }
 
 /**
+ * Removes a file from the state. If no param is passed all files are removed
+ *
+ * @param number|array id - File id or array of file ids.
+ */
+export function removeFile(id) {
+    return (dispatch, getState) => {
+        return dispatch ({
+            type: GALLERY.REMOVE_FILE,
+            payload: { id }
+        });
+    }
+}
+
+/**
  * Updates a file with new data.
  *
  * @param number id - The id of the file to update.
@@ -117,4 +131,18 @@ export function updateEditorField(updates) {
 			payload: { updates }
 		});
 	}
+}
+
+/**
+ * Sorts files in some order.
+ *
+ * @param func comparator - Used to determine the sort order.
+ */
+export function sortFiles(comparator) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.SORT_FILES,
+            payload: { comparator }
+        });
+    }
 }

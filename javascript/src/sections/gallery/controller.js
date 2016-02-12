@@ -14,37 +14,29 @@ import * as galleryActions from '../../state/gallery/actions';
 
 function getComparator(field, direction) {
 	return (a, b) => {
+		const fieldA = a[field].toLowerCase();
+		const fieldB = b[field].toLowerCase();
+
 		if (direction === 'asc') {
-			if (a[field] < b[field]) {
+			if (fieldA < fieldB) {
 				return -1;
 			}
 
-			if (a[field] > b[field]) {
+			if (fieldA > fieldB) {
 				return 1;
 			}
 		} else {
-			if (a[field] > b[field]) {
+			if (fieldA > fieldB) {
 				return -1;
 			}
 
-			if (a[field] < b[field]) {
+			if (fieldA < fieldB) {
 				return 1;
 			}
 		}
 
 		return 0;
 	};
-}
-
-function getSort(field, direction) {
-	let comparator = getComparator(field, direction);
-
-	return () => {
-		let folders = this.props.gallery.files.filter(file => file.type === 'folder');
-		let files = this.props.gallery.files.filter(file => file.type !== 'folder');
-
-		this.props.actions.addFile(folders.sort(comparator).concat(files.sort(comparator)));
-	}
 }
 
 class GalleryContainer extends SilverStripeComponent {
@@ -59,28 +51,24 @@ class GalleryContainer extends SilverStripeComponent {
 
 		this.sorters = [
 			{
-				'field': 'title',
-				'direction': 'asc',
-				'label': i18n._t('AssetGalleryField.FILTER_TITLE_ASC'),
-				'onSort': getSort.call(this, 'title', 'asc')
+				field: 'title',
+				direction: 'asc',
+				label: i18n._t('AssetGalleryField.FILTER_TITLE_ASC')
 			},
 			{
-				'field': 'title',
-				'direction': 'desc',
-				'label': i18n._t('AssetGalleryField.FILTER_TITLE_DESC'),
-				'onSort': getSort.call(this, 'title', 'desc')
+				field: 'title',
+				direction: 'desc',
+				label: i18n._t('AssetGalleryField.FILTER_TITLE_DESC')
 			},
 			{
-				'field': 'created',
-				'direction': 'desc',
-				'label': i18n._t('AssetGalleryField.FILTER_DATE_DESC'),
-				'onSort': getSort.call(this, 'created', 'desc')
+				field: 'created',
+				direction: 'desc',
+				label: i18n._t('AssetGalleryField.FILTER_DATE_DESC')
 			},
 			{
-				'field': 'created',
-				'direction': 'asc',
-				'label': i18n._t('AssetGalleryField.FILTER_DATE_ASC'),
-				'onSort': getSort.call(this, 'created', 'asc')
+				field: 'created',
+				direction: 'asc',
+				label: i18n._t('AssetGalleryField.FILTER_DATE_ASC')
 			}
 		];
 
@@ -99,6 +87,7 @@ class GalleryContainer extends SilverStripeComponent {
 		this.onBackClick = this.onBackClick.bind(this);
 		this.onMoreClick = this.onMoreClick.bind(this);
 		this.onNavigate = this.onNavigate.bind(this);
+		this.handleSort = this.handleSort.bind(this);
 	}
 
 	componentDidMount() {
@@ -116,6 +105,18 @@ class GalleryContainer extends SilverStripeComponent {
 		this.props.backend.on('onNavigateData', this.onNavigateData);
 		this.props.backend.on('onMoreData', this.onMoreData);
 		this.props.backend.on('onSearchData', this.onSearchData);
+		
+		let $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
+		
+		// We opt-out of letting the CMS handle Chosen because it doesn't re-apply the behaviour correctly.
+		// So after the gallery has been rendered we apply Chosen.
+		$select.chosen({
+			'allow_single_deselect': true,
+			'disable_search_threshold': 20
+		});
+
+		//Chosen stops the change event from reaching React so we have to simulate a click.
+		$select.change(() => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
 	}
 
 	componentWillUnmount() {
@@ -128,19 +129,15 @@ class GalleryContainer extends SilverStripeComponent {
 		this.props.backend.removeListener('onMoreData', this.onMoreData);
 		this.props.backend.removeListener('onSearchData', this.onSearchData);
 	}
-
-	componentDidUpdate() {
-		var $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
-
-		// We opt-out of letting the CMS handle Chosen because it doesn't re-apply the behaviour correctly.
-		// So after the gallery has been rendered we apply Chosen.
-		$select.chosen({
-			'allow_single_deselect': true,
-			'disable_search_threshold': 20
-		});
-
-		// Chosen stops the change event from reaching React so we have to simulate a click.
-		$select.change(() => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
+	
+	/**
+	 * Handler for when the user changes the sort order.
+	 *
+	 * @param object event - Click event.
+	 */
+	handleSort(event) {
+		const data = event.target.dataset;
+		this.props.actions.sortFiles(getComparator(data.field, data.direction));
 	}
 
 	getFileById(id) {
@@ -210,7 +207,11 @@ class GalleryContainer extends SilverStripeComponent {
 			<div className="gallery__sort fieldholder-small">
 				<select className="dropdown no-change-track no-chzn" tabIndex="0" style={{width: '160px'}}>
 					{this.sorters.map((sorter, i) => {
-						return <option key={i} onClick={sorter.onSort}>{sorter.label}</option>;
+						return <option
+								key={i}
+								onClick={this.handleSort}
+								data-field={sorter.field}
+								data-direction={sorter.direction}>{sorter.label}</option>;
 					})}
 				</select>
 			</div>
@@ -240,14 +241,12 @@ class GalleryContainer extends SilverStripeComponent {
 	}
 
 	onDeleteData(data) {
-		const files = this.props.gallery.files.filter((file) => {
-			return data !== file.id;
-		});
-
-		this.props.actions.addFile(files, this.props.gallery.count - 1);
+		this.props.actions.removeFile(data);
 	}
 
 	onNavigateData(data) {
+		// Remove files from the previous folder from the state
+		this.props.actions.removeFile();
 		this.props.actions.addFile(data.files, data.count);
 	}
 

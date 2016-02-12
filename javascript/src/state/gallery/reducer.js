@@ -34,10 +34,10 @@ export default function galleryReducer(state = initialState, action) {
 
             if (Object.prototype.toString.call(action.payload.file) === '[object Array]') {
                 // If an array of object is given
-                action.payload.file.forEach((payloadFile) => {
+                action.payload.file.forEach(payloadFile => {
                     let fileInState = false;
 
-                    state.files.forEach((stateFile) => {
+                    state.files.forEach(stateFile => {
                         // Check if each file given is already in the state
                         if (stateFile.id === payloadFile.id) {
                             fileInState = true;
@@ -53,7 +53,7 @@ export default function galleryReducer(state = initialState, action) {
                 // Else if a single item is given
                 let fileInState = false;
 
-                state.files.forEach((file) => {
+                state.files.forEach(file => {
                     // Check if the file given is already in the state
                     if (file.id === action.payload.file.id) {
                         fileInState = true;
@@ -70,6 +70,26 @@ export default function galleryReducer(state = initialState, action) {
                 count: typeof action.payload.count !== 'undefined' ? action.payload.count : state.count,
                 files: state.files.concat(nextFilesState)
             }));
+
+        case GALLERY.REMOVE_FILE:
+            if (typeof action.payload.id === 'undefined') {
+                // No param was passed, remove everything.
+                nextState = deepFreeze(Object.assign({}, state, { count: 0, files: [] }));
+            } else if (typeof action.payload.id === 'number') {
+                // We're dealing with a single file to remove.
+                nextState = deepFreeze(Object.assign({}, state, {
+                    count: state.count - 1,
+                    files: state.files.filter(file => file.id !== action.payload.id)
+                }));
+            } else {
+                // We're dealing with an array of ids
+                nextState = deepFreeze(Object.assign({}, state, {
+                    count: state.count - action.payload.id.length,
+                    files: state.files.filter(file => action.payload.id.indexOf(file.id) === -1)
+                }));
+            }
+
+            return nextState;
 
         case GALLERY.UPDATE_FILE:
             let fileIndex = state.files.map(file => file.id).indexOf(action.payload.id);
@@ -117,7 +137,7 @@ export default function galleryReducer(state = initialState, action) {
                     selectedFiles: state.selectedFiles.slice(0, fileIndex).concat(state.selectedFiles.slice(fileIndex + 1))
                 }));
             } else {
-                // We're dealing with an array if ids to deselect.
+                // We're dealing with an array of ids to deselect.
                 nextState = deepFreeze(Object.assign({}, state, {
                     selectedFiles: state.selectedFiles.filter(id => action.payload.ids.indexOf(id) === -1)
                 }));
@@ -141,13 +161,20 @@ export default function galleryReducer(state = initialState, action) {
             }));
         
         case GALLERY.UPDATE_EDITOR_FIELD:
-            let fieldIndex = state.editorFields.map(field => field.name).indexOf(action.payload.updates.name);
-            let updatedField = Object.assign({}, state.editorFields[fieldIndex], action.payload.updates);
+            let fieldIndex = state.editorFields.map(field => field.name).indexOf(action.payload.updates.name),
+                updatedField = Object.assign({}, state.editorFields[fieldIndex], action.payload.updates);
 
             return deepFreeze(Object.assign({}, state, {
                 editorFields: state.editorFields.map(field => field.name === updatedField.name ? updatedField : field)
             }));
-                    
+        
+        case GALLERY.SORT_FILES:
+            let folders = state.files.filter(file => file.type === 'folder'),
+                files = state.files.filter(file => file.type !== 'folder');
+
+            return deepFreeze(Object.assign({}, state, {
+                files: folders.sort(action.payload.comparator).concat(files.sort(action.payload.comparator))
+            }));
         default:
             return state;
     }
