@@ -12,17 +12,21 @@ matrix:
       env:
     - php: 7.0
       env: NPM_TEST=1
+    - php: 5.6
+      env: BEHAT_TEST=1
   allow_failures:
     - php: 7.0
       env:
 
 before_script:
     - git clone -b "pulls/alias-and-installer-branch" git://github.com/chillu/silverstripe-travis-support.git ~/travis-support
-    - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss
+    - "if [ \"$BEHAT_TEST\" = \"\" ]; then php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss; fi"
+    - "if [ \"$BEHAT_TEST\" = \"1\" ]; then php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss --require silverstripe/behat-extension; fi"
     - cd ~/builds/ss
 
 script:
-    - "if [ \"$NPM_TEST\" = \"\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
+    - "if [ \"$NPM_TEST\" = \"\" ] && [ \"$BEHAT_TEST\" = \"\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
+    - "if [ \"$BEHAT_TEST\" = \"1\" ]; then vendor/bin/behat @asset-admin; fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then cd asset-admin; nvm install 4.1; npm install; npm run test; fi"
     
 notifications:
