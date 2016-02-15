@@ -14,7 +14,7 @@ class AssetGalleryFieldTest extends SapphireTest {
 		$field = new AssetGalleryField("Files1");
 
 		new Form(
-			new AssetGalleryFieldTestController(),
+			new AssetGalleryFieldTest_Controller(),
 			'Foo',
 			new FieldList(array(
 				$field
@@ -40,7 +40,7 @@ class AssetGalleryFieldTest extends SapphireTest {
 		$field = new AssetGalleryField($name);
 
 		new Form(
-			new AssetGalleryFieldTestController(),
+			new AssetGalleryFieldTest_Controller(),
 			$form,
 			new FieldList($field),
 			new FieldList()
@@ -96,6 +96,8 @@ class AssetGalleryFieldTest extends SapphireTest {
 	}
 }
 
-class AssetGalleryFieldTestController extends ContentController {
+}
+
+class AssetGalleryFieldTest_Controller extends ContentController {
 
 }
