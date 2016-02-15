@@ -105,7 +105,7 @@ export default class FileBackend extends Events {
 
 	save(id, values) {
 		var updates = { id };
-		
+
 		values.forEach(field => {
 			updates[field.name] = field.value;
 		});

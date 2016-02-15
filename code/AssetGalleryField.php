@@ -498,6 +498,8 @@ class AssetGalleryField extends FormField {
 			'extension' => $file->Extension,
 			'size' => $file->Size,
 			'url' => $file->AbsoluteURL,
+			'canEdit' => $file->canEdit(),
+			'canDelete' => $file->canDelete()
 		);
 
 		/** @var Member $owner */
