@@ -20,6 +20,11 @@
 		}
 	}
 
+	.ss-assetuploadfield,
+	.cms-content-toolbar.field {
+		margin-bottom: 16px;
+	}
+
 	.cms-content-toolbar {
 		float: left;
 		
@@ -80,5 +85,122 @@
 				background: transparent url(img/treeicons/blue-document.png) no-repeat center;
 			}
 		}
+	}
+
+
+	/* Gallery actions bar */
+	.cms-actions-row {
+		margin-bottom: 0;
+	}
+	.ss-assetuploadfield .ss-uploadfield-addfile .ss-uploadfield-fromcomputer {
+		margin-top: 10px;
+		margin-bottom: 10px;
+	}
+	.ss-uploadfield-fromcomputer {
+		&::before {
+			position: relative;
+			top: -1px;
+		}
+	}
+	.ss-uploadfield-addfile {
+		height: 52px;
+	}
+
+	.asset-gallery .gallery__sort {
+		top: 12px;
+	}
+
+	.ss-uploadfield-view-allowed-extensions {
+		margin-top: -39px;
+	}
+	
+
+	/* Bulk actions */
+	.gallery__bulk-actions {
+		padding: 10px 12px;
+		left: 160px; /* TODO: Needs to go to 60px when main nav is collapsed */
+		z-index: 1;
+		right: 0;
+		height: 52px;
+		margin: 0 auto;
+		position: fixed;
+		top: 52px;
+		width: 200px;
+		box-shadow : 0px 1px 2px rgba(0, 0, 0, 0.2);
+		background-color: $body-bg-dark;
+
+		-webkit-transition: all 0.5s ease-in-out;
+		-moz-transition: all 0.5s ease-in-out;
+		-o-transition: all 0.5s ease-in-out;
+		transition: all 0.5s ease-in-out;
+
+		.gallery__bulk-actions_action,
+		.ss-ui-button {
+			line-height: $line-height;
+			margin-bottom: 0;
+			height: 32px;
+
+			&[class*="font-icon-"]::before {
+				font-size: 20px;
+				line-height: 18px;
+				position: relative;
+				top: -1px;
+			}
+		}
+	}
+
+	
+
+
+	/* TEMP Overides which should eventually not be needed */
+
+	// Reset some annoying CMS styles.
+	.asset-gallery {
+	    > .left {
+	        display: none !important;
+	    }
+
+	    > .middleColumn {
+	        margin-left: 0;
+	    }
+	}
+
+	.icon-button-group {
+		margin-top: 0;
+	}
+
+	.CompositeField.field {
+		border: 0;
+		margin-top: 0;
+		padding: 0;
+		margin: 0;
+	}
+
+	.ss-ui-button {
+		padding-left: 12px;
+		padding-right: 12px;
+		margin-left: 0;
+		margin-right: 0;
+	}
+
+	.cms-actions-row {
+		margin-top: 10px;
+
+		.ss-ui-button {
+			margin-bottom: 10px;
+
+			&[class*="font-icon-folder-add"]::before {
+				position: relative;
+				top: -1px;
+				font-size: 24px;
+			}
+		}
+	}
+
+	.ss-uploadfield-item-info .ss-ui-button {
+		line-height: 18px;
+		height: 32px;
+		margin-top: 10px;
+		margin-bottom: 10px;
 	}
 }

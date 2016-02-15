@@ -1,16 +1,4 @@
-// Reset some annoying CMS styles.
-.asset-gallery {
-    > .left {
-        display: none !important;
-    }
-
-    > .middleColumn {
-        margin-left: 0;
-    }
-}
-
 @import 'variables';
-@import 'mixins';
 @import '../sections/gallery/styles';
 @import '../components/file/styles';
 @import 'AssetAdmin'

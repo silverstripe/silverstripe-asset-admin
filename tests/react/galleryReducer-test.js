@@ -259,34 +259,6 @@ describe('galleryReducer', () => {
         });
     });
 
-    describe('SET_FOCUS', () => {
-        it('should set focus the given file', () => {
-            const initialState = {
-                focus: false
-            };
-
-            const nextState = galleryReducer(initialState, { 
-                type: 'SET_FOCUS',
-                payload: { id: 1 }
-            });
-
-            expect(nextState.focus).toBe(1);
-        });
-
-        it('should remove', () => {
-            const initialState = {
-                focus: 1
-            };
-
-            const nextState = galleryReducer(initialState, { 
-                type: 'SET_FOCUS',
-                payload: { id: false }
-            });
-
-            expect(nextState.focus).toBe(false);
-        });
-    });
-
     describe('SET_EDITOR_FIELDS', () => {
         it('should set the state for the editor fields', () => {
             const initialState = {

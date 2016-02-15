@@ -1,9 +1,12 @@
-.asset-gallery > .left {
-  display: none !important; }
-
-.asset-gallery > .middleColumn {
-  margin-left: 0; }
-
+/* eg. Text, labels, iconography */
+/* eg. Field descriptions */
+/* eg. placeholder text */
+/* eg. iconography hovered */
+/* eg. North bar */
+/* 4px */
+/* 6px */
+/* 2px */
+/* include borders */
 @keyframes actionsAdded {
   0% {
     transform: scale(0.9); }
@@ -89,6 +92,12 @@
   .asset-gallery .gallery__sort .chzn-results .active-result {
     text-transform: capitalize; }
 
+.asset-gallery .gallery__folders {
+  display: inline-block; }
+
+.asset-gallery .gallery__files {
+  display: inline-block; }
+
 .asset-gallery .gallery__load {
   width: 100%;
   display: inline-block; }
@@ -106,55 +115,75 @@
   border: 0;
   border-radius: 4px; }
 
+.cms .asset-gallery p {
+  line-height: 1.5; }
+
+.asset-gallery .item--overlay {
+  background: rgba(56, 63, 69, 0.5);
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  opacity: 0;
+  display: none;
+  transition-property: opacity, background;
+  transition-duration: 0.5s;
+  color: #fff;
+  border-radius: 0.125rem 0.125rem 0 0;
+  height: 132px;
+  width: 100%;
+  font-size: 14px;
+  padding-top: 56px;
+  text-align: center; }
+  .asset-gallery .item--overlay::before {
+    margin-right: 5px; }
+
 .asset-gallery .item {
   position: relative;
-  width: 50%;
-  height: 156px;
-  margin: 0 auto 24px;
-  text-align: center;
-  min-width: 200px; }
-  @media all and (min-width: 40.625em) {
-    .asset-gallery .item {
-      float: left;
-      width: 50%;
-      margin: 0 0 20px; } }
-  @media all and (min-width: 51.25em) {
-    .asset-gallery .item {
-      width: 33.333%; } }
-  @media all and (min-width: 63.25em) {
-    .asset-gallery .item {
-      width: 25%; } }
-  @media all and (min-width: 75.5em) {
-    .asset-gallery .item {
-      width: 20%; } }
-  @media all and (min-width: 88em) {
-    .asset-gallery .item {
-      width: 16.666%; } }
-  @media all and (min-width: 100.5em) {
-    .asset-gallery .item {
-      width: 14.257%; } }
-  @media all and (min-width: 113em) {
-    .asset-gallery .item {
-      width: 12.5%; } }
-  @media all and (min-width: 125.5em) {
-    .asset-gallery .item {
-      width: 11.111%; } }
-  @media all and (min-width: 138em) {
-    .asset-gallery .item {
-      width: 10%; } }
-  .asset-gallery .item .item__thumbnail:hover .item__actions, .asset-gallery .item:hover .item__actions, .asset-gallery .item--focussed .item__actions {
-    background: rgba(34, 56, 91, 0.7); }
-  .asset-gallery .item .item__thumbnail:hover .item__actions__action, .asset-gallery .item:hover .item__actions__action, .asset-gallery .item--focussed .item__actions__action {
-    opacity: 1; }
-    .asset-gallery .item .item__thumbnail:hover .item__actions__action:hover, .asset-gallery .item .item__thumbnail:hover .item__actions__action:focus, .asset-gallery .item:hover .item__actions__action:hover, .asset-gallery .item:hover .item__actions__action:focus, .asset-gallery .item--focussed .item__actions__action:hover, .asset-gallery .item--focussed .item__actions__action:focus {
-      background: rgba(34, 56, 91, 0.7); }
-  .asset-gallery .item .item__thumbnail:hover .item__actions__action--select, .asset-gallery .item:hover .item__actions__action--select, .asset-gallery .item--focussed .item__actions__action--select {
-    background: none; }
-  .asset-gallery .item--folder {
+  float: left;
+  margin: 0 20px 20px 0;
+  background-color: #fff;
+  border: 1px solid;
+  border-color: #e5e8eb #d9dee2 #ced3d9;
+  width: 178px;
+  border-radius: 0.125rem;
+  transition: box-shadow 0.3s;
+  height: 174px; }
+  .asset-gallery .item:hover {
+    box-shadow: 0 1px 4px #ddd;
     cursor: pointer; }
+  .asset-gallery .item .item__thumbnail {
+    height: 132px;
+    width: 176px;
+    margin: 0 auto;
+    background-repeat: no-repeat;
+    background-position: center center; }
+    .asset-gallery .item .item__thumbnail--large {
+      background-size: cover;
+      border-radius: 0.125rem 0.125rem 0 0; }
+  .asset-gallery .item:hover .item--overlay {
+    opacity: 1;
+    display: block; }
+  .asset-gallery .item--focussed .item--overlay {
+    opacity: 1;
+    display: block; }
+  .asset-gallery .item--folder {
+    height: 54px; }
     .asset-gallery .item--folder .item__thumbnail {
-      background: url(img/folder.png) center center no-repeat;
-      background-size: contain; }
+      background: url(img/folder.png) 12px 14px no-repeat;
+      background-size: 27px 24px;
+      height: 52px;
+      width: 45px;
+      float: left; }
+    .asset-gallery .item--folder .item__title {
+      padding: 17px 28px 17px 0;
+      width: 131px;
+      height: 52px; }
+    .asset-gallery .item--folder .item__actions__action--select {
+      height: 52px;
+      padding-top: 9px; }
+    .asset-gallery .item--folder:hover .item--overlay {
+      display: none; }
   .asset-gallery .item--archive .item__thumbnail {
     background: #fff url(img/icon_zip.png) center center no-repeat; }
   .asset-gallery .item--audio .item__thumbnail {
@@ -165,119 +194,165 @@
     background: #fff url(img/icon_doc.png) center center no-repeat; }
   .asset-gallery .item--false .item__thumbnail {
     background: #fff url(img/icon_file.png) center center no-repeat; }
-  .asset-gallery .item--selected .item__actions__action--select {
-    color: #72c34b;
-    opacity: 1;
-    background: rgba(34, 56, 91, 0.7); }
-    .asset-gallery .item--selected .item__actions__action--select::before {
-      border-color: #72c34b; }
-  .asset-gallery .item--selected .item__thumbnail {
-    box-shadow: 0 0 0 3px #72c34b; }
+  .asset-gallery .item--selected {
+    border-color: #29abe2; }
+    .asset-gallery .item--selected .item__actions__action--select {
+      border-color: #29abe2;
+      color: #fff;
+      opacity: 1; }
+      .asset-gallery .item--selected .item__actions__action--select::before {
+        border-color: #29abe2;
+        background-color: #29abe2; }
 
-.asset-gallery .item__thumbnail {
-  height: 132px;
-  width: 176px;
-  margin: 0 auto;
-  background-repeat: no-repeat;
-  background-position: center center; }
-  .asset-gallery .item__thumbnail--large {
-    background-size: cover; }
-
-.asset-gallery .item__actions {
+.asset-gallery .item__actions__action--select {
   position: absolute;
-  width: 176px;
-  height: 40px;
-  box-sizing: border-box;
-  margin: auto;
-  top: 0;
   right: 0;
-  left: 0;
-  background: none;
-  transition: background 0.3s; }
-
-.asset-gallery .item__actions__action {
-  padding: 10px 6px;
-  font-size: 20px;
-  color: #fff;
+  top: 0;
+  height: 40px;
+  padding: 8px 10px 6px;
+  color: transparent;
+  margin-bottom: 0;
+  content: " ";
   background-color: transparent;
   border: 0;
-  opacity: 0;
-  cursor: pointer;
-  float: right;
-  line-height: 20px;
-  height: 40px;
-  transition-property: opacity, background;
-  transition-duration: 0.3s; }
-  .asset-gallery .item__actions__action--edit {
-    padding: 12px 6px 10px;
-    font-size: 16px; }
-  .asset-gallery .item__actions__action--select {
-    float: left;
-    padding: 8px 10px 10px;
-    color: transparent; }
-    .asset-gallery .item__actions__action--select::before {
-      border: 1px solid white;
-      border-radius: 50%;
-      font-size: 12px;
-      padding: 3px; }
+  background: none; }
+  .asset-gallery .item__actions__action--select::before {
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 0.125rem;
+    font-size: 14px;
+    padding: 1px; }
 
 .asset-gallery .item__title {
-  color: #0073C1;
-  padding: 6px 8px 2px;
-  width: 200px;
-  margin: auto;
-  box-sizing: border-box;
+  padding: 11px 28px 11px 12px;
+  height: 40px;
+  width: 176px;
+  margin: 0;
   overflow: hidden;
+  box-sizing: border-box;
   text-overflow: ellipsis;
-  white-space: nowrap; }
+  white-space: nowrap;
+  position: relative; }
 
-.cms .AssetAdmin .cms-content-fields {
-  overflow-x: hidden;
-  /**
+.cms .AssetAdmin {
+  /* Gallery actions bar */
+  /* Bulk actions */
+  /* TEMP Overides which should eventually not be needed */ }
+  .cms .AssetAdmin .cms-content-fields {
+    overflow-x: hidden;
+    /**
 		 * DEPRECATED:
 		 * .cms-content-tools will be removed in 4.0
 		 * Use .cms-content-filters instead.
 		 */ }
-  .cms .AssetAdmin .cms-content-fields .cms-edit-form.AssetAdmin {
-    width: 100%;
-    overflow-y: auto; }
-  .cms .AssetAdmin .cms-content-fields .cms-content-tools .cms-panel-content {
-    overflow: hidden; }
-    .cms .AssetAdmin .cms-content-fields .cms-content-tools .cms-panel-content .cms-search-form {
-      height: 100%; }
-
-.cms .AssetAdmin .cms-content-toolbar {
-  float: left; }
-  .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .ss-ui-button {
-    z-index: 1; }
-    .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .ss-ui-button::before {
-      font-size: 23px; }
-  .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .grid-levelup {
+    .cms .AssetAdmin .cms-content-fields .cms-edit-form.AssetAdmin {
+      width: 100%;
+      overflow-y: auto; }
+    .cms .AssetAdmin .cms-content-fields .cms-content-tools .cms-panel-content {
+      overflow: hidden; }
+      .cms .AssetAdmin .cms-content-fields .cms-content-tools .cms-panel-content .cms-search-form {
+        height: 100%; }
+  .cms .AssetAdmin .ss-assetuploadfield,
+  .cms .AssetAdmin .cms-content-toolbar.field {
+    margin-bottom: 16px; }
+  .cms .AssetAdmin .cms-content-toolbar {
+    float: left; }
+    .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .ss-ui-button {
+      z-index: 1; }
+      .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .ss-ui-button::before {
+        font-size: 23px; }
+    .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .grid-levelup {
+      margin: 0; }
+    .cms .AssetAdmin .cms-content-toolbar .cms-page-add-button {
+      border-color: #c0c0c2; }
+      .cms .AssetAdmin .cms-content-toolbar .cms-page-add-button span.btn-icon-add {
+        height: 17px; }
+      .cms .AssetAdmin .cms-content-toolbar .cms-page-add-button span.ui-button-text {
+        color: #393939;
+        text-shadow: white 0 1px 1px; }
+  .cms .AssetAdmin #Root_TreeView .cms-tree ul .class-Folder a span.text span.jstree-foldericon {
+    background: url(img/blue-folder-horizontal.png) no-repeat;
+    width: 16px;
+    height: 16px;
+    float: left;
+    display: block;
+    margin-right: 4px; }
+  .cms .AssetAdmin .ss-gridfield {
+    margin-top: 0; }
+  .cms .AssetAdmin table.ss-gridfield-table td.bottom-all {
+    padding: 0.7em; }
+  .cms .AssetAdmin table.ss-gridfield-table tr[data-class=Folder] td.col-StripThumbnail {
+    background: transparent url(img/treeicons/blue-folder-horizontal.png) no-repeat center; }
+  .cms .AssetAdmin table.ss-gridfield-table tr[data-class=File] td.col-StripThumbnail {
+    background: transparent url(img/treeicons/blue-document.png) no-repeat center; }
+  .cms .AssetAdmin .cms-actions-row {
+    margin-bottom: 0; }
+  .cms .AssetAdmin .ss-assetuploadfield .ss-uploadfield-addfile .ss-uploadfield-fromcomputer {
+    margin-top: 10px;
+    margin-bottom: 10px; }
+  .cms .AssetAdmin .ss-uploadfield-fromcomputer::before {
+    position: relative;
+    top: -1px; }
+  .cms .AssetAdmin .ss-uploadfield-addfile {
+    height: 52px; }
+  .cms .AssetAdmin .asset-gallery .gallery__sort {
+    top: 12px; }
+  .cms .AssetAdmin .ss-uploadfield-view-allowed-extensions {
+    margin-top: -39px; }
+  .cms .AssetAdmin .gallery__bulk-actions {
+    padding: 10px 12px;
+    left: 160px;
+    /* TODO: Needs to go to 60px when main nav is collapsed */
+    z-index: 1;
+    right: 0;
+    height: 52px;
+    margin: 0 auto;
+    position: fixed;
+    top: 52px;
+    width: 200px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    background-color: #f0f2f4;
+    -webkit-transition: all 0.5s ease-in-out;
+    -moz-transition: all 0.5s ease-in-out;
+    -o-transition: all 0.5s ease-in-out;
+    transition: all 0.5s ease-in-out; }
+    .cms .AssetAdmin .gallery__bulk-actions .gallery__bulk-actions_action,
+    .cms .AssetAdmin .gallery__bulk-actions .ss-ui-button {
+      line-height: 1.5;
+      margin-bottom: 0;
+      height: 32px; }
+      .cms .AssetAdmin .gallery__bulk-actions .gallery__bulk-actions_action[class*="font-icon-"]::before,
+      .cms .AssetAdmin .gallery__bulk-actions .ss-ui-button[class*="font-icon-"]::before {
+        font-size: 20px;
+        line-height: 18px;
+        position: relative;
+        top: -1px; }
+  .cms .AssetAdmin .asset-gallery > .left {
+    display: none !important; }
+  .cms .AssetAdmin .asset-gallery > .middleColumn {
+    margin-left: 0; }
+  .cms .AssetAdmin .icon-button-group {
+    margin-top: 0; }
+  .cms .AssetAdmin .CompositeField.field {
+    border: 0;
+    margin-top: 0;
+    padding: 0;
     margin: 0; }
-  .cms .AssetAdmin .cms-content-toolbar .cms-page-add-button {
-    border-color: #c0c0c2; }
-    .cms .AssetAdmin .cms-content-toolbar .cms-page-add-button span.btn-icon-add {
-      height: 17px; }
-    .cms .AssetAdmin .cms-content-toolbar .cms-page-add-button span.ui-button-text {
-      color: #393939;
-      text-shadow: white 0 1px 1px; }
-
-.cms .AssetAdmin #Root_TreeView .cms-tree ul .class-Folder a span.text span.jstree-foldericon {
-  background: url(img/blue-folder-horizontal.png) no-repeat;
-  width: 16px;
-  height: 16px;
-  float: left;
-  display: block;
-  margin-right: 4px; }
-
-.cms .AssetAdmin .ss-gridfield {
-  margin-top: 0; }
-
-.cms .AssetAdmin table.ss-gridfield-table td.bottom-all {
-  padding: 0.7em; }
-
-.cms .AssetAdmin table.ss-gridfield-table tr[data-class=Folder] td.col-StripThumbnail {
-  background: transparent url(img/treeicons/blue-folder-horizontal.png) no-repeat center; }
-
-.cms .AssetAdmin table.ss-gridfield-table tr[data-class=File] td.col-StripThumbnail {
-  background: transparent url(img/treeicons/blue-document.png) no-repeat center; }
+  .cms .AssetAdmin .ss-ui-button {
+    padding-left: 12px;
+    padding-right: 12px;
+    margin-left: 0;
+    margin-right: 0; }
+  .cms .AssetAdmin .cms-actions-row {
+    margin-top: 10px; }
+    .cms .AssetAdmin .cms-actions-row .ss-ui-button {
+      margin-bottom: 10px; }
+      .cms .AssetAdmin .cms-actions-row .ss-ui-button[class*="font-icon-folder-add"]::before {
+        position: relative;
+        top: -1px;
+        font-size: 24px; }
+  .cms .AssetAdmin .ss-uploadfield-item-info .ss-ui-button {
+    line-height: 18px;
+    height: 32px;
+    margin-top: 10px;
+    margin-bottom: 10px; }

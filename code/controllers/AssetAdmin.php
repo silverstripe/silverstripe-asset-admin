@@ -69,6 +69,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         Requirements::javascript(FRAMEWORK_DIR . "/admin/javascript/dist/bundle-react.js");
         Requirements::javascript(ASSET_ADMIN_DIR . "/javascript/AssetAdmin.js");
         Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . '/javascript/lang', false, true);
+        Requirements::css(FRAMEWORK_ADMIN_DIR . "/thirdparty/bootstrap/bootstrap.css");
         Requirements::css(ASSET_ADMIN_DIR . "/javascript/dist/main.css");
 
         CMSBatchActionHandler::register('delete', 'AssetAdmin_DeleteBatchAction', 'Folder');

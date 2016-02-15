@@ -30,12 +30,9 @@ export default class BulkActionsComponent extends SilverStripeComponent {
 
 	render() {
 		return <div className="gallery__bulk-actions fieldholder-small">
-			<select className="dropdown no-change-track no-chzn" tabIndex="0" data-placeholder={this.props.gallery.bulkActions.placeholder} style={{width: '160px'}}>
-				<option selected disabled hidden value=''></option>
-				{this.props.gallery.bulkActions.options.map((option, i) => {
-					return <option key={i} onClick={this.onChangeValue} value={option.value}>{option.label}</option>;
-				})}
-			</select>
+			{this.props.gallery.bulkActions.options.map((option, i) => {
+				return <button type='button' className="gallery__bulk-actions_action font-icon-trash ss-ui-button ui-corner-all" key={i} onClick={this.onChangeValue} value={option.value}>{option.label}</button>;
+			})}
 		</div>;
 	}
 

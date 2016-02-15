@@ -12,23 +12,16 @@ class FileComponent extends SilverStripeComponent {
 	constructor(props) {
 		super(props);
 
-        this.getButtonTabIndex = this.getButtonTabIndex.bind(this);
 		this.onFileNavigate = this.onFileNavigate.bind(this);
 		this.onFileEdit = this.onFileEdit.bind(this);
 		this.onFileDelete = this.onFileDelete.bind(this);
-		this.handleDoubleClick = this.handleDoubleClick.bind(this);
+		this.handleClick = this.handleClick.bind(this);
 		this.handleKeyDown = this.handleKeyDown.bind(this);
-		this.handleFocus = this.handleFocus.bind(this);
-		this.handleBlur = this.handleBlur.bind(this);
 		this.preventFocus = this.preventFocus.bind(this);
 		this.onFileSelect = this.onFileSelect.bind(this);
 	}
 
-	handleDoubleClick(event) {
-		if (event.target !== ReactDOM.findDOMNode(this.refs.title) && event.target !== ReactDOM.findDOMNode(this.refs.thumbnail)) {
-			return;
-		}
-
+	handleClick(event) {
 		this.onFileNavigate(event);
 	}
 
@@ -38,7 +31,9 @@ class FileComponent extends SilverStripeComponent {
 			return;
 		}
 
-		this.onFileEdit(event);
+		if (this.props.canEdit) {
+			this.onFileEdit(event);
+		}
 	}
 
 	onFileSelect(event) {
@@ -86,25 +81,9 @@ class FileComponent extends SilverStripeComponent {
 	isSelected() {
 		return this.props.gallery.selectedFiles.indexOf(this.props.id) > -1;
 	}
-    
-    isFocussed() {
-        return this.props.gallery.focus === this.props.id;
-    }
-    
-    getButtonTabIndex() {
-        if (this.isFocussed()) {
-            return 0;
-        } else {
-            return -1;
-        }
-    }
 
 	getItemClassNames() {
 		var itemClassNames = 'item item--' + this.props.category;
-
-		if (this.isFocussed()) {
-			itemClassNames += ' item--focussed';
-		}
 
 		if (this.isSelected()) {
 			itemClassNames += ' item--selected';
@@ -122,15 +101,10 @@ class FileComponent extends SilverStripeComponent {
 	handleKeyDown(event) {
 		event.stopPropagation();
 
-		//if event doesn't come from the root element, do nothing
-		if (event.target !== ReactDOM.findDOMNode(this.refs.thumbnail)) {
-			return;
-		}
-		
-		//If space is pressed, allow focus on buttons
+		//If space is pressed, select file
 		if (this.props.spaceKey === event.keyCode) {
 			event.preventDefault(); //Stop page from scrolling
-			$(ReactDOM.findDOMNode(this)).find('.item__actions__action').first().focus();
+			this.onFileSelect(event);
 		}
 
 		//If return is pressed, navigate folder
@@ -139,14 +113,6 @@ class FileComponent extends SilverStripeComponent {
 		}
 	}
 
-	handleFocus() {
-        this.props.actions.setFocus(this.props.id);
-	}
-
-	handleBlur() {
-        this.props.actions.setFocus(false);
-	}
-	
 	preventFocus(event) {
 		//To avoid browser's default focus state when selecting an item
 		event.preventDefault();
@@ -154,52 +120,24 @@ class FileComponent extends SilverStripeComponent {
 
 	render() {
 		var selectButton;
-		var deleteButton;
-		var editButton;
 
 		selectButton = <button
-			className='item__actions__action item__actions__action--select [ font-icon-tick ]'
+			className='item__actions__action--select [ font-icon-tick ]'
 			type='button'
 			title={i18n._t('AssetGalleryField.SELECT')}
-			tabIndex={this.getButtonTabIndex()}
-			onClick={this.onFileSelect}
-			onFocus={this.handleFocus}
-			onBlur={this.handleBlur}>
+			tabIndex='-1'
+			onMouseDown={this.preventFocus}
+			onClick={this.onFileSelect}>
 		</button>;
 
-		if(this.props.canDelete) {
-			deleteButton = <button
-				className='item__actions__action item__actions__action--remove [ font-icon-trash ]'
-				type='button'
-				title={i18n._t('AssetGalleryField.DELETE')}
-				tabIndex={this.getButtonTabIndex()}
-				onClick={this.onFileDelete}
-				onFocus={this.handleFocus}
-				onBlur={this.handleBlur}>
-			</button>;
-		}
-
-		if(this.props.canEdit) {
-			editButton = <button
-				className='item__actions__action item__actions__action--edit [ font-icon-edit ]'
-				type='button'
-				title={i18n._t('AssetGalleryField.EDIT')}
-				tabIndex={this.getButtonTabIndex()}
-				onClick={this.onFileEdit}
-				onFocus={this.handleFocus}
-				onBlur={this.handleBlur}>
-			</button>;
-		}
-
-		return <div className={this.getItemClassNames()} data-id={this.props.id} onDoubleClick={this.handleDoubleClick}>
-			<div ref="thumbnail" className={this.getThumbnailClassNames()} tabIndex="0" onKeyDown={this.handleKeyDown} style={this.getThumbnailStyles()} onClick={this.onFileSelect} onMouseDown={this.preventFocus}>
-				<div className='item__actions'>
-					{selectButton}
-					{deleteButton}
-					{editButton}
+		return <div className={this.getItemClassNames()} data-id={this.props.id} tabIndex="0" onKeyDown={this.handleKeyDown} onClick={this.handleClick} >
+			<div ref="thumbnail" className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()}>
+				<div className='item--overlay [ font-icon-edit ]'> View
 				</div>
 			</div>
-			<p className='item__title' ref="title">{this.props.title}</p>
+			<div className='item__title' ref="title">{this.props.title}
+				{selectButton}
+			</div>
 		</div>;
 	}
 }
