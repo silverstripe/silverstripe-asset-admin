@@ -262,7 +262,6 @@ class GalleryContainer extends SilverStripeComponent {
 	onFileDelete(file, event) {
 		if (confirm(i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
 			this.props.backend.delete(file.id);
-			this.emitFileDeletedCmsEvent();
 		}
 
 		event.stopPropagation();
@@ -273,54 +272,15 @@ class GalleryContainer extends SilverStripeComponent {
 		this.props.backend.navigate(file.filename);
 
 		this.props.actions.deselectFiles();
-
-		this.emitFolderChangedCmsEvent();
-	}
-
-	emitFolderChangedCmsEvent() {
-		var folder = {
-			parentId: 0,
-			id: 0
-		};
-
-		// The current folder is stored by it's name in our component.
-		// We need to get it's id because that's how Entwine components (GridField) reference it.
-		for (let i = 0; i < this.props.gallery.files.length; i += 1) {
-			if (this.props.gallery.files[i].filename === this.props.backend.folder) {
-				folder.parentId = this.props.gallery.files[i].parent.id;
-				folder.id = this.props.gallery.files[i].id;
-				break;
-			}
-		}
-
-		this._emitCmsEvent('folder-changed.asset-gallery-field', folder);
-	}
-
-	emitFileDeletedCmsEvent() {
-		this._emitCmsEvent('file-deleted.asset-gallery-field');
-	}
-
-	emitEnterFileViewCmsEvent(file) {
-		var id = 0;
-
-		this._emitCmsEvent('enter-file-view.asset-gallery-field', file.id);
-	}
-
-	emitExitFileViewCmsEvent() {
-		this._emitCmsEvent('exit-file-view.asset-gallery-field');
 	}
 
 	onNavigate(folder, silent = false) {
-		// Don't the folder if it exists already.
+		// Don't push the folder to the array if it exists already.
 		if (this.folders.indexOf(folder) === -1) {
 			this.folders.push(folder);
 		}
 
 		this.props.backend.navigate(folder);
-
-		if (!silent) {
-			this.emitFolderChangedCmsEvent();
-		}
 	}
 
 	onMoreClick(event) {
@@ -338,8 +298,6 @@ class GalleryContainer extends SilverStripeComponent {
 		}
 
 		this.props.actions.deselectFiles();
-
-		this.emitFolderChangedCmsEvent();
 
 		event.preventDefault();
 	}
