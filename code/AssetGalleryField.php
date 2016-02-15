@@ -46,6 +46,54 @@ class AssetGalleryField extends FormField {
 	protected $bulkActions = true;
 
 	/**
+	 * Data source.
+	 *
+	 * @var SS_List
+	 */
+	protected $list = null;
+
+	/**
+	 * @param string $name
+	 * @param string $title
+	 * @param SS_List $dataList
+	 */
+	public function __construct($name, $title = null, SS_List $dataList = null) {
+		parent::__construct($name, $title, null);
+
+		if($dataList && !$dataList->dataClass() instanceof File) {
+			throw new InvalidArgumentException('AssetGalleryField requires a DataList based on File');
+		}
+
+		if(!$dataList) {
+			$dataList = File::get();
+		}
+
+		$this->setList($dataList);
+	}
+
+	/**
+	 * Set the data source.
+	 *
+	 * @param SS_List $list
+	 *
+	 * @return $this
+	 */
+	public function setList(SS_List $list) {
+		$this->list = $list;
+
+		return $this;
+	}
+
+	/**
+	 * Get the data source.
+	 *
+	 * @return SS_List
+	 */
+	public function getList() {
+		return $this->list;
+	}
+
+	/**
 	 * @return $this
 	 */
 	public function performReadonlyTransformation() {
@@ -74,7 +122,7 @@ class AssetGalleryField extends FormField {
 			$this->httpError(400);
 		}
 
-		$files = File::get()->filter('ParentID', $params['id']);
+		$files = $this->getList()->filter('ParentID', $params['id']);
 
 		if ($files) {
 			foreach($files as $file) {
@@ -154,7 +202,7 @@ class AssetGalleryField extends FormField {
 	 */
 	public function update(SS_HTTPRequest $request) {
 		$id = $request->getVar('id');
-		$file = File::get()->filter('id', (int) $id)->first();
+		$file = $this->getList()->filter('id', (int) $id)->first();
 
 		$code = 500;
 
@@ -203,7 +251,7 @@ class AssetGalleryField extends FormField {
 
 		if($fileIds) {
 			foreach ($fileIds as $id) {
-				if ($file = File::get()->filter("id", (int) $id)->first()) {
+				if ($file = $this->getList()->filter("id", (int) $id)->first()) {
 					array_push($files, $file);
 				}
 			}
@@ -255,10 +303,10 @@ class AssetGalleryField extends FormField {
 				$files = array();
 			} else {
 				// When there's no folder (we're at the top level).
-				$files = File::get()->filter('ParentID', 0);
+				$files = $this->getList()->filter('ParentID', 0);
 			}
 		} else {
-			$files = File::get();
+			$files = $this->getList();
 		}
 
 		$count = 0;
