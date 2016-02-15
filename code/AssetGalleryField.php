@@ -126,6 +126,10 @@ class AssetGalleryField extends FormField {
 
 		if ($files) {
 			foreach($files as $file) {
+				if(!$file->canView()) {
+					continue;
+				}
+
 				$items[] = $this->getObjectFromData($file);
 			}
 		}
@@ -204,37 +208,31 @@ class AssetGalleryField extends FormField {
 		$id = $request->getVar('id');
 		$file = $this->getList()->filter('id', (int) $id)->first();
 
-		$code = 500;
-
-		$body = array(
-			'status' => 'error'
-		);
-
-		if ($file) {
-			$title = $request->getVar('title');
-			$basename = $request->getVar('basename');
-
-			if (!empty($title)) {
-				$file->Title = $title;
-			}
-
-			if (!empty($basename)) {
-				$file->Name = $basename;
-			}
-
-			$file->write();
-
-			$code = 200;
-
-			$body = array(
-				'status' => 'ok'
-			);
+		if (!$file) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 500))
+				->addHeader('Content-Type', 'application/json');
 		}
 
-		$response = new SS_HTTPResponse(json_encode($body), $code);
-		$response->addHeader('Content-Type', 'application/json');
+		if (!$file->canEdit()) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+				->addHeader('Content-Type', 'application/json');
+		}
 
-		return $response;
+		$title = $request->getVar('title');
+		$basename = $request->getVar('basename');
+
+		if (!empty($title)) {
+			$file->Title = $title;
+		}
+
+		if (!empty($basename)) {
+			$file->Name = $basename;
+		}
+
+		$file->write();
+
+		return (new SS_HTTPResponse(json_encode(['status' => 'ok']), 200))
+			->addHeader('Content-Type', 'application/json');
 	}
 
 	/**
@@ -257,23 +255,18 @@ class AssetGalleryField extends FormField {
 			}
 		}
 
-		if(count($files)) {
-			foreach ($files as $file) {
-				$file->delete();
-			}
-
-			$response->setBody(json_encode(array(
-				'status' => 'file was deleted',
-			)));
-		} else {
-			$response->setStatusCode(500);
-
-			$response->setBody(json_encode(array(
-				'status' => 'could not find the file',
-			)));
+		if (!count($files)) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'could not find the file']), 500))
+				->addHeader('Content-Type', 'application/json');
 		}
 
-		return $response;
+		if (!min(array_map(function($file) {return $file->canDelete();}, $files))) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+				->addHeader('Content-Type', 'application/json');
+		}
+
+		return (new SS_HTTPResponse(json_encode(['status' => 'file was deleted'])))
+			->addHeader('Content-Type', 'application/json');
 	}
 
 	/**
@@ -350,6 +343,10 @@ class AssetGalleryField extends FormField {
 			}
 
 			foreach($files as $file) {
+				if(!$file->canView()) {
+					continue;
+				}
+
 				$items[] = $this->getObjectFromData($file);
 			}
 		}

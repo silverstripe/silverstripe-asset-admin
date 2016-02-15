@@ -49,11 +49,8 @@ class AssetGalleryFieldTest extends SapphireTest {
 		return $field;
 	}
 
-	/**
-	 * @test
-	 */
-	public function itGetsNewData() {
-		$this->objFromFixture('File', 'File1');
+	public function testItGetsNewData() {
+		$this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
 
 		$field = $this->getNewField();
 		$field->setCurrentPath('Folder1');
@@ -63,16 +60,13 @@ class AssetGalleryFieldTest extends SapphireTest {
 		$files = json_decode($response->getBody(), true);
 
 		$this->assertArrayHasKey('files', $files);
-		$this->assertCount(1, $files['files']);
-		$this->assertEquals('The First File', $files['files'][0]['title']);
+		$titles = array_map(function($file) {return $file['title'];}, $files['files']);
+		$this->assertContains('The First File', $titles);
 	}
 
-	/**
-	 * @test
-	 */
-	public function itFiltersData() {
-		$this->objFromFixture('File', 'File2');
-		$this->objFromFixture('File', 'File3');
+	public function testItFiltersData() {
+		$this->objFromFixture('AssetGalleryFieldTest_File', 'File2');
+		$this->objFromFixture('AssetGalleryFieldTest_File', 'File3');
 
 		$field = $this->getNewField();
 		$field->setCurrentPath('Folder2');
@@ -94,10 +88,102 @@ class AssetGalleryFieldTest extends SapphireTest {
 		$this->assertCount(1, $files['files']);
 		$this->assertEquals('The Third File', $files['files'][0]['title']);
 	}
-}
 
+	public function testItRestrictsViewInSearch() {
+		$allowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
+		$disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanView');
+		$field = $this->getNewField();
+
+		$request = new SS_HTTPRequest('GET', 'http://example.com', ['name' => $allowedFile->Name]);
+		$response = $field->search($request);
+		$files = json_decode($response->getBody(), true);
+		$this->assertArrayHasKey('files', $files);
+		$this->assertCount(1, $files['files']);
+		$this->assertEquals($allowedFile->ID, $files['files'][0]['id']);
+
+		$request = new SS_HTTPRequest('GET', 'http://example.com', ['name' => $disallowedFile->Name]);
+		$response = $field->search($request);
+		$files = json_decode($response->getBody(), true);
+		$this->assertArrayHasKey('files', $files);
+		$this->assertCount(0, $files['files']);
+	}
+
+	public function testItRestrictsViewInFetch() {
+		$folder1 = $this->objFromFixture('Folder', 'Folder1');
+		$allowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
+		$disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanView');
+		$field = $this->getNewField();
+
+		$request = new SS_HTTPRequest('GET', 'http://example.com', ['id' => $folder1->ID]);
+		$response = $field->fetch($request);
+		$files = json_decode($response->getBody(), true);
+		$this->assertArrayHasKey('files', $files);
+		$ids = array_map(function($file) {return $file['id'];}, $files['files']);
+		$this->assertContains($allowedFile->ID, $ids);
+		$this->assertEquals($allowedFile->ParentID, $folder1->ID);
+		$this->assertNotContains($disallowedFile->ID, $ids);
+		$this->assertEquals($disallowedFile->ParentID, $folder1->ID);
+	}
+
+	public function testItRestrictsUpdate() {
+		$allowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
+		$disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanEdit');
+		$field = $this->getNewField();
+
+		$request = new SS_HTTPRequest(
+			'POST',
+			'http://example.com',
+			['id' => $allowedFile->ID, 'title' => 'new']
+		);
+		$response = $field->update($request);
+		$this->assertFalse($response->isError());
+
+		$request = new SS_HTTPRequest(
+			'POST',
+			'http://example.com',
+			['id' => $disallowedFile->ID, 'title' => 'new']
+		);
+		$response = $field->update($request);
+		$this->assertTrue($response->isError());
+	}
+
+	public function testItRestrictsDelete() {
+		$allowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
+		$disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanDelete');
+		$field = $this->getNewField();
+
+		$request = new SS_HTTPRequest(
+			'POST',
+			'http://example.com',
+			['ids' => [$allowedFile->ID, $disallowedFile->ID]]
+		);
+		$response = $field->delete($request);
+		$this->assertTrue($response->isError());
+
+		$request = new SS_HTTPRequest(
+			'POST',
+			'http://example.com',
+			['ids' => [$allowedFile->ID]]
+		);
+		$response = $field->delete($request);
+		$this->assertFalse($response->isError());
+	}
 }
 
 class AssetGalleryFieldTest_Controller extends ContentController {
 
+}
+
+class AssetGalleryFieldTest_File extends File implements TestOnly {
+	public function canView($member = null) {
+		return ($this->Name != 'disallowCanView.txt');
+	}
+
+	public function canEdit($member = null) {
+		return ($this->Name != 'disallowCanEdit.txt');
+	}
+
+	public function canDelete($member = null) {
+		return ($this->Name != 'disallowCanDelete.txt');
+	}
 }
