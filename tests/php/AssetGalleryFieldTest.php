@@ -131,17 +131,21 @@ class AssetGalleryFieldTest extends SapphireTest {
 		$field = $this->getNewField();
 
 		$request = new SS_HTTPRequest(
-			'POST',
+			'PUT',
 			'http://example.com',
-			['id' => $allowedFile->ID, 'title' => 'new']
+			null,
+			null,
+			http_build_query(['id' => $allowedFile->ID, 'title' => 'new'])
 		);
 		$response = $field->update($request);
 		$this->assertFalse($response->isError());
 
 		$request = new SS_HTTPRequest(
-			'POST',
+			'PUT',
 			'http://example.com',
-			['id' => $disallowedFile->ID, 'title' => 'new']
+			null,
+			null,
+			http_build_query(['id' => $disallowedFile->ID, 'title' => 'new'])
 		);
 		$response = $field->update($request);
 		$this->assertTrue($response->isError());
@@ -153,17 +157,21 @@ class AssetGalleryFieldTest extends SapphireTest {
 		$field = $this->getNewField();
 
 		$request = new SS_HTTPRequest(
-			'POST',
+			'DELETE',
 			'http://example.com',
-			['ids' => [$allowedFile->ID, $disallowedFile->ID]]
+			null,
+			null,
+			http_build_query(['ids' => [$allowedFile->ID, $disallowedFile->ID]])
 		);
 		$response = $field->delete($request);
 		$this->assertTrue($response->isError());
 
 		$request = new SS_HTTPRequest(
-			'POST',
+			'DELETE',
 			'http://example.com',
-			['ids' => [$allowedFile->ID]]
+			null,
+			null,
+			http_build_query(['ids' => [$allowedFile->ID]])
 		);
 		$response = $field->delete($request);
 		$this->assertFalse($response->isError());

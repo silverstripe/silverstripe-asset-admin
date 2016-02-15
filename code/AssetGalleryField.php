@@ -23,6 +23,13 @@ class AssetGalleryField extends FormField {
 		'delete',
 	);
 
+	private static $url_handlers = array(
+		'GET fetch' => 'fetch',
+		'GET search' => 'search',
+		'PUT update' => 'update',
+		'DELETE delete' => 'delete',
+	);
+
 	/**
 	 * @config
 	 *
@@ -205,7 +212,8 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function update(SS_HTTPRequest $request) {
-		$id = $request->getVar('id');
+		parse_str($request->getBody(), $vars);
+		$id = $vars['id'];
 		$file = $this->getList()->filter('id', (int) $id)->first();
 
 		if (!$file) {
@@ -218,8 +226,8 @@ class AssetGalleryField extends FormField {
 				->addHeader('Content-Type', 'application/json');
 		}
 
-		$title = $request->getVar('title');
-		$basename = $request->getVar('basename');
+		$title = $request->postVar('title');
+		$basename = $request->postVar('basename');
 
 		if (!empty($title)) {
 			$file->Title = $title;
@@ -241,7 +249,8 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function delete(SS_HTTPRequest $request) {
-		$fileIds = $request->getVar("ids");
+		parse_str($request->getBody(), $vars);
+		$fileIds = $vars['ids'];
 		$files = array();
 
 		$response = new SS_HTTPResponse();
@@ -263,6 +272,10 @@ class AssetGalleryField extends FormField {
 		if (!min(array_map(function($file) {return $file->canDelete();}, $files))) {
 			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
 				->addHeader('Content-Type', 'application/json');
+		}
+
+		foreach($files as $file) {
+			$file->delete();
 		}
 
 		return (new SS_HTTPResponse(json_encode(['status' => 'file was deleted'])))

@@ -80,7 +80,7 @@ export default class FileBackend extends Events {
 			filesToDelete = ids;
 		}
 
-		this.request('GET', this.delete_url, {
+		this.request('DELETE', this.delete_url, {
 			'ids': filesToDelete
 		}).then(() => {
 			// Using for loop because IE10 doesn't handle 'for of',
@@ -145,7 +145,7 @@ export default class FileBackend extends Events {
 
 		return $.ajax({
 			'url': url,
-			'method': method,
+			'type': method, // compat with jQuery 1.7
 			'dataType': 'json',
 			'data': $.extend(defaults, data)
 		}).always(() => {
