@@ -45,9 +45,9 @@ class FileComponent extends SilverStripeComponent {
 		event.stopPropagation(); //stop triggering click on root element
 
 		if (this.props.gallery.selectedFiles.indexOf(this.props.id) === -1) {
-			this.props.actions.selectFiles(this.props.id);
+			this.props.actions.selectFiles([this.props.id]);
 		} else {
-			this.props.actions.deselectFiles(this.props.id);
+			this.props.actions.deselectFiles([this.props.id]);
 		}
 	}
 

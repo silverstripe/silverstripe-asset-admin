@@ -232,7 +232,7 @@ class GalleryContainer extends SilverStripeComponent {
 	}
 
 	onFetchData(data) {
-		this.props.actions.addFile(data.files, data.count);
+		this.props.actions.addFiles(data.files, data.count);
 	}
 
 	onSaveData(id, values) {
@@ -241,21 +241,21 @@ class GalleryContainer extends SilverStripeComponent {
 	}
 
 	onDeleteData(data) {
-		this.props.actions.removeFile(data);
+		this.props.actions.removeFiles(data);
 	}
 
 	onNavigateData(data) {
 		// Remove files from the previous folder from the state
-		this.props.actions.removeFile();
-		this.props.actions.addFile(data.files, data.count);
+		this.props.actions.removeFiles();
+		this.props.actions.addFiles(data.files, data.count);
 	}
 
 	onMoreData(data) {
-		this.props.actions.addFile(this.props.gallery.files.concat(data.files), data.count);
+		this.props.actions.addFiles(this.props.gallery.files.concat(data.files), data.count);
 	}
 
 	onSearchData(data) {
-		this.props.actions.addFile(data.files, data.count);
+		this.props.actions.addFiles(data.files, data.count);
 	}
 
 	onFileDelete(file, event) {

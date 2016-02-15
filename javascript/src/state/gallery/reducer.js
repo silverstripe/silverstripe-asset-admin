@@ -29,63 +29,39 @@ export default function galleryReducer(state = initialState, action) {
     var nextState;
 
     switch (action.type) {
-        case GALLERY.ADD_FILE:
+        case GALLERY.ADD_FILES:
             let nextFilesState = []; // Clone the state.files array
 
-            if (Object.prototype.toString.call(action.payload.file) === '[object Array]') {
-                // If an array of object is given
-                action.payload.file.forEach(payloadFile => {
-                    let fileInState = false;
-
-                    state.files.forEach(stateFile => {
-                        // Check if each file given is already in the state
-                        if (stateFile.id === payloadFile.id) {
-                            fileInState = true;
-                        };
-                    });
-
-                    // Only add the file if it isn't already in the state
-                    if (!fileInState) {
-                        nextFilesState.push(payloadFile)
-                    }
-                });
-            } else if (typeof action.payload.file === 'object') {
-                // Else if a single item is given
+            action.payload.files.forEach(payloadFile => {
                 let fileInState = false;
 
-                state.files.forEach(file => {
-                    // Check if the file given is already in the state
-                    if (file.id === action.payload.file.id) {
+                state.files.forEach(stateFile => {
+                    // Check if each file given is already in the state
+                    if (stateFile.id === payloadFile.id) {
                         fileInState = true;
                     };
                 });
 
                 // Only add the file if it isn't already in the state
                 if (!fileInState) {
-                    nextFilesState.push(action.payload.file);
+                    nextFilesState.push(payloadFile)
                 }
-            }
+            });
 
             return deepFreeze(Object.assign({}, state, {
                 count: typeof action.payload.count !== 'undefined' ? action.payload.count : state.count,
                 files: state.files.concat(nextFilesState)
             }));
 
-        case GALLERY.REMOVE_FILE:
-            if (typeof action.payload.id === 'undefined') {
+        case GALLERY.REMOVE_FILES:
+            if (typeof action.payload.ids === 'undefined') {
                 // No param was passed, remove everything.
                 nextState = deepFreeze(Object.assign({}, state, { count: 0, files: [] }));
-            } else if (typeof action.payload.id === 'number') {
-                // We're dealing with a single file to remove.
-                nextState = deepFreeze(Object.assign({}, state, {
-                    count: state.count - 1,
-                    files: state.files.filter(file => file.id !== action.payload.id)
-                }));
             } else {
                 // We're dealing with an array of ids
                 nextState = deepFreeze(Object.assign({}, state, {
-                    count: state.count - action.payload.id.length,
-                    files: state.files.filter(file => action.payload.id.indexOf(file.id) === -1)
+                    count: state.files.filter(file => action.payload.ids.indexOf(file.id) === -1).length,
+                    files: state.files.filter(file => action.payload.ids.indexOf(file.id) === -1)
                 }));
             }
 
@@ -105,17 +81,6 @@ export default function galleryReducer(state = initialState, action) {
                 nextState = deepFreeze(Object.assign({}, state, {
                     selectedFiles: state.selectedFiles.concat(state.files.map(file => file.id).filter(id => state.selectedFiles.indexOf(id) === -1))
                 }));
-            } else if (typeof action.payload.ids === 'number') {
-                // We're dealing with a single id to select.
-                // Add the file if it's not already selected.
-                if (state.selectedFiles.indexOf(action.payload.ids) === -1) {
-                    nextState = deepFreeze(Object.assign({}, state, {
-                        selectedFiles: state.selectedFiles.concat(action.payload.ids)
-                    }));
-                } else {
-                    // The file is already selected, so return the current state.
-                    nextState = state;
-                }
             } else {
                 // We're dealing with an array if ids to select.
                 nextState = deepFreeze(Object.assign({}, state, {
@@ -129,13 +94,6 @@ export default function galleryReducer(state = initialState, action) {
             if (action.payload.ids === null) {
                 // No param was passed, deselect everything.
                 nextState = deepFreeze(Object.assign({}, state, { selectedFiles: [] }));
-            } else if (typeof action.payload.ids === 'number') {
-                // We're dealing with a single id to deselect.
-                let fileIndex = state.selectedFiles.indexOf(action.payload.ids);
-
-                nextState = deepFreeze(Object.assign({}, state, {
-                    selectedFiles: state.selectedFiles.slice(0, fileIndex).concat(state.selectedFiles.slice(fileIndex + 1))
-                }));
             } else {
                 // We're dealing with an array of ids to deselect.
                 nextState = deepFreeze(Object.assign({}, state, {

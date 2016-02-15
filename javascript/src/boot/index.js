@@ -33,7 +33,7 @@ function hasSessionStorage() {
 function getProps(props) {
 	var $componentWrapper = $('.asset-gallery').find('.asset-gallery-component-wrapper'),
 		$search = $('.cms-search-form'),
-		initialFolder = $('.asset-gallery').data('asset-gallery-initial-folder'),
+		initialFolder = $componentWrapper.data('asset-gallery-initial-folder') || '',
 		currentFolder = getVar('q[Folder]') || initialFolder,
 		backend,
 		defaults;

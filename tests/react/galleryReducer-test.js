@@ -6,8 +6,8 @@ var galleryReducer = require('../../javascript/src/state/gallery/reducer.js');
 
 describe('galleryReducer', () => {
 
-    describe('ADD_FILE', () => {
-        const type = 'ADD_FILE';
+    describe('ADD_FILES', () => {
+        const type = 'ADD_FILES';
         const initialState = {
             count: 0,
             files: []
@@ -17,7 +17,7 @@ describe('galleryReducer', () => {
             const nextState = galleryReducer(initialState, {
                 type,
                 payload: {
-                    file: { id: 1 }
+                    files: [{ id: 1 }]
                 }
             });
 
@@ -28,7 +28,7 @@ describe('galleryReducer', () => {
             const nextState = galleryReducer(initialState, {
                 type,
                 payload: {
-                    file: [{ id: 1 }, { id: 2 }]
+                    files: [{ id: 1 }, { id: 2 }]
                 }
             });
 
@@ -40,7 +40,7 @@ describe('galleryReducer', () => {
                 type,
                 payload: {
                     count: 1,
-                    file: { id: 1 }
+                    files: [{ id: 1 }]
                 }
             });
 
@@ -52,7 +52,7 @@ describe('galleryReducer', () => {
                 type,
                 payload: {
                     count: 1,
-                    file: { id: 1 }
+                    files: [{ id: 1 }]
                 }
             });
 
@@ -61,7 +61,7 @@ describe('galleryReducer', () => {
             const nextNextState = galleryReducer(nextState, {
                 type,
                 payload: {
-                    file: { id: 2 }
+                    files: [{ id: 2 }]
                 }
             });
 
@@ -73,7 +73,7 @@ describe('galleryReducer', () => {
                 type,
                 payload: {
                     count: 1,
-                    file: { id: 1 }
+                    files: [{ id: 1 }]
                 }
             });
             
@@ -83,7 +83,7 @@ describe('galleryReducer', () => {
                 type,
                 payload: {
                     count: 1,
-                    file: { id: 1 }
+                    files: [{ id: 1 }]
                 }
             });
 
@@ -91,10 +91,10 @@ describe('galleryReducer', () => {
         })
     });
     
-    describe('REMOVE_FILE', () => {
-        const type = 'REMOVE_FILE';
+    describe('REMOVE_FILES', () => {
+        const type = 'REMOVE_FILES';
         const initialState = {
-            count: 2,
+            count: 3,
             files: [{ id: 1 }, { id: 2 }, { id: 3 }]
         }
 
@@ -102,7 +102,7 @@ describe('galleryReducer', () => {
             const nextState = galleryReducer(initialState, {
                 type,
                 payload: {
-                    id: undefined
+                    ids: undefined
                 }
             });
 
@@ -114,33 +114,36 @@ describe('galleryReducer', () => {
             const nextState = galleryReducer(initialState, {
                 type,
                 payload: {
-                    id: 1
+                    ids: [1]
                 }
             });
 
             expect(nextState.files.length).toBe(2);
+            expect(nextState.count).toBe(2);
         });
 
         it('should remove multiple files from the state', () =>{
             const nextState = galleryReducer(initialState, {
                 type,
                 payload: {
-                    id: [1, 2]
+                    ids: [1, 2]
                 }
             });
         
             expect(nextState.files.length).toBe(1);
+            expect(nextState.count).toBe(1);
         });
 
         it('should do nothing if the given id is not in the state', () => {
             const nextState = galleryReducer(initialState, {
                 type,
                 payload: {
-                    id: 4
+                    ids: [4]
                 }
             });
-            
+
             expect(nextState.files.length).toBe(3);
+            expect(nextState.count).toBe(3);
         })
     });
 
@@ -176,7 +179,7 @@ describe('galleryReducer', () => {
 
         it('should select a single file when a file id is passed', () => {
             const initialState = { selectedFiles: [] };
-            const payload = { ids: 1 };
+            const payload = { ids: [1] };
             const nextState = galleryReducer(initialState, { type, payload });
 
             expect(nextState.selectedFiles.length).toBe(1);
@@ -184,7 +187,7 @@ describe('galleryReducer', () => {
 
         it('should not select an already selected file', () => {
             const initialState = { selectedFiles: [1] };
-            const payload = { ids: 1 };
+            const payload = { ids: [1] };
             const nextState = galleryReducer(initialState, { type, payload });
 
             expect(nextState.selectedFiles.length).toBe(1);
@@ -211,7 +214,7 @@ describe('galleryReducer', () => {
         });
 
         it('should deselect a single file when a file id is passed', () => {
-            const payload = { ids: 2 };
+            const payload = { ids: [2] };
             const nextState = galleryReducer(initialState, { type, payload });
 
             expect(nextState.selectedFiles.length).toBe(2);
