@@ -10,8 +10,13 @@ use Member;
 use Requirements;
 use SS_HTTPRequest;
 use SS_HTTPResponse;
-use SS_List;
+use DataList;
 
+/**
+ * Class AssetGalleryField
+ * @package SilverStripe\Forms
+ * @todo Consistent request parameter naming with DataObject properties (capitalisation and naming)
+ */
 class AssetGalleryField extends FormField {
 	/**
 	 * @var array
@@ -21,6 +26,13 @@ class AssetGalleryField extends FormField {
 		'search',
 		'update',
 		'delete',
+	);
+
+	private static $url_handlers = array(
+		'GET fetch' => 'fetch',
+		'GET search' => 'search',
+		'PUT update' => 'update',
+		'DELETE delete' => 'delete',
 	);
 
 	/**
@@ -44,6 +56,54 @@ class AssetGalleryField extends FormField {
 	 * @var boolean
 	 */
 	protected $bulkActions = true;
+
+	/**
+	 * Data source.
+	 *
+	 * @var DataList
+	 */
+	protected $list = null;
+
+	/**
+	 * @param string $name
+	 * @param string $title
+	 * @param DataList $dataList
+	 */
+	public function __construct($name, $title = null, DataList $dataList = null) {
+		parent::__construct($name, $title, null);
+
+		if(!$dataList) {
+			$dataList = File::get();
+		}
+
+		$this->setList($dataList);
+	}
+
+	/**
+	 * Set the data source.
+	 *
+	 * @param DataList $list
+	 * @return $this
+	 * @throws InvalidArgumentException
+	 */
+	public function setList(DataList $list) {
+		if(!is_a($list->dataClass(), 'File', true)) {
+			throw new \InvalidArgumentException('Requires a DataList based on File');
+		}
+
+		$this->list = $list;
+
+		return $this;
+	}
+
+	/**
+	 * Get the data source.
+	 *
+	 * @return DataList
+	 */
+	public function getList() {
+		return $this->list;
+	}
 
 	/**
 	 * @return $this
@@ -74,10 +134,15 @@ class AssetGalleryField extends FormField {
 			$this->httpError(400);
 		}
 
-		$files = File::get()->filter('ParentID', $params['id']);
+		// TODO Limit results to avoid running out of memory (implement client-side pagination)
+		$files = $this->getList()->filter('ParentID', $params['id']);
 
 		if ($files) {
 			foreach($files as $file) {
+				if(!$file->canView()) {
+					continue;
+				}
+
 				$items[] = $this->getObjectFromData($file);
 			}
 		}
@@ -153,40 +218,41 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function update(SS_HTTPRequest $request) {
-		$id = $request->getVar('id');
-		$file = File::get()->filter('id', (int) $id)->first();
+		parse_str($request->getBody(), $vars);
 
-		$code = 500;
-
-		$body = array(
-			'status' => 'error'
-		);
-
-		if ($file) {
-			$title = $request->getVar('title');
-			$basename = $request->getVar('basename');
-
-			if (!empty($title)) {
-				$file->Title = $title;
-			}
-
-			if (!empty($basename)) {
-				$file->Name = $basename;
-			}
-
-			$file->write();
-
-			$code = 200;
-
-			$body = array(
-				'status' => 'ok'
-			);
+		if (!isset($vars['id']) || !is_numeric($vars['id'])) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+				->addHeader('Content-Type', 'application/json');
 		}
 
-		$response = new SS_HTTPResponse(json_encode($body), $code);
-		$response->addHeader('Content-Type', 'application/json');
+		$id = $vars['id'];
+		$file = $this->getList()->filter('id', (int) $id)->first();
 
-		return $response;
+		if (!$file) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
+				->addHeader('Content-Type', 'application/json');
+		}
+
+		if (!$file->canEdit()) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+				->addHeader('Content-Type', 'application/json');
+		}
+
+		$title = $request->postVar('title');
+		$basename = $request->postVar('basename');
+
+		if (!empty($title)) {
+			$file->Title = $title;
+		}
+
+		if (!empty($basename)) {
+			$file->Name = $basename;
+		}
+
+		$file->write();
+
+		return (new SS_HTTPResponse(json_encode(['status' => 'ok']), 200))
+			->addHeader('Content-Type', 'application/json');
 	}
 
 	/**
@@ -195,37 +261,32 @@ class AssetGalleryField extends FormField {
 	 * @return SS_HTTPResponse
 	 */
 	public function delete(SS_HTTPRequest $request) {
-		$fileIds = $request->getVar("ids");
-		$files = array();
+		parse_str($request->getBody(), $vars);
 
-		$response = new SS_HTTPResponse();
-		$response->addHeader('Content-Type', 'application/json');
-
-		if($fileIds) {
-			foreach ($fileIds as $id) {
-				if ($file = File::get()->filter("id", (int) $id)->first()) {
-					array_push($files, $file);
-				}
-			}
+		if (!isset($vars['ids']) || !$vars['ids']) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+				->addHeader('Content-Type', 'application/json');
 		}
 
-		if(count($files)) {
-			foreach ($files as $file) {
-				$file->delete();
-			}
+		$fileIds = $vars['ids'];
+		$files = $this->getList()->filter("id", $fileIds)->toArray();
 
-			$response->setBody(json_encode(array(
-				'status' => 'file was deleted',
-			)));
-		} else {
-			$response->setStatusCode(500);
-
-			$response->setBody(json_encode(array(
-				'status' => 'could not find the file',
-			)));
+		if (!count($files)) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
+				->addHeader('Content-Type', 'application/json');
 		}
 
-		return $response;
+		if (!min(array_map(function($file) {return $file->canDelete();}, $files))) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+				->addHeader('Content-Type', 'application/json');
+		}
+
+		foreach($files as $file) {
+			$file->delete();
+		}
+
+		return (new SS_HTTPResponse(json_encode(['status' => 'file was deleted'])))
+			->addHeader('Content-Type', 'application/json');
 	}
 
 	/**
@@ -237,7 +298,20 @@ class AssetGalleryField extends FormField {
 		$items = array();
 		$files = null;
 
-		if ((!empty($filters['folder']) && isset($filters['onlySearchInFolder']) && $filters['onlySearchInFolder'] == '1') || (empty($filters["name"]) && empty($filters["type"]) && empty($filters["createdFrom"]) && empty($filters["createdTo"]))) {
+		$hasFilters = (
+			empty($filters["name"])
+			&& empty($filters["type"])
+			&& empty($filters["createdFrom"])
+			&& empty($filters["createdTo"])
+		);
+
+		$searchInFolder = (
+			!empty($filters['folder'])
+			&& isset($filters['onlySearchInFolder'])
+			&& $filters['onlySearchInFolder'] == '1'
+		);
+
+		if ($searchInFolder || $hasFilters) {
 			$folder = null;
 
 			if (isset($filters['folder'])) {
@@ -248,17 +322,17 @@ class AssetGalleryField extends FormField {
 
 			if ($folder && $folder->hasChildren()) {
 				// When there's a folder with stuff in it.
-				/** @var File[]|SS_List $files */
+				/** @var File[]|DataList $files */
 				$files = $folder->myChildren();
 			} else if ($folder && !$folder->hasChildren()) {
 				// When there's an empty folder
 				$files = array();
 			} else {
 				// When there's no folder (we're at the top level).
-				$files = File::get()->filter('ParentID', 0);
+				$files = $this->getList()->filter('ParentID', 0);
 			}
 		} else {
-			$files = File::get();
+			$files = $this->getList();
 		}
 
 		$count = 0;
@@ -302,6 +376,10 @@ class AssetGalleryField extends FormField {
 			}
 
 			foreach($files as $file) {
+				if(!$file->canView()) {
+					continue;
+				}
+
 				$items[] = $this->getObjectFromData($file);
 			}
 		}
@@ -440,6 +518,8 @@ class AssetGalleryField extends FormField {
 			'extension' => $file->Extension,
 			'size' => $file->Size,
 			'url' => $file->AbsoluteURL,
+			'canEdit' => $file->canEdit(),
+			'canDelete' => $file->canDelete()
 		);
 
 		/** @var Member $owner */
