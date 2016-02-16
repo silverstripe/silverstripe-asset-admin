@@ -298,7 +298,20 @@ class AssetGalleryField extends FormField {
 		$items = array();
 		$files = null;
 
-		if ((!empty($filters['folder']) && isset($filters['onlySearchInFolder']) && $filters['onlySearchInFolder'] == '1') || (empty($filters["name"]) && empty($filters["type"]) && empty($filters["createdFrom"]) && empty($filters["createdTo"]))) {
+		$hasFilters = (
+			empty($filters["name"])
+			&& empty($filters["type"])
+			&& empty($filters["createdFrom"])
+			&& empty($filters["createdTo"])
+		);
+
+		$searchInFolder = (
+			!empty($filters['folder'])
+			&& isset($filters['onlySearchInFolder'])
+			&& $filters['onlySearchInFolder'] == '1'
+		);
+
+		if ($searchInFolder || $hasFilters) {
 			$folder = null;
 
 			if (isset($filters['folder'])) {
