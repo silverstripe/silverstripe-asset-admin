@@ -49,6 +49,14 @@ class AssetGalleryFieldTest extends SapphireTest {
 		return $field;
 	}
 
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testOnlyAcceptFiles() {
+		$field = $this->getNewField();
+		$field->setList(Member::get());
+	}
+
 	public function testItGetsNewData() {
 		$this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
 

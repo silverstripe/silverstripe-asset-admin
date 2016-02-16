@@ -68,14 +68,9 @@ class AssetGalleryField extends FormField {
 	 * @param string $name
 	 * @param string $title
 	 * @param DataList $dataList
-	 * @throws InvalidArgumentException
 	 */
 	public function __construct($name, $title = null, DataList $dataList = null) {
 		parent::__construct($name, $title, null);
-
-		if($dataList && !is_subclass_of($dataList->dataClass(), 'File')) {
-			throw new InvalidArgumentException('AssetGalleryField requires a DataList based on File');
-		}
 
 		if(!$dataList) {
 			$dataList = File::get();
@@ -88,10 +83,14 @@ class AssetGalleryField extends FormField {
 	 * Set the data source.
 	 *
 	 * @param DataList $list
-	 *
 	 * @return $this
+	 * @throws InvalidArgumentException
 	 */
 	public function setList(DataList $list) {
+		if(!is_a($list->dataClass(), 'File', true)) {
+			throw new \InvalidArgumentException('Requires a DataList based on File');
+		}
+
 		$this->list = $list;
 
 		return $this;
