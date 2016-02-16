@@ -12,6 +12,11 @@ use SS_HTTPRequest;
 use SS_HTTPResponse;
 use SS_List;
 
+/**
+ * Class AssetGalleryField
+ * @package SilverStripe\Forms
+ * @todo Consistent request parameter naming with DataObject properties (capitalisation and naming)
+ */
 class AssetGalleryField extends FormField {
 	/**
 	 * @var array
@@ -129,6 +134,7 @@ class AssetGalleryField extends FormField {
 			$this->httpError(400);
 		}
 
+		// TODO Limit results to avoid running out of memory (implement client-side pagination)
 		$files = $this->getList()->filter('ParentID', $params['id']);
 
 		if ($files) {
