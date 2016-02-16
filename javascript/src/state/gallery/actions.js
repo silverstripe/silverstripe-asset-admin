@@ -1,16 +1,30 @@
 import { GALLERY } from '../action-types';
 
 /**
- * Adds a file to state.
+ * Adds files to state.
  *
- * @param object|array file - File object or array of file objects.
+ * @param array files - Array of file objects.
  * @param number [count] - The number of files in the current view.
  */
-export function addFile(file, count) {
+export function addFiles(files, count) {
     return (dispatch, getState) => {
         return dispatch ({
-            type: GALLERY.ADD_FILE,
-            payload: { file, count }
+            type: GALLERY.ADD_FILES,
+            payload: { files, count }
+        });
+    }
+}
+
+/**
+ * Removes files from the state. If no param is passed all files are removed
+ *
+ * @param Array id - Array of file ids.
+ */
+export function removeFiles(ids) {
+    return (dispatch, getState) => {
+        return dispatch ({
+            type: GALLERY.REMOVE_FILES,
+            payload: { ids }
         });
     }
 }
@@ -31,9 +45,9 @@ export function updateFile(id, updates) {
 }
 
 /**
- * Selects a file or files. If no param is passed all files are selected.
+ * Selects files. If no param is passed all files are selected.
  *
- * @param number|array ids - File id or array of file ids to select.
+ * @param Array ids - Array of file ids to select.
  */
 export function selectFiles(ids = null) {
     return (dispatch, getState) => {
@@ -45,9 +59,9 @@ export function selectFiles(ids = null) {
 }
 
 /**
- * Deselects a file or files. If no param is passed all files are deselected.
+ * Deselects files. If no param is passed all files are deselected.
  *
- * @param number|array ids - File id or array of file ids to deselect.
+ * @param Array ids - Array of file ids to deselect.
  */
 export function deselectFiles(ids = null) {
     return (dispatch, getState) => {
@@ -117,4 +131,18 @@ export function updateEditorField(updates) {
 			payload: { updates }
 		});
 	}
+}
+
+/**
+ * Sorts files in some order.
+ *
+ * @param func comparator - Used to determine the sort order.
+ */
+export function sortFiles(comparator) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.SORT_FILES,
+            payload: { comparator }
+        });
+    }
 }
