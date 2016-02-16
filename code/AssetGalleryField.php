@@ -220,11 +220,17 @@ class AssetGalleryField extends FormField {
 	 */
 	public function update(SS_HTTPRequest $request) {
 		parse_str($request->getBody(), $vars);
+
+		if (!isset($vars['id']) || !is_numeric($vars['id'])) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+				->addHeader('Content-Type', 'application/json');
+		}
+
 		$id = $vars['id'];
 		$file = $this->getList()->filter('id', (int) $id)->first();
 
 		if (!$file) {
-			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 500))
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
 				->addHeader('Content-Type', 'application/json');
 		}
 
@@ -257,22 +263,17 @@ class AssetGalleryField extends FormField {
 	 */
 	public function delete(SS_HTTPRequest $request) {
 		parse_str($request->getBody(), $vars);
-		$fileIds = $vars['ids'];
-		$files = array();
 
-		$response = new SS_HTTPResponse();
-		$response->addHeader('Content-Type', 'application/json');
-
-		if($fileIds) {
-			foreach ($fileIds as $id) {
-				if ($file = $this->getList()->filter("id", (int) $id)->first()) {
-					array_push($files, $file);
-				}
-			}
+		if (!isset($vars['ids']) || !$vars['ids']) {
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+				->addHeader('Content-Type', 'application/json');
 		}
 
+		$fileIds = $vars['ids'];
+		$files = $this->getList()->filter("id", $fileIds)->toArray();
+
 		if (!count($files)) {
-			return (new SS_HTTPResponse(json_encode(['status' => 'could not find the file']), 500))
+			return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
 				->addHeader('Content-Type', 'application/json');
 		}
 
