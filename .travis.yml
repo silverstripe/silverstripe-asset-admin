@@ -3,6 +3,7 @@ language: php
 env:
   global:
     - DB=MYSQL CORE_RELEASE=integrate-react CORE_INSTALLER_RELEASE=master CORE_ALIAS=4.0.x-dev
+    - secure: "YIQpRHDAPLBf+Uu4mChBHYA3QjUQO1ty+2E9bcYqXmptIjkA+kdpzt1ImShLBC62ruzesucRQFF3/pGrqERXqc+hVyKyOl/VJkAD+7VqSfGUd/wX+mXKLO5opD1L7tHOkbhu4YLKE7nqjSPzWwur9rKe90BD0BKeNHt0vO9R0glolcuTzN0SzwJ3+113/zmdz8eXsUCbWaW4I05Hfvjn4BBGeg2rKPCuPVCKH3+CSP2KjlR7fSQf39EzOp+l4qH/QG1fWq8lDKRQ0BDTTn+b0GJbn77t6FAAs6s4vvRrZo5iBxhUo4mtKn9ffR7Il3jjZiT36GBBwH7URMOEuDdydvgQKnEtmBelU2Vtp0h88gDAewwaYHTNk86+hqA7E6ncxaKnmIiJ5cJ59LWvd38duv8yOPez1nF9Fj7NxGowbHUcgNSXlsBLojmszRYNJ07jG0gG9dQ/aCm3tixDY7lsYSzUfSCKNLOeXdU16Yz7pc/yey84Gfim0+d/+Ia3mbUzB6bIhaaasLLu3hzNSxH0qadWl6lLRdDkwlXO9QWVRwhTlg3tPIN5FRyBTrHCwex85sEUjXbvDaWsAZQHZNtWUhySZaoYi6vo6sbrJwmMoxMBBlxwGNEgA3Q+cDvhFW6lAuvjrDA99kDO4sRmqAgZB6vJkRSi+miEHdc2iJmNZcE="
 
 matrix:
   include:
