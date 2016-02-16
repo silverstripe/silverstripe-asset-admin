@@ -10,7 +10,7 @@ use Member;
 use Requirements;
 use SS_HTTPRequest;
 use SS_HTTPResponse;
-use SS_List;
+use DataList;
 
 /**
  * Class AssetGalleryField
@@ -60,19 +60,20 @@ class AssetGalleryField extends FormField {
 	/**
 	 * Data source.
 	 *
-	 * @var SS_List
+	 * @var DataList
 	 */
 	protected $list = null;
 
 	/**
 	 * @param string $name
 	 * @param string $title
-	 * @param SS_List $dataList
+	 * @param DataList $dataList
+	 * @throws InvalidArgumentException
 	 */
-	public function __construct($name, $title = null, SS_List $dataList = null) {
+	public function __construct($name, $title = null, DataList $dataList = null) {
 		parent::__construct($name, $title, null);
 
-		if($dataList && !$dataList->dataClass() instanceof File) {
+		if($dataList && !is_subclass_of($dataList->dataClass(), 'File')) {
 			throw new InvalidArgumentException('AssetGalleryField requires a DataList based on File');
 		}
 
@@ -86,11 +87,11 @@ class AssetGalleryField extends FormField {
 	/**
 	 * Set the data source.
 	 *
-	 * @param SS_List $list
+	 * @param DataList $list
 	 *
 	 * @return $this
 	 */
-	public function setList(SS_List $list) {
+	public function setList(DataList $list) {
 		$this->list = $list;
 
 		return $this;
@@ -99,7 +100,7 @@ class AssetGalleryField extends FormField {
 	/**
 	 * Get the data source.
 	 *
-	 * @return SS_List
+	 * @return DataList
 	 */
 	public function getList() {
 		return $this->list;
@@ -308,7 +309,7 @@ class AssetGalleryField extends FormField {
 
 			if ($folder && $folder->hasChildren()) {
 				// When there's a folder with stuff in it.
-				/** @var File[]|SS_List $files */
+				/** @var File[]|DataList $files */
 				$files = $folder->myChildren();
 			} else if ($folder && !$folder->hasChildren()) {
 				// When there's an empty folder
