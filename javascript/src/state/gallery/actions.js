@@ -87,22 +87,6 @@ export function setEditing(file) {
 }
 
 /**
- * Sets the focus state of a file.
- *
- * @param number|boolean id - the id of the file to focus on, or false.
- */
-export function setFocus(id) {
-    return (dispatch, getState) => {
-        return dispatch({
-            type: GALLERY.SET_FOCUS,
-            payload: {
-                id
-            }
-        });
-    }
-}
-
-/**
  * Sets the state of the fields for the editor component.
  *
  * @param object editorFields - the current fields in the editor component

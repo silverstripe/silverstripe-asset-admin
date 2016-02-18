@@ -135,8 +135,12 @@
         }
     }
 
-    .gallery__items {
-
+    .gallery__folders {
+        display: inline-block;
+    }
+    
+    .gallery__files {
+        display: inline-block;
     }
 
     .gallery__load {

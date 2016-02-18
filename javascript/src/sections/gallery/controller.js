@@ -215,14 +215,25 @@ class GalleryContainer extends SilverStripeComponent {
 					})}
 				</select>
 			</div>
-			<div className='gallery__items'>
+			<div className='gallery__folders'>
 				{this.props.gallery.files.map((file, i) => {
-					return <FileComponent key={i} {...file}
-						spaceKey={CONSTANTS.SPACE_KEY_CODE}
-						returnKey={CONSTANTS.RETURN_KEY_CODE}
-						onFileDelete={this.onFileDelete}
-						onFileNavigate={this.onFileNavigate} />;
-				})}
+					if (file.type === 'folder') {
+						return <FileComponent key={i} {...file}
+							spaceKey={CONSTANTS.SPACE_KEY_CODE}
+							returnKey={CONSTANTS.RETURN_KEY_CODE}
+							onFileDelete={this.onFileDelete}
+							onFileNavigate={this.onFileNavigate} />;
+					}})}
+			</div>
+			<div className='gallery__files'>
+				{this.props.gallery.files.map((file, i) => {
+					if (file.type !== 'folder') {
+						return <FileComponent key={i} {...file}
+							spaceKey={CONSTANTS.SPACE_KEY_CODE}
+							returnKey={CONSTANTS.RETURN_KEY_CODE}
+							onFileDelete={this.onFileDelete}
+							onFileNavigate={this.onFileNavigate} />;
+					}})}
 			</div>
 			{this.getNoItemsNotice()}
 			<div className="gallery__load">

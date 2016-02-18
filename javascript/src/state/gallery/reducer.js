@@ -108,11 +108,6 @@ export default function galleryReducer(state = initialState, action) {
                 editing: action.payload.file
             }));
 
-        case GALLERY.SET_FOCUS:
-            return deepFreeze(Object.assign({}, state, {
-                focus: action.payload.id
-            }));
-
         case GALLERY.SET_EDITOR_FIELDS:
             return deepFreeze(Object.assign({}, state, {
                 editorFields: action.payload.editorFields
