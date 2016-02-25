@@ -5,22 +5,25 @@ import SilverStripeComponent from 'silverstripe-component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as galleryActions from '../../state/gallery/actions';
-import TextFieldComponent from '../../components/text-field/index'
+import TextFieldComponent from '../../components/text-field/index';
+import CONSTANTS from '../../constants';
 
 class EditorContainer extends SilverStripeComponent {
 	constructor(props) {
 		super(props);
 
+		const file = this.props.file;
+
 		this.fields = [
 			{
 				'label': 'Title',
 				'name': 'title',
-				'value': this.props.file.title
+				'value': file === null ? file : file.title
 			},
 			{
 				'label': 'Filename',
 				'name': 'basename',
-				'value': this.props.file.basename
+				'value': file === null ? file : file.basename
 			}
 		];
 
@@ -34,10 +37,10 @@ class EditorContainer extends SilverStripeComponent {
 
 		this.props.actions.setEditorFields(this.fields);
 	}
-	
+
 	componentWillUnmount() {
 		super.componentWillUnmount();
-		
+
 		this.props.actions.setEditorFields();
 	}
 
@@ -49,14 +52,33 @@ class EditorContainer extends SilverStripeComponent {
 	}
 
 	onFileSave(event) {
-		this.props.onFileSave(this.props.file.id, this.props.gallery.editorFields, event);
+		this.props.onFileSave(this.props.file.id, this.props.editorFields);
+
+		event.stopPropagation();
+		event.preventDefault();
 	}
 
 	onCancel(event) {
-		this.props.actions.setEditing(false);
+		window.ss.router.show(CONSTANTS.HOME_ROUTE);
+	}
+
+	handleEnterRoute(ctx, next) {
+		// If there is no file to edit set the editing file
+		// by matching a file id against the id in the URL.
+		if (this.props.file === null) {
+			this.props.actions.setEditing(this.props.files.filter((file) => file.id === parseInt(ctx.params.id, 10))[0]);
+		}
+	}
+
+	handleExitRoute(ctx, next) {
+		this.props.actions.setEditing(null);
 	}
 
 	render() {
+		if (this.props.file === null) {
+			return null;
+		}
+
 		return <div className='editor'>
 			<div className='CompositeField composite cms-file-info nolabel'>
 				<div className='CompositeField composite cms-file-info-preview nolabel'>
@@ -105,12 +127,12 @@ class EditorContainer extends SilverStripeComponent {
 					</div>
 				</div>
 			</div>
-			{this.props.gallery.editorFields.map((field, i) => {
+			{this.props.editorFields.map((field, i) => {
 				return <TextFieldComponent
 						key={i}
 						label={field.label}
 						name={field.name}
-						value={field.value}
+						value={this.props.file[field.name]}
 						onChange={this.onFieldChange} />
 			})}
 			<div>
@@ -145,13 +167,15 @@ EditorContainer.propTypes = {
 			height: React.PropTypes.number
 		})
 	}),
-	onFileSave: React.PropTypes.func,
-	onCancel:React.PropTypes.func
+	backend: React.PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
 	return {
-		gallery: state.assetAdmin.gallery
+		editorFields: state.assetAdmin.gallery.editorFields, // The inputs for editing the file.
+		file: state.assetAdmin.gallery.editing, // The file to edit.
+		files: state.assetAdmin.gallery.files,
+		path: state.assetAdmin.gallery.path // The current location path
 	}
 }
 

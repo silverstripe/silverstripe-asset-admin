@@ -23,14 +23,18 @@ class AssetGalleryField extends FormField
      * @var array
      */
     private static $allowed_actions = array(
-        'fetch',
+        'item',
+        'getFilesByParentID',
+        'getFilesBySiblingID',
         'search',
         'update',
         'delete',
     );
 
     private static $url_handlers = array(
-        'GET fetch' => 'fetch',
+        'GET item/$ID/$Action' => 'item',
+        'GET getFilesByParentID' => 'getFilesByParentID',
+        'GET getFilesBySiblingID' => 'getFilesBySiblingID',
         'GET search' => 'search',
         'PUT update' => 'update',
         'DELETE delete' => 'delete',
@@ -46,7 +50,12 @@ class AssetGalleryField extends FormField
     /**
      * @var string
      */
-    protected $currentPath;
+    protected $currentFolder;
+    
+    /**
+     * @var string
+     */
+    protected $idFromURL;
 
     /**
      * @var int
@@ -84,8 +93,8 @@ class AssetGalleryField extends FormField
     /**
      * Set the data source.
      *
-     * @param  DataList                 $list
-     *                                        @return $this
+     * @param  DataList $list
+     * @return $this
      * @throws InvalidArgumentException
      */
     public function setList(DataList $list)
@@ -126,23 +135,40 @@ class AssetGalleryField extends FormField
     }
 
     /**
+     * Handles routing to a file.
+     *
+     * @param SS_HTTPRequest $request
+     *
+     * @return SS_HTTPResponse
+     */
+    public function item(SS_HTTPRequest $request)
+    {
+        return $this->getForm()->getController();
+    }
+
+    /**
      * Fetches a collection of files by ParentID.
      *
      * @param SS_HTTPRequest $request
      *
      * @return SS_HTTPResponse
      */
-    public function fetch(SS_HTTPRequest $request)
+    public function getFilesByParentID(SS_HTTPRequest $request)
     {
-        $params = $request->getVars();
+        $params = $request->postVars();
         $items = array();
+        $parentId = 0;
 
-        if (empty($params['id'])) {
+        if (!isset($params['id']) && !strlen($params['id'])) {
             $this->httpError(400);
         }
-
+        
         // TODO Limit results to avoid running out of memory (implement client-side pagination)
         $files = $this->getList()->filter('ParentID', $params['id']);
+        
+        if (isset($this->getList()->byID($params['id'])->ParentID)) {
+            $parentId = $this->getList()->byID($params['id'])->ParentID;
+        }
 
         if ($files) {
             foreach ($files as $file) {
@@ -156,12 +182,44 @@ class AssetGalleryField extends FormField
 
         $response = new SS_HTTPResponse();
         $response->addHeader('Content-Type', 'application/json');
-        $response->setBody(json_encode(array(
+        $response->setBody(json_encode([
             'files' => $items,
             'count' => count($items),
-        )));
+            'parent' => $parentId
+        ]));
 
         return $response;
+    }
+    
+    /**
+     * Fetches a collection of files in the same folder as the file with the given id.
+     *
+     * @param SS_HTTPRequest $request
+     *
+     * @return SS_HTTPResponse
+     */
+    public function getFilesBySiblingID(SS_HTTPRequest $request)
+    {
+        $params = $request->postVars();
+        $parentID = 0;
+
+        if (isset($this->getList()->byID($params['id'])->ParentID)) {
+            $parentID = $this->getList()->byID($params['id'])->ParentID;
+        }
+        
+        $getFilesByParentIDURL = $this->getFilesByParentIDURL();
+        $postVars = [
+            'id' => $parentID
+        ];
+
+        $response = new SS_HTTPRequest(
+            'POST',
+            $getFilesByParentIDURL,
+            [],
+            $postVars
+        );
+
+        return $this->getFilesByParentID($response);
     }
 
     /**
@@ -414,8 +472,8 @@ class AssetGalleryField extends FormField
 
         $path = $this->config()->defaultPath;
 
-        if ($this->getCurrentPath() !== null) {
-            $path = $this->getCurrentPath();
+        if ($this->getCurrentFolder() !== null) {
+            $path = $this->getCurrentFolder();
         }
 
         if (empty($path)) {
@@ -441,11 +499,13 @@ class AssetGalleryField extends FormField
         Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . "/javascript/lang");
         Requirements::javascript(ASSET_ADMIN_DIR . "/javascript/dist/bundle.js");
 
-        $fetchURL = $this->getFetchURL();
+        $getFilesByParentIDURL = $this->getFilesByParentIDURL();
+        $getFilesBySiblingIDURL = $this->getFilesBySiblingIDURL();
         $searchURL = $this->getSearchURL();
         $updateURL = $this->getUpdateURL();
         $deleteURL = $this->getDeleteURL();
-        $initialFolder = $this->getCurrentPath();
+        $initialFolder = $this->getCurrentFolder();
+        $idFromURL = $this->getIdFromURL();
         $limit = $this->getLimit();
         $bulkActions = $this->getBulkActions();
 
@@ -454,20 +514,30 @@ class AssetGalleryField extends FormField
             data-asset-gallery-name='{$name}'
             data-asset-gallery-bulk-actions='{$bulkActions}'
             data-asset-gallery-limit='{$limit}'
-            data-asset-gallery-fetch-url='{$fetchURL}'
+            data-asset-gallery-files-by-parent-url='{$getFilesByParentIDURL}'
+            data-asset-gallery-files-by-sibling-url='{$getFilesBySiblingIDURL}'
             data-asset-gallery-search-url='{$searchURL}'
             data-asset-gallery-update-url='{$updateURL}'
             data-asset-gallery-delete-url='{$deleteURL}'
             data-asset-gallery-initial-folder='{$initialFolder}'
+            data-asset-gallery-id-from-url='{$idFromURL}'
             ></div>";
     }
 
     /**
      * @return string
      */
-    protected function getFetchURL()
+    protected function getFilesByParentIDURL()
     {
-        return Controller::join_links($this->Link(), 'fetch');
+        return Controller::join_links($this->Link(), 'getFilesByParentID');
+    }
+    
+    /**
+     * @return string
+     */
+    protected function getFilesBySiblingIDURL()
+    {
+        return Controller::join_links($this->Link(), 'getFilesBySiblingID');
     }
 
     /**
@@ -497,19 +567,34 @@ class AssetGalleryField extends FormField
     /**
      * @return string
      */
-    public function getCurrentPath()
+    public function getCurrentFolder()
     {
-        return $this->currentPath;
+        return $this->currentFolder;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getIdFromURL()
+    {
+        if($this->idFromURL) {
+            return $this->idFromURL;
+        }
+
+        $getIdFromRequest = $this->getForm()->getController()->getRequest()->param('ID');
+
+        return $getIdFromRequest;
     }
 
     /**
-     * @param string $currentPath
+     * Sets the folder being requested.
      *
-     * @return $this
+     * @param int ID - The ID of the folder being set.
+     * @return AssetGalleryField
      */
-    public function setCurrentPath($currentPath)
+    public function setCurrentFolder($currentFolder)
     {
-        $this->currentPath = $currentPath;
+        $this->currentFolder = $currentFolder;
 
         return $this;
     }

@@ -234,7 +234,7 @@ describe('galleryReducer', () => {
     describe('SET_EDITING', () => {
         it('should start editing the given file', () => {
             const initialState = {
-                editing: false
+                editing: null
             };
 
             const nextState = galleryReducer(initialState, { 
@@ -252,10 +252,10 @@ describe('galleryReducer', () => {
 
             const nextState = galleryReducer(initialState, { 
                 type: 'SET_EDITING',
-                payload: { file: false }
+                payload: { file: null }
             });
 
-            expect(nextState.editing).toBe(false);
+            expect(nextState.editing).toBe(null);
         });
     });
 
@@ -307,7 +307,7 @@ describe('galleryReducer', () => {
             }]));
         });
     });
-    
+
     describe('SORT_FILES', () => {
         const type = 'SORT_FILES';
         const initialState = {
@@ -395,4 +395,20 @@ describe('galleryReducer', () => {
             expect(nextState.files[0].created).toBe('2');
         });
     });
+
+    describe('SET_PATH', () => {
+        it('should update the state with the current path', () => {
+            const initialState = { path: null };
+
+            const nextState = galleryReducer(initialState, {
+                type: 'SET_PATH',
+                payload: {
+                    path: '/some/path'
+                }
+            });
+
+            expect(nextState.path).toBe('/some/path');
+        });
+    });
+
 });

@@ -60,6 +60,22 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
+     * Gets the ID of the folder being requested.
+     *
+     * @return int
+     */
+    public function getCurrentFolderID()
+    {
+        $currentFolderID = 0;
+
+        if ($this->urlParams['Action'] == 'show' && is_numeric($this->urlParams['ID'])) {
+            $currentFolderID = $this->urlParams['ID'];
+        }
+
+        return $currentFolderID;
+    }
+
+    /**
      * Set up the controller
      */
     public function init()
@@ -251,7 +267,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         asort($exts);
         $uploadField->Extensions = implode(', ', $exts);
 
-        $galleryField = AssetGalleryField::create('Files')->setCurrentPath('')->setLimit(15);
+        $galleryField = AssetGalleryField::create('Files')
+            ->setCurrentFolder($this->getCurrentFolderID())
+            ->setLimit(15);
+
         // List view
         $fields->addFieldsToTab('Root.ListView', array(
             $actionsComposite = CompositeField::create(

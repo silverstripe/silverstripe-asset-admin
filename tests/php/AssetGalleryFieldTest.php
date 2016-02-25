@@ -131,7 +131,7 @@ class AssetGalleryFieldTest extends SapphireTest
         $field = $this->getNewField();
 
         $request = new SS_HTTPRequest('GET', 'http://example.com', ['id' => $folder1->ID]);
-        $response = $field->fetch($request);
+        $response = $field->getFilesByParentID($request);
         $files = json_decode($response->getBody(), true);
         $this->assertArrayHasKey('files', $files);
         $ids = array_map(function ($file) {return $file['id'];}, $files['files']);

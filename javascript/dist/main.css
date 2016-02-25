@@ -93,10 +93,12 @@
     text-transform: capitalize; }
 
 .asset-gallery .gallery__folders {
-  display: inline-block; }
+  display: inline-block;
+  width: 100%; }
 
 .asset-gallery .gallery__files {
-  display: inline-block; }
+  display: inline-block;
+  width: 100%; }
 
 .asset-gallery .gallery__load {
   width: 100%;

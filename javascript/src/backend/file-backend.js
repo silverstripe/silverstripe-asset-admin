@@ -3,10 +3,11 @@ import Events from 'events';
 
 export default class FileBackend extends Events {
 
-	constructor(fetch_url, search_url, update_url, delete_url, limit, bulkActions, $folder, currentFolder) {
+	constructor(getFilesByParentID_url, getFilesBySiblingID_url, search_url, update_url, delete_url, limit, bulkActions, $folder, currentFolder) {
 		super();
 
-		this.fetch_url = fetch_url;
+		this.getFilesByParentID_url = getFilesByParentID_url;
+		this.getFilesBySiblingID_url = getFilesBySiblingID_url;
 		this.search_url = search_url;
 		this.update_url = update_url;
 		this.delete_url = delete_url;
@@ -23,14 +24,31 @@ export default class FileBackend extends Events {
 	 * @param number id
 	 * @desc Fetches a collection of Files by ParentID.
 	 */
-	fetch(id) {
+	getFilesByParentID(id) {
 		if (typeof id === 'undefined') {
 			return;
 		}
 
 		this.page = 1;
 
-		this.request('POST', this.fetch_url, { id: id }).then((json) => {
+		return this.request('POST', this.getFilesByParentID_url, { id: id, limit: this.limit }).then((json) => {
+			this.emit('onFetchData', json);
+		});
+	}
+
+	/**
+	 * @func getFilesBySiblingID
+	 * @param number id - the id of the file to get the siblings from.
+	 * @desc Fetches a collection of sibling files given an id.
+	 */
+	getFilesBySiblingID(id) {
+		if (typeof id === 'undefined') {
+			return;
+		}
+		
+		this.page = 1;
+
+		return this.request('POST', this.getFilesBySiblingID_url, { id: id, limit: this.limit }).then((json) => {
 			this.emit('onFetchData', json);
 		});
 	}
@@ -38,7 +56,7 @@ export default class FileBackend extends Events {
 	search() {
 		this.page = 1;
 
-		this.request('GET', this.search_url).then((json) => {
+		return this.request('GET', this.search_url).then((json) => {
 			this.emit('onSearchData', json);
 		});
 	}
@@ -46,7 +64,7 @@ export default class FileBackend extends Events {
 	more() {
 		this.page++;
 
-		this.request('GET', this.search_url).then((json) => {
+		return this.request('GET', this.search_url).then((json) => {
 			this.emit('onMoreData', json);
 		});
 	}
@@ -57,7 +75,7 @@ export default class FileBackend extends Events {
 
 		this.persistFolderFilter(folder);
 
-		this.request('GET', this.search_url).then((json) => {
+		return this.request('GET', this.search_url).then((json) => {
 			this.emit('onNavigateData', json);
 		});
 	}
@@ -70,20 +88,17 @@ export default class FileBackend extends Events {
 		this.$folder.val(folder);
 	}
 
+	/**
+	 * Deletes files on the server based on the given ids
+	 *
+	 * @param array ids - an array of file ids to delete on the server
+	 * @returns object - promise
+	 */
 	delete(ids) {
-		var filesToDelete = [];
-
-		// Allows users to pass one or more ids to delete.
-		if (Object.prototype.toString.call(ids) !== '[object Array]') {
-			filesToDelete.push(ids);
-		} else {
-			filesToDelete = ids;
-		}
-
-		this.request('DELETE', this.delete_url, {
-			'ids': filesToDelete
+		return this.request('DELETE', this.delete_url, {
+			'ids': ids
 		}).then(() => {
-			this.emit('onDeleteData', filesToDelete[i]);
+			this.emit('onDeleteData', ids);
 		});
 	}
 
@@ -105,7 +120,7 @@ export default class FileBackend extends Events {
 			updates[field.name] = field.value;
 		});
 
-		this.request('POST', this.update_url, updates).then(() => {
+		return this.request('POST', this.update_url, updates).then(() => {
 			this.emit('onSaveData', id, updates);
 		});
 	}
@@ -118,10 +133,6 @@ export default class FileBackend extends Events {
 
 		if (this.name && this.name.trim() !== '') {
 			defaults.name = decodeURIComponent(this.name);
-		}
-
-		if (this.folder && this.folder.trim() !== '') {
-			defaults.folder = decodeURIComponent(this.folder);
 		}
 
 		if (this.createdFrom && this.createdFrom.trim() !== '') {
