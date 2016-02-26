@@ -152,6 +152,12 @@
 		background-color: transparent;
 		border: 0;
 		background: none;
+		
+		&:hover {
+			&::before {
+				border: 1px solid $state-active;
+			}
+		}
 
 		&::before {
 			border: 1px solid #ddd;

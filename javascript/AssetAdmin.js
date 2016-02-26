@@ -132,9 +132,12 @@
 			}
 		});
 		
-		$('.AssetAdmin .grid-levelup').entwine({
+		$('.AssetAdmin .gallery__back').entwine({
 			onmatch: function () {
-				this.closest('.ui-tabs-panel').find('.cms-actions-row').prepend(this);
+				$('.cms-add-folder-link').css('margin-left', 32);
+			},
+			onunmatch: function () {
+				$('.cms-add-folder-link').css('margin-left', 0);
 			}
 		})
 	});

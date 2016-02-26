@@ -201,14 +201,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             $addFolderBtn = new LiteralField(
                 'AddFolderButton',
                 sprintf(
-                    '<a class="ss-ui-button font-icon-folder-add no-text cms-add-folder-link" title="%s" data-icon="add" data-url="%s" href="%s"></a>',
+                    '<a class="ss-ui-button font-icon-folder-add cms-add-folder-link" title="%s" data-icon="add" data-url="%s" href="%s">%s</a>',
                     _t('Folder.AddFolderButton', 'Add folder'),
                     Controller::join_links($this->Link('AddForm'), '?' . http_build_query(array(
                         'action_doAdd' => 1,
                         'ParentID' => $folder->ID,
                         'SecurityID' => $form->getSecurityToken()->getValue()
                     ))),
-                    Controller::join_links($this->Link('addfolder'), '?ParentID=' . $folder->ID)
+                    Controller::join_links($this->Link('addfolder'), '?ParentID=' . $folder->ID),
+                    _t('Folder.AddFolderButton', 'Add folder')
                 )
             );
         } else {

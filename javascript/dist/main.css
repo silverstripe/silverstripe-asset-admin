@@ -9,61 +9,18 @@
 /* include borders */
 @keyframes actionsAdded {
   0% {
-    transform: scale(0.9); }
-  45% {
-    transform: scale(1.05); }
-  55% {
-    transform: scale(1.05); }
+    top: 0; }
   100% {
-    transform: scale(1); } }
+    top: 52px; } }
 
 .asset-gallery .gallery__no-item-notice {
   width: 100%;
   text-align: center; }
 
-.asset-gallery .gallery__bulk-actions {
-  position: absolute;
-  top: 14px;
-  animation: actionsAdded .3s ease-in-out;
-  z-index: 100; }
-  .asset-gallery .gallery__bulk-actions .chzn-single {
-    border-radius: 5px 0 0 5px;
-    border: 0;
-    filter: none;
-    background: none;
-    box-shadow: none;
-    color: inherit; }
-    .asset-gallery .gallery__bulk-actions .chzn-single:focus {
-      box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2); }
-    .asset-gallery .gallery__bulk-actions .chzn-single > span {
-      text-align: left;
-      display: inline-block;
-      margin-right: 0; }
-    .asset-gallery .gallery__bulk-actions .chzn-single > div {
-      position: static;
-      display: inline-block; }
-  .asset-gallery .gallery__bulk-actions .chzn-drop {
-    border-radius: 3px;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
-    border: 0; }
-  .asset-gallery .gallery__bulk-actions .search-choice-close {
-    display: none; }
-  .asset-gallery .gallery__bulk-actions .chzn-results li {
-    padding-left: 22px;
-    position: relative; }
-    .asset-gallery .gallery__bulk-actions .chzn-results li::before {
-      position: absolute;
-      font-family: silverstripe;
-      left: 4px;
-      font-size: 14px;
-      vertical-align: middle;
-      margin-right: 4px; }
-    .asset-gallery .gallery__bulk-actions .chzn-results li:nth-child(1)::before {
-      content: 'g'; }
-
 .asset-gallery .gallery__back {
   position: absolute;
-  top: 13px; }
+  top: 12px;
+  left: 10px; }
   .asset-gallery .gallery__back.ss-ui-button::before {
     font-size: 23px; }
 
@@ -218,6 +175,8 @@
   background-color: transparent;
   border: 0;
   background: none; }
+  .asset-gallery .item__actions__action--select:hover::before {
+    border: 1px solid #29abe2; }
   .asset-gallery .item__actions__action--select::before {
     border: 1px solid #ddd;
     background-color: #fff;
@@ -236,10 +195,86 @@
   white-space: nowrap;
   position: relative; }
 
+.gallery__bulk-actions {
+  padding: 10px 12px;
+  left: 160px;
+  /* TODO: Needs to go to 60px when main nav is collapsed */
+  z-index: 59;
+  right: 0;
+  height: 52px;
+  margin: 0 auto;
+  position: fixed;
+  top: 52px;
+  width: 200px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+  background-color: #f0f2f4;
+  animation: actionsAdded .3s ease-in-out;
+  transition: all 0.5s ease-in-out; }
+  .gallery__bulk-actions .gallery__bulk-actions__counter {
+    display: inline-block;
+    min-width: 28px;
+    padding: 6px;
+    margin: 2px 8px 2px 0;
+    line-height: 16px;
+    color: white;
+    text-align: center;
+    background-color: #29abe2;
+    border-radius: 4px;
+    font-weight: bold; }
+  .gallery__bulk-actions .gallery__bulk-actions_action.ss-ui-button {
+    line-height: 1.5;
+    margin-bottom: 0;
+    height: 32px; }
+    .gallery__bulk-actions .gallery__bulk-actions_action.ss-ui-button[class*="font-icon-"]::before {
+      font-size: 20px;
+      line-height: 18px;
+      position: relative;
+      top: -1px; }
+  .gallery__bulk-actions .chzn-single {
+    border-radius: 5px 0 0 5px;
+    border: 0;
+    filter: none;
+    background: none;
+    box-shadow: none;
+    color: inherit; }
+    .gallery__bulk-actions .chzn-single:focus {
+      box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2); }
+    .gallery__bulk-actions .chzn-single > span {
+      text-align: left;
+      display: inline-block;
+      margin-right: 0; }
+    .gallery__bulk-actions .chzn-single > div {
+      position: static;
+      display: inline-block; }
+  .gallery__bulk-actions .chzn-drop {
+    border-radius: 3px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);
+    border: 0; }
+  .gallery__bulk-actions .search-choice-close {
+    display: none; }
+  .gallery__bulk-actions .chzn-results li {
+    padding-left: 22px;
+    position: relative; }
+    .gallery__bulk-actions .chzn-results li::before {
+      position: absolute;
+      font-family: silverstripe;
+      left: 4px;
+      font-size: 14px;
+      vertical-align: middle;
+      margin-right: 4px; }
+    .gallery__bulk-actions .chzn-results li:nth-child(1)::before {
+      content: 'g'; }
+
 .cms .AssetAdmin {
   /* Gallery actions bar */
-  /* Bulk actions */
   /* TEMP Overides which should eventually not be needed */ }
+  .cms .AssetAdmin .tabset {
+    margin: 0;
+    box-shadow: 0;
+    padding: 0;
+    border: 0; }
+  .cms .AssetAdmin .cms-content-view {
+    position: relative; }
   .cms .AssetAdmin .cms-content-fields {
     overflow-x: hidden;
     /**
@@ -254,13 +289,12 @@
       overflow: hidden; }
       .cms .AssetAdmin .cms-content-fields .cms-content-tools .cms-panel-content .cms-search-form {
         height: 100%; }
-  .cms .AssetAdmin .ss-assetuploadfield,
-  .cms .AssetAdmin .cms-content-toolbar.field {
-    margin-bottom: 16px; }
   .cms .AssetAdmin .cms-content-toolbar {
     float: left; }
     .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .ss-ui-button {
-      z-index: 1; }
+      z-index: 1;
+      margin: 0;
+      padding: 5px 6px; }
       .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .ss-ui-button::before {
         font-size: 23px; }
     .cms .AssetAdmin .cms-content-toolbar .cms-actions-row .grid-levelup {
@@ -289,72 +323,23 @@
     background: transparent url(img/treeicons/blue-document.png) no-repeat center; }
   .cms .AssetAdmin .cms-actions-row {
     margin-bottom: 0; }
-  .cms .AssetAdmin .ss-assetuploadfield .ss-uploadfield-addfile .ss-uploadfield-fromcomputer {
-    margin-top: 10px;
-    margin-bottom: 10px; }
-  .cms .AssetAdmin .ss-uploadfield-fromcomputer::before {
-    position: relative;
-    top: -1px; }
   .cms .AssetAdmin .ss-uploadfield-addfile {
     height: 52px; }
-  .cms .AssetAdmin .asset-gallery .gallery__sort {
-    top: 12px; }
   .cms .AssetAdmin .ss-uploadfield-view-allowed-extensions {
     margin-top: -39px; }
-  .cms .AssetAdmin .gallery__bulk-actions {
-    padding: 10px 12px;
-    left: 160px;
-    /* TODO: Needs to go to 60px when main nav is collapsed */
-    z-index: 1;
-    right: 0;
-    height: 52px;
-    margin: 0 auto;
-    position: fixed;
-    top: 52px;
-    width: 200px;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
-    background-color: #f0f2f4;
-    -webkit-transition: all 0.5s ease-in-out;
-    -moz-transition: all 0.5s ease-in-out;
-    -o-transition: all 0.5s ease-in-out;
-    transition: all 0.5s ease-in-out; }
-    .cms .AssetAdmin .gallery__bulk-actions .gallery__bulk-actions_action,
-    .cms .AssetAdmin .gallery__bulk-actions .ss-ui-button {
-      line-height: 1.5;
-      margin-bottom: 0;
-      height: 32px; }
-      .cms .AssetAdmin .gallery__bulk-actions .gallery__bulk-actions_action[class*="font-icon-"]::before,
-      .cms .AssetAdmin .gallery__bulk-actions .ss-ui-button[class*="font-icon-"]::before {
-        font-size: 20px;
-        line-height: 18px;
-        position: relative;
-        top: -1px; }
   .cms .AssetAdmin .asset-gallery > .left {
     display: none !important; }
   .cms .AssetAdmin .asset-gallery > .middleColumn {
     margin-left: 0; }
   .cms .AssetAdmin .icon-button-group {
     margin-top: 0; }
-  .cms .AssetAdmin .CompositeField.field {
-    border: 0;
-    margin-top: 0;
-    padding: 0;
+  .cms .AssetAdmin .cms-content-toolbar {
     margin: 0; }
-  .cms .AssetAdmin .ss-ui-button {
-    padding-left: 12px;
-    padding-right: 12px;
-    margin-left: 0;
-    margin-right: 0; }
+  .cms .AssetAdmin .ss-assetupload-fromcomputer {
+    margin-left: 4px; }
   .cms .AssetAdmin .cms-actions-row {
-    margin-top: 10px; }
+    margin-top: 12px; }
     .cms .AssetAdmin .cms-actions-row .ss-ui-button {
       margin-bottom: 10px; }
       .cms .AssetAdmin .cms-actions-row .ss-ui-button[class*="font-icon-folder-add"]::before {
-        position: relative;
-        top: -1px;
         font-size: 24px; }
-  .cms .AssetAdmin .ss-uploadfield-item-info .ss-ui-button {
-    line-height: 18px;
-    height: 32px;
-    margin-top: 10px;
-    margin-bottom: 10px; }

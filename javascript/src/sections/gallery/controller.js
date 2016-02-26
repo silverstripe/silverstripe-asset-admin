@@ -81,7 +81,15 @@ class GalleryContainer extends SilverStripeComponent {
 
 	componentDidMount() {
 		super.componentDidMount();
+	}
+	
+	componentWillUpdate() {
+		let $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
 
+		$select.off('change');
+	}
+	
+	componentDidUpdate() {
 		let $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
 
 		// We opt-out of letting the CMS handle Chosen because it doesn't re-apply the behaviour correctly.
@@ -92,7 +100,7 @@ class GalleryContainer extends SilverStripeComponent {
 		});
 
 		//Chosen stops the change event from reaching React so we have to simulate a click.
-		$select.change(() => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
+		$select.on('change', () => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
 	}
 
 	/**
