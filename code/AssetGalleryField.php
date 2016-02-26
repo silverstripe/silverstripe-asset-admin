@@ -157,7 +157,7 @@ class AssetGalleryField extends FormField
     {
         $params = $request->postVars();
         $items = array();
-        $parentId = 0;
+        $parentId = null;
 
         if (!isset($params['id']) && !strlen($params['id'])) {
             $this->httpError(400);

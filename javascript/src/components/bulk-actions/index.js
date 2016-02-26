@@ -30,6 +30,7 @@ export default class BulkActionsComponent extends SilverStripeComponent {
 
 	render() {
 		return <div className="gallery__bulk-actions fieldholder-small">
+			<div className="gallery__bulk-actions__counter">{this.getSelectedFiles().length}</div>
 			{this.props.gallery.bulkActions.options.map((option, i) => {
 				return <button type='button' className="gallery__bulk-actions_action font-icon-trash ss-ui-button ui-corner-all" key={i} onClick={this.onChangeValue} value={option.value}>{option.label}</button>;
 			})}
