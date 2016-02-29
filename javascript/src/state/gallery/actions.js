@@ -1,4 +1,4 @@
-import { GALLERY } from '../action-types';
+import { GALLERY } from './action-types';
 import CONSTANTS from '../../constants';
 
 /**

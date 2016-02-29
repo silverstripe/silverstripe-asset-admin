@@ -1,11 +1,11 @@
-jest.dontMock('../../../javascript/src/components/text-field/index.js');
-
+jest.dontMock('react');
+jest.dontMock('../index.js');
 
 describe('TextFieldComponent', function() {
 
     var React = require('react'),
         ReactTestUtils = require('react-addons-test-utils'),
-        TextFieldComponent = require('../../../javascript/src/components/text-field/index.js'),
+        TextFieldComponent = require('../index.js'),
         props;
 
     beforeEach(function () {

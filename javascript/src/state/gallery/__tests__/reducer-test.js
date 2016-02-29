@@ -1,8 +1,8 @@
 jest.dontMock('deep-freeze');
-jest.dontMock('../../javascript/src/state/action-types.js');
-jest.dontMock('../../javascript/src/state/gallery/reducer.js');
+jest.dontMock('../action-types.js');
+jest.dontMock('../reducer.js');
 
-var galleryReducer = require('../../javascript/src/state/gallery/reducer.js');
+var galleryReducer = require('../reducer.js');
 
 describe('galleryReducer', () => {
 
