@@ -51,6 +51,7 @@ gulp.task('js', function bundleJavaScript() {
 		.external('redux')
 		.external('redux-thunk')
 		.external('page.js')
+		.external('react-addons-css-transition-group')
 		.bundle()
 		.on('update', bundleJavaScript)
 		.on('error', notify.onError({ message: 'Error: <%= error.message %>' }))

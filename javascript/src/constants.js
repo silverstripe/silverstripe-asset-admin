@@ -1,6 +1,7 @@
 import i18n from 'i18n';
 
 export default {
+	'CSS_TRANSITION_TIME': 300,
 	'THUMBNAIL_HEIGHT': 150,
 	'THUMBNAIL_WIDTH': 200,
 	'BULK_ACTIONS': [

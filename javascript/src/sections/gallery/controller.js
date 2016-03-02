@@ -2,6 +2,7 @@ import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
@@ -140,7 +141,8 @@ export class GalleryContainer extends SilverStripeComponent {
 	getBulkActionsComponent() {
 		if (this.props.gallery.selectedFiles.length > 0 && this.props.backend.bulkActions) {
 			return <BulkActionsComponent
-				backend={this.props.backend} />;
+				backend={this.props.backend}
+				key={this.props.gallery.selectedFiles.length > 0} />
 		}
 
 		return null;
@@ -195,8 +197,9 @@ export class GalleryContainer extends SilverStripeComponent {
 
 		return <div>
 			{this.getBackButton()}
-			{this.getBulkActionsComponent()}
-			
+			<ReactCSSTransitionGroup transitionName="gallery__bulk-actions" transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME} transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}>
+				{this.getBulkActionsComponent()}
+			</ReactCSSTransitionGroup>
 			<div className="gallery__sort fieldholder-small">
 				<select className="dropdown no-change-track no-chzn" tabIndex="0" style={{width: '160px'}}>
 					{this.sorters.map((sorter, i) => {
