@@ -323,10 +323,6 @@
     background: transparent url(img/treeicons/blue-document.png) no-repeat center; }
   .cms .AssetAdmin .cms-actions-row {
     margin-bottom: 0; }
-  .cms .AssetAdmin .ss-uploadfield-addfile {
-    height: 52px; }
-  .cms .AssetAdmin .ss-uploadfield-view-allowed-extensions {
-    margin-top: -39px; }
   .cms .AssetAdmin .asset-gallery > .left {
     display: none !important; }
   .cms .AssetAdmin .asset-gallery > .middleColumn {
@@ -335,8 +331,6 @@
     margin-top: 0; }
   .cms .AssetAdmin .cms-content-toolbar {
     margin: 0; }
-  .cms .AssetAdmin .ss-assetupload-fromcomputer {
-    margin-left: 4px; }
   .cms .AssetAdmin .cms-actions-row {
     margin-top: 12px; }
     .cms .AssetAdmin .cms-actions-row .ss-ui-button {
