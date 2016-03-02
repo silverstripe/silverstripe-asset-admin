@@ -13,20 +13,24 @@
     "url": "https://github.com/open-sausages/silverstripe-asset-admin/issues"
   },
   "author": "SilverStripe Ltd",
-  "contributors": [
-    {
-      "name": "David Craig",
-      "email": "david@silverstripe.com"
-    },
-    {
-      "name": "Christopher Pitt",
-      "email": "chris@silverstripe.com"
-    }
-  ],
   "engines": {
     "node": "4.x"
   },
-  "dependencies": {
+  "scripts": {
+    "build": "gulp",
+    "test": "jest",
+    "lock": "npm-shrinkwrap --dev"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+    "testDirectoryName": "tests/react",
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react"
+    ],
+    "bail": true,
+    "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
+  },
+  "devDependencies": {
     "babel-jest": "^5.3.0",
     "babelify": "^6.3.0",
     "browserify": "^11.1.0",
@@ -37,6 +41,7 @@
     "gulp-sass": "^2.0.4",
     "gulp-uglify": "^1.5.2",
     "jest-cli": "^0.8.0",
+    "npm-shrinkwrap": "^200.4.0",
     "react": "^0.14.7",
     "react-addons-test-utils": "^0.14.7",
     "redux-logger": "^2.4.0",
@@ -44,18 +49,5 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0"
-  },
-  "scripts": {
-    "build": "gulp",
-    "test": "jest"
-  },
-  "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testDirectoryName": "tests/react",
-    "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react"
-    ],
-    "bail": true,
-    "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
   }
 }
