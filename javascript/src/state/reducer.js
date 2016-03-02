@@ -3,7 +3,8 @@
  */
 
 import { combineReducers } from 'redux';
-import galleryReducer from './gallery/reducer.js';
+import galleryReducer from './gallery/reducer';
+import schemaReducer from './schema/reducer';
 
 /**
  * Operates on the Redux store to update application state.
@@ -16,7 +17,8 @@ import galleryReducer from './gallery/reducer.js';
 const rootReducer = combineReducers({
     assetAdmin: combineReducers({
         gallery: galleryReducer
-    })
+    }),
+    schema: schemaReducer
 });
 
 export default rootReducer;

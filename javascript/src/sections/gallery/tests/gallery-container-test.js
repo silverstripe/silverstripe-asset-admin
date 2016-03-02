@@ -2,14 +2,13 @@ jest.dontMock('react');
 jest.dontMock('react-dom');
 jest.dontMock('react-redux');
 jest.dontMock('react-addons-test-utils');
-jest.dontMock('../../../javascript/src/sections/gallery/controller.js');
+jest.dontMock('../../../components/bulk-actions');
+jest.dontMock('../controller.js');
 
-const React = require('react'),
-    $ = require('jQuery'),
-    ReactDOM = require('react-dom'),
+var React = require('react'),
     i18n = require('i18n'),
     ReactTestUtils = require('react-addons-test-utils'),
-    GalleryContainer = require('../../../javascript/src/sections/gallery/controller.js').GalleryContainer;
+    GalleryContainer = require('../controller.js').GalleryContainer;
 
 describe('GalleryContainer', function() {
 

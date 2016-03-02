@@ -1,11 +1,9 @@
-jest.dontMock('../../../javascript/src/components/bulk-actions/index.js');
+jest.dontMock('../index.js');
 
-const React = require('react'),
-    $ = require('jQuery'),
-    ReactDOM = require('react-dom'),
+var React = require('react'),
     i18n = require('i18n'),
     ReactTestUtils = require('react-addons-test-utils'),
-    BulkActionsComponent = require('../../../javascript/src/components/bulk-actions/index.js').BulkActionsComponent;
+    BulkActionsComponent = require('../index.js').BulkActionsComponent;
 
 describe('BulkActionsComponent', function() {
 
