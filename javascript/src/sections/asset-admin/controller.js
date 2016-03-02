@@ -120,6 +120,7 @@ class AssetAdminContainer extends SilverStripeComponent {
     }
 
     handleBackendSave(id, values) {
+        window.ss.router.show(CONSTANTS.HOME_ROUTE);
         this.props.actions.setEditing(null);
         this.props.actions.updateFile(id, { title: values.title, basename: values.basename });
     }

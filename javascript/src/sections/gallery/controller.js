@@ -38,7 +38,7 @@ function getComparator(field, direction) {
 	};
 }
 
-class GalleryContainer extends SilverStripeComponent {
+export class GalleryContainer extends SilverStripeComponent {
 
 	constructor(props) {
 		super(props);

@@ -1,8 +1,7 @@
-jest.dontMock('react');
 jest.dontMock('../../../javascript/src/components/text-field/index.js');
 
 
-describe('GalleryComponent', function() {
+describe('TextFieldComponent', function() {
 
     var React = require('react'),
         ReactTestUtils = require('react-addons-test-utils'),
