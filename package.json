@@ -13,40 +13,14 @@
     "url": "https://github.com/open-sausages/silverstripe-asset-admin/issues"
   },
   "author": "SilverStripe Ltd",
-  "contributors": [
-    {
-      "name": "David Craig",
-      "email": "david@silverstripe.com"
-    },
-    {
-      "name": "Christopher Pitt",
-      "email": "chris@silverstripe.com"
-    }
-  ],
   "engines": {
     "node": "4.x"
-  },
-  "dependencies": {
-    "babel-jest": "^5.3.0",
-    "babelify": "^6.3.0",
-    "browserify": "^11.1.0",
-    "deep-freeze": "0.0.1",
-    "gulp": "^3.9.0",
-    "gulp-if": "^2.0.0",
-    "gulp-notify": "^2.2.0",
-    "gulp-sass": "^2.0.4",
-    "gulp-uglify": "^1.5.2",
-    "jest-cli": "^0.8.0",
-    "redux-logger": "^2.4.0",
-    "semver": "^5.0.3",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.7.0"
   },
   "scripts": {
     "build": "gulp",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "lock": "npm-shrinkwrap --dev"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
@@ -58,12 +32,31 @@
     "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
   },
   "devDependencies": {
+    "babel-jest": "^5.3.0",
+    "babelify": "^6.3.0",
+    "browserify": "^11.1.0",
+    "deep-freeze": "0.0.1",
+    "gulp": "^3.9.0",
+    "gulp-if": "^2.0.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-sass": "^2.0.4",
+    "gulp-uglify": "^1.5.2",
+    "jest-cli": "^0.8.0",
+    "npm-shrinkwrap": "^200.4.0",
     "react": "^0.14.7",
     "react-addons-test-utils": "^0.14.7",
     "react-dom": "^0.14.7",
     "react-redux": "^4.4.0",
     "redux": "^3.3.1",
+    "redux-logger": "^2.4.0",
     "redux-mock-store": "0.0.6",
-    "redux-thunk": "^1.0.3"
+    "redux-thunk": "^1.0.3",
+    "semver": "^5.0.3",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
+  },
+  "dependencies": {
+    "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz"
   }
 }

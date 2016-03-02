@@ -27,7 +27,7 @@
 .asset-gallery .gallery__sort {
   position: absolute;
   top: 14px;
-  right: 40px; }
+  right: 16px; }
   .asset-gallery .gallery__sort .chzn-single {
     border: 0;
     filter: none;
@@ -73,6 +73,15 @@
   background-color: #338DC1;
   border: 0;
   border-radius: 4px; }
+
+.asset-gallery .gallery__upload {
+  margin: 12px 0 0 10px;
+  border-radius: 4px; }
+  .asset-gallery .gallery__upload::before {
+    font-size: 24px !important; }
+
+.editor-component {
+  clear: both; }
 
 .cms .asset-gallery p {
   line-height: 1.5; }
@@ -120,7 +129,7 @@
     .asset-gallery .item .item__thumbnail--large {
       background-size: cover;
       border-radius: 0.125rem 0.125rem 0 0; }
-  .asset-gallery .item:hover .item--overlay {
+  .asset-gallery .item:not(.item--error):not(.item--folder):hover .item--overlay {
     opacity: 1;
     display: block; }
   .asset-gallery .item--focussed .item--overlay {
@@ -138,11 +147,9 @@
       padding: 17px 28px 17px 0;
       width: 131px;
       height: 52px; }
-    .asset-gallery .item--folder .item__actions__action--select {
+    .asset-gallery .item--folder .item__actions__action {
       height: 52px;
       padding-top: 9px; }
-    .asset-gallery .item--folder:hover .item--overlay {
-      display: none; }
   .asset-gallery .item--archive .item__thumbnail {
     background: #fff url(img/icon_zip.png) center center no-repeat; }
   .asset-gallery .item--audio .item__thumbnail {
@@ -162,27 +169,61 @@
       .asset-gallery .item--selected .item__actions__action--select::before {
         border-color: #29abe2;
         background-color: #29abe2; }
+  .asset-gallery .item--error .item__thumbnail {
+    position: relative; }
+    .asset-gallery .item--error .item__thumbnail::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #D30000;
+      opacity: .8; }
 
-.asset-gallery .item__actions__action--select {
+.asset-gallery .item__actions__action {
   position: absolute;
   right: 0;
   top: 0;
   height: 40px;
   padding: 8px 10px 6px;
-  color: transparent;
   margin-bottom: 0;
   content: " ";
   background-color: transparent;
   border: 0;
   background: none; }
-  .asset-gallery .item__actions__action--select:hover::before {
-    border: 1px solid #29abe2; }
-  .asset-gallery .item__actions__action--select::before {
-    border: 1px solid #ddd;
+  .asset-gallery .item__actions__action::before {
     background-color: #fff;
-    border-radius: 0.125rem;
     font-size: 14px;
     padding: 1px; }
+  .asset-gallery .item__actions__action--select {
+    color: transparent; }
+    .asset-gallery .item__actions__action--select:hover::before {
+      border: 1px solid #29abe2; }
+    .asset-gallery .item__actions__action--select::before {
+      border: 1px solid #ddd;
+      border-radius: 0.125rem; }
+  .asset-gallery .item__actions__action--cancel {
+    color: #8d98a2; }
+    .asset-gallery .item__actions__action--cancel:hover {
+      color: #66727d; }
+    .asset-gallery .item__actions__action--cancel::before {
+      font-size: 18px;
+      vertical-align: bottom; }
+
+.asset-gallery .item__upload-progress {
+  height: 18px;
+  width: 75%;
+  position: absolute;
+  top: calc(50% - 40px);
+  left: 50%;
+  transform: translateX(-50%) translateY(50%);
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden; }
+  .asset-gallery .item__upload-progress__bar {
+    height: 100%;
+    background: #29abe2; }
 
 .asset-gallery .item__title {
   padding: 11px 28px 11px 12px;
@@ -194,6 +235,15 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   position: relative; }
+
+.asset-gallery .item__error-message {
+  position: absolute;
+  top: calc(50% - 40px);
+  left: 50%;
+  transform: translateX(-50%) translateY(50%);
+  width: 75%;
+  color: white;
+  text-align: center; }
 
 .gallery__bulk-actions {
   padding: 10px 12px;
@@ -265,6 +315,25 @@
     .gallery__bulk-actions .chzn-results li:nth-child(1)::before {
       content: 'g'; }
 
+.dropzone-component {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 60px 16px 0; }
+  .dropzone-component::after {
+    position: absolute;
+    top: -60px;
+    right: -16px;
+    bottom: 0;
+    left: -16px;
+    background: rgba(236, 239, 241, 0.9) url("../../../framework/admin/images/drag_drop_opt.svg") center center no-repeat;
+    background-size: 312px 325px;
+    z-index: 100; }
+  .dropzone-component.dragging::after {
+    content: ''; }
+
 .cms .AssetAdmin {
   /* Gallery actions bar */
   /* TEMP Overides which should eventually not be needed */ }
@@ -274,7 +343,8 @@
     padding: 0;
     border: 0; }
   .cms .AssetAdmin .cms-content-view {
-    position: relative; }
+    position: relative;
+    min-height: 100%; }
   .cms .AssetAdmin .cms-content-fields {
     overflow-x: hidden;
     /**
@@ -323,10 +393,6 @@
     background: transparent url(img/treeicons/blue-document.png) no-repeat center; }
   .cms .AssetAdmin .cms-actions-row {
     margin-bottom: 0; }
-  .cms .AssetAdmin .ss-uploadfield-addfile {
-    height: 52px; }
-  .cms .AssetAdmin .ss-uploadfield-view-allowed-extensions {
-    margin-top: -39px; }
   .cms .AssetAdmin .asset-gallery > .left {
     display: none !important; }
   .cms .AssetAdmin .asset-gallery > .middleColumn {
@@ -335,8 +401,6 @@
     margin-top: 0; }
   .cms .AssetAdmin .cms-content-toolbar {
     margin: 0; }
-  .cms .AssetAdmin .ss-assetupload-fromcomputer {
-    margin-left: 4px; }
   .cms .AssetAdmin .cms-actions-row {
     margin-top: 12px; }
     .cms .AssetAdmin .cms-actions-row .ss-ui-button {

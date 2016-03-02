@@ -5,27 +5,6 @@
 (function($) {
 	$.entwine('ss', function($){
 		/**
-		 * Delete selected folders through "batch actions" tab.
-		 */
-		/* assets don't currently have batch actions; disabling for now
-		$(document).ready(function() {
-			$('#Form_BatchActionsForm').entwine('.ss.tree').register(
-				// TODO Hardcoding of base URL
-				'admin/assets/batchactions/delete',
-				function(ids) {
-					var confirmed = confirm(
-						ss.i18n.sprintf(
-							ss.i18n._t('AssetAdmin.BATCHACTIONSDELETECONFIRM'),
-							ids.length
-						)
-					);
-					return (confirmed) ? ids : false;
-				}
-			);
-		});
-		*/
-
-		/**
 		 * Load folder detail view via controller methods
 		 * rather than built-in GridField view (which is only geared towards showing files).
 		 */
@@ -123,15 +102,6 @@
 			}
 		});
 
-		/**
-		 * Reload the gridfield to show the user the file has been added
-		 */
-		$('.AssetAdmin.cms-edit-form .ss-uploadfield-item-progress').entwine({
-			onunmatch: function () {
-				$('.AssetAdmin.cms-edit-form .ss-gridfield').reload();
-			}
-		});
-		
 		$('.AssetAdmin .gallery__back').entwine({
 			onmatch: function () {
 				$('.cms-add-folder-link').css('margin-left', 32);

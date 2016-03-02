@@ -2,6 +2,7 @@
 
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
 use SilverStripe\Forms\AssetGalleryField;
+use SilverStripe\Forms\DropzoneUploadField;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -158,9 +159,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     public function getEditForm($id = null, $fields = null)
     {
-        Requirements::javascript(FRAMEWORK_DIR . '/javascript/dist/AssetUploadField.js');
-        Requirements::css(FRAMEWORK_DIR . '/css/AssetUploadField.css');
-
         $form = parent::getEditForm($id, $fields);
         $folder = ($id && is_numeric($id)) ? DataObject::get_by_id('Folder', $id, false) : $this->currentPage();
         $fields = $form->Fields();
@@ -249,24 +247,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $folder = $this->currentPage();
 
-        $uploadField = UploadField::create('AssetUploadField', '');
-        $uploadField->setConfig('previewMaxWidth', 40);
-        $uploadField->setConfig('previewMaxHeight', 30);
-        $uploadField->setConfig('changeDetection', false);
-        $uploadField->addExtraClass('ss-assetuploadfield');
-        $uploadField->removeExtraClass('ss-uploadfield');
-        $uploadField->setTemplate('AssetUploadField');
-
         if ($folder->exists()) {
             $path = $folder->getFilename();
-            $uploadField->setFolderName($path);
-        } else {
-            $uploadField->setFolderName('/'); // root of the assets
         }
-
-        $exts = $uploadField->getValidator()->getAllowedExtensions();
-        asort($exts);
-        $uploadField->Extensions = implode(', ', $exts);
 
         $galleryField = AssetGalleryField::create('Files')
             ->setCurrentFolder($this->getCurrentFolderID())
@@ -277,9 +260,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             $actionsComposite = CompositeField::create(
                 $actionButtonsComposite
             )->addExtraClass('cms-content-toolbar field'),
-            $uploadField,
             new HiddenField('ID'),
-            $galleryField
+            $galleryField,
+            new DropzoneUploadField('Upload')
         ));
 
         // Tree view

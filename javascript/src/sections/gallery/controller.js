@@ -5,11 +5,13 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
+import DropzoneComponent from '../../components/dropzone';
 import FileComponent from '../../components/file/index';
 import BulkActionsComponent from '../../components/bulk-actions/index';
 import SilverStripeComponent from 'silverstripe-component';
 import CONSTANTS from '../../constants';
 import * as galleryActions from '../../state/gallery/actions';
+import * as queuedFilesActions from '../../state/queued-files/actions';
 
 function getComparator(field, direction) {
 	return (a, b) => {
@@ -72,11 +74,15 @@ export class GalleryContainer extends SilverStripeComponent {
 		this.handleFolderActivate = this.handleFolderActivate.bind(this);
 		this.handleFileActivate = this.handleFileActivate.bind(this);
 		this.handleToggleSelect = this.handleToggleSelect.bind(this);
-
+		this.handleAddedFile = this.handleAddedFile.bind(this);
+		this.handleCancelUpload = this.handleCancelUpload.bind(this);
+		this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
+		this.handleSending = this.handleSending.bind(this);
 		this.handleItemDelete = this.handleItemDelete.bind(this);
 		this.handleBackClick = this.handleBackClick.bind(this);
 		this.handleMoreClick = this.handleMoreClick.bind(this);
 		this.handleSort = this.handleSort.bind(this);
+		this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
 	}
 
 	componentWillUpdate() {
@@ -106,11 +112,12 @@ export class GalleryContainer extends SilverStripeComponent {
 	 */
 	handleSort(event) {
 		const data = event.target.dataset;
-		this.props.actions.sortFiles(getComparator(data.field, data.direction));
+		this.props.actions.queuedFiles.purgeUploadQueue();
+		this.props.actions.gallery.sortFiles(getComparator(data.field, data.direction));
 	}
 
 	getNoItemsNotice() {
-		if (this.props.gallery.count < 1) {
+		if (this.props.gallery.count < 1 && this.props.queuedFiles.items.length < 1) {
 			return <p className="gallery__no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
 		}
 		
@@ -146,11 +153,44 @@ export class GalleryContainer extends SilverStripeComponent {
 
 		return null;
 	}
+	
+	handleCancelUpload(fileData) {
+		fileData.xhr.abort();
+		this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedAtTime);
+	}
+
+	handleRemoveErroredUpload(fileData) {
+		this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedAtTime);
+	}
+
+	handleAddedFile(data) {
+		this.props.actions.queuedFiles.addQueuedFile(data);
+	}
+	
+	/**
+	 * Triggered just before the xhr request is sent.
+	 *
+	 * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+	 * @param object xhr
+	 * @param object formData - FormData interface. See https://developer.mozilla.org/en-US/docs/Web/API/FormData
+	 */
+	handleSending(file, xhr, formData) {
+		this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { xhr });
+	}
 
 	render() {
+		const dropzoneOptions = {
+			url: 'admin/assets/EditForm/field/Upload/upload', // Hardcoded placeholder until we have a backend
+			paramName: 'Upload',
+			clickable: '#upload-button'
+		};
+
+		const securityID = $(':input[name=SecurityID]').val();
+
 		return <div>
 			{this.getBackButton()}
 			{this.getBulkActionsComponent()}
+			
 			<div className="gallery__sort fieldholder-small">
 				<select className="dropdown no-change-track no-chzn" tabIndex="0" style={{width: '160px'}}>
 					{this.sorters.map((sorter, i) => {
@@ -162,49 +202,93 @@ export class GalleryContainer extends SilverStripeComponent {
 					})}
 				</select>
 			</div>
-			<div className='gallery__folders'>
-				{this.props.gallery.files.map((file, i) => {
-					if (file.type === 'folder') {
+
+			<button id='upload-button' className='gallery__upload [ ss-ui-button font-icon-upload ]' type='button'>{i18n._t("AssetGalleryField.DROPZONE_UPLOAD")}</button>
+
+			<DropzoneComponent
+				handleAddedFile={this.handleAddedFile}
+				handleError={this.props.actions.queuedFiles.failUpload}
+				handleSuccess={this.handleSuccessfulUpload}
+				handleSending={this.handleSending}
+				folderID={this.props.gallery.folderID}
+				options={dropzoneOptions}
+				securityID={securityID}
+				uploadButton={false}>
+
+				<div className='gallery__folders'>
+					{this.props.gallery.files.map((file, i) => {
+						if (file.type === 'folder') {
+							return <FileComponent
+								key={i}
+								item={file}
+								selected={this.itemIsSelected(file.id)}
+								handleDelete={this.handleItemDelete}
+								handleToggleSelect={this.handleToggleSelect}
+								handleActivate={this.handleFolderActivate} />;
+						}})}
+				</div>
+
+				<div className='gallery__files'>
+					{this.props.queuedFiles.items.map((file, i) => {
 						return <FileComponent
-							key={i}
+							key={`queued_file_${i}`}
 							item={file}
 							selected={this.itemIsSelected(file.id)}
-							spaceKey={CONSTANTS.SPACE_KEY_CODE}
-							returnKey={CONSTANTS.RETURN_KEY_CODE}
 							handleDelete={this.handleItemDelete}
 							handleToggleSelect={this.handleToggleSelect}
-							handleActivate={this.handleFolderActivate} />;
-					}})}
-			</div>
-			<div className='gallery__files'>
-				{this.props.gallery.files.map((file, i) => {
-					if (file.type !== 'folder') {
-						return <FileComponent
-							key={i}
-							item={file}
-							selected={this.itemIsSelected(file.id)}
-							spaceKey={CONSTANTS.SPACE_KEY_CODE}
-							returnKey={CONSTANTS.RETURN_KEY_CODE}
-							handleDelete={this.handleItemDelete}
-							handleToggleSelect={this.handleToggleSelect}
-							handleActivate={this.handleFileActivate} />;
-					}})}
-			</div>
-			{this.getNoItemsNotice()}
-			<div className="gallery__load">
-				{this.getMoreButton()}
-			</div>
+							handleActivate={this.handleFileActivate}
+							handleCancelUpload={this.handleCancelUpload}
+							handleRemoveErroredUpload={this.handleRemoveErroredUpload}
+							messages={file.messages}
+							uploading={true} />;
+					})}
+					{this.props.gallery.files.map((file, i) => {
+						if (file.type !== 'folder') {
+							return <FileComponent
+								key={`file_${i}`}
+								item={file}
+								selected={this.itemIsSelected(file.id)}
+								handleDelete={this.handleItemDelete}
+								handleToggleSelect={this.handleToggleSelect}
+								handleActivate={this.handleFileActivate} />;
+						}})}
+				</div>
+
+				{this.getNoItemsNotice()}
+
+				<div className="gallery__load">
+					{this.getMoreButton()}
+				</div>
+			</DropzoneComponent>
 		</div>;
+	}
+
+	/**
+	 * Handles successful file uploads.
+	 *
+	 * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+	 */
+	handleSuccessfulUpload(file) {
+		this.props.actions.queuedFiles.removeQueuedFile(file._queuedAtTime);
+		this.props.actions.gallery.addFiles(JSON.parse(file.xhr.response), this.props.gallery.count + 1);
 	}
 
 	handleEnterRoute(ctx, next) {
 		var viewingFolder = false;
 
-		if (ctx.params.action === 'show' && typeof ctx.params.id !== 'undefined') {
+		const folderID = ctx.params.id || 0;
+		const folderPath = CONSTANTS.FOLDER_ROUTE.replace(':id?', folderID);
+
+		if (ctx.params.action === 'show' && typeof ctx.params.id !== 0) {
 			viewingFolder = true;
 		}
 
-		this.props.actions.setViewingFolder(viewingFolder);
+		this.props.actions.gallery.setViewingFolder(viewingFolder);
+		this.props.actions.gallery.deselectFiles();
+		this.props.actions.gallery.removeFiles();
+		this.props.actions.gallery.setPath(folderPath);
+
+		this.props.backend.getFilesByParentID(folderID);
 
 		next();
 	}
@@ -237,11 +321,7 @@ export class GalleryContainer extends SilverStripeComponent {
 	 * @param object folder - The folder that's being activated.
 	 */
 	handleFolderActivate(event, folder) {
-		this.props.actions.deselectFiles();
-		this.props.actions.removeFiles();
-		this.props.actions.setPath(CONSTANTS.FOLDER_ROUTE + '/' + folder.id);
-		window.ss.router.show(CONSTANTS.FOLDER_ROUTE + '/' + folder.id);
-		this.props.backend.getFilesByParentID(folder.id)
+		window.ss.router.show(CONSTANTS.FOLDER_ROUTE.replace(':id?', folder.id));
 	}
 
 	/**
@@ -251,7 +331,13 @@ export class GalleryContainer extends SilverStripeComponent {
 	 * @param object file - The file that's being activated.
 	 */
 	handleFileActivate(event, file) {
-		this.props.actions.setEditing(file);
+		// Disable file editing if the file has not finished uploading
+		// or the upload has errored.
+		if (file.created === null) {
+			return;
+		}
+
+		this.props.actions.gallery.setEditing(file);
 		window.ss.router.show(CONSTANTS.EDITING_ROUTE.replace(':id', file.id));
 	}
 
@@ -263,9 +349,9 @@ export class GalleryContainer extends SilverStripeComponent {
 	 */
 	handleToggleSelect(event, item) {
 		if (this.props.gallery.selectedFiles.indexOf(item.id) === -1) {
-			this.props.actions.selectFiles([item.id]);
+			this.props.actions.gallery.selectFiles([item.id]);
 		} else {
-			this.props.actions.deselectFiles([item.id]);
+			this.props.actions.gallery.deselectFiles([item.id]);
 		}
 	}
 
@@ -277,27 +363,33 @@ export class GalleryContainer extends SilverStripeComponent {
 
 	handleBackClick(event) {
 		event.preventDefault();
-		this.props.actions.deselectFiles();
-		this.props.actions.removeFiles();
-		this.props.actions.setPath(CONSTANTS.FOLDER_ROUTE + '/' + this.props.gallery.parentFolderID);
-		window.ss.router.show(CONSTANTS.FOLDER_ROUTE + '/' + this.props.gallery.parentFolderID);
-		this.props.backend.getFilesByParentID(this.props.gallery.parentFolderID);
+		window.ss.router.show(CONSTANTS.FOLDER_ROUTE.replace(':id?', this.props.gallery.parentFolderID));
 	}
 }
 
 GalleryContainer.propTypes = {
-	backend: React.PropTypes.object.isRequired
+	backend: React.PropTypes.object.isRequired,
+	gallery: React.PropTypes.shape({
+		folderID: React.PropTypes.number.isRequired
+	}),
+	queuedFiles: React.PropTypes.shape({
+		items: React.PropTypes.array.isRequired
+	})
 };
 
 function mapStateToProps(state) {
 	return {
-		gallery: state.assetAdmin.gallery
+		gallery: state.assetAdmin.gallery,
+		queuedFiles: state.assetAdmin.queuedFiles
 	}
 }
 
 function mapDispatchToProps(dispatch) {
 	return {
-		actions: bindActionCreators(galleryActions, dispatch)
+		actions: {
+			gallery: bindActionCreators(galleryActions, dispatch),
+			queuedFiles: bindActionCreators(queuedFilesActions, dispatch)
+		}
 	}
 }
 

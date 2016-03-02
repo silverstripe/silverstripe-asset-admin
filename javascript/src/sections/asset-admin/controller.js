@@ -115,6 +115,7 @@ class AssetAdminContainer extends SilverStripeComponent {
     }
 
     handleBackendFetch(data) {
+        this.props.actions.setFolderId(parseInt(data.folderID, 10));
         this.props.actions.setParentFolderId(data.parent);
         this.props.actions.addFiles(data.files, data.count);
     }

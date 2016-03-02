@@ -1,3 +1,4 @@
 module.exports = {
-	_t: function () {}
+	_t: function () {},
+	sprintf: function () {}
 };

@@ -5,6 +5,7 @@
 import { combineReducers } from 'redux';
 import galleryReducer from './gallery/reducer';
 import schemaReducer from './schema/reducer';
+import queuedFilesReducer from './queued-files/reducer';
 
 /**
  * Operates on the Redux store to update application state.
@@ -16,7 +17,8 @@ import schemaReducer from './schema/reducer';
  */
 const rootReducer = combineReducers({
     assetAdmin: combineReducers({
-        gallery: galleryReducer
+        gallery: galleryReducer,
+        queuedFiles: queuedFilesReducer
     }),
     schema: schemaReducer
 });

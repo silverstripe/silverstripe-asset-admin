@@ -12,6 +12,7 @@ class FileComponent extends SilverStripeComponent {
 		this.handleDelete = this.handleDelete.bind(this);
 		this.handleActivate = this.handleActivate.bind(this);
 		this.handleKeyDown = this.handleKeyDown.bind(this);
+		this.handleCancelUpload = this.handleCancelUpload.bind(this);
 		this.preventFocus = this.preventFocus.bind(this);
 	}
 
@@ -52,24 +53,56 @@ class FileComponent extends SilverStripeComponent {
 		return {};
 	}
 
-	getThumbnailClassNames() {
-		var thumbnailClassNames = 'item__thumbnail';
+	/**
+	 * Checks if the component has an error set.
+	 *
+	 * @return boolean
+	 */
+	hasError() {
+		var hasError = false;
 
-		if (this.isImageLargerThanThumbnail()) {
-			thumbnailClassNames += ' item__thumbnail--large';
+		if (Array.isArray(this.props.messages)) {
+			hasError = this.props.messages.filter(message => {
+				return message.type === 'error'
+			}).length > 0;
 		}
 
-		return thumbnailClassNames;
+		return hasError;
+	}
+
+	/**
+	 * Returns markup for an error message if one is set.
+	 */
+	getErrorMessage() {
+		if (this.hasError()) {
+			return <span className="item__error-message">{this.props.messages[0].value}</span>;
+		}
+
+		return null;
+	}
+
+	getThumbnailClassNames() {
+		var thumbnailClassNames = ['item__thumbnail'];
+
+		if (this.isImageLargerThanThumbnail()) {
+			thumbnailClassNames.push('item__thumbnail--large');
+		}
+
+		return thumbnailClassNames.join(' ');
 	}
 
 	getItemClassNames() {
-		var itemClassNames = 'item item--' + this.props.item.category;
+		var itemClassNames = [`item item--${this.props.item.category}`];
 
 		if (this.props.selected) {
-			itemClassNames += ' item--selected';
+			itemClassNames.push('item--selected');
 		}
 
-		return itemClassNames;
+		if (this.hasError()) {
+			itemClassNames.push('item--error');
+		}
+
+		return itemClassNames.join(' ');
 	}
 
 	isImageLargerThanThumbnail() {
@@ -102,17 +135,42 @@ class FileComponent extends SilverStripeComponent {
 		event.preventDefault();
 	}
 
-	render() {
-		var selectButton;
+	handleCancelUpload(event) {
+		event.stopPropagation();
+		
+		if (this.hasError()) {
+			this.props.handleRemoveErroredUpload(this.props.item);
+		} else {
+			this.props.handleCancelUpload(this.props.item);
+		}
+	}
 
-		selectButton = <button
-			className='item__actions__action--select [ font-icon-tick ]'
-			type='button'
-			title={i18n._t('AssetGalleryField.SELECT')}
-			tabIndex='-1'
-			onMouseDown={this.preventFocus}
-			onClick={this.handleToggleSelect}>
-		</button>;
+	render() {
+		var actionButton, uploadProgress = null;
+
+		if (this.props.uploading) {
+			actionButton = <button
+				className='item__actions__action item__actions__action--cancel [ font-icon-cancel ]'
+				type='button'
+				title={i18n._t('AssetGalleryField.SELECT')}
+				tabIndex='-1'
+				onMouseDown={this.preventFocus}
+				onClick={this.handleCancelUpload}
+				data-dz-remove>
+			</button>;
+			
+			uploadProgress = <div className='item__upload-progress'>
+				<div className="item__upload-progress__bar" data-dz-uploadprogress></div></div>;
+		} else {
+			actionButton = <button
+				className='item__actions__action item__actions__action--select [ font-icon-tick ]'
+				type='button'
+				title={i18n._t('AssetGalleryField.SELECT')}
+				tabIndex='-1'
+				onMouseDown={this.preventFocus}
+				onClick={this.handleToggleSelect}>
+			</button>;
+		}
 
 		return (
 			<div
@@ -124,9 +182,10 @@ class FileComponent extends SilverStripeComponent {
 				<div ref="thumbnail" className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()}>
 					<div className='item--overlay [ font-icon-edit ]'>View</div>
 				</div>
+				{this.getErrorMessage()}
 				<div className='item__title' ref="title">
 					{this.props.item.title}
-					{selectButton}
+					{actionButton}
 				</div>
 			</div>
 		);
@@ -134,13 +193,32 @@ class FileComponent extends SilverStripeComponent {
 }
 
 FileComponent.propTypes = {
-	item: React.PropTypes.object.isRequired,
+	item: React.PropTypes.shape({
+		attributes: React.PropTypes.shape({
+			dimensions: React.PropTypes.object.isRequired
+		}),
+		category: React.PropTypes.string.isRequired,
+		id: React.PropTypes.number.isRequired,
+		url: React.PropTypes.string,
+		title: React.PropTypes.string.isRequired
+	}),
 	selected: React.PropTypes.bool.isRequired,
 	spaceKey: React.PropTypes.number,
 	returnKey: React.PropTypes.number,
 	handleActivate: React.PropTypes.func.isRequired,
 	handleToggleSelect: React.PropTypes.func.isRequired,
-	handleDelete: React.PropTypes.func.isRequired
+	handleDelete: React.PropTypes.func.isRequired,
+	messages: React.PropTypes.shape({
+		value: React.PropTypes.string,
+		type: React.PropTypes.string,
+		extraClass: React.PropTypes.string
+	}),
+	uploading: React.PropTypes.bool
+};
+
+FileComponent.defaultProps = {
+	returnKey: 13,
+	spaceKey: 32
 };
 
 export default FileComponent

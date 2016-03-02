@@ -57,7 +57,7 @@
 			}
 		}
 
-		&:hover .item--overlay {
+		&:not(.item--error):not(.item--folder):hover .item--overlay {
 			opacity: 1;
 			display: block;
 		}
@@ -84,13 +84,9 @@
 				height: $gallery-folder-title-height;
 			} 
 
-			.item__actions__action--select {
+			.item__actions__action {
 				height: $gallery-folder-title-height;
 				padding-top: 9px;
-			}
-
-			&:hover  .item--overlay {
-				display: none;
 			}
 		}
 
@@ -125,7 +121,7 @@
 		}
 
 		&--selected {
-			border-color: #29abe2;
+			border-color: $state-active;
 
 			.item__actions__action--select {
 				border-color: $state-active;
@@ -138,33 +134,86 @@
 				}
 			}
 		}
+		
+		&--error {
+			.item__thumbnail {
+				position: relative;
+
+				&::after {
+					content: '';
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					bottom: 0;
+					background: $error;
+					opacity: .8;
+				}
+			}
+		}
 	}
 
-	.item__actions__action--select {
+	.item__actions__action {
 		position: absolute;
 		right: 0;
 		top: 0;
 		height: $gallery-title-height;
 		padding: 8px 10px 6px;
-		color: transparent;
 		margin-bottom: 0;
 		content: " ";
 		background-color: transparent;
 		border: 0;
 		background: none;
-		
-		&:hover {
-			&::before {
-				border: 1px solid $state-active;
-			}
-		}
 
 		&::before {
-			border: 1px solid #ddd;
 			background-color: #fff;
-			border-radius: $border-radius-sm;
 			font-size: 14px;
 			padding: 1px;
+		}
+		
+		&--select {
+			color: transparent;
+
+			&:hover {
+				&::before {
+					border: 1px solid $state-active;
+				}
+			}
+
+			&::before {
+				border: 1px solid #ddd;
+				border-radius: $border-radius-sm;
+			}
+		}
+		
+		&--cancel {
+			color: lighten($color-text, 15%);
+
+			&:hover {
+				color: $color-text;
+			}
+			
+			&::before {
+				font-size: 18px;
+				vertical-align: bottom;
+			}
+		}
+	}
+	
+	.item__upload-progress {
+		height: 18px;
+		width: 75%;
+		position: absolute;
+		top: calc(50% - 40px);
+		left: 50%;
+		transform: translateX(-50%) translateY(50%);
+		background: #ddd;
+		border-radius: 10px;
+		overflow: hidden;
+		
+		&__bar {
+			height: 100%;
+			background: $state-active;
 		}
 	}
 
@@ -178,5 +227,15 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		position: relative;
+	}
+	
+	.item__error-message {
+		position: absolute;
+		top: calc(50% - 40px);
+		left: 50%;
+		transform: translateX(-50%) translateY(50%);
+		width: 75%;
+		color: white;
+		text-align: center;
 	}
 }

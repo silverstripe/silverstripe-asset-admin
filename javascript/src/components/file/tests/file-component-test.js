@@ -13,6 +13,7 @@ describe('FileComponent', function() {
 
     beforeEach(function () {
         props = {
+            id: 0,
             selected: false,
             handleToggleSelect: jest.genMockFunction(),
             handleActivate: jest.genMockFunction(),
@@ -23,7 +24,10 @@ describe('FileComponent', function() {
                         width: 10,
                         height: 10
                     }
-                }
+                },
+                category: 'image',
+                id: 1,
+                title: 'test'
             }
         }
 	});

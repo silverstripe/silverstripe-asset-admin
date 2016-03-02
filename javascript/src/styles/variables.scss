@@ -4,6 +4,8 @@
 //
 
 $state-active:              #29abe2 !default;
+$error:                     #D30000 !default;
+$color-text:                #66727d !default;
 
 
 // Body
@@ -44,7 +46,7 @@ $line-height:                1.5 !default;
 
 // Components
 //
- 
+
 $border-radius:              .25rem !default;   /* 4px */
 $border-radius-lg:           .375rem !default;  /* 6px */
 $border-radius-sm:           .125rem !default;  /* 2px */
@@ -71,3 +73,9 @@ $gallery-folder-title-height: $gallery-folder-height - 2;
 $transition-speed-slow:       1s;
 $transition-speed-mid:        .5s;
 $transition-speed-fast:       .3s;
+
+// Paths
+//
+
+$rootPath:                    '../..';
+$frameworkPath:               '../../../framework';
