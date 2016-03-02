@@ -2108,6 +2108,10 @@
       "version": "0.0.1",
       "resolved": "https://registry.npmjs.org/deep-freeze/-/deep-freeze-0.0.1.tgz"
     },
+    "dropzone": {
+      "version": "4.3.0",
+      "resolved": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz"
+    },
     "gulp": {
       "version": "3.9.1",
       "resolved": "https://registry.npmjs.org/gulp/-/gulp-3.9.1.tgz",

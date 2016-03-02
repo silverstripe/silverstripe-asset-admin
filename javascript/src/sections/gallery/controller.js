@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
+import DropzoneComponent from '../../components/dropzone';
 import FileComponent from '../../components/file/index';
 import BulkActionsComponent from '../../components/bulk-actions/index';
 import SilverStripeComponent from 'silverstripe-component';
@@ -152,9 +153,14 @@ class GalleryContainer extends SilverStripeComponent {
 	}
 
 	render() {
+		const dropzoneOptions = {
+			url: 'admin/assets/' // Hardcoded placeholder until we have a backend
+		};
+
 		return <div>
 			{this.getBackButton()}
 			{this.getBulkActionsComponent()}
+			<DropzoneComponent options={dropzoneOptions} />
 			<div className="gallery__sort fieldholder-small">
 				<select className="dropdown no-change-track no-chzn" tabIndex="0" style={{width: '160px'}}>
 					{this.sorters.map((sorter, i) => {
