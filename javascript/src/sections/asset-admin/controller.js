@@ -43,7 +43,7 @@ class AssetAdminContainer extends SilverStripeComponent {
         super.componentDidMount();
         
         var fetchMethod = 'getFilesByParentID';
-        
+
         if (this.props.idFromURL && this.props.idFromURL !== this.props.initialFolder) {
             // If the url is to edit a specific file.
             // Doing this because the gallery view and the edit view are handled
@@ -65,7 +65,22 @@ class AssetAdminContainer extends SilverStripeComponent {
 
                 // If we're on a file edit route we need to set the file currently being edited.
                 if (route.match(currentPath, params)) {
-                    this.props.actions.setEditing(files.filter((file) => file.id === parseInt(params.id, 10))[0]);
+                    var file = files.filter((file) => file.id === parseInt(params.id, 10))[0],
+                        fields = [
+                            {
+                                'label': 'Title',
+                                'name': 'title',
+                                'value': file.title
+                            },
+                            {
+                                'label': 'Filename',
+                                'name': 'basename',
+                                'value': file.basename
+                            }
+                        ];
+
+                    this.props.actions.setEditorFields(fields);
+                    this.props.actions.setEditing(file);
                 }
 
                 this.props.actions.setPath(currentPath);
@@ -113,7 +128,7 @@ class AssetAdminContainer extends SilverStripeComponent {
         this.props.actions.setPath(null);
         next();
     }
-
+    
     handleBackendFetch(data) {
         this.props.actions.setParentFolderId(data.parent);
         this.props.actions.addFiles(data.files, data.count);
