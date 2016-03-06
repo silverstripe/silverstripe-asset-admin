@@ -8,6 +8,10 @@ class DropzoneComponent extends SilverStripeComponent {
     constructor(props) {
         super(props);
 
+        // By default Dropzone adds markup to the DOM for displaying a thumbnail preview.
+        // Here we're relpacing that default behaviour with our own React / Redux implementation.
+        Dropzone.prototype.defaultOptions.addedfile = this.handleAddedFile.bind(this);
+
         this.dropzone = null;
         this.translateDefaultMessages();
     }
@@ -33,6 +37,23 @@ class DropzoneComponent extends SilverStripeComponent {
         return (
             <button type='button'>Upload files</button>
         );
+    }
+
+    /**
+     * Event handler for files being added. Called before the request is made to the server.
+     *
+     * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+     */
+    handleAddedFile(file) {
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+            this.props.handleAddedFile(Object.assign({}, file, {
+                _thumbnail: event.target.result
+            }));
+        };
+
+        reader.readAsDataURL(file);
     }
 
     /**
@@ -84,6 +105,7 @@ class DropzoneComponent extends SilverStripeComponent {
 }
 
 DropzoneComponent.propTypes = {
+    handleAddedFile: React.PropTypes.func, 
     options: React.PropTypes.object,
     promptOnRemove: React.PropTypes.string
 };

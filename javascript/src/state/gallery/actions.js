@@ -2,6 +2,20 @@ import { GALLERY } from '../action-types';
 import CONSTANTS from '../../constants';
 
 /**
+ * Adds a file which has not been persisted to the server yet.
+ *
+ * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+ */
+export function addQueuedFile(file) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.ADD_QUEUED_FILE,
+            payload: { file }
+        });
+    }
+}
+
+/**
  * Adds files to state.
  *
  * @param array files - Array of file objects.

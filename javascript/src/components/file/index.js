@@ -134,7 +134,15 @@ class FileComponent extends SilverStripeComponent {
 }
 
 FileComponent.propTypes = {
-	item: React.PropTypes.object.isRequired,
+	item: React.PropTypes.shape({
+		attributes: React.PropTypes.shape({
+			dimensions: React.PropTypes.string.isRequired
+		}),
+		category: React.PropTypes.string.isRequired,
+		id: React.PropTypes.number.isRequired,
+		url: React.PropTypes.string,
+		title: React.PropTypes.string.isRequired
+	}),
 	selected: React.PropTypes.bool.isRequired,
 	spaceKey: React.PropTypes.number,
 	returnKey: React.PropTypes.number,

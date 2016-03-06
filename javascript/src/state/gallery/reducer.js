@@ -14,6 +14,7 @@ const initialState = {
     focus: false,
     parentFolderID: null,
     path: null, // The current location path the app is on
+    queuedFiles: [],
     selectedFiles: [],
     viewingFolder: false
 };
@@ -31,6 +32,22 @@ export default function galleryReducer(state = initialState, action) {
     var nextState;
 
     switch (action.type) {
+
+        case GALLERY.ADD_QUEUED_FILE:
+            const queuedFile = {
+                attributes: {
+                    dimensions: ''
+                },
+                category: 'image',
+                id: 0,
+                url: action.payload.file._thumbnail,
+                title: ''
+            };
+
+            return deepFreeze(Object.assign({}, state, {
+                queuedFiles: state.queuedFiles.concat([queuedFile])
+            }));
+
         case GALLERY.ADD_FILES:
             let nextFilesState = []; // Clone the state.files array
 

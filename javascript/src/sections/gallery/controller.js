@@ -160,7 +160,9 @@ class GalleryContainer extends SilverStripeComponent {
 		return <div>
 			{this.getBackButton()}
 			{this.getBulkActionsComponent()}
-			<DropzoneComponent options={dropzoneOptions} />
+
+			<DropzoneComponent options={dropzoneOptions} handleAddedFile={this.props.actions.addQueuedFile} />
+
 			<div className="gallery__sort fieldholder-small">
 				<select className="dropdown no-change-track no-chzn" tabIndex="0" style={{width: '160px'}}>
 					{this.sorters.map((sorter, i) => {
@@ -187,10 +189,21 @@ class GalleryContainer extends SilverStripeComponent {
 					}})}
 			</div>
 			<div className='gallery__files'>
+				{this.props.gallery.queuedFiles.map((file, i) => {
+					return <FileComponent
+						key={`queued_file_${i}`}
+						item={file}
+						selected={this.itemIsSelected(file.id)}
+						spaceKey={CONSTANTS.SPACE_KEY_CODE}
+						returnKey={CONSTANTS.RETURN_KEY_CODE}
+						handleDelete={this.handleItemDelete}
+						handleToggleSelect={this.handleToggleSelect}
+						handleActivate={this.handleFileActivate} />;
+				})}
 				{this.props.gallery.files.map((file, i) => {
 					if (file.type !== 'folder') {
 						return <FileComponent
-							key={i}
+							key={`file_${i}`}
 							item={file}
 							selected={this.itemIsSelected(file.id)}
 							spaceKey={CONSTANTS.SPACE_KEY_CODE}
