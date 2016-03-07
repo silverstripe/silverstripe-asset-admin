@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'silverstripe-component';
 import i18n from 'i18n';
 import Dropzone from 'dropzone';
@@ -19,10 +20,10 @@ class DropzoneComponent extends SilverStripeComponent {
     componentDidMount() {
         super.componentDidMount();
 
-        this.dropzone = new Dropzone(React.findDOMNode(this), Object.assign({}, Dropzone.prototype.defaultOptions, this.props.options));
+        this.dropzone = new Dropzone(ReactDOM.findDOMNode(this), Object.assign({}, Dropzone.prototype.defaultOptions, this.props.options));
 
         if (typeof this.props.promptOnRemove !== 'undefined') {
-            this.setPromptOnRemove(this.props.setPromptOnRemove);
+            this.setPromptOnRemove(this.props.promptOnRemove);
         }
     }
 
@@ -30,7 +31,7 @@ class DropzoneComponent extends SilverStripeComponent {
         super.componentWillUnmount();
 
         // Remove all dropzone event listeners.
-        this.dropzone.off();
+        this.dropzone.disable();
     }
 
     render() {
@@ -47,7 +48,7 @@ class DropzoneComponent extends SilverStripeComponent {
     handleAddedFile(file) {
         const reader = new FileReader();
 
-        reader.onload = (event) => {
+        reader.onload = event => {
             this.props.handleAddedFile(Object.assign({}, file, {
                 _thumbnail: event.target.result
             }));
