@@ -23,7 +23,7 @@ export default class TextFieldComponent extends SilverStripeComponent {
     }
 
     handleChange(event) {
-        this.props.onChange();
+        this.props.onChange(event);
     }
 }
 

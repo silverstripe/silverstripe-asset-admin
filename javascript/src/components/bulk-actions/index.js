@@ -8,7 +8,7 @@ import { bindActionCreators } from 'redux';
 import * as galleryActions from '../../state/gallery/actions';
 import i18n from 'i18n';
 
-export default class BulkActionsComponent extends SilverStripeComponent {
+export class BulkActionsComponent extends SilverStripeComponent {
 
 	constructor(props) {
 		super(props);

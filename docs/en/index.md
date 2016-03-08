@@ -9,6 +9,7 @@
 
 - [Getting Started](getting-started.md)
 - [Architecture](architecture.md)
+- [Testing](testing.md)
 
 ## Questions
 

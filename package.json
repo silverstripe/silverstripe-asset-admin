@@ -37,8 +37,6 @@
     "gulp-sass": "^2.0.4",
     "gulp-uglify": "^1.5.2",
     "jest-cli": "^0.8.0",
-    "react": "^0.14.7",
-    "react-addons-test-utils": "^0.14.7",
     "redux-logger": "^2.4.0",
     "semver": "^5.0.3",
     "vinyl-buffer": "^1.0.0",
@@ -47,7 +45,8 @@
   },
   "scripts": {
     "build": "gulp",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
@@ -57,5 +56,14 @@
     ],
     "bail": true,
     "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
+  },
+  "devDependencies": {
+    "react": "^0.14.7",
+    "react-addons-test-utils": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-redux": "^4.4.0",
+    "redux": "^3.3.1",
+    "redux-mock-store": "0.0.6",
+    "redux-thunk": "^1.0.3"
   }
 }
