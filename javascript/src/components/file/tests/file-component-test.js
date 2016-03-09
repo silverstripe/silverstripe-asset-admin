@@ -1,11 +1,11 @@
-jest.dontMock('../../../javascript/src/components/file/index.js');
+jest.dontMock('../index.js');
 
 const React = require('react'),
     $ = require('jQuery'),
     ReactDom = require('react-dom'),
     i18n = require('i18n'),
     ReactTestUtils = require('react-addons-test-utils'),
-    FileComponent = require('../../../javascript/src/components/file/index.js');
+    FileComponent = require('../index.js');
 
 describe('FileComponent', function() {
     

@@ -1,4 +1,4 @@
-var jquery = function () {
+function jQuery() {
     return {
         change: function () {
             return this;
@@ -15,7 +15,13 @@ var jquery = function () {
         trigger: function() {
             return this;
         }
-    }
+    };
+}
+
+jQuery.ajax = function () {
+    return {
+        done: function () { }
+    };
 };
 
-module.exports = jquery;
+export default jQuery;

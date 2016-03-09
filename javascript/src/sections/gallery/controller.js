@@ -79,16 +79,12 @@ export class GalleryContainer extends SilverStripeComponent {
 		this.handleSort = this.handleSort.bind(this);
 	}
 
-	componentDidMount() {
-		super.componentDidMount();
-	}
-	
 	componentWillUpdate() {
 		let $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
 
 		$select.off('change');
 	}
-	
+
 	componentDidUpdate() {
 		let $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
 

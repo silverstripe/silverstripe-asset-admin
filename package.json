@@ -50,7 +50,7 @@
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testDirectoryName": "tests/react",
+    "testDirectoryName": "tests",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react"
     ],
