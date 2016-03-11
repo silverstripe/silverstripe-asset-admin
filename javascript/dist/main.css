@@ -125,10 +125,11 @@
     width: 176px;
     margin: 0 auto;
     background-repeat: no-repeat;
-    background-position: center center; }
-    .asset-gallery .item .item__thumbnail--large {
-      background-size: cover;
-      border-radius: 0.125rem 0.125rem 0 0; }
+    background-position: center center;
+    background-size: cover;
+    border-radius: 0.125rem 0.125rem 0 0; }
+    .asset-gallery .item .item__thumbnail--small {
+      background-size: auto; }
   .asset-gallery .item:not(.item--error):not(.item--folder):hover .item--overlay {
     opacity: 1;
     display: block; }
@@ -223,7 +224,9 @@
   overflow: hidden; }
   .asset-gallery .item__upload-progress__bar {
     height: 100%;
-    background: #29abe2; }
+    background: #29abe2;
+    background: #29abe2;
+    width: 0%; }
 
 .asset-gallery .item__title {
   padding: 11px 28px 11px 12px;

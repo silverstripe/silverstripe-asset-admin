@@ -77,12 +77,14 @@ export class GalleryContainer extends SilverStripeComponent {
 		this.handleAddedFile = this.handleAddedFile.bind(this);
 		this.handleCancelUpload = this.handleCancelUpload.bind(this);
 		this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
+		this.handleUploadProgress = this.handleUploadProgress.bind(this);
 		this.handleSending = this.handleSending.bind(this);
 		this.handleItemDelete = this.handleItemDelete.bind(this);
 		this.handleBackClick = this.handleBackClick.bind(this);
 		this.handleMoreClick = this.handleMoreClick.bind(this);
 		this.handleSort = this.handleSort.bind(this);
 		this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
+		this.handleFailedUpload = this.handleFailedUpload.bind(this);
 	}
 
 	componentWillUpdate() {
@@ -177,6 +179,10 @@ export class GalleryContainer extends SilverStripeComponent {
 	handleSending(file, xhr, formData) {
 		this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { xhr });
 	}
+	
+	handleUploadProgress(file, progress, bytesSent) {
+		this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { progress });
+	}
 
 	render() {
 		const dropzoneOptions = {
@@ -207,9 +213,10 @@ export class GalleryContainer extends SilverStripeComponent {
 
 			<DropzoneComponent
 				handleAddedFile={this.handleAddedFile}
-				handleError={this.props.actions.queuedFiles.failUpload}
+				handleError={this.handleFailedUpload}
 				handleSuccess={this.handleSuccessfulUpload}
 				handleSending={this.handleSending}
+				handleUploadProgress={this.handleUploadProgress}
 				folderID={this.props.gallery.folderID}
 				options={dropzoneOptions}
 				securityID={securityID}
@@ -269,8 +276,20 @@ export class GalleryContainer extends SilverStripeComponent {
 	 * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
 	 */
 	handleSuccessfulUpload(file) {
+		const json = JSON.parse(file.xhr.response);
+		
+		// SilverStripe send back a success code with an error message sometimes...
+		if (typeof json[0].error !== 'undefined') {
+			this.handleFailedUpload(file);
+			return;
+		}
+
 		this.props.actions.queuedFiles.removeQueuedFile(file._queuedAtTime);
-		this.props.actions.gallery.addFiles(JSON.parse(file.xhr.response), this.props.gallery.count + 1);
+		this.props.actions.gallery.addFiles(json, this.props.gallery.count + 1);
+	}
+	
+	handleFailedUpload(file, errorMessage) {
+		this.props.actions.queuedFiles.failUpload(file._queuedAtTime);
 	}
 
 	handleEnterRoute(ctx, next) {

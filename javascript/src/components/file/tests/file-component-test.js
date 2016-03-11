@@ -120,17 +120,17 @@ describe('FileComponent', function() {
                 <FileComponent {...props} />
             );
             
-            file.isImageLargerThanThumbnail = jest.genMockFunction();
+            file.isImageSmallerThanThumbnail = jest.genMockFunction();
         });
 
         it('should return "item__thumbnail"', function () {
             expect(file.getThumbnailClassNames()).toBe('item__thumbnail');
         });
 
-        it('should return "item__thumbnail item__thumbnail--large" if isImageLargerThanThumbnail returns true', function () {
-            file.isImageLargerThanThumbnail.mockReturnValueOnce(true);
+        it('should return "item__thumbnail item__thumbnail--small" if isImageSmallerThanThumbnail returns true', function () {
+            file.isImageSmallerThanThumbnail.mockReturnValueOnce(true);
 
-            expect(file.getThumbnailClassNames()).toContain('item__thumbnail--large');
+            expect(file.getThumbnailClassNames()).toContain('item__thumbnail--small');
         });
     });
 
@@ -158,7 +158,7 @@ describe('FileComponent', function() {
         });
     });
 
-    describe('isImageLargerThanThumbnail()', function () {
+    describe('isImageSmallerThanThumbnail()', function () {
         var file;
         
         beforeEach(function () {
@@ -167,17 +167,17 @@ describe('FileComponent', function() {
             );
         });
         
-        it('should return true if the dimensions are larger than the default thumbnail size', function () {
+        it('should return true if the dimensions are smaller than the default thumbnail size', function () {
+            expect(file.isImageSmallerThanThumbnail()).toBe(true);
+        });
+        
+        it('should return false if the dimensions are larger than the default thumbnail size', function () {
             props.item.attributes.dimensions = {
                 width: 1000,
                 height: 1000
             }
-            
-            expect(file.isImageLargerThanThumbnail()).toBe(true);
-        });
-        
-        it('should return false if the dimensions are smaller than the default thumbnail size', function () {
-            expect(file.isImageLargerThanThumbnail()).toBe(false);
+
+            expect(file.isImageSmallerThanThumbnail()).toBe(false);
         });
     });
 
