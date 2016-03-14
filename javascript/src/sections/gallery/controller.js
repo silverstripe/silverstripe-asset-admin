@@ -251,6 +251,20 @@ export class GalleryContainer extends SilverStripeComponent {
 	 * @param object file - The file that's being activated.
 	 */
 	handleFileActivate(event, file) {
+		var fields = [
+			{
+				'label': 'Title',
+				'name': 'title',
+				'value': file.title
+			},
+			{
+				'label': 'Filename',
+				'name': 'basename',
+				'value': file.basename
+			}
+		];
+
+		this.props.actions.setEditorFields(fields);
 		this.props.actions.setEditing(file);
 		window.ss.router.show(CONSTANTS.EDITING_ROUTE.replace(':id', file.id));
 	}

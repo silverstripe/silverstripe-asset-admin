@@ -283,6 +283,7 @@ describe('GalleryContainer', function() {
 
         beforeEach(() => {
             props.actions.setEditing = jest.genMockFunction();
+            props.actions.setEditorFields = jest.genMockFunction();
             window.ss = { router: { show: jest.genMockFunction() } };
 
             gallery = ReactTestUtils.renderIntoDocument(
@@ -291,11 +292,13 @@ describe('GalleryContainer', function() {
         });
 
         it('should set the editing state to the given file and update the route', () => {
-            var file = { id: 1 },
+            var file = { id: 1, title: 'title', basname: 'basename' },
                 event = {};
 
             gallery.handleFileActivate(event, file);
 
+            expect(props.actions.setEditing.mock.calls[0][0][0].value).toBe('title');
+            expect(props.actions.setEditing.mock.calls[0][0][1].value).toBe('basename');
             expect(props.actions.setEditing).toBeCalledWith(file);
             expect(window.ss.router.show).toBeCalledWith('/assets/EditForm/field/Files/item/1/edit');
         })

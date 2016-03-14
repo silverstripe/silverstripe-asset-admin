@@ -8,40 +8,13 @@ import * as galleryActions from '../../state/gallery/actions';
 import TextFieldComponent from '../../components/text-field/index';
 import CONSTANTS from '../../constants';
 
-class EditorContainer extends SilverStripeComponent {
+export class EditorContainer extends SilverStripeComponent {
 	constructor(props) {
 		super(props);
-
-		const file = this.props.file;
-
-		this.fields = [
-			{
-				'label': 'Title',
-				'name': 'title',
-				'value': file === null ? file : file.title
-			},
-			{
-				'label': 'Filename',
-				'name': 'basename',
-				'value': file === null ? file : file.basename
-			}
-		];
 
 		this.onFieldChange = this.onFieldChange.bind(this);
 		this.onFileSave = this.onFileSave.bind(this);
 		this.onCancel = this.onCancel.bind(this);
-	}
-
-	componentDidMount() {
-		super.componentDidMount();
-
-		this.props.actions.setEditorFields(this.fields);
-	}
-
-	componentWillUnmount() {
-		super.componentWillUnmount();
-
-		this.props.actions.setEditorFields();
 	}
 
 	onFieldChange(event) {
@@ -52,10 +25,9 @@ class EditorContainer extends SilverStripeComponent {
 	}
 
 	onFileSave(event) {
-		this.props.onFileSave(this.props.file.id, this.props.editorFields);
-
-		event.stopPropagation();
-		event.preventDefault();
+		this.props.backend.save(this.props.file.id, this.props.editorFields).done(() => {
+			window.ss.router.show(CONSTANTS.HOME_ROUTE);
+		});
 	}
 
 	onCancel(event) {
@@ -71,6 +43,7 @@ class EditorContainer extends SilverStripeComponent {
 	}
 
 	handleExitRoute(ctx, next) {
+		this.props.actions.setEditorFields();
 		this.props.actions.setEditing(null);
 	}
 
@@ -132,7 +105,7 @@ class EditorContainer extends SilverStripeComponent {
 						key={i}
 						label={field.label}
 						name={field.name}
-						value={this.props.file[field.name]}
+						value={field.value}
 						onChange={this.onFieldChange} />
 			})}
 			<div>
