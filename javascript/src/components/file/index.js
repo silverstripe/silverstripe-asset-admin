@@ -155,7 +155,7 @@ class FileComponent extends SilverStripeComponent {
 			}
 		};
 
-		if (!this.hasError()) {
+		if (!this.hasError() && this.props.uploading) {
 			progressBar = <div className='item__upload-progress'><div {...progressBarProps}></div></div>;
 		}
 
