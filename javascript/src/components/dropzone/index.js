@@ -80,6 +80,9 @@ class DropzoneComponent extends SilverStripeComponent {
             // When the user drops a file onto the dropzone.
             drop: this.handleDrop.bind(this),
 
+            // Whenever the file upload progress changes
+            uploadprogress: this.handleUploadProgress.bind(this),
+
             // The text used before any files are dropped
             dictDefaultMessage: i18n._t('AssetGalleryField.DROPZONE_DEFAULT_MESSAGE'),
 
@@ -172,6 +175,19 @@ class DropzoneComponent extends SilverStripeComponent {
     }
 
     /**
+     * Event handler when a file's upload progress changes.
+     *
+     * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+     * @param integer progress - the upload progress percentage
+     * @param integer bytesSent - total bytesSent
+     */
+    handleUploadProgress(file, progress, bytesSent) {
+        if (typeof this.props.handleUploadProgress === 'function') {
+            this.props.handleUploadProgress(file, progress, bytesSent);
+        }
+    }
+
+    /**
      * Event handler triggered when the user drops a file on the dropzone.
      *
      * @param object event
@@ -220,16 +236,22 @@ class DropzoneComponent extends SilverStripeComponent {
             // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
             // and using the canvas data URI as the thumbnail image instead.
 
-            var img = document.createElement('img'),
-                canvas = document.createElement('canvas'),
-                ctx = canvas.getContext('2d');
+            var thumbnailURL = '';
 
-            img.src = event.target.result;
+            if (this.getFileCategory(file.type) === 'image') {
+                let img = document.createElement('img'),
+                    canvas = document.createElement('canvas'),
+                    ctx = canvas.getContext('2d');
+                
+                    img.src = event.target.result;
 
-            canvas.width = this.dropzone.options.thumbnailWidth;
-            canvas.height = this.dropzone.options.thumbnailHeight;
+                    canvas.width = this.dropzone.options.thumbnailWidth;
+                    canvas.height = this.dropzone.options.thumbnailHeight;
 
-            ctx.drawImage(img, 0, 0);
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                    thumbnailURL = canvas.toDataURL();
+            }
 
             this.props.handleAddedFile({
                 attributes: {
@@ -244,7 +266,7 @@ class DropzoneComponent extends SilverStripeComponent {
                 size: file.size,
                 title: file.name,
                 type: file.type,
-                url: canvas.toDataURL()
+                url: thumbnailURL
             });
             
             this.dropzone.processFile(file);
@@ -262,7 +284,9 @@ class DropzoneComponent extends SilverStripeComponent {
      * @param string errorMessage
      */
     handleError(file, errorMessage) {
-        this.props.handleError(file._queuedAtTime, errorMessage);
+        if (typeof this.props.handleSending === 'function') {
+            this.props.handleError(file, errorMessage);
+        }
     }
 
     /**

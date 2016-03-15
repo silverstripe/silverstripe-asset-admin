@@ -50,10 +50,11 @@
 			margin: 0 auto;
 			background-repeat: no-repeat;
 			background-position: center center;
+			background-size: cover;
+			border-radius: $border-radius-sm $border-radius-sm 0 0;
 
-			&--large {
-				background-size: cover;
-				border-radius: $border-radius-sm $border-radius-sm 0 0;
+			&--small {
+				background-size: auto;
 			}
 		}
 
@@ -214,6 +215,8 @@
 		&__bar {
 			height: 100%;
 			background: $state-active;
+			background: #29abe2;
+			width: 0%;
 		}
 	}
 

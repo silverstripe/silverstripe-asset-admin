@@ -75,7 +75,7 @@ class FileComponent extends SilverStripeComponent {
 	 */
 	getErrorMessage() {
 		if (this.hasError()) {
-			return <span className="item__error-message">{this.props.messages[0].value}</span>;
+			return <span className='item__error-message'>{this.props.messages[0].value}</span>;
 		}
 
 		return null;
@@ -84,8 +84,8 @@ class FileComponent extends SilverStripeComponent {
 	getThumbnailClassNames() {
 		var thumbnailClassNames = ['item__thumbnail'];
 
-		if (this.isImageLargerThanThumbnail()) {
-			thumbnailClassNames.push('item__thumbnail--large');
+		if (this.isImageSmallerThanThumbnail()) {
+			thumbnailClassNames.push('item__thumbnail--small');
 		}
 
 		return thumbnailClassNames.join(' ');
@@ -105,10 +105,10 @@ class FileComponent extends SilverStripeComponent {
 		return itemClassNames.join(' ');
 	}
 
-	isImageLargerThanThumbnail() {
+	isImageSmallerThanThumbnail() {
 		let dimensions = this.props.item.attributes.dimensions;
 
-		return dimensions.height > constants.THUMBNAIL_HEIGHT || dimensions.width > constants.THUMBNAIL_WIDTH;
+		return dimensions.height < constants.THUMBNAIL_HEIGHT && dimensions.width < constants.THUMBNAIL_WIDTH;
 	}
 
 	handleKeyDown(event) {
@@ -144,9 +144,26 @@ class FileComponent extends SilverStripeComponent {
 			this.props.handleCancelUpload(this.props.item);
 		}
 	}
+	
+	getProgressBar() {
+		var progressBar;
+
+		const progressBarProps = {
+			className: 'item__upload-progress__bar',
+			style: {
+				width: `${this.props.item.progress}%`
+			}
+		};
+
+		if (!this.hasError()) {
+			progressBar = <div className='item__upload-progress'><div {...progressBarProps}></div></div>;
+		}
+
+		return progressBar;
+	}
 
 	render() {
-		var actionButton, uploadProgress = null;
+		var actionButton;
 
 		if (this.props.uploading) {
 			actionButton = <button
@@ -158,9 +175,6 @@ class FileComponent extends SilverStripeComponent {
 				onClick={this.handleCancelUpload}
 				data-dz-remove>
 			</button>;
-			
-			uploadProgress = <div className='item__upload-progress'>
-				<div className="item__upload-progress__bar" data-dz-uploadprogress></div></div>;
 		} else {
 			actionButton = <button
 				className='item__actions__action item__actions__action--select [ font-icon-tick ]'
@@ -176,14 +190,15 @@ class FileComponent extends SilverStripeComponent {
 			<div
 				className={this.getItemClassNames()}
 				data-id={this.props.item.id}
-				tabIndex="0"
+				tabIndex='0'
 				onKeyDown={this.handleKeyDown}
 				onClick={this.handleActivate}>
-				<div ref="thumbnail" className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()}>
+				<div ref='thumbnail' className={this.getThumbnailClassNames()} style={this.getThumbnailStyles()}>
 					<div className='item--overlay [ font-icon-edit ]'>View</div>
 				</div>
+				{this.getProgressBar()}
 				{this.getErrorMessage()}
-				<div className='item__title' ref="title">
+				<div className='item__title' ref='title'>
 					{this.props.item.title}
 					{actionButton}
 				</div>
@@ -200,7 +215,8 @@ FileComponent.propTypes = {
 		category: React.PropTypes.string.isRequired,
 		id: React.PropTypes.number.isRequired,
 		url: React.PropTypes.string,
-		title: React.PropTypes.string.isRequired
+		title: React.PropTypes.string.isRequired,
+		progress: React.PropTypes.number
 	}),
 	selected: React.PropTypes.bool.isRequired,
 	spaceKey: React.PropTypes.number,
@@ -208,11 +224,7 @@ FileComponent.propTypes = {
 	handleActivate: React.PropTypes.func.isRequired,
 	handleToggleSelect: React.PropTypes.func.isRequired,
 	handleDelete: React.PropTypes.func.isRequired,
-	messages: React.PropTypes.shape({
-		value: React.PropTypes.string,
-		type: React.PropTypes.string,
-		extraClass: React.PropTypes.string
-	}),
+	messages: React.PropTypes.array,
 	uploading: React.PropTypes.bool
 };
 
