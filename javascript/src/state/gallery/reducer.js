@@ -11,6 +11,7 @@ const initialState = {
     editing: null, // The file being edited
     editorFields: [], // The input fields for editing files. Hardcoded until form field schema is implemented.
     files: [],
+    folderID: 0,
     focus: false,
     parentFolderID: null,
     path: null, // The current location path the app is on
@@ -31,6 +32,7 @@ export default function galleryReducer(state = initialState, action) {
     var nextState;
 
     switch (action.type) {
+
         case GALLERY.ADD_FILES:
             let nextFilesState = []; // Clone the state.files array
 
@@ -52,7 +54,7 @@ export default function galleryReducer(state = initialState, action) {
 
             return deepFreeze(Object.assign({}, state, {
                 count: typeof action.payload.count !== 'undefined' ? action.payload.count : state.count,
-                files: state.files.concat(nextFilesState)
+                files: nextFilesState.concat(state.files)
             }));
 
         case GALLERY.REMOVE_FILES:
@@ -144,6 +146,11 @@ export default function galleryReducer(state = initialState, action) {
         case GALLERY.SET_PARENT_FOLDER_ID:
             return deepFreeze(Object.assign({}, state, {
                 parentFolderID: action.payload.parentFolderID
+            }));
+
+        case GALLERY.SET_FOLDER_ID:
+            return deepFreeze(Object.assign({}, state, {
+                folderID: action.payload.folderID
             }));
 
         default:

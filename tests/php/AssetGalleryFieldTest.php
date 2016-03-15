@@ -66,7 +66,7 @@ class AssetGalleryFieldTest extends SapphireTest
         $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
 
         $field = $this->getNewField();
-        $field->setCurrentPath('Folder1');
+        $field->setCurrentFolder('Folder1');
 
         $response = $field->search(new SS_HTTPRequest('GET', 'http://example.com'));
 
@@ -83,7 +83,7 @@ class AssetGalleryFieldTest extends SapphireTest
         $this->objFromFixture('AssetGalleryFieldTest_File', 'File3');
 
         $field = $this->getNewField();
-        $field->setCurrentPath('Folder2');
+        $field->setCurrentFolder('Folder2');
 
         $request = new SS_HTTPRequest('GET', 'http://example.com');
 
@@ -130,7 +130,7 @@ class AssetGalleryFieldTest extends SapphireTest
         $disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanView');
         $field = $this->getNewField();
 
-        $request = new SS_HTTPRequest('GET', 'http://example.com', ['id' => $folder1->ID]);
+        $request = new SS_HTTPRequest('POST', 'http://example.com', null, ['id' => $folder1->ID]);
         $response = $field->getFilesByParentID($request);
         $files = json_decode($response->getBody(), true);
         $this->assertArrayHasKey('files', $files);

@@ -5,13 +5,13 @@ import { Provider } from 'react-redux';
 import configureStore from '../state/configureStore';
 import { setRoute } from '../state/gallery/actions';
 import AssetAdminContainer from '../sections/asset-admin/controller';
-import GalleryContainer from '../sections/gallery/controller';
+import { default as GalleryContainer } from '../sections/gallery/controller';
 import EditorContainer from '../sections/editor/controller';
 import CONSTANTS from '../constants';
 
 function getGalleryProps() {
 	var $componentWrapper = $('.asset-gallery').find('.asset-gallery-component-wrapper'),
-		initialFolder = $componentWrapper.data('asset-gallery-initial-folder') || '',
+		initialFolder = $componentWrapper.data('asset-gallery-initial-folder'),
 		currentFolder = initialFolder;
 
 	return {
@@ -27,13 +27,10 @@ $.entwine('ss', function($) {
 		onadd: function () {
 			const store = configureStore();
 			const galleryProps = getGalleryProps();
-			
 
 			ReactDOM.render(
 				<Provider store={store}>
-					<AssetAdminContainer 
-						initialFolder={this.data('asset-gallery-initial-folder')}
-						idFromURL={this.data('asset-gallery-id-from-url')} >
+					<AssetAdminContainer initialFolder={this.data('asset-gallery-initial-folder')} idFromURL={this.data('asset-gallery-id-from-url')} >
 						<GalleryContainer {...galleryProps} />
 						<EditorContainer route={CONSTANTS.EDITING_ROUTE} />
 					</AssetAdminContainer>

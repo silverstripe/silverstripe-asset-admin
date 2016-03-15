@@ -4,10 +4,7 @@
 }
 
 .asset-gallery {
-    .gallery {
 
-    }
-    
     .gallery__no-item-notice {
         width: 100%;
         text-align: center;
@@ -17,7 +14,7 @@
         position: absolute;
         top: 12px;
         left: 10px;
-        
+
         &.ss-ui-button::before {
             font-size: 23px;
         }
@@ -26,7 +23,7 @@
     .gallery__sort {
         position: absolute;
         top: 14px;
-        right: 40px;
+        right: 16px;
 
         .chzn-single {
             border: 0;
@@ -90,5 +87,14 @@
         background-color: #338DC1;
         border: 0;
         border-radius: 4px
+    }
+
+    .gallery__upload {
+        margin: 12px 0 0 10px;
+        border-radius: 4px;
+
+        &::before {
+            font-size: 24px !important;
+        }
     }
 }

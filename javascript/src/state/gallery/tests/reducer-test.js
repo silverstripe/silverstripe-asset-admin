@@ -11,7 +11,7 @@ describe('galleryReducer', () => {
         const initialState = {
             count: 0,
             files: []
-        }
+        };
 
         it('should add a single file to state', () => {
             const nextState = galleryReducer(initialState, {

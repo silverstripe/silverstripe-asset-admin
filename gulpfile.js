@@ -40,6 +40,7 @@ if (isDev) {
 gulp.task('js', function bundleJavaScript() {
 	return browserify(browserifyOptions)
 		.transform(babelify)
+		.external('deep-freeze')
 		.external('react')
 		.external('jQuery')
 		.external('i18n')
