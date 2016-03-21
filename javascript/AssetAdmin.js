@@ -35,8 +35,8 @@
 				} else {
 					msg = ss.i18n._t('TABLEFIELD.DELETECONFIRMMESSAGE');
 				}
-				if(!confirm(msg)) return false;	
-				
+				if(!confirm(msg)) return false;
+
 				this.getGridField().reload({data: [{name: this.attr('name'), value: this.val()}]});
 				e.preventDefault();
 				return false;
@@ -45,7 +45,7 @@
 
 		$('.AssetAdmin.cms-edit-form :submit[name=action_delete]').entwine({
 			onclick: function(e) {
-				if(!confirm(ss.i18n._t('AssetAdmin.ConfirmDelete'))) return false;	
+				if(!confirm(ss.i18n._t('AssetAdmin.ConfirmDelete'))) return false;
 				else this._super(e);
 			}
 		});
@@ -62,42 +62,6 @@
 				if(!name) return false;
 
 				this.closest('.cms-container').loadPanel(this.data('url') + '&Name=' + name);
-				return false;
-			}
-		});
-
-		/**
-		 * Class: #Form_SyncForm
-		 */
-		$('#Form_SyncForm').entwine({
-			
-			/**
-			 * Function: onsubmit
-			 *
-			 * Parameters:
-			 *  (Event) e
-			 */
-			onsubmit: function(e) {
-				var button = jQuery(this).find(':submit:first');
-				button.addClass('loading');
-				$.ajax({
-					url: jQuery(this).attr('action'),
-					data: this.serializeArray(),
-					success: function() {
-						button.removeClass('loading');
-						// reload current form and tree
-						var currNode = $('.cms-tree')[0].firstSelected();
-						if(currNode) {
-						  var url = $(currNode).find('a').attr('href');
-							$('.cms-content').loadPanel(url);
-						}
-						$('.cms-tree')[0].setCustomURL('admin/assets/getsubtree');
-						$('.cms-tree')[0].reload({onSuccess: function() {
-							// TODO Reset current tree node
-						}});
-					}
-				});
-				
 				return false;
 			}
 		});
