@@ -123,7 +123,7 @@ export class GalleryContainer extends SilverStripeComponent {
 		if (this.props.gallery.count < 1 && this.props.queuedFiles.items.length < 1) {
 			return <p className="gallery__no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
 		}
-		
+
 		return null;
 	}
 
@@ -157,7 +157,7 @@ export class GalleryContainer extends SilverStripeComponent {
 
 		return null;
 	}
-	
+
 	handleCancelUpload(fileData) {
 		fileData.xhr.abort();
 		this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedAtTime);
@@ -170,7 +170,7 @@ export class GalleryContainer extends SilverStripeComponent {
 	handleAddedFile(data) {
 		this.props.actions.queuedFiles.addQueuedFile(data);
 	}
-	
+
 	/**
 	 * Triggered just before the xhr request is sent.
 	 *
@@ -181,7 +181,7 @@ export class GalleryContainer extends SilverStripeComponent {
 	handleSending(file, xhr, formData) {
 		this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { xhr });
 	}
-	
+
 	handleUploadProgress(file, progress, bytesSent) {
 		this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { progress });
 	}
@@ -195,6 +195,7 @@ export class GalleryContainer extends SilverStripeComponent {
 
 		const securityID = $(':input[name=SecurityID]').val();
 
+		// TODO Make "add folder" and "upload" buttons conditional on permissions
 		return <div>
 			{this.getBackButton()}
 			<ReactCSSTransitionGroup transitionName="gallery__bulk-actions" transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME} transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}>
@@ -212,7 +213,13 @@ export class GalleryContainer extends SilverStripeComponent {
 				</select>
 			</div>
 
-			<button id='upload-button' className='gallery__upload [ ss-ui-button font-icon-upload ]' type='button'>{i18n._t("AssetGalleryField.DROPZONE_UPLOAD")}</button>
+			<button id='add-folder-button' className='gallery__upload [ ss-ui-button font-icon-folder-add ]' type='button'>
+				{i18n._t("AssetGalleryField.ADD_FOLDER_BUTTON")}
+			</button>
+
+			<button id='upload-button' className='gallery__upload [ ss-ui-button font-icon-upload ]' type='button'>
+				{i18n._t("AssetGalleryField.DROPZONE_UPLOAD")}
+			</button>
 
 			<DropzoneComponent
 				handleAddedFile={this.handleAddedFile}
@@ -280,7 +287,7 @@ export class GalleryContainer extends SilverStripeComponent {
 	 */
 	handleSuccessfulUpload(file) {
 		const json = JSON.parse(file.xhr.response);
-		
+
 		// SilverStripe send back a success code with an error message sometimes...
 		if (typeof json[0].error !== 'undefined') {
 			this.handleFailedUpload(file);
@@ -290,7 +297,7 @@ export class GalleryContainer extends SilverStripeComponent {
 		this.props.actions.queuedFiles.removeQueuedFile(file._queuedAtTime);
 		this.props.actions.gallery.addFiles(json, this.props.gallery.count + 1);
 	}
-	
+
 	handleFailedUpload(file, errorMessage) {
 		this.props.actions.queuedFiles.failUpload(file._queuedAtTime);
 	}

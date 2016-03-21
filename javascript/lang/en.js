@@ -43,6 +43,7 @@ if(typeof(ss) == 'undefined' || typeof(ss.i18n) == 'undefined') {
 	"AssetGalleryField.DROPZONE_CANCEL_UPLOAD_CONFIRMATION": "Are you sure you want to cancel this upload?",
 	"AssetGalleryField.DROPZONE_REMOVE_FILE": "Remove file",
 	"AssetGalleryField.DROPZONE_MAX_FILES_EXCEEDED": "You can not upload any more files.",
-	"AssetGalleryField.DROPZONE_UPLOAD": "Upload"
+	"AssetGalleryField.DROPZONE_UPLOAD": "Upload",
+	"AssetGalleryField.ADD_FOLDER_BUTTON": "Add folder"
 });
 }

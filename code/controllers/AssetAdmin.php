@@ -160,58 +160,43 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $form = parent::getEditForm($id, $fields);
         $folder = ($id && is_numeric($id)) ? DataObject::get_by_id('Folder', $id, false) : $this->currentPage();
-        $fields = $form->Fields();
         $title = ($folder && $folder->exists()) ? $folder->Title : _t('AssetAdmin.FILES', 'Files');
-        $fields->push(new HiddenField('ID', false, $folder ? $folder->ID : null));
 
-        // File listing
-        $gridFieldConfig = GridFieldConfig::create()->addComponents(
-            new GridFieldToolbarHeader(),
-            new GridFieldSortableHeader(),
-            new GridFieldFilterHeader(),
-            new GridFieldDataColumns(),
-            new GridFieldPaginator(self::config()->page_length),
-            new GridFieldEditButton(),
-            new GridFieldDeleteAction(),
-            new GridFieldDetailForm(),
-            GridFieldLevelup::create($folder->ID)->setLinkSpec('admin/assets/show/%d')
+        // Override fields, ignore any details from Folder->getCMSFields() since they'll
+        // be handled by a detail form instead.
+        $fields = FieldList::create(
+          HiddenField::create('ID', false, $folder ? $folder->ID : null)
         );
+        $form->setFields($fields);
 
-        $gridField = GridField::create('File', $title, $this->getList(), $gridFieldConfig);
-        $columns = $gridField->getConfig()->getComponentByType('GridFieldDataColumns');
-        $columns->setDisplayFields(array(
-            'StripThumbnail' => '',
-            'Title' => _t('File.Title', 'Title'),
-            'Created' => _t('AssetAdmin.CREATED', 'Date'),
-            'Size' => _t('AssetAdmin.SIZE', 'Size'),
-        ));
-        $columns->setFieldCasting(array(
-            'Created' => 'SS_Datetime->Nice'
-        ));
-        $gridField->setAttribute(
-            'data-url-folder-template',
-            Controller::join_links($this->Link('show'), '%s')
-        );
-
-        if (!$folder->hasMethod('canAddChildren') || ($folder->hasMethod('canAddChildren') && $folder->canAddChildren())) {
-            // TODO Will most likely be replaced by GridField logic
-            $addFolderBtn = new LiteralField(
-                'AddFolderButton',
-                sprintf(
-                    '<a class="ss-ui-button font-icon-folder-add cms-add-folder-link" title="%s" data-icon="add" data-url="%s" href="%s">%s</a>',
-                    _t('Folder.AddFolderButton', 'Add folder'),
-                    Controller::join_links($this->Link('AddForm'), '?' . http_build_query(array(
-                        'action_doAdd' => 1,
-                        'ParentID' => $folder->ID,
-                        'SecurityID' => $form->getSecurityToken()->getValue()
-                    ))),
-                    Controller::join_links($this->Link('addfolder'), '?ParentID=' . $folder->ID),
-                    _t('Folder.AddFolderButton', 'Add folder')
-                )
-            );
-        } else {
-            $addFolderBtn = '';
-        }
+        // TODO Re-enable once GridField works with React
+        // // File listing
+        // $gridFieldConfig = GridFieldConfig::create()->addComponents(
+        //     new GridFieldToolbarHeader(),
+        //     new GridFieldSortableHeader(),
+        //     new GridFieldFilterHeader(),
+        //     new GridFieldDataColumns(),
+        //     new GridFieldPaginator(self::config()->page_length),
+        //     new GridFieldEditButton(),
+        //     new GridFieldDeleteAction(),
+        //     new GridFieldDetailForm(),
+        //     GridFieldLevelup::create($folder->ID)->setLinkSpec('admin/assets/show/%d')
+        // );
+        // $gridField = GridField::create('File', $title, $this->getList(), $gridFieldConfig);
+        // $columns = $gridField->getConfig()->getComponentByType('GridFieldDataColumns');
+        // $columns->setDisplayFields(array(
+        //     'StripThumbnail' => '',
+        //     'Title' => _t('File.Title', 'Title'),
+        //     'Created' => _t('AssetAdmin.CREATED', 'Date'),
+        //     'Size' => _t('AssetAdmin.SIZE', 'Size'),
+        // ));
+        // $columns->setFieldCasting(array(
+        //     'Created' => 'SS_Datetime->Nice'
+        // ));
+        // $gridField->setAttribute(
+        //     'data-url-folder-template',
+        //     Controller::join_links($this->Link('show'), '%s')
+        // );
 
         // Move existing fields to a "details" tab, unless they've already been tabbed out through extensions.
         // Required to keep Folder->getCMSFields() simple and reuseable,
@@ -232,11 +217,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             $fields->push($tabs);
         }
 
-        // we only add buttons if they're available. User might not have permission and therefore
-        // the button shouldn't be available. Adding empty values into a ComposteField breaks template rendering.
-        $actionButtonsComposite = CompositeField::create()->addExtraClass('cms-actions-row');
-        if($addFolderBtn) $actionButtonsComposite->push($addFolderBtn);
-
         // Add the upload field for new media
         if ($currentPageID = $this->currentPageID()) {
             Session::set("{$this->class}.currentPage", $currentPageID);
@@ -254,10 +234,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // List view
         $fields->addFieldsToTab('Root.ListView', array(
-            $actionsComposite = CompositeField::create(
-                $actionButtonsComposite
-            )->addExtraClass('cms-content-toolbar field'),
-            new HiddenField('ID'),
             $galleryField,
             new DropzoneUploadField('Upload')
         ));
