@@ -41,7 +41,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'delete',
         'AddForm',
         'SearchForm',
-        'getsubtree'
     );
 
     /**
@@ -219,11 +218,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // without any dependencies into AssetAdmin (e.g. useful for "add folder" views).
         if (!$fields->hasTabset()) {
             $tabs = new TabSet('Root',
-                $tabList = new Tab('ListView', _t('AssetAdmin.ListView', 'List View')),
-                $tabTree = new Tab('TreeView', _t('AssetAdmin.TreeView', 'Tree View'))
+                $tabList = new Tab('ListView', _t('AssetAdmin.ListView', 'List View'))
             );
             $tabList->addExtraClass("content-listview cms-tabset-icon list");
-            $tabTree->addExtraClass("content-treeview cms-tabset-icon tree");
             if ($fields->Count() && $folder->exists()) {
                 $tabs->push($tabDetails = new Tab('DetailsView', _t('AssetAdmin.DetailsView', 'Details')));
                 $tabDetails->addExtraClass("content-galleryview cms-tabset-icon edit");
@@ -265,25 +262,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             new DropzoneUploadField('Upload')
         ));
 
-        // Tree view
-        $fields->addFieldsToTab('Root.TreeView', array(
-            clone $actionsComposite,
-            // TODO Replace with lazy loading on client to avoid performance hit of rendering potentially unused views
-            new LiteralField(
-                'Tree',
-                FormField::create_tag(
-                    'div',
-                    array(
-                        'class' => 'cms-tree',
-                        'data-url-tree' => $this->Link('getsubtree'),
-                        'data-url-savetreenode' => $this->Link('savetreenode')
-                    ),
-                    $this->SiteTreeAsUL()
-                )
-            )
-        ));
-
-        // Move actions to "details" tab (they don't make sense on list/tree view)
+        // Move actions to "details" tab (they don't make sense on list view)
         $actions = $form->Actions();
         $saveBtn = $actions->fieldByName('action_save');
         $deleteBtn = $actions->fieldByName('action_delete');
@@ -544,23 +523,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $this->setCurrentPageID(null);
 
         return new Folder();
-    }
-
-    public function getSiteTreeFor($className, $rootID = null, $childrenMethod = null, $numChildrenMethod = null, $filterFunction = null, $minNodeCount = 30)
-    {
-        if (!$childrenMethod) $childrenMethod = 'ChildFolders';
-        if (!$numChildrenMethod) $numChildrenMethod = 'numChildFolders';
-        return parent::getSiteTreeFor($className, $rootID, $childrenMethod, $numChildrenMethod, $filterFunction, $minNodeCount);
-    }
-
-    public function getCMSTreeTitle()
-    {
-        return Director::absoluteBaseURL() . "assets";
-    }
-
-    public function SiteTreeAsUL()
-    {
-        return $this->getSiteTreeFor($this->stat('tree_class'), null, 'ChildFolders', 'numChildFolders');
     }
 
     /**

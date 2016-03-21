@@ -409,6 +409,7 @@
   .cms .AssetAdmin .asset-gallery > .middleColumn {
     margin-left: 0; }
   .cms .AssetAdmin .icon-button-group {
+    display: none;
     margin-top: 0; }
   .cms .AssetAdmin .cms-content-toolbar {
     margin: 0; }
