@@ -17,6 +17,9 @@ use DataObject;
  */
 class DropzoneUploadField extends UploadField
 {
+
+    protected $schemaDataType = 'Hidden';
+
     /**
      * @var array
      */
@@ -27,7 +30,7 @@ class DropzoneUploadField extends UploadField
     private static $url_handlers = [
         'POST upload' => 'uploadFile'
     ];
-    
+
     public function uploadFile(SS_HTTPRequest $request) {
         $folderID = $request->postVar('folderID');
 

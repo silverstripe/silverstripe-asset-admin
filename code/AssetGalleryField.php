@@ -53,7 +53,7 @@ class AssetGalleryField extends FormField
      * @var string
      */
     protected $currentFolder;
-    
+
     /**
      * @var string
      */
@@ -75,6 +75,10 @@ class AssetGalleryField extends FormField
      * @var DataList
      */
     protected $list = null;
+
+    protected $schemaDataType = 'Custom';
+
+    protected $schemaComponent = 'AssetGalleryField';
 
     /**
      * @param string   $name
@@ -165,10 +169,10 @@ class AssetGalleryField extends FormField
         if (!isset($params['id']) && !strlen($params['id'])) {
             $this->httpError(400);
         }
-        
+
         // TODO Limit results to avoid running out of memory (implement client-side pagination)
         $files = $this->getList()->filter('ParentID', $params['id']);
-        
+
         if (isset($this->getList()->byID($params['id'])->ParentID)) {
             $parentId = $this->getList()->byID($params['id'])->ParentID;
         }
@@ -194,7 +198,7 @@ class AssetGalleryField extends FormField
 
         return $response;
     }
-    
+
     /**
      * Fetches a collection of files in the same folder as the file with the given id.
      *
@@ -210,7 +214,7 @@ class AssetGalleryField extends FormField
         if (isset($this->getList()->byID($params['id'])->ParentID)) {
             $parentID = $this->getList()->byID($params['id'])->ParentID;
         }
-        
+
         $getFilesByParentIDURL = $this->getFilesByParentIDURL();
         $postVars = [
             'id' => $parentID
@@ -535,7 +539,7 @@ class AssetGalleryField extends FormField
     {
         return Controller::join_links($this->Link(), 'getFilesByParentID');
     }
-    
+
     /**
      * @return string
      */
@@ -575,7 +579,7 @@ class AssetGalleryField extends FormField
     {
         return $this->currentFolder;
     }
-    
+
     /**
      * @return string
      */
