@@ -4,7 +4,6 @@
 
 import { combineReducers } from 'redux';
 import galleryReducer from './gallery/reducer';
-import schemaReducer from './schema/reducer';
 import queuedFilesReducer from './queued-files/reducer';
 
 /**
@@ -19,8 +18,7 @@ const rootReducer = combineReducers({
     assetAdmin: combineReducers({
         gallery: galleryReducer,
         queuedFiles: queuedFilesReducer
-    }),
-    schema: schemaReducer
+    })
 });
 
 export default rootReducer;
