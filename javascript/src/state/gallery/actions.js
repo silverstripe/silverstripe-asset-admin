@@ -74,9 +74,9 @@ export function deselectFiles(ids = null) {
 }
 
 /**
- * Starts editing the given file or stops editing if false is given.
+ * Starts editing the given file or stops editing if null is given.
  *
- * @param object|boolean file - The file to edit.
+ * @param object|null file - The file to edit.
  */
 export function setEditing(file) {
     return (dispatch, getState) => {

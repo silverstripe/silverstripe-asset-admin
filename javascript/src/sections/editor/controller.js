@@ -59,6 +59,7 @@ class EditorContainer extends SilverStripeComponent {
 	}
 
 	onCancel(event) {
+		this.props.actions.setEditing(null);
 		window.ss.router.show(CONSTANTS.HOME_ROUTE);
 	}
 

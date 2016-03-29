@@ -17,8 +17,7 @@ function getGalleryProps() {
 	return {
 		current_folder: currentFolder,
 		initial_folder: initialFolder,
-		name: $('.asset-gallery').data('asset-gallery-name'),
-		route: '/assets/:action?/:id?'
+		name: $('.asset-gallery').data('asset-gallery-name')
 	};
 }
 
@@ -32,7 +31,7 @@ $.entwine('ss', function($) {
 				<Provider store={store}>
 					<AssetAdminContainer initialFolder={this.data('asset-gallery-initial-folder')} idFromURL={this.data('asset-gallery-id-from-url')} >
 						<GalleryContainer {...galleryProps} />
-						<EditorContainer route={CONSTANTS.EDITING_ROUTE} />
+						<EditorContainer />
 					</AssetAdminContainer>
 				</Provider>,
 				this[0]
