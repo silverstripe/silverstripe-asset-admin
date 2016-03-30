@@ -3,7 +3,7 @@ jest.dontMock('../index.js');
 var React = require('react'),
     i18n = require('i18n'),
     ReactTestUtils = require('react-addons-test-utils'),
-    BulkActionsComponent = require('../index.js').BulkActionsComponent;
+    BulkActionsComponent = require('../index.js');
 
 describe('BulkActionsComponent', function() {
 
@@ -11,18 +11,14 @@ describe('BulkActionsComponent', function() {
 
     beforeEach(function () {
         props = {
-            gallery: {
-                bulkActions: {
-                    options: [
-                        {
-                            value: 'delete',
-                            label: 'Delete',
-                            destructive: true
-                        }
-                    ]
-                },
-                selectedFiles: [1]
-            }
+            options: [
+                {
+                    value: 'delete',
+                    label: 'Delete',
+                    destructive: true
+                }
+            ],
+            selectedFiles: [1]
         }
     });
 
@@ -74,25 +70,21 @@ describe('BulkActionsComponent', function() {
     
         it('should apply the given action', function () {
             props.getSelectedFiles.mockReturnValueOnce('file1');
-    
+
             bulkActions.applyAction('delete');
-    
+
             expect(bulkActions.props.backend.delete).toBeCalled();
-        });
-    
-        it('should return false if there are no matching actions', function () {
-            expect(bulkActions.applyAction('destroyCMS')).toBe(false);
         });
     });
     
     describe('onChangeValue()', function () {
         var bulkActions, event;
-    
+
         beforeEach(function () {
             bulkActions = ReactTestUtils.renderIntoDocument(
                     <BulkActionsComponent {...props} />
             );
-    
+
             event = {
                 target: {
                     value: 'delete'

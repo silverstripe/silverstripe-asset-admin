@@ -3,12 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'silverstripe-component';
 import ReactTestUtils from 'react-addons-test-utils';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as galleryActions from 'state/gallery/actions';
 import i18n from 'i18n';
 
-export class BulkActionsComponent extends SilverStripeComponent {
+export default class BulkActionsComponent extends SilverStripeComponent {
 
   constructor(props) {
     super(props);
@@ -30,7 +27,7 @@ export class BulkActionsComponent extends SilverStripeComponent {
 
   render() {
     // eslint-disable-next-line arrow-body-style
-    const children = this.props.gallery.bulkActions.options.map((option, i) => {
+    const children = this.props.options.map((option, i) => {
       return (<button
         type="button"
         className="gallery__bulk-actions_action font-icon-trash ss-ui-button ui-corner-all"
@@ -54,9 +51,9 @@ export class BulkActionsComponent extends SilverStripeComponent {
     // Using for loop because IE10 doesn't handle 'for of',
     // which gets transcompiled into a function which uses Symbol,
     // the thing IE10 dies on.
-    for (let i = 0; i < this.props.gallery.bulkActions.options.length; i += 1) {
-      if (this.props.gallery.bulkActions.options[i].value === value) {
-        return this.props.gallery.bulkActions.options[i];
+    for (let i = 0; i < this.props.options.length; i += 1) {
+      if (this.props.options[i].value === value) {
+        return this.props.options[i];
       }
     }
 
@@ -64,7 +61,7 @@ export class BulkActionsComponent extends SilverStripeComponent {
   }
 
   getSelectedFiles() {
-    return this.props.gallery.selectedFiles;
+    return this.props.selectedFiles;
   }
 
   applyAction(value) {
@@ -104,16 +101,8 @@ export class BulkActionsComponent extends SilverStripeComponent {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    gallery: state.assetAdmin.gallery,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(galleryActions, dispatch),
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BulkActionsComponent);
+BulkActionsComponent.propTypes = {
+  selectedFiles: React.PropTypes.array.isRequired,
+  options: React.PropTypes.array.isRequired,
+  backend: React.PropTypes.object,
+};

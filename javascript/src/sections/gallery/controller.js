@@ -158,6 +158,8 @@ export class GalleryContainer extends SilverStripeComponent {
       return (
         <BulkActionsComponent
           backend={this.props.backend}
+          options={this.props.gallery.bulkActions.options}
+          selectedFiles={this.props.gallery.selectedFiles}
           key={this.props.gallery.selectedFiles.length > 0}
         />
       );
