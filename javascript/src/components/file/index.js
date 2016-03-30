@@ -1,7 +1,7 @@
 import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
-import constants from '../../constants';
+import constants from 'constants';
 import SilverStripeComponent from 'silverstripe-component';
 
 class FileComponent extends SilverStripeComponent {
@@ -137,14 +137,14 @@ class FileComponent extends SilverStripeComponent {
 
 	handleCancelUpload(event) {
 		event.stopPropagation();
-		
+
 		if (this.hasError()) {
 			this.props.handleRemoveErroredUpload(this.props.item);
 		} else {
 			this.props.handleCancelUpload(this.props.item);
 		}
 	}
-	
+
 	getProgressBar() {
 		var progressBar;
 

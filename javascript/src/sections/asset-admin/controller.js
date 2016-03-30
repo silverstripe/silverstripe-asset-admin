@@ -1,11 +1,11 @@
 import $ from 'jQuery';
 import React from 'react';
 import SilverStripeComponent from 'silverstripe-component';
-import * as galleryActions from '../../state/gallery/actions';
+import * as galleryActions from 'state/gallery/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import FileBackend from '../../backend/file-backend';
-import CONSTANTS from '../../constants';
+import FileBackend from 'backend/file-backend';
+import CONSTANTS from 'constants';
 
 class AssetAdminContainer extends SilverStripeComponent {
 
@@ -41,17 +41,17 @@ class AssetAdminContainer extends SilverStripeComponent {
 
     componentDidMount() {
         super.componentDidMount();
-        
+
         var fetchMethod = 'getFilesByParentID';
-        
+
         if (this.props.idFromURL && this.props.idFromURL !== this.props.initialFolder) {
             // If the url is to edit a specific file.
             // Doing this because the gallery view and the edit view are handled
-            // by separate SilverStripe controllers. 
+            // by separate SilverStripe controllers.
             // When the AssetGalleryField becomes the entire section we can handle this differently
             fetchMethod = 'getFilesBySiblingID';
         }
-        
+
         this.backend[fetchMethod](this.props.idFromURL)
             .done((data, status, xhr) => {
                 // Handle the initial payload from the FileBackend.

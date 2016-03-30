@@ -503,7 +503,7 @@ class AssetGalleryField extends FormField
         $name = $this->getName();
 
         Requirements::css(ASSET_ADMIN_DIR . "/javascript/dist/main.css");
-        Requirements::javascript(FRAMEWORK_DIR . "/admin/javascript/dist/bundle-react.js");
+        Requirements::javascript(FRAMEWORK_DIR . "/admin/javascript/dist/bundle-lib.js");
         Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . "/javascript/lang");
         Requirements::javascript(ASSET_ADMIN_DIR . "/javascript/dist/bundle.js");
 

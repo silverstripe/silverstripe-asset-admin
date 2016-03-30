@@ -6,13 +6,13 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
-import DropzoneComponent from '../../components/dropzone';
-import FileComponent from '../../components/file/index';
-import BulkActionsComponent from '../../components/bulk-actions/index';
+import DropzoneComponent from 'components/dropzone/index';
+import FileComponent from 'components/file/index';
+import BulkActionsComponent from 'components/bulk-actions/index';
 import SilverStripeComponent from 'silverstripe-component';
-import CONSTANTS from '../../constants';
-import * as galleryActions from '../../state/gallery/actions';
-import * as queuedFilesActions from '../../state/queued-files/actions';
+import CONSTANTS from 'constants';
+import * as galleryActions from 'state/gallery/actions';
+import * as queuedFilesActions from 'state/queued-files/actions';
 
 function getComparator(field, direction) {
 	return (a, b) => {

@@ -4,9 +4,9 @@ import React from 'react';
 import SilverStripeComponent from 'silverstripe-component';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as galleryActions from '../../state/gallery/actions';
-import TextFieldComponent from '../../components/text-field/index';
-import CONSTANTS from '../../constants';
+import * as galleryActions from 'state/gallery/actions';
+import TextFieldComponent from 'components/text-field/index';
+import CONSTANTS from 'constants';
 
 class EditorContainer extends SilverStripeComponent {
 	constructor(props) {

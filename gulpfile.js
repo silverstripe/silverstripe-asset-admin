@@ -13,8 +13,8 @@ var gulp = require('gulp'),
 
 var PATHS = {
 	JAVASCRIPT_DIST: './javascript/dist',
-	JAVASCRIPT_SRC: './javascript/src/**/*.js',
-	SCSS: './javascript/src/**/*.scss',
+	JAVASCRIPT_SRC: './javascript/src',
+	SCSS: './javascript/src',
 	IMAGES: './javascript/src/img/**'
 };
 
@@ -22,7 +22,10 @@ var isDev = typeof process.env.npm_config_development !== 'undefined';
 
 var nodeVersionIsValid = semver.satisfies(process.versions.node, packageJSON.engines.node);
 
-var browserifyOptions = { entries: './javascript/src/boot/index.js' };
+var browserifyOptions = {
+	entries: './javascript/src/boot/index.js',
+	paths: [PATHS.JAVASCRIPT_SRC]
+};
 
 if (!nodeVersionIsValid) {
 	console.error('Invalid Node.js version. You need to be using ' + packageJSON.engines.node);
@@ -40,6 +43,7 @@ if (isDev) {
 gulp.task('js', function bundleJavaScript() {
 	return browserify(browserifyOptions)
 		.transform(babelify)
+		.external('components/text-field/index')
 		.external('deep-freeze')
 		.external('react')
 		.external('jQuery')
@@ -74,7 +78,7 @@ gulp.task('images', function () {
 
 gulp.task('default', ['js', 'sass', 'images'], function () {
 	if (isDev) {
-		gulp.watch(PATHS.JAVASCRIPT_SRC, ['js']);
-		gulp.watch(PATHS.SCSS, ['sass']);
+		gulp.watch(PATHS.JAVASCRIPT_SRC + '/**/*.js', ['js']);
+		gulp.watch(PATHS.SCSS + '/**/*.scss', ['sass']);
 	}
 });

@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "gulp",
-    "test": "jest",
+    "test": "NODE_PATH=\"./javascript/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev"
   },
@@ -57,6 +57,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
-    "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz"
+    "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
+    "react-addons-css-transition-group": "^0.14.7"
   }
 }

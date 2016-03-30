@@ -4,7 +4,7 @@ import SilverStripeComponent from 'silverstripe-component';
 import i18n from 'i18n';
 import Dropzone from 'dropzone';
 import $ from 'jQuery';
-import CONSTANTS from '../../constants.js';
+import CONSTANTS from 'constants';
 
 class DropzoneComponent extends SilverStripeComponent {
 
@@ -225,7 +225,7 @@ class DropzoneComponent extends SilverStripeComponent {
      */
     handleAddedFile(file) {
         var reader = new FileReader();
-        
+
         // The queuedAtTime is used to uniquely identify file while it's in the queue.
         const queuedAtTime = Date.now();
 
@@ -242,7 +242,7 @@ class DropzoneComponent extends SilverStripeComponent {
                 let img = document.createElement('img'),
                     canvas = document.createElement('canvas'),
                     ctx = canvas.getContext('2d');
-                
+
                     img.src = event.target.result;
 
                     canvas.width = this.dropzone.options.thumbnailWidth;
@@ -268,7 +268,7 @@ class DropzoneComponent extends SilverStripeComponent {
                 type: file.type,
                 url: thumbnailURL
             });
-            
+
             this.dropzone.processFile(file);
         }.bind(this);
 

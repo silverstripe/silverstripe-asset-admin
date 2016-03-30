@@ -1,6 +1,6 @@
 import deepFreeze from 'deep-freeze';
 import { GALLERY } from './action-types';
-import CONSTANTS from '../../constants.js';
+import CONSTANTS from 'constants';
 
 const initialState = {
     bulkActions: {
@@ -142,7 +142,7 @@ export default function galleryReducer(state = initialState, action) {
             return deepFreeze(Object.assign({}, state, {
                 viewingFolder: action.payload.viewingFolder
             }));
-            
+
         case GALLERY.SET_PARENT_FOLDER_ID:
             return deepFreeze(Object.assign({}, state, {
                 parentFolderID: action.payload.parentFolderID
