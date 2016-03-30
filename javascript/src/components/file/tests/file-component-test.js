@@ -30,7 +30,7 @@ describe('FileComponent', function() {
                 title: 'test'
             }
         }
-	});
+  });
 
     describe('handleActivate()', function () {
         var file, event;

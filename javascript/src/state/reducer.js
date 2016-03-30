@@ -15,10 +15,10 @@ import queuedFilesReducer from './queued-files/reducer';
  * @param object [action.payload] - Optional data passed with the action.
  */
 const rootReducer = combineReducers({
-    assetAdmin: combineReducers({
-        gallery: galleryReducer,
-        queuedFiles: queuedFilesReducer
-    })
+  assetAdmin: combineReducers({
+    gallery: galleryReducer,
+    queuedFiles: queuedFilesReducer,
+  }),
 });
 
 export default rootReducer;

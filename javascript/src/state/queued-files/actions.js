@@ -6,12 +6,11 @@ import ACTION_TYPES from './action-types';
  * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
  */
 export function addQueuedFile(file) {
-    return (dispatch, getState) => {
-        return dispatch({
-            type: ACTION_TYPES.ADD_QUEUED_FILE,
-            payload: { file }
-        });
-    }
+  return (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.ADD_QUEUED_FILE,
+      payload: { file },
+    });
 }
 
 /**
@@ -20,12 +19,11 @@ export function addQueuedFile(file) {
  * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
  */
 export function failUpload(queuedAtTime) {
-    return (dispatch, getState) => {
-        return dispatch({
-            type: ACTION_TYPES.FAIL_UPLOAD,
-            payload: { queuedAtTime }
-        });
-    };
+  return (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.FAIL_UPLOAD,
+      payload: { queuedAtTime },
+    });
 }
 
 /**
@@ -35,12 +33,11 @@ export function failUpload(queuedAtTime) {
  *   - Pending uploads are ignored.
  */
 export function purgeUploadQueue() {
-    return (dispatch, getState) => {
-        return dispatch({
-            type: ACTION_TYPES.PURGE_UPLOAD_QUEUE,
-            payload: null
-        });
-    };
+  return (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.PURGE_UPLOAD_QUEUE,
+      payload: null,
+    });
 }
 
 /**
@@ -49,12 +46,11 @@ export function purgeUploadQueue() {
  * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
  */
 export function removeQueuedFile(queuedAtTime) {
-    return (dispatch, getState) => {
-        return dispatch({
-            type: ACTION_TYPES.REMOVE_QUEUED_FILE,
-            payload: { queuedAtTime }
-        });
-    }
+  return (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.REMOVE_QUEUED_FILE,
+      payload: { queuedAtTime },
+    });
 }
 
 /**
@@ -63,12 +59,11 @@ export function removeQueuedFile(queuedAtTime) {
  * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
  */
 export function succeedUpload(queuedAtTime) {
-    return (dispatch, getState) => {
-        return dispatch({
-            type: ACTION_TYPES.SUCCEED_UPLOAD,
-            payload: { queuedAtTime }
-        });
-    };
+  return (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.SUCCEED_UPLOAD,
+      payload: { queuedAtTime },
+    });
 }
 
 /**
@@ -78,10 +73,9 @@ export function succeedUpload(queuedAtTime) {
  * @param object updates - The values to update.
  */
 export function updateQueuedFile(queuedAtTime, updates) {
-    return (dispatch, getState) => {
-        return dispatch({
-            type: ACTION_TYPES.UPDATE_QUEUED_FILE,
-            payload: { queuedAtTime, updates }
-        });
-    };
+  return (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.UPDATE_QUEUED_FILE,
+      payload: { queuedAtTime, updates },
+    });
 }

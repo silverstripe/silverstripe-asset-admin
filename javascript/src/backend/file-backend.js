@@ -1,171 +1,186 @@
+/* eslint-disable consistent-return */
 import $ from 'jQuery';
 import Events from 'events';
 
 export default class FileBackend extends Events {
 
-	constructor(getFilesByParentID_url, getFilesBySiblingID_url, search_url, update_url, delete_url, limit, bulkActions, $folder, currentFolder) {
-		super();
+  constructor(getFilesByParentIdUrl, getFilesBySiblingIdUrl, searchUrl,
+    updateUrl, deleteUrl, limit, bulkActions, $folder, currentFolder
+  ) {
+    super();
 
-		this.getFilesByParentID_url = getFilesByParentID_url;
-		this.getFilesBySiblingID_url = getFilesBySiblingID_url;
-		this.search_url = search_url;
-		this.update_url = update_url;
-		this.delete_url = delete_url;
-		this.limit = limit;
-		this.bulkActions = bulkActions;
-		this.$folder = $folder;
-		this.folder = currentFolder;
+    this.getFilesByParentIdUrl = getFilesByParentIdUrl;
+    this.getFilesBySiblingIdUrl = getFilesBySiblingIdUrl;
+    this.searchUrl = searchUrl;
+    this.updateUrl = updateUrl;
+    this.deleteUrl = deleteUrl;
+    this.limit = limit;
+    this.bulkActions = bulkActions;
+    this.$folder = $folder;
+    this.folder = currentFolder;
 
-		this.page = 1;
-	}
+    this.page = 1;
+  }
 
-	/**
-	 * @func fetch
-	 * @param number id
-	 * @desc Fetches a collection of Files by ParentID.
-	 */
-	getFilesByParentID(id) {
-		if (typeof id === 'undefined') {
-			return;
-		}
+  /**
+   * @func fetch
+   * @param number id
+   * @return promise
+   * @desc Fetches a collection of Files by ParentID.
+   */
+  getFilesByParentID(id) {
+    if (typeof id === 'undefined') {
+      return;
+    }
 
-		this.page = 1;
+    this.page = 1;
 
-		return this.request('POST', this.getFilesByParentID_url, { id: id, limit: this.limit }).then((json) => {
-			this.emit('onFetchData', json);
-		});
-	}
+    return this.request(
+      'POST',
+      this.getFilesByParentIdUrl,
+      { id, limit: this.limit }).then((json) => {
+        this.emit('onFetchData', json);
+      }
+    );
+  }
 
-	/**
-	 * @func getFilesBySiblingID
-	 * @param number id - the id of the file to get the siblings from.
-	 * @desc Fetches a collection of sibling files given an id.
-	 */
-	getFilesBySiblingID(id) {
-		if (typeof id === 'undefined') {
-			return;
-		}
-		
-		this.page = 1;
+  /**
+   * @func getFilesBySiblingID
+   * @param number id - the id of the file to get the siblings from.
+   * @desc Fetches a collection of sibling files given an id.
+   */
+  getFilesBySiblingID(id) {
+    if (typeof id === 'undefined') {
+      return;
+    }
 
-		return this.request('POST', this.getFilesBySiblingID_url, { id: id, limit: this.limit }).then((json) => {
-			this.emit('onFetchData', json);
-		});
-	}
+    this.page = 1;
 
-	search() {
-		this.page = 1;
+    return this.request(
+      'POST',
+      this.getFilesBySiblingIdUrl,
+      { id, limit: this.limit }
+    ).then((json) => {
+      this.emit('onFetchData', json);
+    });
+  }
 
-		return this.request('GET', this.search_url).then((json) => {
-			this.emit('onSearchData', json);
-		});
-	}
+  search() {
+    this.page = 1;
 
-	more() {
-		this.page++;
+    return this.request('GET', this.searchUrl).then((json) => {
+      this.emit('onSearchData', json);
+    });
+  }
 
-		return this.request('GET', this.search_url).then((json) => {
-			this.emit('onMoreData', json);
-		});
-	}
+  more() {
+    this.page++;
 
-	navigate(folder) {
-		this.page = 1;
-		this.folder = folder;
+    return this.request('GET', this.searchUrl).then((json) => {
+      this.emit('onMoreData', json);
+    });
+  }
 
-		this.persistFolderFilter(folder);
+  navigate(folder) {
+    this.page = 1;
+    this.folder = folder;
 
-		return this.request('GET', this.search_url).then((json) => {
-			this.emit('onNavigateData', json);
-		});
-	}
+    this.persistFolderFilter(folder);
 
-	persistFolderFilter(folder) {
-		if (folder.substr(-1) === '/') {
-			folder = folder.substr(0, folder.length - 1);
-		}
+    return this.request('GET', this.searchUrl).then((json) => {
+      this.emit('onNavigateData', json);
+    });
+  }
 
-		this.$folder.val(folder);
-	}
+  persistFolderFilter(folder) {
+    let folderSanitised = folder;
+    if (folder.substr(-1) === '/') {
+      folderSanitised = folder.substr(0, folder.length - 1);
+    }
 
-	/**
-	 * Deletes files on the server based on the given ids
-	 *
-	 * @param array ids - an array of file ids to delete on the server
-	 * @returns object - promise
-	 */
-	delete(ids) {
-		return this.request('DELETE', this.delete_url, {
-			'ids': ids
-		}).then(() => {
-			this.emit('onDeleteData', ids);
-		});
-	}
+    this.$folder.val(folderSanitised);
+  }
 
-	filter(name, type, folder, createdFrom, createdTo, onlySearchInFolder) {
-		this.name = name;
-		this.type = type;
-		this.folder = folder;
-		this.createdFrom = createdFrom;
-		this.createdTo = createdTo;
-		this.onlySearchInFolder = onlySearchInFolder;
+  /**
+   * Deletes files on the server based on the given ids
+   *
+   * @param array ids - an array of file ids to delete on the server
+   * @returns object - promise
+   */
+  delete(ids) {
+    return this.request('DELETE', this.deleteUrl, { ids })
+      .then(() => {
+        this.emit('onDeleteData', ids);
+      });
+  }
 
-		this.search();
-	}
+  filter(name, type, folder, createdFrom, createdTo, onlySearchInFolder) {
+    this.name = name;
+    this.type = type;
+    this.folder = folder;
+    this.createdFrom = createdFrom;
+    this.createdTo = createdTo;
+    this.onlySearchInFolder = onlySearchInFolder;
 
-	save(id, values) {
-		var updates = { id };
+    this.search();
+  }
 
-		values.forEach(field => {
-			updates[field.name] = field.value;
-		});
+  save(id, values) {
+    const updates = { id };
 
-		return this.request('POST', this.update_url, updates).then(() => {
-			this.emit('onSaveData', id, updates);
-		});
-	}
+    values.forEach(field => {
+      updates[field.name] = field.value;
+    });
 
-	request(method, url, data = {}) {
-		let defaults = {
-			'limit': this.limit,
-			'page': this.page,
-		};
+    return this.request('POST', this.updateUrl, updates).then(() => {
+      this.emit('onSaveData', id, updates);
+    });
+  }
 
-		if (this.name && this.name.trim() !== '') {
-			defaults.name = decodeURIComponent(this.name);
-		}
+  /**
+   * @return promise
+   */
+  request(method, url, data = {}) {
+    const defaults = {
+      limit: this.limit,
+      page: this.page,
+    };
 
-		if (this.createdFrom && this.createdFrom.trim() !== '') {
-			defaults.createdFrom = decodeURIComponent(this.createdFrom);
-		}
+    if (this.name && this.name.trim() !== '') {
+      defaults.name = decodeURIComponent(this.name);
+    }
 
-		if (this.createdTo && this.createdTo.trim() !== '') {
-			defaults.createdTo = decodeURIComponent(this.createdTo);
-		}
+    if (this.createdFrom && this.createdFrom.trim() !== '') {
+      defaults.createdFrom = decodeURIComponent(this.createdFrom);
+    }
 
-		if (this.onlySearchInFolder && this.onlySearchInFolder.trim() !== '') {
-			defaults.onlySearchInFolder = decodeURIComponent(this.onlySearchInFolder);
-		}
+    if (this.createdTo && this.createdTo.trim() !== '') {
+      defaults.createdTo = decodeURIComponent(this.createdTo);
+    }
 
-		this.showLoadingIndicator();
+    if (this.onlySearchInFolder && this.onlySearchInFolder.trim() !== '') {
+      defaults.onlySearchInFolder = decodeURIComponent(this.onlySearchInFolder);
+    }
 
-		return $.ajax({
-			'url': url,
-			'type': method, // compat with jQuery 1.7
-			'dataType': 'json',
-			'data': $.extend(defaults, data)
-		}).always(() => {
-			this.hideLoadingIndicator();
-		});
-	}
+    this.showLoadingIndicator();
 
-	showLoadingIndicator() {
-		$('.cms-content, .ui-dialog').addClass('loading');
-		$('.ui-dialog-content').css('opacity', '.1');
-	}
+    return $.ajax({
+      url,
+      type: method, // compat with jQuery 1.7
+      dataType: 'json',
+      data: $.extend(defaults, data),
+    }).always(() => {
+      this.hideLoadingIndicator();
+    });
+  }
 
-	hideLoadingIndicator() {
-		$('.cms-content, .ui-dialog').removeClass('loading');
-		$('.ui-dialog-content').css('opacity', '1');
-	}
+  showLoadingIndicator() {
+    $('.cms-content, .ui-dialog').addClass('loading');
+    $('.ui-dialog-content').css('opacity', '.1');
+  }
+
+  hideLoadingIndicator() {
+    $('.cms-content, .ui-dialog').removeClass('loading');
+    $('.ui-dialog-content').css('opacity', '1');
+  }
 }
