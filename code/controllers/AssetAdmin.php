@@ -82,7 +82,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         parent::init();
 
-        Requirements::javascript(FRAMEWORK_DIR . "/admin/javascript/dist/bundle-react.js");
         Requirements::javascript(ASSET_ADMIN_DIR . "/javascript/AssetAdmin.js");
         Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . '/javascript/lang', false, true);
         Requirements::css(ASSET_ADMIN_DIR . "/javascript/dist/main.css");
