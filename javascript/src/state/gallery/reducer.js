@@ -1,6 +1,6 @@
 import deepFreeze from 'deep-freeze';
 import { GALLERY } from './action-types';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 const initialState = {
     bulkActions: {

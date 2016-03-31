@@ -10,7 +10,7 @@ import DropzoneComponent from 'components/dropzone/index';
 import FileComponent from 'components/file/index';
 import BulkActionsComponent from 'components/bulk-actions/index';
 import SilverStripeComponent from 'silverstripe-component';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 import * as galleryActions from 'state/gallery/actions';
 import * as queuedFilesActions from 'state/queued-files/actions';
 

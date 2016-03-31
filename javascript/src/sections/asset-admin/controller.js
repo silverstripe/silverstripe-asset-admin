@@ -5,7 +5,7 @@ import * as galleryActions from 'state/gallery/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FileBackend from 'backend/file-backend';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 class AssetAdminContainer extends SilverStripeComponent {
 

@@ -7,7 +7,7 @@ import { setRoute } from 'state/gallery/actions';
 import AssetAdminContainer from 'sections/asset-admin/controller';
 import { default as GalleryContainer } from 'sections/gallery/controller';
 import EditorContainer from 'sections/editor/controller';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 function getGalleryProps() {
 	var $componentWrapper = $('.asset-gallery').find('.asset-gallery-component-wrapper'),

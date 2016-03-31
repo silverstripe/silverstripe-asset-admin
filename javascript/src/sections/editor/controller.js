@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as galleryActions from 'state/gallery/actions';
 import TextFieldComponent from 'components/text-field/index';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 class EditorContainer extends SilverStripeComponent {
 	constructor(props) {
