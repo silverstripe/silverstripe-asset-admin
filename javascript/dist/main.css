@@ -75,7 +75,96 @@
     font-size: 24px !important; }
 
 .editor-component {
-  clear: both; }
+  clear: both;
+  width: 316px;
+  background-color: #f6f7f8;
+  border-left: 1px solid #d9dee2;
+  height: 100%;
+  padding: 16px 20px;
+  position: absolute;
+  right: 0;
+  top: 0; }
+
+.file-details {
+  margin-bottom: 32px; }
+  .file-details h2 {
+    font-weight: normal;
+    margin-top: 4px; }
+
+.file-preview {
+  width: calc(100% + 40px);
+  text-align: center;
+  margin: 0 -20px 24px -20px;
+  position: relative; }
+  .file-preview .file-type {
+    display: none;
+    font-size: 11px;
+    color: #999;
+    position: absolute;
+    width: 100%;
+    text-align: center; }
+  .file-preview .file-enlarge {
+    display: none;
+    position: absolute;
+    margin: 0 auto;
+    opacity: .7;
+    background-color: black;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -25px; }
+    .file-preview .file-enlarge::before {
+      font-size: 26px;
+      color: #fff;
+      top: 12px;
+      position: relative; }
+  .file-preview:hover .file-type {
+    display: block !important; }
+  .file-preview:hover .file-enlarge {
+    display: block; }
+    .file-preview:hover .file-enlarge:hover, .file-preview:hover .file-enlarge:active {
+      text-decoration: none;
+      background-color: rgba(0, 0, 0, 0.7);
+      opacity: 1; }
+
+.file-preview-thumbnail {
+  max-width: 100%; }
+
+/* BTN */
+.cms .btn--close {
+  float: right;
+  margin: 0;
+  padding: 5px;
+  right: 6px;
+  position: absolute; }
+  .cms .btn--close:hover {
+    text-decoration: none; }
+  .cms .btn--close[class*="font-icon-"]::before {
+    font-size: 20px;
+    color: #66727d; }
+
+/* TABS */
+.nav-tabs {
+  margin-bottom: 20px; }
+  .nav-tabs .nav-link {
+    border: none;
+    padding: 12px 4px;
+    margin-right: 4px;
+    color: #66727d; }
+    .nav-tabs .nav-link.active {
+      border-bottom: 2px solid #66727d;
+      color: #4f5861; }
+      .nav-tabs .nav-link.active.hover {
+        text-decoration: none; }
+
+/* Helpers */
+.header-extra {
+  margin-top: -16px;
+  color: #7f8b97;
+  /* should use text-muted variable */ }
 
 .cms .asset-gallery p {
   line-height: 1.5; }
