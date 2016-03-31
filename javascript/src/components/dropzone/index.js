@@ -4,7 +4,7 @@ import SilverStripeComponent from 'silverstripe-component';
 import i18n from 'i18n';
 import Dropzone from 'dropzone';
 import $ from 'jQuery';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 class DropzoneComponent extends SilverStripeComponent {
 

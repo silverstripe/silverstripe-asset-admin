@@ -1,7 +1,7 @@
 import $ from 'jQuery';
 import i18n from 'i18n';
 import React from 'react';
-import constants from 'constants';
+import constants from 'constants/index';
 import SilverStripeComponent from 'silverstripe-component';
 
 class FileComponent extends SilverStripeComponent {

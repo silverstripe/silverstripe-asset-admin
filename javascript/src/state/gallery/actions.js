@@ -1,5 +1,5 @@
 import { GALLERY } from './action-types';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 /**
  * Adds files to state.
