@@ -4,8 +4,8 @@
 	"type": "silverstripe-module",
 	"require": {
 		"php": ">=5.4.0",
-		"silverstripe/cms": "dev-integrate-react",
-		"silverstripe/framework": "dev-integrate-react"
+		"silverstripe/cms": "^4",
+		"silverstripe/framework": "^4"
 	},
 	"require-dev": {
 		"phpunit/PHPUnit": "^3.7"
