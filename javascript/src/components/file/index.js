@@ -121,10 +121,10 @@ class FileComponent extends SilverStripeComponent {
 
   handleKeyDown(event) {
     event.stopPropagation();
-    event.preventDefault(); // Stop page scrolling if spaceKey is pressed
 
     // If space is pressed, select file
     if (this.props.spaceKey === event.keyCode) {
+      event.preventDefault(); // Stop page scrolling if spaceKey is pressed
       this.handleToggleSelect(event);
     }
 
