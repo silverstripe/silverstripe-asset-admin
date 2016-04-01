@@ -16,7 +16,11 @@ const initialState = {
     parentFolderID: null,
     path: null, // The current location path the app is on
     selectedFiles: [],
-    viewingFolder: false
+    viewingFolder: false,
+    folderPermissions: {
+        canEdit: false,
+        canDelete: false
+    }
 };
 
 /**
@@ -151,6 +155,14 @@ export default function galleryReducer(state = initialState, action) {
         case GALLERY.SET_FOLDER_ID:
             return deepFreeze(Object.assign({}, state, {
                 folderID: action.payload.folderID
+            }));
+
+        case GALLERY.SET_FOLDER_PERMISSIONS:
+            return deepFreeze(Object.assign({}, state, {
+                folderPermissions: {
+                    canEdit: action.payload.canEdit,
+                    canDelete: action.payload.canDelete
+                }
             }));
 
         default:

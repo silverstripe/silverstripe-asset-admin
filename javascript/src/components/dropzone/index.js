@@ -50,7 +50,7 @@ class DropzoneComponent extends SilverStripeComponent {
         return (
             <div className={className.join(' ')}>
                 {this.props.uploadButton &&
-                    <button className='dropzone-component__upload-button [ ss-ui-button font-icon-upload ]' type='button'>{i18n._t("AssetGalleryField.DROPZONE_UPLOAD")}</button>
+                    <button className='dropzone-component__upload-button [ ss-ui-button font-icon-upload ]' type='button' disabled={this.props.canUpload}>{i18n._t("AssetGalleryField.DROPZONE_UPLOAD")}</button>
                 }
                 {this.props.children}
             </div>
@@ -224,6 +224,10 @@ class DropzoneComponent extends SilverStripeComponent {
      * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
      */
     handleAddedFile(file) {
+        if(!this.props.canUpload) {
+          return;
+        }
+
         var reader = new FileReader();
 
         // The queuedAtTime is used to uniquely identify file while it's in the queue.
@@ -323,7 +327,8 @@ DropzoneComponent.propTypes = {
     }),
     promptOnRemove: React.PropTypes.string,
     securityID: React.PropTypes.string.isRequired,
-    uploadButton: React.PropTypes.bool
+    uploadButton: React.PropTypes.bool,
+    canUpload: React.PropTypes.bool.isRequired
 };
 
 DropzoneComponent.defaultProps = {

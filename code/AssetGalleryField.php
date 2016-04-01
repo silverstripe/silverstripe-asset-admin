@@ -164,17 +164,25 @@ class AssetGalleryField extends FormField
         $params = $request->postVars();
         $items = array();
         $parentId = null;
-        $folderID = $params['id'];
+        $folderID = null;
 
         if (!isset($params['id']) && !strlen($params['id'])) {
             $this->httpError(400);
+        } else {
+            $folderID = (int)$params['id'];
+        }
+
+        if ($folderID === 0) {
+            $folder = new Folder();
+        } else {
+            $folder = Folder::get()->byID($folderID);
         }
 
         // TODO Limit results to avoid running out of memory (implement client-side pagination)
-        $files = $this->getList()->filter('ParentID', $params['id']);
+        $files = $this->getList()->filter('ParentID', $folderID);
 
-        if (isset($this->getList()->byID($params['id'])->ParentID)) {
-            $parentId = $this->getList()->byID($params['id'])->ParentID;
+        if (isset($this->getList()->byID($folderID)->ParentID)) {
+            $parentId = $this->getList()->byID($folderID)->ParentID;
         }
 
         if ($files) {
@@ -193,7 +201,11 @@ class AssetGalleryField extends FormField
             'files' => $items,
             'count' => count($items),
             'parent' => $parentId,
-            'folderID' => $folderID
+            'folderID' => $folderID,
+            'folderPermissions' => array(
+              'canEdit' => $folder ? $folder->canEdit() : false,
+              'canDelete' => $folder ? $folder->canDelete() : false
+            )
         ]));
 
         return $response;
