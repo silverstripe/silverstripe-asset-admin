@@ -11,12 +11,8 @@
   width: 100%;
   text-align: center; }
 
-.asset-gallery .gallery__back {
-  position: absolute;
-  top: 12px;
-  left: 10px; }
-  .asset-gallery .gallery__back.ss-ui-button::before {
-    font-size: 23px; }
+.asset-gallery .gallery__back.ss-ui-button::before {
+  font-size: 23px; }
 
 .asset-gallery .gallery__sort {
   position: absolute;
@@ -68,11 +64,15 @@
   border: 0;
   border-radius: 4px; }
 
-.asset-gallery .gallery__upload {
-  margin: 12px 0 0 10px;
+.asset-gallery .gallery__upload::before,
+.asset-gallery .gallery__add-folder::before {
+  font-size: 24px !important; }
+
+.asset-gallery .gallery__add-folder,
+.asset-gallery .gallery__upload,
+.asset-gallery .gallery__back {
+  margin: 12px 10px 12px 0;
   border-radius: 4px; }
-  .asset-gallery .gallery__upload::before {
-    font-size: 24px !important; }
 
 .editor-component {
   clear: both; }
@@ -332,10 +332,10 @@
   right: 0;
   bottom: 0;
   left: 0;
-  margin: 60px 16px 0; }
+  margin: 70px 16px 0; }
   .dropzone-component::after {
     position: absolute;
-    top: -60px;
+    top: -70px;
     right: -16px;
     bottom: 0;
     left: -16px;

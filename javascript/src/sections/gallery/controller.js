@@ -222,7 +222,6 @@ export class GalleryContainer extends SilverStripeComponent {
     // TODO Make "add folder" and "upload" buttons conditional on permissions
     return (
       <div>
-        {this.getBackButton()}
         <ReactCSSTransitionGroup
           transitionName="gallery__bulk-actions"
           transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
@@ -250,6 +249,8 @@ export class GalleryContainer extends SilverStripeComponent {
             )}
           </select>
         </div>
+
+        {this.getBackButton()}
 
         <button id="add-folder-button" className="gallery__upload [ ss-ui-button font-icon-folder-add ]" type="button">
           {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}

@@ -6,10 +6,6 @@
     }
 
     .gallery__back {
-        position: absolute;
-        top: 12px;
-        left: 10px;
-
         &.ss-ui-button::before {
             font-size: 23px;
         }
@@ -84,12 +80,17 @@
         border-radius: 4px
     }
 
-    .gallery__upload {
-        margin: 12px 0 0 10px;
-        border-radius: 4px;
-
+    .gallery__upload,
+    .gallery__add-folder {
         &::before {
             font-size: 24px !important;
         }
+    }
+
+    .gallery__add-folder,
+    .gallery__upload,
+    .gallery__back {
+        margin: 12px 10px 12px 0;
+        border-radius: 4px;
     }
 }
