@@ -60,6 +60,7 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
+    "deep-freeze": "https://registry.npmjs.org/deep-freeze/-/deep-freeze-0.0.1.tgz",
     "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
     "react-addons-css-transition-group": "^0.14.7"
   }
