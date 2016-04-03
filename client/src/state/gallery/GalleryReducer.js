@@ -18,6 +18,10 @@ const initialState = {
   selectedFiles: [],
   viewingFolder: false,
   page: 0,
+  folderPermissions: {
+    canEdit: false,
+    canDelete: false,
+  },
 };
 
 /**
@@ -166,6 +170,8 @@ export default function galleryReducer(state = initialState, action) {
     case GALLERY.LOAD_FOLDER_SUCCESS: {
       return deepFreeze(Object.assign({}, state, {
         parentFolderID: action.payload.parentFolderID,
+        canEdit: action.payload.canEdit,
+        canDelete: action.payload.canDelete,
         files: action.payload.files,
         count: action.payload.files.length,
       }));
@@ -179,6 +185,15 @@ export default function galleryReducer(state = initialState, action) {
 
     case GALLERY.ADD_FOLDER_SUCCESS:
       return state;
+
+    case GALLERY.SET_FOLDER_PERMISSIONS: {
+      return deepFreeze(Object.assign({}, state, {
+        folderPermissions: {
+          canEdit: action.payload.canEdit,
+          canDelete: action.payload.canDelete,
+        },
+      }));
+    }
 
     default:
       return state;

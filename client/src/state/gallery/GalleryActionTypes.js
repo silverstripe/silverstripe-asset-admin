@@ -18,4 +18,5 @@ export default [
   'LOAD_FOLDER_SUCCESS',
   'SHOW',
   'HIDE',
+  'SET_FOLDER_PERMISSIONS',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});

@@ -350,10 +350,9 @@ export class Gallery extends Component {
       paramName: 'Upload',
       clickable: '#upload-button',
     };
-
     const securityID = $(':input[name=SecurityID]').val();
+    const canEdit = this.props.canEdit;
 
-    // TODO Make "add folder" and "upload" buttons conditional on permissions
     return (
       <div>
         <ReactCSSTransitionGroup
@@ -391,15 +390,22 @@ export class Gallery extends Component {
           className="gallery__upload btn btn-secondary font-icon-folder-add"
           type="button"
           onClick={this.handleAddFolder}
+          disabled={!canEdit}
         >
           {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
         </button>
 
-        <button id="upload-button" className="gallery__upload btn btn-secondary font-icon-upload" type="button">
+        <button
+          id="upload-button"
+          className="gallery__upload btn btn-secondary font-icon-upload"
+          type="button"
+          disabled={!canEdit}
+        >
           {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
         </button>
 
         <Dropzone
+          canUpload={canEdit}
           handleAddedFile={this.handleAddedFile}
           handleError={this.handleFailedUpload}
           handleSuccess={this.handleSuccessfulUpload}
@@ -507,6 +513,8 @@ function mapStateToProps(state) {
     parentFolderID: state.assetAdmin.gallery.parentFolderID,
     selectedFiles: state.assetAdmin.gallery.selectedFiles,
     page: state.assetAdmin.gallery.page,
+    canEdit: state.assetAdmin.gallery.canEdit,
+    canDelete: state.assetAdmin.gallery.canDelete,
 
     queuedFiles: state.assetAdmin.queuedFiles,
   };

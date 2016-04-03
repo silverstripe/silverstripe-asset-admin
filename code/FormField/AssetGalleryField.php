@@ -166,19 +166,21 @@ class AssetGalleryField extends FormField
         $params = $request->requestVars();
         $items = array();
         $parentId = null;
-        $folderID = $params['id'];
+        $folderID = null;
 
         if (!isset($params['id']) && !strlen($params['id'])) {
             $this->httpError(400);
         }
 
-        // TODO Limit results to avoid running out of memory (implement client-side pagination)
-        $files = $this->getList()->filter('ParentID', $params['id']);
-
-        $item = $this->getList()->byID($params['id']);
-        if ($item && $item->ParentID) {
-            $parentId = $item->ParentID; // grandparent id
+		$folderID = (int)$params['id'];
+        if ($folderID === 0) {
+            $folder = new Folder();
+        } else {
+            $folder = Folder::get()->byID($folderID);
         }
+
+        // TODO Limit results to avoid running out of memory (implement client-side pagination)
+        $files = $this->getList()->filter('ParentID', $folderID);
 
         if ($files) {
             foreach ($files as $file) {
@@ -195,8 +197,10 @@ class AssetGalleryField extends FormField
         $response->setBody(json_encode([
             'files' => $items,
             'count' => count($items),
-            'parent' => $parentId,
-            'folderID' => $folderID
+            'parent' => $folder->ParentID, // grandparent
+            'folderID' => $folderID,
+            'canEdit' => $folder->Name == 'test1',
+            'canDelete' => $folder ? $folder->canDelete() : false
         ]));
 
         return $response;

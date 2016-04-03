@@ -99,7 +99,13 @@ export function loadFolderContents(filesByParentApi, folderID, limit, page) {
     .then((data) => {
       dispatch({
         type: GALLERY.LOAD_FOLDER_SUCCESS,
-        payload: { folderID: parseInt(folderID, 10), parentFolderID: data.parent, files: data.files },
+        payload: {
+          folderID: parseInt(folderID, 10),
+          parentFolderID: data.parent,
+          files: data.files,
+          canEdit: data.canEdit,
+          canDelete: data.canDelete,
+        },
       });
     });
   };
@@ -202,4 +208,18 @@ export function addFolder(addFolderApi, folderID, folderName) {
       });
     });
   };
+}
+
+/**
+ * Sets the permissions for the folder
+ *
+ * @param object folderPermissions Contains the canEdit, canDelete permissions as self-named keys
+ */
+export function setFolderPermissions(folderPermissions) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.SET_FOLDER_PERMISSIONS,
+            payload: folderPermissions
+        });
+    }
 }
