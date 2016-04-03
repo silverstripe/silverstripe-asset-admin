@@ -163,7 +163,7 @@ class AssetGalleryField extends FormField
      */
     public function getFilesByParentID(SS_HTTPRequest $request)
     {
-        $params = $request->postVars();
+        $params = $request->requestVars();
         $items = array();
         $parentId = null;
         $folderID = $params['id'];

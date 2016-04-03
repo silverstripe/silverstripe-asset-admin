@@ -1,5 +1,30 @@
-import { GALLERY } from './action-types';
-import CONSTANTS from 'constants/index';
+import GALLERY from './action-types';
+
+/**
+ * Load the folder view for a given folder
+ * Used by AssetAdmin.
+ * @todo Refactor so that AssetAdmin has its own actions
+ */
+export function show(folderID) {
+  return (dispatch) => {
+    // Start message
+    dispatch({
+      type: GALLERY.SHOW,
+      payload: { folderID },
+    });
+  };
+}
+
+/**
+ * Hide the editor
+ */
+export function hide() {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.HIDE,
+    });
+  };
+}
 
 /**
  * Adds files to state.
@@ -8,6 +33,7 @@ import CONSTANTS from 'constants/index';
  * @param number [count] - The number of files in the current view.
  */
 export function addFiles(files, count) {
+  // TODO: Refactor this away - will be part of "load folder" and "search" actions
   return (dispatch) =>
     dispatch({
       type: GALLERY.ADD_FILES,
@@ -21,11 +47,62 @@ export function addFiles(files, count) {
  * @param array ids - Array of file ids.
  */
 export function removeFiles(ids) {
-  return (dispatch) =>
+  // TODO: Refactor this away - will be part of "load folder", "search", and "delete files" actions
+  return (dispatch) => {
     dispatch({
       type: GALLERY.REMOVE_FILES,
       payload: { ids },
     });
+  };
+}
+
+/**
+ * Deletes a number of items
+ */
+export function deleteItems(deleteApi, ids) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.DELETE_ITEM_REQUEST,
+      payload: { ids },
+    });
+
+    return deleteApi({ ids })
+    .then((json) => {
+      dispatch({
+        type: GALLERY.DELETE_ITEM_SUCCESS,
+        payload: { ids },
+      });
+
+      return json;
+    })
+    .catch((error) => {
+      // Failure finish message
+      dispatch({
+        type: GALLERY.DELETE_ITEM_FAILURE,
+        payload: { error },
+      });
+    });
+  };
+}
+
+/**
+ * Load the contents of a folder from the API
+ */
+export function loadFolderContents(filesByParentApi, folderID, limit, page) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.LOAD_FOLDER_REQUEST,
+      payload: { viewingFolder: (folderID > 0), folderID: parseInt(folderID, 10) },
+    });
+
+    return filesByParentApi({ id: folderID, limit, page })
+    .then((data) => {
+      dispatch({
+        type: GALLERY.LOAD_FOLDER_SUCCESS,
+        payload: { folderID: parseInt(folderID, 10), parentFolderID: data.parent, files: data.files },
+      });
+    });
+  };
 }
 
 /**
@@ -69,62 +146,6 @@ export function deselectFiles(ids = null) {
 }
 
 /**
- * Starts editing the given file or stops editing if false is given.
- *
- * @param object|boolean file - The file to edit.
- */
-export function setEditing(file) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.SET_EDITING,
-      payload: { file },
-    });
-}
-
-/**
- * Sets the state of the fields for the editor component.
- *
- * @param object editorFields - the current fields in the editor component
- */
-export function setEditorFields(editorFields = []) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.SET_EDITOR_FIELDS,
-      payload: { editorFields },
-    });
-}
-
-/**
- * Update the value of the given field.
- *
- * @param object updates - The values to update the editor field with.
- * @param string updates.name - The editor field name.
- * @param string updates.value - The new value of the field.
- * @param string [updates.label] - The field label.
- */
-export function updateEditorField(updates) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.UPDATE_EDITOR_FIELD,
-      payload: { updates },
-    });
-}
-
-/**
- * Updates push state (invoking any registered page.js handlers) and sets the route in state.
- * Components which define routes are rendered based on the `route` value stored in state.
- *
- * @param string path - The path for pushState.
- */
-export function setPath(path) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.SET_PATH,
-      payload: { path },
-    });
-}
-
-/**
  * Sorts files in some order.
  *
  * @param func comparator - Used to determine the sort order.
@@ -138,45 +159,6 @@ export function sortFiles(comparator) {
 }
 
 /**
- * Sets wether or not the user is currently inside a folder.
- *
- * @param boolean viewingFolder
- */
-export function setViewingFolder(viewingFolder) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.SET_VIEWING_FOLDER,
-      payload: { viewingFolder },
-    });
-}
-
-/**
- * Sets the parentID for the currently viewed folder.
- *
- * @param number parentID
- */
-export function setParentFolderId(parentFolderID) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.SET_PARENT_FOLDER_ID,
-      payload: { parentFolderID },
-    });
-}
-
-/**
- * Sets the ID for the folder currently being viewed.
- *
- * @param number folderID
- */
-export function setFolderId(folderID) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.SET_FOLDER_ID,
-      payload: { folderID },
-    });
-}
-
-/**
  * Create a new folder as a sub-folder of the current and open it for viewing.
  * Triggers an asyncrhonous back-end requests and changes view after the request
  * has completed.
@@ -184,7 +166,7 @@ export function setFolderId(folderID) {
  * @param string folderName
  * @param number [count] - The number of files in the current view.
  */
-export function addFolder(addFolderThunk, folderID, folderName) {
+export function addFolder(addFolderApi, folderID, folderName) {
   return (dispatch) => {
     // Start message
     dispatch({
@@ -192,18 +174,25 @@ export function addFolder(addFolderThunk, folderID, folderName) {
       payload: { folderName },
     });
 
-    return addFolderThunk({ folderID: isNaN(folderID) ? 0 : folderID, folderName })
+    return addFolderApi({ folderID: isNaN(folderID) ? 0 : folderID, folderName })
     .then(json => {
       dispatch({
         type: GALLERY.ADD_FOLDER_SUCCESS,
         payload: { folderName },
       });
 
+      dispatch({
+        type: GALLERY.SHOW,
+        payload: { folderID: json.folderID },
+      });
+
+      // Trigger the open-folder-view action
+      (show(parseInt(json.folderID, 10)))(dispatch);
+
       // TODO: Fix this so that the subsequent action is passed without a coupling to router
       // here.
       //  - Successful action should triggers 'show files' view rather than triggering an action
       // showFilesFromFolder(json.folderID);
-      window.ss.router.show(CONSTANTS.FOLDER_ROUTE.replace(':id?', json.folderID));
     })
     .catch((err) => {
       // Failure finish message

@@ -21,6 +21,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     private static $tree_class = 'Folder';
 
+
+    private static $url_handlers = [
+        // Legacy redirect for SS3-style detail view
+        'EditForm/field/File/item/$FileID/$Action' => 'legacyRedirectForEditView',
+        // Pass all URLs to the index, for React to unpack
+        'show/$FolderID/edit/$FileID' => 'index',
+    ];
+
     /**
      * Amount of results showing on a single page.
      *
@@ -41,7 +49,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'delete',
         'AddForm',
         'SearchForm',
+        'legacyRedirectForEditView',
     );
+
+    public function legacyRedirectForEditView($request)
+    {
+        $fileID = $request->param('FileID');
+        $folderID = File::get()->byID($fileID)->ParentID;
+        $this->redirect($this->Link() . "show/$folderID/edit/$fileID");
+    }
 
     /**
      * Return fake-ID "root" if no ID is found (needed to upload files into the root-folder)

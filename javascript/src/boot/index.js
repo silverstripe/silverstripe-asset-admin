@@ -4,15 +4,14 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from 'state/configureStore';
 import AssetAdminContainer from 'sections/asset-admin/controller';
-import { default as GalleryContainer } from 'sections/gallery/controller';
-import EditorContainer from 'sections/editor/controller';
-import CONSTANTS from 'constants/index';
 import backend from 'silverstripe-backend';
 
 /**
- * Return an action-handling thunk for the given endpoint, using the given backend
+ * Return an API caller for the given endpoint, using the given backend
+ * Returns a lambda that takes an object payload returns a promise.
+ * The promise will output another object payload as the argument passed to then()
  */
-function thunkFromEndpoint(endpoint) {
+function apiCallerFromEndpoint(endpoint) {
   function serialize(obj) {
     const str = [];
     let p;
@@ -28,31 +27,26 @@ function thunkFromEndpoint(endpoint) {
     let url = endpoint.url;
     let backendData = data;
 
-    if (endpoint.method === 'get') {
+    if (endpoint.method === 'get' && (endpoint.payloadFormat || 'urlencoded') === 'urlencoded') {
       url += `?${serialize(data)}`;
       backendData = null;
     }
 
-    return backend[endpoint.method](url, serialize(backendData))
+    let backendString = '';
+    switch (endpoint.payloadFormat || 'urlencoded') {
+      case 'urlencoded':
+        backendString = serialize(backendData);
+        break;
+      case 'json':
+        backendString = JSON.stringify(backendData);
+        break;
+      default:
+        throw new Error(`Unknown payloadFormat: '${endpoint.payloadFormat}'`);
+
+    }
+
+    return backend[endpoint.method](url, backendString)
       .then(response => response.json());
-  };
-}
-
-function getGalleryProps() {
-  const $componentWrapper = $('.asset-gallery').find('.asset-gallery-component-wrapper');
-  const initialFolder = $componentWrapper.data('asset-gallery-initial-folder');
-  const currentFolder = initialFolder;
-
-  return {
-    current_folder: currentFolder,
-    initial_folder: initialFolder,
-    name: $('.asset-gallery').data('asset-gallery-name'),
-    route: '/assets/:action?/:id?',
-    addFolderThunk: thunkFromEndpoint({
-      method: 'post',
-      url: $componentWrapper.data('asset-gallery-add-folder-url'),
-      payloadFormat: 'json',
-    }),
   };
 }
 
@@ -60,17 +54,46 @@ $.entwine('ss', () => {
   $('.asset-gallery-component-wrapper').entwine({
     onadd() {
       const store = configureStore();
-      const galleryProps = getGalleryProps();
+
+      // Build API callers from the URLs provided to us in the div
+      // In time, something like a GraphQL endpoint might be a better way to run
+
+      const filesByParentApi = apiCallerFromEndpoint({
+        method: 'get',
+        url: this.data('asset-gallery-files-by-parent-url'),
+      });
+
+      const deleteApi = apiCallerFromEndpoint({
+        method: 'delete',
+        url: this.data('asset-gallery-delete-url'),
+      });
+
+      const addFolderApi = apiCallerFromEndpoint({
+        method: 'post',
+        url: this.data('asset-gallery-add-folder-url'),
+      });
+
+      const limit = this.data('asset-gallery-limit');
+      const bulkActions = this.data('asset-gallery-bulk-actions');
+
+      const name = $('.asset-gallery').data('asset-gallery-name');
+
+      // TODO
+      // filesBySiblingApi={filesBySiblingApi}
+      // searchApi={searchApi}
+      // updateApi={updateApi}
 
       ReactDOM.render(
         <Provider store={store}>
           <AssetAdminContainer
-            initialFolder={this.data('asset-gallery-initial-folder')}
-            idFromURL={this.data('asset-gallery-id-from-url')}
-          >
-            <GalleryContainer {...galleryProps} />
-            <EditorContainer route={CONSTANTS.EDITING_ROUTE} />
-          </AssetAdminContainer>
+            name={name}
+            limit={limit}
+            bulkActions={!!bulkActions}
+
+            filesByParentApi={filesByParentApi}
+            addFolderApi={addFolderApi}
+            deleteApi={deleteApi}
+          />
         </Provider>,
         this[0]
       );

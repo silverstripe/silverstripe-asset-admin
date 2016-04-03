@@ -1,5 +1,5 @@
 import deepFreeze from 'deep-freeze';
-import { GALLERY } from './action-types';
+import GALLERY from './action-types';
 import CONSTANTS from 'constants/index';
 
 const initialState = {
@@ -11,12 +11,13 @@ const initialState = {
   editing: null, // The file being edited
   editorFields: [], // The input fields for editing files. Hardcoded until form field schema is implemented.
   files: [],
-  folderID: 0,
+  folderID: -1,
   focus: false,
   parentFolderID: null,
   path: null, // The current location path the app is on
   selectedFiles: [],
   viewingFolder: false,
+  page: 0,
 };
 
 /**
@@ -31,6 +32,19 @@ export default function galleryReducer(state = initialState, action) {
   let nextState;
 
   switch (action.type) {
+
+    case GALLERY.SHOW:
+      return deepFreeze(Object.assign({}, state, {
+        visible: true,
+        fileID: null,
+        folderID: parseInt(action.payload.folderID, 10),
+      }));
+
+    case GALLERY.HIDE:
+      return deepFreeze(Object.assign({}, state, {
+        visible: false,
+      }));
+
 
     case GALLERY.ADD_FILES: {
       const nextFilesState = []; // Clone the state.files array
@@ -119,26 +133,12 @@ export default function galleryReducer(state = initialState, action) {
       return nextState;
     }
 
-    case GALLERY.SET_EDITING: {
+    // De-select and remove the files listed in payload.ids
+    case GALLERY.DELETE_ITEM_SUCCESS: {
       return deepFreeze(Object.assign({}, state, {
-        editing: action.payload.file,
-      }));
-    }
-
-    case GALLERY.SET_EDITOR_FIELDS: {
-      return deepFreeze(Object.assign({}, state, {
-        editorFields: action.payload.editorFields,
-      }));
-    }
-
-    case GALLERY.UPDATE_EDITOR_FIELD: {
-      const fieldIndex = state.editorFields.map(field => field.name).indexOf(action.payload.updates.name);
-      const updatedField = Object.assign({}, state.editorFields[fieldIndex], action.payload.updates);
-
-      return deepFreeze(Object.assign({}, state, {
-        editorFields: state.editorFields.map(
-          field => (field.name === updatedField.name ? updatedField : field)
-        ),
+        selectedFiles: state.selectedFiles.filter(id => action.payload.ids.indexOf(id) === -1),
+        files: state.files.filter(file => action.payload.ids.indexOf(file.id) === -1),
+        count: state.files.filter(file => action.payload.ids.indexOf(file.id) === -1).length,
       }));
     }
 
@@ -151,27 +151,23 @@ export default function galleryReducer(state = initialState, action) {
       }));
     }
 
-    case GALLERY.SET_PATH: {
+    case GALLERY.LOAD_FOLDER_REQUEST: {
       return deepFreeze(Object.assign({}, state, {
-        path: action.payload.path,
-      }));
-    }
-
-    case GALLERY.SET_VIEWING_FOLDER: {
-      return deepFreeze(Object.assign({}, state, {
+        // Mark "loaded" at the start of the request to avoid infinite loop of load events
+        loadedFolderID: action.payload.folderID,
+        folderID: action.payload.folderID,
         viewingFolder: action.payload.viewingFolder,
+        selectedFiles: [],
+        files: [],
+        count: 0,
       }));
     }
 
-    case GALLERY.SET_PARENT_FOLDER_ID: {
+    case GALLERY.LOAD_FOLDER_SUCCESS: {
       return deepFreeze(Object.assign({}, state, {
         parentFolderID: action.payload.parentFolderID,
-      }));
-    }
-
-    case GALLERY.SET_FOLDER_ID: {
-      return deepFreeze(Object.assign({}, state, {
-        folderID: action.payload.folderID,
+        files: action.payload.files,
+        count: action.payload.files.length,
       }));
     }
 
