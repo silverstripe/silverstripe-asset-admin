@@ -20,7 +20,8 @@ describe('DropzoneComponent', () => {
             handleError: () => null,
             handleSuccess: () => null,
             folderID: 1,
-            securityID: '123'
+            securityID: '123',
+            canUpload: true
         }
     });
 
@@ -40,7 +41,7 @@ describe('DropzoneComponent', () => {
             expect(Dropzone.dropzone).toBe(null);
         });
     });
-    
+
     describe('componentDidMount()', () => {
         var Dropzone;
 
@@ -55,7 +56,7 @@ describe('DropzoneComponent', () => {
         it('should set this.dropzone to a new Dropzone', () => {
             expect(Dropzone.dropzone.options.url).toBe('upload');
         });
-        
+
         it('should call setPromptOnRemove if props.promptOnRemove is set', () => {
             expect(Dropzone.dropzone.options.dictRemoveFileConfirmation).toBe('prompt');
         });
@@ -69,13 +70,13 @@ describe('DropzoneComponent', () => {
                 <DropzoneComponent {...props} />
             );
         });
-        
+
         it('should remove all dropzone listeners', () => {
             Dropzone.dropzone.disable = jest.genMockFunction();
             Dropzone.componentWillUnmount();
-            
+
             expect(Dropzone.dropzone.disable).toBeCalled();
-            
+
         });
     });
 
@@ -90,10 +91,10 @@ describe('DropzoneComponent', () => {
                 <DropzoneComponent {...props} />
             );
         });
-        
+
         it('should set dropzone.options.dictRemoveFileConfirmation to the given string', () => {
             Dropzone.setPromptOnRemove('prompt');
-            
+
             expect(Dropzone.dropzone.options.dictRemoveFileConfirmation).toBe('prompt')
         });
     });

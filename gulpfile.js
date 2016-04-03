@@ -44,6 +44,7 @@ gulp.task('js', function bundleJavaScript() {
 	return browserify(browserifyOptions)
 		.transform(babelify)
 		.external('components/text-field/index')
+		.external('components/form-action/index')
 		.external('deep-freeze')
 		.external('react')
 		.external('jQuery')

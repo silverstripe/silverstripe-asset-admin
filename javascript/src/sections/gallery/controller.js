@@ -13,6 +13,7 @@ import SilverStripeComponent from 'silverstripe-component';
 import CONSTANTS from 'constants/index';
 import * as galleryActions from 'state/gallery/actions';
 import * as queuedFilesActions from 'state/queued-files/actions';
+import FormAction from 'components/form-action/index';
 
 function getComparator(field, direction) {
   return (a, b) => {
@@ -139,6 +140,7 @@ export class GalleryContainer extends SilverStripeComponent {
       'font-icon-level-up',
       'no-text',
     ].join(' ');
+
     if (this.props.gallery.parentFolderID !== null) {
       return (
         <button
@@ -220,6 +222,8 @@ export class GalleryContainer extends SilverStripeComponent {
     const securityID = $(':input[name=SecurityID]').val();
 
     // TODO Make "add folder" and "upload" buttons conditional on permissions
+    const canEdit = this.props.gallery.folderPermissions.canEdit;
+
     return (
       <div>
         <ReactCSSTransitionGroup
@@ -252,15 +256,24 @@ export class GalleryContainer extends SilverStripeComponent {
 
         {this.getBackButton()}
 
-        <button id="add-folder-button" className="gallery__upload [ ss-ui-button font-icon-folder-add ]" type="button">
-          {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
-        </button>
+        <FormAction
+          id="add-folder-button"
+          label={i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
+          icon="folder-add"
+          extraClass="gallery__upload"
+          disabled={!canEdit}
+        />
 
-        <button id="upload-button" className="gallery__upload [ ss-ui-button font-icon-upload ]" type="button">
-          {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
-        </button>
+        <FormAction
+          id="upload-button"
+          label={i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
+          icon="upload"
+          extraClass="gallery__upload"
+          disabled={!canEdit}
+        />
 
         <DropzoneComponent
+          canUpload={canEdit}
           handleAddedFile={this.handleAddedFile}
           handleError={this.handleFailedUpload}
           handleSuccess={this.handleSuccessfulUpload}
