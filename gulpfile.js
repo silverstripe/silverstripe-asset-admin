@@ -10,6 +10,7 @@ var gulp = require('gulp'),
   packageJSON = require('./package.json'),
   semver = require('semver'),
   notify = require('gulp-notify');
+  sourcemaps = require('gulp-sourcemaps');
 
 var PATHS = {
   JAVASCRIPT_DIST: './javascript/dist',
@@ -62,7 +63,9 @@ gulp.task('js', function bundleJavaScript() {
     .on('error', notify.onError({ message: 'Error: <%= error.message %>' }))
     .pipe(source('bundle.js'))
     .pipe(buffer())
+	.pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(gulpif(!isDev, uglify()))
+	.pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(PATHS.JAVASCRIPT_DIST));
 });
 
