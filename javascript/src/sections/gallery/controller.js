@@ -86,6 +86,7 @@ export class GalleryContainer extends SilverStripeComponent {
     this.handleSort = this.handleSort.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
+    this.handleAddFolder = this.handleAddFolder.bind(this);
   }
 
   componentWillUpdate() {
@@ -209,6 +210,18 @@ export class GalleryContainer extends SilverStripeComponent {
     this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { progress });
   }
 
+  /**
+   * Handler for when the user changes clicks the add folder button
+   *
+   * @param object event - Click event.
+   */
+  handleAddFolder() {
+    const folderName = prompt('Folder name (or blank to cancel)');
+    if (folderName) {
+      this.props.actions.gallery.addFolder(this.props.addFolderThunk, this.props.gallery.folderID, folderName);
+    }
+  }
+
   render() {
     const dropzoneOptions = {
       // Hardcoded placeholder until we have a backend
@@ -252,7 +265,12 @@ export class GalleryContainer extends SilverStripeComponent {
 
         {this.getBackButton()}
 
-        <button id="add-folder-button" className="gallery__upload [ ss-ui-button font-icon-folder-add ]" type="button">
+        <button
+          id="add-folder-button"
+          className="gallery__upload [ ss-ui-button font-icon-folder-add ]"
+          type="button"
+          onClick={this.handleAddFolder}
+        >
           {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
         </button>
 

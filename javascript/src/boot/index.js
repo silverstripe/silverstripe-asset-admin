@@ -7,6 +7,36 @@ import AssetAdminContainer from 'sections/asset-admin/controller';
 import { default as GalleryContainer } from 'sections/gallery/controller';
 import EditorContainer from 'sections/editor/controller';
 import CONSTANTS from 'constants/index';
+import backend from 'silverstripe-backend';
+
+/**
+ * Return an action-handling thunk for the given endpoint, using the given backend
+ */
+function thunkFromEndpoint(endpoint) {
+  function serialize(obj) {
+    const str = [];
+    let p;
+    for (p in obj) {
+      if (obj.hasOwnProperty(p)) {
+        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(obj[p])}`);
+      }
+    }
+    return str.join('&');
+  }
+
+  return (data) => {
+    let url = endpoint.url;
+    let backendData = data;
+
+    if (endpoint.method === 'get') {
+      url += `?${serialize(data)}`;
+      backendData = null;
+    }
+
+    return backend[endpoint.method](url, serialize(backendData))
+      .then(response => response.json());
+  };
+}
 
 function getGalleryProps() {
   const $componentWrapper = $('.asset-gallery').find('.asset-gallery-component-wrapper');
@@ -18,6 +48,11 @@ function getGalleryProps() {
     initial_folder: initialFolder,
     name: $('.asset-gallery').data('asset-gallery-name'),
     route: '/assets/:action?/:id?',
+    addFolderThunk: thunkFromEndpoint({
+      method: 'post',
+      url: $componentWrapper.data('asset-gallery-add-folder-url'),
+      payloadFormat: 'json',
+    }),
   };
 }
 

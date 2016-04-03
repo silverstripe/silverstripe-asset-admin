@@ -31,6 +31,7 @@ class AssetGalleryField extends FormField
         'search',
         'update',
         'delete',
+        'addFolder',
     );
 
     private static $url_handlers = array(
@@ -40,6 +41,7 @@ class AssetGalleryField extends FormField
         'GET search' => 'search',
         'PUT update' => 'update',
         'DELETE delete' => 'delete',
+        'POST addFolder' => 'addFolder',
     );
 
     /**
@@ -365,6 +367,68 @@ class AssetGalleryField extends FormField
             ->addHeader('Content-Type', 'application/json');
     }
 
+    public function addFolder(SS_HTTPRequest $request)
+    {
+        parse_str($request->getBody(), $data);
+
+        $class = 'Folder';
+
+        // check create permissions
+        if (!singleton($class)->canCreate()) {
+            return Security::permissionFailure($this);
+        }
+
+        // check addchildren permissions
+        if(!empty($data['folderID']) && is_numeric($data['folderID'])) {
+            $parentRecord = \DataObject::get_by_id($class, $data['folderID']);
+            if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
+                return Security::permissionFailure($this);
+            }
+        } else {
+            $parentRecord = null;
+        }
+
+        // Check parent
+        $parentID = $parentRecord && $parentRecord->ID
+            ? (int) $parentRecord->ID
+            : 0;
+
+        // Build filename
+        $baseFilename = isset($data['folderName'])
+            ? basename($data['folderName'])
+            : _t('AssetAdmin.NEWFOLDER',"NewFolder");
+
+        if ($parentRecord && $parentRecord->ID) {
+            $baseFilename = $parentRecord->getFilename() . '/' . $baseFilename;
+        }
+
+        // Get the folder to be created
+
+        $nameGenerator = \Injector::inst()->createWithArgs('AssetNameGenerator', array($baseFilename));
+
+        // Ensure name is unique
+        foreach ($nameGenerator as $filename) {
+            if (! File::find($filename) ) {
+                break;
+            }
+        }
+
+        // Create record
+        $record = $class::create();
+        $record->ParentID = $parentID;
+        $record->Name = $record->Title = basename($filename);
+        $record->write();
+
+        $result = [
+            "message" => "data was " . var_export($data, true),
+            "parentFolderID" => $record->ParentID,
+            "folderID" => $record->ID,
+            "path" => $record->Filename,
+        ];
+
+        return (new SS_HTTPResponse(json_encode($result)))->addHeader('Content-Type', 'application/json');
+    }
+
     /**
      * @param array $filters
      *
@@ -516,6 +580,7 @@ class AssetGalleryField extends FormField
         $idFromURL = $this->getIdFromURL();
         $limit = $this->getLimit();
         $bulkActions = $this->getBulkActions();
+        $addFolderURL = $this->getAddFolderURL();
 
         return "<div
             class='asset-gallery-component-wrapper'
@@ -529,6 +594,7 @@ class AssetGalleryField extends FormField
             data-asset-gallery-delete-url='{$deleteURL}'
             data-asset-gallery-initial-folder='{$initialFolder}'
             data-asset-gallery-id-from-url='{$idFromURL}'
+            data-asset-gallery-add-folder-url='{$addFolderURL}'
             ></div>";
     }
 
@@ -570,6 +636,14 @@ class AssetGalleryField extends FormField
     protected function getDeleteURL()
     {
         return Controller::join_links($this->Link(), 'delete');
+    }
+
+    /**
+     * @return string
+     */
+    protected function getAddFolderURL()
+    {
+        return Controller::join_links($this->Link(), 'addFolder');
     }
 
     /**

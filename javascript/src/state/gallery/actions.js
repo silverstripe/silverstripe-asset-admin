@@ -1,4 +1,5 @@
 import { GALLERY } from './action-types';
+import CONSTANTS from 'constants/index';
 
 /**
  * Adds files to state.
@@ -173,4 +174,43 @@ export function setFolderId(folderID) {
       type: GALLERY.SET_FOLDER_ID,
       payload: { folderID },
     });
+}
+
+/**
+ * Create a new folder as a sub-folder of the current and open it for viewing.
+ * Triggers an asyncrhonous back-end requests and changes view after the request
+ * has completed.
+ *
+ * @param string folderName
+ * @param number [count] - The number of files in the current view.
+ */
+export function addFolder(addFolderThunk, folderID, folderName) {
+  return (dispatch) => {
+    // Start message
+    dispatch({
+      type: GALLERY.ADD_FOLDER_REQUEST,
+      payload: { folderName },
+    });
+
+    return addFolderThunk({ folderID: isNaN(folderID) ? 0 : folderID, folderName })
+    .then(json => {
+      dispatch({
+        type: GALLERY.ADD_FOLDER_SUCCESS,
+        payload: { folderName },
+      });
+
+      // TODO: Fix this so that the subsequent action is passed without a coupling to router
+      // here.
+      //  - Successful action should triggers 'show files' view rather than triggering an action
+      // showFilesFromFolder(json.folderID);
+      window.ss.router.show(CONSTANTS.FOLDER_ROUTE.replace(':id?', json.folderID));
+    })
+    .catch((err) => {
+      // Failure finish message
+      dispatch({
+        type: GALLERY.ADD_FOLDER_FAILURE,
+        payload: { error: `Couldn\'t create ${folderName}: ${err}` },
+      });
+    });
+  };
 }

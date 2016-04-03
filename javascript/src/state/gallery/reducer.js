@@ -175,6 +175,15 @@ export default function galleryReducer(state = initialState, action) {
       }));
     }
 
+    case GALLERY.ADD_FOLDER_REQUEST:
+      return state;
+
+    case GALLERY.ADD_FOLDER_FAILURE:
+      return state;
+
+    case GALLERY.ADD_FOLDER_SUCCESS:
+      return state;
+
     default:
       return state;
   }

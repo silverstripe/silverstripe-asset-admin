@@ -49,6 +49,7 @@ gulp.task('js', function bundleJavaScript() {
     .external('jQuery')
     .external('i18n')
     .external('silverstripe-component')
+    .external('silverstripe-backend')
     .external('react-dom')
     .external('react-addons-test-utils')
     .external('react-redux')
