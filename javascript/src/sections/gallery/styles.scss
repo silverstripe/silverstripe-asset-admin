@@ -56,12 +56,12 @@
     }
 
     .gallery__folders {
-        display: inline-block;
+        float: left;
         width: 100%;
     }
     
     .gallery__files {
-        display: inline-block;
+        display: left;
         width: 100%;
     }
 
