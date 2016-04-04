@@ -1,9 +1,5 @@
 .asset-gallery {
 
-	.cms & p {
-		line-height: $line-height;
-	}
-
 	.item--overlay {
 		background: rgba(darken($body-color, 10%), .5);
 		position: absolute;

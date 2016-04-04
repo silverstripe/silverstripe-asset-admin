@@ -1,38 +1,59 @@
 .editor-component {
-    clear: both;
-    width: 316px;
-    background-color: $body-bg;
-    border-left: 1px solid $border-base;
-    height: 100%;
-    padding: 16px 20px;
-    position: absolute;
-    right: 0;
-    top: 0;
+	clear: both;
+	width: 100%; // for mobile
+	background-color: $body-bg;
+	height: 100%;
+	padding: 16px 20px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 100%;
+	overflow-y: scroll;
+
+	// To do: should use mixins - @include media-breakpoint-up(md) {
+	@media (min-width: 992px) {
+		width: 330px;
+		border-left: 1px solid $border-base;
+	}
+	@media (min-width: 1400px) {
+		width: 433px;
+
+	}
 }
 
 .file-details {
 	margin-bottom: 32px;
 
 	h2 {
-		font-weight: normal;
 		margin-top: 4px;
+		max-width: 92%;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
+
+	.media .font-icon-link::before {
+		font-size: 20px;
+		color: #bbb;
+	}
+
+	.table .additional-info {
+		margin-top: -1px;
+		display: block;
+		@extend .text-muted;
+	}
+}
+
+.header-extra {
+	margin-top: -16px;
+	color: #7f8b97; /* should use $text-muted variable */
 }
 
 .file-preview {
 	width: calc(100% + 40px);
 	text-align: center;
-	margin: 0 -20px 24px -20px;
+	margin: 0 -20px 16px -20px;
 	position: relative;
-
-	.file-type {
-		display: none;
-		font-size: 11px;
-		color: #999;
-		position: absolute;
-		width: 100%;
-		text-align: center;
-	}
 
 	.file-enlarge {
 		display: none;
@@ -49,7 +70,7 @@
 		margin-left: -25px;
 
 		&::before {
-			font-size: 26px;
+			font-size: 24px;
 			color: #fff;
 			top: 12px;
 			position: relative;
@@ -76,54 +97,4 @@
 
 .file-preview-thumbnail {
 	max-width: 100%;
-}
-
-
-
-
-// Move to its own component
-
-/* BTN */
-.cms .btn--close {
-	float: right;
-	margin: 0;
-	padding: 5px;
-	right: 6px;
-	position: absolute;
-
-	&:hover {
-		text-decoration: none;
-	}
-
-	&[class*="font-icon-"]::before {
-		font-size: 20px;
-		color: $body-color-light;
-	}
-}
-
-/* TABS */
-.nav-tabs {
-	margin-bottom: 20px;
-
-	.nav-link {
-		border: none;
-		padding: 12px 4px;
-		margin-right: 4px;
-		color: $body-color-light;
-
-		&.active {
-			border-bottom: 2px solid $color-text;
-			color: $body-color;
-
-			&.hover {
-				text-decoration: none;
-			}
-		}
-	}
-}
-
-/* Helpers */
-.header-extra {
-	margin-top: -16px;
-	color: #7f8b97; /* should use text-muted variable */
 }

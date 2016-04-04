@@ -44,11 +44,11 @@
     text-transform: capitalize; }
 
 .asset-gallery .gallery__folders {
-  display: inline-block;
+  float: left;
   width: 100%; }
 
 .asset-gallery .gallery__files {
-  display: inline-block;
+  display: left;
   width: 100%; }
 
 .asset-gallery .gallery__load {
@@ -76,33 +76,48 @@
 
 .editor-component {
   clear: both;
-  width: 316px;
+  width: 100%;
   background-color: #f6f7f8;
-  border-left: 1px solid #d9dee2;
   height: 100%;
   padding: 16px 20px;
   position: absolute;
   right: 0;
-  top: 0; }
+  top: 0;
+  height: 100%;
+  overflow-y: scroll; }
+  @media (min-width: 992px) {
+    .editor-component {
+      width: 330px;
+      border-left: 1px solid #d9dee2; } }
+  @media (min-width: 1400px) {
+    .editor-component {
+      width: 433px; } }
 
 .file-details {
   margin-bottom: 32px; }
   .file-details h2 {
-    font-weight: normal;
-    margin-top: 4px; }
+    margin-top: 4px;
+    max-width: 92%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+  .file-details .media .font-icon-link::before {
+    font-size: 20px;
+    color: #bbb; }
+  .file-details .table .additional-info {
+    margin-top: -1px;
+    display: block; }
+
+.header-extra {
+  margin-top: -16px;
+  color: #7f8b97;
+  /* should use $text-muted variable */ }
 
 .file-preview {
   width: calc(100% + 40px);
   text-align: center;
-  margin: 0 -20px 24px -20px;
+  margin: 0 -20px 16px -20px;
   position: relative; }
-  .file-preview .file-type {
-    display: none;
-    font-size: 11px;
-    color: #999;
-    position: absolute;
-    width: 100%;
-    text-align: center; }
   .file-preview .file-enlarge {
     display: none;
     position: absolute;
@@ -117,7 +132,7 @@
     margin-top: -25px;
     margin-left: -25px; }
     .file-preview .file-enlarge::before {
-      font-size: 26px;
+      font-size: 24px;
       color: #fff;
       top: 12px;
       position: relative; }
@@ -146,28 +161,9 @@
     font-size: 20px;
     color: #66727d; }
 
-/* TABS */
-.nav-tabs {
+.cms .btn-toolbar {
+  margin-top: 20px;
   margin-bottom: 20px; }
-  .nav-tabs .nav-link {
-    border: none;
-    padding: 12px 4px;
-    margin-right: 4px;
-    color: #66727d; }
-    .nav-tabs .nav-link.active {
-      border-bottom: 2px solid #66727d;
-      color: #4f5861; }
-      .nav-tabs .nav-link.active.hover {
-        text-decoration: none; }
-
-/* Helpers */
-.header-extra {
-  margin-top: -16px;
-  color: #7f8b97;
-  /* should use text-muted variable */ }
-
-.cms .asset-gallery p {
-  line-height: 1.5; }
 
 .asset-gallery .item--overlay {
   background: rgba(56, 63, 69, 0.5);

@@ -95,26 +95,25 @@ class EditorContainer extends SilverStripeComponent {
 
 			<div className='file-details'>
 				
-				<h2>{this.props.file.title}</h2>
-				<p className='text-muted header-extra'><small>{this.props.file.attributes.dimensions.width} x {this.props.file.attributes.dimensions.height}px, {this.props.file.size}</small></p>
+				<h2 className="">{this.props.file.title}</h2>
+				<p className='header-extra'><small>{this.props.file.attributes.dimensions.width} x {this.props.file.attributes.dimensions.height}px, {this.props.file.size}</small></p>
 
 				<div className='file-preview'>
 					<img className='file-preview-thumbnail' src={this.props.file.url} />
 					<a href={this.props.file.url} target="_blank" className='file-enlarge font-icon-search no-text'></a>
-					<span className='file-type visible-print-block'>{this.props.file.type}</span>
 				</div>
 
-
 				<ul className="nav nav-tabs" role="tablist">
-				  <li className="nav-item">
-				    <a className="nav-link active" data-toggle="tab" href="#details" role="tab">Details</a>
-				  </li>
-				  <li className="nav-item">
-				    <a className="nav-link" data-toggle="tab" href="#usage" role="tab">Usage</a>
-				  </li>
+					<li className="nav-item">
+						<a className="nav-link active" data-toggle="tab" href="#details" role="tab">Details</a>
+					</li>
+					<li className="nav-item">
+						<a className="nav-link" data-toggle="tab" href="#usage" role="tab">Usage</a>
+					</li>
 				</ul>
+
 				<div className="tab-content">
-				  <div className="tab-pane active" id="details" role="tabpanel">
+					<div className="tab-pane active" id="details" role="tabpanel">
 
 						{this.props.editorFields.map((field, i) => {
 							return <TextFieldComponent
@@ -130,50 +129,95 @@ class EditorContainer extends SilverStripeComponent {
 							<input type="text" className="form-control" id="folderLocation" placeholder="uploads/folder name/" />
 						</div>
 
-						<div className="form-group">
-							<a href={this.props.file.url} target='_blank'>{this.props.file.url}</a>
-						</div>
-
-						<div className="btn-group" role="group" aria-label="">
-							<FormAction
-			                    type='submit'
-			                    icon='save'
-			                    style='success'
-			                    handleClick={this.onFileSave}
-			                    label={i18n._t('AssetGalleryField.SAVE')}
-			                />
-							<FormAction
-			                    type='submit'
-			                    icon='rocket'
-			                    style='success'
-			                    handleClick={this.onFilePublish}
-			                    label='Publish'
-			                />
-						</div>
-
-						
-
-					<button type="button" data-container="body" className="btn btn-link no-text" data-toggle="popover" title="Page actions" data-placement="top" data-content="<a href=''>Add to campaign</a><a href=''>Remove from campaign</a>"><i className='dot-3'></i></button>
-
-				  	</div>
-				  	<div className="tab-pane" id="usage" role="tabpanel">
-				  		<div className=''>
-					  		<div className='field date_disabled readonly'>
-								<label className='left'>{i18n._t('AssetGalleryField.CREATED')}:</label>
-								<div className='middleColumn'>
-									<span className='readonly'>{this.props.file.created}</span>
-								</div>
+						<div className="media form-group break-string">
+							<div className="media-left">
+								<i className="font-icon-link"></i>
 							</div>
-							<div className='field date_disabled readonly'>
-								<label className='left'>{i18n._t('AssetGalleryField.LASTEDIT')}:</label>
-								<div className='middleColumn'>
-									<span className='readonly'>{this.props.file.lastUpdated}</span>
-								</div>
+							<div className="media-body">
+								<a href={this.props.file.url} target='_blank'>{this.props.file.url}</a>
 							</div>
 						</div>
 
-						<p>Campaign data here...</p>
-				  	</div>
+
+						<div className="btn-toolbar">
+							<div className="btn-group" role="group" aria-label="">
+								<FormAction
+									type='submit'
+									icon='save'
+									style='success'
+									handleClick={this.onFileSave}
+									label={i18n._t('AssetGalleryField.SAVE')}
+								/>
+								<FormAction
+									type='submit'
+									icon='rocket'
+									style='success'
+									handleClick={this.onFilePublish}
+									label='Publish'
+								/>
+							</div>
+							<button type="button" data-container="body" className="btn btn-link no-text" data-toggle="popover" title="Page actions" data-placement="top" data-content="<a href=''>Add to campaign</a><a href=''>Remove from campaign</a>"><i className='dot-3'></i></button>
+						</div>
+					</div>
+
+					<div className="tab-pane" id="usage" role="tabpanel">
+
+						<table className="table table-sm">
+							<tbody>
+								<tr>
+									<td scope="row">{i18n._t('AssetGalleryField.CREATED')} </td>
+									<td>{this.props.file.created} by <a href="">Michael</a></td>
+								</tr>
+								<tr>
+									<td scope="row">{i18n._t('AssetGalleryField.LASTEDIT')} </td>
+									<td>{this.props.file.lastUpdated} by <a href="">Jack</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<table className="table">
+						  <thead>
+							<tr>
+							  <th>#</th>
+							  <th>Used on</th>
+							  <th>State</th>
+							</tr>
+						  </thead>
+						  <tbody>
+							<tr className="bg-primary">
+							  <th scope="row">1</th>
+							  <td>About us<small className="additional-info">Page</small></td>
+							  <td><span className="label label-info">Draft</span></td>
+							</tr>
+							<tr>
+							  <th scope="row">2</th>
+							  <td><a href="">My great blog post</a><small className="additional-info">Blog post</small></td>
+							  <td><span className="label label-success">Published</span></td>
+							</tr>
+							<tr>
+							  <th scope="row">3</th>
+							  <td><a href="">Our services</a><small className="additional-info">Services Page</small></td>
+							  <td><span className="label label-success">Published</span></td>
+							</tr>
+							<tr>
+							  <th scope="row">4</th>
+							  <td><a href="">June release</a><small className="additional-info">Campaign</small></td>
+							  <td></td>
+							</tr>
+							<tr>
+							  <th scope="row">5</th>
+							  <td><a href="">Marketing</a><small className="additional-info">Campaign</small></td>
+							  <td><span className="label label-warning">Scheduled</span></td>
+							</tr>
+							<tr>
+							  <th scope="row">6</th>
+							  <td><a href="">Services section</a><small className="additional-info">Campaign</small></td>
+							  <td><span className="label label-success">Published</span></td>
+							</tr>
+						  </tbody>
+						</table>
+
+					</div>
 				</div>
 			</div>
 		</div>;
