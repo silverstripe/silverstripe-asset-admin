@@ -226,6 +226,7 @@ describe('FileComponent', function() {
         });
         
         it('should prevent the default behaviour of the event', function () {
+            event.keyCode = 32;
             file.handleKeyDown(event);
             
             expect(event.preventDefault).toBeCalled();
