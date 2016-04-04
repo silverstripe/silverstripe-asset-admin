@@ -174,3 +174,17 @@ export function setFolderId(folderID) {
       payload: { folderID },
     });
 }
+
+/**
+ * Sets the permissions for the folder
+ *
+ * @param object folderPermissions Contains the canEdit, canDelete permissions as self-named keys
+ */
+export function setFolderPermissions(folderPermissions) {
+    return (dispatch, getState) => {
+        return dispatch({
+            type: GALLERY.SET_FOLDER_PERMISSIONS,
+            payload: folderPermissions
+        });
+    }
+}

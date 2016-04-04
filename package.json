@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "gulp",
-    "test": "NODE_PATH=\"./javascript/src\" jest",
+    "test": "NODE_PATH=\"./javascript/src:../framework/admin/javascript/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev"
   },
