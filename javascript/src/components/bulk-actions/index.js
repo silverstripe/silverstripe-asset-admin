@@ -68,13 +68,18 @@ export class BulkActionsComponent extends SilverStripeComponent {
   }
 
   applyAction(value) {
+    let result = false;
+
     // We only have 'delete' right now...
     switch (value) {
       case 'delete':
         this.props.backend.delete(this.getSelectedFiles());
+        result = true;
         break;
       default:
     }
+
+    return result;
   }
 
   onChangeValue(event) {
