@@ -137,7 +137,7 @@ class AssetGalleryField extends FormField
     /**
      * @return string
      */
-    public function Type()
+    public function type()
     {
         return 'asset-gallery';
     }
@@ -354,7 +354,9 @@ class AssetGalleryField extends FormField
                 ->addHeader('Content-Type', 'application/json');
         }
 
-        if (!min(array_map(function ($file) {return $file->canDelete();}, $files))) {
+        if (!min(array_map(function ($file) {
+            return $file->canDelete();
+        }, $files))) {
             return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
                 ->addHeader('Content-Type', 'application/json');
         }
@@ -379,7 +381,7 @@ class AssetGalleryField extends FormField
         }
 
         // check addchildren permissions
-        if(!empty($data['folderID']) && is_numeric($data['folderID'])) {
+        if (!empty($data['folderID']) && is_numeric($data['folderID'])) {
             $parentRecord = \DataObject::get_by_id($class, $data['folderID']);
             if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
                 return Security::permissionFailure($this);
@@ -396,7 +398,7 @@ class AssetGalleryField extends FormField
         // Build filename
         $baseFilename = isset($data['folderName'])
             ? basename($data['folderName'])
-            : _t('AssetAdmin.NEWFOLDER',"NewFolder");
+            : _t('AssetAdmin.NEWFOLDER', "NewFolder");
 
         if ($parentRecord && $parentRecord->ID) {
             $baseFilename = $parentRecord->getFilename() . '/' . $baseFilename;
@@ -408,7 +410,7 @@ class AssetGalleryField extends FormField
 
         // Ensure name is unique
         foreach ($nameGenerator as $filename) {
-            if (! File::find($filename) ) {
+            if (! File::find($filename)) {
                 break;
             }
         }
@@ -562,7 +564,7 @@ class AssetGalleryField extends FormField
      *
      * @return string
      */
-    public function Field($properties = array())
+    public function field($properties = array())
     {
         $name = $this->getName();
 
@@ -659,7 +661,7 @@ class AssetGalleryField extends FormField
      */
     public function getIdFromURL()
     {
-        if($this->idFromURL) {
+        if ($this->idFromURL) {
             return $this->idFromURL;
         }
 
