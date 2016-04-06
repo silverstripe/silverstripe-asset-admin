@@ -5,64 +5,44 @@
  */
 class AssetAdminTest extends SapphireTest
 {
+
     protected static $fixture_file = 'AssetAdminTest.yml';
 
     public function setUp()
     {
         parent::setUp();
 
-        if(!file_exists(ASSETS_PATH)) mkdir(ASSETS_PATH);
+        AssetStoreTest_SpyStore::activate('AssetAdminTest');
+        $this->logInWithPermission('ADMIN');
 
         // Create a test folders for each of the fixture references
-        $folderIDs = $this->allFixtureIDs('Folder');
-        foreach ($folderIDs as $folderID) {
-            $folder = DataObject::get_by_id('Folder', $folderID);
-            if(!file_exists(BASE_PATH."/$folder->Filename")) mkdir(BASE_PATH."/$folder->Filename");
+        foreach (File::get()->filter('ClassName', 'Folder') as $folder) {
+            /** @var Folder $folder */
+            $folder->publish(Versioned::DRAFT, Versioned::LIVE);
         }
 
         // Create a test files for each of the fixture references
-        $fileIDs = $this->allFixtureIDs('File');
-        foreach ($fileIDs as $fileID) {
-            $file = DataObject::get_by_id('File', $fileID);
-            $fh = fopen(BASE_PATH."/$file->Filename", "w");
-            fwrite($fh, str_repeat('x',1000000));
-            fclose($fh);
+        $content = str_repeat('x', 1000000);
+        foreach (File::get()->exclude('ClassName', 'Folder') as $file) {
+            /** @var File $file */
+            $file->setFromString($content, $file->generateFilename());
+            $file->publish(Versioned::DRAFT, Versioned::LIVE);
         }
     }
 
     public function tearDown()
     {
+        AssetStoreTest_SpyStore::reset();
         parent::tearDown();
-
-        // Remove the test files that we've created
-        $fileIDs = $this->allFixtureIDs('File');
-        foreach ($fileIDs as $fileID) {
-            $file = DataObject::get_by_id('File', $fileID);
-            if($file && file_exists(BASE_PATH."/$file->Filename")) unlink(BASE_PATH."/$file->Filename");
-        }
-
-        // Remove the test folders that we've crated
-        $folderIDs = $this->allFixtureIDs('Folder');
-        foreach ($folderIDs as $folderID) {
-            $folder = DataObject::get_by_id('Folder', $folderID);
-            if ($folder && file_exists(BASE_PATH."/$folder->Filename")) {
-                Filesystem::removeFolder(BASE_PATH."/$folder->Filename");
-            }
-        }
-
-        // Remove left over folders and any files that may exist
-        if (file_exists(ASSETS_PATH.'/AssetAdminTest')) {
-            Filesystem::removeFolder(ASSETS_PATH.'/AssetAdminTest');
-        }
     }
 
     /**
      * Mock a file search using AssetAdmin
      *
-     * @param  string  $name
-     * @param  string  $from     Created from date
-     * @param  string  $to       Createi to date
-     * @param  string  $category
+     * @param string $name
+     * @param string $from Created from date
+     * @param string $to Createi to date
+     * @param string $category
      * @return SS_List
      */
     protected function getResultsForSearch($name = '', $from = '', $to = '', $category = '')
@@ -78,7 +58,6 @@ class AssetAdminTest extends SapphireTest
         ));
         $admin = new AssetAdmin();
         $admin->setRequest($request);
-
         return $admin->getList();
     }
 
