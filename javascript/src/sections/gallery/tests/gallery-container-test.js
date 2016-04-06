@@ -91,27 +91,27 @@ describe('GalleryContainer', function() {
                     }
                 }
             };
-
+    
         beforeEach(() => {
             props.actions.queuedFiles.purgeUploadQueue = jest.genMockFunction();
             props.actions.gallery.sortFiles = jest.genMockFunction();
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-
+    
         it('should purge the upload queue', () => {
             gallery.handleSort(event);
             expect(props.actions.queuedFiles.purgeUploadQueue).toBeCalled();
         });
-
+    
         it('should call props.actions.sortFiles() with the event\'s dataset', () => {
             gallery.handleSort(event);
             expect(props.actions.gallery.sortFiles).toBeCalled();
         });
     });
-
+    
     describe('getNoItemsNotice()', () => {
     
         it('should return the no items notice if there are no files', () => {
@@ -139,7 +139,6 @@ describe('GalleryContainer', function() {
         var gallery;
     
         beforeEach(() => {
-    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
@@ -166,12 +165,15 @@ describe('GalleryContainer', function() {
     
         beforeEach(() => {
             props.backend.bulkActions = true;
+            props.gallery.bulkActions = {
+                options: 'option1'
+            };
     
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-        
+
         it('should not return a BulkActionsComponent if there are no selected items', () => {
             expect(gallery.getBulkActionsComponent()).toBe(null);
         });
@@ -182,44 +184,44 @@ describe('GalleryContainer', function() {
             expect(gallery.getBulkActionsComponent()).not.toBe(null);
         });
     });
-
+    
     describe('getMoreButton()', () => {
         var gallery;
-
+    
         beforeEach(() => {
             props.gallery.files = [1];
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-
+    
         it('should not return a more button if all files are loaded', () => {
             props.gallery.count = 1
-
+    
             expect(gallery.getMoreButton()).toBe(null);
         });
-
+    
         it('should return a more button if all files are loaded.', () => {
             props.gallery.count = 2
-
+    
             expect(gallery.getMoreButton()).not.toBe(null);
         });
     });
 
     describe('handleEnterRoute()', () => {
         var gallery, ctx, next;
-
+    
         beforeEach(() => {
             next = jest.genMockFunction();
             ctx = { params: {} };
-
+    
             props.actions.gallery.setViewingFolder = jest.genMockFunction();
             props.actions.gallery.removeFiles = jest.genMockFunction();
             props.actions.gallery.deselectFiles = jest.genMockFunction();
             props.actions.gallery.setPath = jest.genMockFunction();
             props.backend.getFilesByParentID = jest.genMockFunction();
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
@@ -245,68 +247,68 @@ describe('GalleryContainer', function() {
             
             expect(props.actions.gallery.setViewingFolder).toBeCalledWith(true);
         });
-
+    
         it('should remove and deselect all current files', () => {
             const event = {};
-
+    
             ctx.params.id = 1;
-
+    
             gallery.handleEnterRoute(ctx, next);
             expect(props.actions.gallery.deselectFiles).toBeCalled();
             expect(props.actions.gallery.removeFiles).toBeCalled();
         });
-
+    
         it('should call backend.getFilesByParentID with the folder id', () => {
             const event = {};
-
+    
             ctx.params.id = 1;
-
+    
             gallery.handleEnterRoute(ctx, next);
             expect(props.backend.getFilesByParentID).toBeCalledWith(1);
         });
     });
-
+    
     describe('handleItemDelete()', () => {
         var gallery,
             item = { id: 1 },
             event = {};
-
+    
         beforeEach(() => {
             props.backend.delete = jest.genMockFunction();
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-
+    
         it('should call props.backend.delete with the item id.', () => {
             var mock = jest.genMockFunction(),
                 originalConfirm = window.confirm;
-
+    
             mock.mockReturnValueOnce(true);
             window.confirm = mock;
             // i18n.sprintf = jest.genMockFunction();
-
+    
             gallery.handleItemDelete(event, item);
-
+    
             expect(props.backend.delete).toBeCalledWith(1);
             expect(window.confirm).toBeCalled();
-
+    
             window.confirm = originalConfirm;
         });
     });
-
+    
     describe('itemIsSelected()', () => {
         var gallery;
-
+    
         beforeEach(() => {
             props.gallery.selectedFiles = [1];
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-
+    
         it('should return true if the file is selected', () => {
             expect(gallery.itemIsSelected(1)).toBe(true);
         });
@@ -315,92 +317,92 @@ describe('GalleryContainer', function() {
             expect(gallery.itemIsSelected(2)).toBe(false);
         });
     });
-
+    
     describe('handleFolderActivate()', () => {
         var gallery;
-
+    
         beforeEach(() => {
             window.ss = { router: { show: jest.genMockFunction() } };
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-
+    
         it('should update the route', () => {
             var folder = { id: 1 },
                 event = {};
-
+    
             gallery.handleFolderActivate(event, folder);
-
+    
             expect(window.ss.router.show).toBeCalledWith('/assets/show/1');
         });
     });
 
     describe('handleFileActivate()', () => {
         var gallery;
-
+    
         beforeEach(() => {
             props.actions.gallery.setEditing = jest.genMockFunction();
             window.ss = { router: { show: jest.genMockFunction() } };
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-
+    
         it('should set the editing state to the given file and update the route', () => {
             var file = { id: 1 },
                 event = {};
-
+    
             gallery.handleFileActivate(event, file);
-
+    
             expect(props.actions.gallery.setEditing).toBeCalledWith(file);
             expect(window.ss.router.show).toBeCalledWith('/assets/EditForm/field/Files/item/1/edit');
         })
     });
-
+    
     describe('handleToggleSelect()', () => {
         var gallery,
             event = {};
-
+    
         beforeEach(() => {
             props.actions.gallery.selectFiles = jest.genMockFunction();
             props.actions.gallery.deselectFiles = jest.genMockFunction();
             props.gallery.selectedFiles = [1];
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-
+    
         it('should set deselect the file is currently selected', () => {
             var item = { id: 1 };
-
+    
             gallery.handleToggleSelect(event, item);
-
+    
             expect(props.actions.gallery.deselectFiles).toBeCalledWith([1]);
         })
         
         it('should set select the file is not currently selected', () => {
             var item = { id: 2 };
-
+    
             gallery.handleToggleSelect(event, item);
-
+    
             expect(props.actions.gallery.selectFiles).toBeCalledWith([2]);
         })
     });
-
+    
     describe('handleMoreClick()', () => {
         var gallery, event;
-
+    
         beforeEach(() => {
             props.backend.more = jest.genMockFunction();
             event = {
                 stopPropagation: jest.genMockFunction(),
                 preventDefault: jest.genMockFunction()
             };
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
@@ -424,10 +426,10 @@ describe('GalleryContainer', function() {
             expect(props.backend.more).toBeCalled();
         });
     });
-
+    
     describe('handleBackClick()', () => {
         var gallery, event;
-
+    
         beforeEach(() => {
             props.actions.gallery.deselectFiles = jest.genMockFunction();
             props.actions.gallery.removeFiles = jest.genMockFunction();
@@ -438,12 +440,12 @@ describe('GalleryContainer', function() {
             event = {
                 preventDefault: jest.genMockFunction()
             }
-
+    
             gallery = ReactTestUtils.renderIntoDocument(
                 <GalleryContainer {...props} />
             );
         });
-
+    
         it('should prevent the default behaviour of the event', () => {
             gallery.handleBackClick(event);
             
