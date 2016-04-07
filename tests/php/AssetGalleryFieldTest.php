@@ -1,5 +1,16 @@
 <?php
-use SilverStripe\Forms\AssetGalleryField;
+
+namespace SilverStripe\AssetAdmin\Tests;
+
+use SilverStripe\AssetAdmin\FormField\AssetGalleryField;
+use SapphireTest;
+use Member;
+use File;
+use TestOnly;
+use FieldList;
+use SS_HTTPRequest;
+use ContentController;
+use Form;
 
 /**
  * @mixin PHPUnit_Framework_TestCase
@@ -63,7 +74,7 @@ class AssetGalleryFieldTest extends SapphireTest
 
     public function testItGetsNewData()
     {
-        $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
+        $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'File1');
 
         $field = $this->getNewField();
         $field->setCurrentFolder('Folder1');
@@ -79,8 +90,8 @@ class AssetGalleryFieldTest extends SapphireTest
 
     public function testItFiltersData()
     {
-        $this->objFromFixture('AssetGalleryFieldTest_File', 'File2');
-        $this->objFromFixture('AssetGalleryFieldTest_File', 'File3');
+        $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'File2');
+        $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'File3');
 
         $field = $this->getNewField();
         $field->setCurrentFolder('Folder2');
@@ -105,8 +116,8 @@ class AssetGalleryFieldTest extends SapphireTest
 
     public function testItRestrictsViewInSearch()
     {
-        $allowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
-        $disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanView');
+        $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'File1');
+        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'DisallowCanView');
         $field = $this->getNewField();
 
         $request = new SS_HTTPRequest('GET', 'http://example.com', ['name' => $allowedFile->Name]);
@@ -126,8 +137,8 @@ class AssetGalleryFieldTest extends SapphireTest
     public function testItRestrictsViewInFetch()
     {
         $folder1 = $this->objFromFixture('Folder', 'Folder1');
-        $allowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
-        $disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanView');
+        $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'File1');
+        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'DisallowCanView');
         $field = $this->getNewField();
 
         $request = new SS_HTTPRequest('POST', 'http://example.com', null, ['id' => $folder1->ID]);
@@ -143,8 +154,8 @@ class AssetGalleryFieldTest extends SapphireTest
 
     public function testItRestrictsUpdate()
     {
-        $allowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
-        $disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanEdit');
+        $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'File1');
+        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'DisallowCanEdit');
         $field = $this->getNewField();
 
         $request = new SS_HTTPRequest(
@@ -170,8 +181,8 @@ class AssetGalleryFieldTest extends SapphireTest
 
     public function testItRestrictsDelete()
     {
-        $allowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'File1');
-        $disallowedFile = $this->objFromFixture('AssetGalleryFieldTest_File', 'DisallowCanDelete');
+        $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'File1');
+        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File', 'DisallowCanDelete');
         $field = $this->getNewField();
 
         $request = new SS_HTTPRequest(

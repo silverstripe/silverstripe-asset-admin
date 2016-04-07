@@ -1,0 +1,6 @@
+---
+Name: assetadmin
+---
+AssetAdmin:
+  menu_title: 'Files2'
+  url_segment: 'old-assets'

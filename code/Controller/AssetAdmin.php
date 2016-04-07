@@ -1,8 +1,42 @@
 <?php
 
+namespace SilverStripe\AssetAdmin\Controller;
+
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
-use SilverStripe\Forms\AssetGalleryField;
-use SilverStripe\Forms\DropzoneUploadField;
+use SilverStripe\AssetAdmin\FormField\AssetGalleryField;
+use SilverStripe\AssetAdmin\FormField\DropzoneUploadField;
+use LeftAndMain;
+use PermissionProvider;
+use DateField;
+use TabSet;
+use Tab;
+use DropdownField;
+use SS_HTTPResponse_Exception;
+use Controller;
+use TextField;
+use FieldList;
+use Form;
+use FormAction;
+use CheckboxField;
+use Convert;
+use ArrayData;
+use File;
+use Session;
+use Requirements;
+use CMSBatchActionHandler;
+use HiddenField;
+use DataObject;
+use Injector;
+use Folder;
+use Security;
+use CMSForm;
+use CMSBatchAction;
+use SS_List;
+use CompositeField;
+use SSViewer;
+use HeaderField;
+use FieldGroup;
+use Object;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -103,7 +137,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . '/javascript/lang', false, true);
         Requirements::css(ASSET_ADMIN_DIR . "/javascript/dist/main.css");
 
-        CMSBatchActionHandler::register('delete', 'AssetAdmin_DeleteBatchAction', 'Folder');
+        CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
     }
 
     /**
@@ -526,7 +560,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // The root element should explicitly point to the root node.
         // Uses session state for current record otherwise.
-        $items[0]->Link = Controller::join_links(singleton('AssetAdmin')->Link('show'), 0);
+        $items[0]->Link = Controller::join_links(singleton(__class__)->Link('show'), 0);
 
         // If a search is in progress, don't show the path
         if ($this->getRequest()->requestVar('q')) {
@@ -551,6 +585,48 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $items;
     }
 
+
+    /**
+     * Don't include class namespace in auto-generated CSS class
+     */
+    public function baseCSSClasses()
+    {
+        return 'AssetAdmin LeftAndMain';
+    }
+
+    /**
+     * Don't include class namespace in template names
+     * @todo Make code in framework more namespace-savvy so that we don't need this duplication
+     */
+    public function getTemplatesWithSuffix($suffix)
+    {
+        $className = get_class($this);
+        $baseClass = 'LeftandMain';
+
+        $templates = array();
+        $classes = array_reverse(\ClassInfo::ancestry($className));
+        foreach ($classes as $class) {
+            $template = (new \ReflectionClass($class))->getShortName() . $suffix;
+            if (\SSViewer::hasTemplate($template)) {
+                $templates[] = $template;
+            }
+
+            // If the class is "Page_Controller", look for Page.ss
+            if (stripos($class, '_controller') !== false) {
+                $template = str_ireplace('_controller', '', $class) . $suffix;
+                if (\SSViewer::hasTemplate($template)) {
+                    $templates[] = $template;
+                }
+            }
+
+            if ($baseClass && $class == $baseClass) {
+                break;
+            }
+        }
+
+        return $templates;
+    }
+
     public function providePermissions()
     {
         $title = _t("AssetAdmin.MENUTITLE", LeftAndMain::menu_title_for_class($this->class));
@@ -561,44 +637,5 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'category' => _t('Permission.CMS_ACCESS_CATEGORY', 'CMS Access')
             )
         );
-    }
-}
-
-/**
- * Delete multiple {@link Folder} records (and the associated filesystem nodes).
- * Usually used through the {@link AssetAdmin} interface.
- *
- * @package cms
- * @subpackage batchactions
- */
-class AssetAdmin_DeleteBatchAction extends CMSBatchAction
-{
-    public function getActionTitle()
-    {
-        return _t('AssetAdmin_DeleteBatchAction.TITLE', 'Delete folders');
-    }
-
-    public function run(SS_List $records)
-    {
-        $status = array(
-            'modified'=>array(),
-            'deleted'=>array()
-        );
-
-        foreach ($records as $record) {
-            $id = $record->ID;
-
-            // Perform the action
-            if ($record->canDelete()) {
-                $record->delete();
-            }
-
-            $status['deleted'][$id] = array();
-
-            $record->destroy();
-            unset($record);
-        }
-
-        return Convert::raw2json($status);
     }
 }
