@@ -11,11 +11,8 @@ matrix:
     - php: 5.6
     - php: 7.0
       env:
-    - php: 7.0
+    - php: 5.6
       env: NPM_TEST=1
-  allow_failures:
-    - php: 7.0
-      env:
 
 before_script:
     - git clone -b "pulls/alias-and-installer-branch" git://github.com/chillu/silverstripe-travis-support.git ~/travis-support
