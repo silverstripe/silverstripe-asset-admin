@@ -1,31 +1,31 @@
-var gulp = require('gulp'),
-  browserify = require('browserify'),
-  babelify = require('babelify'),
-  source = require('vinyl-source-stream'),
-  sass = require('gulp-sass'),
-  gulpif = require('gulp-if'),
-  uglify = require('gulp-uglify'),
-  buffer = require('vinyl-buffer'),
-  watchify = require('watchify'),
-  packageJSON = require('./package.json'),
-  semver = require('semver'),
-  notify = require('gulp-notify');
-  sourcemaps = require('gulp-sourcemaps');
+const gulp = require('gulp');
+const browserify = require('browserify');
+const babelify = require('babelify');
+const source = require('vinyl-source-stream');
+const sass = require('gulp-sass');
+const gulpif = require('gulp-if');
+const uglify = require('gulp-uglify');
+const buffer = require('vinyl-buffer');
+const watchify = require('watchify');
+const packageJSON = require('./package.json');
+const semver = require('semver');
+const notify = require('gulp-notify');
+const sourcemaps = require('gulp-sourcemaps');
 
-var PATHS = {
+const PATHS = {
   JAVASCRIPT_DIST: './javascript/dist',
   JAVASCRIPT_SRC: './javascript/src',
   SCSS: './javascript/src',
-  IMAGES: './javascript/src/img/**'
+  IMAGES: './javascript/src/img/**',
 };
 
-var isDev = typeof process.env.npm_config_development !== 'undefined';
+const isDev = typeof process.env.npm_config_development !== 'undefined';
 
-var nodeVersionIsValid = semver.satisfies(process.versions.node, packageJSON.engines.node);
+const nodeVersionIsValid = semver.satisfies(process.versions.node, packageJSON.engines.node);
 
-var browserifyOptions = {
+const browserifyOptions = {
   entries: './javascript/src/boot/index.js',
-  paths: [PATHS.JAVASCRIPT_SRC]
+  paths: [PATHS.JAVASCRIPT_SRC],
 };
 
 const babelifyOptions = {
@@ -36,7 +36,8 @@ const babelifyOptions = {
 };
 
 if (!nodeVersionIsValid) {
-  console.error('Invalid Node.js version. You need to be using ' + packageJSON.engines.node);
+  // eslint-disable-next-line no-console
+  console.error(`Invalid Node.js version. You need to be using ${packageJSON.engines.node}`);
   process.exit();
 }
 
@@ -70,26 +71,26 @@ gulp.task('js', function bundleJavaScript() {
     .on('error', notify.onError({ message: 'Error: <%= error.message %>' }))
     .pipe(source('bundle.js'))
     .pipe(buffer())
-	.pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(gulpif(!isDev, uglify()))
-	.pipe(sourcemaps.write('./'))
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(PATHS.JAVASCRIPT_DIST));
 });
 
-gulp.task('sass', function () {
+gulp.task('sass', () => { // eslint-disable-line arrow-body-style
   return gulp.src('./javascript/src/styles/main.scss')
     .pipe(sass().on('error', notify.onError({ message: 'Error: <%= error.message %>' })))
     .pipe(gulp.dest(PATHS.JAVASCRIPT_DIST));
 });
 
-gulp.task('images', function () {
+gulp.task('images', () => { // eslint-disable-line arrow-body-style
   return gulp.src(PATHS.IMAGES)
-    .pipe(gulp.dest(PATHS.JAVASCRIPT_DIST + '/img'));
+    .pipe(gulp.dest(`${PATHS.JAVASCRIPT_DIST}/img`));
 });
 
-gulp.task('default', ['js', 'sass', 'images'], function () {
+gulp.task('default', ['js', 'sass', 'images'], () => {
   if (isDev) {
-    gulp.watch(PATHS.JAVASCRIPT_SRC + '/**/*.js', ['js']);
-    gulp.watch(PATHS.SCSS + '/**/*.scss', ['sass']);
+    gulp.watch(`${PATHS.JAVASCRIPT_SRC}/**/*.js`, ['js']);
+    gulp.watch(`${PATHS.SCSS}/**/*.scss`, ['sass']);
   }
 });
