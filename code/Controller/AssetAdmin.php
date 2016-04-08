@@ -1,8 +1,42 @@
 <?php
 
+namespace SilverStripe\AssetAdmin\Controller;
+
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
-use SilverStripe\Forms\AssetGalleryField;
-use SilverStripe\Forms\DropzoneUploadField;
+use SilverStripe\AssetAdmin\FormField\AssetGalleryField;
+use SilverStripe\AssetAdmin\FormField\DropzoneUploadField;
+use LeftAndMain;
+use PermissionProvider;
+use DateField;
+use TabSet;
+use Tab;
+use DropdownField;
+use SS_HTTPResponse_Exception;
+use Controller;
+use TextField;
+use FieldList;
+use Form;
+use FormAction;
+use CheckboxField;
+use Convert;
+use ArrayData;
+use File;
+use Session;
+use Requirements;
+use CMSBatchActionHandler;
+use HiddenField;
+use DataObject;
+use Injector;
+use Folder;
+use Security;
+use CMSForm;
+use CMSBatchAction;
+use SS_List;
+use CompositeField;
+use SSViewer;
+use HeaderField;
+use FieldGroup;
+use Object;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -20,6 +54,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     private static $menu_title = 'Files';
 
     private static $tree_class = 'Folder';
+
+
+    private static $url_handlers = [
+        // Legacy redirect for SS3-style detail view
+        'EditForm/field/File/item/$FileID/$Action' => 'legacyRedirectForEditView',
+        // Pass all URLs to the index, for React to unpack
+        'show/$FolderID/edit/$FileID' => 'index',
+    ];
 
     /**
      * Amount of results showing on a single page.
@@ -41,7 +83,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'delete',
         'AddForm',
         'SearchForm',
+        'legacyRedirectForEditView',
     );
+
+    public function legacyRedirectForEditView($request)
+    {
+        $fileID = $request->param('FileID');
+        $folderID = File::get()->byID($fileID)->ParentID;
+        $this->redirect($this->Link() . "show/$folderID/edit/$fileID");
+    }
 
     /**
      * Return fake-ID "root" if no ID is found (needed to upload files into the root-folder)
@@ -87,7 +137,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . '/javascript/lang', false, true);
         Requirements::css(ASSET_ADMIN_DIR . "/javascript/dist/main.css");
 
-        CMSBatchActionHandler::register('delete', 'AssetAdmin_DeleteBatchAction', 'Folder');
+        CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
     }
 
     /**
@@ -109,7 +159,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Don't filter list when a detail view is requested,
         // to avoid edge cases where the filtered list wouldn't contain the requested
         // record due to faulty session state (current folder not always encoded in URL, see #7408).
-        if(!$folder->ID
+        if (!$folder->ID
             && $this->getRequest()->requestVar('ID') === null
             && ($this->getRequest()->param('ID') == 'field')
         ) {
@@ -135,7 +185,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Category filter
-        if(!empty($params['AppCategory'])
+        if (!empty($params['AppCategory'])
             && !empty(File::config()->app_categories[$params['AppCategory']])
         ) {
             $exts = File::config()->app_categories[$params['AppCategory']];
@@ -164,7 +214,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Override fields, ignore any details from Folder->getCMSFields() since they'll
         // be handled by a detail form instead.
         $fields = FieldList::create(
-          HiddenField::create('ID', false, $folder ? $folder->ID : null)
+            HiddenField::create('ID', false, $folder ? $folder->ID : null)
         );
         $form->setFields($fields);
 
@@ -201,7 +251,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Required to keep Folder->getCMSFields() simple and reuseable,
         // without any dependencies into AssetAdmin (e.g. useful for "add folder" views).
         if (!$fields->hasTabset()) {
-            $tabs = new TabSet('Root',
+            $tabs = new TabSet(
+                'Root',
                 $tabList = new Tab('ListView', _t('AssetAdmin.ListView', 'List View'))
             );
             $tabList->addExtraClass("content-listview cms-tabset-icon list");
@@ -246,7 +297,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         if (($saveBtn || $deleteBtn) && $fields->fieldByName('Root.DetailsView')) {
             $fields->addFieldToTab(
                 'Root.DetailsView',
-                CompositeField::create($saveBtn,$deleteBtn)->addExtraClass('Actions')
+                CompositeField::create($saveBtn, $deleteBtn)->addExtraClass('Actions')
             );
         }
 
@@ -320,7 +371,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $dateHeader = HeaderField::create('q[Date]', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
         $dateFrom = DateField::create('q[CreatedFrom]', _t('CMSSearch.FILTERDATEFROM', 'From'))
         ->setConfig('showcalendar', true);
-        $dateTo = DateField::create('q[CreatedTo]',_t('CMSSearch.FILTERDATETO', 'To'))
+        $dateTo = DateField::create('q[CreatedTo]', _t('CMSSearch.FILTERDATETO', 'To'))
         ->setConfig('showcalendar', true);
         $dateGroup = FieldGroup::create(
             $dateHeader,
@@ -361,14 +412,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @return Form
      *              @see AssetAdmin.js
      */
-    public function SearchForm()
+    public function searchForm()
     {
         $folder = $this->currentPage();
         $context = $this->getSearchContext();
 
         $fields = $context->getSearchFields();
         $actions = new FieldList(
-            FormAction::create('doSearch',  _t('CMSMain_left_ss.APPLY_FILTER', 'Apply Filter'))
+            FormAction::create('doSearch', _t('CMSMain_left_ss.APPLY_FILTER', 'Apply Filter'))
                 ->addExtraClass('ss-ui-action-constructive'),
             Object::create('ResetFormAction', 'clear', _t('CMSMain_left_ss.RESET', 'Reset'))
         );
@@ -385,7 +436,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $form;
     }
 
-    public function AddForm()
+    public function addForm()
     {
         $form = CMSForm::create(
             $this,
@@ -395,7 +446,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 new HiddenField('ParentID', false, $this->getRequest()->getVar('ParentID'))
             ),
             new FieldList(
-                FormAction::create('doAdd', _t('AssetAdmin_left_ss.GO','Go'))
+                FormAction::create('doAdd', _t('AssetAdmin_left_ss.GO', 'Go'))
                     ->addExtraClass('ss-ui-action-constructive')->setAttribute('data-icon', 'accept')
                     ->setTitle(_t('AssetAdmin.ActionAdd', 'Add folder'))
             )
@@ -423,8 +474,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // check addchildren permissions
-        if(
-            singleton($class)->hasExtension('Hierarchy')
+        if (singleton($class)->hasExtension('Hierarchy')
             && isset($data['ParentID'])
             && is_numeric($data['ParentID'])
             && $data['ParentID']
@@ -444,7 +494,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Build filename
         $filename = isset($data['Name'])
             ? basename($data['Name'])
-            : _t('AssetAdmin.NEWFOLDER',"NewFolder");
+            : _t('AssetAdmin.NEWFOLDER', "NewFolder");
         if ($parentRecord && $parentRecord->ID) {
             $filename = $parentRecord->getFilename() . '/' . $filename;
         }
@@ -453,7 +503,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Ensure name is unique
         foreach ($this->getNameGenerator($filename) as $filename) {
-            if (! File::find($filename) ) {
+            if (! File::find($filename)) {
                 break;
             }
         }
@@ -504,20 +554,23 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @param  bool      $unlinked
      * @return ArrayList
      */
-    public function Breadcrumbs($unlinked = false)
+    public function breadcrumbs($unlinked = false)
     {
         $items = parent::Breadcrumbs($unlinked);
 
         // The root element should explicitly point to the root node.
         // Uses session state for current record otherwise.
-        $items[0]->Link = Controller::join_links(singleton('AssetAdmin')->Link('show'), 0);
+        $items[0]->Link = Controller::join_links(singleton(__class__)->Link('show'), 0);
 
         // If a search is in progress, don't show the path
         if ($this->getRequest()->requestVar('q')) {
             $items = $items->limit(1);
             $items->push(new ArrayData(array(
                 'Title' => _t('LeftAndMain.SearchResults', 'Search Results'),
-                'Link' => Controller::join_links($this->Link(), '?' . http_build_query(array('q' => $this->getRequest()->requestVar('q'))))
+                'Link' => Controller::join_links(
+                    $this->Link(),
+                    '?' . http_build_query(array('q' => $this->getRequest()->requestVar('q')))
+                )
             )));
         }
 
@@ -532,6 +585,48 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $items;
     }
 
+
+    /**
+     * Don't include class namespace in auto-generated CSS class
+     */
+    public function baseCSSClasses()
+    {
+        return 'AssetAdmin LeftAndMain';
+    }
+
+    /**
+     * Don't include class namespace in template names
+     * @todo Make code in framework more namespace-savvy so that we don't need this duplication
+     */
+    public function getTemplatesWithSuffix($suffix)
+    {
+        $className = get_class($this);
+        $baseClass = 'LeftandMain';
+
+        $templates = array();
+        $classes = array_reverse(\ClassInfo::ancestry($className));
+        foreach ($classes as $class) {
+            $template = (new \ReflectionClass($class))->getShortName() . $suffix;
+            if (\SSViewer::hasTemplate($template)) {
+                $templates[] = $template;
+            }
+
+            // If the class is "Page_Controller", look for Page.ss
+            if (stripos($class, '_controller') !== false) {
+                $template = str_ireplace('_controller', '', $class) . $suffix;
+                if (\SSViewer::hasTemplate($template)) {
+                    $templates[] = $template;
+                }
+            }
+
+            if ($baseClass && $class == $baseClass) {
+                break;
+            }
+        }
+
+        return $templates;
+    }
+
     public function providePermissions()
     {
         $title = _t("AssetAdmin.MENUTITLE", LeftAndMain::menu_title_for_class($this->class));
@@ -542,43 +637,5 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'category' => _t('Permission.CMS_ACCESS_CATEGORY', 'CMS Access')
             )
         );
-    }
-
-}
-/**
- * Delete multiple {@link Folder} records (and the associated filesystem nodes).
- * Usually used through the {@link AssetAdmin} interface.
- *
- * @package cms
- * @subpackage batchactions
- */
-class AssetAdmin_DeleteBatchAction extends CMSBatchAction
-{
-    public function getActionTitle()
-    {
-        // _t('AssetAdmin_left_ss.SELECTTODEL','Select the folders that you want to delete and then click the button below')
-        return _t('AssetAdmin_DeleteBatchAction.TITLE', 'Delete folders');
-    }
-
-    public function run(SS_List $records)
-    {
-        $status = array(
-            'modified'=>array(),
-            'deleted'=>array()
-        );
-
-        foreach ($records as $record) {
-            $id = $record->ID;
-
-            // Perform the action
-            if($record->canDelete()) $record->delete();
-
-            $status['deleted'][$id] = array();
-
-            $record->destroy();
-            unset($record);
-        }
-
-        return Convert::raw2json($status);
     }
 }

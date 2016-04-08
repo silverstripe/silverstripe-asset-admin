@@ -1,13 +1,11 @@
 import i18n from 'i18n';
-import React from 'react';
-import SilverStripeComponent from 'silverstripe-component';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as galleryActions from 'state/gallery/actions';
+import * as editorActions from 'state/editor/actions';
 import TextFieldComponent from 'components/text-field/index';
-import CONSTANTS from 'constants/index';
 
-class EditorContainer extends SilverStripeComponent {
+class EditorContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -28,18 +26,13 @@ class EditorContainer extends SilverStripeComponent {
 
     this.onFieldChange = this.onFieldChange.bind(this);
     this.onFileSave = this.onFileSave.bind(this);
-    this.onCancel = this.onCancel.bind(this);
   }
 
   componentDidMount() {
-    super.componentDidMount();
-
     this.props.actions.setEditorFields(this.fields);
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount();
-
     this.props.actions.setEditorFields();
   }
 
@@ -57,26 +50,8 @@ class EditorContainer extends SilverStripeComponent {
     event.preventDefault();
   }
 
-  onCancel() {
-    window.ss.router.show(CONSTANTS.HOME_ROUTE);
-  }
-
-  handleEnterRoute(ctx) {
-    // If there is no file to edit set the editing file
-    // by matching a file id against the id in the URL.
-    if (this.props.file === null) {
-      this.props.actions.setEditing(
-        this.props.files.filter((file) => file.id === parseInt(ctx.params.id, 10))[0]
-      );
-    }
-  }
-
-  handleExitRoute() {
-    this.props.actions.setEditing(null);
-  }
-
   render() {
-    if (this.props.file === null || typeof this.props.file === 'undefined') {
+    if (!this.props.visible) {
       return null;
     }
 
@@ -155,7 +130,7 @@ class EditorContainer extends SilverStripeComponent {
         <button
           type="button"
           className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-cancel-circled"
-          onClick={this.onCancel}
+          onClick={this.props.onClose}
         >
           {i18n._t('AssetGalleryField.CANCEL')}
         </button>
@@ -165,34 +140,40 @@ class EditorContainer extends SilverStripeComponent {
 }
 
 EditorContainer.propTypes = {
+  visible: React.PropTypes.bool,
   file: React.PropTypes.shape({
     id: React.PropTypes.number,
     title: React.PropTypes.string,
     basename: React.PropTypes.string,
     url: React.PropTypes.string,
     size: React.PropTypes.string,
+    type: React.PropTypes.string,
     created: React.PropTypes.string,
     lastUpdated: React.PropTypes.string,
-    dimensions: React.PropTypes.shape({
-      width: React.PropTypes.number,
-      height: React.PropTypes.number,
+    attributes: React.PropTypes.shape({
+      dimensions: React.PropTypes.shape({
+        width: React.PropTypes.number,
+        height: React.PropTypes.number,
+      }),
     }),
   }),
-  backend: React.PropTypes.object.isRequired,
+  editorFields: React.PropTypes.object,
+  actions: React.PropTypes.object,
+  onClose: React.PropTypes.func.isRequired,
+  onFileSave: React.PropTypes.func,
 };
 
 function mapStateToProps(state) {
   return {
-    editorFields: state.assetAdmin.gallery.editorFields, // The inputs for editing the file.
-    file: state.assetAdmin.gallery.editing, // The file to edit.
-    files: state.assetAdmin.gallery.files,
-    path: state.assetAdmin.gallery.path, // The current location path
+    visible: state.assetAdmin.editor.visible,
+    file: state.assetAdmin.editor.editing,
+    editorFields: state.assetAdmin.editor.editorFields,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    actions: bindActionCreators(galleryActions, dispatch),
+    actions: bindActionCreators(editorActions, dispatch),
   };
 }
 

@@ -17,15 +17,5 @@
 		"classmap": ["tests/behat/"]
 	},
 	"minimum-stability": "dev",
-	"prefer-stable": true,
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/open-sausages/silverstripe-cms.git"
-		},
-		{
-			"type": "vcs",
-			"url": "https://github.com/open-sausages/silverstripe-framework.git"
-		}
-	]
+	"prefer-stable": true
 }

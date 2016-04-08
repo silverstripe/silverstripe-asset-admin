@@ -1,5 +1,15 @@
 <?php
 
+namespace SilverStripe\AssetAdmin\Tests;
+
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
+use SapphireTest;
+use Versioned;
+use File;
+use AssetStoreTest_SpyStore;
+use SS_HTTPRequest;
+
+
 /**
  * Tests {@see AssetAdmin}
  */

@@ -1,6 +1,6 @@
 <?php
 
-namespace SilverStripe\Forms;
+namespace SilverStripe\AssetAdmin\FormField;
 
 use Convert;
 use UploadField;

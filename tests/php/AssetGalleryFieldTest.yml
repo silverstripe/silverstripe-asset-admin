@@ -10,7 +10,7 @@ Folder:
     Title: Folder1
   Folder2:
     Title: Folder2
-AssetGalleryFieldTest_File:
+SilverStripe\AssetAdmin\Tests\AssetGalleryFieldTest_File:
   File1:
     Created: 2015-08-19 00:00:00
     LastUpdated: 2015-08-27 00:00:00
