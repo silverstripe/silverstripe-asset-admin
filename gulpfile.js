@@ -10,6 +10,7 @@ var gulp = require('gulp'),
   packageJSON = require('./package.json'),
   semver = require('semver'),
   notify = require('gulp-notify');
+  sourcemaps = require('gulp-sourcemaps');
 
 var PATHS = {
   JAVASCRIPT_DIST: './javascript/dist',
@@ -27,6 +28,13 @@ var browserifyOptions = {
   paths: [PATHS.JAVASCRIPT_SRC]
 };
 
+const babelifyOptions = {
+  presets: ['es2015', 'es2015-ie', 'react'],
+  plugins: ['transform-object-assign'],
+  ignore: /(node_modules|thirdparty)/,
+  comments: false,
+};
+
 if (!nodeVersionIsValid) {
   console.error('Invalid Node.js version. You need to be using ' + packageJSON.engines.node);
   process.exit();
@@ -42,7 +50,7 @@ if (isDev) {
 
 gulp.task('js', function bundleJavaScript() {
   return browserify(browserifyOptions)
-    .transform(babelify)
+    .transform(babelify, babelifyOptions)
     .external('components/text-field/index')
     .external('deep-freeze')
     .external('react')
@@ -62,7 +70,9 @@ gulp.task('js', function bundleJavaScript() {
     .on('error', notify.onError({ message: 'Error: <%= error.message %>' }))
     .pipe(source('bundle.js'))
     .pipe(buffer())
+	.pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(gulpif(!isDev, uglify()))
+	.pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(PATHS.JAVASCRIPT_DIST));
 });
 
