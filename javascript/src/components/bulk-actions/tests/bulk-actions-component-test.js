@@ -8,7 +8,6 @@ const ReactTestUtils = require('react-addons-test-utils');
 const BulkActionsComponent = require('../index.js').BulkActionsComponent;
 
 describe('BulkActionsComponent', () => {
-
   let props;
   const deleteActionSpy = jasmine.createSpy('deleteAction');
 
@@ -34,42 +33,42 @@ describe('BulkActionsComponent', () => {
   describe('getOptionByValue()', () => {
     let bulkActions;
 
-    beforeEach(function () {
+    beforeEach(() => {
       bulkActions = ReactTestUtils.renderIntoDocument(
         <BulkActionsComponent {...props} />
       );
     });
 
-    it('should return the option which matches the given value', function () {
+    it('should return the option which matches the given value', () => {
       expect(bulkActions.getOptionByValue('delete').value).toBe('delete');
     });
 
-    it('should return null if no option matches the given value', function () {
+    it('should return null if no option matches the given value', () => {
       expect(bulkActions.getOptionByValue('destroyCMS')).toBe(null);
     });
   });
 
-  describe('getSelectedFiles()', function () {
-    var bulkActions;
+  describe('getSelectedFiles()', () => {
+    let bulkActions;
 
-    beforeEach(function () {
+    beforeEach(() => {
       bulkActions = ReactTestUtils.renderIntoDocument(
         <BulkActionsComponent {...props} />
       );
     });
 
-    it('should return the option which matches the given value', function () {
+    it('should return the option which matches the given value', () => {
       expect(bulkActions.getSelectedFiles()[0]).toBe(1);
     });
   });
 
-  describe('applyAction()', function () {
-    var bulkActions;
+  describe('applyAction()', () => {
+    let bulkActions;
 
-    beforeEach(function () {
+    beforeEach(() => {
       props.backend = {
-        delete: jest.genMockFunction()
-      }
+        delete: jest.genMockFunction(),
+      };
       props.getSelectedFiles = jest.genMockFunction();
 
       bulkActions = ReactTestUtils.renderIntoDocument(
@@ -77,7 +76,7 @@ describe('BulkActionsComponent', () => {
       );
     });
 
-    it('should apply the given action', function () {
+    it('should apply the given action', () => {
       props.getSelectedFiles.mockReturnValueOnce('file1');
 
       bulkActions.applyAction('delete');
@@ -85,40 +84,41 @@ describe('BulkActionsComponent', () => {
       expect(deleteActionSpy).toHaveBeenCalled();
     });
 
-    it('should return false if there are no matching actions', function () {
+    it('should return false if there are no matching actions', () => {
       expect(bulkActions.applyAction('destroyCMS')).toBe(false);
     });
   });
 
-  describe('onChangeValue()', function () {
-    var bulkActions, event;
+  describe('onChangeValue()', () => {
+    let bulkActions;
+    let event;
 
-    beforeEach(function () {
+    beforeEach(() => {
       bulkActions = ReactTestUtils.renderIntoDocument(
           <BulkActionsComponent {...props} />
       );
 
       event = {
         target: {
-          value: 'delete'
-        }
-      }
+          value: 'delete',
+        },
+      };
 
       bulkActions.getOptionByValue = jest.genMockFunction();
       bulkActions.applyAction = jest.genMockFunction();
     });
 
-    it('should return undefined if no valid option is selected', function () {
+    it('should return undefined if no valid option is selected', () => {
       bulkActions.getOptionByValue.mockReturnValueOnce(null);
 
       expect(bulkActions.onChangeValue(event)).toBe(undefined);
     });
 
-    it('should ask user for confirmation if the action is destructive', function () {
-      var mock = jest.genMockFunction(),
-        originalConfirm = window.confirm;
+    it('should ask user for confirmation if the action is destructive', () => {
+      const mock = jest.genMockFunction();
+      const originalConfirm = window.confirm;
 
-      bulkActions.getOptionByValue.mockReturnValueOnce({destructive: true});
+      bulkActions.getOptionByValue.mockReturnValueOnce({ destructive: true });
       mock.mockReturnValueOnce(true);
       window.confirm = mock;
       i18n.sprintf = jest.genMockFunction();
@@ -131,8 +131,8 @@ describe('BulkActionsComponent', () => {
       window.confirm = originalConfirm;
     });
 
-    it('should not ask user for confirmation if the action is not destructive', function () {
-      bulkActions.getOptionByValue.mockReturnValueOnce({destructive: false});
+    it('should not ask user for confirmation if the action is not destructive', () => {
+      bulkActions.getOptionByValue.mockReturnValueOnce({ destructive: false });
 
       bulkActions.onChangeValue(event);
 
