@@ -1,100 +1,98 @@
+/* global jest, jasmine, describe, it, expect, beforeEach */
+
 jest.dontMock('../index.js');
 jest.dontMock('dropzone');
 
-const React = require('react'),
-    ReactDOM = require('react-dom'),
-    i18n = require('i18n'),
-    ReactTestUtils = require('react-addons-test-utils'),
-    DropzoneComponent = require('../index.js');
+const React = require('react');
+const ReactTestUtils = require('react-addons-test-utils');
+const DropzoneComponent = require('../index.js');
 
 describe('DropzoneComponent', () => {
+  let props;
 
-    var props;
+  beforeEach(() => {
+    props = {
+      options: {
+        url: 'upload',
+      },
+      handleAddedFile: () => null,
+      handleError: () => null,
+      handleSuccess: () => null,
+      folderID: 1,
+      securityID: '123',
+    };
+  });
+
+  describe('constructor()', () => {
+    let Dropzone;
 
     beforeEach(() => {
-        props = {
-            options: {
-                url: 'upload'
-            },
-            handleAddedFile: () => null,
-            handleError: () => null,
-            handleSuccess: () => null,
-            folderID: 1,
-            securityID: '123'
-        }
+      Dropzone = ReactTestUtils.renderIntoDocument(
+        <DropzoneComponent {...props} />
+      );
     });
 
-    describe('constructor()', () => {
-        var Dropzone;
+    it('should set this.dropzone to null', () => {
+      Dropzone.dropzone = 1;
+      Dropzone.constructor(props);
 
-        beforeEach(function () {
-            Dropzone = ReactTestUtils.renderIntoDocument(
-                <DropzoneComponent {...props} />
-            );
-        });
-
-        it('should set this.dropzone to null', () => {
-            Dropzone.dropzone = 1;
-            Dropzone.constructor(props);
-
-            expect(Dropzone.dropzone).toBe(null);
-        });
+      expect(Dropzone.dropzone).toBe(null);
     });
-    
-    describe('componentDidMount()', () => {
-        var Dropzone;
+  });
 
-        beforeEach(() => {
-            props.promptOnRemove = 'prompt';
+  describe('componentDidMount()', () => {
+    let Dropzone;
 
-            Dropzone = ReactTestUtils.renderIntoDocument(
-                <DropzoneComponent {...props} />
-            );
-        });
+    beforeEach(() => {
+      props.promptOnRemove = 'prompt';
 
-        it('should set this.dropzone to a new Dropzone', () => {
-            expect(Dropzone.dropzone.options.url).toBe('upload');
-        });
-        
-        it('should call setPromptOnRemove if props.promptOnRemove is set', () => {
-            expect(Dropzone.dropzone.options.dictRemoveFileConfirmation).toBe('prompt');
-        });
+      Dropzone = ReactTestUtils.renderIntoDocument(
+        <DropzoneComponent {...props} />
+      );
     });
 
-    describe('componentWillUnmount()', () => {
-        var Dropzone;
-
-        beforeEach(() => {
-            Dropzone = ReactTestUtils.renderIntoDocument(
-                <DropzoneComponent {...props} />
-            );
-        });
-        
-        it('should remove all dropzone listeners', () => {
-            Dropzone.dropzone.disable = jest.genMockFunction();
-            Dropzone.componentWillUnmount();
-            
-            expect(Dropzone.dropzone.disable).toBeCalled();
-            
-        });
+    it('should set this.dropzone to a new Dropzone', () => {
+      expect(Dropzone.dropzone.options.url).toBe('upload');
     });
 
-    describe('handleAddedFile()', () => {
+    it('should call setPromptOnRemove if props.promptOnRemove is set', () => {
+      expect(Dropzone.dropzone.options.dictRemoveFileConfirmation).toBe('prompt');
+    });
+  });
+
+  describe('componentWillUnmount()', () => {
+    let Dropzone;
+
+    beforeEach(() => {
+      Dropzone = ReactTestUtils.renderIntoDocument(
+        <DropzoneComponent {...props} />
+      );
     });
 
-    describe('setPromptOnRemove()', () => {
-        var Dropzone;
+    it('should remove all dropzone listeners', () => {
+      Dropzone.dropzone.disable = jest.genMockFunction();
+      Dropzone.componentWillUnmount();
 
-        beforeEach(() => {
-            Dropzone = ReactTestUtils.renderIntoDocument(
-                <DropzoneComponent {...props} />
-            );
-        });
-        
-        it('should set dropzone.options.dictRemoveFileConfirmation to the given string', () => {
-            Dropzone.setPromptOnRemove('prompt');
-            
-            expect(Dropzone.dropzone.options.dictRemoveFileConfirmation).toBe('prompt')
-        });
+      expect(Dropzone.dropzone.disable).toBeCalled();
     });
+  });
+
+  describe('handleAddedFile()', () => {
+  });
+
+  describe('setPromptOnRemove()', () => {
+    let Dropzone;
+
+    beforeEach(() => {
+      Dropzone = ReactTestUtils.renderIntoDocument(
+        <DropzoneComponent {...props} />
+      );
+    });
+
+    it('should set dropzone.options.dictRemoveFileConfirmation to the given string', () => {
+      Dropzone.setPromptOnRemove('prompt');
+
+      expect(Dropzone.dropzone.options.dictRemoveFileConfirmation).toBe('prompt');
+    });
+  });
 });
