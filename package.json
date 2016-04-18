@@ -21,7 +21,7 @@
     "test": "NODE_PATH=\"./client/src:../framework/client/src:../framework/admin/client/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
-    "lint": "eslint client/src"
+    "lint": "eslint client/src && sass-lint -c .sass-lint.yml --verbose"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
@@ -65,6 +65,7 @@
     "redux-logger": "^2.4.0",
     "redux-mock-store": "0.0.6",
     "redux-thunk": "^1.0.3",
+    "sass-lint": "^1.5.1",
     "semver": "^5.0.3",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
