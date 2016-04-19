@@ -86,6 +86,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'legacyRedirectForEditView',
     );
 
+
+
+	public function getClientConfig() {
+		return array_merge( parent::getClientConfig(), [
+            'assetsRoute' => $this->Link() . ':folderAction?/:folderId?/:fileAction?/:fileId?',
+            'assetsRouteHome' => $this->Link() . 'show/0',
+        ]);
+	}
+
     public function legacyRedirectForEditView($request)
     {
         $fileID = $request->param('FileID');

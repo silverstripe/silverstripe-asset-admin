@@ -77,6 +77,7 @@ $.entwine('ss', () => {
       const bulkActions = this.data('asset-gallery-bulk-actions');
 
       const name = $('.asset-gallery').data('asset-gallery-name');
+      const section = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
       // TODO
       // filesBySiblingApi={filesBySiblingApi}
@@ -93,13 +94,11 @@ $.entwine('ss', () => {
             filesByParentApi={filesByParentApi}
             addFolderApi={addFolderApi}
             deleteApi={deleteApi}
+            sectionConfigKey={section}
           />
         </Provider>,
         this[0]
       );
-
-      // Catch any routes that aren't handled by components.
-      window.ss.router('*', () => {});
     },
     onremove() {
       ReactDOM.unmountComponentAtNode(this[0]);

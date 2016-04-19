@@ -6,11 +6,12 @@ import * as galleryActions from 'state/gallery/actions';
 import * as editorActions from 'state/editor/actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import CONSTANTS from 'constants/index';
+import Config from 'config';
 
 class AssetAdminContainer extends SilverStripeComponent {
   constructor(props) {
     super(props);
+
 
     // TO DO: Work out what this is for and put it somewhere better
     // const $search = $('.cms-search-form');
@@ -21,11 +22,46 @@ class AssetAdminContainer extends SilverStripeComponent {
 
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
+    this.handleURL = this.handleURL.bind(this);
+    this.getConfig = this.getConfig.bind(this);
+  }
+
+  /**
+   * Get config for this section
+   * @returns {Object|undefined}
+   */
+  getConfig() {
+    return Config.getSection(this.props.sectionConfigKey);
   }
 
   componentDidMount() {
     super.componentDidMount();
-    this.handleURL(window.ss.router, window.ss.router.current);
+    // While a component is mounted it will intercept all routes and handle internally
+    let captureRoute = true;
+
+    const route = window.ss.router.resolveURLToBase(this.getConfig().assetsRoute);
+
+    // Capture routing within this section
+    window.ss.router(route, (ctx, next) => {
+      if (captureRoute) {
+        // If this component is mounted, then handle all page changes via state / redux
+        this.handleURL(window.ss.router, ctx);
+      } else {
+        // If component is not mounted, we need to allow root routes to load
+        // this section in via ajax
+        next();
+      }
+    });
+
+    // When leaving this section to go to another top level section then
+    // disable route capturing.
+    window.ss.router.exit(route, (ctx, next) => {
+      const applies = window.ss.router.routeAppliesToCurrentLocation(route);
+      if (!applies) {
+        captureRoute = false;
+      }
+      next();
+    });
   }
 
   componentDidUpdate() {
@@ -38,12 +74,17 @@ class AssetAdminContainer extends SilverStripeComponent {
   refreshURL(router) {
     let desiredURL = null;
     if (this.props.galleryVisible) {
-      desiredURL = CONSTANTS.FOLDER_ROUTE
-        .replace(/:folderId\??/, this.props.folderID);
+      desiredURL = this.getConfig().assetsRoute
+        .replace(/:folderAction\?/, 'show')
+        .replace(/:folderId\?.*$/, this.props.folderID);
+      desiredURL = window.ss.router.resolveURLToBase(desiredURL);
     } else if (this.props.editorVisible) {
-      desiredURL = CONSTANTS.EDITING_ROUTE
-        .replace(/:fileId\??/, this.props.fileID)
-        .replace(/:folderId\??/, this.props.folderID);
+      desiredURL = this.getConfig().assetsRoute
+        .replace(/:folderAction\?/, 'show')
+        .replace(/:folderId\?/, this.props.folderID)
+        .replace(/:fileAction\?/, 'edit')
+        .replace(/:fileId\?/, this.props.fileID);
+      desiredURL = window.ss.router.resolveURLToBase(desiredURL);
     }
 
     if (desiredURL !== null && desiredURL !== router.current) {
@@ -54,28 +95,41 @@ class AssetAdminContainer extends SilverStripeComponent {
 
   /**
    * Respond to a route change, provided by SS3-style javascript
+   *
+   * @param {Page} router
+   * @param {Context} context
    */
-  handleURL(router, url) {
-    const editingRoute = new router.Route(CONSTANTS.EDITING_ROUTE);
-    const folderRoute = new router.Route(CONSTANTS.FOLDER_ROUTE);
-
-    const params = {};
-
-    // File editing view
-    if (editingRoute.match(url || router.current, params)) {
-      this.props.actions.gallery.hide();
-      this.props.actions.editor.show(params.folderId, params.fileId);
-
-    // Folder view
-    } else if (folderRoute.match(router.current, params)) {
-      this.props.actions.editor.hide();
-      this.props.actions.gallery.show(params.folderId);
-
-    // Default redirection
-    } else {
+  handleURL(router, context) {
+    // If no folder is selected redirect to default route
+    if (context.params.folderAction !== 'show') {
       this.props.actions.editor.hide();
       this.props.actions.gallery.show(0);
-      router.show(CONSTANTS.FOLDER_ROUTE.replace(':folderId', 0), null, false);
+      const defaultRoute = router.resolveURLToBase(this.getConfig().assetsRouteHome);
+      router.show(defaultRoute, null, false);
+      return;
+    }
+
+    // Find folder
+    const folderId = context.params.folderId || 0;
+
+    // Check if file is selected
+    if (context.params.fileAction === 'edit' && context.params.fileId) {
+      // Show view for this file
+      const fileId = context.params.fileId;
+      const file = this.props.folderFiles.find((next) => next.id === parseInt(fileId, 10));
+      if (file) {
+        this.props.actions.gallery.hide();
+        this.props.actions.editor.show(folderId, fileId, file);
+      } else {
+        // @todo Instead of redirecting, load just this one file via an ajax call
+        // We don't have data on this file, so just redirect back to the gallery for this folder
+        this.props.actions.editor.hide();
+        this.props.actions.gallery.show(folderId);
+      }
+    } else {
+      // No file is selected, so list view for this folder
+      this.props.actions.editor.hide();
+      this.props.actions.gallery.show(folderId);
     }
   }
 
@@ -83,6 +137,7 @@ class AssetAdminContainer extends SilverStripeComponent {
     this.props.actions.gallery.hide();
     this.props.actions.editor.show(this.props.folderID, fileID, file);
   }
+
   handleCloseFile() {
     this.props.actions.editor.hide();
     this.props.actions.gallery.show(this.props.folderID);
@@ -107,23 +162,26 @@ class AssetAdminContainer extends SilverStripeComponent {
       </div>
     );
   }
-
-  handleEnterRoute(ctx, next) {
-    this.handleURL(window.ss.router, ctx.path);
-    next();
-  }
-
-  handleExitRoute(ctx, next) {
-    // TO DO: Add action for leaving both the gallery and the edit view
-    next();
-  }
 }
+
+AssetAdminContainer.propTypes = {
+  config: React.PropTypes.shape({
+    forms: React.PropTypes.shape({
+      editForm: React.PropTypes.shape({
+        schemaUrl: React.PropTypes.string,
+      }),
+    }),
+  }),
+  sectionConfigKey: React.PropTypes.string.isRequired,
+  // @todo others
+};
 
 function mapStateToProps(state) {
   return {
     galleryVisible: state.assetAdmin.gallery.visible,
     editorVisible: state.assetAdmin.editor.visible,
     folderID: state.assetAdmin.gallery.folderID,
+    folderFiles: state.assetAdmin.gallery.files,
     fileID: state.assetAdmin.editor.fileID,
   };
 }

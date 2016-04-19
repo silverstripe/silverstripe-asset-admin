@@ -12,7 +12,4 @@ export default {
     },
   ],
   BULK_ACTIONS_PLACEHOLDER: i18n._t('AssetGalleryField.BULK_ACTIONS_PLACEHOLDER'),
-  HOME_ROUTE: '/assets', // Hardcoded here until we have a config manager
-  EDITING_ROUTE: '/assets/show/:folderId/edit/:fileId', // Hardcoded here until we have a config manager
-  FOLDER_ROUTE: '/assets/show/:folderId?', // Hardcoded here until we have a config manager
 };
