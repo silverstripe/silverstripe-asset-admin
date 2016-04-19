@@ -5,7 +5,7 @@
   }
 
   .item--overlay {
-    background: rgba(darken($body-color, 10%), .5);
+    background: $gallery-item-overlay-bg;
     position: absolute;
     top: 0;
     right: 0;
@@ -14,7 +14,7 @@
     display: none;
     transition-property: opacity, background;
     transition-duration: $transition-speed-mid;
-    color: #fff;
+    color: $gallery-item-overlay-text;
     border-radius: $border-radius-sm $border-radius-sm 0 0;
     height: $gallery-thumb-height;
     width: 100%;
@@ -31,7 +31,7 @@
     position: relative;
     float: left;
     margin: 0 20px 20px 0;
-    background-color: #fff;
+    background-color: $gallery-item-bg;
     border: 1px solid;
     border-color: $border-light $border-base $border-dark;
     width: $gallery-item-width;
@@ -40,7 +40,7 @@
     height: $gallery-item-height;
 
     &:hover {
-      box-shadow: 0 1px 4px #ddd;
+      box-shadow: 0 1px 4px $shadow-black-variant;
       cursor: pointer;
     }
 
@@ -72,7 +72,7 @@
       height: $gallery-folder-height;
 
       .item__thumbnail {
-        background: url(img/folder.png) 12px 14px no-repeat;
+        background: url("img/folder.png") 12px 14px no-repeat;
         background-size: 27px 24px;
         height: $gallery-folder-height - 2;
         width: 45px;
@@ -93,31 +93,31 @@
 
     &--archive {
       .item__thumbnail {
-        background: #fff url(img/icon_zip.png) center center no-repeat;
+        background: #fff url("img/icon_zip.png") center center no-repeat;
       }
     }
 
     &--audio {
       .item__thumbnail {
-        background: #fff url(img/icon_audio.png) center center no-repeat;
+        background: #fff url("img/icon_audio.png") center center no-repeat;
       }
     }
 
     &--video {
       .item__thumbnail {
-        background: #fff url(img/icon_video.png) center center no-repeat;
+        background: #fff url("img/icon_video.png") center center no-repeat;
       }
     }
 
     &--document {
       .item__thumbnail {
-        background: #fff url(img/icon_doc.png) center center no-repeat;
+        background: #fff url("img/icon_doc.png") center center no-repeat;
       }
     }
 
     &--false {
       .item__thumbnail {
-        background: #fff url(img/icon_file.png) center center no-repeat;
+        background: #fff url("img/icon_file.png") center center no-repeat;
       }
     }
 
@@ -126,7 +126,7 @@
 
       .item__actions__action--select {
         border-color: $state-active;
-        color: #fff;
+        color: $state-active-text;
         opacity: 1;
 
         &::before {
@@ -141,7 +141,7 @@
         position: relative;
 
         &::after {
-          content: '';
+          content: "";
           position: absolute;
           top: 0;
           left: 0;
