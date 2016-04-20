@@ -77,14 +77,12 @@ class AssetAdminContainer extends SilverStripeComponent {
       desiredURL = this.getConfig().assetsRoute
         .replace(/:folderAction\?/, 'show')
         .replace(/:folderId\?.*$/, this.props.folderID);
-      desiredURL = window.ss.router.resolveURLToBase(desiredURL);
     } else if (this.props.editorVisible) {
       desiredURL = this.getConfig().assetsRoute
         .replace(/:folderAction\?/, 'show')
         .replace(/:folderId\?/, this.props.folderID)
         .replace(/:fileAction\?/, 'edit')
         .replace(/:fileId\?/, this.props.fileID);
-      desiredURL = window.ss.router.resolveURLToBase(desiredURL);
     }
 
     if (desiredURL !== null && desiredURL !== router.current) {
@@ -104,7 +102,7 @@ class AssetAdminContainer extends SilverStripeComponent {
     if (context.params.folderAction !== 'show') {
       this.props.actions.editor.hide();
       this.props.actions.gallery.show(0);
-      const defaultRoute = router.resolveURLToBase(this.getConfig().assetsRouteHome);
+      const defaultRoute = this.getConfig().assetsRouteHome;
       router.show(defaultRoute, null, false);
       return;
     }
