@@ -54,6 +54,7 @@ gulp.task('js', function bundleJavaScript() {
     .transform(babelify, babelifyOptions)
     .external('components/text-field/index')
     .external('deep-freeze')
+    .external('config')
     .external('react')
     .external('jQuery')
     .external('i18n')

@@ -58,7 +58,7 @@ class EditorContainer extends Component {
     return (<div className="editor-component">
       <div className="CompositeField composite cms-file-info nolabel">
         <div className="CompositeField composite cms-file-info-preview nolabel">
-          <img className="thumbnail-preview" src={this.props.file.url} />
+          <img alt={this.props.file.title} className="thumbnail-preview" src={this.props.file.url} />
         </div>
         <div className="CompositeField composite cms-file-info-data nolabel">
           <div className="CompositeField composite nolabel">
@@ -157,7 +157,7 @@ EditorContainer.propTypes = {
       }),
     }),
   }),
-  editorFields: React.PropTypes.object,
+  editorFields: React.PropTypes.array,
   actions: React.PropTypes.object,
   onClose: React.PropTypes.func.isRequired,
   onFileSave: React.PropTypes.func,

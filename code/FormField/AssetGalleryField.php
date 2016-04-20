@@ -175,8 +175,9 @@ class AssetGalleryField extends FormField
         // TODO Limit results to avoid running out of memory (implement client-side pagination)
         $files = $this->getList()->filter('ParentID', $params['id']);
 
-        if (isset($this->getList()->byID($params['id'])->ParentID)) {
-            $parentId = $this->getList()->byID($params['id'])->ParentID;
+        $item = $this->getList()->byID($params['id']);
+        if ($item && $item->ParentID) {
+            $parentId = $item->ParentID; // grandparent id
         }
 
         if ($files) {
@@ -213,8 +214,9 @@ class AssetGalleryField extends FormField
         $params = $request->postVars();
         $parentID = 0;
 
-        if (isset($this->getList()->byID($params['id'])->ParentID)) {
-            $parentID = $this->getList()->byID($params['id'])->ParentID;
+        $item = $this->getList()->byID($params['id']);
+        if ($item && $item->ParentID) {
+            $parentID = $item->ParentID;
         }
 
         $getFilesByParentIDURL = $this->getFilesByParentIDURL();
@@ -575,6 +577,7 @@ class AssetGalleryField extends FormField
 
         $getFilesByParentIDURL = $this->getFilesByParentIDURL();
         $getFilesBySiblingIDURL = $this->getFilesBySiblingIDURL();
+        $getFilesByIDURL = $this->getFilesByIDURL();
         $searchURL = $this->getSearchURL();
         $updateURL = $this->getUpdateURL();
         $deleteURL = $this->getDeleteURL();
@@ -591,6 +594,7 @@ class AssetGalleryField extends FormField
             data-asset-gallery-limit='{$limit}'
             data-asset-gallery-files-by-parent-url='{$getFilesByParentIDURL}'
             data-asset-gallery-files-by-sibling-url='{$getFilesBySiblingIDURL}'
+            data-asset-gallery-file-by-id='{$getFilesByIDURL}'
             data-asset-gallery-search-url='{$searchURL}'
             data-asset-gallery-update-url='{$updateURL}'
             data-asset-gallery-delete-url='{$deleteURL}'
@@ -614,6 +618,15 @@ class AssetGalleryField extends FormField
     protected function getFilesBySiblingIDURL()
     {
         return Controller::join_links($this->Link(), 'getFilesBySiblingID');
+    }
+
+    /**
+     * URL to getter for single file data
+     *
+     * @return string
+     */
+    protected function getFilesByIDURL() {
+        return Controller::join_links($this->Link(), 'getFilesByID');
     }
 
     /**
