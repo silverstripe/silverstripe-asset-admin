@@ -13,10 +13,10 @@ const notify = require('gulp-notify');
 const sourcemaps = require('gulp-sourcemaps');
 
 const PATHS = {
-  JAVASCRIPT_DIST: './javascript/dist',
-  JAVASCRIPT_SRC: './javascript/src',
-  SCSS: './javascript/src',
-  IMAGES: './javascript/src/img/**',
+  JS_DIST: './client/dist/js',
+  JS_SRC: './client/src',
+  SCSS_SRC: './client/src/styles',
+  SCSS_DIST: './client/dist/styles',
 };
 
 const isDev = typeof process.env.npm_config_development !== 'undefined';
@@ -24,8 +24,8 @@ const isDev = typeof process.env.npm_config_development !== 'undefined';
 const nodeVersionIsValid = semver.satisfies(process.versions.node, packageJSON.engines.node);
 
 const browserifyOptions = {
-  entries: './javascript/src/boot/index.js',
-  paths: [PATHS.JAVASCRIPT_SRC],
+  entries: './client/src/boot/index.js',
+  paths: [PATHS.JS_SRC],
 };
 
 const babelifyOptions = {
@@ -52,14 +52,14 @@ if (isDev) {
 gulp.task('js', function bundleJavaScript() {
   return browserify(browserifyOptions)
     .transform(babelify, babelifyOptions)
-    .external('components/text-field/index')
+    .external('components/TextField/TextField')
     .external('deep-freeze')
-    .external('config')
+    .external('lib/Config')
     .external('react')
     .external('jQuery')
     .external('i18n')
-    .external('silverstripe-component')
-    .external('silverstripe-backend')
+    .external('lib/SilverStripeComponent')
+    .external('lib/Backend')
     .external('react-dom')
     .external('react-addons-test-utils')
     .external('react-redux')
@@ -75,23 +75,18 @@ gulp.task('js', function bundleJavaScript() {
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(gulpif(!isDev, uglify()))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest(PATHS.JAVASCRIPT_DIST));
+    .pipe(gulp.dest(PATHS.JS_DIST));
 });
 
 gulp.task('sass', () => { // eslint-disable-line arrow-body-style
-  return gulp.src('./javascript/src/styles/main.scss')
+  return gulp.src('./client/src/styles/bundle.scss')
     .pipe(sass().on('error', notify.onError({ message: 'Error: <%= error.message %>' })))
-    .pipe(gulp.dest(PATHS.JAVASCRIPT_DIST));
+    .pipe(gulp.dest(PATHS.SCSS_DIST));
 });
 
-gulp.task('images', () => { // eslint-disable-line arrow-body-style
-  return gulp.src(PATHS.IMAGES)
-    .pipe(gulp.dest(`${PATHS.JAVASCRIPT_DIST}/img`));
-});
-
-gulp.task('default', ['js', 'sass', 'images'], () => {
+gulp.task('default', ['js', 'sass'], () => {
   if (isDev) {
-    gulp.watch(`${PATHS.JAVASCRIPT_SRC}/**/*.js`, ['js']);
-    gulp.watch(`${PATHS.SCSS}/**/*.scss`, ['sass']);
+    gulp.watch(`${PATHS.JS_SRC}/**/*.js`, ['js']);
+    gulp.watch(`${PATHS.SCSS_SRC}/**/*.scss`, ['sass']);
   }
 });
