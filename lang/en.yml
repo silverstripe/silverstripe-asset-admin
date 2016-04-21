@@ -19,7 +19,7 @@ en:
     FROMYOURCOMPUTER: 'From your computer'
     Filetype: 'File type'
     ListView: 'List View'
-    MENUTITLE: Files
+    MENUTITLE: Files (old)
     NEWFOLDER: NewFolder
     SIZE: Size
     THUMBSDELETED: '{count} unused thumbnails have been deleted'
@@ -50,3 +50,5 @@ en:
     PreviewButton: Preview
   Permission:
     CMS_ACCESS_CATEGORY: 'CMS Access'
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    MENUTITLE: Files
