@@ -1,25 +1,27 @@
-.dropzone-component {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: 70px 16px 0;
-    
-    &::after {
-        position: absolute;
-        top: -70px;
-        right: -16px;
-        bottom: 0;
-        left: -16px;
-        background: rgba(236, 239, 241, .9) url('#{$frameworkPath}/admin/images/drag_drop_opt.svg') center center no-repeat;
-        background-size: 312px 325px;
-        z-index: 100;
-    }
+$dropzone-background: rgba(236, 239, 241, .9);
 
-    &.dragging {
-        &::after {
-            content: '';
-        }
+.dropzone-component {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: 70px 16px 0;
+
+  &::after {
+    position: absolute;
+    top: -70px;
+    right: -16px;
+    bottom: 0;
+    left: -16px;
+    background: $dropzone-background url("#{$framework-path}/admin/images/drag_drop_opt.svg") center center no-repeat;
+    background-size: 312px 325px;
+    z-index: 100;
+  }
+
+  &.dragging {
+    &::after {
+      content: "";
     }
+  }
 }

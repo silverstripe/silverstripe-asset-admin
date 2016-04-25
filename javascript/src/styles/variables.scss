@@ -4,37 +4,41 @@
 //
 
 $state-active:              #29abe2 !default;
-$error:                     #D30000 !default;
+$error:                     #d30000 !default;
 $color-text:                #66727d !default;
 
+$state-active-text:         #ffffff;
 
 // Body
 //
 // Settings for the `<body>` element.
 
-$body-color:                 #4f5861 !default;          /* eg. Text, labels, iconography */ 
-$body-color-light:           lighten($body-color, 10%); /* eg. Field descriptions */
-$body-color-lighter:         lighten($body-color, 20%); /* eg. placeholder text */
-$body-color-dark:            darken($body-color, 10%);  /* eg. iconography hovered */
+$body-color:                 #4f5861 !default;          // eg. Text, labels, iconography
+$body-color-light:           lighten($body-color, 10%); // eg. Field descriptions
+$body-color-lighter:         lighten($body-color, 20%); // eg. placeholder text
+$body-color-dark:            darken($body-color, 10%);  // eg. iconography hovered
 
 $body-bg:                    #f6f7f8 !default;
-$body-bg-dark:               darken($body-bg, 2%);      /* eg. North bar */
+$body-bg-dark:               darken($body-bg, 2%);      // eg. North bar
 $menu-bg:                    #e9f0f4 !default;
 $menu-link-active:           darken($menu-bg, 5%);
 $menu-icon-color:            darken($menu-bg, 32%);
 
 // borders colors
-$border-light:               darken($body-bg,6%);
-$border-base:                darken($body-bg,10%);
-$border-dark:                darken($body-bg,14%);
-$border-darker:              darken($body-bg,20%);
+$border-light:               darken($body-bg, 6%);
+$border-base:                darken($body-bg, 10%);
+$border-dark:                darken($body-bg, 14%);
+$border-darker:              darken($body-bg, 20%);
 
+// shadow
+$shadow-black:               rgba(0, 0, 0, .2);
+$shadow-black-variant:       #ddd; // TODO: perhaps $shadow-black should be used for consistency?
 
 // Links
 //
 // Style anchor elements.
 
-$link-color:                 #0073C1 !default;
+$link-color:                 #0073c1 !default;
 
 
 // Typography
@@ -47,9 +51,9 @@ $line-height:                1.5 !default;
 // Components
 //
 
-$border-radius:              .25rem !default;   /* 4px */
-$border-radius-lg:           .375rem !default;  /* 6px */
-$border-radius-sm:           .125rem !default;  /* 2px */
+$border-radius:              .25rem !default;   // 4px
+$border-radius-lg:           .375rem !default;  // 6px
+$border-radius-sm:           .125rem !default;  // 2px
 $card-border-color:          $border-base;
 
 
@@ -59,12 +63,16 @@ $card-border-color:          $border-base;
 $gallery-thumb-width:         176px;
 $gallery-thumb-height:        132px;
 
-$gallery-item-width:          $gallery-thumb-width + 2; /* include borders */
+$gallery-item-width:          $gallery-thumb-width + 2; // include borders
 $gallery-item-height:         174px;
 $gallery-title-height:        40px;
 
 $gallery-folder-height:	      54px;
 $gallery-folder-title-height: $gallery-folder-height - 2;
+
+$gallery-item-bg:             #ffffff;
+$gallery-item-overlay-bg:     rgba(darken($body-color, 10%), .5);
+$gallery-item-overlay-text:   #ffffff;
 
 
 // Transition speeds
@@ -77,5 +85,7 @@ $transition-speed-fast:       .3s;
 // Paths
 //
 
-$rootPath:                    '../..';
-$frameworkPath:               '../../../framework';
+$root-path:                    "../..";
+$framework-path:               "../../../framework";
+
+
