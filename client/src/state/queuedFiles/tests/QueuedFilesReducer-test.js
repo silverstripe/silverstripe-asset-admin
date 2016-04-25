@@ -31,7 +31,7 @@ describe('queuedFilesReducer', () => {
           },
         ],
       };
-console.log(queuedFilesReducer);
+
       const nextState = queuedFilesReducer(initialState, action);
 
       expect(nextState.items.length).toBe(1);
