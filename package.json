@@ -2,7 +2,7 @@
   "name": "silverstripe-asset-admin",
   "version": "0.0.0",
   "description": "Asset management for the SilverStripe CMS",
-  "main": "./javascript/src/boot/index.js",
+  "main": "./client/src/boot/index.js",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
@@ -18,10 +18,10 @@
   },
   "scripts": {
     "build": "gulp",
-    "test": "NODE_PATH=\"./javascript/src:../framework/client/src:../framework/admin/client/src\" jest",
+    "test": "NODE_PATH=\"./client/src:../framework/client/src:../framework/admin/client/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
-    "lint": "eslint javascript/src"
+    "lint": "eslint client/src"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
@@ -31,7 +31,7 @@
     ],
     "mocksPattern": "mocks",
     "testPathDirs": [
-      "javascript/src"
+      "client/src"
     ],
     "bail": true,
     "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
