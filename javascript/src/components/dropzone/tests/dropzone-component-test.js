@@ -1,11 +1,11 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.dontMock('../index.js');
-jest.dontMock('dropzone');
+jest.unmock('../index.js');
+jest.unmock('dropzone');
 
-const React = require('react');
-const ReactTestUtils = require('react-addons-test-utils');
-const DropzoneComponent = require('../index.js');
+import React from 'react';
+import ReactTestUtils from 'react-addons-test-utils';
+import DropzoneComponent from '../index.js';
 
 describe('DropzoneComponent', () => {
   let props;

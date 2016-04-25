@@ -1,15 +1,15 @@
 /* global jest, describe, it, expect, beforeEach */
 
-jest.dontMock('react');
-jest.dontMock('react-dom');
-jest.dontMock('react-redux');
-jest.dontMock('react-addons-test-utils');
-jest.dontMock('../../../components/bulk-actions');
-jest.dontMock('../controller');
+jest.unmock('react');
+jest.unmock('react-dom');
+jest.unmock('react-redux');
+jest.unmock('react-addons-test-utils');
+jest.unmock('../../../components/bulk-actions');
+jest.unmock('../controller');
 
-const React = require('react');
-const ReactTestUtils = require('react-addons-test-utils');
-const GalleryContainer = require('../controller').GalleryContainer;
+import React from 'react';
+import ReactTestUtils from 'react-addons-test-utils';
+import { GalleryContainer } from '../controller';
 
 describe('GalleryContainer', () => {
   let props;

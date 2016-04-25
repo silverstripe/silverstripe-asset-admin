@@ -1,11 +1,11 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.dontMock('deep-freeze');
-jest.dontMock('../action-types.js');
-jest.dontMock('../reducer.js');
+jest.unmock('deep-freeze');
+jest.unmock('../action-types.js');
+jest.unmock('../reducer.js');
 
-const schemaReducer = require('../reducer.js');
-const ACTION_TYPES = require('../action-types');
+import schemaReducer from '../reducer.js';
+import ACTION_TYPES from '../action-types';
 
 describe('schemaReducer', () => {
   describe('SET_SCHEMA', () => {

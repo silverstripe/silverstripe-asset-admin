@@ -1,10 +1,10 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.dontMock('../index.js');
+jest.unmock('../index.js');
 
-const React = require('react');
-const ReactTestUtils = require('react-addons-test-utils');
-const FileComponent = require('../index.js');
+import React from 'react';
+import ReactTestUtils from 'react-addons-test-utils';
+import FileComponent from '../index.js';
 
 describe('FileComponent', () => {
   let props;

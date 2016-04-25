@@ -1,11 +1,12 @@
 /* global jest, describe, it, expect */
 
-jest.dontMock('deep-freeze');
-jest.dontMock('../action-types.js');
-jest.dontMock('../reducer.js');
+jest.mock('i18n');
+jest.unmock('deep-freeze');
+jest.unmock('../action-types.js');
+jest.unmock('../reducer.js');
 
-const galleryReducer = require('../reducer.js');
-const GALLERY = require('../action-types.js');
+import galleryReducer from '../reducer.js';
+import GALLERY from '../action-types.js';
 
 describe('galleryReducer', () => {
   describe('ADD_FILES', () => {

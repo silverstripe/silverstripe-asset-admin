@@ -1,11 +1,11 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.dontMock('../index.js');
+jest.unmock('../index.js');
 
-const React = require('react');
-const i18n = require('i18n');
-const ReactTestUtils = require('react-addons-test-utils');
-const BulkActionsComponent = require('../index.js').BulkActionsComponent;
+import React from 'react';
+import i18n from 'i18n';
+import ReactTestUtils from 'react-addons-test-utils';
+import { BulkActionsComponent } from '../index.js';
 
 describe('BulkActionsComponent', () => {
   let props;

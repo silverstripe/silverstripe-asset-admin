@@ -1,10 +1,10 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.dontMock('deep-freeze');
-jest.dontMock('../action-types');
-jest.dontMock('../reducer');
+jest.unmock('deep-freeze');
+jest.unmock('../action-types');
+jest.unmock('../reducer.js');
 
-const queuedFilesReducer = require('../reducer');
+import queuedFilesReducer from '../reducer.js';
 
 describe('queuedFilesReducer', () => {
   describe('PURGE_UPLOAD_QUEUE', () => {
@@ -31,7 +31,7 @@ describe('queuedFilesReducer', () => {
           },
         ],
       };
-
+console.log(queuedFilesReducer);
       const nextState = queuedFilesReducer(initialState, action);
 
       expect(nextState.items.length).toBe(1);

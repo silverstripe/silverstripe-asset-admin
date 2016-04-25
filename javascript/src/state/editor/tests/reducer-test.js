@@ -1,11 +1,11 @@
 /* global jest, describe, it, expect */
 
-jest.dontMock('deep-freeze');
-jest.dontMock('../action-types.js');
-jest.dontMock('../reducer.js');
+jest.unmock('deep-freeze');
+jest.unmock('../action-types.js');
+jest.unmock('../reducer.js');
 
-const editorReducer = require('../reducer.js');
-const EDITOR = require('../action-types.js');
+import editorReducer from '../reducer.js';
+import EDITOR from '../action-types.js';
 
 describe('editorReducer', () => {
   describe('SET_OPEN_FILE', () => {
