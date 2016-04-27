@@ -21,7 +21,7 @@ before_script:
 
 script:
     - "if [ \"$NPM_TEST\" = \"\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
-    - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm install 4.1 && npm install --silent); fi"
+    - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm install 4 && npm install --silent); fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && npm run test); fi"
 
 notifications:
