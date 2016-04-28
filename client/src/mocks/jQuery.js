@@ -1,27 +1,13 @@
 function jQuery() {
-    return {
-        change: function () {
-            return this;
-        },
-        chosen: function () {
-            return this;
-        },
-        find: function () {
-            return this;
-        },
-        val: function () {
-            return this;
-        },
-        trigger: function() {
-            return this;
-        }
-    };
+  return {
+    change: () => this,
+    chosen: () => this,
+    find: () => this,
+    val: () => this,
+    trigger: () => this,
+  };
 }
 
-jQuery.ajax = function () {
-    return {
-        done: function () { }
-    };
-};
+jQuery.ajax = () => ({ done: () => {} });
 
 export default jQuery;

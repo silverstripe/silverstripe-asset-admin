@@ -1,5 +1,3 @@
-export function connect(mapStateToProps, mapDispatchToProps) {
-    return function (Component) {
-        return Component;
-    };
-};
+export function connect() {
+  return (Component) => Component;
+}
