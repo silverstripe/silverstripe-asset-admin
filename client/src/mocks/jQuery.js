@@ -1,10 +1,20 @@
 function jQuery() {
   return {
-    change: () => this,
-    chosen: () => this,
-    find: () => this,
-    val: () => this,
-    trigger: () => this,
+    change() {
+      return this;
+    },
+    chosen() {
+      return this;
+    },
+    find() {
+      return this;
+    },
+    val() {
+      return this;
+    },
+    trigger() {
+      return this;
+    },
   };
 }
 
