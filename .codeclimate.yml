@@ -12,4 +12,4 @@ ratings:
   paths:
   - client/src/**
 exclude_paths:
-- "client/dist/**""
+- "client/dist/**"
