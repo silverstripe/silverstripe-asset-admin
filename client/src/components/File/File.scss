@@ -14,7 +14,7 @@
     display: none;
     transition-property: opacity, background;
     transition-duration: $transition-speed-mid;
-    color: #ffffff;
+    color: #fff;
     border-radius: $border-radius-sm $border-radius-sm 0 0;
     height: $gallery-thumb-height;
     width: 100%;
@@ -40,7 +40,7 @@
     height: $gallery-item-height;
 
     &:hover {
-      box-shadow: 0 1px 4px #dddddd;
+      box-shadow: 0 1px 4px #ddd;
       cursor: pointer;
     }
 
@@ -214,7 +214,6 @@
 
     &__bar {
       height: 100%;
-      background: $state-active;
       background: #29abe2;
       width: 0%;
     }
