@@ -1,4 +1,5 @@
 # See https://docs.silverstripe.org/en/4.0/getting_started/css_coding_conventions/
+
 # Adapted from https://github.com/airbnb/css
 # Used for CodeClimate CI checks.
 # See .sass-lint.yml for equivalent linting file used by "npm run lint"

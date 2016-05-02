@@ -1,4 +1,5 @@
 # See https://docs.silverstripe.org/en/4.0/getting_started/css_coding_conventions/
+
 # Adapted from https://github.com/airbnb/css
 # Generated with http://sasstools.github.io/make-sass-lint-config/
 # Used for "npm run lint"
