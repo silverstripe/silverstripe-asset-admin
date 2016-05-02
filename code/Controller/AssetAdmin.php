@@ -98,8 +98,29 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function legacyRedirectForEditView($request)
     {
         $fileID = $request->param('FileID');
-        $folderID = File::get()->byID($fileID)->ParentID;
-        $this->redirect($this->Link() . "show/$folderID/edit/$fileID");
+        $file = File::get()->byID($fileID);
+        $link = $this->getFileEditLink($file) ?: $this->Link();
+        $this->redirect($link);
+    }
+
+    /**
+     * Given a file return the CMS link to edit it
+     *
+     * @param File $file
+     * @return string
+     */
+    public function getFileEditLink($file) {
+        if(!$file || !$file->isInDB()) {
+            return null;
+        }
+        $fileID = $file->ID;
+        $folderID = $file->ParentID;
+        return Controller::join_links(
+            $this->Link('show'),
+            $folderID,
+            'edit',
+            $fileID
+        );
     }
 
     /**

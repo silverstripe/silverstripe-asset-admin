@@ -3,3 +3,6 @@ Name: assetadmin
 ---
 AssetAdmin:
   url_segment: 'old-assets'
+File:
+  extensions:
+    - 'SilverStripe\AssetAdmin\Controller\AssetAdminFile'
