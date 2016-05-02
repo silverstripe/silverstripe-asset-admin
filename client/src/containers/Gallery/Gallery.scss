@@ -33,7 +33,7 @@
         color: inherit;
 
         &::before {
-          content: "Sort by "
+          content: "Sort by ";
         }
       }
     }
@@ -68,7 +68,7 @@
 
   .gallery__load__more {
     display: block;
-    color: #fffff;
+    color: #fff;
     cursor: pointer;
     margin: 8px auto 24px;
     padding: 4px;
