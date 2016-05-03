@@ -3,12 +3,17 @@
 	"description": "Asset management for the SilverStripe CMS",
 	"type": "silverstripe-module",
 	"require": {
-		"php": ">=5.4.0",
+		"php": ">=5.5.0",
 		"silverstripe/cms": "^4",
 		"silverstripe/framework": "^4"
 	},
 	"require-dev": {
 		"phpunit/PHPUnit": "^3.7"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "1.0.x-dev"
+		}
 	},
 	"config": {
 		"process-timeout": 600
