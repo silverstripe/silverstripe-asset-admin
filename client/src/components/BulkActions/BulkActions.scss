@@ -8,8 +8,8 @@
   position: fixed;
   top: 52px;
   width: 200px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  background-color: $body-bg-dark;
+  box-shadow: 0 1px 2px $shadow-light;
+  background-color: $background-darker;
   transition: all 0.5s ease-in-out;
   transform: scale(1);
 
@@ -35,21 +35,21 @@
     transition: top .2s linear .1s, transform .1s ease-in;
   }
 
-  .gallery__bulk-actions__counter {
+  .gallery__bulk-actions-counter {
     display: inline-block;
     min-width: 28px;
     padding: 6px;
     margin: 2px 8px 2px 0;
     line-height: 16px;
-    color: #fff;
+    color: $white;
     text-align: center;
-    background-color: $state-active;
+    background-color: $component-active-bg;
     border-radius: 4px;
     font-weight: bold;
   }
 
   .gallery__bulk-actions_action.ss-ui-button {
-    line-height: $line-height;
+    line-height: $line-height-base;
     margin-bottom: 0;
     height: 32px;
 
@@ -61,7 +61,7 @@
     }
   }
 
-  .chzn-single {
+  .chosen-single {
     border-radius: 5px 0 0 5px;
     border: 0;
     filter: none; //IE9
@@ -70,7 +70,7 @@
     color: inherit;
 
     &:focus {
-      box-shadow: 0 0 3px 0 rgba(0, 0, 0, .2);
+      box-shadow: $dropdown-shadow;
     }
 
     > span {
@@ -85,9 +85,9 @@
     }
   }
 
-  .chzn-drop {
+  .chosen-drop {
     border-radius: 3px;
-    box-shadow: 0 0 3px rgba(0, 0, 0, .2);
+    box-shadow: $dropdown-shadow;
     border: 0;
   }
 
@@ -95,7 +95,7 @@
     display: none;
   }
 
-  .chzn-results li {
+  .chosen-results li {
     padding-left: 22px;
     position: relative;
 

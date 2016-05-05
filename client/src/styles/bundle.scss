@@ -1,7 +1,16 @@
-@import "variables";
-@import "../containers/Gallery/Gallery";
-@import "../containers/Editor/Editor";
+// Variables
+@import "../../../../framework/admin/client/src/styles/variables";
+
+// Thirdparty
+
+// Base
+
+// Components
 @import "../components/File/File";
 @import "../components/BulkActions/BulkActions";
 @import "../components/Dropzone/Dropzone";
-@import "AssetAdmin";
+
+// Layout and sections
+@import "../containers/Gallery/Gallery";
+@import "../containers/Editor/Editor";
+@import "../containers/AssetAdmin/AssetAdmin";

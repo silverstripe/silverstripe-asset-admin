@@ -16,39 +16,38 @@
     top: 14px;
     right: 16px;
 
-    .chzn-single {
+    // Nesting required to override chosen defaults
+    .chosen-single {
       border: 0;
       filter: none; //IE9
       background: none;
       box-shadow: none;
       color: inherit;
       margin-top: -1px;
-
-      &:focus {
-        box-shadow: 0 0 3px 0 rgba(0, 0, 0, .2);
-      }
-
-      > span {
-        text-align: right;
-        color: inherit;
-
-        &::before {
-          content: "Sort by ";
-        }
-      }
     }
+  }
 
-    .chzn-drop {
-      border-radius: 3px;
-      box-shadow: 0 0 3px rgba(0, 0, 0, .2);
-      border: 0;
-    }
+  .chosen-single:focus {
+    box-shadow: $dropdown-shadow;
+  }
 
-    .chzn-results {
-      .active-result {
-        text-transform: capitalize;
-      }
+  .chosen-single > span {
+    text-align: right;
+    color: inherit;
+
+    &::before {
+      content: "Sort by ";
     }
+  }
+
+  .chosen-drop {
+    border-radius: 3px;
+    box-shadow: $dropdown-shadow;
+    border: 0;
+  }
+
+  .active-result {
+    text-transform: capitalize;
   }
 
   .gallery__folders {
@@ -66,16 +65,16 @@
     display: inline-block;
   }
 
-  .gallery__load__more {
+  .gallery__load-more {
     display: block;
-    color: #fff;
+    color: $white;
     cursor: pointer;
     margin: 8px auto 24px;
     padding: 4px;
     width: 200px;
     font-size: 16px;
     height: 44px;
-    background-color: #338dc1;
+    background-color: $brand-primary;
     border: 0;
     border-radius: 4px;
   }
@@ -83,14 +82,10 @@
   .gallery__upload,
   .gallery__add-folder {
     &::before {
-      font-size: 24px !important;
+      font-size: 22px;
+      line-height: 20px;
+      top: -1px;
+      float: left;
     }
-  }
-
-  .gallery__add-folder,
-  .gallery__upload,
-  .gallery__back {
-    margin: 12px 10px 12px 0;
-    border-radius: 4px;
   }
 }

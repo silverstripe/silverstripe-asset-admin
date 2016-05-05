@@ -44,7 +44,7 @@ export class BulkActions extends SilverStripeComponent {
 
     return (
       <div className="gallery__bulk-actions fieldholder-small">
-        <div className="gallery__bulk-actions__counter">{this.getSelectedFiles().length}</div>
+        <div className="gallery__bulk-actions-counter">{this.getSelectedFiles().length}</div>
         {children}
       </div>
     );

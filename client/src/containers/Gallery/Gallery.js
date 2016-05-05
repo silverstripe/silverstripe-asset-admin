@@ -168,7 +168,7 @@ export class Gallery extends Component {
     if (this.props.count > this.props.files.length) {
       return (
         <button
-          className="gallery__load__more"
+          className="gallery__load-more"
           onClick={this.handleMoreClick}
         >
           {i18n._t('AssetGalleryField.LOADMORE')}
@@ -388,14 +388,14 @@ export class Gallery extends Component {
 
         <button
           id="add-folder-button"
-          className="gallery__upload [ ss-ui-button font-icon-folder-add ]"
+          className="gallery__upload btn btn-secondary font-icon-folder-add"
           type="button"
           onClick={this.handleAddFolder}
         >
           {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
         </button>
 
-        <button id="upload-button" className="gallery__upload [ ss-ui-button font-icon-upload ]" type="button">
+        <button id="upload-button" className="gallery__upload btn btn-secondary font-icon-upload" type="button">
           {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
         </button>
 
