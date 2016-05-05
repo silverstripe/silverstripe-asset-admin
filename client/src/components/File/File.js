@@ -179,7 +179,7 @@ class File extends SilverStripeComponent {
 
     if (this.props.uploading) {
       actionButton = (<button
-        className="item__actions__action item__actions__action--cancel [ font-icon-cancel ]"
+        className="item__action item__action--cancel [ font-icon-cancel ]"
         type="button"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
@@ -190,7 +190,7 @@ class File extends SilverStripeComponent {
       </button>);
     } else {
       actionButton = (<button
-        className="item__actions__action item__actions__action--select [ font-icon-tick ]"
+        className="item__action item__action--select [ font-icon-tick ]"
         type="button"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"

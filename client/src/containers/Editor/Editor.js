@@ -122,14 +122,14 @@ class Editor extends Component {
       <div>
         <button
           type="submit"
-          className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-check-mark"
+          className="btn btn-primary font-icon-save"
           onClick={this.onFileSave}
         >
           {i18n._t('AssetGalleryField.SAVE')}
         </button>
         <button
           type="button"
-          className="ss-ui-button ui-button ui-widget ui-state-default ui-corner-all font-icon-cancel-circled"
+          className="btn btn-secondary"
           onClick={this.props.onClose}
         >
           {i18n._t('AssetGalleryField.CANCEL')}
