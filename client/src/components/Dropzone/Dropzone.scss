@@ -13,7 +13,7 @@
     bottom: 0;
     left: -16px;
     background: $page-mask-light
-      url("../../../../framework/admin/client/dist/images/drag_drop_opt.svg") center center no-repeat;
+      url("#{$framework-path}/admin/client/dist/images/drag_drop_opt.svg") center center no-repeat;
     background-size: 312px 325px;
     z-index: 100;
   }
