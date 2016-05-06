@@ -199,7 +199,7 @@ class AssetGalleryField extends FormField
             'count' => count($items),
             'parent' => $folder->ParentID, // grandparent
             'folderID' => $folderID,
-            'canEdit' => $folder->Name == 'test1',
+            'canEdit' => $folder ? $folder->canEdit() : false,
             'canDelete' => $folder ? $folder->canDelete() : false
         ]));
 
