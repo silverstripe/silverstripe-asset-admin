@@ -112,7 +112,7 @@ class Editor extends Component {
         (
           <TextFieldComponent
             key={i}
-            label={field.label}
+            leftTitle={field.label}
             name={field.name}
             value={this.props.file[field.name]}
             onChange={this.onFieldChange}
