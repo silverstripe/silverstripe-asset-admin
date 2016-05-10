@@ -124,14 +124,12 @@ export class Gallery extends Component {
 
   getBackButton() {
     const classes = [
-      'gallery__back',
-      'ss-ui-button',
-      'ui-button',
-      'ui-widget',
-      'ui-state-default',
-      'ui-corner-all',
+      'btn',
+      'btn-secondary',
+      'btn--no-text',
       'font-icon-level-up',
-      'no-text',
+      'btn--icon-large',
+      'gallery__back',
     ].join(' ');
     if (this.props.parentFolderID !== null) {
       return (
@@ -383,26 +381,28 @@ export class Gallery extends Component {
           </select>
         </div>
 
-        {this.getBackButton()}
+        <div className="toolbar--content">
+          {this.getBackButton()}
 
-        <button
-          id="add-folder-button"
-          className="gallery__upload btn btn-secondary font-icon-folder-add"
-          type="button"
-          onClick={this.handleAddFolder}
-          disabled={!canEdit}
-        >
-          {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
-        </button>
+          <button
+            id="add-folder-button"
+            className="gallery__upload btn btn-secondary font-icon-folder-add"
+            type="button"
+            onClick={this.handleAddFolder}
+            disabled={!canEdit}
+          >
+            {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
+          </button>
 
-        <button
-          id="upload-button"
-          className="gallery__upload btn btn-secondary font-icon-upload"
-          type="button"
-          disabled={!canEdit}
-        >
-          {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
-        </button>
+          <button
+            id="upload-button"
+            className="gallery__upload btn btn-secondary font-icon-upload"
+            type="button"
+            disabled={!canEdit}
+          >
+            {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
+          </button>
+        </div>
 
         <Dropzone
           canUpload={canEdit}

@@ -262,13 +262,13 @@
   right: 0;
   bottom: 0;
   left: 0;
-  margin: 70px 16px 0; }
+  margin: 61px 1.5385rem 0; }
   .dropzone-component::after {
     position: absolute;
     top: -70px;
-    right: -16px;
+    right: -1.5385rem;
     bottom: 0;
-    left: -16px;
+    left: -1.5385rem;
     background: rgba(236, 239, 241, 0.9) url("../../../../framework/admin/client/dist/images/drag_drop_opt.svg") center center no-repeat;
     background-size: 312px 325px;
     z-index: 100; }
@@ -313,6 +313,7 @@
 
 .asset-gallery .gallery__folders {
   display: inline-block;
+  margin-bottom: -6px;
   width: 100%; }
 
 .asset-gallery .gallery__files {
@@ -347,11 +348,13 @@
   clear: both; }
 
 .asset-gallery {
-  margin: 10px 0; }
+  margin: 0; }
 
 .cms .AssetAdmin .cms-content-view {
   position: relative;
-  min-height: 100%; }
+  min-height: 100%;
+  padding-left: 0;
+  padding-right: 0; }
 
 .AssetAdmin .tabset {
   margin: 0;
