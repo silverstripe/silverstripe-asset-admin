@@ -386,7 +386,7 @@ export class Gallery extends Component {
 
           <button
             id="add-folder-button"
-            className="gallery__upload btn btn-secondary font-icon-folder-add"
+            className="btn btn-secondary font-icon-folder-add btn--icon-xl"
             type="button"
             onClick={this.handleAddFolder}
             disabled={!canEdit}
@@ -396,7 +396,7 @@ export class Gallery extends Component {
 
           <button
             id="upload-button"
-            className="gallery__upload btn btn-secondary font-icon-upload"
+            className="btn btn-secondary font-icon-upload btn--icon-xl"
             type="button"
             disabled={!canEdit}
           >

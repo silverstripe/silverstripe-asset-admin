@@ -79,14 +79,4 @@
     border: 0;
     border-radius: 4px;
   }
-
-  .gallery__upload,
-  .gallery__add-folder {
-    &::before {
-      font-size: 22px;
-      line-height: 20px;
-      top: -1px;
-      float: left;
-    }
-  }
 }
