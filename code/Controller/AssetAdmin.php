@@ -237,6 +237,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getEditForm($id = null, $fields = null)
     {
         $form = parent::getEditForm($id, $fields);
+        
+        // Remove legacy previewable behaviour.
+        // Can't yet be cleanly removed from JS logic since its loaded via LeftAndMain.ss.
+        $form->removeExtraClass('cms-previewable');
+        $form->Fields()->removeByName('SilverStripeNavigator');
+        
         $folder = ($id && is_numeric($id)) ? DataObject::get_by_id('Folder', $id, false) : $this->currentPage();
         $title = ($folder && $folder->exists()) ? $folder->Title : _t('AssetAdmin.FILES', 'Files');
 
