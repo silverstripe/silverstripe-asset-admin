@@ -1,12 +1,14 @@
 .asset-gallery {
-  // TODO replace with .toolbar--content
-  margin: 10px 0;
+  margin: 0; // Temp: Needed for legacy markup in template
 }
 
+// Temp: Needed for legacy markup in template
 // Needs deeper nesting to override legacy styles
 .cms .AssetAdmin .cms-content-view {
   position: relative;
   min-height: 100%;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .AssetAdmin {
