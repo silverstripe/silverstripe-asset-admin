@@ -55,7 +55,7 @@ class Editor extends Component {
       return null;
     }
 
-    return (<div className="editor-component">
+    return (<div className="editor-component container-fluid">
       <div className="CompositeField composite cms-file-info nolabel">
         <div className="CompositeField composite cms-file-info-preview nolabel">
           <img alt={this.props.file.title} className="thumbnail-preview" src={this.props.file.url} />

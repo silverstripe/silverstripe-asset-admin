@@ -337,15 +337,9 @@
   border: 0;
   border-radius: 4px; }
 
-.asset-gallery .gallery__upload::before,
-.asset-gallery .gallery__add-folder::before {
-  font-size: 22px;
-  line-height: 20px;
-  top: -1px;
-  float: left; }
-
 .editor-component {
-  clear: both; }
+  clear: both;
+  margin-top: 2.4616rem; }
 
 .asset-gallery {
   margin: 0; }
