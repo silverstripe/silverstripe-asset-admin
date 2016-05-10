@@ -216,10 +216,10 @@ export function addFolder(addFolderApi, folderID, folderName) {
  * @param object folderPermissions Contains the canEdit, canDelete permissions as self-named keys
  */
 export function setFolderPermissions(folderPermissions) {
-    return (dispatch, getState) => {
-        return dispatch({
-            type: GALLERY.SET_FOLDER_PERMISSIONS,
-            payload: folderPermissions
-        });
-    }
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.SET_FOLDER_PERMISSIONS,
+      payload: folderPermissions,
+    });
+  };
 }

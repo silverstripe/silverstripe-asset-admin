@@ -488,6 +488,7 @@ Gallery.propTypes = {
   bulkActions: React.PropTypes.bool,
   limit: React.PropTypes.number,
   page: React.PropTypes.number,
+  canEdit: React.PropTypes.bool,
 
   queuedFiles: React.PropTypes.shape({
     items: React.PropTypes.array.isRequired,
