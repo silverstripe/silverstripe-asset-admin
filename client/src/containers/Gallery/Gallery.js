@@ -385,6 +385,15 @@ export class Gallery extends Component {
           {this.getBackButton()}
 
           <button
+            id="upload-button"
+            className="btn btn-secondary font-icon-upload btn--icon-xl"
+            type="button"
+            disabled={!canEdit}
+          >
+            {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
+          </button>
+
+          <button
             id="add-folder-button"
             className="btn btn-secondary font-icon-folder-add btn--icon-xl"
             type="button"
@@ -394,14 +403,6 @@ export class Gallery extends Component {
             {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
           </button>
 
-          <button
-            id="upload-button"
-            className="btn btn-secondary font-icon-upload btn--icon-xl"
-            type="button"
-            disabled={!canEdit}
-          >
-            {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
-          </button>
         </div>
 
         <Dropzone
