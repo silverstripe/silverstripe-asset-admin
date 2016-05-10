@@ -1,9 +1,9 @@
 .gallery__bulk-actions {
-  padding: 10px 12px;
+  padding: 8px;
   left: 160px; // TODO: Needs to go to 60px when main nav is collapsed
   z-index: 59;
   right: 0;
-  height: 52px;
+  height: 48px;
   margin: 0 auto;
   position: fixed;
   top: 52px;
@@ -37,14 +37,15 @@
 
   .gallery__bulk-actions-counter {
     display: inline-block;
+    vertical-align: middle;
     min-width: 28px;
     padding: 6px;
-    margin: 2px 8px 2px 0;
-    line-height: 16px;
+    margin-right: 8px;
+    line-height: $line-height-base;
     color: $white;
     text-align: center;
     background-color: $component-active-bg;
-    border-radius: 4px;
+    border-radius: $btn-border-radius;
     font-weight: bold;
   }
 
