@@ -24,7 +24,7 @@
 .asset-gallery .item {
   position: relative;
   float: left;
-  margin: 0 20px 20px 0;
+  margin: 0 1.2308rem 1.2308rem 0;
   background-color: #fff;
   border: 1px solid;
   border-color: #e5e8eb #d9dee2 #ced3d9;
@@ -174,11 +174,11 @@
   text-align: center; }
 
 .gallery__bulk-actions {
-  padding: 10px 12px;
+  padding: 8px;
   left: 160px;
   z-index: 59;
   right: 0;
-  height: 52px;
+  height: 48px;
   margin: 0 auto;
   position: fixed;
   top: 52px;
@@ -203,14 +203,15 @@
     transition: top .2s linear .1s, transform .1s ease-in; }
   .gallery__bulk-actions .gallery__bulk-actions-counter {
     display: inline-block;
+    vertical-align: middle;
     min-width: 28px;
     padding: 6px;
-    margin: 2px 8px 2px 0;
-    line-height: 16px;
+    margin-right: 8px;
+    line-height: 20px;
     color: #fff;
     text-align: center;
     background-color: #29abe2;
-    border-radius: 4px;
+    border-radius: 0.23rem;
     font-weight: bold; }
   .gallery__bulk-actions .gallery__bulk-actions_action.ss-ui-button {
     line-height: 20px;
@@ -262,7 +263,7 @@
   right: 0;
   bottom: 0;
   left: 0;
-  margin: 61px 1.5385rem 0; }
+  margin: 53px 1.5385rem 0; }
   .dropzone-component::after {
     position: absolute;
     top: -70px;
