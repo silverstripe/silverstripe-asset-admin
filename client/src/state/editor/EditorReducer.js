@@ -31,7 +31,7 @@ export default function editorReducer(state = initialState, action) {
         editorFields: state.editorFields.map(
           (field) => {
             if (field.name === action.payload.updates.name) {
-              return Object.assign(field, { value: action.payload.updates.value });
+              return Object.assign({}, field, { value: action.payload.updates.value });
             }
             return field;
           }
@@ -39,13 +39,22 @@ export default function editorReducer(state = initialState, action) {
       }));
     }
 
-    case EDITOR.SET_OPEN_FILE:
+    case EDITOR.SET_OPEN_FILE: {
+      // Poor man's data binding.
+      // Keeps file state separate from the form field edits.
+      // Not every field value change might be saved.
+      // TODO Refactor to form field schema
+      const fields = state.editorFields.map(
+        (field) => Object.assign({}, field, { value: action.payload.file[field.name] })
+      );
       return deepFreeze(Object.assign({}, state, {
         visible: true,
         folderID: parseInt(action.payload.folderID, 10),
         fileID: parseInt(action.payload.fileID, 10),
         editing: action.payload.file,
+        editorFields: fields,
       }));
+    }
 
     case EDITOR.HIDE:
       return deepFreeze(Object.assign({}, state, {

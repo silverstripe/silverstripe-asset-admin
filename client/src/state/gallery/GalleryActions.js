@@ -114,15 +114,25 @@ export function loadFolderContents(filesByParentApi, folderID, limit, page) {
 /**
  * Updates a file with new data.
  *
+ * @param {function} updateApi
  * @param number id - The id of the file to update.
  * @param object updates - The new values.
  */
-export function updateFile(id, updates) {
-  return (dispatch) =>
+export function updateFile(updateApi, id, updates) {
+  return (dispatch) => {
     dispatch({
-      type: GALLERY.UPDATE_FILE,
+      type: GALLERY.UPDATE_FILE_REQUEST,
       payload: { id, updates },
     });
+
+    return updateApi(Object.assign({}, { id }, updates))
+      .then(() => {
+        dispatch({
+          type: GALLERY.UPDATE_FILE_SUCCESS,
+          payload: { id, updates },
+        });
+      });
+  };
 }
 
 /**

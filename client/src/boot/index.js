@@ -32,6 +32,12 @@ $.entwine('ss', () => {
         url: this.data('asset-gallery-add-folder-url'),
       });
 
+      const updateApi = backend.createEndpointFetcher({
+        method: 'put',
+        payloadFormat: 'urlencoded',
+        url: this.data('asset-gallery-update-url'),
+      });
+
       const limit = this.data('asset-gallery-limit');
       const bulkActions = this.data('asset-gallery-bulk-actions');
 
@@ -53,6 +59,7 @@ $.entwine('ss', () => {
             filesByParentApi={filesByParentApi}
             addFolderApi={addFolderApi}
             deleteApi={deleteApi}
+            updateApi={updateApi}
             sectionConfigKey={section}
           />
         </Provider>,

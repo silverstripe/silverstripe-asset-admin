@@ -12,6 +12,7 @@ describe('editorReducer', () => {
     it('should start editing the given file', () => {
       const initialState = {
         editing: null,
+        editorFields: [],
       };
 
       const nextState = editorReducer(initialState, {
@@ -25,6 +26,7 @@ describe('editorReducer', () => {
     it('should stop editing', () => {
       const initialState = {
         editing: { id: 1 },
+        editorFields: [],
       };
 
       const nextState = editorReducer(initialState, {

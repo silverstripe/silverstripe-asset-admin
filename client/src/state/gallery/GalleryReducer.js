@@ -90,7 +90,7 @@ export default function galleryReducer(state = initialState, action) {
       return nextState;
     }
 
-    case GALLERY.UPDATE_FILE: {
+    case GALLERY.UPDATE_FILE_SUCCESS: {
       const fileIndex = state.files.map(file => file.id).indexOf(action.payload.id);
       const updatedFile = Object.assign({}, state.files[fileIndex], action.payload.updates);
 

@@ -4,50 +4,61 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as editorActions from 'state/editor/EditorActions';
 import TextFieldComponent from 'components/TextField/TextField';
+import FormAction from 'components/FormAction/FormAction';
 
 class Editor extends Component {
   constructor(props) {
     super(props);
 
-    const file = this.props.file;
+    this.handleFieldUpdate = this.handleFieldUpdate.bind(this);
+    this.handleFileSave = this.handleFileSave.bind(this);
 
-    this.fields = [
-      {
-        label: 'Title',
-        name: 'title',
-        value: file === null ? file : file.title,
-      },
-      {
-        label: 'Filename',
-        name: 'basename',
-        value: file === null ? file : file.basename,
-      },
-    ];
-
-    this.onFieldChange = this.onFieldChange.bind(this);
-    this.onFileSave = this.onFileSave.bind(this);
+    this.state = {
+      isSaving: false,
+    };
   }
 
   componentDidMount() {
-    this.props.actions.setEditorFields(this.fields);
+    // TODO Use form field schema (which will also take care of i18n)
+    // Values for fields are set via the action
+    const fields = [
+      {
+        label: 'Title',
+        name: 'title',
+      },
+      {
+        label: 'Filename',
+        // TODO Use same property names as DataObject
+        name: 'basename',
+      },
+    ];
+    this.props.actions.setEditorFields(fields);
   }
 
   componentWillUnmount() {
     this.props.actions.setEditorFields();
   }
 
-  onFieldChange(event) {
+  handleFileSave(event) {
+    if (this.props.onFileSave) {
+      this.setState({ isSaving: true });
+      const updates = this.props.editorFields.reduce(
+        (prev, curr) => Object.assign({}, prev, { [curr.name]: curr.value }),
+        {}
+      );
+      this.props.onFileSave(this.props.file.id, updates)
+        .then(() => this.setState({ isSaving: false }));
+    }
+
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  handleFieldUpdate(event) {
     this.props.actions.updateEditorField({
       name: event.target.name,
       value: event.target.value,
     });
-  }
-
-  onFileSave(event) {
-    this.props.onFileSave(this.props.file.id, this.props.editorFields);
-
-    event.stopPropagation();
-    event.preventDefault();
   }
 
   render() {
@@ -114,26 +125,25 @@ class Editor extends Component {
             key={i}
             leftTitle={field.label}
             name={field.name}
-            value={this.props.file[field.name]}
-            onChange={this.onFieldChange}
+            value={field.value}
+            onChange={this.handleFieldUpdate}
           />
         )
       )}
       <div>
-        <button
+        <FormAction
           type="submit"
-          className="btn btn-primary font-icon-save"
-          onClick={this.onFileSave}
-        >
-          {i18n._t('AssetGalleryField.SAVE')}
-        </button>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={this.props.onClose}
-        >
-          {i18n._t('AssetGalleryField.CANCEL')}
-        </button>
+          bootstrapButtonStyle="primary"
+          icon="save"
+          handleClick={this.handleFileSave}
+          loading={this.state.isSaving}
+          label={i18n._t('AssetGalleryField.SAVE')}
+        />
+        <FormAction
+          bootstrapButtonStyle="secondary"
+          handleClick={this.props.onClose}
+          label={i18n._t('AssetGalleryField.CANCEL')}
+        />
       </div>
     </div>);
   }

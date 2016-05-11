@@ -321,15 +321,14 @@ class AssetGalleryField extends FormField
                 ->addHeader('Content-Type', 'application/json');
         }
 
-        $title = $request->postVar('title');
-        $basename = $request->postVar('basename');
-
-        if (!empty($title)) {
-            $file->Title = $title;
+        // TODO Use same property names and capitalisation as DataObject
+        if (!empty($vars['title'])) {
+            $file->Title = $vars['title'];
         }
 
-        if (!empty($basename)) {
-            $file->Name = $basename;
+        // TODO Use same property names and capitalisation as DataObject
+        if (!empty($vars['basename'])) {
+            $file->Name = $vars['basename'];
         }
 
         $file->write();

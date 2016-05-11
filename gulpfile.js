@@ -53,6 +53,7 @@ gulp.task('js', function bundleJavaScript() {
   return browserify(browserifyOptions)
     .transform(babelify, babelifyOptions)
     .external('components/TextField/TextField')
+    .external('components/FormAction/FormAction')
     .external('deep-freeze')
     .external('lib/Config')
     .external('react')

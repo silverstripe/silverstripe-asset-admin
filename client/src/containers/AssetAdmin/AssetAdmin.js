@@ -22,6 +22,7 @@ class AssetAdmin extends SilverStripeComponent {
 
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
+    this.handleFileSave = this.handleFileSave.bind(this);
     this.handleURL = this.handleURL.bind(this);
     this.getConfig = this.getConfig.bind(this);
   }
@@ -141,6 +142,14 @@ class AssetAdmin extends SilverStripeComponent {
     this.props.actions.gallery.show(this.props.folderID);
   }
 
+  /**
+   * @param  {Number} id
+   * @param  {Object} updates
+   */
+  handleFileSave(id, updates) {
+    return this.props.actions.gallery.updateFile(this.props.updateApi, id, updates);
+  }
+
   render() {
     return (
       <div className="gallery">
@@ -156,6 +165,7 @@ class AssetAdmin extends SilverStripeComponent {
         />
         <Editor
           onClose={this.handleCloseFile}
+          onFileSave={this.handleFileSave}
         />
       </div>
     );
@@ -171,6 +181,7 @@ AssetAdmin.propTypes = {
     }),
   }),
   sectionConfigKey: React.PropTypes.string.isRequired,
+  updateApi: React.PropTypes.func,
   // @todo others
 };
 
