@@ -19,7 +19,6 @@ describe('Gallery', () => {
       actions: {
         gallery: {
           addFiles: () => null,
-          removeFiles: () => null,
           updateFile: () => null,
           selectFiles: () => null,
           deselectFiles: () => null,

@@ -42,21 +42,6 @@ export function addFiles(files, count) {
 }
 
 /**
- * Removes files from the state. If no param is passed all files are removed
- *
- * @param array ids - Array of file ids.
- */
-export function removeFiles(ids) {
-  // TODO: Refactor this away - will be part of "load folder", "search", and "delete files" actions
-  return (dispatch) => {
-    dispatch({
-      type: GALLERY.REMOVE_FILES,
-      payload: { ids },
-    });
-  };
-}
-
-/**
  * Deletes a number of items
  */
 export function deleteItems(deleteApi, ids) {
