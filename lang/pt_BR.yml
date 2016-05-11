@@ -1,9 +1,0 @@
-pt_BR:
-  AssetAdmin:
-    NEWFOLDER: Nova Pasta
-  AssetAdmin_left_ss:
-    GO: Ir
-  Folder:
-    DELETEUNUSEDTHUMBNAILS: 'Excluir miniaturas não utilizadas'
-    UNUSEDFILESTITLE: 'Arquivos não utilizados'
-    UNUSEDTHUMBNAILSTITLE: 'Miniaturas não utilizadas'

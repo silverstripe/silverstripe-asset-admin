@@ -1,29 +1,3 @@
 bs:
-  AssetAdmin:
-    ADDFILES: 'Dodaj datoteke'
-    ActionAdd: 'Kreiraj direktorij'
-    AppCategoryArchive: Arhiva
-    AppCategoryAudio: Audio
-    AppCategoryDocument: Dokument
-    BackToFolder: 'Nazad na direktorij'
-    CREATED: Datum
-    CurrentFolderOnly: 'Limitiraj na trenutni direktorij?'
-    DetailsView: Detalji
-    FILES: Datoteke
-    FILESYSTEMSYNC: 'Sinhroniziraj datoteke'
-    FROMTHEINTERNET: 'Sa interneta'
-    FROMYOURCOMPUTER: 'Sa Vašeg kompijutera'
-    Filetype: 'Tip datoteke'
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Datoteke
-    NEWFOLDER: NoviDirektorij
-    SIZE: Veličina
-    THUMBSDELETED: '{count} nekorištenih je obrisano'
-    Upload: Upload
-  AssetAdmin_DeleteBatchAction:
-    TITLE: 'Izbriši direktorije'
-  AssetAdmin_left_ss:
-    GO: Idi
-  Folder:
-    DELETEUNUSEDTHUMBNAILS: 'Izbriši neiskorištene sličice'
-    UNUSEDFILESTITLE: 'Neiskorištene datoteke'
-    UNUSEDTHUMBNAILSTITLE: 'Neiskorištene sličice'

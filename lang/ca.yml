@@ -1,9 +1,0 @@
-ca:
-  AssetAdmin:
-    NEWFOLDER: NovaCarpeta
-  AssetAdmin_left_ss:
-    GO: Vés
-  Folder:
-    DELETEUNUSEDTHUMBNAILS: 'Suprimeix les miniatures no usades'
-    UNUSEDFILESTITLE: 'Fitxers no usats'
-    UNUSEDTHUMBNAILSTITLE: 'Miniatures no usades'
