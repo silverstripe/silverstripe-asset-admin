@@ -149,7 +149,7 @@ describe('galleryReducer', () => {
   });
 
   describe('UPDATE_FILE', () => {
-    const type = GALLERY.UPDATE_FILE;
+    const type = GALLERY.UPDATE_FILE_SUCCESS;
     const payload = { id: 1, updates: { title: 'updated' } };
 
     it('should update an existing file value', () => {
