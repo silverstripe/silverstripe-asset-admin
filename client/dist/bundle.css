@@ -180,13 +180,10 @@
   position: absolute;
   right: 0;
   top: 0;
-  height: 40px;
-  padding: 8px 10px 6px;
-  margin-bottom: 0;
-  content: " ";
+  margin: 12px 16px 0 0;
   background-color: transparent;
   border: 0;
-  background: none; }
+  box-sizing: border-box; }
   .asset-gallery .item__actions__action::before {
     background-color: #fff;
     font-size: 14px;

@@ -175,29 +175,27 @@ class File extends SilverStripeComponent {
   }
 
   render() {
-    let actionButton;
+    let actionInputCheckbox;
 
     if (this.props.uploading) {
-      actionButton = (<button
-        className="item__action item__action--cancel [ font-icon-cancel ]"
-        type="button"
+      actionInputCheckbox = (<input
+        className="item__actions__action item__actions__action--cancel [ font-icon-cancel ]"
+        type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
         onMouseDown={this.preventFocus}
         onClick={this.handleCancelUpload}
         data-dz-remove
-      >
-      </button>);
+      />);
     } else {
-      actionButton = (<button
-        className="item__action item__action--select [ font-icon-tick ]"
-        type="button"
+      actionInputCheckbox = (<input
+        className="item__actions__action item__actions__action--select [ font-icon-tick ]"
+        type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
         onMouseDown={this.preventFocus}
         onClick={this.handleToggleSelect}
-      >
-      </button>);
+      />);
     }
 
     return (
@@ -219,7 +217,7 @@ class File extends SilverStripeComponent {
         {this.getErrorMessage()}
         <div className="item__title" ref="title">
           {this.props.item.title}
-          {actionButton}
+          {actionInputCheckbox}
         </div>
       </div>
     );
