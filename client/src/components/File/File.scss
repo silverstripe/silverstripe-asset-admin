@@ -68,8 +68,7 @@
     }
 
     .item__action {
-      height: $gallery-folder-title-height;
-      padding-top: 9px;
+      margin-top: 14px;
     }
   }
 
@@ -163,6 +162,9 @@
 
   .item__action--select {
     color: transparent;
+    margin: 8px 10px;
+    height: 26px;
+    width: 16px;
 
     &:hover::before {
       border: 1px solid $component-active-border-color;
@@ -171,6 +173,9 @@
     &::before {
       border: 1px solid $border-color;
       border-radius: $border-radius-sm;
+      position: absolute;
+      top: 2px;
+      right: 1px;
     }
   }
 

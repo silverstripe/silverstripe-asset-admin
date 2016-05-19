@@ -130,7 +130,7 @@ class Editor extends Component {
           />
         )
       )}
-      <div>
+      <div className="btn-toolbar">
         <FormAction
           type="submit"
           bootstrapButtonStyle="primary"

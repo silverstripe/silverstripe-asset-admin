@@ -52,8 +52,7 @@
     width: 131px;
     height: 52px; }
   .asset-gallery .item--folder .item__action {
-    height: 52px;
-    padding-top: 9px; }
+    margin-top: 14px; }
 
 .asset-gallery .item--selected {
   border-color: #29abe2; }
@@ -124,12 +123,18 @@
     padding: 1px; }
 
 .asset-gallery .item__action--select {
-  color: transparent; }
+  color: transparent;
+  margin: 8px 10px;
+  height: 26px;
+  width: 16px; }
   .asset-gallery .item__action--select:hover::before {
     border: 1px solid #29abe2; }
   .asset-gallery .item__action--select::before {
     border: 1px solid #d9dee2;
-    border-radius: 0.2rem; }
+    border-radius: 0.2rem;
+    position: absolute;
+    top: 2px;
+    right: 1px; }
 
 .asset-gallery .item__action--cancel {
   color: #66727d; }
