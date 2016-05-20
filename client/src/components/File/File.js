@@ -178,24 +178,30 @@ class File extends SilverStripeComponent {
     let actionInputCheckbox;
 
     if (this.props.uploading) {
-      actionInputCheckbox = (<input
-        className="item__action item__action--cancel [ font-icon-cancel ]"
+      actionInputCheckbox = (<label
+        className="item__action--label font-icon-cancel"
+      >
+      <input
+        className="item__action item__action--cancel"
         type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
         onMouseDown={this.preventFocus}
         onClick={this.handleCancelUpload}
         data-dz-remove
-      />);
+      /></label>);
     } else {
-      actionInputCheckbox = (<input
-        className="item__action item__action--select [ font-icon-tick ]"
+      actionInputCheckbox = (<label
+        className="item__action--label font-icon-tick"
+      >
+      <input
+        className="item__action item__action--select"
         type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
         onMouseDown={this.preventFocus}
         onClick={this.handleToggleSelect}
-      />);
+      /></label>);
     }
 
     return (
@@ -216,8 +222,8 @@ class File extends SilverStripeComponent {
         {this.getProgressBar()}
         {this.getErrorMessage()}
         <div className="item__title" ref="title">
-          {this.props.item.title}
           {actionInputCheckbox}
+          {this.props.item.title}
         </div>
       </div>
     );
