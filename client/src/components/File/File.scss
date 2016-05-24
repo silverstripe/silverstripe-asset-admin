@@ -208,6 +208,12 @@
     &::before {
       font-size: 18px;
       vertical-align: bottom;
+      padding: 11px 8px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      cursor: pointer;
+      z-index: 2;
     }
   }
 

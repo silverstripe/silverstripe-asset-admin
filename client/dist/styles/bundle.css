@@ -158,7 +158,13 @@
     color: #4f5861; }
   .asset-gallery .item__action--cancel::before {
     font-size: 18px;
-    vertical-align: bottom; }
+    vertical-align: bottom;
+    padding: 11px 8px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    z-index: 2; }
 
 .asset-gallery .item__upload-progress {
   height: 18px;
