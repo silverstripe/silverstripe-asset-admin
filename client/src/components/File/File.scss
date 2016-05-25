@@ -63,7 +63,7 @@
 
     .item__title {
       padding: 17px 28px 17px 0;
-      width: 131px;
+      width: auto;
       height: $gallery-folder-title-height;
     }
 
@@ -160,7 +160,7 @@
   }
 
   .item__action--label {
-    width: 40px;
+    width: 30px;
     height: 40px;
     position: absolute;
     right: 0;
@@ -235,7 +235,7 @@
   }
 
   .item__title {
-    padding: 11px 28px 11px 12px;
+    padding: 11px 30px 11px 12px;
     height: $gallery-title-height;
     width: $gallery-thumb-width;
     margin: 0;
