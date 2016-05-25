@@ -1,8 +1,10 @@
 // Variables
-@import "../../../../framework/admin/client/src/styles/variables";
+// @import "../../../../framework/node_modules/bootstrap/scss/bootstrap";
 @import "variables";
+@import "../../../../framework/admin/client/src/styles/variables";
 
 // Thirdparty
+@import "../../../../framework/node_modules/bootstrap/scss/mixins";
 
 // Base
 

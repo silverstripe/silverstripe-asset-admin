@@ -160,7 +160,6 @@ class AssetAdmin extends SilverStripeComponent {
           filesByParentApi={this.props.filesByParentApi}
           addFolderApi={this.props.addFolderApi}
           deleteApi={this.props.deleteApi}
-
           onOpenFile={this.handleOpenFile}
         />
         <Editor

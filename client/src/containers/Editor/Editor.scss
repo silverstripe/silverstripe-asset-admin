@@ -1,4 +1,100 @@
 .editor-component {
   clear: both;
   margin-top: $spacer-y * 2;
+  width: 100%; // for mobile
+  background-color: $body-bg;
+  height: 100%;
+  padding: 16px 20px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  overflow-y: scroll;
+
+  // To do: should use mixins - @include media-breakpoint-up(md) {
+  @include media-breakpoint-up(md) {
+    width: $cms-panel-sm;
+    border-left: 1px solid $border-color;
+  }
+
+  @include media-breakpoint-up(xl) {
+    width: $cms-panel-md;
+  }
+}
+
+.file-details {
+  margin-bottom: 32px;
+
+  h2 {
+    margin-top: 4px;
+    max-width: 92%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .media .font-icon-link::before {
+    font-size: 20px;
+    color: #bbb;
+  }
+
+  .table .additional-info {
+    margin-top: -1px;
+    display: block;
+    @extend .text-muted;
+  }
+}
+
+.header-extra {
+  margin-top: -16px;
+  color: #7f8b97; /* should use $text-muted variable */
+}
+
+.file-preview {
+  width: calc(100% + 40px);
+  text-align: center;
+  margin: 0 -20px 16px;
+  position: relative;
+
+  .file-enlarge {
+    display: none;
+    position: absolute;
+    margin: 0 auto;
+    opacity: .7;
+    background-color: rgba(0,0,0,1);
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -25px;
+
+    &::before {
+      font-size: 24px;
+      color: $white;
+      top: 12px;
+      position: relative;
+    }
+  }
+
+  &:hover {
+    .file-type {
+      display: block !important;
+    }
+
+    .file-enlarge {
+      display: block;
+
+      &:hover,
+      &:active {
+        text-decoration: none;
+        background-color: rgba(0,0,0,.7);
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.file-preview-thumbnail {
+  max-width: 100%;
 }
