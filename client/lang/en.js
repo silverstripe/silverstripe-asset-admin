@@ -46,6 +46,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetGalleryField.TITLE": "Title",
     "AssetGalleryField.TYPE": "File type",
     "AssetGalleryField.URL": "URL",
+    "AssetGalleryField.CLOSE": "Close",
     "Folder.Name": "Folder name"
 });
 }

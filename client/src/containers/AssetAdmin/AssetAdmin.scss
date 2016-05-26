@@ -1,7 +1,3 @@
-.asset-gallery {
-  margin: 0; // Temp: Needed for legacy markup in template
-}
-
 // Temp: Needed for legacy markup in template
 // Needs deeper nesting to override legacy styles
 .cms .AssetAdmin .cms-content-view {
@@ -31,6 +27,8 @@
   // TEMP Overides which should eventually not be needed
   // Reset some annoying CMS styles.
   .asset-gallery {
+    margin: 0; // Temp: Needed for legacy markup in template
+
     > .left {
       display: none;
     }

@@ -64,22 +64,21 @@ class Editor extends Component {
   }
 
   render() {
-    return (<div className="editor-component container-fluid">
+    return (<div className="editor container-fluid">
       <a
         tabIndex="1"
-        title={i18n._t('AssetGalleryField.CANCEL')}
-        className="btn btn--close no-text font-icon-cancel"
+        className="btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl"
         onClick={this.props.onClose}
+        type="button"
+        aria-label={i18n._t('AssetGalleryField.CANCEL')}
       />
 
-      <div className="file-details">
-        <h2 className="">{this.props.file.title}</h2>
-        <p className="header-extra readonly">
-          <small>
-            {this.props.file.attributes.dimensions.width} x
-            {this.props.file.attributes.dimensions.height}px,
-            {this.props.file.size}
-          </small>
+      <div className="editor__details">
+        <h1 className="editor__heading">{this.props.file.title}</h1>
+        <p className="header-extra small readonly">
+          {this.props.file.attributes.dimensions.width} x&nbsp;
+          {this.props.file.attributes.dimensions.height}px,
+          {this.props.file.size}
         </p>
 
         <div className="file-preview">
@@ -89,15 +88,15 @@ class Editor extends Component {
 
         <ul className="nav nav-tabs hidden-xs-up" role="tablist">
           <li className="nav-item">
-            <a className="nav-link active" data-toggle="tab" href="#details" role="tab">Details</a>
+            <a className="nav-link active" data-toggle="tab" href="#file-details" role="tab">Details</a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" data-toggle="tab" href="#usage" role="tab">Usage</a>
+            <a className="nav-link" data-toggle="tab" href="#file-usage" role="tab">Usage</a>
           </li>
         </ul>
 
         <div className="tab-content">
-          <div className="tab-pane active" id="details" role="tabpanel">
+          <div className="tab-pane active" id="file-details" role="tabpanel">
 
             {this.props.editorFields.map((field, i) =>
               (
@@ -157,67 +156,57 @@ class Editor extends Component {
               </button>
             </div>
           </div>
-        </div>
 
-        <div className="tab-pane hidden-xs-up" id="usage" role="tabpanel">
-          <table className="table table-sm">
-            <tbody>
-              <tr>
-                <td scope="row">{i18n._t('AssetGalleryField.TYPE')}</td>
-                <td>{this.props.file.type}</td>
-              </tr>
-              <tr>
-                <td scope="row">{i18n._t('AssetGalleryField.CREATED')}</td>
-                <td>{this.props.file.created} by <a href="">Michael</a></td>
-              </tr>
-              <tr>
-                <td scope="row">{i18n._t('AssetGalleryField.LASTEDIT')}</td>
-                <td>{this.props.file.lastUpdated} by <a href="">Jack</a></td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="tab-pane hidden-xs-up" id="file-usage" role="tabpanel">
 
-          <table className="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Used on</th>
-                <th>State</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="bg-primary">
-                <th scope="row">1</th>
-                <td>About us<small className="additional-info">Page</small></td>
-                <td><span className="label label-info">Draft</span></td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td><a href="">My great blog post</a><small className="additional-info">Blog post</small></td>
-                <td><span className="label label-success">Published</span></td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td><a href="">Our services</a><small className="additional-info">Services Page</small></td>
-                <td><span className="label label-success">Published</span></td>
-              </tr>
-              <tr>
-                <th scope="row">4</th>
-                <td><a href="">June release</a><small className="additional-info">Campaign</small></td>
-                <td></td>
-              </tr>
-              <tr>
-                <th scope="row">5</th>
-                <td><a href="">Marketing</a><small className="additional-info">Campaign</small></td>
-                <td><span className="label label-warning">Scheduled</span></td>
-              </tr>
-              <tr>
-                <th scope="row">6</th>
-                <td><a href="">Services section</a><small className="additional-info">Campaign</small></td>
-                <td><span className="label label-success">Published</span></td>
-              </tr>
-            </tbody>
-          </table>
+            <ul className="list-unstyled text-muted m-b-2">
+              <li>{this.props.file.type}</li>
+              <li>{i18n._t('AssetGalleryField.CREATED')} {this.props.file.created}</li>
+              <li>{i18n._t('AssetGalleryField.LASTEDIT')} {this.props.file.lastUpdated}</li>
+            </ul>
+
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Used on</th>
+                  <th>State</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="bg-primary">
+                  <th scope="row">1</th>
+                  <td>About us<small className="additional-info">Page</small></td>
+                  <td><span className="label label-info">Draft</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td><a href="">My great blog post</a><small className="additional-info">Blog post</small></td>
+                  <td><span className="label label-success">Published</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td><a href="">Our services</a><small className="additional-info">Services Page</small></td>
+                  <td><span className="label label-success">Published</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">4</th>
+                  <td><a href="">June release</a><small className="additional-info">Campaign</small></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td><a href="">Marketing</a><small className="additional-info">Campaign</small></td>
+                  <td><span className="label label-warning">Scheduled</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">6</th>
+                  <td><a href="">Services section</a><small className="additional-info">Campaign</small></td>
+                  <td><span className="label label-success">Published</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>);
