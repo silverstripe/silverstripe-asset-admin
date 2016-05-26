@@ -1,10 +1,20 @@
 .dropzone-component {
   position: absolute;
+  left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-  left: 0;
-  margin: $toolbar-total-height #{$grid-gutter-width / 2} 0;
+  margin: $toolbar-total-height $grid-gutter-width-half 0;
+
+  .gallery--has-editor & {
+    @include media-breakpoint-up(md) {
+      width: calc(100% - #{$cms-panel-sm + 20px});
+    }
+
+    @include media-breakpoint-up(xl) {
+      margin-right: calc(100% - #{$cms-panel-md + 20px});
+    }
+  }
 
   &::after {
     position: absolute;

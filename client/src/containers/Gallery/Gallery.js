@@ -361,7 +361,7 @@ export class Gallery extends Component {
     const canEdit = this.props.canEdit;
 
     return (
-      <div>
+      <div className="gallery__main">
         <ReactCSSTransitionGroup
           transitionName="gallery__bulk-actions"
           transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
@@ -369,28 +369,30 @@ export class Gallery extends Component {
         >
           {this.getBulkActionsComponent()}
         </ReactCSSTransitionGroup>
-        <div className="gallery__sort fieldholder-small">
-          <select
-            className="dropdown no-change-track no-chzn"
-            tabIndex="0"
-            style={{ width: '160px' }}
-          >
-            {this.sorters.map((sorter, i) =>
-              (
-                <option
-                  key={i}
-                  onClick={this.handleSort}
-                  data-field={sorter.field}
-                  data-direction={sorter.direction}
-                >
-                  {sorter.label}
-                </option>
-              )
-            )}
-          </select>
-        </div>
 
         <div className="toolbar--content">
+
+          <div className="gallery__sort fieldholder-small">
+            <select
+              className="dropdown no-change-track no-chzn"
+              tabIndex="0"
+              style={{ width: '160px' }}
+            >
+              {this.sorters.map((sorter, i) =>
+                (
+                  <option
+                    key={i}
+                    onClick={this.handleSort}
+                    data-field={sorter.field}
+                    data-direction={sorter.direction}
+                  >
+                    {sorter.label}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+
           {this.getBackButton()}
 
           <button
