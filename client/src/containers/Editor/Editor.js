@@ -111,16 +111,6 @@ class Editor extends Component {
               )
             )}
 
-            <fieldset className="form-group">
-              <label htmlFor="fileTitle">Title</label>
-              <input value="Example" type="text" className="form-control" id="fileTile" />
-            </fieldset>
-
-            <fieldset className="form-group">
-              <label htmlFor="fileName">File name</label>
-              <input value="Example.png" type="text" className="form-control" id="fileName" />
-            </fieldset>
-
             <div className="form-group">
               <label htmlFor="folderLocation">Folder location</label>
               <input type="text" className="form-control" id="folderLocation" value="uploads/folder name/" disabled />
