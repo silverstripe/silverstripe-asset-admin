@@ -86,6 +86,11 @@
     }
   }
 
+  .item--highlighted {
+    border-color: $component-active-border-color;
+    background-color: $component-active-bg-light;
+  }
+
   .item--focussed .item--overlay {
     opacity: 1;
     display: block;

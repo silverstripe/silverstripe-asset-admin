@@ -287,6 +287,17 @@ export class Gallery extends Component {
   }
 
   /**
+   * Checks if a file or folder is currently highlighted,
+   * which typically means its own for viewing or editing.
+   *
+   * @param number id - The id of the file or folder to check.
+   * @return boolean
+   */
+  itemIsHighlighted(id) {
+    return this.props.highlightedFiles.indexOf(id) > -1;
+  }
+
+  /**
    * Handles a user drilling down into a folder.
    *
    * @param object event - Event object.
@@ -424,6 +435,7 @@ export class Gallery extends Component {
                   key={i}
                   item={file}
                   selected={this.itemIsSelected(file.id)}
+                  highlighted={this.itemIsHighlighted(file.id)}
                   handleDelete={this.handleItemDelete}
                   handleToggleSelect={this.handleToggleSelect}
                   handleActivate={this.handleFolderActivate}
@@ -439,6 +451,7 @@ export class Gallery extends Component {
                 key={`queued_file_${i}`}
                 item={file}
                 selected={this.itemIsSelected(file.id)}
+                highlighted={this.itemIsHighlighted(file.id)}
                 handleDelete={this.handleItemDelete}
                 handleToggleSelect={this.handleToggleSelect}
                 handleActivate={this.handleFileActivate}
@@ -455,6 +468,7 @@ export class Gallery extends Component {
                   key={`file_${i}`}
                   item={file}
                   selected={this.itemIsSelected(file.id)}
+                  highlighted={this.itemIsHighlighted(file.id)}
                   handleDelete={this.handleItemDelete}
                   handleToggleSelect={this.handleToggleSelect}
                   handleActivate={this.handleFileActivate}
@@ -482,6 +496,7 @@ Gallery.propTypes = {
   loadedfolderId: React.PropTypes.number,
   parentfolderId: React.PropTypes.number,
   selectedFiles: React.PropTypes.array,
+  highlightedFiles: React.PropTypes.array,
   bulkActions: React.PropTypes.bool,
   limit: React.PropTypes.number,
   page: React.PropTypes.number,
@@ -508,6 +523,7 @@ function mapStateToProps(state) {
     loadedfolderId: state.assetAdmin.gallery.loadedfolderId,
     parentfolderId: state.assetAdmin.gallery.parentfolderId,
     selectedFiles: state.assetAdmin.gallery.selectedFiles,
+    highlightedFiles: state.assetAdmin.gallery.highlightedFiles,
     page: state.assetAdmin.gallery.page,
     canEdit: state.assetAdmin.gallery.canEdit,
     canDelete: state.assetAdmin.gallery.canDelete,

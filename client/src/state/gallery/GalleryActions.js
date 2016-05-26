@@ -20,6 +20,14 @@ export function setFolder(folderId) {
  */
 export function setFile(fileId) {
   return (dispatch) => {
+    dispatch({
+      type: GALLERY.UNHIGHLIGHT_FILES,
+      payload: { ids: null },
+    });
+    dispatch({
+      type: GALLERY.HIGHLIGHT_FILES,
+      payload: { ids: [fileId] },
+    });
     // Start message
     dispatch({
       type: GALLERY.SET_FILE,
@@ -144,6 +152,33 @@ export function deselectFiles(ids = null) {
   return (dispatch) =>
     dispatch({
       type: GALLERY.DESELECT_FILES,
+      payload: { ids },
+    });
+}
+
+/**
+ * Highlight files. If no param is passed all files are highlighted.
+ *
+ * @param Array ids - Array of file ids to select.
+ */
+export function highlightFiles(ids = null) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.HIGHLIGHT_FILES,
+      payload: { ids },
+    });
+}
+
+/**
+ * Remove highlight from files. If no param is passed all,
+ * highlight is removed from all files.
+ *
+ * @param Array ids - Array of file ids to highlight.
+ */
+export function unhighlightFiles(ids = null) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.UNHIGHLIGHT_FILES,
       payload: { ids },
     });
 }

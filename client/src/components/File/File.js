@@ -104,6 +104,10 @@ class File extends SilverStripeComponent {
       itemClassNames.push('item--selected');
     }
 
+    if (this.props.highlighted) {
+      itemClassNames.push('item--highlighted');
+    }
+
     if (this.hasError()) {
       itemClassNames.push('item--error');
     }
@@ -242,6 +246,9 @@ File.propTypes = {
     title: React.PropTypes.string.isRequired,
     progress: React.PropTypes.number,
   }),
+  // Can be used to highlight a currently edited file
+  highlighted: React.PropTypes.bool,
+  // Styles according to the checkbox selection state
   selected: React.PropTypes.bool.isRequired,
   spaceKey: React.PropTypes.number,
   returnKey: React.PropTypes.number,

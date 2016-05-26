@@ -20,4 +20,6 @@ export default [
   'SET_FOLDER',
   'SET_FILE',
   'SET_FOLDER_PERMISSIONS',
+  'HIGHLIGHT_FILES',
+  'UNHIGHLIGHT_FILES',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});
