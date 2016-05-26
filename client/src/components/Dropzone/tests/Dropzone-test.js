@@ -18,7 +18,7 @@ describe('DropzoneComponent', () => {
       handleAddedFile: () => null,
       handleError: () => null,
       handleSuccess: () => null,
-      folderID: 1,
+      folderId: 1,
       securityID: '123',
       canUpload: true,
     };

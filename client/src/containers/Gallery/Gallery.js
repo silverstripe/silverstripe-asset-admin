@@ -131,7 +131,7 @@ export class Gallery extends Component {
       'btn--icon-large',
       'gallery__back',
     ].join(' ');
-    if (this.props.parentFolderID !== null) {
+    if (this.props.parentfolderId !== null) {
       return (
         <button
           className={classes}
@@ -178,11 +178,11 @@ export class Gallery extends Component {
   }
 
   refreshFolderIfNeeded() {
-    // folderID updates saying "please load", loadedFolderID updates when the ajax request is actually triggered
-    if (!isNaN(this.props.folderID) && this.props.folderID >= 0 && this.props.folderID !== this.props.loadedFolderID) {
+    // folderId updates saying "please load", loadedfolderId updates when the ajax request is actually triggered
+    if (!isNaN(this.props.folderId) && this.props.folderId >= 0 && this.props.folderId !== this.props.loadedfolderId) {
       this.props.actions.gallery.loadFolderContents(
         this.props.filesByParentApi,
-        this.props.folderID,
+        this.props.folderId,
         this.props.limit,
         this.props.page
       );
@@ -237,7 +237,7 @@ export class Gallery extends Component {
     // eslint-disable-next-line no-alert
     const folderName = prompt('Folder name (or blank to cancel)');
     if (folderName) {
-      this.props.actions.gallery.addFolder(this.props.addFolderApi, this.props.folderID, folderName);
+      this.props.actions.gallery.addFolder(this.props.addFolderApi, this.props.folderId, folderName);
     }
   }
 
@@ -293,7 +293,7 @@ export class Gallery extends Component {
    * @param object folder - The folder that's being activated.
    */
   handleFolderActivate(event, folder) {
-    this.props.actions.gallery.show(folder.id);
+    this.props.actions.gallery.setFolder(folder.id);
   }
 
   /**
@@ -336,12 +336,10 @@ export class Gallery extends Component {
 
   handleBackClick(event) {
     event.preventDefault();
-    this.props.actions.gallery.show(this.props.parentFolderID);
+    this.props.actions.gallery.setFolder(this.props.parentfolderId);
   }
 
   render() {
-    if (!this.props.visible) return null;
-
     const dropzoneOptions = {
       // Hardcoded placeholder until we have a backend
       url: 'admin/assets/EditForm/field/Upload/upload',
@@ -412,7 +410,7 @@ export class Gallery extends Component {
           handleSuccess={this.handleSuccessfulUpload}
           handleSending={this.handleSending}
           handleUploadProgress={this.handleUploadProgress}
-          folderID={this.props.folderID}
+          folderId={this.props.folderId}
           options={dropzoneOptions}
           securityID={securityID}
           uploadButton={false}
@@ -478,13 +476,11 @@ export class Gallery extends Component {
 }
 
 Gallery.propTypes = {
-  visible: React.PropTypes.bool,
-
   files: React.PropTypes.array,
   count: React.PropTypes.number,
-  folderID: React.PropTypes.number.isRequired,
-  loadedFolderID: React.PropTypes.number,
-  parentFolderID: React.PropTypes.number,
+  folderId: React.PropTypes.number.isRequired,
+  loadedfolderId: React.PropTypes.number,
+  parentfolderId: React.PropTypes.number,
   selectedFiles: React.PropTypes.array,
   bulkActions: React.PropTypes.bool,
   limit: React.PropTypes.number,
@@ -506,13 +502,11 @@ Gallery.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    visible: state.assetAdmin.gallery.visible,
-
     files: state.assetAdmin.gallery.files,
     count: state.assetAdmin.gallery.count,
-    folderID: state.assetAdmin.gallery.folderID,
-    loadedFolderID: state.assetAdmin.gallery.loadedFolderID,
-    parentFolderID: state.assetAdmin.gallery.parentFolderID,
+    folderId: state.assetAdmin.gallery.folderId,
+    loadedfolderId: state.assetAdmin.gallery.loadedfolderId,
+    parentfolderId: state.assetAdmin.gallery.parentfolderId,
     selectedFiles: state.assetAdmin.gallery.selectedFiles,
     page: state.assetAdmin.gallery.page,
     canEdit: state.assetAdmin.gallery.canEdit,

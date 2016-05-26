@@ -8,12 +8,12 @@ const initialState = {
     options: CONSTANTS.BULK_ACTIONS,
   },
   count: 0, // The number of files in the current view
-  editing: null, // The file being edited
   editorFields: [], // The input fields for editing files. Hardcoded until form field schema is implemented.
   files: [],
-  folderID: -1,
+  fileId: 0,
+  folderId: 0,
   focus: false,
-  parentFolderID: null,
+  parentfolderId: null,
   path: null, // The current location path the app is on
   selectedFiles: [],
   viewingFolder: false,
@@ -37,18 +37,16 @@ export default function galleryReducer(state = initialState, action) {
 
   switch (action.type) {
 
-    case GALLERY.SHOW:
+    case GALLERY.SET_FOLDER:
       return deepFreeze(Object.assign({}, state, {
-        visible: true,
-        fileID: null,
-        folderID: parseInt(action.payload.folderID, 10),
+        folderId: parseInt(action.payload.folderId, 10) || 0,
+        fileId: 0, // reset active file to avoid state inconsistencies
       }));
 
-    case GALLERY.HIDE:
+    case GALLERY.SET_FILE:
       return deepFreeze(Object.assign({}, state, {
-        visible: false,
+        fileId: parseInt(action.payload.fileId, 10) || 0,
       }));
-
 
     case GALLERY.ADD_FILES: {
       const nextFilesState = []; // Clone the state.files array
@@ -158,8 +156,8 @@ export default function galleryReducer(state = initialState, action) {
     case GALLERY.LOAD_FOLDER_REQUEST: {
       return deepFreeze(Object.assign({}, state, {
         // Mark "loaded" at the start of the request to avoid infinite loop of load events
-        loadedFolderID: action.payload.folderID,
-        folderID: action.payload.folderID,
+        loadedfolderId: action.payload.folderId,
+        folderId: action.payload.folderId,
         viewingFolder: action.payload.viewingFolder,
         selectedFiles: [],
         files: [],
@@ -169,7 +167,7 @@ export default function galleryReducer(state = initialState, action) {
 
     case GALLERY.LOAD_FOLDER_SUCCESS: {
       return deepFreeze(Object.assign({}, state, {
-        parentFolderID: action.payload.parentFolderID,
+        parentfolderId: action.payload.parentfolderId,
         canEdit: action.payload.canEdit,
         canDelete: action.payload.canDelete,
         files: action.payload.files,

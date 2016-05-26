@@ -4,6 +4,6 @@
 export default [
   'SET_EDITOR_FIELDS',
   'UPDATE_EDITOR_FIELD',
-  'SET_OPEN_FILE',
+  'SET_FILE',
   'HIDE',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `EDITOR.${item}` }), {});

@@ -28,8 +28,8 @@ describe('Gallery', () => {
           setPath: () => null,
           sortFiles: () => null,
           setViewingFolder: () => null,
-          setParentFolderId: () => null,
-          setFolderId: () => null,
+          setParentfolderId: () => null,
+          setfolderId: () => null,
           loadFolderContents: () => null,
           deleteItems: () => null,
           show: () => null,
@@ -42,11 +42,11 @@ describe('Gallery', () => {
           succeedUpload: () => null,
         },
       },
-      parentFolderID: null,
+      parentfolderId: null,
       selectedFiles: [],
       files: [],
       count: 0,
-      folderID: 1,
+      folderId: 1,
       queuedFiles: {
         items: [],
       },
@@ -147,8 +147,8 @@ describe('Gallery', () => {
       expect(gallery.getBackButton()).toBe(null);
     });
 
-    it('should return a back button if parentFolderID is set.', () => {
-      props.parentFolderID = 0;
+    it('should return a back button if parentfolderId is set.', () => {
+      props.parentfolderId = 0;
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );

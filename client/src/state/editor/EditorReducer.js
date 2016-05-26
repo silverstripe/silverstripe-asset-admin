@@ -2,11 +2,7 @@ import deepFreeze from 'deep-freeze';
 import EDITOR from './EditorActionTypes';
 
 const initialState = {
-  visible: false,
-  editing: null, // The file being edited
   editorFields: [], // The input fields for editing files. Hardcoded until form field schema is implemented.
-  folderID: -1,
-  fileID: -1,
 };
 
 /**
@@ -39,7 +35,7 @@ export default function editorReducer(state = initialState, action) {
       }));
     }
 
-    case EDITOR.SET_OPEN_FILE: {
+    case EDITOR.SET_FILE: {
       // Poor man's data binding.
       // Keeps file state separate from the form field edits.
       // Not every field value change might be saved.
@@ -48,18 +44,9 @@ export default function editorReducer(state = initialState, action) {
         (field) => Object.assign({}, field, { value: action.payload.file[field.name] })
       );
       return deepFreeze(Object.assign({}, state, {
-        visible: true,
-        folderID: parseInt(action.payload.folderID, 10),
-        fileID: parseInt(action.payload.fileID, 10),
-        editing: action.payload.file,
         editorFields: fields,
       }));
     }
-
-    case EDITOR.HIDE:
-      return deepFreeze(Object.assign({}, state, {
-        visible: false,
-      }));
 
     default:
       return state;

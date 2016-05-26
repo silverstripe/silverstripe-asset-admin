@@ -28,28 +28,3 @@ export function updateEditorField(updates) {
       payload: { updates },
     });
 }
-
-/**
- * Load the editing view for a given file
- * Used by AssetAdmin
- * @todo Refactor so that AssetAdmin has its own actions
- */
-export function show(folderID, fileID, file) {
-  return (dispatch) => {
-    dispatch({
-      type: EDITOR.SET_OPEN_FILE,
-      payload: { folderID, fileID, file },
-    });
-  };
-}
-
-/**
- * Hide the editor
- */
-export function hide() {
-  return (dispatch) => {
-    dispatch({
-      type: EDITOR.HIDE,
-    });
-  };
-}

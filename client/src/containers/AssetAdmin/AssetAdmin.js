@@ -12,6 +12,8 @@ class AssetAdmin extends SilverStripeComponent {
   constructor(props) {
     super(props);
 
+    // Required to stop routing from kicking in before props can be set through handleURL()
+    this._didHandleUrl = false;
 
     // TO DO: Work out what this is for and put it somewhere better
     // const $search = $('.cms-search-form');
@@ -37,6 +39,7 @@ class AssetAdmin extends SilverStripeComponent {
 
   componentDidMount() {
     super.componentDidMount();
+
     // While a component is mounted it will intercept all routes and handle internally
     let captureRoute = true;
 
@@ -65,25 +68,33 @@ class AssetAdmin extends SilverStripeComponent {
     });
   }
 
-  componentDidUpdate() {
-    this.refreshURL(window.ss.router);
+  componentWillUnmount() {
+    super.componentWillUnmount();
+
+    this._didHandleUrl = true;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this._didHandleUrl) {
+      this.refreshURL(window.ss.router, nextProps);
+    }
   }
 
   /**
    * Refresh the URL based on the current component state
    */
-  refreshURL(router) {
+  refreshURL(router, nextProps) {
     let desiredURL = null;
-    if (this.props.galleryVisible) {
+    if (nextProps.fileId) {
       desiredURL = this.getConfig().assetsRoute
         .replace(/:folderAction\?/, 'show')
-        .replace(/:folderId\?.*$/, this.props.folderID);
-    } else if (this.props.editorVisible) {
-      desiredURL = this.getConfig().assetsRoute
-        .replace(/:folderAction\?/, 'show')
-        .replace(/:folderId\?/, this.props.folderID)
+        .replace(/:folderId\?/, nextProps.folderId)
         .replace(/:fileAction\?/, 'edit')
-        .replace(/:fileId\?/, this.props.fileID);
+        .replace(/:fileId\?/, nextProps.fileId);
+    } else {
+      desiredURL = this.getConfig().assetsRoute
+        .replace(/:folderAction\?/, 'show')
+        .replace(/:folderId\?.*$/, nextProps.folderId);
     }
 
     if (desiredURL !== null && desiredURL !== router.current) {
@@ -101,45 +112,29 @@ class AssetAdmin extends SilverStripeComponent {
   handleURL(router, context) {
     // If no folder is selected redirect to default route
     if (context.params.folderAction !== 'show') {
-      this.props.actions.editor.hide();
-      this.props.actions.gallery.show(0);
+      this.props.actions.gallery.setFolder(0);
       const defaultRoute = this.getConfig().assetsRouteHome;
       router.show(defaultRoute, null, false);
       return;
     }
 
-    // Find folder
-    const folderId = context.params.folderId || 0;
+    const folderId = parseInt(context.params.folderId, 10);
+    const fileId = parseInt(context.params.fileId, 10);
 
-    // Check if file is selected
-    if (context.params.fileAction === 'edit' && context.params.fileId) {
-      // Show view for this file
-      const fileId = context.params.fileId;
-      const file = this.props.folderFiles.find((next) => next.id === parseInt(fileId, 10));
-      if (file) {
-        this.props.actions.gallery.hide();
-        this.props.actions.editor.show(folderId, fileId, file);
-      } else {
-        // @todo Instead of redirecting, load just this one file via an ajax call
-        // We don't have data on this file, so just redirect back to the gallery for this folder
-        this.props.actions.editor.hide();
-        this.props.actions.gallery.show(folderId);
-      }
-    } else {
-      // No file is selected, so list view for this folder
-      this.props.actions.editor.hide();
-      this.props.actions.gallery.show(folderId);
-    }
+    // These actions will will trigger refreshUrl()
+    // since they case changes to the 'folderId' and 'fileId' props on this component
+    this.props.actions.gallery.setFolder(folderId);
+    this.props.actions.gallery.setFile(fileId);
+
+    this._didHandleUrl = true;
   }
 
-  handleOpenFile(fileID, file) {
-    this.props.actions.gallery.hide();
-    this.props.actions.editor.show(this.props.folderID, fileID, file);
+  handleOpenFile(fileId) {
+    this.props.actions.gallery.setFile(fileId);
   }
 
   handleCloseFile() {
-    this.props.actions.editor.hide();
-    this.props.actions.gallery.show(this.props.folderID);
+    this.props.actions.gallery.setFile(null);
   }
 
   /**
@@ -151,6 +146,15 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   render() {
+    const fileId = this.props.fileId;
+    const file = fileId ? this.props.folderFiles.find((next) => next.id === parseInt(fileId, 10)) : null;
+    let editor = (file &&
+      <Editor
+        onClose={this.handleCloseFile}
+        onFileSave={this.handleFileSave}
+        file={file}
+      />
+    );
     return (
       <div className="gallery">
         <Gallery
@@ -162,10 +166,7 @@ class AssetAdmin extends SilverStripeComponent {
           deleteApi={this.props.deleteApi}
           onOpenFile={this.handleOpenFile}
         />
-        <Editor
-          onClose={this.handleCloseFile}
-          onFileSave={this.handleFileSave}
-        />
+      {editor}
       </div>
     );
   }
@@ -186,11 +187,9 @@ AssetAdmin.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    galleryVisible: state.assetAdmin.gallery.visible,
-    editorVisible: state.assetAdmin.editor.visible,
-    folderID: state.assetAdmin.gallery.folderID,
+    folderId: state.assetAdmin.gallery.folderId,
     folderFiles: state.assetAdmin.gallery.files,
-    fileID: state.assetAdmin.editor.fileID,
+    fileId: state.assetAdmin.gallery.fileId,
   };
 }
 

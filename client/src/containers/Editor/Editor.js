@@ -25,11 +25,13 @@ class Editor extends Component {
       {
         label: 'Title',
         name: 'title',
+        value: this.props.file.title,
       },
       {
         label: 'Filename',
         // TODO Use same property names as DataObject
         name: 'basename',
+        value: this.props.file.basename,
       },
     ];
     this.props.actions.setEditorFields(fields);
@@ -62,10 +64,6 @@ class Editor extends Component {
   }
 
   render() {
-    if (!this.props.visible) {
-      return null;
-    }
-
     return (<div className="editor-component container-fluid">
       <a
         tabIndex="1"
@@ -237,7 +235,6 @@ class Editor extends Component {
 }
 
 Editor.propTypes = {
-  visible: React.PropTypes.bool,
   file: React.PropTypes.shape({
     id: React.PropTypes.number,
     title: React.PropTypes.string,
@@ -262,8 +259,6 @@ Editor.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    visible: state.assetAdmin.editor.visible,
-    file: state.assetAdmin.editor.editing,
     editorFields: state.assetAdmin.editor.editorFields,
   };
 }

@@ -8,7 +8,7 @@ import editorReducer from '../EditorReducer.js';
 import EDITOR from '../EditorActionTypes.js';
 
 describe('editorReducer', () => {
-  describe('SET_OPEN_FILE', () => {
+  describe('SET_FILE', () => {
     it('should start editing the given file', () => {
       const initialState = {
         editing: null,
@@ -16,7 +16,7 @@ describe('editorReducer', () => {
       };
 
       const nextState = editorReducer(initialState, {
-        type: EDITOR.SET_OPEN_FILE,
+        type: EDITOR.SET_FILE,
         payload: { file: { id: 1 } },
       });
 
@@ -30,7 +30,7 @@ describe('editorReducer', () => {
       };
 
       const nextState = editorReducer(initialState, {
-        type: EDITOR.SET_OPEN_FILE,
+        type: EDITOR.SET_FILE,
         payload: { file: null },
       });
 

@@ -240,7 +240,7 @@ class Dropzone extends SilverStripeComponent {
    */
   handleSending(file, xhr, formData) {
     formData.append('SecurityID', this.props.securityID);
-    formData.append('folderID', this.props.folderID);
+    formData.append('folderId', this.props.folderId);
 
     if (typeof this.props.handleSending === 'function') {
       this.props.handleSending(file, xhr, formData);
@@ -344,7 +344,7 @@ class Dropzone extends SilverStripeComponent {
 }
 
 Dropzone.propTypes = {
-  folderID: React.PropTypes.number.isRequired,
+  folderId: React.PropTypes.number.isRequired,
   handleAddedFile: React.PropTypes.func.isRequired,
   handleDragEnter: React.PropTypes.func,
   handleDragLeave: React.PropTypes.func,
