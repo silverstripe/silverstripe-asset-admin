@@ -130,7 +130,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         if (is_numeric($this->getRequest()->requestVar('ID'))) {
             return $this->getRequest()->requestVar('ID');
-        } elseif (is_numeric($this->urlParams['ID'])) {
+        } elseif (array_key_exists('ID', $this->urlParams) && is_numeric($this->urlParams['ID'])) {
             return $this->urlParams['ID'];
         } elseif (Session::get("{$this->class}.currentPage")) {
             return Session::get("{$this->class}.currentPage");
