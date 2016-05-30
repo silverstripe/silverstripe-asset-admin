@@ -157,6 +157,7 @@ class AssetAdmin extends SilverStripeComponent {
     );
     return (
       <div className="gallery">
+        {editor}
         <Gallery
           name={this.props.name}
           limit={this.props.limit}
@@ -166,7 +167,6 @@ class AssetAdmin extends SilverStripeComponent {
           deleteApi={this.props.deleteApi}
           onOpenFile={this.handleOpenFile}
         />
-      {editor}
       </div>
     );
   }
