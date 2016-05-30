@@ -6,16 +6,6 @@
   bottom: 0;
   margin: $toolbar-total-height $grid-gutter-width-half 0;
 
-  .gallery--has-editor & {
-    @include media-breakpoint-up(md) {
-      width: calc(100% - #{$cms-panel-sm + 20px});
-    }
-
-    @include media-breakpoint-up(xl) {
-      margin-right: calc(100% - #{$cms-panel-md + 20px});
-    }
-  }
-
   &::after {
     position: absolute;
     top: -70px;
@@ -32,5 +22,15 @@
     &::after {
       content: "";
     }
+  }
+}
+
+.editor + .gallery__main .dropzone-component {
+  @include media-breakpoint-up(lg) {
+    width: calc(100% - #{$cms-panel-sm} - #{$grid-gutter-width});
+  }
+
+  @include media-breakpoint-up(xl) {
+    width: calc(100% - #{$cms-panel-md} - #{$grid-gutter-width});
   }
 }
