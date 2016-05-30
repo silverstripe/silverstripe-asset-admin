@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
 import Dropzone from 'components/Dropzone/Dropzone';
-import File from 'components/File/File';
+import File from 'components/GalleryItem/GalleryItem';
 import BulkActions from 'components/BulkActions/BulkActions';
 import CONSTANTS from 'constants/index';
 import * as galleryActions from 'state/gallery/GalleryActions';
@@ -363,35 +363,35 @@ export class Gallery extends Component {
     return (
       <div className="gallery__main">
         <ReactCSSTransitionGroup
-          transitionName="gallery__bulk-actions"
+          transitionName="bulk-actions"
           transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
           transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
         >
           {this.getBulkActionsComponent()}
         </ReactCSSTransitionGroup>
 
-        <div className="toolbar--content">
+        <div className="gallery__sort fieldholder-small">
+          <select
+            className="dropdown no-change-track no-chzn"
+            tabIndex="0"
+            style={{ width: '160px' }}
+          >
+            {this.sorters.map((sorter, i) =>
+              (
+                <option
+                  key={i}
+                  onClick={this.handleSort}
+                  data-field={sorter.field}
+                  data-direction={sorter.direction}
+                >
+                  {sorter.label}
+                </option>
+              )
+            )}
+          </select>
+        </div>
 
-          <div className="gallery__sort fieldholder-small">
-            <select
-              className="dropdown no-change-track no-chzn"
-              tabIndex="0"
-              style={{ width: '160px' }}
-            >
-              {this.sorters.map((sorter, i) =>
-                (
-                  <option
-                    key={i}
-                    onClick={this.handleSort}
-                    data-field={sorter.field}
-                    data-direction={sorter.direction}
-                  >
-                    {sorter.label}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
+        <div className="toolbar--content toolbar--space-save">
 
           {this.getBackButton()}
 
@@ -401,19 +401,18 @@ export class Gallery extends Component {
             type="button"
             disabled={!canEdit}
           >
-            {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
+            <span className="btn__text">{i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}</span>
           </button>
 
           <button
             id="add-folder-button"
-            className="btn btn-secondary font-icon-folder-add btn--icon-xl"
+            className="btn btn-secondary font-icon-folder-add btn--icon-xl "
             type="button"
             onClick={this.handleAddFolder}
             disabled={!canEdit}
           >
-            {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
+            <span className="btn__text">{i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}</span>
           </button>
-
         </div>
 
         <Dropzone

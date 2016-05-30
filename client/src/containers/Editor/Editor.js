@@ -86,14 +86,17 @@ class Editor extends Component {
 
       <div className="editor__details">
         <h1 className="editor__heading">{file.title}</h1>
-        <p className="header-extra small readonly">
+        <p className="sub-heading">
           {headerExtraPartsStr}
         </p>
 
-        <div className="file-preview">
-          <img className="file-preview-thumbnail" src={file.url} alt={file.title} />
-          <a href={file.url} target="_blank" className="file-enlarge font-icon-search btn--no-text"></a>
-        </div>
+        <a
+          href={file.url}
+          className="editor__file-preview font-icon-search btn--no-text"
+          target="_blank"
+        >
+          <img className="editor__file-thumbnail" src={file.url} alt={file.title} />
+        </a>
 
         <ul className="nav nav-tabs hidden-xs-up" role="tablist">
           <li className="nav-item">
@@ -124,9 +127,9 @@ class Editor extends Component {
               <input type="text" className="form-control" id="folderLocation" value="uploads/folder name/" disabled />
             </div>
 
-            <div className="media form-group break-string">
+            <div className="media break-string">
               <div className="media-left">
-                <i className="font-icon-link"></i>
+                <i className="font-icon-link btn--icon-large editor__url-icon"></i>
               </div>
               <div className="media-body">
                 <a href={file.url} target="_blank">{file.url}</a>
@@ -134,15 +137,8 @@ class Editor extends Component {
             </div>
 
             <div className="btn-toolbar">
-              <div className="btn-group" role="group" aria-label="">
-                <FormAction
-                  type="submit"
-                  bootstrapButtonStyle="primary"
-                  icon="save"
-                  handleClick={this.handleFileSave}
-                  loading={this.state.isSaving}
-                  label={i18n._t('AssetGalleryField.SAVE')}
-                />
+
+              <div className="btn-group hidden-xs-up" role="group" aria-label="">
                 <FormAction
                   type="submit"
                   bootstrapButtonStyle="primary"
@@ -153,10 +149,19 @@ class Editor extends Component {
                 />
               </div>
 
+              <FormAction
+                type="submit"
+                bootstrapButtonStyle="primary"
+                icon="save"
+                handleClick={this.handleFileSave}
+                loading={this.state.isSaving}
+                label={i18n._t('AssetGalleryField.SAVE')}
+              />
+
               <button
                 type="button"
                 data-container="body"
-                className="btn btn-secondary font-icon-dot-3 btn--no-text btn--icon-large"
+                className="btn btn-secondary font-icon-dot-3 btn--no-text btn--icon-large hidden-xs-up"
                 data-toggle="popover"
                 title="Page actions"
                 data-placement="top"
@@ -166,7 +171,7 @@ class Editor extends Component {
             </div>
           </div>
 
-          <div className="tab-pane hidden-xs-up" id="file-usage" role="tabpanel">
+          <div className="tab-pane" id="file-usage" role="tabpanel">
 
             <ul className="list-unstyled text-muted m-b-2">
               <li>{file.type}</li>
@@ -183,34 +188,34 @@ class Editor extends Component {
                 </tr>
               </thead>
               <tbody>
-                <tr className="bg-primary">
+                <tr>
                   <th scope="row">1</th>
-                  <td>About us<small className="additional-info">Page</small></td>
+                  <td><h5><a href="">About us</a></h5><small className="sub-heading">Page</small></td>
                   <td><span className="label label-info">Draft</span></td>
                 </tr>
                 <tr>
                   <th scope="row">2</th>
-                  <td><a href="">My great blog post</a><small className="additional-info">Blog post</small></td>
+                  <td><h5><a href="">My great blog post</a></h5><p className="sub-heading">Blog post</p></td>
                   <td><span className="label label-success">Published</span></td>
                 </tr>
                 <tr>
                   <th scope="row">3</th>
-                  <td><a href="">Our services</a><small className="additional-info">Services Page</small></td>
+                  <td><h5><a href="">Our services</a></h5><p className="sub-heading">Services Page</p></td>
                   <td><span className="label label-success">Published</span></td>
                 </tr>
                 <tr>
                   <th scope="row">4</th>
-                  <td><a href="">June release</a><small className="additional-info">Campaign</small></td>
+                  <td><h5><a href="">June release</a></h5><p className="sub-heading">Campaign</p></td>
                   <td></td>
                 </tr>
                 <tr>
                   <th scope="row">5</th>
-                  <td><a href="">Marketing</a><small className="additional-info">Campaign</small></td>
+                  <td><h5><a href="">Marketing</a></h5><p className="sub-heading">Campaign</p></td>
                   <td><span className="label label-warning">Scheduled</span></td>
                 </tr>
                 <tr>
                   <th scope="row">6</th>
-                  <td><a href="">Services section</a><small className="additional-info">Campaign</small></td>
+                  <td><h5><a href="">Services section</a></h5><p className="sub-heading">Campaign</p></td>
                   <td><span className="label label-success">Published</span></td>
                 </tr>
               </tbody>

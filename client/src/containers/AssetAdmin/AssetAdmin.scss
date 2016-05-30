@@ -1,5 +1,6 @@
 // Temp: Needed for legacy markup in template
 // Needs deeper nesting to override legacy styles
+
 .cms .AssetAdmin .cms-content-view {
   position: relative;
   min-height: 100%;
@@ -42,26 +43,6 @@
     // TODO Re-enable once list view is in place
     display: none;
     margin-top: 0;
-  }
-
-  .gallery--has-editor .toolbar-content {
-    @include media-breakpoint-up(md) {
-      margin-right: $cms-panel-sm + 20px;
-    }
-
-    @include media-breakpoint-up(xl) {
-      margin-right: $cms-panel-md + 20px;
-    }
-  }
-
-  .gallery--has-editor .toolbar-content {
-    @include media-breakpoint-up(md) {
-      margin-right: #{$cms-panel-sm} + $grid-gutter-width-half;
-    }
-
-    @include media-breakpoint-up(xl) {
-      margin-right: #{$cms-panel-md} + $grid-gutter-width-half;
-    }
   }
 
   // Hide search for AssetAdmin for Alpha1 only

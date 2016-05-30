@@ -1,41 +1,78 @@
-.gallery {
+.gallery__no-item-notice {
+  width: 100%;
+  text-align: center;
+}
 
-  .gallery__no-item-notice {
-    width: 100%;
-    text-align: center;
+.gallery__back {
+  &.ss-ui-button::before {
+    font-size: 23px;
   }
+}
 
-  .gallery__back {
-    &.ss-ui-button::before {
-      font-size: 23px;
-    }
-  }
+.gallery__folders {
+  display: inline-block;
+  margin-bottom: -6px;
+  width: 100%;
+}
 
-  .gallery__sort {
-    position: absolute;
-    top: 14px;
-    right: 16px;
+.gallery__files {
+  display: inline-block;
+  width: 100%;
+}
 
-    // Nesting required to override chosen defaults
-    .chosen-single {
-      border: 0;
-      filter: none; //IE9
-      background: none;
-      box-shadow: none;
-      color: inherit;
-      margin-top: -1px;
-    }
-  }
+.gallery__load {
+  width: 100%;
+  display: inline-block;
+}
 
-  .chosen-single:focus {
-    box-shadow: $dropdown-shadow;
-  }
+.gallery__load-more {
+  display: block;
+  color: $white;
+  cursor: pointer;
+  margin: 8px auto 24px;
+  padding: 4px;
+  width: 200px;
+  font-size: 16px;
+  height: 44px;
+  background-color: $brand-primary;
+  border: 0;
+  border-radius: 4px;
+}
 
-  .chosen-single > span {
-    text-align: right;
+// Sort - requires deeper nesting
+.gallery .gallery__sort .chosen-single {
+  border: 0;
+  filter: none; //IE9
+  background: none;
+  box-shadow: none;
+  color: inherit;
+  margin-top: -1px;
+}
+
+.gallery__sort {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  margin-right: 16px;
+
+  .chosen-single {
+    border: 0;
+    filter: none; //IE9
+    background: none;
+    box-shadow: none;
     color: inherit;
+    margin-top: -1px;
 
-    &::before {
+    &:focus {
+      box-shadow: $dropdown-shadow;
+    }
+
+    > span {
+      text-align: right;
+      color: inherit;
+    }
+
+    > span::before {
       content: "Sort by ";
     }
   }
@@ -49,34 +86,15 @@
   .active-result {
     text-transform: capitalize;
   }
+}
 
-  .gallery__folders {
-    display: inline-block;
-    margin-bottom: -6px;
-    width: 100%;
+// Responsive, if editor exists then move .gallery__sort
+.editor + .gallery__main .gallery__sort {
+  @include media-breakpoint-up(md) {
+    right: $cms-panel-sm;
   }
 
-  .gallery__files {
-    display: inline-block;
-    width: 100%;
-  }
-
-  .gallery__load {
-    width: 100%;
-    display: inline-block;
-  }
-
-  .gallery__load-more {
-    display: block;
-    color: $white;
-    cursor: pointer;
-    margin: 8px auto 24px;
-    padding: 4px;
-    width: 200px;
-    font-size: 16px;
-    height: 44px;
-    background-color: $brand-primary;
-    border: 0;
-    border-radius: 4px;
+  @include media-breakpoint-up(xl) {
+    right: $cms-panel-md;
   }
 }
