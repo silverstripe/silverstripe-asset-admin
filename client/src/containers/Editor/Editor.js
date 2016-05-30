@@ -64,6 +64,17 @@ class Editor extends Component {
   }
 
   render() {
+    const file = this.props.file;
+
+    const headerExtraParts = [];
+    if (file.attributes.dimensions.width && file.attributes.dimensions.height) {
+      headerExtraParts.push(
+        `${file.attributes.dimensions.width}x${file.attributes.dimensions.height}px`
+      );
+    }
+    headerExtraParts.push(file.size);
+    const headerExtraPartsStr = headerExtraParts.join(', ');
+
     return (<div className="editor container-fluid">
       <a
         tabIndex="1"
@@ -74,16 +85,14 @@ class Editor extends Component {
       />
 
       <div className="editor__details">
-        <h1 className="editor__heading">{this.props.file.title}</h1>
+        <h1 className="editor__heading">{file.title}</h1>
         <p className="header-extra small readonly">
-          {this.props.file.attributes.dimensions.width} x&nbsp;
-          {this.props.file.attributes.dimensions.height}px,
-          {this.props.file.size}
+          {headerExtraPartsStr}
         </p>
 
         <div className="file-preview">
-          <img className="file-preview-thumbnail" src={this.props.file.url} alt={this.props.file.title} />
-          <a href={this.props.file.url} target="_blank" className="file-enlarge font-icon-search btn--no-text"></a>
+          <img className="file-preview-thumbnail" src={file.url} alt={file.title} />
+          <a href={file.url} target="_blank" className="file-enlarge font-icon-search btn--no-text"></a>
         </div>
 
         <ul className="nav nav-tabs hidden-xs-up" role="tablist">
@@ -120,7 +129,7 @@ class Editor extends Component {
                 <i className="font-icon-link"></i>
               </div>
               <div className="media-body">
-                <a href={this.props.file.url} target="_blank">{this.props.file.url}</a>
+                <a href={file.url} target="_blank">{file.url}</a>
               </div>
             </div>
 
@@ -160,9 +169,9 @@ class Editor extends Component {
           <div className="tab-pane hidden-xs-up" id="file-usage" role="tabpanel">
 
             <ul className="list-unstyled text-muted m-b-2">
-              <li>{this.props.file.type}</li>
-              <li>{i18n._t('AssetGalleryField.CREATED')} {this.props.file.created}</li>
-              <li>{i18n._t('AssetGalleryField.LASTEDIT')} {this.props.file.lastUpdated}</li>
+              <li>{file.type}</li>
+              <li>{i18n._t('AssetGalleryField.CREATED')} {file.created}</li>
+              <li>{i18n._t('AssetGalleryField.LASTEDIT')} {file.lastUpdated}</li>
             </ul>
 
             <table className="table">
