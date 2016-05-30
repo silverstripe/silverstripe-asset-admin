@@ -41,6 +41,7 @@ describe('File', () => {
 
       event = {
         stopPropagation: jest.genMockFunction(),
+        preventDefault: jest.genMockFunction(),
       };
     });
 
@@ -70,6 +71,7 @@ describe('File', () => {
 
       event = {
         stopPropagation: jest.genMockFunction(),
+        preventDefault: jest.genMockFunction(),
       };
     });
 
