@@ -49,21 +49,19 @@
     float: left; }
   .asset-gallery .item--folder .item__title {
     padding: 17px 28px 17px 0;
-    width: 131px;
+    width: auto;
     height: 52px; }
   .asset-gallery .item--folder .item__action {
-    height: 52px;
-    padding-top: 9px; }
+    margin-top: 14px; }
+  .asset-gallery .item--folder .item__action--label {
+    margin-top: 5px; }
 
 .asset-gallery .item--selected {
   border-color: #29abe2; }
-  .asset-gallery .item--selected .item__action--select {
+  .asset-gallery .item--selected .item__action--label::before {
     border-color: #29abe2;
-    color: #fff;
-    opacity: 1; }
-  .asset-gallery .item--selected .item__action--select::before {
-    border-color: #29abe2;
-    background-color: #29abe2; }
+    background-color: #29abe2;
+    color: #fff; }
 
 .asset-gallery .item--focussed .item--overlay {
   opacity: 1;
@@ -123,13 +121,36 @@
     font-size: 14px;
     padding: 1px; }
 
-.asset-gallery .item__action--select {
-  color: transparent; }
-  .asset-gallery .item__action--select:hover::before {
-    border: 1px solid #29abe2; }
-  .asset-gallery .item__action--select::before {
+.asset-gallery .item__action--label {
+  width: 30px;
+  height: 40px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background-color: #fff;
+  margin-bottom: 0; }
+  .asset-gallery .item__action--label::before {
     border: 1px solid #d9dee2;
-    border-radius: 0.2rem; }
+    border-radius: 0.2rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 10px;
+    font-size: 14px;
+    padding: 1px;
+    z-index: 1;
+    color: transparent; }
+  .asset-gallery .item__action--label:hover {
+    cursor: pointer; }
+  .asset-gallery .item__action--label:hover::before {
+    border: 1px solid #29abe2; }
+
+.asset-gallery .item__action--select {
+  color: transparent;
+  margin: 8px 10px;
+  height: 26px;
+  width: 16px;
+  z-index: -1; }
 
 .asset-gallery .item__action--cancel {
   color: #66727d; }
@@ -137,7 +158,13 @@
     color: #4f5861; }
   .asset-gallery .item__action--cancel::before {
     font-size: 18px;
-    vertical-align: bottom; }
+    vertical-align: bottom;
+    padding: 11px 8px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    z-index: 2; }
 
 .asset-gallery .item__upload-progress {
   height: 18px;
@@ -154,7 +181,7 @@
     width: 0%; }
 
 .asset-gallery .item__title {
-  padding: 11px 28px 11px 12px;
+  padding: 11px 30px 11px 12px;
   height: 40px;
   width: 176px;
   margin: 0;

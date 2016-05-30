@@ -63,28 +63,26 @@
 
     .item__title {
       padding: 17px 28px 17px 0;
-      width: 131px;
+      width: auto;
       height: $gallery-folder-title-height;
     }
 
     .item__action {
-      height: $gallery-folder-title-height;
-      padding-top: 9px;
+      margin-top: 14px;
+    }
+
+    .item__action--label {
+      margin-top: 5px;
     }
   }
 
   .item--selected {
     border-color: $component-active-border-color;
 
-    .item__action--select {
-      border-color: $component-active-border-color;
-      color: $white;
-      opacity: 1;
-    }
-
-    .item__action--select::before {
+    .item__action--label::before {
       border-color: $component-active-border-color;
       background-color: $component-active-border-color;
+      color: $white;
     }
   }
 
@@ -161,17 +159,43 @@
     }
   }
 
-  .item__action--select {
-    color: transparent;
-
-    &:hover::before {
-      border: 1px solid $component-active-border-color;
-    }
+  .item__action--label {
+    width: 30px;
+    height: 40px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: $white;
+    margin-bottom: 0;
 
     &::before {
       border: 1px solid $border-color;
       border-radius: $border-radius-sm;
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 10px;
+      font-size: 14px;
+      padding: 1px;
+      z-index: 1;
+      color: transparent;
     }
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &:hover::before {
+      border: 1px solid $component-active-border-color;
+    }
+  }
+
+  .item__action--select {
+    color: transparent;
+    margin: 8px 10px;
+    height: 26px;
+    width: 16px;
+    z-index: -1;
   }
 
   .item__action--cancel {
@@ -184,6 +208,12 @@
     &::before {
       font-size: 18px;
       vertical-align: bottom;
+      padding: 11px 8px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      cursor: pointer;
+      z-index: 2;
     }
   }
 
@@ -205,7 +235,7 @@
   }
 
   .item__title {
-    padding: 11px 28px 11px 12px;
+    padding: 11px 30px 11px 12px;
     height: $gallery-title-height;
     width: $gallery-thumb-width;
     margin: 0;

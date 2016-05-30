@@ -32,6 +32,7 @@ class File extends SilverStripeComponent {
    */
   handleToggleSelect(event) {
     event.stopPropagation();
+    event.preventDefault();
     this.props.handleToggleSelect(event, this.props.item);
   }
 
@@ -178,24 +179,30 @@ class File extends SilverStripeComponent {
     let actionInputCheckbox;
 
     if (this.props.uploading) {
-      actionInputCheckbox = (<input
-        className="item__actions__action item__actions__action--cancel [ font-icon-cancel ]"
-        type="checkbox"
-        title={i18n._t('AssetGalleryField.SELECT')}
-        tabIndex="-1"
-        onMouseDown={this.preventFocus}
+      actionInputCheckbox = (<label
+        className="item__action--cancel font-icon-cancel"
         onClick={this.handleCancelUpload}
-        data-dz-remove
-      />);
-    } else {
-      actionInputCheckbox = (<input
-        className="item__actions__action item__actions__action--select [ font-icon-tick ]"
+      >
+      <input
+        className="item__action item__action--select"
         type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
         onMouseDown={this.preventFocus}
+        data-dz-remove
+      /></label>);
+    } else {
+      actionInputCheckbox = (<label
+        className="item__action--label font-icon-tick"
         onClick={this.handleToggleSelect}
-      />);
+      >
+      <input
+        className="item__action item__action--select"
+        type="checkbox"
+        title={i18n._t('AssetGalleryField.SELECT')}
+        tabIndex="-1"
+        onMouseDown={this.preventFocus}
+      /></label>);
     }
 
     return (
@@ -216,8 +223,8 @@ class File extends SilverStripeComponent {
         {this.getProgressBar()}
         {this.getErrorMessage()}
         <div className="item__title" ref="title">
-          {this.props.item.title}
           {actionInputCheckbox}
+          {this.props.item.title}
         </div>
       </div>
     );
