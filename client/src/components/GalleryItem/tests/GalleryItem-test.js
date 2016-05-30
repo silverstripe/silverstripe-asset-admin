@@ -1,12 +1,12 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('../File.js');
+jest.unmock('../GalleryItem.js');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import File from '../File.js';
+import GalleryItem from '../GalleryItem.js';
 
-describe('File', () => {
+describe('GalleryItem', () => {
   let props;
 
   beforeEach(() => {
@@ -31,12 +31,12 @@ describe('File', () => {
   });
 
   describe('handleActivate()', () => {
-    let file;
+    let item;
     let event;
 
     beforeEach(() => {
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
 
       event = {
@@ -46,27 +46,27 @@ describe('File', () => {
     });
 
     it('should call props.handleActivate', () => {
-      expect(file.props.handleActivate.mock.calls.length).toBe(0);
+      expect(item.props.handleActivate.mock.calls.length).toBe(0);
 
-      file.handleActivate(event);
+      item.handleActivate(event);
 
-      expect(file.props.handleActivate).toBeCalled();
+      expect(item.props.handleActivate).toBeCalled();
     });
 
     it('should stop propagation of the event', () => {
-      file.handleActivate(event);
+      item.handleActivate(event);
 
       expect(event.stopPropagation).toBeCalled();
     });
   });
 
   describe('handleToggleSelect()', () => {
-    let file;
+    let item;
     let event;
 
     beforeEach(() => {
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
 
       event = {
@@ -76,101 +76,101 @@ describe('File', () => {
     });
 
     it('should call props.handleToggleSelect', () => {
-      expect(file.props.handleToggleSelect.mock.calls.length).toBe(0);
+      expect(item.props.handleToggleSelect.mock.calls.length).toBe(0);
 
-      file.handleToggleSelect(event);
+      item.handleToggleSelect(event);
 
-      expect(file.props.handleToggleSelect).toBeCalled();
+      expect(item.props.handleToggleSelect).toBeCalled();
     });
 
     it('should stop propagation of the event', () => {
-      file.handleToggleSelect(event);
+      item.handleToggleSelect(event);
 
       expect(event.stopPropagation).toBeCalled();
     });
   });
 
   describe('getThumbnailStyles()', () => {
-    let file;
+    let item;
 
     beforeEach(() => {
       props.item.url = 'myurl';
 
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
     });
 
     it('should return backgroundImage with the correct url if the item is an image', () => {
-      file.props.item.category = 'image';
+      item.props.item.category = 'image';
 
-      expect(JSON.stringify(file.getThumbnailStyles())).toBe('{"backgroundImage":"url(myurl)"}');
+      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{"backgroundImage":"url(myurl)"}');
     });
 
     it('should return an empty object if the item is not an image', () => {
-      file.props.item.category = 'notAnImage';
+      item.props.item.category = 'notAnImage';
 
-      expect(JSON.stringify(file.getThumbnailStyles())).toBe('{}');
+      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{}');
     });
   });
 
   describe('getThumbnailClassNames()', () => {
-    let file;
+    let item;
 
     beforeEach(() => {
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
 
-      file.isImageSmallerThanThumbnail = jest.genMockFunction();
+      item.isImageSmallerThanThumbnail = jest.genMockFunction();
     });
 
-    it('should return "item__thumbnail"', () => {
-      expect(file.getThumbnailClassNames()).toBe('item__thumbnail');
+    it('should return not return small classes by default', () => {
+      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail');
     });
 
-    it('should return "item__thumbnail item__thumbnail--small" if isImageSmallerThanThumbnail returns true', () => {
-      file.isImageSmallerThanThumbnail.mockReturnValueOnce(true);
+    it('should return small classes only if isImageSmallerThanThumbnail returns true', () => {
+      item.isImageSmallerThanThumbnail.mockReturnValueOnce(true);
 
-      expect(file.getThumbnailClassNames()).toContain('item__thumbnail--small');
+      expect(item.getThumbnailClassNames()).toContain('gallery-item__thumbnail--small');
     });
   });
 
   describe('getItemClassNames()', () => {
-    let file;
+    let item;
 
     it('should return the file\'s category', () => {
       props.item.category = 'image';
 
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
 
-      expect(file.getItemClassNames()).toContain('item--image');
+      expect(item.getItemClassNames()).toContain('item--image');
     });
 
     it('should return selected if the selected prop is true', () => {
       props.selected = true;
 
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
 
-      expect(file.getItemClassNames()).toContain('item--selected');
+      expect(item.getItemClassNames()).toContain('item--selected');
     });
   });
 
   describe('isImageSmallerThanThumbnail()', () => {
-    let file;
+    let item;
 
     beforeEach(() => {
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
     });
 
     it('should return true if the dimensions are smaller than the default thumbnail size', () => {
-      expect(file.isImageSmallerThanThumbnail()).toBe(true);
+      expect(item.isImageSmallerThanThumbnail()).toBe(true);
     });
 
     it('should return false if the dimensions are larger than the default thumbnail size', () => {
@@ -179,20 +179,20 @@ describe('File', () => {
         height: 1000,
       };
 
-      expect(file.isImageSmallerThanThumbnail()).toBe(false);
+      expect(item.isImageSmallerThanThumbnail()).toBe(false);
     });
   });
 
   describe('handleKeyDown()', () => {
-    let file;
+    let item;
     let event;
 
     beforeEach(() => {
       props.spaceKey = 32;
       props.returnKey = 13;
 
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
 
       event = {
@@ -200,49 +200,49 @@ describe('File', () => {
         preventDefault: jest.genMockFunction(),
       };
 
-      file.handleToggleSelect = jest.genMockFunction();
-      file.handleActivate = jest.genMockFunction();
+      item.handleToggleSelect = jest.genMockFunction();
+      item.handleActivate = jest.genMockFunction();
     });
 
     it('should trigger handleToggleSelect when the space key is pressed', () => {
       event.keyCode = 32;
-      expect(file.handleToggleSelect.mock.calls.length).toBe(0);
+      expect(item.handleToggleSelect.mock.calls.length).toBe(0);
 
-      file.handleKeyDown(event);
+      item.handleKeyDown(event);
 
-      expect(file.handleToggleSelect).toBeCalled();
+      expect(item.handleToggleSelect).toBeCalled();
     });
 
     it('should trigger handleActivate when the return key is pressed', () => {
       event.keyCode = 13;
-      expect(file.handleActivate.mock.calls.length).toBe(0);
+      expect(item.handleActivate.mock.calls.length).toBe(0);
 
-      file.handleKeyDown(event);
+      item.handleKeyDown(event);
 
-      expect(file.handleActivate).toBeCalled();
+      expect(item.handleActivate).toBeCalled();
     });
 
     it('should stop propagation of the event', () => {
-      file.handleKeyDown(event);
+      item.handleKeyDown(event);
 
       expect(event.stopPropagation).toBeCalled();
     });
 
     it('should prevent the default behaviour of the event', () => {
       event.keyCode = 32;
-      file.handleKeyDown(event);
+      item.handleKeyDown(event);
 
       expect(event.preventDefault).toBeCalled();
     });
   });
 
   describe('preventFocus()', () => {
-    let file;
+    let item;
     let event;
 
     beforeEach(() => {
-      file = ReactTestUtils.renderIntoDocument(
-        <File {...props} />
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
       );
 
       event = {
@@ -251,7 +251,7 @@ describe('File', () => {
     });
 
     it('should prevent the default behaviour of the event', () => {
-      file.preventFocus(event);
+      item.preventFocus(event);
 
       expect(event.preventDefault).toBeCalled();
     });
