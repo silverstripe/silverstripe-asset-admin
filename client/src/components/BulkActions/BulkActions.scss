@@ -1,17 +1,29 @@
-.gallery__bulk-actions {
-  padding: 8px;
-  left: 160px; // TODO: Needs to go to 60px when main nav is collapsed
-  z-index: 59;
-  right: 0;
-  height: 48px;
+// Change width depending on the amount of actions inside
+$bulk-actions-width: 200px;
+
+.bulk-actions {
+  width: calc(100% - #{$cms-panel-xs});
+  padding-top: $spacer-y * .625;
+  padding-bottom: $spacer-y * .625;
+  padding-left: $grid-gutter-width-half;
+  padding-right: $grid-gutter-width-half;
   margin: 0 auto;
   position: fixed;
+  height: 53px;
+  z-index: 1;
   top: 52px;
-  width: 200px;
   box-shadow: 0 1px 2px $shadow-light;
   background-color: $background-darker;
   transition: all 0.5s ease-in-out;
   transform: scale(1);
+
+  @include media-breakpoint-up(sm) {
+    height: 48px;
+    padding: 8px;
+    left: 50%;
+    width: $bulk-actions-width;
+    margin-left: -$bulk-actions-width / 2;
+  }
 
   &-enter {
     top: 0;
@@ -35,7 +47,7 @@
     transition: top .2s linear .1s, transform .1s ease-in;
   }
 
-  .gallery__bulk-actions-counter {
+  .bulk-actions-counter {
     display: inline-block;
     vertical-align: middle;
     min-width: 28px;
@@ -49,7 +61,7 @@
     font-weight: bold;
   }
 
-  .gallery__bulk-actions_action.ss-ui-button {
+  .bulk-actions_action.ss-ui-button {
     line-height: $line-height-base;
     margin-bottom: 0;
     height: 32px;
@@ -112,5 +124,16 @@
     &:nth-child(1)::before {
       content: "g";
     }
+  }
+}
+
+// Responsive, if editor exists then move .bulk-actions
+.editor + .gallery__main .bulk-actions {
+  @include media-breakpoint-up(md) {
+    left: calc((100% - #{$cms-panel-sm}) / 2 + (#{$bulk-actions-width} / 4));
+  }
+
+  @include media-breakpoint-up(xl) {
+    left: calc((100% - #{$cms-panel-md}) / 2 + (#{$bulk-actions-width} / 4));
   }
 }
