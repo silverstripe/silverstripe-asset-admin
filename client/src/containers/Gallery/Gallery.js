@@ -6,7 +6,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
-import Dropzone from 'components/Dropzone/Dropzone';
+import Dropzone from 'components/AssetDropzone/AssetDropzone';
 import File from 'components/GalleryItem/GalleryItem';
 import BulkActions from 'components/BulkActions/BulkActions';
 import CONSTANTS from 'constants/index';

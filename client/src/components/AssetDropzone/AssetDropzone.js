@@ -5,7 +5,7 @@ import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
 import $ from 'jQuery';
 
-class Dropzone extends SilverStripeComponent {
+class AssetDropzone extends SilverStripeComponent {
 
   constructor(props) {
     super(props);
@@ -21,7 +21,7 @@ class Dropzone extends SilverStripeComponent {
 
     if (this.props.uploadButton === true) {
       defaultOptions.clickable = $(ReactDOM.findDOMNode(this))
-        .find('.dropzone-component__upload-button')[0];
+        .find('.asset-dropzone__upload-button')[0];
     }
 
     this.dropzone = new DropzoneLib(
@@ -46,10 +46,10 @@ class Dropzone extends SilverStripeComponent {
   }
 
   render() {
-    const className = ['dropzone-component'];
+    const className = ['asset-dropzone'];
 
     const buttonProps = {
-      className: 'dropzone-component__upload-button [ ss-ui-button font-icon-upload ]',
+      className: 'asset-dropzone__upload-button ss-ui-button font-icon-upload',
       type: 'button',
     };
 
@@ -343,7 +343,7 @@ class Dropzone extends SilverStripeComponent {
 
 }
 
-Dropzone.propTypes = {
+AssetDropzone.propTypes = {
   folderId: React.PropTypes.number.isRequired,
   handleAddedFile: React.PropTypes.func.isRequired,
   handleDragEnter: React.PropTypes.func,
@@ -361,8 +361,8 @@ Dropzone.propTypes = {
   canUpload: React.PropTypes.bool.isRequired,
 };
 
-Dropzone.defaultProps = {
+AssetDropzone.defaultProps = {
   uploadButton: true,
 };
 
-export default Dropzone;
+export default AssetDropzone;

@@ -1,4 +1,4 @@
-.dropzone-component {
+.asset-dropzone {
   position: absolute;
   left: 0;
   top: 0;
@@ -25,7 +25,7 @@
   }
 }
 
-.editor + .gallery__main .dropzone-component {
+.editor + .gallery__main .asset-dropzone {
   @include media-breakpoint-up(lg) {
     width: calc(100% - #{$cms-panel-sm} - #{$grid-gutter-width});
   }
