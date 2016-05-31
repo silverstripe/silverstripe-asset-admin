@@ -78,6 +78,16 @@ class Editor extends Component {
     headerExtraParts.push(file.size);
     const headerExtraPartsStr = headerExtraParts.join(', ');
 
+    const preview = (file.category === 'image' &&
+      <a
+        href={file.url}
+        className="editor__file-preview font-icon-search btn--no-text"
+        target="_blank"
+      >
+        <img className="editor__file-thumbnail" src={file.url} alt={file.title} />
+      </a>
+    );
+
     return (<div className="editor container-fluid">
       <a
         tabIndex="1"
@@ -93,13 +103,7 @@ class Editor extends Component {
           {headerExtraPartsStr}
         </p>
 
-        <a
-          href={file.url}
-          className="editor__file-preview font-icon-search btn--no-text"
-          target="_blank"
-        >
-          <img className="editor__file-thumbnail" src={file.url} alt={file.title} />
-        </a>
+        {preview}
 
         <ul className="nav nav-tabs hidden-xs-up" role="tablist">
           <li className="nav-item">
