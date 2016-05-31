@@ -3,7 +3,7 @@ import React from 'react';
 import constants from 'constants/index';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 
-class File extends SilverStripeComponent {
+class GalleryItem extends SilverStripeComponent {
   constructor(props) {
     super(props);
 
@@ -235,7 +235,7 @@ class File extends SilverStripeComponent {
   }
 }
 
-File.propTypes = {
+GalleryItem.propTypes = {
   item: React.PropTypes.shape({
     attributes: React.PropTypes.shape({
       dimensions: React.PropTypes.object.isRequired,
@@ -259,9 +259,9 @@ File.propTypes = {
   uploading: React.PropTypes.bool,
 };
 
-File.defaultProps = {
+GalleryItem.defaultProps = {
   returnKey: 13,
   spaceKey: 32,
 };
 
-export default File;
+export default GalleryItem;
