@@ -339,7 +339,8 @@
 
 .gallery__files {
   display: inline-block;
-  width: 100%; }
+  width: 100%;
+  margin-bottom: 53px; }
 
 .gallery__load {
   width: 100%;
