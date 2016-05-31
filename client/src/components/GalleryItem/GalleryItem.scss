@@ -108,16 +108,12 @@
   }
 }
 
-// Label becomes an X to cancel upload
-.gallery-item--error .gallery-item__checkbox-label {
-
-  &:hover {
-    color: $body-color;
-  }
+// If error or currently uploading the label becomes an X to cancel upload
+.gallery-item--error .gallery-item__checkbox-label,
+.gallery-item__upload-progress + .gallery-item__title .gallery-item__checkbox-label {
 
   &::before {
     font-size: 19px;
-    color: $brand-danger;
     border: 0;
     border-radius: 0;
     padding: 0;
@@ -126,6 +122,10 @@
   &:hover::before {
     border: 0;
   }
+}
+
+.gallery-item--error .gallery-item__checkbox-label::before {
+  color: $brand-danger;
 }
 
 .gallery-item__error-message {
@@ -226,6 +226,10 @@
   transform: translateX(-50%) translateY(50%);
   border-radius: 10px;
   overflow: hidden;
+
+  + .gallery-item__title .gallery-item__checkbox-label::before {
+    color: $body-color;
+  }
 }
 
 .gallery-item__progress-bar {
