@@ -162,7 +162,7 @@ class File extends SilverStripeComponent {
     let progressBar;
 
     const progressBarProps = {
-      className: 'gallery-item__upload-progress__bar',
+      className: 'gallery-item__progress-bar',
       style: {
         width: `${this.props.item.progress}%`,
       },
@@ -184,11 +184,11 @@ class File extends SilverStripeComponent {
 
     if (this.props.uploading) {
       actionInputCheckbox = (<label
-        className="gallery-item__action--cancel font-icon-cancel"
+        className="gallery-item__checkbox-label font-icon-cancel"
         onClick={this.handleCancelUpload}
       >
       <input
-        className="gallery-item__action item__action--select"
+        className="gallery-item__checkbox"
         type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
@@ -197,11 +197,11 @@ class File extends SilverStripeComponent {
       /></label>);
     } else {
       actionInputCheckbox = (<label
-        className="gallery-item__action--label font-icon-tick"
+        className="gallery-item__checkbox-label font-icon-tick"
         onClick={this.handleToggleSelect}
       >
       <input
-        className="gallery-item__action gallery-item__action--select"
+        className="gallery-item__checkbox"
         type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"

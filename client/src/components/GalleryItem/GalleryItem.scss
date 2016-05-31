@@ -19,51 +19,123 @@
     opacity: 1;
     display: block;
   }
+}
 
-  .gallery-item__action {
-    position: absolute;
-    right: 0;
+.gallery-item--folder {
+  height: $gallery-folder-height;
+
+  .gallery-item__thumbnail {
+    background: url("../images/folder.png") 12px 14px no-repeat;
+    background-size: 27px 24px;
+    height: $gallery-folder-height - 2;
+    width: 45px;
+    float: left;
+  }
+
+  .gallery-item__title {
+    padding-top: 17px;
+    padding-bottom: 17px;
+    padding-left: 0;
+    width: 131px;
+    height: $gallery-folder-title-height;
+  }
+
+  .gallery-item__checkbox-label {
+    margin-top: 5px;
+  }
+}
+
+.gallery-item__thumbnail {
+  height: 132px;
+  width: $gallery-thumb-width;
+  margin: 0 auto;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  border-radius: $border-radius-sm $border-radius-sm 0 0;
+
+  &--small {
+    background-size: auto;
+  }
+}
+
+.gallery-item__title {
+  padding: 11px 29px 11px 12px;
+  height: $gallery-title-height;
+  width: $gallery-thumb-width;
+  margin: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+}
+
+// ACTIONS
+// Hidden checkbox is controlled via it's label
+.gallery-item__checkbox {
+  margin: 6px 4px;
+  height: 26px;
+  width: 16px;
+  z-index: -1;
+  position: absolute;
+}
+
+// Label acts as a trigger for input
+.gallery-item__checkbox-label {
+  width: 30px;
+  height: 40px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-bottom: 0;
+
+  &::before {
+    cursor: pointer;
     top: 0;
-    height: $gallery-title-height;
-    padding: 8px 10px 6px;
-    margin-bottom: 0;
-    content: " ";
-    background-color: transparent;
-    border: 0;
-    background: none;
-
-    &::before {
-      background-color: $white;
-      font-size: 14px;
-      padding: 1px;
-    }
-  }
-
-  .gallery-item__action--select {
+    right: 0;
+    margin: 10px;
+    position: absolute;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    font-size: 14px;
+    padding: 1px;
     color: transparent;
-
-    &:hover::before {
-      border: 1px solid $component-active-border-color;
-    }
-
-    &::before {
-      border: 1px solid $border-color;
-      border-radius: $border-radius-sm;
-    }
   }
 
-  .gallery-item__action--cancel {
-    color: $body-color-light;
-
-    &:hover {
-      color: $body-color;
-    }
-
-    &::before {
-      font-size: 18px;
-      vertical-align: bottom;
-    }
+  &:hover::before {
+    border: 1px solid $component-active-border-color;
   }
+}
+
+// Label becomes an X to cancel upload
+.gallery-item--error .gallery-item__checkbox-label {
+
+  &:hover {
+    color: $body-color;
+  }
+
+  &::before {
+    font-size: 19px;
+    color: $brand-danger;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  &:hover::before {
+    border: 0;
+  }
+}
+
+.gallery-item__error-message {
+  position: absolute;
+  top: calc(50% - 40px);
+  left: 50%;
+  transform: translateX(-50%) translateY(50%);
+  width: 75%;
+  color: $white;
+  text-align: center;
 }
 
 .gallery-item--overlay {
@@ -89,41 +161,13 @@
   }
 }
 
-.gallery-item--folder {
-  height: $gallery-folder-height;
-
-  .gallery-item__thumbnail {
-    background: url("../images/folder.png") 12px 14px no-repeat;
-    background-size: 27px 24px;
-    height: $gallery-folder-height - 2;
-    width: 45px;
-    float: left;
-  }
-
-  .gallery-item__title {
-    padding: 17px 28px 17px 0;
-    width: 131px;
-    height: $gallery-folder-title-height;
-  }
-
-  .gallery-item__action {
-    height: $gallery-folder-title-height;
-    padding-top: 9px;
-  }
-}
-
 .gallery-item--selected {
   border-color: $component-active-border-color;
 
-  .gallery-item__action--select {
-    border-color: $component-active-border-color;
-    color: $white;
-    opacity: 1;
-  }
-
-  .gallery-item__action--select::before {
+  .gallery-item__checkbox-label::before {
     border-color: $component-active-border-color;
     background-color: $component-active-border-color;
+    color: $white;
   }
 }
 
@@ -132,7 +176,7 @@
   background-color: $component-active-bg-light;
 }
 
-.gallery-item--focussed .gallery-item--overlay { // TODO check if used
+.gallery-item--focussed .gallery-item--overlay {
   opacity: 1;
   display: block;
 }
@@ -172,21 +216,7 @@
   }
 }
 
-
-.gallery-item__thumbnail {
-  height: 132px;
-  width: $gallery-thumb-width;
-  margin: 0 auto;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  border-radius: $border-radius-sm $border-radius-sm 0 0;
-
-  &--small {
-    background-size: auto;
-  }
-}
-
+// Individual progress bar
 .gallery-item__upload-progress {
   height: 18px;
   width: 75%;
@@ -196,32 +226,10 @@
   transform: translateX(-50%) translateY(50%);
   border-radius: 10px;
   overflow: hidden;
-
-  &__bar {
-    height: 100%;
-    background: $brand-primary;
-    width: 0%;
-  }
 }
 
-.gallery-item__title {
-  padding: 11px 28px 11px 12px;
-  height: $gallery-title-height;
-  width: $gallery-thumb-width;
-  margin: 0;
-  overflow: hidden;
-  box-sizing: border-box;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  position: relative;
-}
-
-.gallery-item__error-message {
-  position: absolute;
-  top: calc(50% - 40px);
-  left: 50%;
-  transform: translateX(-50%) translateY(50%);
-  width: 75%;
-  color: $white;
-  text-align: center;
+.gallery-item__progress-bar {
+  height: 100%;
+  background: $brand-primary;
+  width: 0%;
 }
