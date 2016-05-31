@@ -7,10 +7,19 @@ import GALLERY from './GalleryActionTypes';
  */
 export function setFolder(folderId) {
   return (dispatch) => {
-    // Start message
     dispatch({
       type: GALLERY.SET_FOLDER,
       payload: { folderId },
+    });
+
+    // Always unset selected file, since it might not be in the current folder
+    dispatch({
+      type: GALLERY.SET_FILE,
+      payload: { fileId: null },
+    });
+    dispatch({
+      type: GALLERY.HIGHLIGHT_FILES,
+      payload: { ids: null },
     });
   };
 }
@@ -20,10 +29,6 @@ export function setFolder(folderId) {
  */
 export function setFile(fileId) {
   return (dispatch) => {
-    dispatch({
-      type: GALLERY.UNHIGHLIGHT_FILES,
-      payload: { ids: null },
-    });
     dispatch({
       type: GALLERY.HIGHLIGHT_FILES,
       payload: { ids: [fileId] },
@@ -66,6 +71,11 @@ export function deleteItems(deleteApi, ids) {
       dispatch({
         type: GALLERY.DELETE_ITEM_SUCCESS,
         payload: { ids },
+      });
+
+      dispatch({
+        type: GALLERY.SET_FILE,
+        payload: { fileId: null },
       });
 
       return json;
@@ -170,20 +180,6 @@ export function highlightFiles(ids = null) {
 }
 
 /**
- * Remove highlight from files. If no param is passed all,
- * highlight is removed from all files.
- *
- * @param Array ids - Array of file ids to highlight.
- */
-export function unhighlightFiles(ids = null) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.UNHIGHLIGHT_FILES,
-      payload: { ids },
-    });
-}
-
-/**
  * Sorts files in some order.
  *
  * @param func comparator - Used to determine the sort order.
@@ -220,12 +216,9 @@ export function addFolder(addFolderApi, folderId, folderName) {
       });
 
       dispatch({
-        type: GALLERY.SHOW,
-        payload: { folderId: json.folderId },
+        type: GALLERY.SET_FOLDER,
+        payload: { folderId: json.folderID },
       });
-
-      // Trigger the open-folder-view action
-      (show(parseInt(json.folderId, 10)))(dispatch);
 
       // TODO: Fix this so that the subsequent action is passed without a coupling to router
       // here.

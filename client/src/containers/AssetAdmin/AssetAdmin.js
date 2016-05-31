@@ -146,13 +146,12 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   render() {
-    const fileId = this.props.fileId;
-    const file = fileId ? this.props.folderFiles.find((next) => next.id === parseInt(fileId, 10)) : null;
-    let editor = (file &&
+    // Only show the editor if the file object has been loaded
+    // (fetched through an async folder request for all contained files)
+    const editor = (this.props.file &&
       <Editor
         onClose={this.handleCloseFile}
         onFileSave={this.handleFileSave}
-        file={file}
       />
     );
     return (
@@ -182,14 +181,21 @@ AssetAdmin.propTypes = {
   }),
   sectionConfigKey: React.PropTypes.string.isRequired,
   updateApi: React.PropTypes.func,
-  // @todo others
+  file: React.PropTypes.object,
 };
 
 function mapStateToProps(state) {
+  const { files, fileId, folderId } = state.assetAdmin.gallery;
+  let file = null;
+  if (fileId) {
+    // Calculated on the fly to avoid getting out of sync with lazy loaded fileId
+    file = files.find((next) => next.id === parseInt(fileId, 10));
+  }
   return {
-    folderId: state.assetAdmin.gallery.folderId,
-    folderFiles: state.assetAdmin.gallery.files,
-    fileId: state.assetAdmin.gallery.fileId,
+    folderId,
+    files,
+    fileId,
+    file,
   };
 }
 

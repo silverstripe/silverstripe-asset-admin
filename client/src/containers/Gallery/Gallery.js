@@ -178,6 +178,7 @@ export class Gallery extends Component {
   }
 
   refreshFolderIfNeeded() {
+    const self = this;
     // folderId updates saying "please load", loadedfolderId updates when the ajax request is actually triggered
     if (!isNaN(this.props.folderId) && this.props.folderId >= 0 && this.props.folderId !== this.props.loadedfolderId) {
       this.props.actions.gallery.loadFolderContents(
@@ -185,7 +186,16 @@ export class Gallery extends Component {
         this.props.folderId,
         this.props.limit,
         this.props.page
-      );
+      ).then(() => {
+        // Check if the selected file is in the new files, and trigger a pseudo-select.
+        // This ensures files can be selected prior to the async folder load completing,
+        // e.g. through URL parameters.
+        const fileId = self.props.fileId;
+        const file = self.props.files.find((next) => next.id === parseInt(fileId, 10));
+        if (file) {
+          self.props.onOpenFile(fileId, file);
+        }
+      });
     }
   }
 
@@ -493,6 +503,7 @@ export class Gallery extends Component {
 Gallery.propTypes = {
   files: React.PropTypes.array,
   count: React.PropTypes.number,
+  fileId: React.PropTypes.number,
   folderId: React.PropTypes.number.isRequired,
   loadedfolderId: React.PropTypes.number,
   parentfolderId: React.PropTypes.number,
@@ -517,10 +528,12 @@ Gallery.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { files, fileId, folderId } = state.assetAdmin.gallery;
   return {
-    files: state.assetAdmin.gallery.files,
+    files,
+    fileId,
     count: state.assetAdmin.gallery.count,
-    folderId: state.assetAdmin.gallery.folderId,
+    folderId,
     loadedfolderId: state.assetAdmin.gallery.loadedfolderId,
     parentfolderId: state.assetAdmin.gallery.parentfolderId,
     selectedFiles: state.assetAdmin.gallery.selectedFiles,
@@ -528,7 +541,6 @@ function mapStateToProps(state) {
     page: state.assetAdmin.gallery.page,
     canEdit: state.assetAdmin.gallery.canEdit,
     canDelete: state.assetAdmin.gallery.canDelete,
-
     queuedFiles: state.assetAdmin.queuedFiles,
   };
 }

@@ -16,36 +16,39 @@ class Editor extends Component {
     this.state = {
       isSaving: false,
     };
-  }
 
-  componentDidMount() {
+    // The input fields for editing files. Hardcoded until form field schema is implemented.
     // TODO Use form field schema (which will also take care of i18n)
-    // Values for fields are set via the action
-    const fields = [
+    this.editorFields = [
       {
         label: 'Title',
         name: 'title',
-        value: this.props.file.title,
       },
       {
         label: 'Filename',
         // TODO Use same property names as DataObject
         name: 'basename',
-        value: this.props.file.basename,
       },
     ];
-    this.props.actions.setEditorFields(fields);
+
+    // Set initial form state
+    this.props.actions.updateFormState(Object.assign({}, props.file));
   }
 
-  componentWillUnmount() {
-    this.props.actions.setEditorFields();
+  componentWillReceiveProps(nextProps) {
+    // If the file has changed, set the new form state accordingly.
+    // Causes another prop update on this component which isn't ideal.
+    if (nextProps.file !== this.props.file) {
+      this.props.actions.updateFormState(Object.assign({}, nextProps.file));
+    }
   }
 
   handleFileSave(event) {
     if (this.props.onFileSave) {
       this.setState({ isSaving: true });
-      const updates = this.props.editorFields.reduce(
-        (prev, curr) => Object.assign({}, prev, { [curr.name]: curr.value }),
+      // TODO Replace with redux-form save handling
+      const updates = this.editorFields.reduce(
+        (prev, curr) => Object.assign({}, prev, { [curr.name]: this.props.formState[curr.name] }),
         {}
       );
       this.props.onFileSave(this.props.file.id, updates)
@@ -57,10 +60,10 @@ class Editor extends Component {
   }
 
   handleFieldUpdate(event) {
-    this.props.actions.updateEditorField({
-      name: event.target.name,
-      value: event.target.value,
-    });
+    this.props.actions.updateFormState(Object.assign({},
+      this.props.formState,
+      { [event.target.name]: event.target.value }
+    ));
   }
 
   render() {
@@ -110,13 +113,13 @@ class Editor extends Component {
         <div className="tab-content">
           <div className="tab-pane active" id="file-details" role="tabpanel">
 
-            {this.props.editorFields.map((field, i) =>
+            {this.editorFields.map((field, i) =>
               (
                 <TextFieldComponent
                   key={i}
                   leftTitle={field.label}
                   name={field.name}
-                  value={field.value}
+                  value={this.props.formState[field.name]}
                   onChange={this.handleFieldUpdate}
                 />
               )
@@ -228,6 +231,7 @@ class Editor extends Component {
 }
 
 Editor.propTypes = {
+  formState: React.PropTypes.object,
   file: React.PropTypes.shape({
     id: React.PropTypes.number,
     title: React.PropTypes.string,
@@ -244,15 +248,21 @@ Editor.propTypes = {
       }),
     }),
   }),
-  editorFields: React.PropTypes.array,
   actions: React.PropTypes.object,
   onClose: React.PropTypes.func.isRequired,
   onFileSave: React.PropTypes.func,
 };
 
 function mapStateToProps(state) {
+  const { files, fileId } = state.assetAdmin.gallery;
+  let file = null;
+  if (fileId) {
+    // Calculated on the fly to avoid getting out of sync with lazy loaded fileId
+    file = files.find((next) => next.id === parseInt(fileId, 10));
+  }
   return {
-    editorFields: state.assetAdmin.editor.editorFields,
+    file,
+    formState: state.assetAdmin.editor.formState,
   };
 }
 

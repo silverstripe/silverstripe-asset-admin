@@ -9,6 +9,7 @@ const initialState = {
   },
   count: 0, // The number of files in the current view
   editorFields: [], // The input fields for editing files. Hardcoded until form field schema is implemented.
+  file: null,
   files: [],
   fileId: 0,
   folderId: 0,
@@ -137,37 +138,9 @@ export default function galleryReducer(state = initialState, action) {
     }
 
     case GALLERY.HIGHLIGHT_FILES: {
-      if (action.payload.ids === null) {
-        // No param was passed, add everything that isn't currently highlighted, to the highlightedFiles array.
-        nextState = deepFreeze(Object.assign({}, state, {
-          highlightedFiles: state.highlightedFiles
-            .concat(
-              state.files.map(file => file.id).filter(id => state.highlightedFiles.indexOf(id) === -1)
-            ),
-        }));
-      } else {
-        // We're dealing with an array if ids to add highlight.
-        nextState = deepFreeze(Object.assign({}, state, {
-          highlightedFiles: state.highlightedFiles
-            .concat(
-              action.payload.ids.filter(id => state.highlightedFiles.indexOf(id) === -1)
-            ),
-        }));
-      }
-
-      return nextState;
-    }
-
-    case GALLERY.UNHIGHLIGHT_FILES: {
-      if (action.payload.ids === null) {
-        // No param was passed, remove highlight from everything.
-        nextState = deepFreeze(Object.assign({}, state, { highlightedFiles: [] }));
-      } else {
-        // We're dealing with an array of ids to remove highlight from.
-        nextState = deepFreeze(Object.assign({}, state, {
-          highlightedFiles: state.highlightedFiles.filter(id => action.payload.ids.indexOf(id) === -1),
-        }));
-      }
+      nextState = deepFreeze(Object.assign({}, state, {
+        highlightedFiles: action.payload.ids || [],
+      }));
 
       return nextState;
     }

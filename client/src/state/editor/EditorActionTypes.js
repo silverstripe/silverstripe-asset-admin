@@ -2,8 +2,6 @@
 // EDITOR.SET_EDITOR_FIELDS === 'EDITOR.SET_EDITOR_FIELDS'
 
 export default [
-  'SET_EDITOR_FIELDS',
-  'UPDATE_EDITOR_FIELD',
+  'UPDATE_FORM_STATE',
   'SET_FILE',
-  'HIDE',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `EDITOR.${item}` }), {});
