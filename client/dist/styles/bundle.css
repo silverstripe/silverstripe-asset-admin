@@ -193,7 +193,7 @@
   padding-left: 1.5385rem;
   padding-right: 1.5385rem;
   margin: 0 auto;
-  position: fixed;
+  position: absolute;
   height: 53px;
   z-index: 1;
   bottom: 0;
@@ -216,23 +216,23 @@
     .bulk-actions {
       height: 48px;
       padding: 8px;
-      top: 52px;
+      top: 0;
       left: 50%;
       width: 200px;
       margin-left: -100px;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
       .bulk-actions-enter {
-        top: 0;
+        top: -52px;
         transform: scale(0.95); }
       .bulk-actions-enter-active {
-        top: 52px;
+        top: 0;
         transform: scale(1);
         transition: top .2s linear, transform .1s ease-in .2s; }
       .bulk-actions-leave {
-        top: 52px;
+        top: 0;
         transform: scale(1); }
       .bulk-actions-leave-active {
-        top: 0;
+        top: -52px;
         transform: scale(0.95);
         transition: top .2s linear .1s, transform .1s ease-in; } }
   .bulk-actions .bulk-actions-counter {
@@ -293,11 +293,11 @@
 
 @media (min-width: 768px) {
   .editor + .gallery__main .bulk-actions {
-    left: calc(100% - 300px / 2)calc(200px / 4); } }
+    left: calc((100% - 300px) / 2); } }
 
 @media (min-width: 1200px) {
   .editor + .gallery__main .bulk-actions {
-    left: calc((100% - 448px) / 2 + (200px / 4)); } }
+    left: calc((100% - 448px) / 2); } }
 
 .asset-dropzone {
   position: absolute;

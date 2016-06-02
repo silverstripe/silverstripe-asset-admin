@@ -8,7 +8,7 @@ $bulk-actions-width: 200px;
   padding-left: $grid-gutter-width-half;
   padding-right: $grid-gutter-width-half;
   margin: 0 auto;
-  position: fixed;
+  position: absolute;
   height: $toolbar-total-height;
   z-index: 1;
   bottom: 0;
@@ -40,30 +40,30 @@ $bulk-actions-width: 200px;
   @include media-breakpoint-up(sm) {
     height: 48px;
     padding: 8px;
-    top: $toolbar-height;
+    top: 0;
     left: 50%;
     width: $bulk-actions-width;
     margin-left: -$bulk-actions-width / 2;
     box-shadow: 0 1px 2px $shadow-light;
 
     &-enter {
-      top: 0;
+      top: -$toolbar-height;
       transform: scale(.95);
     }
 
     &-enter-active {
-      top: 52px;
+      top: 0;
       transform: scale(1);
       transition: top .2s linear, transform .1s ease-in .2s;
     }
 
     &-leave {
-      top: 52px;
+      top: 0;
       transform: scale(1);
     }
 
     &-leave-active {
-      top: 0;
+      top: -$toolbar-height;
       transform: scale(.95);
       transition: top .2s linear .1s, transform .1s ease-in;
     }
@@ -152,10 +152,10 @@ $bulk-actions-width: 200px;
 // Responsive, if editor exists then move .bulk-actions
 .editor + .gallery__main .bulk-actions {
   @include media-breakpoint-up(md) {
-    left: calc(100% - #{$cms-panel-sm} / 2) + calc(#{$bulk-actions-width} / 4);
+    left: calc((100% - #{$cms-panel-sm}) / 2);
   }
 
   @include media-breakpoint-up(xl) {
-    left: calc((100% - #{$cms-panel-md}) / 2 + (#{$bulk-actions-width} / 4));
+    left: calc((100% - #{$cms-panel-md}) / 2);
   }
 }
