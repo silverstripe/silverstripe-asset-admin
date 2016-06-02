@@ -79,7 +79,8 @@
     border-radius: 0.2rem;
     font-size: 14px;
     padding: 1px;
-    color: transparent; }
+    color: transparent;
+    background-color: #fff; }
   .gallery-item__checkbox-label:hover::before {
     border: 1px solid #29abe2; }
 
