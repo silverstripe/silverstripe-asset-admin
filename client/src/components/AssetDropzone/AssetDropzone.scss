@@ -24,13 +24,3 @@
     }
   }
 }
-
-.editor + .gallery__main .asset-dropzone {
-  @include media-breakpoint-up(lg) {
-    width: calc(100% - #{$cms-panel-sm} - #{$grid-gutter-width});
-  }
-
-  @include media-breakpoint-up(xl) {
-    width: calc(100% - #{$cms-panel-md} - #{$grid-gutter-width});
-  }
-}
