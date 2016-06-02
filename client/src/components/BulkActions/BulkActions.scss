@@ -2,7 +2,7 @@
 $bulk-actions-width: 200px;
 
 .bulk-actions {
-  width: calc(100% - #{$cms-panel-xs});
+  width: 100%;
   padding-top: $spacer-y * .625;
   padding-bottom: $spacer-y * .625;
   padding-left: $grid-gutter-width-half;
