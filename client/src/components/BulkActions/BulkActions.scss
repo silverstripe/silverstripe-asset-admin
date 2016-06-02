@@ -152,7 +152,7 @@ $bulk-actions-width: 200px;
 // Responsive, if editor exists then move .bulk-actions
 .editor + .gallery__main .bulk-actions {
   @include media-breakpoint-up(md) {
-    left: calc((100% - #{$cms-panel-sm}) / 2 + (#{$bulk-actions-width} / 4));
+    left: calc(100% - #{$cms-panel-sm} / 2) + calc(#{$bulk-actions-width} / 4);
   }
 
   @include media-breakpoint-up(xl) {

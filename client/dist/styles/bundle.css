@@ -293,7 +293,7 @@
 
 @media (min-width: 768px) {
   .editor + .gallery__main .bulk-actions {
-    left: calc((100% - 300px) / 2 + (200px / 4)); } }
+    left: calc(100% - 300px / 2)calc(200px / 4); } }
 
 @media (min-width: 1200px) {
   .editor + .gallery__main .bulk-actions {

@@ -90,9 +90,10 @@ class Editor extends Component {
 
     return (<div className="editor container-fluid">
       <a
-        tabIndex="1"
+        tabIndex="0"
         className="btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl"
         onClick={this.props.onClose}
+        onKeyPress={this.props.onClose}
         type="button"
         aria-label={i18n._t('AssetGalleryField.CANCEL')}
       />
@@ -131,7 +132,13 @@ class Editor extends Component {
 
             <div className="form-group">
               <label htmlFor="folderLocation">Folder location</label>
-              <input type="text" className="form-control" id="folderLocation" value="uploads/folder name/" disabled />
+              <input
+                type="text"
+                className="form-control"
+                id="folderLocation"
+                value="uploads/folder name/"
+                readOnly="readonly"
+              />
             </div>
 
             <div className="media break-string">
