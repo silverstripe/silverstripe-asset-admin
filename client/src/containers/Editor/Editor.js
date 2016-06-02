@@ -84,7 +84,7 @@ class Editor extends Component {
         className="editor__file-preview font-icon-search btn--no-text"
         target="_blank"
       >
-        <img className="editor__file-thumbnail" src={file.url} alt={file.title} />
+        <img className="editor__thumbnail" src={file.url} alt={file.title} />
       </a>
     );
 

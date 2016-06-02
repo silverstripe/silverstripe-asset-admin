@@ -44,8 +44,9 @@
   max-height: $cms-panel-md * .75;
   min-height: 60px;
   overflow: hidden;
-  display: flex;
+  display: block;
   align-items: center;
+  text-decoration: none;
 
   &::before {
     position: absolute;
@@ -71,7 +72,9 @@
   }
 }
 
-.editor__file-thumbnail {
+.editor__thumbnail {
   max-width: 100%;
-  margin: 0 auto;
+  max-height: $cms-panel-md * .75;
+  min-height: 60px;
+  margin: auto;
 }

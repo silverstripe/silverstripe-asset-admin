@@ -441,8 +441,9 @@
   max-height: 336px;
   min-height: 60px;
   overflow: hidden;
-  display: flex;
-  align-items: center; }
+  display: block;
+  align-items: center;
+  text-decoration: none; }
   .editor__file-preview::before {
     position: absolute;
     display: none;
@@ -462,9 +463,11 @@
     text-decoration: none;
     display: block; }
 
-.editor__file-thumbnail {
+.editor__thumbnail {
   max-width: 100%;
-  margin: 0 auto; }
+  max-height: 336px;
+  min-height: 60px;
+  margin: auto; }
 
 .cms .AssetAdmin .cms-content-view {
   position: relative;
