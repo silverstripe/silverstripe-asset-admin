@@ -93,7 +93,7 @@ class Editor extends Component {
         tabIndex="0"
         className="btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl"
         onClick={this.props.onClose}
-        onKeyPress={this.props.onClose}
+        onKeyDown={this.props.onClose}
         type="button"
         aria-label={i18n._t('AssetGalleryField.CANCEL')}
       />
