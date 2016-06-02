@@ -110,14 +110,3 @@
     text-transform: capitalize;
   }
 }
-
-// Responsive, if editor exists then move .gallery__sort
-.editor + .gallery__main .gallery__sort {
-  @include media-breakpoint-up(md) {
-    right: $cms-panel-sm;
-  }
-
-  @include media-breakpoint-up(xl) {
-    right: $cms-panel-md;
-  }
-}

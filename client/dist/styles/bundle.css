@@ -291,14 +291,6 @@
     .bulk-actions .chosen-results li:nth-child(1)::before {
       content: "g"; }
 
-@media (min-width: 768px) {
-  .editor + .gallery__main .bulk-actions {
-    left: calc((100% - 300px) / 2); } }
-
-@media (min-width: 1200px) {
-  .editor + .gallery__main .bulk-actions {
-    left: calc((100% - 448px) / 2); } }
-
 .asset-dropzone {
   position: absolute;
   left: 0;
@@ -403,14 +395,6 @@
     border: 0; }
   .gallery__sort .active-result {
     text-transform: capitalize; }
-
-@media (min-width: 768px) {
-  .editor + .gallery__main .gallery__sort {
-    right: 300px; } }
-
-@media (min-width: 1200px) {
-  .editor + .gallery__main .gallery__sort {
-    right: 448px; } }
 
 .editor {
   width: 100%;

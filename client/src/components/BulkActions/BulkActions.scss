@@ -148,14 +148,3 @@ $bulk-actions-width: 200px;
     }
   }
 }
-
-// Responsive, if editor exists then move .bulk-actions
-.editor + .gallery__main .bulk-actions {
-  @include media-breakpoint-up(md) {
-    left: calc((100% - #{$cms-panel-sm}) / 2);
-  }
-
-  @include media-breakpoint-up(xl) {
-    left: calc((100% - #{$cms-panel-md}) / 2);
-  }
-}
