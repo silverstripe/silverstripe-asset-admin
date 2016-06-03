@@ -1,41 +1,101 @@
-.asset-gallery {
+.gallery {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
 
-  .gallery__no-item-notice {
-    width: 100%;
-    text-align: center;
+.gallery__main {
+  position: relative;
+  overflow: auto;
+  height: 100%;
+}
+
+.editor + .gallery__main {
+  @include media-breakpoint-up(lg) {
+    width: calc(100% - #{$cms-panel-sm});
   }
 
-  .gallery__back {
-    &.ss-ui-button::before {
-      font-size: 23px;
-    }
+  @include media-breakpoint-up(xl) {
+    width: calc(100% - #{$cms-panel-md});
   }
+}
 
-  .gallery__sort {
-    position: absolute;
-    top: 14px;
-    right: 16px;
+.gallery__no-item-notice {
+  width: 100%;
+  text-align: center;
+}
 
-    // Nesting required to override chosen defaults
-    .chosen-single {
-      border: 0;
-      filter: none; //IE9
-      background: none;
-      box-shadow: none;
-      color: inherit;
-      margin-top: -1px;
-    }
+.gallery__back {
+  &.ss-ui-button::before {
+    font-size: 23px;
   }
+}
 
-  .chosen-single:focus {
-    box-shadow: $dropdown-shadow;
-  }
+.gallery__folders {
+  display: inline-block;
+  margin-bottom: -6px;
+  width: 100%;
+}
 
-  .chosen-single > span {
-    text-align: right;
+.gallery__files {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: $toolbar-total-height; // leave space at bottom for bulk-actions on smaller screens
+}
+
+.gallery__load {
+  width: 100%;
+  display: inline-block;
+}
+
+.gallery__load-more {
+  display: block;
+  color: $white;
+  cursor: pointer;
+  margin: 8px auto 24px;
+  padding: 4px;
+  width: 200px;
+  font-size: 16px;
+  height: 44px;
+  background-color: $brand-primary;
+  border: 0;
+  border-radius: 4px;
+}
+
+// Sort - requires deeper nesting
+.gallery .gallery__sort .chosen-single {
+  border: 0;
+  filter: none; //IE9
+  background: none;
+  box-shadow: none;
+  color: inherit;
+  margin-top: -1px;
+}
+
+.gallery__sort {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  margin-right: 16px;
+
+  .chosen-single {
+    border: 0;
+    filter: none; //IE9
+    background: none;
+    box-shadow: none;
     color: inherit;
+    margin-top: -1px;
 
-    &::before {
+    &:focus {
+      box-shadow: $dropdown-shadow;
+    }
+
+    > span {
+      text-align: right;
+      color: inherit;
+    }
+
+    > span::before {
       content: "Sort by ";
     }
   }
@@ -48,35 +108,5 @@
 
   .active-result {
     text-transform: capitalize;
-  }
-
-  .gallery__folders {
-    display: inline-block;
-    margin-bottom: -6px;
-    width: 100%;
-  }
-
-  .gallery__files {
-    display: inline-block;
-    width: 100%;
-  }
-
-  .gallery__load {
-    width: 100%;
-    display: inline-block;
-  }
-
-  .gallery__load-more {
-    display: block;
-    color: $white;
-    cursor: pointer;
-    margin: 8px auto 24px;
-    padding: 4px;
-    width: 200px;
-    font-size: 16px;
-    height: 44px;
-    background-color: $brand-primary;
-    border: 0;
-    border-radius: 4px;
   }
 }

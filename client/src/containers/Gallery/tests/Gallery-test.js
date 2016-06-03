@@ -22,17 +22,15 @@ describe('Gallery', () => {
           updateFile: () => null,
           selectFiles: () => null,
           deselectFiles: () => null,
-          setEditing: () => null,
-          setEditorFields: () => null,
-          updateEditorField: () => null,
           setPath: () => null,
+          setFolder: () => null,
+          setFile: () => null,
           sortFiles: () => null,
           setViewingFolder: () => null,
-          setParentFolderId: () => null,
-          setFolderId: () => null,
-          loadFolderContents: () => null,
+          setParentfolderId: () => null,
+          setfolderId: () => null,
+          loadFolderContents: () => Promise.resolve(),
           deleteItems: () => null,
-          show: () => null,
         },
         queuedFiles: {
           addQueuedFile: () => null,
@@ -42,11 +40,12 @@ describe('Gallery', () => {
           succeedUpload: () => null,
         },
       },
-      parentFolderID: null,
+      parentfolderId: null,
       selectedFiles: [],
+      highlightedFiles: [],
       files: [],
       count: 0,
-      folderID: 1,
+      folderId: 1,
       queuedFiles: {
         items: [],
       },
@@ -147,8 +146,8 @@ describe('Gallery', () => {
       expect(gallery.getBackButton()).toBe(null);
     });
 
-    it('should return a back button if parentFolderID is set.', () => {
-      props.parentFolderID = 0;
+    it('should return a back button if parentfolderId is set.', () => {
+      props.parentfolderId = 0;
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
@@ -269,7 +268,7 @@ describe('Gallery', () => {
     let gallery;
 
     beforeEach(() => {
-      props.actions.gallery.show = jest.genMockFunction();
+      props.actions.gallery.setFolder = jest.genMockFunction();
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
@@ -281,7 +280,7 @@ describe('Gallery', () => {
 
       gallery.handleFolderActivate(event, folder);
 
-      expect(props.actions.gallery.show).toBeCalledWith(1);
+      expect(props.actions.gallery.setFolder).toBeCalledWith(1);
     });
   });
 
@@ -289,7 +288,6 @@ describe('Gallery', () => {
     let gallery;
 
     beforeEach(() => {
-      props.actions.gallery.setEditing = jest.genMockFunction();
       props.onOpenFile = jest.genMockFunction();
 
       gallery = ReactTestUtils.renderIntoDocument(

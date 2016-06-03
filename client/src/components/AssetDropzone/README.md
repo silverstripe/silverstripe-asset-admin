@@ -1,4 +1,4 @@
-# Dropzone
+# AssetDropzone
 
 The Dropzone component uses the [Dropzone library](http://www.dropzonejs.com/) to handle file uploads in AssetAdmin.
 

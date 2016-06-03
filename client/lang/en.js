@@ -40,11 +40,13 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetGalleryField.LOADMORE": "Load more",
     "AssetGalleryField.NOITEMSFOUND": "No items found",
     "AssetGalleryField.SAVE": "Save",
+    "AssetGalleryField.PUBLISH": "Publish",
     "AssetGalleryField.SELECT": "Select",
     "AssetGalleryField.SIZE": "Size",
     "AssetGalleryField.TITLE": "Title",
     "AssetGalleryField.TYPE": "File type",
     "AssetGalleryField.URL": "URL",
+    "AssetGalleryField.CLOSE": "Close",
     "Folder.Name": "Folder name"
 });
 }

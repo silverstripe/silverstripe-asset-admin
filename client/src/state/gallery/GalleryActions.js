@@ -5,23 +5,38 @@ import GALLERY from './GalleryActionTypes';
  * Used by AssetAdmin.
  * @todo Refactor so that AssetAdmin has its own actions
  */
-export function show(folderID) {
+export function setFolder(folderId) {
   return (dispatch) => {
-    // Start message
     dispatch({
-      type: GALLERY.SHOW,
-      payload: { folderID },
+      type: GALLERY.SET_FOLDER,
+      payload: { folderId },
+    });
+
+    // Always unset selected file, since it might not be in the current folder
+    dispatch({
+      type: GALLERY.SET_FILE,
+      payload: { fileId: null },
+    });
+    dispatch({
+      type: GALLERY.HIGHLIGHT_FILES,
+      payload: { ids: null },
     });
   };
 }
 
 /**
- * Hide the editor
+ * Load the file view for a given folder
  */
-export function hide() {
+export function setFile(fileId) {
   return (dispatch) => {
     dispatch({
-      type: GALLERY.HIDE,
+      type: GALLERY.HIGHLIGHT_FILES,
+      payload: { ids: [fileId] },
+    });
+    // Start message
+    dispatch({
+      type: GALLERY.SET_FILE,
+      payload: { fileId },
     });
   };
 }
@@ -58,6 +73,11 @@ export function deleteItems(deleteApi, ids) {
         payload: { ids },
       });
 
+      dispatch({
+        type: GALLERY.SET_FILE,
+        payload: { fileId: null },
+      });
+
       return json;
     })
     .catch((error) => {
@@ -73,20 +93,20 @@ export function deleteItems(deleteApi, ids) {
 /**
  * Load the contents of a folder from the API
  */
-export function loadFolderContents(filesByParentApi, folderID, limit, page) {
+export function loadFolderContents(filesByParentApi, folderId, limit, page) {
   return (dispatch) => {
     dispatch({
       type: GALLERY.LOAD_FOLDER_REQUEST,
-      payload: { viewingFolder: (folderID > 0), folderID: parseInt(folderID, 10) },
+      payload: { viewingFolder: (folderId > 0), folderId: parseInt(folderId, 10) },
     });
 
-    return filesByParentApi({ id: folderID, limit, page })
+    return filesByParentApi({ id: folderId, limit, page })
     .then((data) => {
       dispatch({
         type: GALLERY.LOAD_FOLDER_SUCCESS,
         payload: {
-          folderID: parseInt(folderID, 10),
-          parentFolderID: data.parent,
+          folderId: parseInt(folderId, 10),
+          parentfolderId: data.parent,
           files: data.files,
           canEdit: data.canEdit,
           canDelete: data.canDelete,
@@ -147,6 +167,19 @@ export function deselectFiles(ids = null) {
 }
 
 /**
+ * Highlight files. If no param is passed all files are highlighted.
+ *
+ * @param Array ids - Array of file ids to select.
+ */
+export function highlightFiles(ids = null) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.HIGHLIGHT_FILES,
+      payload: { ids },
+    });
+}
+
+/**
  * Sorts files in some order.
  *
  * @param func comparator - Used to determine the sort order.
@@ -167,7 +200,7 @@ export function sortFiles(comparator) {
  * @param string folderName
  * @param number [count] - The number of files in the current view.
  */
-export function addFolder(addFolderApi, folderID, folderName) {
+export function addFolder(addFolderApi, folderId, folderName) {
   return (dispatch) => {
     // Start message
     dispatch({
@@ -175,7 +208,7 @@ export function addFolder(addFolderApi, folderID, folderName) {
       payload: { folderName },
     });
 
-    return addFolderApi({ folderID: isNaN(folderID) ? 0 : folderID, folderName })
+    return addFolderApi({ folderId: isNaN(folderId) ? 0 : folderId, folderName })
     .then(json => {
       dispatch({
         type: GALLERY.ADD_FOLDER_SUCCESS,
@@ -183,17 +216,14 @@ export function addFolder(addFolderApi, folderID, folderName) {
       });
 
       dispatch({
-        type: GALLERY.SHOW,
-        payload: { folderID: json.folderID },
+        type: GALLERY.SET_FOLDER,
+        payload: { folderId: json.folderID },
       });
-
-      // Trigger the open-folder-view action
-      (show(parseInt(json.folderID, 10)))(dispatch);
 
       // TODO: Fix this so that the subsequent action is passed without a coupling to router
       // here.
       //  - Successful action should triggers 'show files' view rather than triggering an action
-      // showFilesFromFolder(json.folderID);
+      // showFilesFromFolder(json.folderId);
     })
     .catch((err) => {
       // Failure finish message

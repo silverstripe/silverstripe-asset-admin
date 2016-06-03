@@ -3,7 +3,7 @@ import React from 'react';
 import constants from 'constants/index';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 
-class File extends SilverStripeComponent {
+class GalleryItem extends SilverStripeComponent {
   constructor(props) {
     super(props);
 
@@ -78,7 +78,7 @@ class File extends SilverStripeComponent {
   getErrorMessage() {
     if (this.hasError()) {
       return (
-        <span className="item__error-message">
+        <span className="gallery-item__error-message">
           {this.props.messages[0].value}
         </span>
       );
@@ -88,24 +88,28 @@ class File extends SilverStripeComponent {
   }
 
   getThumbnailClassNames() {
-    const thumbnailClassNames = ['item__thumbnail'];
+    const thumbnailClassNames = ['gallery-item__thumbnail'];
 
     if (this.isImageSmallerThanThumbnail()) {
-      thumbnailClassNames.push('item__thumbnail--small');
+      thumbnailClassNames.push('gallery-item__thumbnail--small');
     }
 
     return thumbnailClassNames.join(' ');
   }
 
   getItemClassNames() {
-    const itemClassNames = [`item item--${this.props.item.category}`];
+    const itemClassNames = [`gallery-item gallery-item--${this.props.item.category}`];
 
     if (this.props.selected) {
-      itemClassNames.push('item--selected');
+      itemClassNames.push('gallery-item--selected');
+    }
+
+    if (this.props.highlighted) {
+      itemClassNames.push('gallery-item--highlighted');
     }
 
     if (this.hasError()) {
-      itemClassNames.push('item--error');
+      itemClassNames.push('gallery-item--error');
     }
 
     return itemClassNames.join(' ');
@@ -158,7 +162,7 @@ class File extends SilverStripeComponent {
     let progressBar;
 
     const progressBarProps = {
-      className: 'item__upload-progress__bar',
+      className: 'gallery-item__progress-bar',
       style: {
         width: `${this.props.item.progress}%`,
       },
@@ -166,7 +170,7 @@ class File extends SilverStripeComponent {
 
     if (!this.hasError() && this.props.uploading) {
       progressBar = (
-        <div className="item__upload-progress">
+        <div className="gallery-item__upload-progress">
           <div {...progressBarProps}></div>
         </div>
       );
@@ -180,11 +184,11 @@ class File extends SilverStripeComponent {
 
     if (this.props.uploading) {
       actionInputCheckbox = (<label
-        className="item__action--cancel font-icon-cancel"
+        className="gallery-item__checkbox-label font-icon-cancel"
         onClick={this.handleCancelUpload}
       >
       <input
-        className="item__action item__action--select"
+        className="gallery-item__checkbox"
         type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
@@ -193,11 +197,11 @@ class File extends SilverStripeComponent {
       /></label>);
     } else {
       actionInputCheckbox = (<label
-        className="item__action--label font-icon-tick"
+        className="gallery-item__checkbox-label font-icon-tick"
         onClick={this.handleToggleSelect}
       >
       <input
-        className="item__action item__action--select"
+        className="gallery-item__checkbox"
         type="checkbox"
         title={i18n._t('AssetGalleryField.SELECT')}
         tabIndex="-1"
@@ -218,11 +222,11 @@ class File extends SilverStripeComponent {
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
         >
-          <div className="item--overlay [ font-icon-edit ]">View</div>
+          <div className="gallery-item--overlay font-icon-edit">View</div>
         </div>
         {this.getProgressBar()}
         {this.getErrorMessage()}
-        <div className="item__title" ref="title">
+        <div className="gallery-item__title" ref="title">
           {actionInputCheckbox}
           {this.props.item.title}
         </div>
@@ -231,7 +235,7 @@ class File extends SilverStripeComponent {
   }
 }
 
-File.propTypes = {
+GalleryItem.propTypes = {
   item: React.PropTypes.shape({
     attributes: React.PropTypes.shape({
       dimensions: React.PropTypes.object.isRequired,
@@ -242,6 +246,9 @@ File.propTypes = {
     title: React.PropTypes.string.isRequired,
     progress: React.PropTypes.number,
   }),
+  // Can be used to highlight a currently edited file
+  highlighted: React.PropTypes.bool,
+  // Styles according to the checkbox selection state
   selected: React.PropTypes.bool.isRequired,
   spaceKey: React.PropTypes.number,
   returnKey: React.PropTypes.number,
@@ -252,9 +259,9 @@ File.propTypes = {
   uploading: React.PropTypes.bool,
 };
 
-File.defaultProps = {
+GalleryItem.defaultProps = {
   returnKey: 13,
   spaceKey: 32,
 };
 
-export default File;
+export default GalleryItem;

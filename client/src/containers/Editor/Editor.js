@@ -16,12 +16,10 @@ class Editor extends Component {
     this.state = {
       isSaving: false,
     };
-  }
 
-  componentDidMount() {
+    // The input fields for editing files. Hardcoded until form field schema is implemented.
     // TODO Use form field schema (which will also take care of i18n)
-    // Values for fields are set via the action
-    const fields = [
+    this.editorFields = [
       {
         label: 'Title',
         name: 'title',
@@ -32,18 +30,25 @@ class Editor extends Component {
         name: 'basename',
       },
     ];
-    this.props.actions.setEditorFields(fields);
+
+    // Set initial form state
+    this.props.actions.updateFormState(Object.assign({}, props.file));
   }
 
-  componentWillUnmount() {
-    this.props.actions.setEditorFields();
+  componentWillReceiveProps(nextProps) {
+    // If the file has changed, set the new form state accordingly.
+    // Causes another prop update on this component which isn't ideal.
+    if (nextProps.file !== this.props.file) {
+      this.props.actions.updateFormState(Object.assign({}, nextProps.file));
+    }
   }
 
   handleFileSave(event) {
     if (this.props.onFileSave) {
       this.setState({ isSaving: true });
-      const updates = this.props.editorFields.reduce(
-        (prev, curr) => Object.assign({}, prev, { [curr.name]: curr.value }),
+      // TODO Replace with redux-form save handling
+      const updates = this.editorFields.reduce(
+        (prev, curr) => Object.assign({}, prev, { [curr.name]: this.props.formState[curr.name] }),
         {}
       );
       this.props.onFileSave(this.props.file.id, updates)
@@ -55,102 +60,189 @@ class Editor extends Component {
   }
 
   handleFieldUpdate(event) {
-    this.props.actions.updateEditorField({
-      name: event.target.name,
-      value: event.target.value,
-    });
+    this.props.actions.updateFormState(Object.assign({},
+      this.props.formState,
+      { [event.target.name]: event.target.value }
+    ));
   }
 
   render() {
-    if (!this.props.visible) {
-      return null;
-    }
+    const file = this.props.file;
 
-    return (<div className="editor-component container-fluid">
-      <div className="CompositeField composite cms-file-info nolabel">
-        <div className="CompositeField composite cms-file-info-preview nolabel">
-          <img alt={this.props.file.title} className="thumbnail-preview" src={this.props.file.url} />
-        </div>
-        <div className="CompositeField composite cms-file-info-data nolabel">
-          <div className="CompositeField composite nolabel">
-            <div className="field readonly">
-              <label className="left">{i18n._t('AssetGalleryField.TYPE')}:</label>
-              <div className="middleColumn">
-                <span className="readonly">{this.props.file.type}</span>
+    const headerExtraParts = [];
+    if (file.attributes.dimensions.width && file.attributes.dimensions.height) {
+      headerExtraParts.push(
+        `${file.attributes.dimensions.width}x${file.attributes.dimensions.height}px`
+      );
+    }
+    headerExtraParts.push(file.size);
+    const headerExtraPartsStr = headerExtraParts.join(', ');
+
+    const preview = (file.category === 'image' &&
+      <a
+        href={file.url}
+        className="editor__file-preview font-icon-search btn--no-text"
+        target="_blank"
+      >
+        <img className="editor__thumbnail" src={file.url} alt={file.title} />
+      </a>
+    );
+
+    return (<div className="editor container-fluid">
+      <a
+        tabIndex="0"
+        className="btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl"
+        onClick={this.props.onClose}
+        onKeyDown={this.props.onClose}
+        type="button"
+        aria-label={i18n._t('AssetGalleryField.CANCEL')}
+      />
+
+      <div className="editor__details">
+        <h1 className="editor__heading">{file.title}</h1>
+        <p className="sub-heading">
+          {headerExtraPartsStr}
+        </p>
+
+        {preview}
+
+        <ul className="nav nav-tabs hidden-xs-up" role="tablist">
+          <li className="nav-item">
+            <a className="nav-link active" data-toggle="tab" href="#file-details" role="tab">Details</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" data-toggle="tab" href="#file-usage" role="tab">Usage</a>
+          </li>
+        </ul>
+
+        <div className="tab-content">
+          <div className="tab-pane active" id="file-details" role="tabpanel">
+
+            {this.editorFields.map((field, i) =>
+              (
+                <TextFieldComponent
+                  key={i}
+                  leftTitle={field.label}
+                  name={field.name}
+                  value={this.props.formState[field.name]}
+                  onChange={this.handleFieldUpdate}
+                />
+              )
+            )}
+
+            <div className="form-group">
+              <label htmlFor="folderLocation">Folder location</label>
+              <input
+                type="text"
+                className="form-control"
+                id="folderLocation"
+                value="uploads/folder name/"
+                readOnly="readonly"
+              />
+            </div>
+
+            <div className="media break-string">
+              <div className="media-left">
+                <i className="font-icon-link btn--icon-large editor__url-icon"></i>
+              </div>
+              <div className="media-body">
+                <a href={file.url} target="_blank">{file.url}</a>
               </div>
             </div>
-          </div>
-          <div className="field readonly">
-            <label className="left">{i18n._t('AssetGalleryField.SIZE')}:</label>
-            <div className="middleColumn">
-              <span className="readonly">{this.props.file.size}</span>
+
+            <div className="btn-toolbar">
+
+              <div className="btn-group hidden-xs-up" role="group" aria-label="">
+                <FormAction
+                  type="submit"
+                  bootstrapButtonStyle="primary"
+                  icon="rocket"
+                  handleClick={this.onFilePublish}
+                  loading={this.state.isSaving}
+                  label={i18n._t('AssetGalleryField.PUBLISH')}
+                />
+              </div>
+
+              <FormAction
+                type="submit"
+                bootstrapButtonStyle="primary"
+                icon="save"
+                handleClick={this.handleFileSave}
+                loading={this.state.isSaving}
+                label={i18n._t('AssetGalleryField.SAVE')}
+              />
+
+              <button
+                type="button"
+                data-container="body"
+                className="btn btn-secondary font-icon-dot-3 btn--no-text btn--icon-large hidden-xs-up"
+                data-toggle="popover"
+                title="Page actions"
+                data-placement="top"
+                data-content="<a href=''>Add to campaign</a><a href=''>Remove from campaign</a>"
+              >
+              </button>
             </div>
           </div>
-          <div className="field readonly">
-            <label className="left">{i18n._t('AssetGalleryField.URL')}:</label>
-            <div className="middleColumn">
-              <span className="readonly">
-                <a href={this.props.file.url} target="_blank">{this.props.file.url}</a>
-              </span>
-            </div>
-          </div>
-          <div className="field date_disabled readonly">
-            <label className="left">{i18n._t('AssetGalleryField.CREATED')}:</label>
-            <div className="middleColumn">
-              <span className="readonly">{this.props.file.created}</span>
-            </div>
-          </div>
-          <div className="field date_disabled readonly">
-            <label className="left">{i18n._t('AssetGalleryField.LASTEDIT')}:</label>
-            <div className="middleColumn">
-              <span className="readonly">{this.props.file.lastUpdated}</span>
-            </div>
-          </div>
-          <div className="field readonly">
-            <label className="left">{i18n._t('AssetGalleryField.DIM')}:</label>
-            <div className="middleColumn">
-              <span className="readonly">
-                {this.props.file.attributes.dimensions.width}
-                x
-                {this.props.file.attributes.dimensions.height}
-                px
-              </span>
-            </div>
+
+          <div className="tab-pane" id="file-usage" role="tabpanel">
+
+            <ul className="list-unstyled text-muted m-b-2">
+              <li>{file.type}</li>
+              <li>{i18n._t('AssetGalleryField.CREATED')} {file.created}</li>
+              <li>{i18n._t('AssetGalleryField.LASTEDIT')} {file.lastUpdated}</li>
+            </ul>
+
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Used on</th>
+                  <th>State</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">1</th>
+                  <td><h5><a href="">About us</a></h5><small className="sub-heading">Page</small></td>
+                  <td><span className="label label-info">Draft</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">2</th>
+                  <td><h5><a href="">My great blog post</a></h5><p className="sub-heading">Blog post</p></td>
+                  <td><span className="label label-success">Published</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">3</th>
+                  <td><h5><a href="">Our services</a></h5><p className="sub-heading">Services Page</p></td>
+                  <td><span className="label label-success">Published</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">4</th>
+                  <td><h5><a href="">June release</a></h5><p className="sub-heading">Campaign</p></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th scope="row">5</th>
+                  <td><h5><a href="">Marketing</a></h5><p className="sub-heading">Campaign</p></td>
+                  <td><span className="label label-warning">Scheduled</span></td>
+                </tr>
+                <tr>
+                  <th scope="row">6</th>
+                  <td><h5><a href="">Services section</a></h5><p className="sub-heading">Campaign</p></td>
+                  <td><span className="label label-success">Published</span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
-      {this.props.editorFields.map((field, i) =>
-        (
-          <TextFieldComponent
-            key={i}
-            leftTitle={field.label}
-            name={field.name}
-            value={field.value}
-            onChange={this.handleFieldUpdate}
-          />
-        )
-      )}
-      <div className="btn-toolbar">
-        <FormAction
-          type="submit"
-          bootstrapButtonStyle="primary"
-          icon="save"
-          handleClick={this.handleFileSave}
-          loading={this.state.isSaving}
-          label={i18n._t('AssetGalleryField.SAVE')}
-        />
-        <FormAction
-          bootstrapButtonStyle="secondary"
-          handleClick={this.props.onClose}
-          label={i18n._t('AssetGalleryField.CANCEL')}
-        />
       </div>
     </div>);
   }
 }
 
 Editor.propTypes = {
-  visible: React.PropTypes.bool,
+  formState: React.PropTypes.object,
   file: React.PropTypes.shape({
     id: React.PropTypes.number,
     title: React.PropTypes.string,
@@ -167,17 +259,21 @@ Editor.propTypes = {
       }),
     }),
   }),
-  editorFields: React.PropTypes.array,
   actions: React.PropTypes.object,
   onClose: React.PropTypes.func.isRequired,
   onFileSave: React.PropTypes.func,
 };
 
 function mapStateToProps(state) {
+  const { files, fileId } = state.assetAdmin.gallery;
+  let file = null;
+  if (fileId) {
+    // Calculated on the fly to avoid getting out of sync with lazy loaded fileId
+    file = files.find((next) => next.id === parseInt(fileId, 10));
+  }
   return {
-    visible: state.assetAdmin.editor.visible,
-    file: state.assetAdmin.editor.editing,
-    editorFields: state.assetAdmin.editor.editorFields,
+    file,
+    formState: state.assetAdmin.editor.formState,
   };
 }
 

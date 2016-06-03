@@ -1,41 +1,75 @@
-.gallery__bulk-actions {
-  padding: 8px;
-  left: 160px; // TODO: Needs to go to 60px when main nav is collapsed
-  z-index: 59;
-  right: 0;
-  height: 48px;
+// Change width depending on the amount of actions inside
+$bulk-actions-width: 200px;
+
+.bulk-actions {
+  width: 100%;
+  padding-top: $spacer-y * .625;
+  padding-bottom: $spacer-y * .625;
+  padding-left: $grid-gutter-width-half;
+  padding-right: $grid-gutter-width-half;
   margin: 0 auto;
-  position: fixed;
-  top: 52px;
-  width: 200px;
-  box-shadow: 0 1px 2px $shadow-light;
+  position: absolute;
+  height: $toolbar-total-height;
+  z-index: 1;
+  bottom: 0;
+  box-shadow: 0 -1px 2px $shadow-light;
   background-color: $background-darker;
   transition: all 0.5s ease-in-out;
   transform: scale(1);
 
-  &-enter {
+  @include media-breakpoint-down(sm) {
+    &-enter {
+      bottom: -$toolbar-total-height;
+    }
+
+    &-enter-active {
+      bottom: 0;
+      transition: bottom .2s linear, transform .1s ease-in .2s;
+    }
+
+    &-leave {
+      bottom: 0;
+    }
+
+    &-leave-active {
+      bottom: -$toolbar-total-height;
+      transition: bottom .2s linear .1s, transform .1s ease-in;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+    height: 48px;
+    padding: 8px;
     top: 0;
-    transform: scale(.95);
+    left: 50%;
+    width: $bulk-actions-width;
+    margin-left: -$bulk-actions-width / 2;
+    box-shadow: 0 1px 2px $shadow-light;
+
+    &-enter {
+      top: -$toolbar-height;
+      transform: scale(.95);
+    }
+
+    &-enter-active {
+      top: 0;
+      transform: scale(1);
+      transition: top .2s linear, transform .1s ease-in .2s;
+    }
+
+    &-leave {
+      top: 0;
+      transform: scale(1);
+    }
+
+    &-leave-active {
+      top: -$toolbar-height;
+      transform: scale(.95);
+      transition: top .2s linear .1s, transform .1s ease-in;
+    }
   }
 
-  &-enter-active {
-    top: 52px;
-    transform: scale(1);
-    transition: top .2s linear, transform .1s ease-in .2s;
-  }
-
-  &-leave {
-    top: 52px;
-    transform: scale(1);
-  }
-
-  &-leave-active {
-    top: 0;
-    transform: scale(.95);
-    transition: top .2s linear .1s, transform .1s ease-in;
-  }
-
-  .gallery__bulk-actions-counter {
+  .bulk-actions-counter {
     display: inline-block;
     vertical-align: middle;
     min-width: 28px;
@@ -49,7 +83,7 @@
     font-weight: bold;
   }
 
-  .gallery__bulk-actions_action.ss-ui-button {
+  .bulk-actions_action.ss-ui-button {
     line-height: $line-height-base;
     margin-bottom: 0;
     height: 32px;

@@ -1,55 +1,15 @@
 import EDITOR from './EditorActionTypes';
 
 /**
- * Sets the state of the fields for the editor component.
+ * Update the form state.
+ * @todo Replace with form state management library (e.g. redux-form)
  *
- * @param object editorFields - the current fields in the editor component
+ * @param object updates - Key-value map of form state updates
  */
-export function setEditorFields(editorFields = []) {
+export function updateFormState(updates) {
   return (dispatch) =>
     dispatch({
-      type: EDITOR.SET_EDITOR_FIELDS,
-      payload: { editorFields },
-    });
-}
-
-/**
- * Update the value of the given field.
- *
- * @param object updates - The values to update the editor field with.
- * @param string updates.name - The editor field name.
- * @param string updates.value - The new value of the field.
- * @param string [updates.label] - The field label.
- */
-export function updateEditorField(updates) {
-  return (dispatch) =>
-    dispatch({
-      type: EDITOR.UPDATE_EDITOR_FIELD,
+      type: EDITOR.UPDATE_FORM_STATE,
       payload: { updates },
     });
-}
-
-/**
- * Load the editing view for a given file
- * Used by AssetAdmin
- * @todo Refactor so that AssetAdmin has its own actions
- */
-export function show(folderID, fileID, file) {
-  return (dispatch) => {
-    dispatch({
-      type: EDITOR.SET_OPEN_FILE,
-      payload: { folderID, fileID, file },
-    });
-  };
-}
-
-/**
- * Hide the editor
- */
-export function hide() {
-  return (dispatch) => {
-    dispatch({
-      type: EDITOR.HIDE,
-    });
-  };
 }

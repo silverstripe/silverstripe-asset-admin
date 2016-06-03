@@ -6,8 +6,8 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
-import Dropzone from 'components/Dropzone/Dropzone';
-import File from 'components/File/File';
+import Dropzone from 'components/AssetDropzone/AssetDropzone';
+import File from 'components/GalleryItem/GalleryItem';
 import BulkActions from 'components/BulkActions/BulkActions';
 import CONSTANTS from 'constants/index';
 import * as galleryActions from 'state/gallery/GalleryActions';
@@ -131,7 +131,7 @@ export class Gallery extends Component {
       'btn--icon-large',
       'gallery__back',
     ].join(' ');
-    if (this.props.parentFolderID !== null) {
+    if (this.props.parentfolderId !== null) {
       return (
         <button
           className={classes}
@@ -178,14 +178,24 @@ export class Gallery extends Component {
   }
 
   refreshFolderIfNeeded() {
-    // folderID updates saying "please load", loadedFolderID updates when the ajax request is actually triggered
-    if (!isNaN(this.props.folderID) && this.props.folderID >= 0 && this.props.folderID !== this.props.loadedFolderID) {
+    const self = this;
+    // folderId updates saying "please load", loadedfolderId updates when the ajax request is actually triggered
+    if (!isNaN(this.props.folderId) && this.props.folderId >= 0 && this.props.folderId !== this.props.loadedfolderId) {
       this.props.actions.gallery.loadFolderContents(
         this.props.filesByParentApi,
-        this.props.folderID,
+        this.props.folderId,
         this.props.limit,
         this.props.page
-      );
+      ).then(() => {
+        // Check if the selected file is in the new files, and trigger a pseudo-select.
+        // This ensures files can be selected prior to the async folder load completing,
+        // e.g. through URL parameters.
+        const fileId = self.props.fileId;
+        const file = self.props.files.find((next) => next.id === parseInt(fileId, 10));
+        if (file) {
+          self.props.onOpenFile(fileId, file);
+        }
+      });
     }
   }
 
@@ -237,7 +247,7 @@ export class Gallery extends Component {
     // eslint-disable-next-line no-alert
     const folderName = prompt('Folder name (or blank to cancel)');
     if (folderName) {
-      this.props.actions.gallery.addFolder(this.props.addFolderApi, this.props.folderID, folderName);
+      this.props.actions.gallery.addFolder(this.props.addFolderApi, this.props.folderId, folderName);
     }
   }
 
@@ -287,13 +297,24 @@ export class Gallery extends Component {
   }
 
   /**
+   * Checks if a file or folder is currently highlighted,
+   * which typically means its own for viewing or editing.
+   *
+   * @param number id - The id of the file or folder to check.
+   * @return boolean
+   */
+  itemIsHighlighted(id) {
+    return this.props.highlightedFiles.indexOf(id) > -1;
+  }
+
+  /**
    * Handles a user drilling down into a folder.
    *
    * @param object event - Event object.
    * @param object folder - The folder that's being activated.
    */
   handleFolderActivate(event, folder) {
-    this.props.actions.gallery.show(folder.id);
+    this.props.actions.gallery.setFolder(folder.id);
   }
 
   /**
@@ -336,12 +357,10 @@ export class Gallery extends Component {
 
   handleBackClick(event) {
     event.preventDefault();
-    this.props.actions.gallery.show(this.props.parentFolderID);
+    this.props.actions.gallery.setFolder(this.props.parentfolderId);
   }
 
   render() {
-    if (!this.props.visible) return null;
-
     const dropzoneOptions = {
       // Hardcoded placeholder until we have a backend
       url: 'admin/assets/EditForm/field/Upload/upload',
@@ -352,14 +371,15 @@ export class Gallery extends Component {
     const canEdit = this.props.canEdit;
 
     return (
-      <div>
+      <div className="gallery__main">
         <ReactCSSTransitionGroup
-          transitionName="gallery__bulk-actions"
+          transitionName="bulk-actions"
           transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
           transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
         >
           {this.getBulkActionsComponent()}
         </ReactCSSTransitionGroup>
+
         <div className="gallery__sort fieldholder-small">
           <select
             className="dropdown no-change-track no-chzn"
@@ -381,7 +401,8 @@ export class Gallery extends Component {
           </select>
         </div>
 
-        <div className="toolbar--content">
+        <div className="toolbar--content toolbar--space-save">
+
           {this.getBackButton()}
 
           <button
@@ -390,19 +411,18 @@ export class Gallery extends Component {
             type="button"
             disabled={!canEdit}
           >
-            {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
+            <span className="btn__text">{i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}</span>
           </button>
 
           <button
             id="add-folder-button"
-            className="btn btn-secondary font-icon-folder-add btn--icon-xl"
+            className="btn btn-secondary font-icon-folder-add btn--icon-xl "
             type="button"
             onClick={this.handleAddFolder}
             disabled={!canEdit}
           >
-            {i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}
+            <span className="btn__text">{i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}</span>
           </button>
-
         </div>
 
         <Dropzone
@@ -412,7 +432,7 @@ export class Gallery extends Component {
           handleSuccess={this.handleSuccessfulUpload}
           handleSending={this.handleSending}
           handleUploadProgress={this.handleUploadProgress}
-          folderID={this.props.folderID}
+          folderId={this.props.folderId}
           options={dropzoneOptions}
           securityID={securityID}
           uploadButton={false}
@@ -426,6 +446,7 @@ export class Gallery extends Component {
                   key={i}
                   item={file}
                   selected={this.itemIsSelected(file.id)}
+                  highlighted={this.itemIsHighlighted(file.id)}
                   handleDelete={this.handleItemDelete}
                   handleToggleSelect={this.handleToggleSelect}
                   handleActivate={this.handleFolderActivate}
@@ -441,6 +462,7 @@ export class Gallery extends Component {
                 key={`queued_file_${i}`}
                 item={file}
                 selected={this.itemIsSelected(file.id)}
+                highlighted={this.itemIsHighlighted(file.id)}
                 handleDelete={this.handleItemDelete}
                 handleToggleSelect={this.handleToggleSelect}
                 handleActivate={this.handleFileActivate}
@@ -457,6 +479,7 @@ export class Gallery extends Component {
                   key={`file_${i}`}
                   item={file}
                   selected={this.itemIsSelected(file.id)}
+                  highlighted={this.itemIsHighlighted(file.id)}
                   handleDelete={this.handleItemDelete}
                   handleToggleSelect={this.handleToggleSelect}
                   handleActivate={this.handleFileActivate}
@@ -478,14 +501,14 @@ export class Gallery extends Component {
 }
 
 Gallery.propTypes = {
-  visible: React.PropTypes.bool,
-
   files: React.PropTypes.array,
   count: React.PropTypes.number,
-  folderID: React.PropTypes.number.isRequired,
-  loadedFolderID: React.PropTypes.number,
-  parentFolderID: React.PropTypes.number,
+  fileId: React.PropTypes.number,
+  folderId: React.PropTypes.number.isRequired,
+  loadedfolderId: React.PropTypes.number,
+  parentfolderId: React.PropTypes.number,
   selectedFiles: React.PropTypes.array,
+  highlightedFiles: React.PropTypes.array,
   bulkActions: React.PropTypes.bool,
   limit: React.PropTypes.number,
   page: React.PropTypes.number,
@@ -505,19 +528,19 @@ Gallery.propTypes = {
 };
 
 function mapStateToProps(state) {
+  const { files, fileId, folderId } = state.assetAdmin.gallery;
   return {
-    visible: state.assetAdmin.gallery.visible,
-
-    files: state.assetAdmin.gallery.files,
+    files,
+    fileId,
     count: state.assetAdmin.gallery.count,
-    folderID: state.assetAdmin.gallery.folderID,
-    loadedFolderID: state.assetAdmin.gallery.loadedFolderID,
-    parentFolderID: state.assetAdmin.gallery.parentFolderID,
+    folderId,
+    loadedfolderId: state.assetAdmin.gallery.loadedfolderId,
+    parentfolderId: state.assetAdmin.gallery.parentfolderId,
     selectedFiles: state.assetAdmin.gallery.selectedFiles,
+    highlightedFiles: state.assetAdmin.gallery.highlightedFiles,
     page: state.assetAdmin.gallery.page,
     canEdit: state.assetAdmin.gallery.canEdit,
     canDelete: state.assetAdmin.gallery.canDelete,
-
     queuedFiles: state.assetAdmin.queuedFiles,
   };
 }
