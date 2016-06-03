@@ -112,10 +112,11 @@ export class Gallery extends Component {
     $select.on('change', () => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
 
     this.refreshFolderIfNeeded();
+    this.checkLoadingIndicator();
   }
 
   getNoItemsNotice() {
-    if (this.props.files.length < 1 && this.props.queuedFiles.items.length < 1) {
+    if (this.props.files.length < 1 && this.props.queuedFiles.items.length < 1 && !this.props.loading) {
       return <p className="gallery__no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
     }
 
@@ -175,6 +176,16 @@ export class Gallery extends Component {
     }
 
     return null;
+  }
+
+  checkLoadingIndicator() {
+    const $sectionWrapper = $('.cms-content.AssetAdmin');
+
+    if (this.props.loading && !$sectionWrapper.hasClass('loading')) {
+      $sectionWrapper.addClass('loading');
+    } else if (!this.props.loading && $sectionWrapper.hasClass('loading')) {
+      $sectionWrapper.removeClass('loading');
+    }
   }
 
   refreshFolderIfNeeded() {
@@ -501,6 +512,7 @@ export class Gallery extends Component {
 }
 
 Gallery.propTypes = {
+  loading: React.PropTypes.bool,
   files: React.PropTypes.array,
   count: React.PropTypes.number,
   fileId: React.PropTypes.number,
@@ -532,6 +544,7 @@ function mapStateToProps(state) {
   return {
     files,
     fileId,
+    loading: state.assetAdmin.gallery.loading,
     count: state.assetAdmin.gallery.count,
     folderId,
     loadedfolderId: state.assetAdmin.gallery.loadedfolderId,
