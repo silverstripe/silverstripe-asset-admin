@@ -8,16 +8,17 @@ $bulk-actions-width: 200px;
   padding-left: $grid-gutter-width-half;
   padding-right: $grid-gutter-width-half;
   margin: 0 auto;
-  position: absolute;
+  position: fixed;
   height: $toolbar-total-height;
   z-index: 1;
   bottom: 0;
   box-shadow: 0 -1px 2px $shadow-light;
   background-color: $background-darker;
-  transition: all 0.5s ease-in-out;
+  transition: top 0.5s ease-in-out,
+    transform 0.5s ease-in-out;
   transform: scale(1);
 
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(md) {
     &-enter {
       bottom: -$toolbar-total-height;
     }
@@ -37,7 +38,7 @@ $bulk-actions-width: 200px;
     }
   }
 
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(md) {
     height: 48px;
     padding: 8px;
     top: 0;
@@ -45,6 +46,7 @@ $bulk-actions-width: 200px;
     width: $bulk-actions-width;
     margin-left: -$bulk-actions-width / 2;
     box-shadow: 0 1px 2px $shadow-light;
+    position: absolute;
 
     &-enter {
       top: -$toolbar-height;
