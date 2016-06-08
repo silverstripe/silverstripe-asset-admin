@@ -4,13 +4,14 @@
   position: absolute;
 }
 
-.gallery__main {
-  position: relative;
-  overflow: auto;
+// Required for bulk-actions position
+.gallery__outer {
   height: 100%;
+  position: relative;
 }
 
-.editor + .gallery__main {
+// If editor is present reduce size of gallery
+.editor + .gallery__outer {
   @include media-breakpoint-up(lg) {
     width: calc(100% - #{$cms-panel-sm});
   }
@@ -18,6 +19,10 @@
   @include media-breakpoint-up(xl) {
     width: calc(100% - #{$cms-panel-md});
   }
+}
+
+.gallery__main {
+  position: relative;
 }
 
 .gallery__no-item-notice {
@@ -62,30 +67,22 @@
   border-radius: 4px;
 }
 
-// Sort - requires deeper nesting
-.gallery .gallery__sort .chosen-single {
-  border: 0;
-  filter: none; //IE9
-  background: none;
-  box-shadow: none;
-  color: inherit;
-  margin-top: -1px;
-}
-
 .gallery__sort {
   position: absolute;
   top: 12px;
   right: 0;
   margin-right: 16px;
 
-  .chosen-single {
+  .gallery & .chosen-single {
     border: 0;
     filter: none; //IE9
     background: none;
     box-shadow: none;
     color: inherit;
     margin-top: -1px;
+  }
 
+  .chosen-single {
     &:focus {
       box-shadow: $dropdown-shadow;
     }

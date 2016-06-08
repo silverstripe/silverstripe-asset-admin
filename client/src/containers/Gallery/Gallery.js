@@ -112,10 +112,11 @@ export class Gallery extends Component {
     $select.on('change', () => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
 
     this.refreshFolderIfNeeded();
+    this.checkLoadingIndicator();
   }
 
   getNoItemsNotice() {
-    if (this.props.files.length < 1 && this.props.queuedFiles.items.length < 1) {
+    if (this.props.files.length < 1 && this.props.queuedFiles.items.length < 1 && !this.props.loading) {
       return <p className="gallery__no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
     }
 
@@ -175,6 +176,16 @@ export class Gallery extends Component {
     }
 
     return null;
+  }
+
+  checkLoadingIndicator() {
+    const $sectionWrapper = $('.cms-content.AssetAdmin');
+
+    if (this.props.loading && !$sectionWrapper.hasClass('loading')) {
+      $sectionWrapper.addClass('loading');
+    } else if (!this.props.loading && $sectionWrapper.hasClass('loading')) {
+      $sectionWrapper.removeClass('loading');
+    }
   }
 
   refreshFolderIfNeeded() {
@@ -371,7 +382,7 @@ export class Gallery extends Component {
     const canEdit = this.props.canEdit;
 
     return (
-      <div className="gallery__main">
+      <div className="gallery__outer">
         <ReactCSSTransitionGroup
           transitionName="bulk-actions"
           transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
@@ -380,127 +391,131 @@ export class Gallery extends Component {
           {this.getBulkActionsComponent()}
         </ReactCSSTransitionGroup>
 
-        <div className="gallery__sort fieldholder-small">
-          <select
-            className="dropdown no-change-track no-chzn"
-            tabIndex="0"
-            style={{ width: '160px' }}
-          >
-            {this.sorters.map((sorter, i) =>
-              (
-                <option
-                  key={i}
-                  onClick={this.handleSort}
-                  data-field={sorter.field}
-                  data-direction={sorter.direction}
-                >
-                  {sorter.label}
-                </option>
-              )
-            )}
-          </select>
-        </div>
+        <div className="gallery__main panel-scrollable">
 
-        <div className="toolbar--content toolbar--space-save">
-
-          {this.getBackButton()}
-
-          <button
-            id="upload-button"
-            className="btn btn-secondary font-icon-upload btn--icon-xl"
-            type="button"
-            disabled={!canEdit}
-          >
-            <span className="btn__text">{i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}</span>
-          </button>
-
-          <button
-            id="add-folder-button"
-            className="btn btn-secondary font-icon-folder-add btn--icon-xl "
-            type="button"
-            onClick={this.handleAddFolder}
-            disabled={!canEdit}
-          >
-            <span className="btn__text">{i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}</span>
-          </button>
-        </div>
-
-        <Dropzone
-          canUpload={canEdit}
-          handleAddedFile={this.handleAddedFile}
-          handleError={this.handleFailedUpload}
-          handleSuccess={this.handleSuccessfulUpload}
-          handleSending={this.handleSending}
-          handleUploadProgress={this.handleUploadProgress}
-          folderId={this.props.folderId}
-          options={dropzoneOptions}
-          securityID={securityID}
-          uploadButton={false}
-        >
-
-          <div className="gallery__folders">
-            {this.props.files.map((file, i) => {
-              let component;
-              if (file.type === 'folder') {
-                component = (<File
-                  key={i}
-                  item={file}
-                  selected={this.itemIsSelected(file.id)}
-                  highlighted={this.itemIsHighlighted(file.id)}
-                  handleDelete={this.handleItemDelete}
-                  handleToggleSelect={this.handleToggleSelect}
-                  handleActivate={this.handleFolderActivate}
-                />);
-              }
-              return component;
-            })}
+          <div className="gallery__sort fieldholder-small">
+            <select
+              className="dropdown no-change-track no-chzn"
+              tabIndex="0"
+              style={{ width: '160px' }}
+            >
+              {this.sorters.map((sorter, i) =>
+                (
+                  <option
+                    key={i}
+                    onClick={this.handleSort}
+                    data-field={sorter.field}
+                    data-direction={sorter.direction}
+                  >
+                    {sorter.label}
+                  </option>
+                )
+              )}
+            </select>
           </div>
 
-          <div className="gallery__files">
-            {this.props.queuedFiles.items.map((file, i) =>
-              (<File
-                key={`queued_file_${i}`}
-                item={file}
-                selected={this.itemIsSelected(file.id)}
-                highlighted={this.itemIsHighlighted(file.id)}
-                handleDelete={this.handleItemDelete}
-                handleToggleSelect={this.handleToggleSelect}
-                handleActivate={this.handleFileActivate}
-                handleCancelUpload={this.handleCancelUpload}
-                handleRemoveErroredUpload={this.handleRemoveErroredUpload}
-                messages={file.messages}
-                uploading
-              />)
-            )}
-            {this.props.files.map((file, i) => {
-              let component;
-              if (file.type !== 'folder') {
-                component = (<File
-                  key={`file_${i}`}
+          <div className="toolbar--content toolbar--space-save">
+
+            {this.getBackButton()}
+
+            <button
+              id="upload-button"
+              className="btn btn-secondary font-icon-upload btn--icon-xl"
+              type="button"
+              disabled={!canEdit}
+            >
+              <span className="btn__text">{i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}</span>
+            </button>
+
+            <button
+              id="add-folder-button"
+              className="btn btn-secondary font-icon-folder-add btn--icon-xl "
+              type="button"
+              onClick={this.handleAddFolder}
+              disabled={!canEdit}
+            >
+              <span className="btn__text">{i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}</span>
+            </button>
+          </div>
+
+          <Dropzone
+            canUpload={canEdit}
+            handleAddedFile={this.handleAddedFile}
+            handleError={this.handleFailedUpload}
+            handleSuccess={this.handleSuccessfulUpload}
+            handleSending={this.handleSending}
+            handleUploadProgress={this.handleUploadProgress}
+            folderId={this.props.folderId}
+            options={dropzoneOptions}
+            securityID={securityID}
+            uploadButton={false}
+          >
+
+            <div className="gallery__folders">
+              {this.props.files.map((file, i) => {
+                let component;
+                if (file.type === 'folder') {
+                  component = (<File
+                    key={i}
+                    item={file}
+                    selected={this.itemIsSelected(file.id)}
+                    highlighted={this.itemIsHighlighted(file.id)}
+                    handleDelete={this.handleItemDelete}
+                    handleToggleSelect={this.handleToggleSelect}
+                    handleActivate={this.handleFolderActivate}
+                  />);
+                }
+                return component;
+              })}
+            </div>
+
+            <div className="gallery__files">
+              {this.props.queuedFiles.items.map((file, i) =>
+                (<File
+                  key={`queued_file_${i}`}
                   item={file}
                   selected={this.itemIsSelected(file.id)}
                   highlighted={this.itemIsHighlighted(file.id)}
                   handleDelete={this.handleItemDelete}
                   handleToggleSelect={this.handleToggleSelect}
                   handleActivate={this.handleFileActivate}
-                />);
-              }
-              return component;
-            })}
-          </div>
+                  handleCancelUpload={this.handleCancelUpload}
+                  handleRemoveErroredUpload={this.handleRemoveErroredUpload}
+                  messages={file.messages}
+                  uploading
+                />)
+              )}
+              {this.props.files.map((file, i) => {
+                let component;
+                if (file.type !== 'folder') {
+                  component = (<File
+                    key={`file_${i}`}
+                    item={file}
+                    selected={this.itemIsSelected(file.id)}
+                    highlighted={this.itemIsHighlighted(file.id)}
+                    handleDelete={this.handleItemDelete}
+                    handleToggleSelect={this.handleToggleSelect}
+                    handleActivate={this.handleFileActivate}
+                  />);
+                }
+                return component;
+              })}
+            </div>
 
-          {this.getNoItemsNotice()}
+            {this.getNoItemsNotice()}
 
-          <div className="gallery__load">
-            {this.getMoreButton()}
-          </div>
-        </Dropzone>
+            <div className="gallery__load">
+              {this.getMoreButton()}
+            </div>
+          </Dropzone>
+        </div>
       </div>
     );
   }
 }
 
 Gallery.propTypes = {
+  loading: React.PropTypes.bool,
   files: React.PropTypes.array,
   count: React.PropTypes.number,
   fileId: React.PropTypes.number,
@@ -532,6 +547,7 @@ function mapStateToProps(state) {
   return {
     files,
     fileId,
+    loading: state.assetAdmin.gallery.loading,
     count: state.assetAdmin.gallery.count,
     folderId,
     loadedfolderId: state.assetAdmin.gallery.loadedfolderId,

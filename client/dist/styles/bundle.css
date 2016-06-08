@@ -193,15 +193,15 @@
   padding-left: 1.5385rem;
   padding-right: 1.5385rem;
   margin: 0 auto;
-  position: absolute;
+  position: fixed;
   height: 53px;
   z-index: 1;
   bottom: 0;
   box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
   background-color: #f0f2f4;
-  transition: all 0.5s ease-in-out;
+  transition: top 0.5s ease-in-out, transform 0.5s ease-in-out;
   transform: scale(1); }
-  @media (max-width: 767px) {
+  @media (max-width: 991px) {
     .bulk-actions-enter {
       bottom: -53px; }
     .bulk-actions-enter-active {
@@ -212,7 +212,7 @@
     .bulk-actions-leave-active {
       bottom: -53px;
       transition: bottom .2s linear .1s, transform .1s ease-in; } }
-  @media (min-width: 544px) {
+  @media (min-width: 768px) {
     .bulk-actions {
       height: 48px;
       padding: 8px;
@@ -220,7 +220,8 @@
       left: 50%;
       width: 200px;
       margin-left: -100px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      position: absolute; }
       .bulk-actions-enter {
         top: -52px;
         transform: scale(0.95); }
@@ -315,18 +316,20 @@
   height: 100%;
   position: absolute; }
 
-.gallery__main {
-  position: relative;
-  overflow: auto;
-  height: 100%; }
+.gallery__outer {
+  height: 100%;
+  position: relative; }
 
 @media (min-width: 992px) {
-  .editor + .gallery__main {
+  .editor + .gallery__outer {
     width: calc(100% - 300px); } }
 
 @media (min-width: 1200px) {
-  .editor + .gallery__main {
+  .editor + .gallery__outer {
     width: calc(100% - 448px); } }
+
+.gallery__main {
+  position: relative; }
 
 .gallery__no-item-notice {
   width: 100%;
@@ -362,33 +365,25 @@
   border: 0;
   border-radius: 4px; }
 
-.gallery .gallery__sort .chosen-single {
-  border: 0;
-  filter: none;
-  background: none;
-  box-shadow: none;
-  color: inherit;
-  margin-top: -1px; }
-
 .gallery__sort {
   position: absolute;
   top: 12px;
   right: 0;
   margin-right: 16px; }
-  .gallery__sort .chosen-single {
+  .gallery .gallery__sort .chosen-single {
     border: 0;
     filter: none;
     background: none;
     box-shadow: none;
     color: inherit;
     margin-top: -1px; }
-    .gallery__sort .chosen-single:focus {
-      box-shadow: 0 0 3px rgba(0, 0, 0, 0.2); }
-    .gallery__sort .chosen-single > span {
-      text-align: right;
-      color: inherit; }
-    .gallery__sort .chosen-single > span::before {
-      content: "Sort by "; }
+  .gallery__sort .chosen-single:focus {
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.2); }
+  .gallery__sort .chosen-single > span {
+    text-align: right;
+    color: inherit; }
+  .gallery__sort .chosen-single > span::before {
+    content: "Sort by "; }
   .gallery__sort .chosen-drop {
     border-radius: 3px;
     box-shadow: 0 0 3px rgba(0, 0, 0, 0.2);

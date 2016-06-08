@@ -172,6 +172,7 @@ export default function galleryReducer(state = initialState, action) {
         selectedFiles: [],
         files: [],
         count: 0,
+        loading: true,
       }));
     }
 
@@ -182,6 +183,7 @@ export default function galleryReducer(state = initialState, action) {
         canDelete: action.payload.canDelete,
         files: action.payload.files,
         count: action.payload.files.length,
+        loading: false,
       }));
     }
 
