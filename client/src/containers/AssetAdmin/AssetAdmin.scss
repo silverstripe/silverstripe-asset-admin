@@ -27,16 +27,15 @@
   }
 
   // TEMP Overides which should eventually not be needed
-  // Reset some annoying CMS styles.
   .asset-gallery {
-    margin: 0; // Temp: Needed for legacy markup in template
+    margin: 0;
 
-    > .left {
+    .form__field-label {
       display: none;
     }
 
-    > .middleColumn {
-      margin-left: 0;
+    .form__field-holder {
+      width: auto;
     }
   }
 
