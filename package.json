@@ -46,6 +46,7 @@
     "babel-preset-react": "^6.5.0",
     "babelify": "^7.2.0",
     "browserify": "^11.1.0",
+    "deep-freeze-strict": "^1.1.1",
     "eslint": "^2.5.3",
     "eslint-config-airbnb": "^6.2.0",
     "eslint-plugin-react": "^4.2.3",
@@ -71,7 +72,6 @@
     "watchify": "^3.7.0"
   },
   "dependencies": {
-    "deep-freeze": "https://registry.npmjs.org/deep-freeze/-/deep-freeze-0.0.1.tgz",
     "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
     "react-addons-css-transition-group": "^0.14.7"
   },
