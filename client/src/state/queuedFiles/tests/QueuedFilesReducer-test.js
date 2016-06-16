@@ -1,6 +1,6 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('deep-freeze');
+jest.unmock('deep-freeze-strict');
 jest.unmock('../QueuedFilesActionTypes');
 jest.unmock('../QueuedFilesReducer.js');
 

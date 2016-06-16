@@ -1,7 +1,7 @@
 /* global jest, describe, it, expect */
 
 jest.mock('i18n');
-jest.unmock('deep-freeze');
+jest.unmock('deep-freeze-strict');
 jest.unmock('../GalleryActionTypes.js');
 jest.unmock('../GalleryReducer.js');
 

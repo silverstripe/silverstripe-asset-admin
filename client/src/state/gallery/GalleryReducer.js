@@ -1,4 +1,4 @@
-import deepFreeze from 'deep-freeze';
+import deepFreeze from 'deep-freeze-strict';
 import GALLERY from './GalleryActionTypes';
 import CONSTANTS from 'constants/index';
 

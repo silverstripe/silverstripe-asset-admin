@@ -1,4 +1,4 @@
-import deepFreeze from 'deep-freeze';
+import deepFreeze from 'deep-freeze-strict';
 import EDITOR from './EditorActionTypes';
 
 const initialState = {
