@@ -24,6 +24,10 @@
 
 .editor__details {
   margin-bottom: 32px;
+
+  .form-group::after {
+    margin-bottom: $spacer-y;
+  }
 }
 
 .editor__heading {
