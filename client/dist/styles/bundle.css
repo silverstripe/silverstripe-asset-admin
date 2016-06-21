@@ -415,6 +415,8 @@
 
 .editor__details {
   margin-bottom: 32px; }
+  .editor__details .form-group::after {
+    margin-bottom: 1.2308rem; }
 
 .editor__heading {
   margin-right: 2.4616rem;
@@ -482,8 +484,6 @@
 
 .AssetAdmin .asset-gallery {
   margin: 0; }
-  .AssetAdmin .asset-gallery .form__field-label {
-    display: none; }
   .AssetAdmin .asset-gallery .form__field-holder {
     width: auto; }
 
