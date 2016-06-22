@@ -153,7 +153,7 @@ class AssetAdmin extends SilverStripeComponent {
           limit={this.props.limit}
           bulkActions={this.props.bulkActions}
           filesByParentApi={this.props.filesByParentApi}
-          addFolderApi={this.props.addFolderApi}
+          createFolderApi={this.props.createFolderApi}
           deleteApi={this.props.deleteApi}
           onOpenFile={this.handleOpenFile}
         />
@@ -172,6 +172,7 @@ AssetAdmin.propTypes = {
   }),
   updateApi: React.PropTypes.func,
   sectionConfig: React.PropTypes.object.isRequired,
+  createFolderApi: React.PropTypes.func,
   file: React.PropTypes.object,
 };
 

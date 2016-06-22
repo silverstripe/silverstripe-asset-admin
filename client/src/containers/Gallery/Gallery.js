@@ -85,7 +85,7 @@ export class Gallery extends Component {
     this.handleSort = this.handleSort.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
-    this.handleAddFolder = this.handleAddFolder.bind(this);
+    this.handleCreateFolder = this.handleCreateFolder.bind(this);
   }
 
   componentDidMount() {
@@ -254,11 +254,11 @@ export class Gallery extends Component {
    *
    * @param object event - Click event.
    */
-  handleAddFolder() {
+  handleCreateFolder() {
     // eslint-disable-next-line no-alert
     const folderName = prompt('Folder name (or blank to cancel)');
     if (folderName) {
-      this.props.actions.gallery.addFolder(this.props.addFolderApi, this.props.folderId, folderName);
+      this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName);
     }
   }
 
@@ -431,7 +431,7 @@ export class Gallery extends Component {
               id="add-folder-button"
               className="btn btn-secondary font-icon-folder-add btn--icon-xl "
               type="button"
-              onClick={this.handleAddFolder}
+              onClick={this.handleCreateFolder}
               disabled={!canEdit}
             >
               <span className="btn__text">{i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}</span>
@@ -535,7 +535,7 @@ Gallery.propTypes = {
 
   onOpenFile: React.PropTypes.func.isRequired,
 
-  addFolderApi: React.PropTypes.func,
+  createFolderApi: React.PropTypes.func,
   deleteApi: React.PropTypes.func,
   filesByParentApi: React.PropTypes.func,
 
