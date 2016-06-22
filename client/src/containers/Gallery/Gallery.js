@@ -514,6 +514,10 @@ export class Gallery extends Component {
   }
 }
 
+Gallery.defaultProps = {
+  bulkActions: true,
+};
+
 Gallery.propTypes = {
   loading: React.PropTypes.bool,
   files: React.PropTypes.array,

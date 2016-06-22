@@ -151,7 +151,6 @@ class AssetAdmin extends SilverStripeComponent {
         <Gallery
           name={this.props.name}
           limit={this.props.limit}
-          bulkActions={this.props.bulkActions}
           filesByParentApi={this.props.filesByParentApi}
           createFolderApi={this.props.createFolderApi}
           deleteApi={this.props.deleteApi}
