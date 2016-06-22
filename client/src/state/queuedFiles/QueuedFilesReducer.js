@@ -10,7 +10,7 @@ function fileFactory() {
         width: null,
       },
     },
-    basename: null,
+    name: null,
     canDelete: false,
     canEdit: false,
     category: null,
