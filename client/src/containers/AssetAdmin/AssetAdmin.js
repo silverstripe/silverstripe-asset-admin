@@ -133,7 +133,7 @@ class AssetAdmin extends SilverStripeComponent {
    * @param  {Object} updates
    */
   handleFileSave(id, updates) {
-    return this.props.actions.gallery.updateFile(this.props.updateApi, id, updates);
+    return this.props.actions.gallery.updateFile(this.props.updateFileApi, id, updates);
   }
 
   render() {
@@ -151,7 +151,7 @@ class AssetAdmin extends SilverStripeComponent {
         <Gallery
           name={this.props.name}
           limit={this.props.limit}
-          filesByParentApi={this.props.filesByParentApi}
+          readFolderApi={this.props.readFolderApi}
           createFolderApi={this.props.createFolderApi}
           deleteApi={this.props.deleteApi}
           onOpenFile={this.handleOpenFile}
@@ -169,9 +169,12 @@ AssetAdmin.propTypes = {
       }),
     }),
   }),
-  updateApi: React.PropTypes.func,
   sectionConfig: React.PropTypes.object.isRequired,
   createFolderApi: React.PropTypes.func,
+  readFolderApi: React.PropTypes.func,
+  updateFolderApi: React.PropTypes.func,
+  updateFileApi: React.PropTypes.func,
+  deleteApi: React.PropTypes.func,
   file: React.PropTypes.object,
 };
 

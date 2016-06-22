@@ -193,7 +193,7 @@ export class Gallery extends Component {
     // folderId updates saying "please load", loadedfolderId updates when the ajax request is actually triggered
     if (!isNaN(this.props.folderId) && this.props.folderId >= 0 && this.props.folderId !== this.props.loadedfolderId) {
       this.props.actions.gallery.loadFolderContents(
-        this.props.filesByParentApi,
+        this.props.readFolderApi,
         this.props.folderId,
         this.props.limit,
         this.props.page
@@ -541,7 +541,7 @@ Gallery.propTypes = {
 
   createFolderApi: React.PropTypes.func,
   deleteApi: React.PropTypes.func,
-  filesByParentApi: React.PropTypes.func,
+  readFolderApi: React.PropTypes.func,
 
   actions: React.PropTypes.object,
 };

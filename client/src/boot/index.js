@@ -1,66 +1,39 @@
 import $ from 'jQuery';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Config from 'lib/Config';
 import { Provider } from 'react-redux';
 import configureStore from 'state/configureStore';
 import AssetAdminContainer from 'containers/AssetAdmin/AssetAdmin';
 import backend from 'lib/Backend';
 
 $.entwine('ss', () => {
-  $('.asset-gallery-component-wrapper').entwine({
+  $('#assetadmin-cms-content .cms-content-view').entwine({
+
     onadd() {
+      const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
       const store = configureStore();
 
       // Build API callers from the URLs provided to us in the div
       // In time, something like a GraphQL endpoint might be a better way to run
-
-      const filesByParentApi = backend.createEndpointFetcher({
-        method: 'get',
-        responseFormat: 'json',
-        url: this.data('asset-gallery-files-by-parent-url'),
-      });
-
-      const deleteApi = backend.createEndpointFetcher({
-        method: 'delete',
-        payloadFormat: 'urlencoded',
-        url: this.data('asset-gallery-delete-url'),
-      });
-
-      const addFolderApi = backend.createEndpointFetcher({
-        method: 'post',
-        payloadFormat: 'urlencoded',
-        url: this.data('asset-gallery-add-folder-url'),
-      });
-
-      const updateApi = backend.createEndpointFetcher({
-        method: 'put',
-        payloadFormat: 'urlencoded',
-        url: this.data('asset-gallery-update-url'),
-      });
-
-      const limit = this.data('asset-gallery-limit');
-      const bulkActions = this.data('asset-gallery-bulk-actions');
-
-      const name = $('.asset-gallery').data('asset-gallery-name');
-      const section = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
-
-      // TODO
-      // filesBySiblingApi={filesBySiblingApi}
-      // searchApi={searchApi}
-      // updateApi={updateApi}
+      const createFolderApi = backend.createEndpointFetcher(sectionConfig['createFolderEndpoint']);
+      const readFolderApi = backend.createEndpointFetcher(sectionConfig['readFolderEndpoint']);
+      const updateFolderApi = backend.createEndpointFetcher(sectionConfig['updateFolderEndpoint']);
+      const updateFileApi = backend.createEndpointFetcher(sectionConfig['updateFileEndpoint']);
+      const deleteApi = backend.createEndpointFetcher(sectionConfig['deleteEndpoint']);
+      const limit = sectionConfig['limit'];
 
       ReactDOM.render(
         <Provider store={store}>
           <AssetAdminContainer
             name={name}
             limit={limit}
-            bulkActions={!!bulkActions}
-
-            filesByParentApi={filesByParentApi}
-            addFolderApi={addFolderApi}
+            createFolderApi={createFolderApi}
+            readFolderApi={readFolderApi}
+            updateFolderApi={updateFolderApi}
+            updateFileApi={updateFileApi}
             deleteApi={deleteApi}
-            updateApi={updateApi}
-            sectionConfigKey={section}
+            sectionConfig={sectionConfig}
           />
         </Provider>,
         this[0]
