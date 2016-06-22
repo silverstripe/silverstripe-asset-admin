@@ -26,15 +26,6 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleCloseFile = this.handleCloseFile.bind(this);
     this.handleFileSave = this.handleFileSave.bind(this);
     this.handleURL = this.handleURL.bind(this);
-    this.getConfig = this.getConfig.bind(this);
-  }
-
-  /**
-   * Get config for this section
-   * @returns {Object|undefined}
-   */
-  getConfig() {
-    return Config.getSection(this.props.sectionConfigKey);
   }
 
   componentDidMount() {
@@ -43,7 +34,7 @@ class AssetAdmin extends SilverStripeComponent {
     // While a component is mounted it will intercept all routes and handle internally
     let captureRoute = true;
 
-    const route = window.ss.router.resolveURLToBase(this.getConfig().assetsRoute);
+    const route = window.ss.router.resolveURLToBase(this.props.sectionConfig.assetsRoute);
 
     // Capture routing within this section
     window.ss.router(route, (ctx, next) => {
@@ -86,13 +77,13 @@ class AssetAdmin extends SilverStripeComponent {
   refreshURL(router, nextProps) {
     let desiredURL = null;
     if (nextProps.fileId) {
-      desiredURL = this.getConfig().assetsRoute
+      desiredURL = this.props.sectionConfig.assetsRoute
         .replace(/:folderAction\?/, 'show')
         .replace(/:folderId\?/, nextProps.folderId)
         .replace(/:fileAction\?/, 'edit')
         .replace(/:fileId\?/, nextProps.fileId);
     } else {
-      desiredURL = this.getConfig().assetsRoute
+      desiredURL = this.props.sectionConfig.assetsRoute
         .replace(/:folderAction\?/, 'show')
         .replace(/:folderId\?.*$/, nextProps.folderId);
     }
@@ -113,7 +104,7 @@ class AssetAdmin extends SilverStripeComponent {
     // If no folder is selected redirect to default route
     if (context.params.folderAction !== 'show') {
       this.props.actions.gallery.setFolder(0);
-      const defaultRoute = this.getConfig().assetsRouteHome;
+      const defaultRoute = this.props.sectionConfig.assetsRouteHome;
       router.show(defaultRoute, null, false);
       return;
     }
@@ -179,8 +170,8 @@ AssetAdmin.propTypes = {
       }),
     }),
   }),
-  sectionConfigKey: React.PropTypes.string.isRequired,
   updateApi: React.PropTypes.func,
+  sectionConfig: React.PropTypes.object.isRequired,
   file: React.PropTypes.object,
 };
 
