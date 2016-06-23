@@ -2,10 +2,12 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use SilverStripe\ORM\DataExtension;
+
 /**
  * Update File dataobjects to be editable in this asset admin
  */
-class AssetAdminFile extends \DataExtension
+class AssetAdminFile extends DataExtension
 {
     public function updateCMSEditLink(&$link) {
         // Update edit link for this file to point to the new asset admin

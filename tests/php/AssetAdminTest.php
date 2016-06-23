@@ -3,13 +3,15 @@
 namespace SilverStripe\AssetAdmin\Tests;
 
 use FunctionalTest;
-use Versioned;
 use File;
 use Folder;
 use AssetStoreTest_SpyStore;
 use SecurityToken;
 use Director;
 use Injector;
+use Session;
+use SilverStripe\ORM\Versioning\Versioned;
+
 
 
 /**
@@ -36,7 +38,7 @@ class AssetAdminTest extends FunctionalTest
         // Create a test folders for each of the fixture references
         foreach (File::get()->filter('ClassName', 'Folder') as $folder) {
             /** @var Folder $folder */
-            $folder->publish(Versioned::DRAFT, Versioned::LIVE);
+            $folder->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         }
 
         // Create a test files for each of the fixture references
@@ -44,7 +46,7 @@ class AssetAdminTest extends FunctionalTest
         foreach (File::get()->exclude('ClassName', 'Folder') as $file) {
             /** @var File $file */
             $file->setFromString($content, $file->generateFilename());
-            $file->publish(Versioned::DRAFT, Versioned::LIVE);
+            $file->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         }
 
         // Override FunctionalTest defaults
@@ -442,7 +444,9 @@ class AssetAdminTest extends FunctionalTest
     }
 
     /**
-     * @return Array Emulating an entry in the $_FILES superglobal
+     * @param string $paramName
+     * @param string $tmpFileName
+     * @return array Emulating an entry in the $_FILES superglobal
      */
     protected function getUploadFile($paramName, $tmpFileName = 'AssetAdminTest.txt')
     {
