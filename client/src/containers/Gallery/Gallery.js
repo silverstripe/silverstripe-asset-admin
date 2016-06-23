@@ -373,8 +373,8 @@ export class Gallery extends Component {
 
   render() {
     const dropzoneOptions = {
-      // Hardcoded placeholder until we have a backend
-      url: 'admin/assets/EditForm/field/Upload/upload',
+      url: this.props.createFileApiUrl,
+      method: this.props.createFileApiMethod,
       paramName: 'Upload',
       clickable: '#upload-button',
     };
@@ -532,17 +532,15 @@ Gallery.propTypes = {
   limit: React.PropTypes.number,
   page: React.PropTypes.number,
   canEdit: React.PropTypes.bool,
-
   queuedFiles: React.PropTypes.shape({
     items: React.PropTypes.array.isRequired,
   }),
-
   onOpenFile: React.PropTypes.func.isRequired,
-
+  createFileApiUrl: React.PropTypes.string,
+  createFileApiMethod: React.PropTypes.string,
   createFolderApi: React.PropTypes.func,
-  deleteApi: React.PropTypes.func,
   readFolderApi: React.PropTypes.func,
-
+  deleteApi: React.PropTypes.func,
   actions: React.PropTypes.object,
 };
 

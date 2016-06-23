@@ -16,6 +16,8 @@ $.entwine('ss', () => {
 
       // Build API callers from the URLs provided to us in the div
       // In time, something like a GraphQL endpoint might be a better way to run
+      const createFileApiUrl = sectionConfig['createFileEndpoint']['url'];
+      const createFileApiMethod = sectionConfig['createFileEndpoint']['method'];
       const createFolderApi = backend.createEndpointFetcher(sectionConfig['createFolderEndpoint']);
       const readFolderApi = backend.createEndpointFetcher(sectionConfig['readFolderEndpoint']);
       const updateFolderApi = backend.createEndpointFetcher(sectionConfig['updateFolderEndpoint']);
@@ -28,6 +30,8 @@ $.entwine('ss', () => {
           <AssetAdminContainer
             name={name}
             limit={limit}
+            createFileApiUrl={createFileApiUrl}
+            createFileApiMethod={createFileApiMethod}
             createFolderApi={createFolderApi}
             readFolderApi={readFolderApi}
             updateFolderApi={updateFolderApi}

@@ -151,8 +151,10 @@ class AssetAdmin extends SilverStripeComponent {
         <Gallery
           name={this.props.name}
           limit={this.props.limit}
-          readFolderApi={this.props.readFolderApi}
+          createFileApiUrl={this.props.createFileApiUrl}
+          createFileApiMethod={this.props.createFileApiMethod}
           createFolderApi={this.props.createFolderApi}
+          readFolderApi={this.props.readFolderApi}
           deleteApi={this.props.deleteApi}
           onOpenFile={this.handleOpenFile}
         />
@@ -170,6 +172,8 @@ AssetAdmin.propTypes = {
     }),
   }),
   sectionConfig: React.PropTypes.object.isRequired,
+  createFileApiUrl: React.PropTypes.string,
+  createFileApiMethod: React.PropTypes.string,
   createFolderApi: React.PropTypes.func,
   readFolderApi: React.PropTypes.func,
   updateFolderApi: React.PropTypes.func,

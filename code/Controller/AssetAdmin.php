@@ -31,6 +31,8 @@ use FieldGroup;
 use Object;
 use SS_HTTPRequest;
 use SS_HTTPResponse;
+use Upload;
+use Config;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -56,6 +58,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'show/$FolderID/edit/$FileID' => 'index',
         // API access points with structured data
         'POST api/createFolder' => 'apiCreateFolder',
+        'POST api/createFile' => 'apiCreateFile',
         'GET api/readFolder' => 'apiReadFolder',
         'PUT api/updateFolder' => 'apiUpdateFolder',
         'PUT api/updateFile' => 'apiUpdateFile',
@@ -84,6 +87,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     private static $allowed_actions = array(
         'legacyRedirectForEditView',
         'apiCreateFolder',
+        'apiCreateFile',
         'apiReadFolder',
         'apiUpdateFolder',
         'apiUpdateFile',
@@ -110,6 +114,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return array_merge( parent::getClientConfig(), [
             'assetsRoute' => $this->Link() . ':folderAction?/:folderId?/:fileAction?/:fileId?',
             'assetsRouteHome' => $this->Link() . 'show/0',
+            'createFileEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/createFile'),
+                'method' => 'post',
+                'payloadFormat' => 'urlencoded',
+            ],
             'createFolderEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/createFolder'),
                 'method' => 'post',
@@ -332,6 +341,52 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         return (new SS_HTTPResponse(json_encode(['status' => 'file was deleted'])))
+            ->addHeader('Content-Type', 'application/json');
+    }
+
+    public function apiCreateFile(SS_HTTPRequest $request)
+    {
+        $class = 'File';
+        $data = $request->postVars();
+        $upload = $this->getUpload();
+
+        // TODO CSRF token check
+
+        // check create permissions
+        if (!singleton($class)->canCreate()) {
+            return Security::permissionFailure($this);
+        }
+
+        // check canAddChildren permissions
+        if (!empty($data['folderId']) && is_numeric($data['folderId'])) {
+            $parentRecord = Folder::get()->byID($data['folderId']);
+            if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
+                return Security::permissionFailure($this);
+            }
+        } else {
+            $parentRecord = null;
+        }
+
+        $tmpFile = $request->postVar('Upload');
+        if(!$upload->validate($tmpFile)) {
+            $result = ['error' => $upload->getErrors()];
+            return (new SS_HTTPResponse(json_encode($result), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        // TODO Allow batch uploads
+
+        $file = File::create();
+        $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
+        if(!$uploadResult) {
+            $result = ['error' => 'unknown'];
+            return (new SS_HTTPResponse(json_encode($result), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $result = [$this->getObjectFromData($file)];
+
+        return (new SS_HTTPResponse(json_encode($result)))
             ->addHeader('Content-Type', 'application/json');
     }
 
@@ -799,5 +854,19 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             "items" => $items,
             "count" => $count,
         );
+    }
+
+    /**
+     * @return Upload
+     */
+    protected function getUpload()
+    {
+        $upload = Upload::create();
+        $upload->getValidator()->setAllowedExtensions(
+            // filter out '' since this would be a regex problem on JS end
+            array_filter(Config::inst()->get('File', 'allowed_extensions'))
+        );
+
+        return $upload;
     }
 }
