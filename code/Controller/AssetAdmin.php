@@ -2,12 +2,14 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
-use SearchContext;
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\SecurityToken;
+use SearchContext;
 use LeftAndMain;
-use PermissionProvider;
 use DateField;
 use DropdownField;
 use Controller;
@@ -22,12 +24,10 @@ use Folder;
 use SSViewer;
 use HeaderField;
 use FieldGroup;
-use SecurityToken;
 use SS_HTTPRequest;
 use SS_HTTPResponse;
 use Upload;
 use Config;
-
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -104,9 +104,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
     }
 
-    public function getClientConfig() {
+	public function getClientConfig() {
         $baseLink = $this->Link();
-        return array_merge( parent::getClientConfig(), [
+		return array_merge( parent::getClientConfig(), [
             'assetsRoute' => $this->Link() . ':folderAction?/:folderId?/:fileAction?/:fileId?',
             'assetsRouteHome' => $this->Link() . 'show/0',
             'createFileEndpoint' => [
@@ -599,7 +599,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * as well as an intermediary object to process data through API endpoints.
      * Since it's used directly on API endpoints, it does not have any form actions.
      *
-     * @param Folder
+     * @param Folder $folder
      * @return Form
      */
     protected function getFolderEditForm(Folder $folder)

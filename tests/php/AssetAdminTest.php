@@ -2,17 +2,15 @@
 
 namespace SilverStripe\AssetAdmin\Tests;
 
+use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Security\SecurityToken;
 use FunctionalTest;
 use File;
 use Folder;
 use AssetStoreTest_SpyStore;
-use SecurityToken;
 use Director;
 use Injector;
 use Session;
-use SilverStripe\ORM\Versioning\Versioned;
-
-
 
 /**
  * Tests {@see AssetAdmin}
