@@ -484,8 +484,12 @@
 
 .AssetAdmin .asset-gallery {
   margin: 0; }
-  .AssetAdmin .asset-gallery .form__field-holder {
-    width: auto; }
+  .AssetAdmin .asset-gallery > .form__field-label {
+    display: none; }
+  .AssetAdmin .asset-gallery::after {
+    visibility: hidden;
+    content: "";
+    display: none; }
 
 .AssetAdmin .icon-button-group {
   display: none;

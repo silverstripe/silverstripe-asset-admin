@@ -27,12 +27,18 @@
     overflow-y: auto; //adds scrolling only to the datagrid
   }
 
-  // TEMP Overides which should eventually not be needed
+  // TEMP Overrides which should eventually not be needed
   .asset-gallery {
     margin: 0;
 
-    .form__field-holder {
-      width: auto;
+    > .form__field-label {
+      display: none;
+    }
+
+    &::after {
+      visibility: hidden;
+      content: "";
+      display: none;
     }
   }
 
