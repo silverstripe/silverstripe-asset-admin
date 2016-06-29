@@ -9,7 +9,7 @@ export function setFolder(folderId) {
   return (dispatch) => {
     dispatch({
       type: GALLERY.SET_FOLDER,
-      payload: { ID: folderID },
+      payload: { ID: folderId },
     });
 
     // Always unset selected file, since it might not be in the current folder
