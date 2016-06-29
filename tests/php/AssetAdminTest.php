@@ -55,37 +55,12 @@ class AssetAdminTest extends FunctionalTest
     }
 
     /**
-     * Mock a file search using AssetAdmin
-     *
-     * @param string $name
-     * @param string $from Created from date
-     * @param string $to Createi to date
-     * @param string $category
-     * @return SS_List
-     */
-    protected function getResultsForSearch($name = '', $from = '', $to = '', $category = '')
-    {
-        $request = new SS_HTTPRequest(null, 'admin/assets/show', array(
-            'q' => array(
-                'Name' => $name,
-                'CreatedFrom' => $from,
-                'CreatedTo' => $to,
-                'AppCategory' => $category
-            ),
-            'action_doSearch' => 'Apply Filter'
-        ));
-        $admin = new AssetAdmin();
-        $admin->setRequest($request);
-        return $admin->getList();
-    }
-
-    /**
      * Tests filtering between date ranges
      */
-    public function testDateFromToLastSameDate()
+    public function testItFiltersByDateInSearch()
     {
-        $file1 = $this->objFromFixture('File', 'file1');
-        $file2 = $this->objFromFixture('File', 'file2');
+        $file1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
+        $file2 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file2');
 
         // Force creation times
         $file1->Created = '2014-01-05 23:11:39';
@@ -94,72 +69,112 @@ class AssetAdminTest extends FunctionalTest
         $file2->write();
 
         // Mock searches for 4th Jan
-        $results = $this->getResultsForSearch(null, '2014-01-04', '2014-01-04');
-        $this->assertEmpty($results->column('Title'));
+        $results = $this->getResultsForSearch([
+            'CreatedFrom' => '2014-01-04',
+            'CreatedTo' => '2014-01-04'
+        ]);
+        $this->assertEquals(count($results['files']), 0);
 
         // Mock searches for 5th Jan
-        $results = $this->getResultsForSearch(null, '2014-01-05', '2014-01-05');
-        $this->assertEquals(array('file1'), $results->column('Title'));
+        $results = $this->getResultsForSearch([
+            'CreatedFrom' => '2014-01-05',
+            'CreatedTo' => '2014-01-05'
+        ]);
+        $this->assertEquals(count($results['files']), 1);
+        $this->assertContains($file1->ID, array_column($results['files'], 'id'));
+
 
         // Mock searches for 5th-6th Jan
-        $results = $this->getResultsForSearch(null, '2014-01-05', '2014-01-06');
-        $this->assertEquals(array('file1', 'file2'), $results->sort('Title')->column('Title'));
+        $results = $this->getResultsForSearch([
+            'CreatedFrom' => '2014-01-05',
+            'CreatedTo' => '2014-01-06'
+        ]);
+        $this->assertEquals(count($results['files']), 2);
+        $this->assertContains($file1->ID, array_column($results['files'], 'id'));
+        $this->assertContains($file2->ID, array_column($results['files'], 'id'));
 
         // Mock searches for 6th Jan
-        $results = $this->getResultsForSearch(null, '2014-01-06', '2014-01-06');
-        $this->assertEquals(array('file2'), $results->column('Title'));
+        $results = $this->getResultsForSearch([
+            'CreatedFrom' => '2014-01-06',
+            'CreatedTo' => '2014-01-06'
+        ]);
+        $this->assertEquals(count($results['files']), 1);
+        $this->assertContains($file2->ID, array_column($results['files'], 'id'));
 
         // Mock searches for 7th Jan
-        $results = $this->getResultsForSearch(null, '2014-01-07', '2014-01-07');
-        $this->assertEmpty($results->column('Title'));
+        $results = $this->getResultsForSearch([
+            'CreatedFrom' => '2014-01-07',
+            'CreatedTo' => '2014-01-07'
+        ]);
+        $this->assertEquals(count($results['files']), 0);
     }
 
 
-    public function testItFiltersData()
+    public function testItDoesNotFilterByDefaultInSearch()
     {
-        $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file2');
-        $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file3');
+        $rootfile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'rootfile');
+        $file1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
+        $folder1 = $this->objFromFixture('Folder', 'folder1');
 
+        $results = $this->getResultsForSearch();
+        $this->assertContains($rootfile->ID, array_column($results['files'], 'id'),
+            'Contains top level file'
+        );
+        $this->assertContains($folder1->ID, array_column($results['files'], 'id'),
+            'Contains top level folder'
+        );
+        $this->assertContains($file1->ID, array_column($results['files'], 'id'),
+            'Contains files in subfolder'
+        );
+    }
 
-        $field = $this->getNewField();
-        $field->setCurrentFolder('Folder2');
+    public function testItFiltersByParentInSearch()
+    {
+        $file1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
+        $file2 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file2');
+        $file1Folder = $file1->Parent();
+        $file2Folder = $file2->Parent();
 
-        $request = new SS_HTTPRequest('GET', 'http://example.com');
+        $results = $this->getResultsForSearch(['Name' => $file1->Name, 'ParentID' => $file1Folder->ID]);
+        $this->assertEquals(count($results['files']), 1);
+        $this->assertContains($file1->ID, array_column($results['files'], 'id'),
+            'Returns file when contained in correct folder'
+        );
 
-        $response = $field->search($request);
-        $files = json_decode($response->getBody(), true);
+        $results = $this->getResultsForSearch(['Name' => $file1->Name, 'ParentID' => $file2Folder->ID]);
+        $this->assertEquals(count($results['files']), 0,
+            'Does not return file when contained in different folder'
+        );
+    }
 
-        $this->assertArrayHasKey('files', $files);
-        $this->assertCount(2, $files['files']);
+    public function testItFiltersByNameInSearch()
+    {
+        $file1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
 
-        $request = new SS_HTTPRequest('GET', 'http://example.com', array('name' => 'Third'));
+        $results = $this->getResultsForSearch(['Name' => $file1->Name]);
+        $this->assertEquals(count($results['files']), 1,
+            'Finds by Name property'
+        );
+        $this->assertContains($file1->ID, array_column($results['files'], 'id'));
 
-        $response = $field->search($request);
-        $files = json_decode($response->getBody(), true);
-
-        $this->assertArrayHasKey('files', $files);
-        $this->assertCount(1, $files['files']);
-        $this->assertEquals('The Third File', $files['files'][0]['title']);
+        $results = $this->getResultsForSearch(['Name' => 'First']);
+        $this->assertEquals(count($results['files']), 1,
+            'Finds by Title property'
+        );
+        $this->assertContains($file1->ID, array_column($results['files'], 'id'));
     }
 
     public function testItRestrictsViewInSearch()
     {
         $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
         $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'disallowCanView');
-        $field = $this->getNewField();
 
-        $request = new SS_HTTPRequest('GET', 'http://example.com', ['name' => $allowedFile->Name]);
-        $response = $field->search($request);
-        $files = json_decode($response->getBody(), true);
-        $this->assertArrayHasKey('files', $files);
-        $this->assertCount(1, $files['files']);
-        $this->assertEquals($allowedFile->ID, $files['files'][0]['id']);
+        $results = $this->getResultsForSearch(['Name' => $allowedFile->Name]);
+        $this->assertEquals(count($results['files']), 1);
+        $this->assertContains($allowedFile->ID, array_column($results['files'], 'id'));
 
-        $request = new SS_HTTPRequest('GET', 'http://example.com', ['name' => $disallowedFile->Name]);
-        $response = $field->search($request);
-        $files = json_decode($response->getBody(), true);
-        $this->assertArrayHasKey('files', $files);
-        $this->assertCount(0, $files['files']);
+        $results = $this->getResultsForSearch(['Name' => $disallowedFile->Name]);
+        $this->assertEquals(count($results['files']), 0);
     }
 
     public function testItRestrictsViewInReadFolder()
@@ -224,6 +239,18 @@ class AssetAdminTest extends FunctionalTest
             http_build_query(['ids' => [$allowedFile->ID]])
         );
         $this->assertFalse($response->isError());
+    }
+
+    /**
+     * @param array $params
+     * @return array
+     */
+    protected function getResultsForSearch($params = array())
+    {
+        $response = $this->get('admin/assets/api/search?' . http_build_query($params));
+        $this->assertFalse($response->isError());
+
+        return json_decode($response->getBody(), true);
     }
 }
 

@@ -7,19 +7,13 @@ Member:
     LastName: Mooyman
 Folder:
   folder1:
-    Title: Folder1
+    Title: folder1
   folder2:
-    Title: Folder2
-File:
-  file1:
-    Title: File1
-    Name: file1.txt
-    ParentID: =>Folder.folder1
-  file2:
-    Title: File2
-    Name: file2.txt
-    ParentID: =>Folder.folder1
+    Title: folder2
 SilverStripe\AssetAdmin\Tests\AssetAdminTest_File:
+  rootfile:
+    Name: rootfile.jpg
+    Title: rootfile
   file1:
     Created: 2015-08-19 00:00:00
     LastUpdated: 2015-08-27 00:00:00

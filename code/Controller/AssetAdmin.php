@@ -211,51 +211,18 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function apiSearch(SS_HTTPRequest $request)
     {
-        $filters = array();
-
-        if ($name = $request->getVar('name')) {
-            $filters['name'] = $name;
-        }
-
-        if ($folder = $request->getVar('folder')) {
-            $filters['folder'] = $folder;
-        }
-
-        if ($folder = $request->getVar('type')) {
-            $filters['type'] = $folder;
-        }
-
-        if ($createdFrom = $request->getVar('createdFrom')) {
-            $filters['createdFrom'] = $createdFrom;
-        }
-
-        if ($createdTo = $request->getVar('createdTo')) {
-            $filters['createdTo'] = $createdTo;
-        }
-
-        if ($onlySearchInFolder = $request->getVar('onlySearchInFolder')) {
-            $filters['onlySearchInFolder'] = $onlySearchInFolder;
-        }
-
-        $filters['page'] = 1;
-        $filters['limit'] = 10;
-
-        if ($page = $request->getVar('page')) {
-            $filters['page'] = $page;
-        }
-
-        if ($limit = $request->getVar('limit')) {
-            $filters['limit'] = $limit;
-        }
-
-        $data = $this->getData($filters);
+        $params = $request->getVars();
+        $list = $this->getList($params);
 
         $response = new SS_HTTPResponse();
         $response->addHeader('Content-Type', 'application/json');
-        $response->setBody(json_encode(array(
-            'files' => $data['items'],
-            'count' => $data['count'],
-        )));
+        $response->setBody(json_encode([
+            // Serialisation
+            "files" => array_map(function($file) {
+                return $this->getObjectFromData($file);
+            }, $list->toArray()),
+            "count" => $list->count(),
+        ]));
 
         return $response;
     }
@@ -322,7 +289,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $fileIds = $vars['ids'];
-        $files = $this->getList()->filter("id", $fileIds)->toArray();
+        $files = $this->getList()->filter("ID", $fileIds)->toArray();
 
         if (!count($files)) {
             return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
@@ -475,63 +442,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-     * Returns the files and subfolders contained in the currently selected folder,
-     * defaulting to the root node. Doubles as search results, if any search parameters
-     * are set through {@link SearchForm()}.
-     *
-     * @return SS_List
-     */
-    public function getList()
-    {
-        $context = $this->getSearchContext();
-        // Overwrite name filter to search both Name and Title attributes
-        $context->removeFilterByName('Name');
-        $params = $this->getRequest()->requestVar('q');
-        $list = $context->getResults($params);
-
-        return $list;
-
-        // Re-add previously removed "Name" filter as combined filter
-        // TODO Replace with composite SearchFilter once that API exists
-        if (!empty($params['Name'])) {
-            $list = $list->filterAny(array(
-                'Name:PartialMatch' => $params['Name'],
-                'Title:PartialMatch' => $params['Name']
-            ));
-        }
-
-        // Always show folders at the top
-        $list = $list->sort('(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"');
-
-        // If a search is conducted, check for the "current folder" limitation.
-        // Otherwise limit by the current folder as denoted by the URL.
-        if (empty($params) || !empty($params['CurrentFolderOnly'])) {
-            $list = $list->filter('ParentID', $folder->ID);
-        }
-
-        // Category filter
-        if (!empty($params['AppCategory'])
-            && !empty(File::config()->app_categories[$params['AppCategory']])
-        ) {
-            $exts = File::config()->app_categories[$params['AppCategory']];
-            $list = $list->filter('Name:PartialMatch', $exts);
-        }
-
-        // Date filter
-        if (!empty($params['CreatedFrom'])) {
-            $fromDate = new DateField(null, null, $params['CreatedFrom']);
-            $list = $list->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
-        }
-        if (!empty($params['CreatedTo'])) {
-            $toDate = new DateField(null, null, $params['CreatedTo']);
-            $list = $list->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
-        }
-
-        return $list;
-    }
-
-    /**
-     * Get the search context
+     * Get the search context from {@link File}, used to create the search form
+     * as well as power the /search API endpoint.
      *
      * @return SearchContext
      */
@@ -539,19 +451,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $context = singleton('File')->getDefaultSearchContext();
 
-        // Namespace fields, for easier detection if a search is present
-        foreach ($context->getFields() as $field) {
-            $field->setName(sprintf('q[%s]', $field->getName()));
-        }
-        foreach ($context->getFilters() as $filter) {
-            $filter->setFullName(sprintf('q[%s]', $filter->getFullName()));
-        }
-
         // Customize fields
-        $dateHeader = HeaderField::create('q[Date]', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
-        $dateFrom = DateField::create('q[CreatedFrom]', _t('CMSSearch.FILTERDATEFROM', 'From'))
+        $dateHeader = HeaderField::create('Date', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
+        $dateFrom = DateField::create('CreatedFrom', _t('CMSSearch.FILTERDATEFROM', 'From'))
         ->setConfig('showcalendar', true);
-        $dateTo = DateField::create('q[CreatedTo]', _t('CMSSearch.FILTERDATETO', 'To'))
+        $dateTo = DateField::create('CreatedTo', _t('CMSSearch.FILTERDATETO', 'To'))
         ->setConfig('showcalendar', true);
         $dateGroup = FieldGroup::create(
             $dateHeader,
@@ -569,7 +473,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         );
         $context->addField(
             $typeDropdown = new DropdownField(
-                'q[AppCategory]',
+                'AppCategory',
                 _t('AssetAdmin.Filetype', 'File type'),
                 $appCategories
             )
@@ -578,9 +482,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $typeDropdown->setEmptyString(' ');
 
         $context->addField(
-            new CheckboxField('q[CurrentFolderOnly]', _t('AssetAdmin.CurrentFolderOnly', 'Limit to current folder?'))
+            new CheckboxField('CurrentFolderOnly', _t('AssetAdmin.CurrentFolderOnly', 'Limit to current folder?'))
         );
-        $context->getFields()->removeByName('q[Title]');
+        $context->getFields()->removeByName('Title');
 
         return $context;
     }
@@ -755,105 +659,72 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $object;
     }
 
+
     /**
-     * @param array $filters
-     * @return array
+     * Returns the files and subfolders contained in the currently selected folder,
+     * defaulting to the root node. Doubles as search results, if any search parameters
+     * are set through {@link SearchForm()}.
+     *
+     * @param array $params Unsanitised request parameters
+     * @return SS_List
      */
-    protected function getData($filters = array())
+    protected function getList($params = array())
     {
-        $items = array();
-        $files = null;
+        $context = $this->getSearchContext();
 
-        $hasFilters = (
-            empty($filters["name"])
-            && empty($filters["type"])
-            && empty($filters["createdFrom"])
-            && empty($filters["createdTo"])
-        );
+        // Overwrite name filter to search both Name and Title attributes
+        $context->removeFilterByName('Name');
 
-        $searchInFolder = (
-            !empty($filters['folder'])
-            && isset($filters['onlySearchInFolder'])
-            && $filters['onlySearchInFolder'] == '1'
-        );
+        // Lazy loaded list. Allows adding new filters through SearchContext.
+        $list = $context->getResults($params);
 
-        if ($searchInFolder || $hasFilters) {
-            $folder = null;
-
-            if (isset($filters['folder'])) {
-                $folder = $filters['folder'];
-            }
-
-            $folder = $this->getFolder($folder);
-
-            if ($folder && $folder->hasChildren()) {
-                // When there's a folder with stuff in it.
-                /** @var File[]|DataList $files */
-                $files = $folder->myChildren();
-            } elseif ($folder && !$folder->hasChildren()) {
-                // When there's an empty folder
-                $files = array();
-            } else {
-                // When there's no folder (we're at the top level).
-                $files = $this->getList()->filter('ParentID', 0);
-            }
-        } else {
-            $files = $this->getList();
+        // Re-add previously removed "Name" filter as combined filter
+        // TODO Replace with composite SearchFilter once that API exists
+        if(!empty($params['Name'])) {
+            $list = $list->filterAny(array(
+                'Name:PartialMatch' => $params['Name'],
+                'Title:PartialMatch' => $params['Name']
+            ));
         }
 
-        $count = 0;
-
-        if ($files) {
-            if (!empty($filters['name'])) {
-                $files = $files->filterAny(array(
-                    'Name:PartialMatch' => $filters['name'],
-                    'Title:PartialMatch' => $filters['name']
-                ));
-            }
-
-            if (!empty($filters['createdFrom'])) {
-                $fromDate = new DateField(null, null, $filters['createdFrom']);
-                $files = $files->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
-            }
-
-            if (!empty($filters['createdTo'])) {
-                $toDate = new DateField(null, null, $filters['createdTo']);
-                $files = $files->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
-            }
-
-            if (!empty($filters['type']) && !empty(File::config()->app_categories[$filters['type']])) {
-                $extensions = File::config()->app_categories[$filters['type']];
-                $files = $files->filter('Name:PartialMatch', $extensions);
-            }
-
-            $files = $files->sort(
-                '(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"'
-            );
-
-            $count = $files->count();
-
-            if (isset($filters['page']) && isset($filters['limit'])) {
-                $page = $filters['page'];
-                $limit = $filters['limit'];
-
-                $offset = ($page - 1) * $limit;
-
-                $files = $files->limit($limit, $offset);
-            }
-
-            foreach ($files as $file) {
-                if (!$file->canView()) {
-                    continue;
-                }
-
-                $items[] = $this->getObjectFromData($file);
-            }
+        // Optionally limit search to a folder (non-recursive)
+        if(!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
+            $list = $list->filter('ParentID', $params['ParentID']);
         }
 
-        return array(
-            "items" => $items,
-            "count" => $count,
+        // Date filtering
+        if (!empty($params['CreatedFrom'])) {
+            $fromDate = new DateField(null, null, $params['CreatedFrom']);
+            $list = $list->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
+        }
+        if (!empty($params['CreatedTo'])) {
+            $toDate = new DateField(null, null, $params['CreatedTo']);
+            $list = $list->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
+        }
+
+        // Categories
+        if (!empty($filters['AppCategory']) && !empty(File::config()->app_categories[$filters['AppCategory']])) {
+            $extensions = File::config()->app_categories[$filters['AppCategory']];
+            $list = $list->filter('Name:PartialMatch', $extensions);
+        }
+
+        // Sort folders first
+        $list = $list->sort(
+            '(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"'
         );
+
+        // Pagination
+        if (isset($filters['page']) && isset($filters['limit'])) {
+            $page = $filters['page'];
+            $limit = $filters['limit'];
+            $offset = ($page - 1) * $limit;
+            $list = $list->limit($limit, $offset);
+        }
+
+        // Access checks
+        $list = $list->filterByCallback(function($file) {return $file->canView();});
+
+        return $list;
     }
 
     /**
