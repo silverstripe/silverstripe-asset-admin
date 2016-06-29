@@ -5,11 +5,15 @@ Member:
   member2:
     FirstName: Damian
     LastName: Mooyman
-Folder:
+SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder:
   folder1:
     Title: folder1
   folder2:
     Title: folder2
+  disallowCanCreate:
+    Title: disallowCanCreate
+  disallowCanAddChildren:
+      Title: disallowCanAddChildren
 SilverStripe\AssetAdmin\Tests\AssetAdminTest_File:
   rootfile:
     Name: rootfile.jpg
@@ -18,29 +22,29 @@ SilverStripe\AssetAdmin\Tests\AssetAdminTest_File:
     Created: 2015-08-19 00:00:00
     LastUpdated: 2015-08-27 00:00:00
     Owner: =>Member.member1
-    Parent: =>Folder.folder1
+    Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder1
     Name: file1.jpg
     Title: The First File
   file2:
     Created: 2015-08-20 00:00:00
     LastUpdated: 2015-08-28 00:00:00
     Owner: =>Member.member2
-    Parent: =>Folder.folder2
+    Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder2
     Name: file2.jpg
     Title: The Second File
   file3:
     Created: 2015-08-21 00:00:00
     LastUpdated: 2015-08-29 00:00:00
     Owner: =>Member.member2
-    Parent: =>Folder.folder2
+    Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder2
     Name: file3.jpg
     Title: The Third File
   disallowCanView:
-    Parent: =>Folder.folder1
+    Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder1
     Name: disallowCanView.txt
   disallowCanEdit:
-    Parent: =>Folder.folder1
+    Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder1
     Name: disallowCanEdit.txt
   disallowCanDelete:
-    Parent: =>Folder.folder1
+    Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder1
     Name: disallowCanDelete.txt

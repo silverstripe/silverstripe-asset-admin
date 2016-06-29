@@ -319,19 +319,21 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // TODO CSRF token check
 
-        // check create permissions
-        if (!singleton($class)->canCreate()) {
-            return Security::permissionFailure($this);
-        }
-
         // check canAddChildren permissions
-        if (!empty($data['folderId']) && is_numeric($data['folderId'])) {
-            $parentRecord = Folder::get()->byID($data['folderId']);
+        if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
+            $parentRecord = Folder::get()->byID($data['ParentID']);
             if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
-                return Security::permissionFailure($this);
+                return (new SS_HTTPResponse(json_encode(['status' => 'error']), 403))
+                    ->addHeader('Content-Type', 'application/json');
             }
         } else {
-            $parentRecord = null;
+            $parentRecord = singleton('Folder');
+        }
+
+        // check create permissions
+        if (!$parentRecord->canCreate()) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 403))
+                ->addHeader('Content-Type', 'application/json');
         }
 
         $tmpFile = $request->postVar('Upload');
@@ -351,6 +353,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ->addHeader('Content-Type', 'application/json');
         }
 
+        $file->ParentID = $parentRecord->ID;
+        $file->write();
+
         $result = [$this->getObjectFromData($file)];
 
         return (new SS_HTTPResponse(json_encode($result)))
@@ -365,21 +370,23 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // TODO CSRF token check
 
-        // check create permissions
-        if (!singleton($class)->canCreate()) {
-            return Security::permissionFailure($this);
-        }
-
         // check addchildren permissions
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
             $parentRecord = \DataObject::get_by_id($class, $data['ParentID']);
             if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
-                return Security::permissionFailure($this);
+                return (new SS_HTTPResponse(null, 403))
+                    ->addHeader('Content-Type', 'application/json');
             }
         } else {
-            $parentRecord = null;
+            $parentRecord = singleton($class);
         }
-        $data['ParentID'] = ($parentRecord && $parentRecord->ID) ? (int)$parentRecord->ID : 0;
+        $data['ParentID'] = ($parentRecord->exists()) ? (int)$parentRecord->ID : 0;
+
+        // check create permissions
+        if (!$parentRecord->canCreate()) {
+            return (new SS_HTTPResponse(null, 403))
+                ->addHeader('Content-Type', 'application/json');
+        }
 
         // Build filename
         $baseFilename = isset($data['Name'])

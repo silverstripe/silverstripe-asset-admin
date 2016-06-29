@@ -9,7 +9,7 @@ export function setFolder(folderId) {
   return (dispatch) => {
     dispatch({
       type: GALLERY.SET_FOLDER,
-      payload: { folderId },
+      payload: { ID: folderID },
     });
 
     // Always unset selected file, since it might not be in the current folder
@@ -217,7 +217,7 @@ export function createFolder(createFolderApi, parentId, name) {
 
       dispatch({
         type: GALLERY.SET_FOLDER,
-        payload: { folderId: json.ID },
+        payload: { ID: json.ID },
       });
 
       // TODO: Fix this so that the subsequent action is passed without a coupling to router
