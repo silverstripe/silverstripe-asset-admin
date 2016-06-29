@@ -2,13 +2,12 @@
 
 namespace SilverStripe\AssetAdmin\Tests;
 
-use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use FunctionalTest;
 use Versioned;
 use File;
 use Folder;
 use AssetStoreTest_SpyStore;
-use SS_HTTPRequest;
+use SecurityToken;
 use Director;
 use Injector;
 
@@ -47,6 +46,10 @@ class AssetAdminTest extends FunctionalTest
             $file->setFromString($content, $file->generateFilename());
             $file->publish(Versioned::DRAFT, Versioned::LIVE);
         }
+
+        // Override FunctionalTest defaults
+        SecurityToken::enable();
+        $this->session->inst_set('SecurityID', SecurityToken::inst()->getValue());
     }
 
     public function tearDown()
@@ -61,13 +64,13 @@ class AssetAdminTest extends FunctionalTest
 
         $response = Director::test(
             'admin/assets/api/createFolder',
-            null,
-            $this->session,
-            'POST',
-            http_build_query([
+            [
                 'ParentID' => $folder1->ID,
-                'Name' => 'testItCreatesFolder'
-            ])
+                'Name' => 'testItCreatesFolder',
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ],
+            $this->session,
+            'POST'
         );
         $this->assertFalse($response->isError());
         $responseData = json_decode($response->getBody(), true);
@@ -86,13 +89,13 @@ class AssetAdminTest extends FunctionalTest
 
         $response = Director::test(
             'admin/assets/api/createFolder',
-            null,
-            $this->session,
-            'POST',
-            http_build_query([
+            [
                 'ParentID' => $folder->ID,
-                'Name' => 'testItRestrictsCreateFolderByCanCreate'
-            ])
+                'Name' => 'testItRestrictsCreateFolderByCanCreate',
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ],
+            $this->session,
+            'POST'
         );
         $this->assertTrue($response->isError());
         $this->assertEquals(403, $response->getStatusCode());
@@ -107,13 +110,13 @@ class AssetAdminTest extends FunctionalTest
 
         $response = Director::test(
             'admin/assets/api/createFolder',
-            null,
-            $this->session,
-            'POST',
-            http_build_query([
+            [
                 'ParentID' => $folder->ID,
-                'Name' => 'testItRestrictsCreateFolderByCanAddChildren'
-            ])
+                'Name' => 'testItRestrictsCreateFolderByCanAddChildren',
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ],
+            $this->session,
+            'POST'
         );
         $this->assertTrue($response->isError());
         $this->assertEquals(403, $response->getStatusCode());
@@ -127,7 +130,13 @@ class AssetAdminTest extends FunctionalTest
         $_FILES = $fileData;
         $response = Director::test(
             'admin/assets/api/createFile',
-            array_merge($fileData, ['ParentID' => $folder1->ID]),
+            array_merge(
+                $fileData,
+                [
+                    'ParentID' => $folder1->ID,
+                    'SecurityID' => SecurityToken::inst()->getValue(),
+                ]
+            ),
             $this->session,
             'POST'
         );
@@ -150,7 +159,13 @@ class AssetAdminTest extends FunctionalTest
         $_FILES = $fileData;
         $response = Director::test(
             'admin/assets/api/createFile',
-            array_merge($fileData, ['ParentID' => $folder->ID]),
+            array_merge(
+                $fileData,
+                [
+                    'ParentID' => $folder->ID,
+                    'SecurityID' => SecurityToken::inst()->getValue(),
+                ]
+            ),
             $this->session,
             'POST'
         );
@@ -169,7 +184,13 @@ class AssetAdminTest extends FunctionalTest
         $_FILES = $fileData;
         $response = Director::test(
             'admin/assets/api/createFile',
-            array_merge($fileData, ['ParentID' => $folder->ID]),
+            array_merge(
+                $fileData,
+                [
+                    'ParentID' => $folder->ID,
+                    'SecurityID' => SecurityToken::inst()->getValue(),
+                ]
+            ),
             $this->session,
             'POST'
         );
@@ -188,7 +209,13 @@ class AssetAdminTest extends FunctionalTest
         $_FILES = $fileData;
         $response = Director::test(
             'admin/assets/api/createFile',
-            array_merge($fileData, ['ParentID' => $folder1->ID]),
+            array_merge(
+                $fileData,
+                [
+                    'ParentID' => $folder1->ID,
+                    'SecurityID' => SecurityToken::inst()->getValue(),
+                ]
+            ),
             $this->session,
             'POST'
         );
@@ -330,7 +357,9 @@ class AssetAdminTest extends FunctionalTest
         $response = $this->get('admin/assets/api/readFolder?' . http_build_query(['id' => $folder1->ID]));
         $files = json_decode($response->getBody(), true);
         $this->assertArrayHasKey('files', $files);
-        $ids = array_map(function ($file) {return $file['id'];}, $files['files']);
+        $ids = array_map(function ($file) {
+            return $file['id'];
+        }, $files['files']);
         $this->assertContains($allowedFile->ID, $ids);
         $this->assertEquals($allowedFile->ParentID, $folder1->ID);
         $this->assertNotContains($disallowedFile->ID, $ids);
@@ -347,7 +376,11 @@ class AssetAdminTest extends FunctionalTest
             null,
             $this->session,
             'PUT',
-            http_build_query(['id' => $allowedFile->ID, 'title' => 'new'])
+            http_build_query([
+                'id' => $allowedFile->ID,
+                'title' => 'new',
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ])
         );
         $this->assertFalse($response->isError());
 
@@ -356,7 +389,11 @@ class AssetAdminTest extends FunctionalTest
             null,
             $this->session,
             'PUT',
-            http_build_query(['id' => $disallowedFile->ID, 'title' => 'new'])
+            http_build_query([
+                'id' => $disallowedFile->ID,
+                'title' => 'new',
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ])
         );
         $this->assertTrue($response->isError());
     }
@@ -364,14 +401,18 @@ class AssetAdminTest extends FunctionalTest
     public function testItRestrictsDelete()
     {
         $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
-        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'disallowCanDelete');
+        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File',
+            'disallowCanDelete');
 
         $response = Director::test(
             'admin/assets/api/delete',
             null,
             $this->session,
             'DELETE',
-            http_build_query(['ids' => [$allowedFile->ID, $disallowedFile->ID]])
+            http_build_query([
+                'ids' => [$allowedFile->ID, $disallowedFile->ID],
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ])
         );
         $this->assertTrue($response->isError());
 
@@ -380,7 +421,10 @@ class AssetAdminTest extends FunctionalTest
             null,
             $this->session,
             'DELETE',
-            http_build_query(['ids' => [$allowedFile->ID]])
+            http_build_query([
+                'ids' => [$allowedFile->ID],
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ])
         );
         $this->assertFalse($response->isError());
     }
@@ -400,10 +444,13 @@ class AssetAdminTest extends FunctionalTest
     /**
      * @return Array Emulating an entry in the $_FILES superglobal
      */
-    protected function getUploadFile($paramName, $tmpFileName = 'AssetAdminTest.txt') {
+    protected function getUploadFile($paramName, $tmpFileName = 'AssetAdminTest.txt')
+    {
         $tmpFilePath = TEMP_FOLDER . '/' . $tmpFileName;
         $tmpFileContent = '';
-        for($i=0; $i<10000; $i++) $tmpFileContent .= '0';
+        for ($i = 0; $i < 10000; $i++) {
+            $tmpFileContent .= '0';
+        }
         file_put_contents($tmpFilePath, $tmpFileContent);
 
         // emulates the $_FILES array

@@ -22,6 +22,7 @@ use SS_List;
 use SSViewer;
 use HeaderField;
 use FieldGroup;
+use SecurityToken;
 use SS_HTTPRequest;
 use SS_HTTPResponse;
 use Upload;
@@ -229,7 +230,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         parse_str($request->getBody(), $data);
 
-        // TODO CSRF token check
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
+            return new SS_HTTPResponse(null, 400);
+        }
 
         if (!isset($data['id']) || !is_numeric($data['id'])) {
             return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
@@ -274,7 +279,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         parse_str($request->getBody(), $vars);
 
-        // TODO CSRF token check
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($vars[$token->getName()]) || !$token->check($vars[$token->getName()])) {
+            return new SS_HTTPResponse(null, 400);
+        }
 
         if (!isset($vars['ids']) || !$vars['ids']) {
             return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
@@ -310,7 +319,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $data = $request->postVars();
         $upload = $this->getUpload();
 
-        // TODO CSRF token check
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
+            return new SS_HTTPResponse(null, 400);
+        }
 
         // check canAddChildren permissions
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
@@ -357,11 +370,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     public function apiCreateFolder(SS_HTTPRequest $request)
     {
-        parse_str($request->getBody(), $data);
+        $data = $request->postVars();
 
         $class = 'Folder';
 
-        // TODO CSRF token check
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
+            return new SS_HTTPResponse(null, 400);
+        }
 
         // check addchildren permissions
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {

@@ -6,6 +6,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
+import Config from 'lib/Config';
 import Dropzone from 'components/AssetDropzone/AssetDropzone';
 import File from 'components/GalleryItem/GalleryItem';
 import BulkActions from 'components/BulkActions/BulkActions';
@@ -378,7 +379,8 @@ export class Gallery extends Component {
       paramName: 'Upload',
       clickable: '#upload-button',
     };
-    const securityID = $(':input[name=SecurityID]').val();
+    // TODO Use this.props.config once the store is consolidated with framework
+    const securityID = Config.get('SecurityID');
     const canEdit = this.props.canEdit;
 
     return (
