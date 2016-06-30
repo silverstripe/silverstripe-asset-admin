@@ -165,11 +165,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $folderID = (int)$params['id'];
-        if ($folderID === 0) {
-            $folder = new Folder();
-        } else {
-            $folder = Folder::get()->byID($folderID);
-        }
+        $folder = $folderID ? Folder::get()->byID($folderID) : null;
 
         // TODO Limit results to avoid running out of memory (implement client-side pagination)
         $files = $this->getList()->filter('ParentID', $folderID);
@@ -189,7 +185,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $response->setBody(json_encode([
             'files' => $items,
             'count' => count($items),
-            'parent' => $folder->ParentID, // grandparent
+            'parent' => $folder ? $folder->ParentID : 0, // grandparent
             'folderID' => $folderID,
             'canEdit' => $folder ? $folder->canEdit() : false,
             'canDelete' => $folder ? $folder->canDelete() : false
