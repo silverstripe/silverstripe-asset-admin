@@ -681,7 +681,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         /** @var File $file */
-        if ($file->hasMethod('getWidth') && $file->hasMethod('getHeight')) {
+        if ($file->getIsImage()) {
             $object['attributes']['dimensions']['width'] = $file->Width;
             $object['attributes']['dimensions']['height'] = $file->Height;
         }
