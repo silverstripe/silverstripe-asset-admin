@@ -14,11 +14,11 @@ $.entwine('ss', () => {
       const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
       const store = configureStore();
 
-      const createEndpoint = (endpointConfig) =>
+      const createEndpoint = (endpointConfig, includeToken = true) =>
         backend.createEndpointFetcher(Object.assign(
             {},
             endpointConfig,
-            { defaultData: { SecurityID: Config.get('SecurityID') } }
+            includeToken ? { defaultData: { SecurityID: Config.get('SecurityID') } } : {}
         ));
 
       // Build API callers from the URLs provided to us in the div
@@ -26,7 +26,7 @@ $.entwine('ss', () => {
       const createFileApiUrl = sectionConfig.createFileEndpoint.url;
       const createFileApiMethod = sectionConfig.createFileEndpoint.method;
       const createFolderApi = createEndpoint(sectionConfig.createFolderEndpoint);
-      const readFolderApi = createEndpoint(sectionConfig.readFolderEndpoint);
+      const readFolderApi = createEndpoint(sectionConfig.readFolderEndpoint, false);
       const updateFolderApi = createEndpoint(sectionConfig.updateFolderEndpoint);
       const updateFileApi = createEndpoint(sectionConfig.updateFileEndpoint);
       const deleteApi = createEndpoint(sectionConfig.deleteEndpoint);
