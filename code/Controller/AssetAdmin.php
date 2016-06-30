@@ -309,6 +309,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             ->addHeader('Content-Type', 'application/json');
     }
 
+    /**
+     * Creates a single file based on a form-urlencoded upload.
+     *
+     * @param SS_HTTPRequest $request
+     * @return SS_HTTPRequest|SS_HTTPResponse
+     */
     public function apiCreateFile(SS_HTTPRequest $request)
     {
         $class = 'File';
@@ -364,6 +370,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             ->addHeader('Content-Type', 'application/json');
     }
 
+    /**
+     * Creates a single folder, within an optional parent folder.
+     *
+     * @param SS_HTTPRequest $request
+     * @return SS_HTTPRequest|SS_HTTPResponse
+     */
     public function apiCreateFolder(SS_HTTPRequest $request)
     {
         $data = $request->postVars();
@@ -427,6 +439,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return (new SS_HTTPResponse(json_encode($result)))->addHeader('Content-Type', 'application/json');
     }
 
+    /**
+     * Redirects 3.x style detail links to new 4.x style routing.
+     *
+     * @param $request
+     */
     public function legacyRedirectForEditView($request)
     {
         $fileID = $request->param('FileID');
