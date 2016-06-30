@@ -6,7 +6,6 @@ import * as galleryActions from 'state/gallery/GalleryActions';
 import * as editorActions from 'state/editor/EditorActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Config from 'lib/Config';
 
 class AssetAdmin extends SilverStripeComponent {
   constructor(props) {
