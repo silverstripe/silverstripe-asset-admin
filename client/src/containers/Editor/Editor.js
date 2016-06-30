@@ -27,7 +27,7 @@ class Editor extends Component {
       {
         label: 'Filename',
         // TODO Use same property names as DataObject
-        name: 'basename',
+        name: 'Name',
       },
     ];
 
@@ -246,7 +246,7 @@ Editor.propTypes = {
   file: React.PropTypes.shape({
     id: React.PropTypes.number,
     title: React.PropTypes.string,
-    basename: React.PropTypes.string,
+    name: React.PropTypes.string,
     url: React.PropTypes.string,
     size: React.PropTypes.string,
     type: React.PropTypes.string,

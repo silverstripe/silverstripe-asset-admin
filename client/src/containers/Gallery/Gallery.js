@@ -6,6 +6,7 @@ import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
+import Config from 'lib/Config';
 import Dropzone from 'components/AssetDropzone/AssetDropzone';
 import File from 'components/GalleryItem/GalleryItem';
 import BulkActions from 'components/BulkActions/BulkActions';
@@ -85,7 +86,7 @@ export class Gallery extends Component {
     this.handleSort = this.handleSort.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
-    this.handleAddFolder = this.handleAddFolder.bind(this);
+    this.handleCreateFolder = this.handleCreateFolder.bind(this);
   }
 
   componentDidMount() {
@@ -193,7 +194,7 @@ export class Gallery extends Component {
     // folderId updates saying "please load", loadedfolderId updates when the ajax request is actually triggered
     if (!isNaN(this.props.folderId) && this.props.folderId >= 0 && this.props.folderId !== this.props.loadedfolderId) {
       this.props.actions.gallery.loadFolderContents(
-        this.props.filesByParentApi,
+        this.props.readFolderApi,
         this.props.folderId,
         this.props.limit,
         this.props.page
@@ -254,11 +255,11 @@ export class Gallery extends Component {
    *
    * @param object event - Click event.
    */
-  handleAddFolder() {
+  handleCreateFolder() {
     // eslint-disable-next-line no-alert
     const folderName = prompt('Folder name (or blank to cancel)');
     if (folderName) {
-      this.props.actions.gallery.addFolder(this.props.addFolderApi, this.props.folderId, folderName);
+      this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName);
     }
   }
 
@@ -373,12 +374,13 @@ export class Gallery extends Component {
 
   render() {
     const dropzoneOptions = {
-      // Hardcoded placeholder until we have a backend
-      url: 'admin/assets/EditForm/field/Upload/upload',
+      url: this.props.createFileApiUrl,
+      method: this.props.createFileApiMethod,
       paramName: 'Upload',
       clickable: '#upload-button',
     };
-    const securityID = $(':input[name=SecurityID]').val();
+    // TODO Use this.props.config once the store is consolidated with framework
+    const securityID = Config.get('SecurityID');
     const canEdit = this.props.canEdit;
 
     return (
@@ -431,7 +433,7 @@ export class Gallery extends Component {
               id="add-folder-button"
               className="btn btn-secondary font-icon-folder-add btn--icon-xl "
               type="button"
-              onClick={this.handleAddFolder}
+              onClick={this.handleCreateFolder}
               disabled={!canEdit}
             >
               <span className="btn__text">{i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}</span>
@@ -514,6 +516,10 @@ export class Gallery extends Component {
   }
 }
 
+Gallery.defaultProps = {
+  bulkActions: true,
+};
+
 Gallery.propTypes = {
   loading: React.PropTypes.bool,
   files: React.PropTypes.array,
@@ -528,17 +534,15 @@ Gallery.propTypes = {
   limit: React.PropTypes.number,
   page: React.PropTypes.number,
   canEdit: React.PropTypes.bool,
-
   queuedFiles: React.PropTypes.shape({
     items: React.PropTypes.array.isRequired,
   }),
-
   onOpenFile: React.PropTypes.func.isRequired,
-
-  addFolderApi: React.PropTypes.func,
+  createFileApiUrl: React.PropTypes.string,
+  createFileApiMethod: React.PropTypes.string,
+  createFolderApi: React.PropTypes.func,
+  readFolderApi: React.PropTypes.func,
   deleteApi: React.PropTypes.func,
-  filesByParentApi: React.PropTypes.func,
-
   actions: React.PropTypes.object,
 };
 

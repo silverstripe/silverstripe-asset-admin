@@ -9,7 +9,7 @@ export function setFolder(folderId) {
   return (dispatch) => {
     dispatch({
       type: GALLERY.SET_FOLDER,
-      payload: { folderId },
+      payload: { ID: folderId },
     });
 
     // Always unset selected file, since it might not be in the current folder
@@ -93,14 +93,14 @@ export function deleteItems(deleteApi, ids) {
 /**
  * Load the contents of a folder from the API
  */
-export function loadFolderContents(filesByParentApi, folderId, limit, page) {
+export function loadFolderContents(listApi, folderId, limit, page) {
   return (dispatch) => {
     dispatch({
       type: GALLERY.LOAD_FOLDER_REQUEST,
       payload: { viewingFolder: (folderId > 0), folderId: parseInt(folderId, 10) },
     });
 
-    return filesByParentApi({ id: folderId, limit, page })
+    return listApi({ id: folderId, limit, page })
     .then((data) => {
       dispatch({
         type: GALLERY.LOAD_FOLDER_SUCCESS,
@@ -197,27 +197,27 @@ export function sortFiles(comparator) {
  * Triggers an asyncrhonous back-end requests and changes view after the request
  * has completed.
  *
- * @param string folderName
- * @param number [count] - The number of files in the current view.
+ * @param {Number} parentId
+ * @param {String} folderName
  */
-export function addFolder(addFolderApi, folderId, folderName) {
+export function createFolder(createFolderApi, parentId, name) {
   return (dispatch) => {
     // Start message
     dispatch({
-      type: GALLERY.ADD_FOLDER_REQUEST,
-      payload: { folderName },
+      type: GALLERY.CREATE_FOLDER_REQUEST,
+      payload: { name },
     });
 
-    return addFolderApi({ folderId: isNaN(folderId) ? 0 : folderId, folderName })
+    return createFolderApi({ ParentID: isNaN(parentId) ? 0 : parentId, Name: name })
     .then(json => {
       dispatch({
-        type: GALLERY.ADD_FOLDER_SUCCESS,
-        payload: { folderName },
+        type: GALLERY.CREATE_FOLDER_SUCCESS,
+        payload: { name },
       });
 
       dispatch({
         type: GALLERY.SET_FOLDER,
-        payload: { folderId: json.folderID },
+        payload: { ID: json.ID },
       });
 
       // TODO: Fix this so that the subsequent action is passed without a coupling to router
@@ -228,8 +228,8 @@ export function addFolder(addFolderApi, folderId, folderName) {
     .catch((err) => {
       // Failure finish message
       dispatch({
-        type: GALLERY.ADD_FOLDER_FAILURE,
-        payload: { error: `Couldn\'t create ${folderName}: ${err}` },
+        type: GALLERY.CREATE_FOLDER_FAILURE,
+        payload: { error: `Couldn\'t create ${name}: ${err}` },
       });
     });
   };

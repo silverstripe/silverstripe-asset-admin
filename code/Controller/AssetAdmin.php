@@ -3,40 +3,30 @@
 namespace SilverStripe\AssetAdmin\Controller;
 
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
-use SilverStripe\AssetAdmin\FormField\AssetGalleryField;
-use SilverStripe\AssetAdmin\FormField\DropzoneUploadField;
 use LeftAndMain;
 use PermissionProvider;
 use DateField;
-use TabSet;
-use Tab;
 use DropdownField;
-use SS_HTTPResponse_Exception;
 use Controller;
-use TextField;
 use FieldList;
 use Form;
-use FormAction;
 use CheckboxField;
-use Convert;
-use ArrayData;
 use File;
-use Session;
 use Requirements;
 use CMSBatchActionHandler;
-use HiddenField;
 use DataObject;
 use Injector;
 use Folder;
-use Security;
 use CMSForm;
-use CMSBatchAction;
 use SS_List;
-use CompositeField;
 use SSViewer;
 use HeaderField;
 use FieldGroup;
-use Object;
+use SecurityToken;
+use SS_HTTPRequest;
+use SS_HTTPResponse;
+use Upload;
+use Config;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -55,12 +45,19 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     private static $tree_class = 'Folder';
 
-
     private static $url_handlers = [
         // Legacy redirect for SS3-style detail view
         'EditForm/field/File/item/$FileID/$Action' => 'legacyRedirectForEditView',
         // Pass all URLs to the index, for React to unpack
         'show/$FolderID/edit/$FileID' => 'index',
+        // API access points with structured data
+        'POST api/createFolder' => 'apiCreateFolder',
+        'POST api/createFile' => 'apiCreateFile',
+        'GET api/readFolder' => 'apiReadFolder',
+        'PUT api/updateFolder' => 'apiUpdateFolder',
+        'PUT api/updateFile' => 'apiUpdateFile',
+        'DELETE api/delete' => 'apiDelete',
+        'GET api/search' => 'apiSearch',
     ];
 
     /**
@@ -78,23 +75,375 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     private static $allowed_max_file_size;
 
+    /**
+     * @var array
+     */
     private static $allowed_actions = array(
-        'addfolder',
-        'delete',
-        'AddForm',
-        'SearchForm',
         'legacyRedirectForEditView',
+        'apiCreateFolder',
+        'apiCreateFile',
+        'apiReadFolder',
+        'apiUpdateFolder',
+        'apiUpdateFile',
+        'apiDelete',
+        'apiSearch',
     );
 
+    /**
+     * Set up the controller
+     */
+    public function init()
+    {
+        parent::init();
 
+        Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . '/client/lang', false, true);
+        Requirements::javascript(ASSET_ADMIN_DIR . "/client/dist/js/bundle.js");
+        Requirements::css(ASSET_ADMIN_DIR . "/client/dist/styles/bundle.css");
 
-	public function getClientConfig() {
-		return array_merge( parent::getClientConfig(), [
+        CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
+    }
+
+    public function getClientConfig() {
+        $baseLink = $this->Link();
+        return array_merge( parent::getClientConfig(), [
             'assetsRoute' => $this->Link() . ':folderAction?/:folderId?/:fileAction?/:fileId?',
             'assetsRouteHome' => $this->Link() . 'show/0',
+            'createFileEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/createFile'),
+                'method' => 'post',
+                'payloadFormat' => 'urlencoded',
+            ],
+            'createFolderEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/createFolder'),
+                'method' => 'post',
+                'payloadFormat' => 'urlencoded',
+            ],
+            'readFolderEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/readFolder'),
+                'method' => 'get',
+                'responseFormat' => 'json',
+            ],
+            'searchEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/search'),
+                'method' => 'get',
+                'responseFormat' => 'json',
+            ],
+            'updateFileEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/updateFile'),
+                'method' => 'put',
+                'payloadFormat' => 'urlencoded',
+            ],
+            'updateFolderEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/updateFolder'),
+                'method' => 'put',
+                'payloadFormat' => 'urlencoded',
+            ],
+            'deleteEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/delete'),
+                'method' => 'delete',
+                'payloadFormat' => 'urlencoded',
+            ],
+            'limit' => $this->config()->page_length,
         ]);
 	}
 
+    /**
+     * Fetches a collection of files by ParentID.
+     *
+     * @param SS_HTTPRequest $request
+     * @return SS_HTTPResponse
+     */
+    public function apiReadFolder(SS_HTTPRequest $request)
+    {
+        $params = $request->requestVars();
+        $items = array();
+        $parentId = null;
+        $folderID = null;
+
+        if (!isset($params['id']) && !strlen($params['id'])) {
+            $this->httpError(400);
+        }
+
+        $folderID = (int)$params['id'];
+        $folder = $folderID ? Folder::get()->byID($folderID) : null;
+
+        // TODO Limit results to avoid running out of memory (implement client-side pagination)
+        $files = $this->getList()->filter('ParentID', $folderID);
+
+        if ($files) {
+            foreach ($files as $file) {
+                if (!$file->canView()) {
+                    continue;
+                }
+
+                $items[] = $this->getObjectFromData($file);
+            }
+        }
+
+        $response = new SS_HTTPResponse();
+        $response->addHeader('Content-Type', 'application/json');
+        $response->setBody(json_encode([
+            'files' => $items,
+            'count' => count($items),
+            'parent' => $folder ? $folder->ParentID : 0, // grandparent
+            'folderID' => $folderID,
+            'canEdit' => $folder ? $folder->canEdit() : false,
+            'canDelete' => $folder ? $folder->canDelete() : false
+        ]));
+
+        return $response;
+    }
+
+    /**
+     * @param SS_HTTPRequest $request
+     *
+     * @return SS_HTTPResponse
+     */
+    public function apiSearch(SS_HTTPRequest $request)
+    {
+        $params = $request->getVars();
+        $list = $this->getList($params);
+
+        $response = new SS_HTTPResponse();
+        $response->addHeader('Content-Type', 'application/json');
+        $response->setBody(json_encode([
+            // Serialisation
+            "files" => array_map(function($file) {
+                return $this->getObjectFromData($file);
+            }, $list->toArray()),
+            "count" => $list->count(),
+        ]));
+
+        return $response;
+    }
+
+    /**
+     * @param SS_HTTPRequest $request
+     *
+     * @return SS_HTTPResponse
+     */
+    public function apiUpdateFile(SS_HTTPRequest $request)
+    {
+        parse_str($request->getBody(), $data);
+
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
+            return new SS_HTTPResponse(null, 400);
+        }
+
+        if (!isset($data['id']) || !is_numeric($data['id'])) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $id = $data['id'];
+        $record = $this->getList()->filter('ID', (int) $id)->first();
+
+        if (!$record) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        if (!$record->canEdit()) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        // TODO Use same property names and capitalisation as DataObject
+        if (!empty($data['title'])) {
+            $record->Title = $data['title'];
+        }
+
+        // TODO Use same property names and capitalisation as DataObject
+        if (!empty($data['basename'])) {
+            $record->Name = $data['basename'];
+        }
+
+        $record->write();
+
+        return (new SS_HTTPResponse(json_encode(['status' => 'ok']), 200))
+            ->addHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * @param SS_HTTPRequest $request
+     *
+     * @return SS_HTTPResponse
+     */
+    public function apiDelete(SS_HTTPRequest $request)
+    {
+        parse_str($request->getBody(), $vars);
+
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($vars[$token->getName()]) || !$token->check($vars[$token->getName()])) {
+            return new SS_HTTPResponse(null, 400);
+        }
+
+        if (!isset($vars['ids']) || !$vars['ids']) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $fileIds = $vars['ids'];
+        $files = $this->getList()->filter("ID", $fileIds)->toArray();
+
+        if (!count($files)) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        if (!min(array_map(function ($file) {
+            return $file->canDelete();
+        }, $files))) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        foreach ($files as $file) {
+            $file->delete();
+        }
+
+        return (new SS_HTTPResponse(json_encode(['status' => 'file was deleted'])))
+            ->addHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Creates a single file based on a form-urlencoded upload.
+     *
+     * @param SS_HTTPRequest $request
+     * @return SS_HTTPRequest|SS_HTTPResponse
+     */
+    public function apiCreateFile(SS_HTTPRequest $request)
+    {
+        $class = 'File';
+        $data = $request->postVars();
+        $upload = $this->getUpload();
+
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
+            return new SS_HTTPResponse(null, 400);
+        }
+
+        // check canAddChildren permissions
+        if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
+            $parentRecord = Folder::get()->byID($data['ParentID']);
+            if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
+                return (new SS_HTTPResponse(json_encode(['status' => 'error']), 403))
+                    ->addHeader('Content-Type', 'application/json');
+            }
+        } else {
+            $parentRecord = singleton('Folder');
+        }
+
+        // check create permissions
+        if (!$parentRecord->canCreate()) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 403))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $tmpFile = $request->postVar('Upload');
+        if(!$upload->validate($tmpFile)) {
+            $result = ['error' => $upload->getErrors()];
+            return (new SS_HTTPResponse(json_encode($result), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        // TODO Allow batch uploads
+
+        $file = File::create();
+        $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
+        if(!$uploadResult) {
+            $result = ['error' => 'unknown'];
+            return (new SS_HTTPResponse(json_encode($result), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $file->ParentID = $parentRecord->ID;
+        $file->write();
+
+        $result = [$this->getObjectFromData($file)];
+
+        return (new SS_HTTPResponse(json_encode($result)))
+            ->addHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Creates a single folder, within an optional parent folder.
+     *
+     * @param SS_HTTPRequest $request
+     * @return SS_HTTPRequest|SS_HTTPResponse
+     */
+    public function apiCreateFolder(SS_HTTPRequest $request)
+    {
+        $data = $request->postVars();
+
+        $class = 'Folder';
+
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
+            return new SS_HTTPResponse(null, 400);
+        }
+
+        // check addchildren permissions
+        if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
+            $parentRecord = \DataObject::get_by_id($class, $data['ParentID']);
+            if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
+                return (new SS_HTTPResponse(null, 403))
+                    ->addHeader('Content-Type', 'application/json');
+            }
+        } else {
+            $parentRecord = singleton($class);
+        }
+        $data['ParentID'] = ($parentRecord->exists()) ? (int)$parentRecord->ID : 0;
+
+        // check create permissions
+        if (!$parentRecord->canCreate()) {
+            return (new SS_HTTPResponse(null, 403))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        // Build filename
+        $baseFilename = isset($data['Name'])
+            ? basename($data['Name'])
+            : _t('AssetAdmin.NEWFOLDER', "NewFolder");
+
+        if ($parentRecord && $parentRecord->ID) {
+            $baseFilename = $parentRecord->getFilename() . '/' . $baseFilename;
+        }
+
+        // Ensure name is unique
+        $nameGenerator = $this->getNameGenerator($baseFilename);
+        foreach ($nameGenerator as $filename) {
+            if (! File::find($filename)) {
+                break;
+            }
+        }
+        $data['Name'] = basename($filename);
+
+        // Create record
+        $record = $class::create();
+        $record->ParentID = $data['ParentID'];
+        $record->Name = $record->Title = basename($data['Name']);
+        $record->write();
+
+        $result = [
+            "ParentID" => $record->ParentID,
+            "ID" => $record->ID,
+            "Filename" => $record->Filename,
+        ];
+
+        return (new SS_HTTPResponse(json_encode($result)))->addHeader('Content-Type', 'application/json');
+    }
+
+    /**
+     * Redirects 3.x style detail links to new 4.x style routing.
+     *
+     * @param $request
+     */
     public function legacyRedirectForEditView($request)
     {
         $fileID = $request->param('FileID');
@@ -113,280 +462,18 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         if(!$file || !$file->isInDB()) {
             return null;
         }
-        $fileID = $file->ID;
-        $folderID = $file->ParentID;
+
         return Controller::join_links(
             $this->Link('show'),
-            $folderID,
+            $file->ParentID,
             'edit',
-            $fileID
+            $file->ID
         );
     }
 
     /**
-     * Return fake-ID "root" if no ID is found (needed to upload files into the root-folder)
-     */
-    public function currentPageID()
-    {
-        if (is_numeric($this->getRequest()->requestVar('ID'))) {
-            return $this->getRequest()->requestVar('ID');
-        } elseif (array_key_exists('ID', $this->urlParams) && is_numeric($this->urlParams['ID'])) {
-            return $this->urlParams['ID'];
-        } elseif (Session::get("{$this->class}.currentPage")) {
-            return Session::get("{$this->class}.currentPage");
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Gets the ID of the folder being requested.
-     *
-     * @return int
-     */
-    public function getCurrentFolderID()
-    {
-        $currentFolderID = 0;
-
-        if ($this->urlParams['Action'] == 'show' && is_numeric($this->urlParams['ID'])) {
-            $currentFolderID = $this->urlParams['ID'];
-        }
-
-        return $currentFolderID;
-    }
-
-    /**
-     * Set up the controller
-     */
-    public function init()
-    {
-        parent::init();
-
-        Requirements::javascript(FRAMEWORK_DIR . "/admin/client/dist/js/bundle-lib.js");
-        Requirements::add_i18n_javascript(ASSET_ADMIN_DIR . '/client/lang', false, true);
-        Requirements::css(ASSET_ADMIN_DIR . "/client/dist/styles/bundle.css");
-
-        CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
-    }
-
-    /**
-     * Returns the files and subfolders contained in the currently selected folder,
-     * defaulting to the root node. Doubles as search results, if any search parameters
-     * are set through {@link SearchForm()}.
-     *
-     * @return SS_List
-     */
-    public function getList()
-    {
-        $folder = $this->currentPage();
-        $context = $this->getSearchContext();
-        // Overwrite name filter to search both Name and Title attributes
-        $context->removeFilterByName('Name');
-        $params = $this->getRequest()->requestVar('q');
-        $list = $context->getResults($params);
-
-        // Don't filter list when a detail view is requested,
-        // to avoid edge cases where the filtered list wouldn't contain the requested
-        // record due to faulty session state (current folder not always encoded in URL, see #7408).
-        if (!$folder->ID
-            && $this->getRequest()->requestVar('ID') === null
-            && ($this->getRequest()->param('ID') == 'field')
-        ) {
-            return $list;
-        }
-
-        // Re-add previously removed "Name" filter as combined filter
-        // TODO Replace with composite SearchFilter once that API exists
-        if (!empty($params['Name'])) {
-            $list = $list->filterAny(array(
-                'Name:PartialMatch' => $params['Name'],
-                'Title:PartialMatch' => $params['Name']
-            ));
-        }
-
-        // Always show folders at the top
-        $list = $list->sort('(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"');
-
-        // If a search is conducted, check for the "current folder" limitation.
-        // Otherwise limit by the current folder as denoted by the URL.
-        if (empty($params) || !empty($params['CurrentFolderOnly'])) {
-            $list = $list->filter('ParentID', $folder->ID);
-        }
-
-        // Category filter
-        if (!empty($params['AppCategory'])
-            && !empty(File::config()->app_categories[$params['AppCategory']])
-        ) {
-            $exts = File::config()->app_categories[$params['AppCategory']];
-            $list = $list->filter('Name:PartialMatch', $exts);
-        }
-
-        // Date filter
-        if (!empty($params['CreatedFrom'])) {
-            $fromDate = new DateField(null, null, $params['CreatedFrom']);
-            $list = $list->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
-        }
-        if (!empty($params['CreatedTo'])) {
-            $toDate = new DateField(null, null, $params['CreatedTo']);
-            $list = $list->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
-        }
-
-        return $list;
-    }
-
-    public function getEditForm($id = null, $fields = null)
-    {
-        $form = parent::getEditForm($id, $fields);
-        
-        // Remove legacy previewable behaviour.
-        // Can't yet be cleanly removed from JS logic since its loaded via LeftAndMain.ss.
-        $form->removeExtraClass('cms-previewable');
-        $form->Fields()->removeByName('SilverStripeNavigator');
-        
-        $folder = ($id && is_numeric($id)) ? DataObject::get_by_id('Folder', $id, false) : $this->currentPage();
-        $title = ($folder && $folder->exists()) ? $folder->Title : _t('AssetAdmin.FILES', 'Files');
-
-        // Override fields, ignore any details from Folder->getCMSFields() since they'll
-        // be handled by a detail form instead.
-        $fields = FieldList::create(
-            HiddenField::create('ID', false, $folder ? $folder->ID : null)
-        );
-        $form->setFields($fields);
-
-        // TODO Re-enable once GridField works with React
-        // // File listing
-        // $gridFieldConfig = GridFieldConfig::create()->addComponents(
-        //     new GridFieldToolbarHeader(),
-        //     new GridFieldSortableHeader(),
-        //     new GridFieldFilterHeader(),
-        //     new GridFieldDataColumns(),
-        //     new GridFieldPaginator(self::config()->page_length),
-        //     new GridFieldEditButton(),
-        //     new GridFieldDeleteAction(),
-        //     new GridFieldDetailForm(),
-        //     GridFieldLevelup::create($folder->ID)->setLinkSpec('admin/assets/show/%d')
-        // );
-        // $gridField = GridField::create('File', $title, $this->getList(), $gridFieldConfig);
-        // $columns = $gridField->getConfig()->getComponentByType('GridFieldDataColumns');
-        // $columns->setDisplayFields(array(
-        //     'StripThumbnail' => '',
-        //     'Title' => _t('File.Title', 'Title'),
-        //     'Created' => _t('AssetAdmin.CREATED', 'Date'),
-        //     'Size' => _t('AssetAdmin.SIZE', 'Size'),
-        // ));
-        // $columns->setFieldCasting(array(
-        //     'Created' => 'SS_Datetime->Nice'
-        // ));
-        // $gridField->setAttribute(
-        //     'data-url-folder-template',
-        //     Controller::join_links($this->Link('show'), '%s')
-        // );
-
-        // Move existing fields to a "details" tab, unless they've already been tabbed out through extensions.
-        // Required to keep Folder->getCMSFields() simple and reuseable,
-        // without any dependencies into AssetAdmin (e.g. useful for "add folder" views).
-        if (!$fields->hasTabset()) {
-            $tabs = new TabSet(
-                'Root',
-                $tabList = new Tab('ListView', _t('AssetAdmin.ListView', 'List View'))
-            );
-            $tabList->addExtraClass("content-listview cms-tabset-icon list");
-            if ($fields->Count() && $folder->exists()) {
-                $tabs->push($tabDetails = new Tab('DetailsView', _t('AssetAdmin.DetailsView', 'Details')));
-                $tabDetails->addExtraClass("content-galleryview cms-tabset-icon edit");
-                foreach ($fields as $field) {
-                    $fields->removeByName($field->getName());
-                    $tabDetails->push($field);
-                }
-            }
-            $fields->push($tabs);
-        }
-
-        // Add the upload field for new media
-        if ($currentPageID = $this->currentPageID()) {
-            Session::set("{$this->class}.currentPage", $currentPageID);
-        }
-
-        $folder = $this->currentPage();
-
-        if ($folder->exists()) {
-            $path = $folder->getFilename();
-        }
-
-        $galleryField = AssetGalleryField::create('Files')
-            ->setCurrentFolder($this->getCurrentFolderID())
-            ->setLimit(15);
-
-        // List view
-        $fields->addFieldsToTab('Root.ListView', array(
-            $galleryField,
-            new DropzoneUploadField('Upload')
-        ));
-
-        // Move actions to "details" tab (they don't make sense on list view)
-        $actions = $form->Actions();
-        $saveBtn = $actions->fieldByName('action_save');
-        $deleteBtn = $actions->fieldByName('action_delete');
-        $actions->removeByName('action_save');
-        $actions->removeByName('action_delete');
-        if (($saveBtn || $deleteBtn) && $fields->fieldByName('Root.DetailsView')) {
-            $fields->addFieldToTab(
-                'Root.DetailsView',
-                CompositeField::create($saveBtn, $deleteBtn)->addExtraClass('Actions')
-            );
-        }
-
-        $fields->setForm($form);
-        $form->setTemplate($this->getTemplatesWithSuffix('_EditForm'));
-        // TODO Can't merge $FormAttributes in template at the moment
-        $form->addExtraClass('cms-edit-form ' . $this->BaseCSSClasses());
-        $form->setAttribute('data-pjax-fragment', 'CurrentForm');
-        $form->Fields()->findOrMakeTab('Root')->setTemplate('CMSTabSet');
-
-        $this->extend('updateEditForm', $form);
-
-        return $form;
-    }
-
-    public function addfolder($request)
-    {
-        $obj = $this->customise(array(
-            'EditForm' => $this->AddForm()
-        ));
-
-        if ($request->isAjax()) {
-            // Rendering is handled by template, which will call EditForm() eventually
-            $content = $obj->renderWith($this->getTemplatesWithSuffix('_Content'));
-        } else {
-            $content = $obj->renderWith($this->getViewer('show'));
-        }
-
-        return $content;
-    }
-
-    public function delete($data, $form)
-    {
-        $className = $this->stat('tree_class');
-
-        $record = DataObject::get_by_id($className, $data['ID']);
-        if ($record && !$record->canDelete()) {
-            return Security::permissionFailure();
-        }
-        if (!$record || !$record->ID) {
-            throw new SS_HTTPResponse_Exception("Bad record ID #" . (int) $data['ID'], 404);
-        }
-        $parentID = $record->ParentID;
-        $record->delete();
-        $this->setCurrentPageID(null);
-
-        $this->getResponse()->addHeader('X-Status', rawurlencode(_t('LeftAndMain.DELETED', 'Deleted.')));
-        $this->getResponse()->addHeader('X-Pjax', 'Content');
-
-        return $this->redirect(Controller::join_links($this->Link('show'), $parentID ? $parentID : 0));
-    }
-
-    /**
-     * Get the search context
+     * Get the search context from {@link File}, used to create the search form
+     * as well as power the /search API endpoint.
      *
      * @return SearchContext
      */
@@ -394,19 +481,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $context = singleton('File')->getDefaultSearchContext();
 
-        // Namespace fields, for easier detection if a search is present
-        foreach ($context->getFields() as $field) {
-            $field->setName(sprintf('q[%s]', $field->getName()));
-        }
-        foreach ($context->getFilters() as $filter) {
-            $filter->setFullName(sprintf('q[%s]', $filter->getFullName()));
-        }
-
         // Customize fields
-        $dateHeader = HeaderField::create('q[Date]', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
-        $dateFrom = DateField::create('q[CreatedFrom]', _t('CMSSearch.FILTERDATEFROM', 'From'))
+        $dateHeader = HeaderField::create('Date', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
+        $dateFrom = DateField::create('CreatedFrom', _t('CMSSearch.FILTERDATEFROM', 'From'))
         ->setConfig('showcalendar', true);
-        $dateTo = DateField::create('q[CreatedTo]', _t('CMSSearch.FILTERDATETO', 'To'))
+        $dateTo = DateField::create('CreatedTo', _t('CMSSearch.FILTERDATETO', 'To'))
         ->setConfig('showcalendar', true);
         $dateGroup = FieldGroup::create(
             $dateHeader,
@@ -424,7 +503,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         );
         $context->addField(
             $typeDropdown = new DropdownField(
-                'q[AppCategory]',
+                'AppCategory',
                 _t('AssetAdmin.Filetype', 'File type'),
                 $appCategories
             )
@@ -433,127 +512,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $typeDropdown->setEmptyString(' ');
 
         $context->addField(
-            new CheckboxField('q[CurrentFolderOnly]', _t('AssetAdmin.CurrentFolderOnly', 'Limit to current folder?'))
+            new CheckboxField('CurrentFolderOnly', _t('AssetAdmin.CurrentFolderOnly', 'Limit to current folder?'))
         );
-        $context->getFields()->removeByName('q[Title]');
+        $context->getFields()->removeByName('Title');
 
         return $context;
-    }
-
-    /**
-     * Returns a form for filtering of files and assets gridfield.
-     * Result filtering takes place in {@link getList()}.
-     *
-     * @return Form
-     *              @see AssetAdmin.js
-     */
-    public function searchForm()
-    {
-        $folder = $this->currentPage();
-        $context = $this->getSearchContext();
-
-        $fields = $context->getSearchFields();
-        $actions = new FieldList(
-            FormAction::create('doSearch', _t('CMSMain_left_ss.APPLY_FILTER', 'Apply Filter'))
-                ->addExtraClass('ss-ui-action-constructive'),
-            Object::create('ResetFormAction', 'clear', _t('CMSMain_left_ss.RESET', 'Reset'))
-        );
-
-        $form = new Form($this, 'filter', $fields, $actions);
-        $form->setFormMethod('GET');
-        $form->setFormAction(Controller::join_links($this->Link('show'), $folder->ID));
-        $form->addExtraClass('cms-search-form');
-        $form->loadDataFrom($this->getRequest()->getVars());
-        $form->disableSecurityToken();
-        // This have to match data-name attribute on the gridfield so that the javascript selectors work
-        $form->setAttribute('data-gridfield', 'File');
-
-        return $form;
-    }
-
-    public function addForm()
-    {
-        $form = CMSForm::create(
-            $this,
-            'AddForm',
-            new FieldList(
-                new TextField("Name", _t('File.Name')),
-                new HiddenField('ParentID', false, $this->getRequest()->getVar('ParentID'))
-            ),
-            new FieldList(
-                FormAction::create('doAdd', _t('AssetAdmin_left_ss.GO', 'Go'))
-                    ->addExtraClass('ss-ui-action-constructive')->setAttribute('data-icon', 'accept')
-                    ->setTitle(_t('AssetAdmin.ActionAdd', 'Add folder'))
-            )
-        )->setHTMLID('Form_AddForm');
-        $form->setResponseNegotiator($this->getResponseNegotiator());
-        $form->setTemplate($this->getTemplatesWithSuffix('_EditForm'));
-        // TODO Can't merge $FormAttributes in template at the moment
-        $form->addExtraClass('add-form cms-add-form cms-edit-form cms-panel-padded center ' . $this->BaseCSSClasses());
-
-        return $form;
-    }
-
-    /**
-     * Add a new group and return its details suitable for ajax.
-     *
-     * @todo Move logic into Folder class, and use LeftAndMain->doAdd() default implementation.
-     */
-    public function doAdd($data, $form)
-    {
-        $class = $this->stat('tree_class');
-
-        // check create permissions
-        if (!singleton($class)->canCreate()) {
-            return Security::permissionFailure($this);
-        }
-
-        // check addchildren permissions
-        if (singleton($class)->hasExtension('Hierarchy')
-            && isset($data['ParentID'])
-            && is_numeric($data['ParentID'])
-            && $data['ParentID']
-        ) {
-            $parentRecord = DataObject::get_by_id($class, $data['ParentID']);
-            if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
-                return Security::permissionFailure($this);
-            }
-        } else {
-            $parentRecord = null;
-        }
-
-        // Check parent
-        $parentID = $parentRecord && $parentRecord->ID
-            ? (int) $parentRecord->ID
-            : 0;
-        // Build filename
-        $filename = isset($data['Name'])
-            ? basename($data['Name'])
-            : _t('AssetAdmin.NEWFOLDER', "NewFolder");
-        if ($parentRecord && $parentRecord->ID) {
-            $filename = $parentRecord->getFilename() . '/' . $filename;
-        }
-
-        // Get the folder to be created
-
-        // Ensure name is unique
-        foreach ($this->getNameGenerator($filename) as $filename) {
-            if (! File::find($filename)) {
-                break;
-            }
-        }
-
-        // Create record
-        $record = Folder::create();
-        $record->ParentID = $parentID;
-        $record->Name = $record->Title = basename($filename);
-        $record->write();
-
-        if ($parentRecord) {
-            return $this->redirect(Controller::join_links($this->Link('show'), $parentRecord->ID));
-        } else {
-            return $this->redirect($this->Link());
-        }
     }
 
     /**
@@ -569,55 +532,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-     * Custom currentPage() method to handle opening the 'root' folder
-     */
-    public function currentPage()
-    {
-        $id = $this->currentPageID();
-        if ($id && is_numeric($id) && $id > 0) {
-            $folder = DataObject::get_by_id('Folder', $id);
-            if ($folder && $folder->exists()) {
-                return $folder;
-            }
-        }
-        $this->setCurrentPageID(null);
-
-        return new Folder();
-    }
-
-    /**
-     * @param  bool      $unlinked
-     * @return ArrayList
+     * @todo Implement on client
      */
     public function breadcrumbs($unlinked = false)
     {
-        $items = parent::Breadcrumbs($unlinked);
-
-        // The root element should explicitly point to the root node.
-        // Uses session state for current record otherwise.
-        $items[0]->Link = Controller::join_links(singleton(__class__)->Link('show'), 0);
-
-        // If a search is in progress, don't show the path
-        if ($this->getRequest()->requestVar('q')) {
-            $items = $items->limit(1);
-            $items->push(new ArrayData(array(
-                'Title' => _t('LeftAndMain.SearchResults', 'Search Results'),
-                'Link' => Controller::join_links(
-                    $this->Link(),
-                    '?' . http_build_query(array('q' => $this->getRequest()->requestVar('q')))
-                )
-            )));
-        }
-
-        // If we're adding a folder, note that in breadcrumbs as well
-        if ($this->getRequest()->param('Action') == 'addfolder') {
-            $items->push(new ArrayData(array(
-                'Title' => _t('Folder.AddFolderButton', 'Add folder'),
-                'Link' => false
-            )));
-        }
-
-        return $items;
+        return null;
     }
 
 
@@ -672,5 +591,183 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'category' => _t('Permission.CMS_ACCESS_CATEGORY', 'CMS Access')
             )
         );
+    }
+
+    /**
+     * The form is used to generate a form schema,
+     * as well as an intermediary object to process data through API endpoints.
+     * Since it's used directly on API endpoints, it does not have any form actions.
+     *
+     * @param Folder
+     * @return Form
+     */
+    protected function getFolderEditForm(Folder $folder)
+    {
+        $form = Form::create(
+            $this,
+            'FolderEditForm',
+            $folder->getCMSFields(),
+            FieldList::create()
+        );
+
+        return $form;
+    }
+
+    /**
+     * See {@link getFolderEditForm()} for details.
+     *
+     * @param File $file
+     * @return Form
+     */
+    protected function getFileEditForm(File $file)
+    {
+        $form = Form::create(
+            $this,
+            'FileEditForm',
+            $file->getCMSFields(),
+            FieldList::create()
+        );
+
+        return $form;
+    }
+
+    /**
+     * @param File $file
+     *
+     * @return array
+     */
+    protected function getObjectFromData(File $file)
+    {
+        $object = array(
+            'id' => $file->ID,
+            'created' => $file->Created,
+            'lastUpdated' => $file->LastEdited,
+            'owner' => null,
+            'parent' => null,
+            'attributes' => array(
+                'dimensions' => array(),
+            ),
+            'title' => $file->Title,
+            'type' => $file->is_a('Folder') ? 'folder' : $file->FileType,
+            'category' => $file->is_a('Folder') ? 'folder' : $file->appCategory(),
+            'name' => $file->Name,
+            'filename' => $file->Filename,
+            'extension' => $file->Extension,
+            'size' => $file->Size,
+            'url' => $file->AbsoluteURL,
+            'canEdit' => $file->canEdit(),
+            'canDelete' => $file->canDelete()
+        );
+
+        /** @var Member $owner */
+        $owner = $file->Owner();
+
+        if ($owner) {
+            $object['owner'] = array(
+                'id' => $owner->ID,
+                'title' => trim($owner->FirstName . ' ' . $owner->Surname),
+            );
+        }
+
+        /** @var Folder $parent */
+        $parent = $file->Parent();
+
+        if ($parent) {
+            $object['parent'] = array(
+                'id' => $parent->ID,
+                'title' => $parent->Title,
+                'filename' => $parent->Filename,
+            );
+        }
+
+        /** @var File $file */
+        if ($file->getIsImage()) {
+            $object['attributes']['dimensions']['width'] = $file->Width;
+            $object['attributes']['dimensions']['height'] = $file->Height;
+        }
+
+        return $object;
+    }
+
+
+    /**
+     * Returns the files and subfolders contained in the currently selected folder,
+     * defaulting to the root node. Doubles as search results, if any search parameters
+     * are set through {@link SearchForm()}.
+     *
+     * @param array $params Unsanitised request parameters
+     * @return SS_List
+     */
+    protected function getList($params = array())
+    {
+        $context = $this->getSearchContext();
+
+        // Overwrite name filter to search both Name and Title attributes
+        $context->removeFilterByName('Name');
+
+        // Lazy loaded list. Allows adding new filters through SearchContext.
+        $list = $context->getResults($params);
+
+        // Re-add previously removed "Name" filter as combined filter
+        // TODO Replace with composite SearchFilter once that API exists
+        if(!empty($params['Name'])) {
+            $list = $list->filterAny(array(
+                'Name:PartialMatch' => $params['Name'],
+                'Title:PartialMatch' => $params['Name']
+            ));
+        }
+
+        // Optionally limit search to a folder (non-recursive)
+        if(!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
+            $list = $list->filter('ParentID', $params['ParentID']);
+        }
+
+        // Date filtering
+        if (!empty($params['CreatedFrom'])) {
+            $fromDate = new DateField(null, null, $params['CreatedFrom']);
+            $list = $list->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
+        }
+        if (!empty($params['CreatedTo'])) {
+            $toDate = new DateField(null, null, $params['CreatedTo']);
+            $list = $list->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
+        }
+
+        // Categories
+        if (!empty($filters['AppCategory']) && !empty(File::config()->app_categories[$filters['AppCategory']])) {
+            $extensions = File::config()->app_categories[$filters['AppCategory']];
+            $list = $list->filter('Name:PartialMatch', $extensions);
+        }
+
+        // Sort folders first
+        $list = $list->sort(
+            '(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"'
+        );
+
+        // Pagination
+        if (isset($filters['page']) && isset($filters['limit'])) {
+            $page = $filters['page'];
+            $limit = $filters['limit'];
+            $offset = ($page - 1) * $limit;
+            $list = $list->limit($limit, $offset);
+        }
+
+        // Access checks
+        $list = $list->filterByCallback(function($file) {return $file->canView();});
+
+        return $list;
+    }
+
+    /**
+     * @return Upload
+     */
+    protected function getUpload()
+    {
+        $upload = Upload::create();
+        $upload->getValidator()->setAllowedExtensions(
+            // filter out '' since this would be a regex problem on JS end
+            array_filter(Config::inst()->get('File', 'allowed_extensions'))
+        );
+
+        return $upload;
     }
 }

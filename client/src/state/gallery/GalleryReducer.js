@@ -41,7 +41,7 @@ export default function galleryReducer(state = initialState, action) {
 
     case GALLERY.SET_FOLDER:
       return deepFreeze(Object.assign({}, state, {
-        folderId: parseInt(action.payload.folderId, 10) || 0,
+        folderId: parseInt(action.payload.ID, 10) || 0,
         fileId: 0, // reset active file to avoid state inconsistencies
       }));
 

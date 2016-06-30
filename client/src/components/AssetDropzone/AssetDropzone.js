@@ -240,7 +240,7 @@ class AssetDropzone extends SilverStripeComponent {
    */
   handleSending(file, xhr, formData) {
     formData.append('SecurityID', this.props.securityID);
-    formData.append('folderId', this.props.folderId);
+    formData.append('ParentID', this.props.folderId);
 
     if (typeof this.props.handleSending === 'function') {
       this.props.handleSending(file, xhr, formData);
