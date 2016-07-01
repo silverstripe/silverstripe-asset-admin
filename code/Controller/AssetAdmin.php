@@ -2,7 +2,10 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use SearchContext;
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\SS_List;
 use LeftAndMain;
 use PermissionProvider;
 use DateField;
@@ -14,11 +17,8 @@ use CheckboxField;
 use File;
 use Requirements;
 use CMSBatchActionHandler;
-use DataObject;
 use Injector;
 use Folder;
-use CMSForm;
-use SS_List;
 use SSViewer;
 use HeaderField;
 use FieldGroup;
@@ -27,6 +27,7 @@ use SS_HTTPRequest;
 use SS_HTTPResponse;
 use Upload;
 use Config;
+
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -390,7 +391,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // check addchildren permissions
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
-            $parentRecord = \DataObject::get_by_id($class, $data['ParentID']);
+            $parentRecord = DataObject::get_by_id($class, $data['ParentID']);
             if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
                 return (new SS_HTTPResponse(null, 403))
                     ->addHeader('Content-Type', 'application/json');

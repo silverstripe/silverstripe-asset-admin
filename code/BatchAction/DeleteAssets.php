@@ -3,8 +3,8 @@
 namespace SilverStripe\AssetAdmin\BatchAction;
 
 use CMSBatchAction;
-use SS_List;
 use Convert;
+use SilverStripe\ORM\SS_List;
 
 /**
  * Delete multiple {@link Folder} records (and the associated filesystem nodes).
