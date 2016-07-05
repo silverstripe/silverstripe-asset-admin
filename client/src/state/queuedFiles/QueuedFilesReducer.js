@@ -57,7 +57,7 @@ function queuedFilesReducer(state = initialState, action) {
           if (file.queuedAtTime === action.payload.queuedAtTime) {
             return Object.assign({}, file, {
               messages: [{
-                value: i18n._t('AssetGalleryField.DROPZONE_FAILED_UPLOAD'),
+                value: i18n._t('AssetAdmin.DROPZONE_FAILED_UPLOAD'),
                 type: 'error',
                 extraClass: 'error',
               }],
@@ -96,7 +96,7 @@ function queuedFilesReducer(state = initialState, action) {
           if (file.queuedAtTime === action.payload.queuedAtTime) {
             return Object.assign({}, file, {
               messages: [{
-                value: i18n._t('AssetGalleryField.DROPZONE_SUCCESS_UPLOAD'),
+                value: i18n._t('AssetAdmin.DROPZONE_SUCCESS_UPLOAD'),
                 type: 'success',
                 extraClass: 'success',
               }],

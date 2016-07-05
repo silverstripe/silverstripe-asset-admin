@@ -26,9 +26,6 @@ describe('Gallery', () => {
           setFolder: () => null,
           setFile: () => null,
           sortFiles: () => null,
-          setViewingFolder: () => null,
-          setParentfolderId: () => null,
-          setfolderId: () => null,
           loadFolderContents: () => Promise.resolve(),
           deleteItems: () => null,
         },
@@ -40,22 +37,34 @@ describe('Gallery', () => {
           succeedUpload: () => null,
         },
       },
-      parentfolderId: null,
       selectedFiles: [],
       highlightedFiles: [],
       files: [],
       count: 0,
       folderId: 1,
+      folder: {
+        id: 1,
+        parentID: null,
+        canView: true,
+        canEdit: true,
+      },
       queuedFiles: {
         items: [],
       },
       onOpenFile: () => {},
+      onOpenFolder: () => {},
     };
   });
 
   describe('handleSuccessfulUpload', () => {
     const file = {
+      exists: true,
+      category: 'image',
       filename: 'unclepaul.png',
+      dimensions: {
+        width: 10,
+        height: 10,
+      },
       size: 123,
       xhr: { response: '[{"id":1}]' },
     };
@@ -146,8 +155,8 @@ describe('Gallery', () => {
       expect(gallery.getBackButton()).toBe(null);
     });
 
-    it('should return a back button if parentfolderId is set.', () => {
-      props.parentfolderId = 0;
+    it('should return a back button if parentID is set.', () => {
+      props.folder = { parentID: 0 };
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
@@ -268,7 +277,7 @@ describe('Gallery', () => {
     let gallery;
 
     beforeEach(() => {
-      props.actions.gallery.setFolder = jest.genMockFunction();
+      props.onOpenFolder = jest.genMockFunction();
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
@@ -280,7 +289,7 @@ describe('Gallery', () => {
 
       gallery.handleFolderActivate(event, folder);
 
-      expect(props.actions.gallery.setFolder).toBeCalledWith(1);
+      expect(props.onOpenFolder).toBeCalledWith(1, folder);
     });
   });
 

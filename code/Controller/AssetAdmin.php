@@ -104,11 +104,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
     }
 
-	public function getClientConfig() {
+    public function getClientConfig() {
         $baseLink = $this->Link();
-		return array_merge( parent::getClientConfig(), [
-            'assetsRoute' => $this->Link() . ':folderAction?/:folderId?/:fileAction?/:fileId?',
-            'assetsRouteHome' => $this->Link() . 'show/0',
+        return array_merge( parent::getClientConfig(), [
+            'reactRouter' => true,
             'createFileEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/createFile'),
                 'method' => 'post',
@@ -166,7 +165,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $folderID = (int)$params['id'];
-        $folder = $folderID ? Folder::get()->byID($folderID) : null;
+        /** @var Folder $folder */
+        $folder = $folderID ? Folder::get()->byID($folderID) : singleton('Folder');
 
         // TODO Limit results to avoid running out of memory (implement client-side pagination)
         $files = $this->getList()->filter('ParentID', $folderID);
@@ -181,15 +181,33 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             }
         }
 
+        // Build parents (for breadcrumbs)
+        $parents = [];
+        $next = $folder->Parent();
+        while($next && $next->exists()) {
+            array_unshift($parents, [
+                'id' => $next->ID,
+                'title' => $next->getTitle(),
+            ]);
+            if($next->ParentID) {
+                $next = $next->Parent();
+            } else {
+                break;
+            }
+        }
+
+        // Build response
         $response = new SS_HTTPResponse();
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(json_encode([
             'files' => $items,
+            'title' => $folder->getTitle(),
             'count' => count($items),
-            'parent' => $folder ? $folder->ParentID : 0, // grandparent
+            'parents' => $parents,
+            'parentID' => $folder->exists() ? $folder->ParentID : null, // grandparent
             'folderID' => $folderID,
-            'canEdit' => $folder ? $folder->canEdit() : false,
-            'canDelete' => $folder ? $folder->canDelete() : false
+            'canEdit' => $folder->canEdit(),
+            'canDelete' => $folder->canDelete(),
         ]));
 
         return $response;
@@ -645,10 +663,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'lastUpdated' => $file->LastEdited,
             'owner' => null,
             'parent' => null,
-            'attributes' => array(
-                'dimensions' => array(),
-            ),
             'title' => $file->Title,
+            'exists' => $file->exists(), // Broken file check
             'type' => $file->is_a('Folder') ? 'folder' : $file->FileType,
             'category' => $file->is_a('Folder') ? 'folder' : $file->appCategory(),
             'name' => $file->Name,
@@ -683,8 +699,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         /** @var File $file */
         if ($file->getIsImage()) {
-            $object['attributes']['dimensions']['width'] = $file->Width;
-            $object['attributes']['dimensions']['height'] = $file->Height;
+            $object['dimensions']['width'] = $file->Width;
+            $object['dimensions']['height'] = $file->Height;
         }
 
         return $object;

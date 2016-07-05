@@ -18,7 +18,7 @@ class GalleryItem extends SilverStripeComponent {
   /**
    * Wrapper around this.props.handleActivate
    *
-   * @param object event - Event object.
+   * @param {Object} event - Event object.
    */
   handleActivate(event) {
     event.stopPropagation();
@@ -28,7 +28,7 @@ class GalleryItem extends SilverStripeComponent {
   /**
    * Wrapper around this.props.handleToggleSelect
    *
-   * @param object event - Event object.
+   * @param {Object} event Event object.
    */
   handleToggleSelect(event) {
     event.stopPropagation();
@@ -39,14 +39,19 @@ class GalleryItem extends SilverStripeComponent {
   /**
    * Wrapper around this.props.handleDelete
    *
-   * @param object event - Event object.
+   * @param {Object} event Event object.
    */
   handleDelete(event) {
     this.props.handleDelete(event, this.props.item);
   }
 
+  /**
+   * Gets props for thumbnail
+   *
+   * @returns {Object}
+   */
   getThumbnailStyles() {
-    if (this.props.item.category === 'image') {
+    if (this.isImage() && this.exists()) {
       return {
         backgroundImage: `url(${this.props.item.url})`,
       };
@@ -58,7 +63,7 @@ class GalleryItem extends SilverStripeComponent {
   /**
    * Checks if the component has an error set.
    *
-   * @return boolean
+   * @return {boolean}
    */
   hasError() {
     let hasError = false;
@@ -74,6 +79,8 @@ class GalleryItem extends SilverStripeComponent {
 
   /**
    * Returns markup for an error message if one is set.
+   *
+   * @returns {Object}
    */
   getErrorMessage() {
     if (this.hasError()) {
@@ -87,6 +94,11 @@ class GalleryItem extends SilverStripeComponent {
     return null;
   }
 
+  /**
+   * Retrieve list of thumbnail classes
+   *
+   * @returns {string}
+   */
   getThumbnailClassNames() {
     const thumbnailClassNames = ['gallery-item__thumbnail'];
 
@@ -97,8 +109,17 @@ class GalleryItem extends SilverStripeComponent {
     return thumbnailClassNames.join(' ');
   }
 
+  /**
+   * Retrieves class names for the item
+   *
+   * @returns {string}
+   */
   getItemClassNames() {
     const itemClassNames = [`gallery-item gallery-item--${this.props.item.category}`];
+
+    if (!this.exists()) {
+      itemClassNames.push('gallery-item--error');
+    }
 
     if (this.props.selected) {
       itemClassNames.push('gallery-item--selected');
@@ -115,8 +136,34 @@ class GalleryItem extends SilverStripeComponent {
     return itemClassNames.join(' ');
   }
 
+  /**
+   * Determine if this is an image type
+   *
+   * @returns {boolean}
+   */
+  isImage() {
+    return this.props.item.category === 'image';
+  }
+
+  /**
+   * Validate that the file backing this record is not missing
+   *
+   * @returns {boolean}
+   */
+  exists() {
+    return this.props.item.exists;
+  }
+
+  /**
+   * Determine that this record is an image, and the thumbnail is smaller than the given thumbnail area
+   *
+   * @returns {boolean}
+   */
   isImageSmallerThanThumbnail() {
-    const dimensions = this.props.item.attributes.dimensions;
+    if (!this.isImage() || !this.exists()) {
+      return false;
+    }
+    const dimensions = this.props.item.dimensions;
 
     return (
       dimensions.height < constants.THUMBNAIL_HEIGHT
@@ -124,6 +171,9 @@ class GalleryItem extends SilverStripeComponent {
     );
   }
 
+  /**
+   * @param {Object} event
+   */
   handleKeyDown(event) {
     event.stopPropagation();
 
@@ -135,14 +185,14 @@ class GalleryItem extends SilverStripeComponent {
 
     // If return is pressed, navigate folder
     if (this.props.returnKey === event.keyCode) {
-      this.handleActivate(event, this.props.item);
+      this.handleActivate(event);
     }
   }
 
   /**
    * Avoids the browser's default focus state when selecting an item.
    *
-   * @param object event - Event object.
+   * @param {Object} event Event object.
    */
   preventFocus(event) {
     event.preventDefault();
@@ -158,6 +208,11 @@ class GalleryItem extends SilverStripeComponent {
     }
   }
 
+  /**
+   * Gets upload progress bar
+   *
+   * @returns {Object}
+   */
   getProgressBar() {
     let progressBar;
 
@@ -190,7 +245,7 @@ class GalleryItem extends SilverStripeComponent {
       <input
         className="gallery-item__checkbox"
         type="checkbox"
-        title={i18n._t('AssetGalleryField.SELECT')}
+        title={i18n._t('AssetAdmin.SELECT')}
         tabIndex="-1"
         onMouseDown={this.preventFocus}
         data-dz-remove
@@ -203,7 +258,7 @@ class GalleryItem extends SilverStripeComponent {
       <input
         className="gallery-item__checkbox"
         type="checkbox"
-        title={i18n._t('AssetGalleryField.SELECT')}
+        title={i18n._t('AssetAdmin.SELECT')}
         tabIndex="-1"
         onMouseDown={this.preventFocus}
       /></label>);
@@ -237,8 +292,9 @@ class GalleryItem extends SilverStripeComponent {
 
 GalleryItem.propTypes = {
   item: React.PropTypes.shape({
-    attributes: React.PropTypes.shape({
-      dimensions: React.PropTypes.object.isRequired,
+    dimensions: React.PropTypes.shape({
+      width: React.PropTypes.number,
+      height: React.PropTypes.number,
     }),
     category: React.PropTypes.string.isRequired,
     id: React.PropTypes.number.isRequired,

@@ -97,7 +97,7 @@ export function loadFolderContents(listApi, folderId, limit, page) {
   return (dispatch) => {
     dispatch({
       type: GALLERY.LOAD_FOLDER_REQUEST,
-      payload: { viewingFolder: (folderId > 0), folderId: parseInt(folderId, 10) },
+      payload: { folderId: parseInt(folderId, 10) },
     });
 
     return listApi({ id: folderId, limit, page })
@@ -105,11 +105,19 @@ export function loadFolderContents(listApi, folderId, limit, page) {
       dispatch({
         type: GALLERY.LOAD_FOLDER_SUCCESS,
         payload: {
-          folderId: parseInt(folderId, 10),
-          parentfolderId: data.parent,
           files: data.files,
-          canEdit: data.canEdit,
-          canDelete: data.canDelete,
+          // TODO Return as consistent data structure from API signature
+          folder: {
+            id: parseInt(data.folderID, 10),
+            title: data.title,
+            parents: data.parents,
+            canEdit: data.canEdit,
+            canDelete: data.canDelete,
+            // Distinguish between null and 0
+            parentID: (data.parentID === null) ? null : parseInt(data.parentID, 10),
+          },
+          // TODO Remove once all code is using 'folder' defined above
+          folderId: parseInt(data.folderID, 10),
         },
       });
     });
@@ -231,20 +239,6 @@ export function createFolder(createFolderApi, parentId, name) {
         type: GALLERY.CREATE_FOLDER_FAILURE,
         payload: { error: `Couldn\'t create ${name}: ${err}` },
       });
-    });
-  };
-}
-
-/**
- * Sets the permissions for the folder
- *
- * @param object folderPermissions Contains the canEdit, canDelete permissions as self-named keys
- */
-export function setFolderPermissions(folderPermissions) {
-  return (dispatch) => {
-    dispatch({
-      type: GALLERY.SET_FOLDER_PERMISSIONS,
-      payload: folderPermissions,
     });
   };
 }

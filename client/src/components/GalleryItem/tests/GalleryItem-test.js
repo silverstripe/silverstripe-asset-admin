@@ -17,12 +17,11 @@ describe('GalleryItem', () => {
       handleActivate: jest.genMockFunction(),
       handleDelete: jest.genMockFunction(),
       item: {
-        attributes: {
-          dimensions: {
-            width: 10,
-            height: 10,
-          },
+        dimensions: {
+          width: 10,
+          height: 10,
         },
+        exists: true,
         category: 'image',
         id: 1,
         title: 'test',
@@ -132,6 +131,7 @@ describe('GalleryItem', () => {
     it('should return small classes only if isImageSmallerThanThumbnail returns true', () => {
       item.isImageSmallerThanThumbnail.mockReturnValueOnce(true);
 
+      expect(item.isImage()).toEqual(true);
       expect(item.getThumbnailClassNames()).toContain('gallery-item__thumbnail--small');
     });
   });
@@ -174,7 +174,7 @@ describe('GalleryItem', () => {
     });
 
     it('should return false if the dimensions are larger than the default thumbnail size', () => {
-      props.item.attributes.dimensions = {
+      props.item.dimensions = {
         width: 1000,
         height: 1000,
       };

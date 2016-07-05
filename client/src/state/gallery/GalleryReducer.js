@@ -14,16 +14,10 @@ const initialState = {
   fileId: 0,
   folderId: 0,
   focus: false,
-  parentfolderId: null,
   path: null, // The current location path the app is on
   selectedFiles: [],
   highlightedFiles: [],
-  viewingFolder: false,
   page: 0,
-  folderPermissions: {
-    canEdit: false,
-    canDelete: false,
-  },
 };
 
 /**
@@ -166,9 +160,7 @@ export default function galleryReducer(state = initialState, action) {
     case GALLERY.LOAD_FOLDER_REQUEST: {
       return deepFreeze(Object.assign({}, state, {
         // Mark "loaded" at the start of the request to avoid infinite loop of load events
-        loadedfolderId: action.payload.folderId,
         folderId: action.payload.folderId,
-        viewingFolder: action.payload.viewingFolder,
         selectedFiles: [],
         files: [],
         count: 0,
@@ -178,9 +170,7 @@ export default function galleryReducer(state = initialState, action) {
 
     case GALLERY.LOAD_FOLDER_SUCCESS: {
       return deepFreeze(Object.assign({}, state, {
-        parentfolderId: action.payload.parentfolderId,
-        canEdit: action.payload.canEdit,
-        canDelete: action.payload.canDelete,
+        folder: action.payload.folder,
         files: action.payload.files,
         count: action.payload.files.length,
         loading: false,
@@ -195,15 +185,6 @@ export default function galleryReducer(state = initialState, action) {
 
     case GALLERY.ADD_FOLDER_SUCCESS:
       return state;
-
-    case GALLERY.SET_FOLDER_PERMISSIONS: {
-      return deepFreeze(Object.assign({}, state, {
-        folderPermissions: {
-          canEdit: action.payload.canEdit,
-          canDelete: action.payload.canDelete,
-        },
-      }));
-    }
 
     default:
       return state;
