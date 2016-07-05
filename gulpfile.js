@@ -15,8 +15,8 @@ const sourcemaps = require('gulp-sourcemaps');
 const PATHS = {
   JS_DIST: './client/dist/js',
   JS_SRC: './client/src',
-  SCSS_SRC: './client/src/styles',
-  SCSS_DIST: './client/dist/styles',
+  SCSS_SRC: './client/src',
+  SCSS_DIST: './client/dist',
 };
 
 const isDev = typeof process.env.npm_config_development !== 'undefined';
@@ -79,15 +79,20 @@ gulp.task('js', function bundleJavaScript() {
     .pipe(gulp.dest(PATHS.JS_DIST));
 });
 
-gulp.task('sass', () => { // eslint-disable-line arrow-body-style
-  return gulp.src('./client/src/styles/bundle.scss')
-    .pipe(sass().on('error', notify.onError({ message: 'Error: <%= error.message %>' })))
-    .pipe(gulp.dest(PATHS.SCSS_DIST));
+gulp.task('css', ['compile:css'], () => { // eslint-disable-line arrow-body-style
+  if (isDev) {
+    gulp.watch(`${PATHS.SCSS_SRC}/**/*.scss`, ['compile:css']);
+  }
 });
 
-gulp.task('default', ['js', 'sass'], () => {
+gulp.task('compile:css', () => { // eslint-disable-line arrow-body-style
+  return gulp.src(`${PATHS.JS_SRC}/styles/bundle.scss`)
+    .pipe(sass().on('error', notify.onError({ message: 'Error: <%= error.message %>' })))
+    .pipe(gulp.dest(`${PATHS.SCSS_DIST}/styles`));
+});
+
+gulp.task('default', ['js', 'css'], () => {
   if (isDev) {
     gulp.watch(`${PATHS.JS_SRC}/**/*.js`, ['js']);
-    gulp.watch(`${PATHS.SCSS_SRC}/**/*.scss`, ['sass']);
   }
 });
