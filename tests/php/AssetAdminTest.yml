@@ -1,10 +1,10 @@
-Member:
+SilverStripe\Security\Member:
   member1:
     FirstName: Christopher
-    LastName: Pitt
+    Surname: Pitt
   member2:
     FirstName: Damian
-    LastName: Mooyman
+    Surname: Mooyman
 SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder:
   folder1:
     Title: folder1
@@ -13,7 +13,7 @@ SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder:
   disallowCanCreate:
     Title: disallowCanCreate
   disallowCanAddChildren:
-      Title: disallowCanAddChildren
+    Title: disallowCanAddChildren
 SilverStripe\AssetAdmin\Tests\AssetAdminTest_File:
   rootfile:
     Name: rootfile.jpg
@@ -21,21 +21,21 @@ SilverStripe\AssetAdmin\Tests\AssetAdminTest_File:
   file1:
     Created: 2015-08-19 00:00:00
     LastUpdated: 2015-08-27 00:00:00
-    Owner: =>Member.member1
+    Owner: =>SilverStripe\Security\Member.member1
     Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder1
     Name: file1.jpg
     Title: The First File
   file2:
     Created: 2015-08-20 00:00:00
     LastUpdated: 2015-08-28 00:00:00
-    Owner: =>Member.member2
+    Owner: =>SilverStripe\Security\Member.member2
     Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder2
     Name: file2.jpg
     Title: The Second File
   file3:
     Created: 2015-08-21 00:00:00
     LastUpdated: 2015-08-29 00:00:00
-    Owner: =>Member.member2
+    Owner: =>SilverStripe\Security\Member.member2
     Parent: =>SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder.folder2
     Name: file3.jpg
     Title: The Third File
