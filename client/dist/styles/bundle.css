@@ -425,7 +425,7 @@
   text-overflow: ellipsis; }
 
 .editor__url-icon::before {
-  color: #a1a6a9; }
+  color: #a1aab2; }
 
 .editor__file-preview {
   text-align: center;
@@ -479,8 +479,7 @@
   overflow-x: hidden; }
 
 .AssetAdmin .cms-edit-form.AssetAdmin {
-  width: 100%;
-  overflow-y: auto; }
+  width: 100%; }
 
 .AssetAdmin .asset-gallery {
   margin: 0; }
