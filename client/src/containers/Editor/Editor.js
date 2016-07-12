@@ -88,7 +88,7 @@ class Editor extends Component {
       </a>
     );
 
-    return (<div className="editor container-fluid">
+    return (<div className="editor form--no-dividers container-fluid">
       <a
         tabIndex="0"
         className="btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl"
