@@ -92,7 +92,7 @@ export class BulkActions extends SilverStripeComponent {
 
     if (option.destructive === true) {
       // eslint-disable-next-line no-alert
-      if (confirm(i18n.sprintf(i18n._t('AssetGalleryField.BULK_ACTIONS_CONFIRM'), option.label))) {
+      if (confirm(i18n.sprintf(i18n._t('AssetAdmin.BULK_ACTIONS_CONFIRM'), option.label))) {
         this.applyAction(option.value);
       }
     } else {

@@ -1,6 +1,7 @@
 import i18n from 'i18n';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import * as editorActions from 'state/editor/EditorActions';
 import TextFieldComponent from 'components/TextField/TextField';
@@ -27,12 +28,14 @@ class Editor extends Component {
       {
         label: 'Filename',
         // TODO Use same property names as DataObject
-        name: 'Name',
+        name: 'name',
       },
     ];
+  }
 
+  componentDidMount() {
     // Set initial form state
-    this.props.actions.updateFormState(Object.assign({}, props.file));
+    this.props.actions.updateFormState(Object.assign({}, this.props.file));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -70,9 +73,9 @@ class Editor extends Component {
     const file = this.props.file;
 
     const headerExtraParts = [];
-    if (file.attributes.dimensions.width && file.attributes.dimensions.height) {
+    if (file.dimensions && file.dimensions.width && file.dimensions.height) {
       headerExtraParts.push(
-        `${file.attributes.dimensions.width}x${file.attributes.dimensions.height}px`
+        `${file.dimensions.width}x${file.dimensions.height}px`
       );
     }
     headerExtraParts.push(file.size);
@@ -95,7 +98,7 @@ class Editor extends Component {
         onClick={this.props.onClose}
         onKeyDown={this.props.onClose}
         type="button"
-        aria-label={i18n._t('AssetGalleryField.CANCEL')}
+        aria-label={i18n._t('AssetAdmin.CANCEL')}
       />
 
       <div className="editor__details">
@@ -159,7 +162,7 @@ class Editor extends Component {
                   icon="rocket"
                   handleClick={this.onFilePublish}
                   loading={this.state.isSaving}
-                  label={i18n._t('AssetGalleryField.PUBLISH')}
+                  label={i18n._t('AssetAdmin.PUBLISH')}
                 />
               </div>
 
@@ -169,7 +172,7 @@ class Editor extends Component {
                 icon="save"
                 handleClick={this.handleFileSave}
                 loading={this.state.isSaving}
-                label={i18n._t('AssetGalleryField.SAVE')}
+                label={i18n._t('AssetAdmin.SAVE')}
               />
 
               <button
@@ -189,8 +192,8 @@ class Editor extends Component {
 
             <ul className="list-unstyled text-muted m-b-2">
               <li>{file.type}</li>
-              <li>{i18n._t('AssetGalleryField.CREATED')} {file.created}</li>
-              <li>{i18n._t('AssetGalleryField.LASTEDIT')} {file.lastUpdated}</li>
+              <li>{i18n._t('AssetAdmin.CREATED')} {file.created}</li>
+              <li>{i18n._t('AssetAdmin.LASTEDIT')} {file.lastUpdated}</li>
             </ul>
 
             <table className="table">
@@ -252,11 +255,9 @@ Editor.propTypes = {
     type: React.PropTypes.string,
     created: React.PropTypes.string,
     lastUpdated: React.PropTypes.string,
-    attributes: React.PropTypes.shape({
-      dimensions: React.PropTypes.shape({
-        width: React.PropTypes.number,
-        height: React.PropTypes.number,
-      }),
+    dimensions: React.PropTypes.shape({
+      width: React.PropTypes.number,
+      height: React.PropTypes.number,
     }),
   }),
   actions: React.PropTypes.object,
@@ -265,14 +266,7 @@ Editor.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const { files, fileId } = state.assetAdmin.gallery;
-  let file = null;
-  if (fileId) {
-    // Calculated on the fly to avoid getting out of sync with lazy loaded fileId
-    file = files.find((next) => next.id === parseInt(fileId, 10));
-  }
   return {
-    file,
     formState: state.assetAdmin.editor.formState,
   };
 }
@@ -283,4 +277,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Editor);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Editor));

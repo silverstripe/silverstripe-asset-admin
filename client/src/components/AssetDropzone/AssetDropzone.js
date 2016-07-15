@@ -65,7 +65,7 @@ class AssetDropzone extends SilverStripeComponent {
       <div className={className.join(' ')}>
         {this.props.uploadButton &&
           <button {...buttonProps}>
-            {i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}
+            {i18n._t('AssetAdmin.DROPZONE_UPLOAD')}
           </button>
         }
         {this.props.children}
@@ -101,35 +101,35 @@ class AssetDropzone extends SilverStripeComponent {
       uploadprogress: this.handleUploadProgress.bind(this),
 
       // The text used before any files are dropped
-      dictDefaultMessage: i18n._t('AssetGalleryField.DROPZONE_DEFAULT_MESSAGE'),
+      dictDefaultMessage: i18n._t('AssetAdmin.DROPZONE_DEFAULT_MESSAGE'),
 
       // The text that replaces the default message text it the browser is not supported
-      dictFallbackMessage: i18n._t('AssetGalleryField.DROPZONE_FALLBACK_MESSAGE'),
+      dictFallbackMessage: i18n._t('AssetAdmin.DROPZONE_FALLBACK_MESSAGE'),
 
       // The text that will be added before the fallback form
       // If null, no text will be added at all.
-      dictFallbackText: i18n._t('AssetGalleryField.DROPZONE_FALLBACK_TEXT'),
+      dictFallbackText: i18n._t('AssetAdmin.DROPZONE_FALLBACK_TEXT'),
 
       // If the file doesn't match the file type.
-      dictInvalidFileType: i18n._t('AssetGalleryField.DROPZONE_INVALID_FILE_TYPE'),
+      dictInvalidFileType: i18n._t('AssetAdmin.DROPZONE_INVALID_FILE_TYPE'),
 
       // If the server response was invalid.
-      dictResponseError: i18n._t('AssetGalleryField.DROPZONE_RESPONSE_ERROR'),
+      dictResponseError: i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR'),
 
       // If used, the text to be used for the cancel upload link.
-      dictCancelUpload: i18n._t('AssetGalleryField.DROPZONE_CANCEL_UPLOAD'),
+      dictCancelUpload: i18n._t('AssetAdmin.DROPZONE_CANCEL_UPLOAD'),
 
       // If used, the text to be used for confirmation when cancelling upload.
       dictCancelUploadConfirmation: i18n._t(
-        'AssetGalleryField.DROPZONE_CANCEL_UPLOAD_CONFIRMATION'
+        'AssetAdmin.DROPZONE_CANCEL_UPLOAD_CONFIRMATION'
       ),
 
       // If used, the text to be used to remove a file.
-      dictRemoveFile: i18n._t('AssetGalleryField.DROPZONE_REMOVE_FILE'),
+      dictRemoveFile: i18n._t('AssetAdmin.DROPZONE_REMOVE_FILE'),
 
       // Displayed when the maxFiles have been exceeded
       // You can use {{maxFiles}} here, which will be replaced by the option.
-      dictMaxFilesExceeded: i18n._t('AssetGalleryField.DROPZONE_MAX_FILES_EXCEEDED'),
+      dictMaxFilesExceeded: i18n._t('AssetAdmin.DROPZONE_MAX_FILES_EXCEEDED'),
 
       // When a file upload fails.
       error: this.handleError.bind(this),

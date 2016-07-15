@@ -1,130 +1,143 @@
 import React from 'react';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
-import { default as Gallery } from 'containers/Gallery/Gallery';
-import Editor from 'containers/Editor/Editor';
-import * as galleryActions from 'state/gallery/GalleryActions';
-import * as editorActions from 'state/editor/EditorActions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
+import SilverStripeComponent from 'lib/SilverStripeComponent';
+import backend from 'lib/Backend';
+import Config from 'lib/Config';
+import i18n from 'i18n';
+import * as galleryActions from 'state/gallery/GalleryActions';
+import * as editorActions from 'state/editor/EditorActions';
+import * as breadcrumbsActions from 'state/breadcrumbs/BreadcrumbsActions';
+import Editor from 'containers/Editor/Editor';
+import Gallery from 'containers/Gallery/Gallery';
+import Breadcrumb from 'components/Breadcrumb/Breadcrumb';
+import Toolbar from 'components/Toolbar/Toolbar';
 
 class AssetAdmin extends SilverStripeComponent {
-  constructor(props) {
-    super(props);
 
-    // Required to stop routing from kicking in before props can be set through handleURL()
-    this._didHandleUrl = false;
-
-    // TO DO: Work out what this is for and put it somewhere better
-    // const $search = $('.cms-search-form');
-    // if ($search.find('[type=hidden][name="q[Folder]"]').length === 0) {
-    //   $search.append('<input type="hidden" name="q[Folder]" />');
-    // }
-    // this.$folder = $search.find('[type=hidden][name="q[Folder]"]');
-
+  constructor() {
+    super();
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
+    this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.handleFileSave = this.handleFileSave.bind(this);
-    this.handleURL = this.handleURL.bind(this);
-  }
+    this.createEndpoint = this.createEndpoint.bind(this);
+    this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+    this.compare = this.compare.bind(this);
 
-  componentDidMount() {
-    super.componentDidMount();
-
-    // While a component is mounted it will intercept all routes and handle internally
-    let captureRoute = true;
-
-    const route = window.ss.router.resolveURLToBase(this.props.sectionConfig.assetsRoute);
-
-    // Capture routing within this section
-    window.ss.router(route, (ctx, next) => {
-      if (captureRoute) {
-        // If this component is mounted, then handle all page changes via state / redux
-        this.handleURL(window.ss.router, ctx);
-      } else {
-        // If component is not mounted, we need to allow root routes to load
-        // this section in via ajax
-        next();
-      }
-    });
-
-    // When leaving this section to go to another top level section then
-    // disable route capturing.
-    window.ss.router.exit(route, (ctx, next) => {
-      const applies = window.ss.router.routeAppliesToCurrentLocation(route);
-      if (!applies) {
-        captureRoute = false;
-      }
-      next();
-    });
-  }
-
-  componentWillUnmount() {
-    super.componentWillUnmount();
-
-    this._didHandleUrl = true;
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this._didHandleUrl) {
-      this.refreshURL(window.ss.router, nextProps);
-    }
+    // Build API callers from the URLs provided in configuration.
+    // In time, something like a GraphQL endpoint might be a better way to run.
+    const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
+    this.endpoints = {
+      createFolderApi: this.createEndpoint(sectionConfig.createFolderEndpoint),
+      readFolderApi: this.createEndpoint(sectionConfig.readFolderEndpoint, false),
+      updateFolderApi: this.createEndpoint(sectionConfig.updateFolderEndpoint),
+      updateFileApi: this.createEndpoint(sectionConfig.updateFileEndpoint),
+      deleteApi: this.createEndpoint(sectionConfig.deleteEndpoint),
+    };
   }
 
   /**
-   * Refresh the URL based on the current component state
-   */
-  refreshURL(router, nextProps) {
-    let desiredURL = null;
-    if (nextProps.fileId) {
-      desiredURL = this.props.sectionConfig.assetsRoute
-        .replace(/:folderAction\?/, 'show')
-        .replace(/:folderId\?/, nextProps.folderId)
-        .replace(/:fileAction\?/, 'edit')
-        .replace(/:fileId\?/, nextProps.fileId);
-    } else {
-      desiredURL = this.props.sectionConfig.assetsRoute
-        .replace(/:folderAction\?/, 'show')
-        .replace(/:folderId\?.*$/, nextProps.folderId);
-    }
-
-    if (desiredURL !== null && desiredURL !== router.current) {
-      // 3rd arg false so as not to trigger handleEnterRoute() and therefore an infinite loops
-      router.show(desiredURL, null, false);
-    }
-  }
-
-  /**
-   * Respond to a route change, provided by SS3-style javascript
+   * Create a new endpoint
    *
-   * @param {Page} router
-   * @param {Context} context
+   * @param {Object} endpointConfig
+   * @param {Boolean} includeToken
+   * @returns {Function}
+     */
+  createEndpoint(endpointConfig, includeToken = true) {
+    return backend.createEndpointFetcher(Object.assign(
+      {},
+      endpointConfig,
+      includeToken ? { defaultData: { SecurityID: Config.get('SecurityID') } } : {}
+    ));
+  }
+
+  componentWillReceiveProps(props) {
+    const viewChanged = this.compare(this.props.folder, props.folder);
+    if (viewChanged) {
+      this.setBreadcrumbs(props.folder);
+    }
+  }
+
+  /**
+   * Navigate to parent folder
+   *
+   * @param {Object} event
    */
-  handleURL(router, context) {
-    // If no folder is selected redirect to default route
-    if (context.params.folderAction !== 'show') {
-      this.props.actions.gallery.setFolder(0);
-      const defaultRoute = this.props.sectionConfig.assetsRouteHome;
-      router.show(defaultRoute, null, false);
-      return;
+  handleBackButtonClick(event) {
+    event.preventDefault();
+    if (this.props.folder) {
+      this.handleOpenFolder(this.props.folder.parentID || 0);
+    } else {
+      this.handleOpenFolder(0);
+    }
+  }
+
+  /**
+   * Assign breadcrumbs from selected folder
+   *
+   * @param {Object} folder
+     */
+  setBreadcrumbs(folder) {
+    const base = this.props.sectionConfig.url;
+
+    // Set root breadcrumb
+    const breadcrumbs = [{
+      text: i18n._t('AssetAdmin.FILES', 'Files'),
+      href: `/${base}/`,
+    }];
+
+    if (folder && folder.id) {
+      // Add parent folders
+      if (folder.parents) {
+        folder.parents.forEach((parent) => {
+          breadcrumbs.push({
+            text: parent.title,
+            href: `/${base}/show/${parent.id}`,
+          });
+        });
+      }
+
+      // Add current folder
+      breadcrumbs.push({
+        text: folder.title,
+        href: `/${base}/show/${folder.id}`,
+      });
     }
 
-    const folderId = parseInt(context.params.folderId, 10);
-    const fileId = parseInt(context.params.fileId, 10);
+    this.props.actions.breadcrumbsActions.setBreadcrumbs(breadcrumbs);
+  }
 
-    // These actions will will trigger refreshUrl()
-    // since they case changes to the 'folderId' and 'fileId' props on this component
-    this.props.actions.gallery.setFolder(folderId);
-    this.props.actions.gallery.setFile(fileId);
+  /**
+   * Check if either of the two objects differ
+   *
+   * @param {Object} left
+   * @param {Object} right
+     */
+  compare(left, right) {
+    // Check for falsiness
+    if (left && !right || right && !left) {
+      return true;
+    }
 
-    this._didHandleUrl = true;
+    // Fall back to object comparison
+    return left && right && left.id !== right.id;
   }
 
   handleOpenFile(fileId) {
-    this.props.actions.gallery.setFile(fileId);
+    const base = this.props.sectionConfig.url;
+    this.props.router.push(`/${base}/show/${this.props.folderId}/edit/${fileId}`);
   }
 
   handleCloseFile() {
-    this.props.actions.gallery.setFile(null);
+    const base = this.props.sectionConfig.url;
+    this.props.router.push(`/${base}/show/${this.props.folderId}`);
+  }
+
+  handleOpenFolder(folderId) {
+    const base = this.props.sectionConfig.url;
+    this.props.router.push(`/${base}/show/${folderId}`);
   }
 
   /**
@@ -136,27 +149,49 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   render() {
-    // Only show the editor if the file object has been loaded
-    // (fetched through an async folder request for all contained files)
-    const editor = (this.props.file &&
+    const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
+    const createFileApiUrl = sectionConfig.createFileEndpoint.url;
+    const createFileApiMethod = sectionConfig.createFileEndpoint.method;
+
+    let editor = (this.props.file &&
       <Editor
+        file={this.props.file}
         onClose={this.handleCloseFile}
         onFileSave={this.handleFileSave}
       />
     );
+
+    const showBackButton = !!(this.props.folder && this.props.folder.id);
+
     return (
-      <div className="gallery">
-        {editor}
-        <Gallery
-          name={this.props.name}
-          limit={this.props.limit}
-          createFileApiUrl={this.props.createFileApiUrl}
-          createFileApiMethod={this.props.createFileApiMethod}
-          createFolderApi={this.props.createFolderApi}
-          readFolderApi={this.props.readFolderApi}
-          deleteApi={this.props.deleteApi}
-          onOpenFile={this.handleOpenFile}
-        />
+      <div className="cms-content__inner no-preview">
+        <div className="cms-content__left cms-gallery collapse in">
+          <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
+            <Breadcrumb multiline crumbs={this.props.breadcrumbs} />
+          </Toolbar>
+          <div className="gallery">
+            {editor}
+            <Gallery
+              files={this.props.files}
+              fileId={this.props.fileId}
+              folderId={this.props.folderId}
+              folder={this.props.folder}
+              name={this.props.name}
+              limit={this.props.limit}
+              bulkActions={this.props.bulkActions}
+              createFileApiUrl={createFileApiUrl}
+              createFileApiMethod={createFileApiMethod}
+              createFolderApi={this.endpoints.createFolderApi}
+              readFolderApi={this.endpoints.readFolderApi}
+              updateFolderApi={this.endpoints.updateFolderApi}
+              updateFileApi={this.endpoints.updateFileApi}
+              deleteApi={this.endpoints.deleteApi}
+              onOpenFile={this.handleOpenFile}
+              onOpenFolder={this.handleOpenFolder}
+              sectionConfig={this.props.sectionConfig}
+            />
+          </div>
+        </div>
       </div>
     );
   }
@@ -170,29 +205,39 @@ AssetAdmin.propTypes = {
       }),
     }),
   }),
-  sectionConfig: React.PropTypes.object.isRequired,
-  createFileApiUrl: React.PropTypes.string,
-  createFileApiMethod: React.PropTypes.string,
-  createFolderApi: React.PropTypes.func,
-  readFolderApi: React.PropTypes.func,
-  updateFolderApi: React.PropTypes.func,
-  updateFileApi: React.PropTypes.func,
-  deleteApi: React.PropTypes.func,
+  sectionConfig: React.PropTypes.shape({
+    url: React.PropTypes.string,
+  }),
   file: React.PropTypes.object,
+  folder: React.PropTypes.shape({
+    id: React.PropTypes.number,
+    title: React.PropTypes.string,
+    parents: React.PropTypes.array,
+    parentID: React.PropTypes.number,
+    canView: React.PropTypes.bool,
+    canEdit: React.PropTypes.bool,
+  }),
 };
 
-function mapStateToProps(state) {
-  const { files, fileId, folderId } = state.assetAdmin.gallery;
+function mapStateToProps(state, ownProps) {
+  const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
+  const sectionConfig = state.config.sections[sectionConfigKey];
+  const folder = state.assetAdmin.gallery.folder;
+  const files = state.assetAdmin.gallery.files;
   let file = null;
-  if (fileId) {
+  if (ownProps.params.fileId) {
     // Calculated on the fly to avoid getting out of sync with lazy loaded fileId
-    file = files.find((next) => next.id === parseInt(fileId, 10));
+    file = files.find((next) => next.id === parseInt(ownProps.params.fileId, 10));
   }
   return {
-    folderId,
+    breadcrumbs: state.breadcrumbs,
+    sectionConfig,
+    fileId: parseInt(ownProps.params.fileId, 10),
+    folderId: parseInt(ownProps.params.folderId, 10),
     files,
-    fileId,
     file,
+    folder,
+    limit: sectionConfig.limit,
   };
 }
 
@@ -201,8 +246,9 @@ function mapDispatchToProps(dispatch) {
     actions: {
       gallery: bindActionCreators(galleryActions, dispatch),
       editor: bindActionCreators(editorActions, dispatch),
+      breadcrumbsActions: bindActionCreators(breadcrumbsActions, dispatch),
     },
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AssetAdmin);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(AssetAdmin));

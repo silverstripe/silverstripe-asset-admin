@@ -7,9 +7,9 @@ export default {
   BULK_ACTIONS: [
     {
       value: 'delete',
-      label: i18n._t('AssetGalleryField.BULK_ACTIONS_DELETE'),
+      label: i18n._t('AssetAdmin.BULK_ACTIONS_DELETE'),
       destructive: true,
     },
   ],
-  BULK_ACTIONS_PLACEHOLDER: i18n._t('AssetGalleryField.BULK_ACTIONS_PLACEHOLDER'),
+  BULK_ACTIONS_PLACEHOLDER: i18n._t('AssetAdmin.BULK_ACTIONS_PLACEHOLDER'),
 };

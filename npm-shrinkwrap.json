@@ -14506,32 +14506,84 @@
       "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-0.14.7.tgz"
     },
     "react-redux": {
-      "version": "4.4.0",
-      "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-4.4.0.tgz",
+      "version": "4.4.5",
+      "resolved": "https://registry.npmjs.org/react-redux/-/react-redux-4.4.5.tgz",
       "dependencies": {
         "hoist-non-react-statics": {
-          "version": "1.0.5",
-          "resolved": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-1.0.5.tgz"
+          "version": "1.2.0",
+          "resolved": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-1.2.0.tgz"
         },
         "invariant": {
-          "version": "2.2.0",
-          "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.2.0.tgz"
+          "version": "2.2.1",
+          "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.2.1.tgz"
         },
         "lodash": {
-          "version": "4.6.1",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.6.1.tgz"
+          "version": "4.13.1",
+          "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.13.1.tgz"
         },
         "loose-envify": {
-          "version": "1.1.0",
-          "resolved": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.1.0.tgz",
+          "version": "1.2.0",
+          "resolved": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.2.0.tgz",
           "dependencies": {
             "js-tokens": {
-              "version": "1.0.2",
-              "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-1.0.2.tgz"
+              "version": "1.0.3",
+              "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-1.0.3.tgz"
             }
           }
         }
       }
+    },
+    "react-router": {
+      "version": "2.5.2",
+      "resolved": "https://registry.npmjs.org/react-router/-/react-router-2.5.2.tgz",
+      "dependencies": {
+        "history": {
+          "version": "2.1.2",
+          "resolved": "https://registry.npmjs.org/history/-/history-2.1.2.tgz",
+          "dependencies": {
+            "deep-equal": {
+              "version": "1.0.1",
+              "resolved": "https://registry.npmjs.org/deep-equal/-/deep-equal-1.0.1.tgz"
+            },
+            "query-string": {
+              "version": "3.0.3",
+              "resolved": "https://registry.npmjs.org/query-string/-/query-string-3.0.3.tgz",
+              "dependencies": {
+                "strict-uri-encode": {
+                  "version": "1.1.0",
+                  "resolved": "https://registry.npmjs.org/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz"
+                }
+              }
+            }
+          }
+        },
+        "hoist-non-react-statics": {
+          "version": "1.2.0",
+          "resolved": "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-1.2.0.tgz"
+        },
+        "invariant": {
+          "version": "2.2.1",
+          "resolved": "https://registry.npmjs.org/invariant/-/invariant-2.2.1.tgz"
+        },
+        "loose-envify": {
+          "version": "1.2.0",
+          "resolved": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.2.0.tgz",
+          "dependencies": {
+            "js-tokens": {
+              "version": "1.0.3",
+              "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-1.0.3.tgz"
+            }
+          }
+        },
+        "warning": {
+          "version": "2.1.0",
+          "resolved": "https://registry.npmjs.org/warning/-/warning-2.1.0.tgz"
+        }
+      }
+    },
+    "react-router-redux": {
+      "version": "4.0.5",
+      "resolved": "https://registry.npmjs.org/react-router-redux/-/react-router-redux-4.0.5.tgz"
     },
     "redux": {
       "version": "3.3.1",

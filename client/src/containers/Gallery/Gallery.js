@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
 import Config from 'lib/Config';
@@ -53,22 +54,22 @@ export class Gallery extends Component {
       {
         field: 'title',
         direction: 'asc',
-        label: i18n._t('AssetGalleryField.FILTER_TITLE_ASC'),
+        label: i18n._t('AssetAdmin.FILTER_TITLE_ASC'),
       },
       {
         field: 'title',
         direction: 'desc',
-        label: i18n._t('AssetGalleryField.FILTER_TITLE_DESC'),
+        label: i18n._t('AssetAdmin.FILTER_TITLE_DESC'),
       },
       {
         field: 'created',
         direction: 'desc',
-        label: i18n._t('AssetGalleryField.FILTER_DATE_DESC'),
+        label: i18n._t('AssetAdmin.FILTER_DATE_DESC'),
       },
       {
         field: 'created',
         direction: 'asc',
-        label: i18n._t('AssetGalleryField.FILTER_DATE_ASC'),
+        label: i18n._t('AssetAdmin.FILTER_DATE_ASC'),
       },
     ];
 
@@ -98,7 +99,7 @@ export class Gallery extends Component {
     $select.off('change');
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
 
     // We opt-out of letting the CMS handle Chosen because it doesn't
@@ -112,13 +113,13 @@ export class Gallery extends Component {
     // Chosen stops the change event from reaching React so we have to simulate a click.
     $select.on('change', () => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
 
-    this.refreshFolderIfNeeded();
+    this.refreshFolderIfNeeded(prevProps);
     this.checkLoadingIndicator();
   }
 
   getNoItemsNotice() {
     if (this.props.files.length < 1 && this.props.queuedFiles.items.length < 1 && !this.props.loading) {
-      return <p className="gallery__no-item-notice">{i18n._t('AssetGalleryField.NOITEMSFOUND')}</p>;
+      return <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>;
     }
 
     return null;
@@ -133,7 +134,7 @@ export class Gallery extends Component {
       'btn--icon-large',
       'gallery__back',
     ].join(' ');
-    if (this.props.parentfolderId !== null) {
+    if (this.props.folder.parentID !== null) {
       return (
         <button
           className={classes}
@@ -171,7 +172,7 @@ export class Gallery extends Component {
           className="gallery__load-more"
           onClick={this.handleMoreClick}
         >
-          {i18n._t('AssetGalleryField.LOADMORE')}
+          {i18n._t('AssetAdmin.LOADMORE')}
         </button>
       );
     }
@@ -189,25 +190,15 @@ export class Gallery extends Component {
     }
   }
 
-  refreshFolderIfNeeded() {
-    const self = this;
-    // folderId updates saying "please load", loadedfolderId updates when the ajax request is actually triggered
-    if (!isNaN(this.props.folderId) && this.props.folderId >= 0 && this.props.folderId !== this.props.loadedfolderId) {
+  refreshFolderIfNeeded(prevProps) {
+    if (!prevProps || this.props.folderId !== prevProps.folderId) {
+      this.props.actions.gallery.deselectFiles();
       this.props.actions.gallery.loadFolderContents(
         this.props.readFolderApi,
         this.props.folderId,
         this.props.limit,
         this.props.page
-      ).then(() => {
-        // Check if the selected file is in the new files, and trigger a pseudo-select.
-        // This ensures files can be selected prior to the async folder load completing,
-        // e.g. through URL parameters.
-        const fileId = self.props.fileId;
-        const file = self.props.files.find((next) => next.id === parseInt(fileId, 10));
-        if (file) {
-          self.props.onOpenFile(fileId, file);
-        }
-      });
+      );
     }
   }
 
@@ -293,7 +284,7 @@ export class Gallery extends Component {
    */
   handleItemDelete(event, item) {
     // eslint-disable-next-line no-alert
-    if (confirm(i18n._t('AssetGalleryField.CONFIRMDELETE'))) {
+    if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
       this.props.actions.gallery.deleteItems(this.props.deleteApi, [item.id]);
     }
   }
@@ -326,7 +317,7 @@ export class Gallery extends Component {
    * @param object folder - The folder that's being activated.
    */
   handleFolderActivate(event, folder) {
-    this.props.actions.gallery.setFolder(folder.id);
+    this.props.onOpenFolder(folder.id, folder);
   }
 
   /**
@@ -369,10 +360,15 @@ export class Gallery extends Component {
 
   handleBackClick(event) {
     event.preventDefault();
-    this.props.actions.gallery.setFolder(this.props.parentfolderId);
+    const base = this.props.sectionConfig.url;
+    this.props.router.push(`/${base}/show/${this.props.folder.parentID}`);
   }
 
   render() {
+    if (!this.props.folder) {
+      return <div />;
+    }
+
     const dropzoneOptions = {
       url: this.props.createFileApiUrl,
       method: this.props.createFileApiMethod,
@@ -381,7 +377,7 @@ export class Gallery extends Component {
     };
     // TODO Use this.props.config once the store is consolidated with framework
     const securityID = Config.get('SecurityID');
-    const canEdit = this.props.canEdit;
+    const canEdit = this.props.folder.canEdit;
 
     return (
       <div className="gallery__outer">
@@ -426,7 +422,7 @@ export class Gallery extends Component {
               type="button"
               disabled={!canEdit}
             >
-              <span className="btn__text">{i18n._t('AssetGalleryField.DROPZONE_UPLOAD')}</span>
+              <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
             </button>
 
             <button
@@ -436,7 +432,7 @@ export class Gallery extends Component {
               onClick={this.handleCreateFolder}
               disabled={!canEdit}
             >
-              <span className="btn__text">{i18n._t('AssetGalleryField.ADD_FOLDER_BUTTON')}</span>
+              <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
             </button>
           </div>
 
@@ -526,41 +522,48 @@ Gallery.propTypes = {
   count: React.PropTypes.number,
   fileId: React.PropTypes.number,
   folderId: React.PropTypes.number.isRequired,
-  loadedfolderId: React.PropTypes.number,
-  parentfolderId: React.PropTypes.number,
+  folder: React.PropTypes.shape({
+    id: React.PropTypes.number,
+    parentID: React.PropTypes.number,
+    canView: React.PropTypes.bool,
+    canEdit: React.PropTypes.bool,
+  }),
   selectedFiles: React.PropTypes.array,
   highlightedFiles: React.PropTypes.array,
   bulkActions: React.PropTypes.bool,
   limit: React.PropTypes.number,
   page: React.PropTypes.number,
-  canEdit: React.PropTypes.bool,
   queuedFiles: React.PropTypes.shape({
     items: React.PropTypes.array.isRequired,
   }),
   onOpenFile: React.PropTypes.func.isRequired,
+  onOpenFolder: React.PropTypes.func.isRequired,
   createFileApiUrl: React.PropTypes.string,
   createFileApiMethod: React.PropTypes.string,
   createFolderApi: React.PropTypes.func,
   readFolderApi: React.PropTypes.func,
   deleteApi: React.PropTypes.func,
   actions: React.PropTypes.object,
+  sectionConfig: React.PropTypes.shape({
+    url: React.PropTypes.string,
+  }),
+  router: React.PropTypes.object,
 };
 
 function mapStateToProps(state) {
-  const { files, fileId, folderId } = state.assetAdmin.gallery;
+  const {
+    loading,
+    count,
+    selectedFiles,
+    highlightedFiles,
+    page,
+  } = state.assetAdmin.gallery;
   return {
-    files,
-    fileId,
-    loading: state.assetAdmin.gallery.loading,
-    count: state.assetAdmin.gallery.count,
-    folderId,
-    loadedfolderId: state.assetAdmin.gallery.loadedfolderId,
-    parentfolderId: state.assetAdmin.gallery.parentfolderId,
-    selectedFiles: state.assetAdmin.gallery.selectedFiles,
-    highlightedFiles: state.assetAdmin.gallery.highlightedFiles,
-    page: state.assetAdmin.gallery.page,
-    canEdit: state.assetAdmin.gallery.canEdit,
-    canDelete: state.assetAdmin.gallery.canDelete,
+    loading,
+    count,
+    selectedFiles,
+    highlightedFiles,
+    page,
     queuedFiles: state.assetAdmin.queuedFiles,
   };
 }
@@ -574,4 +577,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Gallery);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Gallery));
