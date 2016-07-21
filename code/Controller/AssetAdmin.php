@@ -567,39 +567,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return 'AssetAdmin LeftAndMain';
     }
 
-    /**
-     * Don't include class namespace in template names
-     * @todo Make code in framework more namespace-savvy so that we don't need this duplication
-     */
-    public function getTemplatesWithSuffix($suffix)
-    {
-        $className = get_class($this);
-        $baseClass = 'LeftandMain';
-
-        $templates = array();
-        $classes = array_reverse(\ClassInfo::ancestry($className));
-        foreach ($classes as $class) {
-            $template = (new \ReflectionClass($class))->getShortName() . $suffix;
-            if (\SSViewer::hasTemplate($template)) {
-                $templates[] = $template;
-            }
-
-            // If the class is "Page_Controller", look for Page.ss
-            if (stripos($class, '_controller') !== false) {
-                $template = str_ireplace('_controller', '', $class) . $suffix;
-                if (\SSViewer::hasTemplate($template)) {
-                    $templates[] = $template;
-                }
-            }
-
-            if ($baseClass && $class == $baseClass) {
-                break;
-            }
-        }
-
-        return $templates;
-    }
-
     public function providePermissions()
     {
         $title = _t("AssetAdmin.MENUTITLE", LeftAndMain::menu_title_for_class($this->class));
