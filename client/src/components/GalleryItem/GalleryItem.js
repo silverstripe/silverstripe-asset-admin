@@ -165,8 +165,10 @@ class GalleryItem extends SilverStripeComponent {
     }
     const dimensions = this.props.item.dimensions;
 
+    // Note: dimensions will be null if the back-end image is lost
     return (
-      dimensions.height < constants.THUMBNAIL_HEIGHT
+      dimensions
+      && dimensions.height < constants.THUMBNAIL_HEIGHT
       && dimensions.width < constants.THUMBNAIL_WIDTH
     );
   }
