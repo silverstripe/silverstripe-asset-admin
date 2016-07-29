@@ -336,7 +336,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function apiCreateFile(SS_HTTPRequest $request)
     {
-        $class = 'File';
         $data = $request->postVars();
         $upload = $this->getUpload();
 
@@ -371,8 +370,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // TODO Allow batch uploads
-
-        $file = File::create();
+        $fileClass = File::get_class_for_file_extension(File::get_file_extension($tmpFile['name']));
+        $file = Injector::inst()->create($fileClass);
         $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
         if(!$uploadResult) {
             $result = ['error' => 'unknown'];
