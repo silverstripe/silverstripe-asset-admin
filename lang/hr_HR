@@ -1,0 +1,3 @@
+hr_HR:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    MENUTITLE: Datoteke
