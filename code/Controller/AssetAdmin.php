@@ -2,12 +2,14 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\SecurityToken;
@@ -94,6 +96,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiDelete',
         'apiSearch',
         'FileEditForm',
+        'AddToCampaignForm',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -151,6 +154,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'form' => [
                 'FileEditForm' => [
                     'schemaUrl' => $this->Link('schema/FileEditForm')
+                ],
+                'AddToCampaignForm' => [
+                    'schemaUrl' => $this->Link('schema/AddToCampaignForm')
                 ],
             ],
         ]);
@@ -805,6 +811,53 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         });
 
         return $list;
+    }
+
+	/**
+	 * Action handler for adding pages to a campaign
+	 *
+	 * @param array $data
+	 * @param Form $form
+	 * @return DBHTMLText|SS_HTTPResponse
+	 */
+	public function addtocampaign($data, $form) {
+		$handler = AddToCampaignHandler::create($form, $data);
+        $handler->setShowTitle(false);
+		return $handler->handle();
+	}
+
+	/**
+	 * Url handler for add to campaign form
+	 *
+	 * @param SS_HTTPRequest $request
+	 * @return Form
+	 */
+	public function AddToCampaignForm($request) {
+		// Get ID either from posted back value, or url parameter
+		$id = $request->param('ID') ?: $request->postVar('ID');
+		return $this->getAddToCampaignForm($id);
+	}
+
+	/**
+	 * @param int $id
+	 * @return Form
+	 */
+	public function getAddToCampaignForm($id)
+    {
+        // Get record-specific fields
+        $record = null;
+
+        $record = File::get()->byID($id);
+        if (!$record) {
+            return $this->httpError(404);
+        }
+        if (!$record->canView()) {
+            return $this->httpError(403);
+        }
+
+        $handler = AddToCampaignHandler::create($this, $record);
+        $handler->setShowTitle(false);
+        return $handler->Form($record);
     }
 
     /**
