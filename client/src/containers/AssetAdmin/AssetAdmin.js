@@ -145,7 +145,7 @@ class AssetAdmin extends SilverStripeComponent {
    * @param  {Object} updates
    */
   handleFileSave(id, updates) {
-    return this.props.actions.gallery.updateFile(this.props.updateFileApi, id, updates);
+    return this.props.actions.gallery.updateFile(this.endpoints.updateFileApi, id, updates);
   }
 
   render() {
