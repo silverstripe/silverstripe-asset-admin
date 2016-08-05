@@ -1,7 +1,7 @@
 ---
 Name: assetadmin
 ---
-AssetAdmin:
+SilverStripe\CMS\Controllers\AssetAdmin:
   url_segment: 'old-assets'
 File:
   extensions:
