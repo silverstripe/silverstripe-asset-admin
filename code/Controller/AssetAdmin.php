@@ -2,7 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
-use AddToCampaignHandler;
+use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
@@ -35,6 +35,8 @@ use TextField;
 use HiddenField;
 use ReadonlyField;
 use LiteralField;
+use PopoverField;
+use AddToCampaignHandler_FormAction;
 use HTMLReadonlyField;
 use DateField_Disabled;
 
@@ -615,6 +617,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $actions = FieldList::create([
             FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
                 ->setIcon('save'),
+            PopoverField::create([
+                AddToCampaignHandler_FormAction::create(),
+            ])
+                ->setPlacement('top'),
         ]);
 
         $form = Form::create(
@@ -821,9 +827,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 	 * @return DBHTMLText|SS_HTTPResponse
 	 */
 	public function addtocampaign($data, $form) {
-		$handler = AddToCampaignHandler::create($form, $data);
-        $handler->setShowTitle(false);
-		return $handler->handle();
+        $id = $data['ID'];
+        $record = $this->getList()->byID($id);
+
+        $handler = AddToCampaignHandler::create($this, $record);
+        if (!is_null($handler->addToCampaign($record, $data['Campaign']))) {
+            $handler->setShowTitle(false);
+            return $this->getSchemaResponse($handler->Form($record));
+
+        }
 	}
 
 	/**
@@ -845,9 +857,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 	public function getAddToCampaignForm($id)
     {
         // Get record-specific fields
-        $record = null;
+        $record = $this->getList()->byID($id);
 
-        $record = File::get()->byID($id);
         if (!$record) {
             return $this->httpError(404);
         }

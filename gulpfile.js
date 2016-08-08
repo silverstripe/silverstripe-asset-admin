@@ -54,6 +54,8 @@ gulp.task('js', function bundleJavaScript() {
     .transform(babelify, babelifyOptions)
     .external('components/Breadcrumb/Breadcrumb')
     .external('components/FormAction/FormAction')
+    .external('components/PopoverField/PopoverField')
+    .external('components/AddToCampaignModal/AddToCampaignModal')
     .external('components/FormBuilder/FormBuilder')
     .external('components/TextField/TextField')
     .external('components/Toolbar/Toolbar')

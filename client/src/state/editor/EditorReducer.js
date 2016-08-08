@@ -2,7 +2,7 @@ import deepFreeze from 'deep-freeze-strict';
 import EDITOR from './EditorActionTypes';
 
 const initialState = {
-  formState: {},
+  openAddCampaignModal: false,
 };
 
 /**
@@ -14,9 +14,9 @@ const initialState = {
 export default function editorReducer(state = initialState, action) {
   switch (action.type) {
 
-    case EDITOR.UPDATE_FORM_STATE: {
+    case EDITOR.UPDATE_ADDTOCAMPAING_MODAL: {
       return deepFreeze(Object.assign({}, state, {
-        formState: Object.assign({}, state.formState, action.payload.updates),
+        openAddCampaignModal: action.payload.show,
       }));
     }
 

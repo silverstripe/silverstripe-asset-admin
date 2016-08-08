@@ -1,7 +1,12 @@
 import i18n from 'i18n';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
+import { bindActionCreators } from 'redux';
+import * as editorActions from 'state/editor/EditorActions';
 import FormBuilder from 'components/FormBuilder/FormBuilder';
 import CONSTANTS from 'constants/index';
+import AddToCampaignModal from 'components/AddToCampaignModal/AddToCampaignModal';
 
 class Editor extends Component {
   constructor(props) {
@@ -9,9 +14,9 @@ class Editor extends Component {
 
     this.handleCancelKeyDown = this.handleCancelKeyDown.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-
-    this.state = {};
+    this.handleSubmitFile = this.handleSubmitFile.bind(this);
+    this.handleAction = this.handleAction.bind(this);
+    this.closeModals = this.closeModals.bind(this);
   }
 
   getCancelButton() {
@@ -25,10 +30,12 @@ class Editor extends Component {
     />);
   }
 
-  handleClose(event) {
-    this.props.onClose();
-
-    event.preventDefault();
+  handleAction(event, name) {
+    // intercept the Add to Campaign submit and open the modal dialog instead
+    if (name === 'action_addtocampaign') {
+      this.props.actions.updateAddToCampaignModal(true);
+      event.preventDefault();
+    }
   }
 
   /**
@@ -41,14 +48,26 @@ class Editor extends Component {
     }
   }
 
-  handleSubmit(event, fieldValues, submitFn) {
+  handleSubmitFile(event, fieldValues, submitFn) {
     if (typeof this.props.handleSubmit === 'function') {
-      this.props.handleSubmit(event, fieldValues, submitFn);
-      return;
+      return this.props.handleSubmit(event, fieldValues, submitFn);
     }
 
     event.preventDefault();
-    submitFn();
+    return submitFn();
+  }
+
+  closeModals() {
+    this.props.actions.updateAddToCampaignModal(false);
+  }
+
+  handleClose(event) {
+    this.props.onClose();
+    this.closeModals();
+
+    if (event) {
+      event.preventDefault();
+    }
   }
 
   render() {
@@ -58,8 +77,19 @@ class Editor extends Component {
       { this.getCancelButton() }
 
       <div className="editor__details">
-        <FormBuilder schemaUrl={schemaUrl} handleSubmit={this.handleSubmit} />
+        <FormBuilder
+          schemaUrl={schemaUrl}
+          handleSubmit={this.handleSubmitFile}
+          handleAction={this.handleAction}
+        />
+        <AddToCampaignModal
+          fileId={this.props.fileId}
+          show={this.props.openAddCampaignModal}
+          handleHide={this.closeModals}
+          schemaUrl={this.props.addToCampaignSchemaUrl}
+        />
       </div>
+
     </div>);
   }
 
@@ -71,6 +101,21 @@ Editor.propTypes = {
   onClose: React.PropTypes.func.isRequired,
   handleSubmit: React.PropTypes.func,
   editFileSchemaUrl: React.PropTypes.string.isRequired,
+  addToCampaignSchemaUrl: React.PropTypes.string,
+  openAddCampaignModal: React.PropTypes.bool,
 };
 
-export default Editor;
+function mapStateToProps(state) {
+  return {
+    openAddCampaignModal: state.assetAdmin.editor.openAddCampaignModal,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(editorActions, dispatch),
+  };
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Editor));
+
