@@ -50,10 +50,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     private static $tree_class = 'Folder';
 
-    private static $edit_thumbnail_width = 380;
-
-    private static $edit_thumbnail_height = 380;
-
     private static $url_handlers = [
         // Legacy redirect for SS3-style detail view
         'EditForm/field/File/item/$FileID/$Action' => 'legacyRedirectForEditView',
@@ -624,14 +620,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         $file = $this->getList()->byID($id);
 
-        // Get thumbnail, CMSThumbnail() is smaller than what we'd like
-        $thumbnailWidth = $this->config()->edit_thumbnail_width;
-        $thumbnailHeight = $this->config()->edit_thumbnail_height;
-
-        // todo: use getCMSFields
+        // TODO use $file->getCMSFields()
         $fields = FieldList::create([
             HeaderField::create('TitleHeader', $file->Title, 1),
-            LiteralField::create("ImageFull", $file->ThumbnailIcon($thumbnailWidth, $thumbnailHeight)),
+            LiteralField::create("ImageFull", $file->PreviewThumbnail()),
             TextField::create("Title", _t('AssetTableField.TITLE','Title')),
             TextField::create("Name", _t('AssetTableField.FILENAME','Filename')),
             HiddenField::create('ID', $id),
