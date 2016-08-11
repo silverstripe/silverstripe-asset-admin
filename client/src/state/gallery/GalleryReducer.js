@@ -84,15 +84,18 @@ export default function galleryReducer(state = initialState, action) {
       return nextState;
     }
 
-    case GALLERY.UPDATE_FILE_SUCCESS: {
-      const fileIndex = state.files.map(file => file.id).indexOf(action.payload.id);
-      const updatedFile = Object.assign({}, state.files[fileIndex], action.payload.updates);
+    case GALLERY.LOAD_FILE_SUCCESS: {
+      const oldFile = state.files.find(file => file.id === action.payload.id);
+      if (oldFile) {
+        const updatedFile = Object.assign({}, oldFile, action.payload.file);
 
-      return deepFreeze(Object.assign({}, state, {
-        files: state.files.map(
-          file => (file.id === updatedFile.id ? updatedFile : file)
-        ),
-      }));
+        return deepFreeze(Object.assign({}, state, {
+          files: state.files.map(
+            file => (file.id === updatedFile.id ? updatedFile : file)
+          ),
+        }));
+      }
+      return state;
     }
 
     case GALLERY.SELECT_FILES: {

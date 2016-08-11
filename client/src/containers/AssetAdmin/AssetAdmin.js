@@ -20,8 +20,8 @@ class AssetAdmin extends SilverStripeComponent {
     super();
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
+    this.handleSaveFile = this.handleSaveFile.bind(this);
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
-    this.handleFileSave = this.handleFileSave.bind(this);
     this.createEndpoint = this.createEndpoint.bind(this);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.compare = this.compare.bind(this);
@@ -33,7 +33,6 @@ class AssetAdmin extends SilverStripeComponent {
       createFolderApi: this.createEndpoint(sectionConfig.createFolderEndpoint),
       readFolderApi: this.createEndpoint(sectionConfig.readFolderEndpoint, false),
       updateFolderApi: this.createEndpoint(sectionConfig.updateFolderEndpoint),
-      updateFileApi: this.createEndpoint(sectionConfig.updateFileEndpoint),
       deleteApi: this.createEndpoint(sectionConfig.deleteEndpoint),
     };
   }
@@ -130,6 +129,16 @@ class AssetAdmin extends SilverStripeComponent {
     this.props.router.push(`/${base}/show/${this.props.folderId}/edit/${fileId}`);
   }
 
+  handleSaveFile(event, fieldValues, submitFn) {
+    event.preventDefault();
+    submitFn()
+      .then((response) => {
+        this.props.actions.gallery.loadFile(this.props.fileId, response.record);
+
+        return response;
+      });
+  }
+
   handleCloseFile() {
     const base = this.props.sectionConfig.url;
     this.props.router.push(`/${base}/show/${this.props.folderId}`);
@@ -140,24 +149,18 @@ class AssetAdmin extends SilverStripeComponent {
     this.props.router.push(`/${base}/show/${folderId}`);
   }
 
-  /**
-   * @param  {Number} id
-   * @param  {Object} updates
-   */
-  handleFileSave(id, updates) {
-    return this.props.actions.gallery.updateFile(this.endpoints.updateFileApi, id, updates);
-  }
-
   render() {
     const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
     const createFileApiUrl = sectionConfig.createFileEndpoint.url;
     const createFileApiMethod = sectionConfig.createFileEndpoint.method;
+    const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
 
-    let editor = (this.props.file &&
+    const editor = (file &&
       <Editor
-        file={this.props.file}
+        fileId={this.props.fileId}
         onClose={this.handleCloseFile}
-        onFileSave={this.handleFileSave}
+        editFileSchemaUrl={sectionConfig.form.FileEditForm.schemaUrl}
+        handleSubmit={this.handleSaveFile}
       />
     );
 
@@ -178,13 +181,13 @@ class AssetAdmin extends SilverStripeComponent {
               folder={this.props.folder}
               name={this.props.name}
               limit={this.props.limit}
+              page={this.props.page}
               bulkActions={this.props.bulkActions}
               createFileApiUrl={createFileApiUrl}
               createFileApiMethod={createFileApiMethod}
               createFolderApi={this.endpoints.createFolderApi}
               readFolderApi={this.endpoints.readFolderApi}
               updateFolderApi={this.endpoints.updateFolderApi}
-              updateFileApi={this.endpoints.updateFileApi}
               deleteApi={this.endpoints.deleteApi}
               onOpenFile={this.handleOpenFile}
               onOpenFolder={this.handleOpenFolder}
@@ -224,18 +227,13 @@ function mapStateToProps(state, ownProps) {
   const sectionConfig = state.config.sections[sectionConfigKey];
   const folder = state.assetAdmin.gallery.folder;
   const files = state.assetAdmin.gallery.files;
-  let file = null;
-  if (ownProps.params.fileId) {
-    // Calculated on the fly to avoid getting out of sync with lazy loaded fileId
-    file = files.find((next) => next.id === parseInt(ownProps.params.fileId, 10));
-  }
+
   return {
     breadcrumbs: state.breadcrumbs,
     sectionConfig,
     fileId: parseInt(ownProps.params.fileId, 10),
     folderId: parseInt(ownProps.params.folderId, 10),
     files,
-    file,
     folder,
     limit: sectionConfig.limit,
   };

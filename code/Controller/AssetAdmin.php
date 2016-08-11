@@ -21,13 +21,17 @@ use Requirements;
 use CMSBatchActionHandler;
 use Injector;
 use Folder;
-use SSViewer;
 use HeaderField;
 use FieldGroup;
 use SS_HTTPRequest;
 use SS_HTTPResponse;
 use Upload;
 use Config;
+use FormAction;
+use TextField;
+use HiddenField;
+use ReadonlyField;
+use LiteralField;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -45,6 +49,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     private static $menu_title = 'Files';
 
     private static $tree_class = 'Folder';
+
+    private static $edit_thumbnail_width = 380;
+
+    private static $edit_thumbnail_height = 380;
 
     private static $url_handlers = [
         // Legacy redirect for SS3-style detail view
@@ -88,6 +96,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiUpdateFile',
         'apiDelete',
         'apiSearch',
+        'FileEditForm',
     );
 
     /**
@@ -104,7 +113,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
     }
 
-    public function getClientConfig() {
+    public function getClientConfig()
+    {
         $baseLink = $this->Link();
         return array_merge( parent::getClientConfig(), [
             'reactRouter' => true,
@@ -144,8 +154,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'payloadFormat' => 'urlencoded',
             ],
             'limit' => $this->config()->page_length,
+            'form' => [
+                'FileEditForm' => [
+                    'schemaUrl' => $this->Link('schema/FileEditForm')
+                ],
+            ],
         ]);
-	}
+    }
 
     /**
      * Fetches a collection of files by ParentID.
@@ -586,7 +601,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @param Folder $folder
      * @return Form
      */
-    protected function getFolderEditForm(Folder $folder)
+    public function getFolderEditForm(Folder $folder)
     {
         $form = Form::create(
             $this,
@@ -601,19 +616,105 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * See {@link getFolderEditForm()} for details.
      *
-     * @param File $file
+     * @param int $id
      * @return Form
      */
-    protected function getFileEditForm(File $file)
+    public function getFileEditForm($id)
     {
+        /** @var File $file */
+        $file = $this->getList()->byID($id);
+
+        // Get thumbnail, CMSThumbnail() is smaller than what we'd like
+        $thumbnailWidth = $this->config()->edit_thumbnail_width;
+        $thumbnailHeight = $this->config()->edit_thumbnail_height;
+
+        // todo: use getCMSFields
+        $fields = FieldList::create([
+            HeaderField::create('TitleHeader', $file->Title, 1),
+            LiteralField::create("ImageFull", $file->ThumbnailIcon($thumbnailWidth, $thumbnailHeight)),
+            TextField::create("Title", _t('AssetTableField.TITLE','Title')),
+            TextField::create("Name", _t('AssetTableField.FILENAME','Filename')),
+            HiddenField::create('ID', $id),
+        ]);
+        if ($file->getIsImage()) {
+            $size = sprintf('%spx, %s', $file->getDimensions(), $file->getSize());
+            $fields->push(ReadonlyField::create("DisplaySize", "Size", $size));
+            $fields->push(LiteralField::create('Link', "<a href=\"{$file->Link()}\">{$file->Link()}</a>"));
+        }
+
+        $actions = FieldList::create([
+            FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
+                ->setIcon('save'),
+        ]);
+
         $form = Form::create(
             $this,
             'FileEditForm',
-            $file->getCMSFields(),
-            FieldList::create()
+            $fields,
+            $actions
         );
 
+        // Load into form
+        if($id && $file) {
+            $form->loadDataFrom($file);
+        }
+
+        // Configure form to respond to validation errors with form schema
+        // if requested via react.
+        $form->setValidationResponseCallback(function() use ($form) {
+            return $this->getSchemaResponse($form);
+        });
+
         return $form;
+    }
+
+    /**
+     * Get file edit form
+     *
+     * @return Form
+     */
+    public function FileEditForm()
+    {
+        // Get ID either from posted back value, or url parameter
+        $request = $this->getRequest();
+        $id = $request->param('ID') ?: $request->postVar('ID');
+        return $this->getFileEditForm($id);
+    }
+
+    /**
+     * @param array $data
+     * @param Form $form
+     * @return SS_HTTPResponse
+     */
+    public function save($data, $form)
+    {
+        if (!isset($data['ID']) || !is_numeric($data['ID'])) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $id = (int) $data['ID'];
+        $record = $this->getList()->filter('ID', $id)->first();
+
+        if (!$record) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        if (!$record->canEdit()) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $form->saveInto($record);
+        $record->write();
+
+        // Return the record data in the same response as the schema to save a postback
+        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
+        $schemaData['record'] = $this->getObjectFromData($record);
+        $response = new SS_HTTPResponse(\Convert::raw2json($schemaData));
+        $response->addHeader('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
