@@ -630,7 +630,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         ]);
         if ($file->getIsImage()) {
             $size = sprintf('%spx, %s', $file->getDimensions(), $file->getSize());
-            $fields->push(ReadonlyField::create("DisplaySize", "Size", $size));
+            $fields->push(ReadonlyField::create("DisplaySize", _t('AssetAdmin.SIZE', "Size"), $size));
             $fields->push(LiteralField::create('Link', "<a href=\"{$file->Link()}\">{$file->Link()}</a>"));
         }
 
