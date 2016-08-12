@@ -6,6 +6,6 @@ SilverStripe\CMS\Controllers\AssetAdmin:
 File:
   extensions:
     - 'SilverStripe\AssetAdmin\Controller\AssetAdminFile'
-LeftAndMain:
+SilverStripe\Admin\LeftAndMain:
   extra_requirements_javascript:
     - asset-admin/client/dist/js/bundle.js

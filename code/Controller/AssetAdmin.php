@@ -91,6 +91,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiSearch',
     );
 
+    private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
+
     /**
      * Set up the controller
      */
