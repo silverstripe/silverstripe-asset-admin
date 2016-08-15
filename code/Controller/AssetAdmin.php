@@ -32,6 +32,8 @@ use TextField;
 use HiddenField;
 use ReadonlyField;
 use LiteralField;
+use HTMLReadonlyField;
+use DateField_Disabled;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -570,12 +572,28 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             LiteralField::create("ImageFull", $file->PreviewThumbnail()),
             TextField::create("Title", _t('AssetTableField.TITLE','Title')),
             TextField::create("Name", _t('AssetTableField.FILENAME','Filename')),
+            ReadonlyField::create(
+                'Location',
+                _t('AssetTableField.FOLDER', 'Folder'),
+                dirname($file->getSourceURL())
+            ),
             HiddenField::create('ID', $id),
         ]);
         if ($file->getIsImage()) {
-            $size = sprintf('%spx, %s', $file->getDimensions(), $file->getSize());
-            $fields->push(ReadonlyField::create("DisplaySize", _t('AssetAdmin.SIZE', "Size"), $size));
-            $fields->push(LiteralField::create('Link', "<a href=\"{$file->Link()}\">{$file->Link()}</a>"));
+            $fields->push(ReadonlyField::create(
+                "DisplaySize",
+                "Size",
+                sprintf('%spx, %s', $file->getDimensions(), $file->getSize()))
+            );
+            $fields->push(HTMLReadonlyField::create(
+                'ClickableURL',
+                _t('AssetTableField.URL','URL'),
+                sprintf('<a href="%s" target="_blank">%s</a>', $file->Link(), $file->Link())
+            ));
+            $fields->push(DateField_Disabled::create(
+                "LastEdited",
+                _t('AssetTableField.LASTEDIT','Last changed')
+            ));
         }
 
         $actions = FieldList::create([
