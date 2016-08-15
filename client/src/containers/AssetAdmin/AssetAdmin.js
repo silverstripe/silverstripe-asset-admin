@@ -140,8 +140,7 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   handleCloseFile() {
-    const base = this.props.sectionConfig.url;
-    this.props.router.push(`/${base}/show/${this.props.folderId}`);
+    this.handleOpenFolder(this.props.folderId);
   }
 
   handleOpenFolder(folderId) {

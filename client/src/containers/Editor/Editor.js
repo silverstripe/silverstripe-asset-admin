@@ -6,6 +6,7 @@ class Editor extends Component {
   constructor(props) {
     super(props);
 
+    this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {};
