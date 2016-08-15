@@ -372,28 +372,26 @@ class AssetAdminTest extends FunctionalTest
         $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'disallowCanEdit');
 
         $response = Director::test(
-            'admin/assets/api/updateFile',
-            null,
-            $this->session,
-            'PUT',
-            http_build_query([
-                'id' => $allowedFile->ID,
-                'title' => 'new',
+            'admin/assets/FileEditForm',
+            [
+                'action_save' => 1,
+                'ID' => $allowedFile->ID,
+                'Title' => 'new',
                 'SecurityID' => SecurityToken::inst()->getValue(),
-            ])
+            ],
+            $this->session
         );
         $this->assertFalse($response->isError());
 
         $response = Director::test(
-            'admin/assets/api/updateFile',
-            null,
-            $this->session,
-            'PUT',
-            http_build_query([
-                'id' => $disallowedFile->ID,
-                'title' => 'new',
+            'admin/assets/FileEditForm',
+            [
+                'action_save' => 1,
+                'ID' => $disallowedFile->ID,
+                'Title' => 'new',
                 'SecurityID' => SecurityToken::inst()->getValue(),
-            ])
+            ],
+            $this->session
         );
         $this->assertTrue($response->isError());
     }

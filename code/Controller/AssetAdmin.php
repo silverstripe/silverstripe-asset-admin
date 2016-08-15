@@ -60,7 +60,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'POST api/createFile' => 'apiCreateFile',
         'GET api/readFolder' => 'apiReadFolder',
         'PUT api/updateFolder' => 'apiUpdateFolder',
-        'PUT api/updateFile' => 'apiUpdateFile',
         'DELETE api/delete' => 'apiDelete',
         'GET api/search' => 'apiSearch',
     ];
@@ -89,7 +88,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiCreateFile',
         'apiReadFolder',
         'apiUpdateFolder',
-        'apiUpdateFile',
         'apiDelete',
         'apiSearch',
         'FileEditForm',
@@ -133,11 +131,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'url' => Controller::join_links($baseLink, 'api/search'),
                 'method' => 'get',
                 'responseFormat' => 'json',
-            ],
-            'updateFileEndpoint' => [
-                'url' => Controller::join_links($baseLink, 'api/updateFile'),
-                'method' => 'put',
-                'payloadFormat' => 'urlencoded',
             ],
             'updateFolderEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/updateFolder'),
@@ -245,55 +238,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         ]));
 
         return $response;
-    }
-
-    /**
-     * @param SS_HTTPRequest $request
-     *
-     * @return SS_HTTPResponse
-     */
-    public function apiUpdateFile(SS_HTTPRequest $request)
-    {
-        parse_str($request->getBody(), $data);
-
-        // CSRF check
-        $token = SecurityToken::inst();
-        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
-            return new SS_HTTPResponse(null, 400);
-        }
-
-        if (!isset($data['id']) || !is_numeric($data['id'])) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        $id = $data['id'];
-        $record = $this->getList()->filter('ID', (int) $id)->first();
-
-        if (!$record) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        if (!$record->canEdit()) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        // TODO Use same property names and capitalisation as DataObject
-        if (!empty($data['title'])) {
-            $record->Title = $data['title'];
-        }
-
-        // TODO Use same property names and capitalisation as DataObject
-        if (!empty($data['basename'])) {
-            $record->Name = $data['basename'];
-        }
-
-        $record->write();
-
-        return (new SS_HTTPResponse(json_encode(['status' => 'ok']), 200))
-            ->addHeader('Content-Type', 'application/json');
     }
 
     /**
