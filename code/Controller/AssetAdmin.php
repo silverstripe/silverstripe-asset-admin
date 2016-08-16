@@ -174,6 +174,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var Folder $folder */
         $folder = $folderID ? Folder::get()->byID($folderID) : singleton('Folder');
 
+        if (!$folder) {
+            $this->httpError(400);
+        }
+
         // TODO Limit results to avoid running out of memory (implement client-side pagination)
         $files = $this->getList()->filter('ParentID', $folderID);
 
