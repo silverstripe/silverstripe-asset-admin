@@ -148,9 +148,9 @@ describe('galleryReducer', () => {
     });
   });
 
-  describe('UPDATE_FILE', () => {
-    const type = GALLERY.UPDATE_FILE_SUCCESS;
-    const payload = { id: 1, updates: { title: 'updated' } };
+  describe('LOAD_FILE', () => {
+    const type = GALLERY.LOAD_FILE_SUCCESS;
+    const payload = { id: 1, file: { title: 'updated' } };
 
     it('should update an existing file value', () => {
       const initialState = {
@@ -163,7 +163,6 @@ describe('galleryReducer', () => {
       expect(nextState.files[0].title).toBe('updated');
     });
   });
-
 
   describe('SELECT_FILES', () => {
     const type = GALLERY.SELECT_FILES;

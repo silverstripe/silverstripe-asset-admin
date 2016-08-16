@@ -21,13 +21,19 @@ use Requirements;
 use CMSBatchActionHandler;
 use Injector;
 use Folder;
-use SSViewer;
 use HeaderField;
 use FieldGroup;
 use SS_HTTPRequest;
 use SS_HTTPResponse;
 use Upload;
 use Config;
+use FormAction;
+use TextField;
+use HiddenField;
+use ReadonlyField;
+use LiteralField;
+use HTMLReadonlyField;
+use DateField_Disabled;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -56,7 +62,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'POST api/createFile' => 'apiCreateFile',
         'GET api/readFolder' => 'apiReadFolder',
         'PUT api/updateFolder' => 'apiUpdateFolder',
-        'PUT api/updateFile' => 'apiUpdateFile',
         'DELETE api/delete' => 'apiDelete',
         'GET api/search' => 'apiSearch',
     ];
@@ -85,9 +90,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiCreateFile',
         'apiReadFolder',
         'apiUpdateFolder',
-        'apiUpdateFile',
         'apiDelete',
         'apiSearch',
+        'FileEditForm',
     );
 
     /**
@@ -104,7 +109,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
     }
 
-    public function getClientConfig() {
+    public function getClientConfig()
+    {
         $baseLink = $this->Link();
         return array_merge( parent::getClientConfig(), [
             'reactRouter' => true,
@@ -128,11 +134,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'method' => 'get',
                 'responseFormat' => 'json',
             ],
-            'updateFileEndpoint' => [
-                'url' => Controller::join_links($baseLink, 'api/updateFile'),
-                'method' => 'put',
-                'payloadFormat' => 'urlencoded',
-            ],
             'updateFolderEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/updateFolder'),
                 'method' => 'put',
@@ -144,8 +145,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'payloadFormat' => 'urlencoded',
             ],
             'limit' => $this->config()->page_length,
+            'form' => [
+                'FileEditForm' => [
+                    'schemaUrl' => $this->Link('schema/FileEditForm')
+                ],
+            ],
         ]);
-	}
+    }
 
     /**
      * Fetches a collection of files by ParentID.
@@ -167,6 +173,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $folderID = (int)$params['id'];
         /** @var Folder $folder */
         $folder = $folderID ? Folder::get()->byID($folderID) : singleton('Folder');
+
+        if (!$folder) {
+            $this->httpError(400);
+        }
 
         // TODO Limit results to avoid running out of memory (implement client-side pagination)
         $files = $this->getList()->filter('ParentID', $folderID);
@@ -234,55 +244,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         ]));
 
         return $response;
-    }
-
-    /**
-     * @param SS_HTTPRequest $request
-     *
-     * @return SS_HTTPResponse
-     */
-    public function apiUpdateFile(SS_HTTPRequest $request)
-    {
-        parse_str($request->getBody(), $data);
-
-        // CSRF check
-        $token = SecurityToken::inst();
-        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
-            return new SS_HTTPResponse(null, 400);
-        }
-
-        if (!isset($data['id']) || !is_numeric($data['id'])) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        $id = $data['id'];
-        $record = $this->getList()->filter('ID', (int) $id)->first();
-
-        if (!$record) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        if (!$record->canEdit()) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        // TODO Use same property names and capitalisation as DataObject
-        if (!empty($data['title'])) {
-            $record->Title = $data['title'];
-        }
-
-        // TODO Use same property names and capitalisation as DataObject
-        if (!empty($data['basename'])) {
-            $record->Name = $data['basename'];
-        }
-
-        $record->write();
-
-        return (new SS_HTTPResponse(json_encode(['status' => 'ok']), 200))
-            ->addHeader('Content-Type', 'application/json');
     }
 
     /**
@@ -586,7 +547,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @param Folder $folder
      * @return Form
      */
-    protected function getFolderEditForm(Folder $folder)
+    public function getFolderEditForm(Folder $folder)
     {
         $form = Form::create(
             $this,
@@ -601,19 +562,117 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * See {@link getFolderEditForm()} for details.
      *
-     * @param File $file
+     * @param int $id
      * @return Form
      */
-    protected function getFileEditForm(File $file)
+    public function getFileEditForm($id)
     {
+        /** @var File $file */
+        $file = $this->getList()->byID($id);
+
+        // TODO use $file->getCMSFields()
+        $fields = FieldList::create([
+            HeaderField::create('TitleHeader', $file->Title, 1),
+            LiteralField::create("ImageFull", $file->PreviewThumbnail()),
+            TextField::create("Title", _t('AssetTableField.TITLE','Title')),
+            TextField::create("Name", _t('AssetTableField.FILENAME','Filename')),
+            ReadonlyField::create(
+                'Location',
+                _t('AssetTableField.FOLDER', 'Folder'),
+                dirname($file->getSourceURL())
+            ),
+            HiddenField::create('ID', $id),
+        ]);
+        if ($file->getIsImage()) {
+            $fields->push(ReadonlyField::create(
+                "DisplaySize",
+                "Size",
+                sprintf('%spx, %s', $file->getDimensions(), $file->getSize()))
+            );
+            $fields->push(HTMLReadonlyField::create(
+                'ClickableURL',
+                _t('AssetTableField.URL','URL'),
+                sprintf('<a href="%s" target="_blank">%s</a>', $file->Link(), $file->Link())
+            ));
+            $fields->push(DateField_Disabled::create(
+                "LastEdited",
+                _t('AssetTableField.LASTEDIT','Last changed')
+            ));
+        }
+
+        $actions = FieldList::create([
+            FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
+                ->setIcon('save'),
+        ]);
+
         $form = Form::create(
             $this,
             'FileEditForm',
-            $file->getCMSFields(),
-            FieldList::create()
+            $fields,
+            $actions
         );
 
+        // Load into form
+        if($id && $file) {
+            $form->loadDataFrom($file);
+        }
+
+        // Configure form to respond to validation errors with form schema
+        // if requested via react.
+        $form->setValidationResponseCallback(function() use ($form) {
+            return $this->getSchemaResponse($form);
+        });
+
         return $form;
+    }
+
+    /**
+     * Get file edit form
+     *
+     * @return Form
+     */
+    public function FileEditForm()
+    {
+        // Get ID either from posted back value, or url parameter
+        $request = $this->getRequest();
+        $id = $request->param('ID') ?: $request->postVar('ID');
+        return $this->getFileEditForm($id);
+    }
+
+    /**
+     * @param array $data
+     * @param Form $form
+     * @return SS_HTTPResponse
+     */
+    public function save($data, $form)
+    {
+        if (!isset($data['ID']) || !is_numeric($data['ID'])) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $id = (int) $data['ID'];
+        $record = $this->getList()->filter('ID', $id)->first();
+
+        if (!$record) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        if (!$record->canEdit()) {
+            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $form->saveInto($record);
+        $record->write();
+
+        // Return the record data in the same response as the schema to save a postback
+        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
+        $schemaData['record'] = $this->getObjectFromData($record);
+        $response = new SS_HTTPResponse(\Convert::raw2json($schemaData));
+        $response->addHeader('Content-Type', 'application/json');
+        return $response;
     }
 
     /**
