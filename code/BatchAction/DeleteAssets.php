@@ -2,7 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\BatchAction;
 
-use CMSBatchAction;
+use SilverStripe\Admin\CMSBatchAction;
 use Convert;
 use SilverStripe\ORM\SS_List;
 

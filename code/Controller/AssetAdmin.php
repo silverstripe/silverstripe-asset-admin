@@ -2,14 +2,16 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use SilverStripe\Admin\CMSBatchActionHandler;
+use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\SS_List;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\SecurityToken;
 use SearchContext;
-use LeftAndMain;
 use DateField;
 use DropdownField;
 use Controller;
@@ -18,7 +20,6 @@ use Form;
 use CheckboxField;
 use File;
 use Requirements;
-use CMSBatchActionHandler;
 use Injector;
 use Folder;
 use HeaderField;
@@ -94,6 +95,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiSearch',
         'FileEditForm',
     );
+
+    private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
 
     /**
      * Set up the controller
@@ -182,6 +185,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $files = $this->getList()->filter('ParentID', $folderID);
 
         if ($files) {
+            /** @var File $file */
             foreach ($files as $file) {
                 if (!$file->canView()) {
                     continue;
@@ -274,13 +278,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ->addHeader('Content-Type', 'application/json');
         }
 
-        if (!min(array_map(function ($file) {
+        if (!min(array_map(function (File $file) {
             return $file->canDelete();
         }, $files))) {
             return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
                 ->addHeader('Content-Type', 'application/json');
         }
 
+        /** @var File $file */
         foreach ($files as $file) {
             $file->delete();
         }
@@ -396,6 +401,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Ensure name is unique
         $nameGenerator = $this->getNameGenerator($baseFilename);
+        $filename = null;
         foreach ($nameGenerator as $filename) {
             if (! File::find($filename)) {
                 break;
@@ -404,7 +410,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $data['Name'] = basename($filename);
 
         // Create record
-        $record = $class::create();
+        /** @var Folder $record */
+        $record = Injector::inst()->create($class);
         $record->ParentID = $data['ParentID'];
         $record->Name = $record->Title = basename($data['Name']);
         $record->write();
@@ -421,7 +428,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Redirects 3.x style detail links to new 4.x style routing.
      *
-     * @param $request
+     * @param SS_HTTPRequest $request
      */
     public function legacyRedirectForEditView($request)
     {
@@ -458,7 +465,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getSearchContext()
     {
-        $context = singleton('File')->getDefaultSearchContext();
+        $context = File::singleton()->getDefaultSearchContext();
 
         // Customize fields
         $dateHeader = HeaderField::create('Date', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
@@ -512,6 +519,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     /**
      * @todo Implement on client
+     *
+     * @param bool $unlinked
+     * @return ArrayList
      */
     public function breadcrumbs($unlinked = false)
     {
@@ -529,11 +539,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     public function providePermissions()
     {
-        $title = _t("AssetAdmin.MENUTITLE", LeftAndMain::menu_title_for_class($this->class));
-
         return array(
             "CMS_ACCESS_AssetAdmin" => array(
-                'name' => _t('CMSMain.ACCESS', "Access to '{title}' section", array('title' => $title)),
+                'name' => _t('CMSMain.ACCESS', "Access to '{title}' section", array(
+                    'title' => static::menu_title()
+                )),
                 'category' => _t('Permission.CMS_ACCESS_CATEGORY', 'CMS Access')
             )
         );
@@ -738,7 +748,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * are set through {@link SearchForm()}.
      *
      * @param array $params Unsanitised request parameters
-     * @return SS_List
+     * @return DataList
      */
     protected function getList($params = array())
     {
@@ -794,7 +804,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Access checks
-        $list = $list->filterByCallback(function($file) {return $file->canView();});
+        $list = $list->filterByCallback(function(File $file) {
+            return $file->canView();
+        });
 
         return $list;
     }
