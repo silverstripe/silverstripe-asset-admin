@@ -819,14 +819,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $list;
     }
 
-	/**
-	 * Action handler for adding pages to a campaign
-	 *
-	 * @param array $data
-	 * @param Form $form
-	 * @return DBHTMLText|SS_HTTPResponse
-	 */
-	public function addtocampaign($data, $form) {
+    /**
+     * Action handler for adding pages to a campaign
+     *
+     * @param array $data
+     * @param Form $form
+     * @return DBHTMLText|SS_HTTPResponse
+     */
+    public function addtocampaign($data, $form)
+    {
         $id = $data['ID'];
         $record = $this->getList()->byID($id);
 
@@ -836,25 +837,26 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return $this->getSchemaResponse($handler->Form($record));
 
         }
-	}
+    }
 
-	/**
-	 * Url handler for add to campaign form
-	 *
-	 * @param SS_HTTPRequest $request
-	 * @return Form
-	 */
-	public function AddToCampaignForm($request) {
-		// Get ID either from posted back value, or url parameter
-		$id = $request->param('ID') ?: $request->postVar('ID');
-		return $this->getAddToCampaignForm($id);
-	}
+    /**
+     * Url handler for add to campaign form
+     *
+     * @param SS_HTTPRequest $request
+     * @return Form
+     */
+    public function AddToCampaignForm($request)
+    {
+        // Get ID either from posted back value, or url parameter
+        $id = $request->param('ID') ?: $request->postVar('ID');
+        return $this->getAddToCampaignForm($id);
+    }
 
-	/**
-	 * @param int $id
-	 * @return Form
-	 */
-	public function getAddToCampaignForm($id)
+    /**
+     * @param int $id
+     * @return Form
+     */
+    public function getAddToCampaignForm($id)
     {
         // Get record-specific fields
         $record = $this->getList()->byID($id);

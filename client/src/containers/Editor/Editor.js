@@ -71,14 +71,16 @@ class Editor extends Component {
   }
 
   render() {
-    const schemaUrl = `${this.props.editFileSchemaUrl}/${this.props.fileId}`;
+    const formSchemaUrl = `${this.props.editFileSchemaUrl}/${this.props.fileId}`;
+    const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
+
 
     return (<div className="editor form--no-dividers container-fluid">
       { this.getCancelButton() }
 
       <div className="editor__details">
         <FormBuilder
-          schemaUrl={schemaUrl}
+          schemaUrl={formSchemaUrl}
           handleSubmit={this.handleSubmitFile}
           handleAction={this.handleAction}
         />
@@ -86,7 +88,7 @@ class Editor extends Component {
           fileId={this.props.fileId}
           show={this.props.openAddCampaignModal}
           handleHide={this.closeModals}
-          schemaUrl={this.props.addToCampaignSchemaUrl}
+          schemaUrl={modalSchemaUrl}
         />
       </div>
 
