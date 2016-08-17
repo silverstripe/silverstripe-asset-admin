@@ -36,7 +36,6 @@ use HiddenField;
 use ReadonlyField;
 use LiteralField;
 use PopoverField;
-use AddToCampaignHandler_FormAction;
 use HTMLReadonlyField;
 use DateField_Disabled;
 
@@ -618,7 +617,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
                 ->setIcon('save'),
             PopoverField::create([
-                AddToCampaignHandler_FormAction::create(),
+                FormAction::create(
+                    'addtocampaign',
+                    _t('CAMPAIGNS.ADDTOCAMPAIGN',
+                    'Add to campaign')
+                ),
             ])
                 ->setPlacement('top'),
         ]);
