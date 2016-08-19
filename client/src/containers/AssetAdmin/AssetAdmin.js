@@ -127,6 +127,7 @@ class AssetAdmin extends SilverStripeComponent {
   handleOpenFile(fileId) {
     const base = this.props.sectionConfig.url;
     this.props.router.push(`/${base}/show/${this.props.folderId}/edit/${fileId}`);
+    this.props.actions.gallery.setFile(fileId);
   }
 
   handleSaveFile(event, fieldValues, submitFn) {
