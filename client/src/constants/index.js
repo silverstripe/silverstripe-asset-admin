@@ -7,9 +7,11 @@ export default {
   BULK_ACTIONS: [
     {
       value: 'delete',
-      label: i18n._t('AssetAdmin.BULK_ACTIONS_DELETE'),
+      label: i18n._t('AssetAdmin.BULK_ACTIONS_DELETE', 'Delete'),
       destructive: true,
     },
   ],
   BULK_ACTIONS_PLACEHOLDER: i18n._t('AssetAdmin.BULK_ACTIONS_PLACEHOLDER'),
+  SPACE_KEY_CODE: 32,
+  RETURN_KEY_CODE: 13,
 };
