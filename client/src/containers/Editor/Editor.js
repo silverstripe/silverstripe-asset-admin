@@ -1,11 +1,13 @@
 import i18n from 'i18n';
 import React, { Component } from 'react';
 import FormBuilder from 'components/FormBuilder/FormBuilder';
+import CONSTANTS from 'constants/index';
 
 class Editor extends Component {
   constructor(props) {
     super(props);
 
+    this.handleCancelKeyDown = this.handleCancelKeyDown.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -17,7 +19,7 @@ class Editor extends Component {
       tabIndex="0"
       className="btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl"
       onClick={this.handleClose}
-      onKeyDown={this.handleClose}
+      onKeyDown={this.handleCancelKeyDown}
       type="button"
       aria-label={i18n._t('AssetAdmin.CANCEL')}
     />);
@@ -27,6 +29,16 @@ class Editor extends Component {
     this.props.onClose();
 
     event.preventDefault();
+  }
+
+  /**
+   * Trigger handleClose if either the return key or space key is pressed
+   * @param {object} event
+   */
+  handleCancelKeyDown(event) {
+    if (event.keyCode === CONSTANTS.SPACE_KEY_CODE || event.keyCode === CONSTANTS.RETURN_KEY_CODE) {
+      this.handleClose(event);
+    }
   }
 
   handleSubmit(event, fieldValues, submitFn) {

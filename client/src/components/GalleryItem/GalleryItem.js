@@ -180,13 +180,13 @@ class GalleryItem extends SilverStripeComponent {
     event.stopPropagation();
 
     // If space is pressed, select file
-    if (this.props.spaceKey === event.keyCode) {
+    if (constants.SPACE_KEY_CODE === event.keyCode) {
       event.preventDefault(); // Stop page scrolling if spaceKey is pressed
       this.handleToggleSelect(event);
     }
 
     // If return is pressed, navigate folder
-    if (this.props.returnKey === event.keyCode) {
+    if (constants.RETURN_KEY_CODE === event.keyCode) {
       this.handleActivate(event);
     }
   }
@@ -308,18 +308,11 @@ GalleryItem.propTypes = {
   highlighted: React.PropTypes.bool,
   // Styles according to the checkbox selection state
   selected: React.PropTypes.bool.isRequired,
-  spaceKey: React.PropTypes.number,
-  returnKey: React.PropTypes.number,
   handleActivate: React.PropTypes.func.isRequired,
   handleToggleSelect: React.PropTypes.func.isRequired,
   handleDelete: React.PropTypes.func.isRequired,
   messages: React.PropTypes.array,
   uploading: React.PropTypes.bool,
-};
-
-GalleryItem.defaultProps = {
-  returnKey: 13,
-  spaceKey: 32,
 };
 
 export default GalleryItem;
