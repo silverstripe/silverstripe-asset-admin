@@ -1,47 +1,6 @@
 import GALLERY from './GalleryActionTypes';
 
 /**
- * Load the folder view for a given folder
- * Used by AssetAdmin.
- * @todo Refactor so that AssetAdmin has its own actions
- */
-export function setFolder(folderId) {
-  return (dispatch) => {
-    dispatch({
-      type: GALLERY.SET_FOLDER,
-      payload: { ID: folderId },
-    });
-
-    // Always unset selected file, since it might not be in the current folder
-    dispatch({
-      type: GALLERY.SET_FILE,
-      payload: { fileId: null },
-    });
-    dispatch({
-      type: GALLERY.HIGHLIGHT_FILES,
-      payload: { ids: null },
-    });
-  };
-}
-
-/**
- * Load the file view for a given folder
- */
-export function setFile(fileId) {
-  return (dispatch) => {
-    dispatch({
-      type: GALLERY.HIGHLIGHT_FILES,
-      payload: { ids: [fileId] },
-    });
-    // Start message
-    dispatch({
-      type: GALLERY.SET_FILE,
-      payload: { fileId },
-    });
-  };
-}
-
-/**
  * Adds files to state.
  *
  * @param array files - Array of file objects.
@@ -216,16 +175,7 @@ export function createFolder(createFolderApi, parentId, name) {
         type: GALLERY.CREATE_FOLDER_SUCCESS,
         payload: { name },
       });
-
-      dispatch({
-        type: GALLERY.SET_FOLDER,
-        payload: { ID: json.ID },
-      });
-
-      // TODO: Fix this so that the subsequent action is passed without a coupling to router
-      // here.
-      //  - Successful action should triggers 'show files' view rather than triggering an action
-      // showFilesFromFolder(json.folderId);
+      return json;
     })
     .catch((err) => {
       // Failure finish message

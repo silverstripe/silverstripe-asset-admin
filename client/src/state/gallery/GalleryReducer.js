@@ -33,17 +33,6 @@ export default function galleryReducer(state = initialState, action) {
 
   switch (action.type) {
 
-    case GALLERY.SET_FOLDER:
-      return deepFreeze(Object.assign({}, state, {
-        folderId: parseInt(action.payload.ID, 10) || 0,
-        fileId: 0, // reset active file to avoid state inconsistencies
-      }));
-
-    case GALLERY.SET_FILE:
-      return deepFreeze(Object.assign({}, state, {
-        fileId: parseInt(action.payload.fileId, 10) || 0,
-      }));
-
     case GALLERY.ADD_FILES: {
       const nextFilesState = []; // Clone the state.files array
 

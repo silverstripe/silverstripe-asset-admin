@@ -246,14 +246,18 @@ export class Gallery extends Component {
    *
    * @param object event - Click event.
    */
-  handleCreateFolder() {
+  handleCreateFolder(event) {
     // eslint-disable-next-line no-alert
-    const folderName = prompt('Folder name (or blank to cancel)');
+    const folderName = this.promptFolderName();
     if (folderName) {
-      this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName);
+      this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName)
+        .then(data => {
+          this.props.actions.gallery.addFiles([data], 1);
+          return data;
+        });
     }
+    event.preventDefault();
   }
-
 
   /**
    * Handles successful file uploads.
@@ -287,6 +291,13 @@ export class Gallery extends Component {
     if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
       this.props.actions.gallery.deleteItems(this.props.deleteApi, [item.id]);
     }
+  }
+
+	/**
+   * @return String
+   */
+  promptFolderName() {
+    return prompt(i18n._t('AssetAdmin.PROMPTFOLDERNAME'));
   }
 
   /**
