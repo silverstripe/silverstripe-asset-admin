@@ -1,12 +1,8 @@
 import i18n from 'i18n';
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { bindActionCreators } from 'redux';
-import * as editorActions from 'state/editor/EditorActions';
 import FormBuilder from 'components/FormBuilder/FormBuilder';
 import CONSTANTS from 'constants/index';
-import AddToCampaignModal from 'components/AddToCampaignModal/AddToCampaignModal';
+import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 
 class Editor extends Component {
   constructor(props) {
@@ -15,8 +11,14 @@ class Editor extends Component {
     this.handleCancelKeyDown = this.handleCancelKeyDown.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmitFile = this.handleSubmitFile.bind(this);
-    this.handleAction = this.handleAction.bind(this);
-    this.closeModals = this.closeModals.bind(this);
+    this.handleActionFile = this.handleActionFile.bind(this);
+    this.handleSubmitModal = this.handleSubmitModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.openModal = this.openModal.bind(this);
+
+    this.state = {
+      openModal: false,
+    };
   }
 
   getCancelButton() {
@@ -30,10 +32,10 @@ class Editor extends Component {
     />);
   }
 
-  handleAction(event, name) {
+  handleActionFile(event, name) {
     // intercept the Add to Campaign submit and open the modal dialog instead
     if (name === 'action_addtocampaign') {
-      this.props.actions.updateAddToCampaignModal(true);
+      this.openModal();
       event.preventDefault();
     }
   }
@@ -57,13 +59,36 @@ class Editor extends Component {
     return submitFn();
   }
 
-  closeModals() {
-    this.props.actions.updateAddToCampaignModal(false);
+  handleSubmitModal(event, fieldValues, submitFn) {
+    event.preventDefault();
+
+    if (!fieldValues.Campaign) {
+      // TODO invisible submit disable, remove this when validation is implemented
+      // eslint-disable-next-line no-alert
+      alert(i18n._t(
+        'AddToCampaigns.ErrorCampaignNotSelected',
+        'There was no campaign selected to be added to'
+      ));
+      return null;
+    }
+    return submitFn();
+  }
+
+  openModal() {
+    this.setState({
+      openModal: true,
+    });
+  }
+
+  closeModal() {
+    this.setState({
+      openModal: false,
+    });
   }
 
   handleClose(event) {
     this.props.onClose();
-    this.closeModals();
+    this.closeModal();
 
     if (event) {
       event.preventDefault();
@@ -82,13 +107,17 @@ class Editor extends Component {
         <FormBuilder
           schemaUrl={formSchemaUrl}
           handleSubmit={this.handleSubmitFile}
-          handleAction={this.handleAction}
+          handleAction={this.handleActionFile}
         />
-        <AddToCampaignModal
+        <FormBuilderModal
           fileId={this.props.fileId}
-          show={this.props.openAddCampaignModal}
-          handleHide={this.closeModals}
+          show={this.state.openModal}
+          handleHide={this.closeModal}
+          handleSubmit={this.handleSubmitModal}
           schemaUrl={modalSchemaUrl}
+          bodyClassName="add-to-campaign__dialog"
+          responseClassBad="add-to-campaign__response add-to-campaign__response--error"
+          responseClassGood="add-to-campaign__response add-to-campaign__response--good"
         />
       </div>
 
@@ -107,17 +136,4 @@ Editor.propTypes = {
   openAddCampaignModal: React.PropTypes.bool,
 };
 
-function mapStateToProps(state) {
-  return {
-    openAddCampaignModal: state.assetAdmin.editor.openAddCampaignModal,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(editorActions, dispatch),
-  };
-}
-
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Editor));
-
+export default Editor;

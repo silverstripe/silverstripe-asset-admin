@@ -297,6 +297,7 @@ export class Gallery extends Component {
    * @return {String}
    */
   promptFolderName() {
+    // eslint-disable-next-line no-alert
     return prompt(i18n._t('AssetAdmin.PROMPTFOLDERNAME'));
   }
 

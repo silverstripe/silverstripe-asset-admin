@@ -38,6 +38,7 @@ use LiteralField;
 use PopoverField;
 use HTMLReadonlyField;
 use DateField_Disabled;
+use Convert;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -835,10 +836,19 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $record = $this->getList()->byID($id);
 
         $handler = AddToCampaignHandler::create($this, $record);
-        if (!is_null($handler->addToCampaign($record, $data['Campaign']))) {
-            $handler->setShowTitle(false);
-            return $this->getSchemaResponse($handler->Form($record));
+        $results = $handler->addToCampaign($record, $data['Campaign']);
+        if (!is_null($results)) {
+            $request = $this->getRequest();
+            if($request->getHeader('X-Formschema-Request')) {
+                $handler->setShowTitle(false);
+                $data = $this->getSchemaForForm($handler->Form($record));
+                $data['message'] = $results;
 
+                $response = new SS_HTTPResponse(Convert::raw2json($data));
+                $response->addHeader('Content-Type', 'application/json');
+                return $response;
+            }
+            return $results;
         }
     }
 
@@ -865,10 +875,22 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $record = $this->getList()->byID($id);
 
         if (!$record) {
-            return $this->httpError(404);
+            $this->httpError(404, _t(
+                'AssetAdmin.ErrorNotFound',
+                'That {Type} couldn\'t be found',
+                '',
+                ['Type' => 'File']
+            ));
+            return null;
         }
         if (!$record->canView()) {
-            return $this->httpError(403);
+            $this->httpError(403, _t(
+                'AssetAdmin.ErrorItemPermissionDenied',
+                'It seems you don\'t have the necessary permissions to add {ObjectTitle} to a campaign',
+                '',
+                ['ObjectTitle' => 'File']
+            ));
+            return null;
         }
 
         $handler = AddToCampaignHandler::create($this, $record);
