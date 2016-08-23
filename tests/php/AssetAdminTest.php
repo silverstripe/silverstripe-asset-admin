@@ -74,7 +74,7 @@ class AssetAdminTest extends FunctionalTest
         );
         $this->assertFalse($response->isError());
         $responseData = json_decode($response->getBody(), true);
-        $newFolder = \Folder::get()->byID($responseData['ID']);
+        $newFolder = \Folder::get()->byID($responseData['id']);
         $this->assertNotNull($newFolder);
         $this->assertEquals($folder1->ID, $newFolder->ParentID);
         $this->assertEquals('testItCreatesFolder', $newFolder->Name);
