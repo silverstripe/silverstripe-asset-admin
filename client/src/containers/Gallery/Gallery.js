@@ -205,7 +205,7 @@ export class Gallery extends Component {
   /**
    * Handler for when the user changes the sort order.
    *
-   * @param object event - Click event.
+   * @param {Object} event - Click event.
    */
   handleSort(event) {
     const data = event.target.dataset;
@@ -229,9 +229,8 @@ export class Gallery extends Component {
   /**
    * Triggered just before the xhr request is sent.
    *
-   * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
-   * @param object xhr
-   * @param object formData - FormData interface. See https://developer.mozilla.org/en-US/docs/Web/API/FormData
+   * @param {Object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {Object} xhr
    */
   handleSending(file, xhr) {
     this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { xhr });
@@ -244,21 +243,25 @@ export class Gallery extends Component {
   /**
    * Handler for when the user changes clicks the add folder button
    *
-   * @param object event - Click event.
+   * @param {Object} event - Click event.
    */
-  handleCreateFolder() {
+  handleCreateFolder(event) {
     // eslint-disable-next-line no-alert
-    const folderName = prompt('Folder name (or blank to cancel)');
+    const folderName = this.promptFolderName();
     if (folderName) {
-      this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName);
+      this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName)
+        .then(data => {
+          this.props.actions.gallery.addFiles([data], 1);
+          return data;
+        });
     }
+    event.preventDefault();
   }
-
 
   /**
    * Handles successful file uploads.
    *
-   * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {Object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleSuccessfulUpload(file) {
     const json = JSON.parse(file.xhr.response);
@@ -280,7 +283,8 @@ export class Gallery extends Component {
   /**
    * Handles deleting a file or folder.
    *
-   * @param object item - The file or folder to delete.
+   * @param {Object} event
+   * @param {Object} item - The file or folder to delete.
    */
   handleItemDelete(event, item) {
     // eslint-disable-next-line no-alert
@@ -289,11 +293,18 @@ export class Gallery extends Component {
     }
   }
 
+	/**
+   * @return {String}
+   */
+  promptFolderName() {
+    return prompt(i18n._t('AssetAdmin.PROMPTFOLDERNAME'));
+  }
+
   /**
    * Checks if a file or folder is currently selected.
    *
-   * @param number id - The id of the file or folder to check.
-   * @return boolean
+   * @param {Number} id - The id of the file or folder to check.
+   * @return {Boolean}
    */
   itemIsSelected(id) {
     return this.props.selectedFiles.indexOf(id) > -1;
@@ -303,8 +314,8 @@ export class Gallery extends Component {
    * Checks if a file or folder is currently highlighted,
    * which typically means its own for viewing or editing.
    *
-   * @param number id - The id of the file or folder to check.
-   * @return boolean
+   * @param {Number} id - The id of the file or folder to check.
+   * @return {Boolean}
    */
   itemIsHighlighted(id) {
     return this.props.highlightedFiles.indexOf(id) > -1;
@@ -313,8 +324,8 @@ export class Gallery extends Component {
   /**
    * Handles a user drilling down into a folder.
    *
-   * @param object event - Event object.
-   * @param object folder - The folder that's being activated.
+   * @param {Object} event - Event object.
+   * @param {Object} folder - The folder that's being activated.
    */
   handleFolderActivate(event, folder) {
     this.props.onOpenFolder(folder.id, folder);
@@ -323,8 +334,8 @@ export class Gallery extends Component {
   /**
    * Handles a user activating the file editor.
    *
-   * @param object event - Event object.
-   * @param object file - The file that's being activated.
+   * @param {Object} event - Event object.
+   * @param {Object} file - The file that's being activated.
    */
   handleFileActivate(event, file) {
     // Disable file editing if the file has not finished uploading
@@ -339,8 +350,8 @@ export class Gallery extends Component {
   /**
    * Handles the user toggling the selected/deselected state of a file or folder.
    *
-   * @param object event - Event object.
-   * @param object item - The item being selected/deselected
+   * @param {Object} event - Event object.
+   * @param {Object} item - The item being selected/deselected
    */
   handleToggleSelect(event, item) {
     if (this.props.selectedFiles.indexOf(item.id) === -1) {

@@ -343,4 +343,30 @@ describe('Gallery', () => {
       expect(props.actions.gallery.selectFiles).toBeCalledWith([2]);
     });
   });
+
+  describe('handleCreateFolder()', () => {
+    let gallery;
+    const mockFile = { name: 'newFolder' };
+    const promise = Promise.resolve(mockFile);
+
+    beforeEach(() => {
+      props.actions.gallery.createFolder = jest.genMockFunction();
+      props.actions.gallery.createFolder.mockReturnValue(promise);
+      props.actions.gallery.addFiles = jest.genMockFunction();
+
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+      gallery.promptFolderName = () => 'newFolder';
+    });
+
+    it('should add folder after successful create API call', () => {
+      gallery.handleCreateFolder({
+        preventDefault: () => {},
+      }, 'newFolder');
+      return promise.then(() => {
+        expect(props.actions.gallery.addFiles).toBeCalled();
+      });
+    });
+  });
 });

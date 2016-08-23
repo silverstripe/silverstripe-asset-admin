@@ -40,6 +40,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.LASTEDIT": "Last changed",
     "AssetAdmin.LOADMORE": "Load more",
     "AssetAdmin.NOITEMSFOUND": "No items found",
+    "AssetAdmin.PROMPTFOLDERNAME": "Please enter a folder name (or blank to cancel)",
     "AssetAdmin.SAVE": "Save",
     "AssetAdmin.PUBLISH": "Publish",
     "AssetAdmin.SELECT": "Select",

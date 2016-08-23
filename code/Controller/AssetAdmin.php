@@ -416,11 +416,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $record->Name = $record->Title = basename($data['Name']);
         $record->write();
 
-        $result = [
-            "ParentID" => $record->ParentID,
-            "ID" => $record->ID,
-            "Filename" => $record->Filename,
-        ];
+        $result = $this->getObjectFromData($record);
 
         return (new SS_HTTPResponse(json_encode($result)))->addHeader('Content-Type', 'application/json');
     }
