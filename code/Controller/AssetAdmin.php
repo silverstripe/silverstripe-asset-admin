@@ -879,7 +879,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'AssetAdmin.ErrorNotFound',
                 'That {Type} couldn\'t be found',
                 '',
-                ['Type' => 'File']
+                ['Type' => _t('File.SINGULARNAME')]
             ));
             return null;
         }
@@ -888,7 +888,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'AssetAdmin.ErrorItemPermissionDenied',
                 'It seems you don\'t have the necessary permissions to add {ObjectTitle} to a campaign',
                 '',
-                ['ObjectTitle' => 'File']
+                ['ObjectTitle' => _t('File.SINGULARNAME')]
             ));
             return null;
         }
