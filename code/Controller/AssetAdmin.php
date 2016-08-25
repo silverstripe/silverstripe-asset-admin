@@ -37,8 +37,8 @@ use ReadonlyField;
 use LiteralField;
 use PopoverField;
 use HTMLReadonlyField;
-use DateField_Disabled;
 use Convert;
+use DatetimeField;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -558,24 +558,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * as well as an intermediary object to process data through API endpoints.
      * Since it's used directly on API endpoints, it does not have any form actions.
      *
-     * @param Folder $folder
-     * @return Form
-     */
-    public function getFolderEditForm(Folder $folder)
-    {
-        $form = Form::create(
-            $this,
-            'FolderEditForm',
-            $folder->getCMSFields(),
-            FieldList::create()
-        );
-
-        return $form;
-    }
-
-    /**
-     * See {@link getFolderEditForm()} for details.
-     *
      * @param int $id
      * @return Form
      */
@@ -584,48 +566,54 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         $file = $this->getList()->byID($id);
 
-        // TODO use $file->getCMSFields()
         $fields = FieldList::create([
             HeaderField::create('TitleHeader', $file->Title, 1),
             LiteralField::create("ImageFull", $file->PreviewThumbnail()),
-            TextField::create("Title", _t('AssetTableField.TITLE','Title')),
-            TextField::create("Name", _t('AssetTableField.FILENAME','Filename')),
-            ReadonlyField::create(
-                'Location',
-                _t('AssetTableField.FOLDER', 'Folder'),
-                dirname($file->getSourceURL())
-            ),
-            HiddenField::create('ID', $id),
         ]);
+
+        $path = '/' . dirname($file->getFilename());
+        $fields->push(TextField::create("Name", $file->fieldLabel('Filename')));
+        $fields->push(ReadonlyField::create(
+            "Path",
+            _t('AssetTableField.PATH', 'Path'),
+            (($path !== '/.') ? $path : '') . '/'
+        ));
         if ($file->getIsImage()) {
             $fields->push(ReadonlyField::create(
                 "DisplaySize",
-                "Size",
-                sprintf('%spx, %s', $file->getDimensions(), $file->getSize()))
-            );
+                _t('AssetTableField.SIZE', "File size"),
+                sprintf('%spx, %s', $file->getDimensions(), $file->getSize())
+            ));
             $fields->push(HTMLReadonlyField::create(
                 'ClickableURL',
                 _t('AssetTableField.URL','URL'),
                 sprintf('<a href="%s" target="_blank">%s</a>', $file->Link(), $file->Link())
             ));
-            $fields->push(DateField_Disabled::create(
-                "LastEdited",
-                _t('AssetTableField.LASTEDIT','Last changed')
-            ));
         }
+        $fields->push(HiddenField::create('ID', $id));
 
+        if (!$file instanceof Folder) {
+            $fields->insertBefore(TextField::create("Title", $file->fieldLabel('Title')), 'Name');
+            $fields->push(DatetimeField::create(
+                "LastEdited",
+                _t('AssetTableField.LASTEDIT', 'Last changed')
+            )->setReadonly(true));
+        }
         $actions = FieldList::create([
             FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
-                ->setIcon('save'),
-            PopoverField::create([
+                ->setIcon('save')
+        ]);
+        if (!$file instanceof Folder) {
+            $actions->push(PopoverField::create([
                 FormAction::create(
                     'addtocampaign',
                     _t('CAMPAIGNS.ADDTOCAMPAIGN',
-                    'Add to campaign')
+                        'Add to campaign')
                 ),
             ])
-                ->setPlacement('top'),
-        ]);
+                ->setPlacement('top')
+            );
+        }
 
         $form = Form::create(
             $this,

@@ -11,6 +11,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.BACK": "Back",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Are you sure you want to %s these files?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Delete",
+    "AssetAdmin.BULK_ACTIONS_EDIT_FOLDER": "Edit folder",
     "AssetAdmin.BULK_ACTIONS_PLACEHOLDER": "Select an action...",
     "AssetAdmin.CANCEL": "Cancel",
     "AssetAdmin.CONFIRMDELETE": "Are you sure you want to delete this record?",

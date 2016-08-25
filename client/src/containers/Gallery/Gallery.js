@@ -153,10 +153,15 @@ export class Gallery extends Component {
       this.props.actions.gallery.deleteItems(this.props.deleteApi, ids);
     };
 
+    const editFolderAction = (folder) => {
+      this.props.onOpenFile(folder.id);
+    };
+
     if (this.props.selectedFiles.length > 0 && this.props.bulkActions) {
       return (
         <BulkActions
           deleteAction={deleteAction}
+          editFolderAction={editFolderAction}
           key={this.props.selectedFiles.length > 0}
         />
       );
@@ -246,7 +251,6 @@ export class Gallery extends Component {
    * @param {Object} event - Click event.
    */
   handleCreateFolder(event) {
-    // eslint-disable-next-line no-alert
     const folderName = this.promptFolderName();
     if (folderName) {
       this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName)
@@ -329,6 +333,7 @@ export class Gallery extends Component {
    * @param {Object} folder - The folder that's being activated.
    */
   handleFolderActivate(event, folder) {
+    event.preventDefault();
     this.props.onOpenFolder(folder.id, folder);
   }
 
@@ -339,6 +344,7 @@ export class Gallery extends Component {
    * @param {Object} file - The file that's being activated.
    */
   handleFileActivate(event, file) {
+    event.preventDefault();
     // Disable file editing if the file has not finished uploading
     // or the upload has errored.
     if (file.created === null) {

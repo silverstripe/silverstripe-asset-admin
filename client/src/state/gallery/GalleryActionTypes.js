@@ -18,4 +18,5 @@ export default [
   'LOAD_FOLDER_REQUEST',
   'LOAD_FOLDER_SUCCESS',
   'HIGHLIGHT_FILES',
+  'UPDATE_BATCH_ACTIONS',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});

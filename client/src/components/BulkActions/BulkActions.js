@@ -31,10 +31,17 @@ export class BulkActions extends SilverStripeComponent {
   render() {
     // eslint-disable-next-line arrow-body-style
     const children = this.props.gallery.bulkActions.options.map((option, i) => {
+      const className = [
+        'bulk-actions_action',
+        'ss-ui-button',
+        'ui-corner-all',
+        option.className || 'font-icon-info-circled',
+      ].join(' ');
       return (<button
         type="button"
-        className="bulk-actions_action font-icon-trash ss-ui-button ui-corner-all"
+        className={className}
         key={i}
+        disabled={option.disabled}
         onClick={this.onChangeValue}
         value={option.value}
       >
@@ -67,6 +74,15 @@ export class BulkActions extends SilverStripeComponent {
     return this.props.gallery.selectedFiles;
   }
 
+  getSelectedFolder() {
+    const folders = this.props.gallery.selectedFiles
+      .map(id => this.props.gallery.files.find(file => file.id === id))
+      // folders only
+      .filter(file => file.type === 'folder');
+
+    return folders.shift();
+  }
+
   applyAction(value) {
     let result = false;
 
@@ -74,6 +90,10 @@ export class BulkActions extends SilverStripeComponent {
     switch (value) {
       case 'delete':
         this.props.deleteAction(this.getSelectedFiles());
+        result = true;
+        break;
+      case 'editFolder':
+        this.props.editFolderAction(this.getSelectedFolder());
         result = true;
         break;
       default:

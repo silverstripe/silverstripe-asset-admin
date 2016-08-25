@@ -24,6 +24,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.createEndpoint = this.createEndpoint.bind(this);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+    this.handleFolderIcon = this.handleFolderIcon.bind(this);
     this.compare = this.compare.bind(this);
 
     // Build API callers from the URLs provided in configuration.
@@ -102,6 +103,10 @@ class AssetAdmin extends SilverStripeComponent {
       breadcrumbs.push({
         text: folder.title,
         href: `/${base}/show/${folder.id}`,
+        icon: {
+          className: 'icon font-icon-edit-list',
+          action: this.handleFolderIcon,
+        },
       });
     }
 
@@ -121,7 +126,13 @@ class AssetAdmin extends SilverStripeComponent {
     }
 
     // Fall back to object comparison
-    return left && right && left.id !== right.id;
+    return left && right && (left.id !== right.id || left.name !== right.name);
+  }
+
+  handleFolderIcon(event) {
+    this.handleOpenFile(this.props.folderId);
+
+    event.preventDefault();
   }
 
   handleOpenFile(fileId) {
@@ -154,7 +165,7 @@ class AssetAdmin extends SilverStripeComponent {
     const createFileApiMethod = sectionConfig.createFileEndpoint.method;
     const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
 
-    const editor = (file &&
+    const editor = ((file || this.props.fileId === this.props.folderId) &&
       <Editor
         fileId={this.props.fileId}
         onClose={this.handleCloseFile}
