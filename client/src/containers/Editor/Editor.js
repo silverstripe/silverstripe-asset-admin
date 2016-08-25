@@ -110,7 +110,6 @@ class Editor extends Component {
           handleAction={this.handleActionFile}
         />
         <FormBuilderModal
-          fileId={this.props.fileId}
           show={this.state.openModal}
           handleHide={this.closeModal}
           handleSubmit={this.handleSubmitModal}
