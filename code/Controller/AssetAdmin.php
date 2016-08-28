@@ -840,7 +840,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         if (!is_null($results)) {
             $request = $this->getRequest();
             if($request->getHeader('X-Formschema-Request')) {
-                $handler->setShowTitle(false);
                 $data = $this->getSchemaForForm($handler->Form($record));
                 $data['message'] = $results;
 
@@ -894,7 +893,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $handler = AddToCampaignHandler::create($this, $record);
-        $handler->setShowTitle(false);
         return $handler->Form($record);
     }
 
