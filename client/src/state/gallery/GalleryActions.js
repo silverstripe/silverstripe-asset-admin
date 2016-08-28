@@ -158,8 +158,9 @@ export function sortFiles(comparator) {
  * Triggers an asyncrhonous back-end requests and changes view after the request
  * has completed.
  *
+ * @param {Function} createFolderApi
  * @param {Number} parentId
- * @param {String} folderName
+ * @param {String} name - the name of the folder
  */
 export function createFolder(createFolderApi, parentId, name) {
   return (dispatch) => {
@@ -170,7 +171,7 @@ export function createFolder(createFolderApi, parentId, name) {
     });
 
     return createFolderApi({ ParentID: isNaN(parentId) ? 0 : parentId, Name: name })
-    .then(json => {
+    .then((json) => {
       dispatch({
         type: GALLERY.CREATE_FOLDER_SUCCESS,
         payload: { name },

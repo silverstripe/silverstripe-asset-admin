@@ -1,15 +1,9 @@
 import EDITOR from './EditorActionTypes';
 
-/**
- * Update the form state.
- * @todo Replace with form state management library (e.g. redux-form)
- *
- * @param object updates - Key-value map of form state updates
- */
-export function updateFormState(updates) {
+export function updateAddToCampaignModal(show) {
   return (dispatch) =>
     dispatch({
-      type: EDITOR.UPDATE_FORM_STATE,
-      payload: { updates },
+      type: EDITOR.UPDATE_ADDTOCAMPAING_MODAL,
+      payload: { show },
     });
 }

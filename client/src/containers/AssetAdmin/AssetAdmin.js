@@ -149,7 +149,7 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   render() {
-    const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
+    const sectionConfig = this.props.sectionConfig;
     const createFileApiUrl = sectionConfig.createFileEndpoint.url;
     const createFileApiMethod = sectionConfig.createFileEndpoint.method;
     const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
@@ -159,7 +159,9 @@ class AssetAdmin extends SilverStripeComponent {
         fileId={this.props.fileId}
         onClose={this.handleCloseFile}
         editFileSchemaUrl={sectionConfig.form.FileEditForm.schemaUrl}
+        actions={this.props.actions.editor}
         handleSubmit={this.handleSaveFile}
+        addToCampaignSchemaUrl={sectionConfig.form.AddToCampaignForm.schemaUrl}
       />
     );
 

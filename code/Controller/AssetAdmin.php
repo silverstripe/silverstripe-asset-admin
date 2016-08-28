@@ -2,12 +2,14 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Filesystem\Storage\AssetNameGenerator;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\SecurityToken;
@@ -33,8 +35,10 @@ use TextField;
 use HiddenField;
 use ReadonlyField;
 use LiteralField;
+use PopoverField;
 use HTMLReadonlyField;
 use DateField_Disabled;
+use Convert;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -94,6 +98,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiDelete',
         'apiSearch',
         'FileEditForm',
+        'AddToCampaignForm',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -151,6 +156,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'form' => [
                 'FileEditForm' => [
                     'schemaUrl' => $this->Link('schema/FileEditForm')
+                ],
+                'AddToCampaignForm' => [
+                    'schemaUrl' => $this->Link('schema/AddToCampaignForm')
                 ],
             ],
         ]);
@@ -609,6 +617,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $actions = FieldList::create([
             FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
                 ->setIcon('save'),
+            PopoverField::create([
+                FormAction::create(
+                    'addtocampaign',
+                    _t('CAMPAIGNS.ADDTOCAMPAIGN',
+                    'Add to campaign')
+                ),
+            ])
+                ->setPlacement('top'),
         ]);
 
         $form = Form::create(
@@ -805,6 +821,79 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         });
 
         return $list;
+    }
+
+    /**
+     * Action handler for adding pages to a campaign
+     *
+     * @param array $data
+     * @param Form $form
+     * @return DBHTMLText|SS_HTTPResponse
+     */
+    public function addtocampaign($data, $form)
+    {
+        $id = $data['ID'];
+        $record = $this->getList()->byID($id);
+
+        $handler = AddToCampaignHandler::create($this, $record);
+        $results = $handler->addToCampaign($record, $data['Campaign']);
+        if (!is_null($results)) {
+            $request = $this->getRequest();
+            if($request->getHeader('X-Formschema-Request')) {
+                $data = $this->getSchemaForForm($handler->Form($record));
+                $data['message'] = $results;
+
+                $response = new SS_HTTPResponse(Convert::raw2json($data));
+                $response->addHeader('Content-Type', 'application/json');
+                return $response;
+            }
+            return $results;
+        }
+    }
+
+    /**
+     * Url handler for add to campaign form
+     *
+     * @param SS_HTTPRequest $request
+     * @return Form
+     */
+    public function AddToCampaignForm($request)
+    {
+        // Get ID either from posted back value, or url parameter
+        $id = $request->param('ID') ?: $request->postVar('ID');
+        return $this->getAddToCampaignForm($id);
+    }
+
+    /**
+     * @param int $id
+     * @return Form
+     */
+    public function getAddToCampaignForm($id)
+    {
+        // Get record-specific fields
+        $record = $this->getList()->byID($id);
+
+        if (!$record) {
+            $this->httpError(404, _t(
+                'AssetAdmin.ErrorNotFound',
+                'That {Type} couldn\'t be found',
+                '',
+                ['Type' => _t('File.SINGULARNAME')]
+            ));
+            return null;
+        }
+        if (!$record->canView()) {
+            $this->httpError(403, _t(
+                'AssetAdmin.ErrorItemPermissionDenied',
+                'It seems you don\'t have the necessary permissions to add {ObjectTitle} to a campaign',
+                '',
+                ['ObjectTitle' => _t('File.SINGULARNAME')]
+            ));
+            return null;
+        }
+
+        $handler = AddToCampaignHandler::create($this, $record);
+        return $handler->Form($record);
     }
 
     /**
