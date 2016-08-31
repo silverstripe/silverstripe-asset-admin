@@ -20,7 +20,8 @@ class AssetAdmin extends SilverStripeComponent {
     super();
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
-    this.handleSaveFile = this.handleSaveFile.bind(this);
+    this.delete = this.delete.bind(this);
+    this.handleSubmitEditor = this.handleSubmitEditor.bind(this);
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.createEndpoint = this.createEndpoint.bind(this);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
@@ -140,7 +141,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.props.router.push(`/${base}/show/${this.props.folderId}/edit/${fileId}`);
   }
 
-  handleSaveFile(event, fieldValues, submitFn) {
+  handleSubmitEditor(event, fieldValues, submitFn) {
     event.preventDefault();
     submitFn()
       .then((response) => {
@@ -159,6 +160,23 @@ class AssetAdmin extends SilverStripeComponent {
     this.props.router.push(`/${base}/show/${folderId}`);
   }
 
+  /**
+   * Delete a file or folder
+   *
+   * @param {number} fileId
+   */
+  delete(fileId) {
+    const file = this.props.files.find((next) => next.id === fileId);
+    // eslint-disable-next-line no-alert
+    if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
+      this.props.actions.gallery.deleteItems(this.endpoints.deleteApi, [file.id])
+        .then(() => {
+          const base = this.props.sectionConfig.url;
+          this.props.router.push(`/${base}/show/${file.parent.id}`);
+        });
+    }
+  }
+
   render() {
     const sectionConfig = this.props.sectionConfig;
     const createFileApiUrl = sectionConfig.createFileEndpoint.url;
@@ -171,7 +189,8 @@ class AssetAdmin extends SilverStripeComponent {
         onClose={this.handleCloseFile}
         editFileSchemaUrl={sectionConfig.form.FileEditForm.schemaUrl}
         actions={this.props.actions.editor}
-        handleSubmit={this.handleSaveFile}
+        onSubmit={this.handleSubmitEditor}
+        onDelete={this.delete}
         addToCampaignSchemaUrl={sectionConfig.form.AddToCampaignForm.schemaUrl}
       />
     );

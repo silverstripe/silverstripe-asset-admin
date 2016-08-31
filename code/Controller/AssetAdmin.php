@@ -603,6 +603,17 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
                 ->setIcon('save')
         ]);
+
+        // Delete action
+        $actions->push(
+            FormAction::create(
+                'delete',
+                _t('SilverStripe\AssetAdmin\Controller\AssetAdmin.DELETE_BUTTON', 'Delete')
+            )
+                ->setIcon('trash-bin')
+        );
+
+        // Add to campaign action
         if (!$file instanceof Folder) {
             $actions->push(PopoverField::create([
                 FormAction::create(

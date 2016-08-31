@@ -10,8 +10,8 @@ class Editor extends Component {
 
     this.handleCancelKeyDown = this.handleCancelKeyDown.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleSubmitFile = this.handleSubmitFile.bind(this);
-    this.handleActionFile = this.handleActionFile.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleAction = this.handleAction.bind(this);
     this.handleSubmitModal = this.handleSubmitModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
@@ -32,11 +32,18 @@ class Editor extends Component {
     />);
   }
 
-  handleActionFile(event, name) {
+  handleAction(event, name, fieldValues) {
     // intercept the Add to Campaign submit and open the modal dialog instead
     if (name === 'action_addtocampaign') {
       this.openModal();
       event.preventDefault();
+      return;
+    }
+
+    if (name === 'action_delete') {
+      this.props.onDelete(fieldValues.ID);
+      event.preventDefault();
+      return;
     }
   }
 
@@ -50,9 +57,9 @@ class Editor extends Component {
     }
   }
 
-  handleSubmitFile(event, fieldValues, submitFn) {
-    if (typeof this.props.handleSubmit === 'function') {
-      return this.props.handleSubmit(event, fieldValues, submitFn);
+  handleSubmit(event, fieldValues, submitFn) {
+    if (typeof this.props.onSubmit === 'function') {
+      return this.props.onSubmit(event, fieldValues, submitFn);
     }
 
     event.preventDefault();
@@ -106,8 +113,8 @@ class Editor extends Component {
       <div className="editor__details">
         <FormBuilder
           schemaUrl={formSchemaUrl}
-          handleSubmit={this.handleSubmitFile}
-          handleAction={this.handleActionFile}
+          handleSubmit={this.handleSubmit}
+          handleAction={this.handleAction}
         />
         <FormBuilderModal
           show={this.state.openModal}
@@ -129,7 +136,8 @@ Editor.propTypes = {
   fileId: React.PropTypes.number.isRequired,
   actions: React.PropTypes.object,
   onClose: React.PropTypes.func.isRequired,
-  handleSubmit: React.PropTypes.func,
+  onSubmit: React.PropTypes.func.isRequired,
+  onDelete: React.PropTypes.func.isRequired,
   editFileSchemaUrl: React.PropTypes.string.isRequired,
   addToCampaignSchemaUrl: React.PropTypes.string,
   openAddCampaignModal: React.PropTypes.bool,
