@@ -3,104 +3,96 @@
 jest.unmock('../BulkActions.js');
 
 import React from 'react';
-import i18n from 'i18n';
 import ReactTestUtils from 'react-addons-test-utils';
 import { BulkActions } from '../BulkActions.js';
 
 describe('BulkActions', () => {
-  let props;
-  const deleteActionSpy = jasmine.createSpy('deleteAction');
+  describe('canApply()', () => {
+    let props;
+    beforeEach(() => {
+      props = {
+        actions: [
+          {
+            value: 'action-with-apply',
+            label: '',
+            canApply: (items) => items.filter(item => item.applies).length,
+            callback: () => true,
+          },
+          {
+            value: 'action-without-apply',
+            label: '',
+            callback: () => true,
+          },
+        ],
+      };
+    });
 
-  beforeEach(() => {
-    props = {
-      gallery: {
-        bulkActions: {
-          options: [
-            {
-              value: 'delete',
-              label: 'Delete',
-              destructive: true,
-            },
-          ],
+    it('shows an action button when canApply returns true', () => {
+      const propsWithItems = Object.assign({}, props, { items: [{ applies: true }] });
+      const bulkActions = ReactTestUtils.renderIntoDocument(
+        <BulkActions {...propsWithItems} />
+      );
+      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions_action')
+        .find(el => el.value === 'action-with-apply');
+      expect(matchedBulkAction).toBeTruthy();
+    });
 
-        },
-        selectedFiles: [1],
-      },
-      deleteAction: deleteActionSpy,
-    };
+    it('does not show an action button when canApply returns false', () => {
+      const propsWithItems = Object.assign({}, props, { items: [{ applies: false }] });
+      const bulkActions = ReactTestUtils.renderIntoDocument(
+        <BulkActions {...propsWithItems } />
+      );
+      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions_action')
+        .find(el => el.value === 'action-with-apply');
+      expect(matchedBulkAction).toBeFalsy();
+    });
   });
 
   describe('getOptionByValue()', () => {
     let bulkActions;
+    let props;
 
     beforeEach(() => {
+      props = {
+        actions: [
+          {
+            value: 'my-first-action',
+            label: 'My First Action',
+            callback: () => true,
+          },
+        ],
+        items: [],
+      };
       bulkActions = ReactTestUtils.renderIntoDocument(
         <BulkActions {...props} />
       );
     });
 
     it('should return the option which matches the given value', () => {
-      expect(bulkActions.getOptionByValue('delete').value).toBe('delete');
+      expect(bulkActions.getOptionByValue('my-first-action').value).not.toBeFalsy();
     });
 
     it('should return null if no option matches the given value', () => {
-      expect(bulkActions.getOptionByValue('destroyCMS')).toBe(null);
-    });
-  });
-
-  describe('getSelectedFiles()', () => {
-    let bulkActions;
-
-    beforeEach(() => {
-      bulkActions = ReactTestUtils.renderIntoDocument(
-        <BulkActions {...props} />
-      );
-    });
-
-    it('should return the option which matches the given value', () => {
-      expect(bulkActions.getSelectedFiles()[0]).toBe(1);
-    });
-  });
-
-  describe('applyAction()', () => {
-    let bulkActions;
-
-    beforeEach(() => {
-      props.backend = {
-        delete: jest.genMockFunction(),
-      };
-      props.getSelectedFiles = jest.genMockFunction();
-
-      bulkActions = ReactTestUtils.renderIntoDocument(
-          <BulkActions {...props} />
-      );
-    });
-
-    it('should apply the given action', () => {
-      props.getSelectedFiles.mockReturnValueOnce('file1');
-
-      bulkActions.applyAction('delete');
-
-      expect(deleteActionSpy).toHaveBeenCalled();
-    });
-
-    it('should return false if there are no matching actions', () => {
-      expect(bulkActions.applyAction('destroyCMS')).toBe(false);
+      expect(bulkActions.getOptionByValue('unknown-action')).toBeFalsy();
     });
   });
 
   describe('onChangeValue()', () => {
     let bulkActions;
     let event;
+    let props;
 
     beforeEach(() => {
+      props = {
+        actions: [],
+        items: [],
+      };
       bulkActions = ReactTestUtils.renderIntoDocument(
           <BulkActions {...props} />
       );
-
       event = {
         target: {
-          value: 'delete',
+          value: null,
         },
       };
 
@@ -111,32 +103,35 @@ describe('BulkActions', () => {
     it('should return undefined if no valid option is selected', () => {
       bulkActions.getOptionByValue.mockReturnValueOnce(null);
 
-      expect(bulkActions.onChangeValue(event)).toBe(undefined);
+      expect(bulkActions.onChangeValue(event)).toBeFalsy();
     });
 
-    it('should ask user for confirmation if the action is destructive', () => {
-      const mock = jest.genMockFunction();
-      const originalConfirm = window.confirm;
 
-      bulkActions.getOptionByValue.mockReturnValueOnce({ destructive: true });
-      mock.mockReturnValueOnce(true);
-      window.confirm = mock;
-      i18n.sprintf = jest.genMockFunction();
+    it('should use callback if no confirm callback is configured', () => {
+      const callbackMockFn = jest.genMockFunction();
 
-      bulkActions.onChangeValue(event);
-
-      expect(bulkActions.applyAction).toBeCalled();
-      expect(window.confirm).toBeCalled();
-
-      window.confirm = originalConfirm;
+      bulkActions.getOptionByValue.mockReturnValueOnce({ confirm: null, callback: callbackMockFn });
+      return bulkActions.onChangeValue(event).then(() => {
+        expect(callbackMockFn).toBeCalled();
+      });
     });
 
-    it('should not ask user for confirmation if the action is not destructive', () => {
-      bulkActions.getOptionByValue.mockReturnValueOnce({ destructive: false });
+    it('should use callback if confirm is configured and resolved', () => {
+      const callbackMockFn = jest.genMockFunction();
 
-      bulkActions.onChangeValue(event);
+      bulkActions.getOptionByValue.mockReturnValueOnce({ confirm: Promise.resolve(), callback: callbackMockFn });
+      return bulkActions.onChangeValue(event).then(() => {
+        expect(callbackMockFn).toBeCalled();
+      });
+    });
 
-      expect(bulkActions.applyAction).toBeCalled();
+    it('should not use callback if confirm is configured and rejected', () => {
+      const callbackMockFn = jest.genMockFunction();
+
+      bulkActions.getOptionByValue.mockReturnValueOnce({ confirm: Promise.reject(), callback: callbackMockFn });
+      return bulkActions.onChangeValue(event).then(() => {
+        expect(callbackMockFn).toBeCalled();
+      });
     });
   });
 });

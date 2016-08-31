@@ -8,7 +8,6 @@ jest.unmock('constants/index');
 
 import galleryReducer from '../GalleryReducer.js';
 import GALLERY from '../GalleryActionTypes.js';
-import CONSTANTS from 'constants/index';
 
 describe('galleryReducer', () => {
   describe('ADD_FILES', () => {
@@ -188,9 +187,6 @@ describe('galleryReducer', () => {
         { id: 4, type: 'folder' },
       ],
       selectedFiles: [],
-      bulkActions: {
-        options: [CONSTANTS.BULK_ACTIONS_EDIT_FOLDER],
-      },
     };
 
     it('should select all files when no param is passed', () => {
@@ -226,27 +222,6 @@ describe('galleryReducer', () => {
 
       expect(nextState.selectedFiles.length).toBe(2);
     });
-
-    it('should disable edit folder with only files selected', () => {
-      const payload = { ids: [1, 2] };
-      const nextState = galleryReducer(baseState, { type, payload });
-
-      expect(nextState.bulkActions.options[0].disabled).toBe(true);
-    });
-
-    it('should enable edit folder with only one folder selected', () => {
-      const payload = { ids: [2, 3] };
-      const nextState = galleryReducer(baseState, { type, payload });
-
-      expect(nextState.bulkActions.options[0].disabled).toBe(false);
-    });
-
-    it('should disable edit folder with more than one folder selected', () => {
-      const payload = { ids: [2, 3, 4] };
-      const nextState = galleryReducer(baseState, { type, payload });
-
-      expect(nextState.bulkActions.options[0].disabled).toBe(true);
-    });
   });
 
   describe('DESELECT_FILES', () => {
@@ -258,9 +233,6 @@ describe('galleryReducer', () => {
         { id: 3, type: 'folder' },
       ],
       selectedFiles: [1, 2, 3],
-      bulkActions: {
-        options: [CONSTANTS.BULK_ACTIONS_EDIT_FOLDER],
-      },
     };
 
     it('should deselect all files when no param is passed', () => {
@@ -285,27 +257,6 @@ describe('galleryReducer', () => {
 
       expect(nextState.selectedFiles.length).toBe(1);
       expect(nextState.selectedFiles[0]).toBe(2);
-    });
-
-    it('should disable edit folder with more than one folder selected', () => {
-      const payload = { ids: [2] };
-      const nextState = galleryReducer(initialState, { type, payload });
-
-      expect(nextState.bulkActions.options[0].disabled).toBe(true);
-    });
-
-    it('should enable edit folder with only one folder selected', () => {
-      const payload = { ids: [1, 3] };
-      const nextState = galleryReducer(initialState, { type, payload });
-
-      expect(nextState.bulkActions.options[0].disabled).toBe(false);
-    });
-
-    it('should disable edit folder with no folder selected', () => {
-      const payload = { ids: [1, 2, 3] };
-      const nextState = galleryReducer(initialState, { type, payload });
-
-      expect(nextState.bulkActions.options[0].disabled).toBe(true);
     });
   });
 

@@ -1,15 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 import GALLERY from './GalleryActionTypes';
-import CONSTANTS from 'constants/index';
 
 const initialState = {
-  bulkActions: {
-    placeholder: CONSTANTS.BULK_ACTIONS_PLACEHOLDER,
-    options: [
-      CONSTANTS.BULK_ACTIONS_EDIT_FOLDER,
-      CONSTANTS.BULK_ACTIONS_DELETE,
-    ],
-  },
   count: 0, // The number of files in the current view
   editorFields: [], // The input fields for editing files. Hardcoded until form field schema is implemented.
   file: null,
@@ -33,24 +25,6 @@ const initialState = {
  */
 export default function galleryReducer(state = initialState, action) {
   let nextState;
-
-  const getBulkActions = (selected) => {
-    if (!state.files || !state.bulkActions) {
-      return [];
-    }
-    const folders = selected
-      .map(id => state.files.find(file => file.id === id))
-      .filter(file => file.type === 'folder');
-
-    return state.bulkActions.options.map((bulkAction) => {
-      if (CONSTANTS.BULK_ACTIONS_EDIT_FOLDER.value === bulkAction.value) {
-        return Object.assign({}, bulkAction, {
-          disabled: (folders.length !== 1),
-        });
-      }
-      return bulkAction;
-    });
-  };
 
   switch (action.type) {
 
@@ -127,9 +101,6 @@ export default function galleryReducer(state = initialState, action) {
 
       return deepFreeze(Object.assign({}, state, {
         selectedFiles,
-        bulkActions: Object.assign({}, state.bulkActions, {
-          options: getBulkActions(selectedFiles),
-        }),
       }));
     }
 
@@ -146,9 +117,6 @@ export default function galleryReducer(state = initialState, action) {
 
       return deepFreeze(Object.assign({}, state, {
         selectedFiles,
-        bulkActions: Object.assign({}, state.bulkActions, {
-          options: getBulkActions(selectedFiles),
-        }),
       }));
     }
 
