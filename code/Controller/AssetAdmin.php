@@ -557,6 +557,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * The form is used to generate a form schema,
      * as well as an intermediary object to process data through API endpoints.
      * Since it's used directly on API endpoints, it does not have any form actions.
+     * It handles both {@link File} and {@link Folder} records.
      *
      * @param int $id
      * @return Form
@@ -566,39 +567,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         $file = $this->getList()->byID($id);
 
-        $fields = FieldList::create([
-            HeaderField::create('TitleHeader', $file->Title, 1),
-            LiteralField::create("ImageFull", $file->PreviewThumbnail()),
-        ]);
+        $fields = $file->getCMSFields();
 
-        $path = '/' . dirname($file->getFilename());
-        $fields->push(TextField::create("Name", $file->fieldLabel('Filename')));
-        $fields->push(ReadonlyField::create(
-            "Path",
-            _t('AssetTableField.PATH', 'Path'),
-            (($path !== '/.') ? $path : '') . '/'
-        ));
-        if ($file->getIsImage()) {
-            $fields->push(ReadonlyField::create(
-                "DisplaySize",
-                _t('AssetTableField.SIZE', "File size"),
-                sprintf('%spx, %s', $file->getDimensions(), $file->getSize())
-            ));
-            $fields->push(HTMLReadonlyField::create(
-                'ClickableURL',
-                _t('AssetTableField.URL','URL'),
-                sprintf('<a href="%s" target="_blank">%s</a>', $file->Link(), $file->Link())
-            ));
-        }
-        $fields->push(HiddenField::create('ID', $id));
-
-        if (!$file instanceof Folder) {
-            $fields->insertBefore(TextField::create("Title", $file->fieldLabel('Title')), 'Name');
-            $fields->push(DatetimeField::create(
-                "LastEdited",
-                _t('AssetTableField.LASTEDIT', 'Last changed')
-            )->setReadonly(true));
-        }
         $actions = FieldList::create([
             FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
                 ->setIcon('save')
