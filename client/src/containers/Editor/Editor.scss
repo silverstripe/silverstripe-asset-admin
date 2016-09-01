@@ -39,6 +39,7 @@
 
 .editor__url-icon::before {
   color: lighten($gray, 30);
+  vertical-align: middle;
 }
 
 .editor__file-preview {
