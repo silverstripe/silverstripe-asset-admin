@@ -14,7 +14,7 @@ const initialState = {
 export default function editorReducer(state = initialState, action) {
   switch (action.type) {
 
-    case EDITOR.UPDATE_ADDTOCAMPAING_MODAL: {
+    case EDITOR.UPDATE_ADDTOCAMPAIGN_MODAL: {
       return deepFreeze(Object.assign({}, state, {
         openAddCampaignModal: action.payload.show,
       }));
