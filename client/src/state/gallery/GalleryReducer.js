@@ -1,12 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 import GALLERY from './GalleryActionTypes';
-import CONSTANTS from 'constants/index';
 
 const initialState = {
-  bulkActions: {
-    placeholder: CONSTANTS.BULK_ACTIONS_PLACEHOLDER,
-    options: CONSTANTS.BULK_ACTIONS,
-  },
   count: 0, // The number of files in the current view
   editorFields: [], // The input fields for editing files. Hardcoded until form field schema is implemented.
   file: null,
@@ -83,44 +78,46 @@ export default function galleryReducer(state = initialState, action) {
             file => (file.id === updatedFile.id ? updatedFile : file)
           ),
         }));
+      } else if (state.folder.id === action.payload.id) {
+        return deepFreeze(Object.assign({}, state, {
+          folder: Object.assign({}, state.folder, action.payload.file),
+        }));
       }
       return state;
     }
 
     case GALLERY.SELECT_FILES: {
+      let selectedFiles;
+
       if (action.payload.ids === null) {
-        // No param was passed, add everything that isn't currently selected, to the selectedFiles array.
-        nextState = deepFreeze(Object.assign({}, state, {
-          selectedFiles: state.selectedFiles
-            .concat(
-              state.files.map(file => file.id).filter(id => state.selectedFiles.indexOf(id) === -1)
-            ),
-        }));
+        // No param was passed, so select everything.
+        selectedFiles = state.files.map(file => file.id);
       } else {
         // We're dealing with an array if ids to select.
-        nextState = deepFreeze(Object.assign({}, state, {
-          selectedFiles: state.selectedFiles
-            .concat(
-              action.payload.ids.filter(id => state.selectedFiles.indexOf(id) === -1)
-            ),
-        }));
+        selectedFiles = state.selectedFiles.concat(
+          action.payload.ids.filter(id => state.selectedFiles.indexOf(id) === -1)
+        );
       }
 
-      return nextState;
+      return deepFreeze(Object.assign({}, state, {
+        selectedFiles,
+      }));
     }
 
     case GALLERY.DESELECT_FILES: {
+      let selectedFiles;
       if (action.payload.ids === null) {
         // No param was passed, deselect everything.
-        nextState = deepFreeze(Object.assign({}, state, { selectedFiles: [] }));
+        selectedFiles = [];
       } else {
         // We're dealing with an array of ids to deselect.
-        nextState = deepFreeze(Object.assign({}, state, {
-          selectedFiles: state.selectedFiles.filter(id => action.payload.ids.indexOf(id) === -1),
-        }));
+        selectedFiles = state.selectedFiles
+          .filter(id => action.payload.ids.indexOf(id) === -1);
       }
 
-      return nextState;
+      return deepFreeze(Object.assign({}, state, {
+        selectedFiles,
+      }));
     }
 
     case GALLERY.HIGHLIGHT_FILES: {

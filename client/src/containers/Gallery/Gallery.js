@@ -149,15 +149,30 @@ export class Gallery extends Component {
   }
 
   getBulkActionsComponent() {
-    const deleteAction = (ids) => {
+    const deleteAction = (items) => {
+      const ids = items.map(item => item.id);
       this.props.actions.gallery.deleteItems(this.props.deleteApi, ids);
     };
+    const editAction = (items) => {
+      this.props.onOpenFile(items[0].id);
+    };
+    const actions = CONSTANTS.BULK_ACTIONS.map(action => {
+      if (action.value === 'delete' && !action.callback) {
+        return Object.assign({}, action, { callback: deleteAction });
+      }
+      if (action.value === 'edit' && !action.callback) {
+        return Object.assign({}, action, { callback: editAction });
+      }
+      return action;
+    });
+    const selectedFileObjs = this.props.selectedFiles.map(id => this.props.files.find(file => id === file.id));
 
-    if (this.props.selectedFiles.length > 0 && this.props.bulkActions) {
+    if (selectedFileObjs.length > 0 && this.props.bulkActions) {
       return (
         <BulkActions
-          deleteAction={deleteAction}
-          key={this.props.selectedFiles.length > 0}
+          actions={actions}
+          items={selectedFileObjs}
+          key={selectedFileObjs.length > 0}
         />
       );
     }
@@ -246,7 +261,6 @@ export class Gallery extends Component {
    * @param {Object} event - Click event.
    */
   handleCreateFolder(event) {
-    // eslint-disable-next-line no-alert
     const folderName = this.promptFolderName();
     if (folderName) {
       this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName)
@@ -329,6 +343,7 @@ export class Gallery extends Component {
    * @param {Object} folder - The folder that's being activated.
    */
   handleFolderActivate(event, folder) {
+    event.preventDefault();
     this.props.onOpenFolder(folder.id, folder);
   }
 
@@ -339,6 +354,7 @@ export class Gallery extends Component {
    * @param {Object} file - The file that's being activated.
    */
   handleFileActivate(event, file) {
+    event.preventDefault();
     // Disable file editing if the file has not finished uploading
     // or the upload has errored.
     if (file.created === null) {
@@ -530,7 +546,6 @@ Gallery.defaultProps = {
 
 Gallery.propTypes = {
   loading: React.PropTypes.bool,
-  files: React.PropTypes.array,
   count: React.PropTypes.number,
   fileId: React.PropTypes.number,
   folderId: React.PropTypes.number.isRequired,
@@ -540,8 +555,9 @@ Gallery.propTypes = {
     canView: React.PropTypes.bool,
     canEdit: React.PropTypes.bool,
   }),
-  selectedFiles: React.PropTypes.array,
-  highlightedFiles: React.PropTypes.array,
+  files: React.PropTypes.array, // all files as full objects (incl. ids)
+  selectedFiles: React.PropTypes.arrayOf(React.PropTypes.number), // ids only
+  highlightedFiles: React.PropTypes.arrayOf(React.PropTypes.number), // ids only
   bulkActions: React.PropTypes.bool,
   limit: React.PropTypes.number,
   page: React.PropTypes.number,
@@ -566,6 +582,7 @@ function mapStateToProps(state) {
   const {
     loading,
     count,
+    files,
     selectedFiles,
     highlightedFiles,
     page,
@@ -573,6 +590,7 @@ function mapStateToProps(state) {
   return {
     loading,
     count,
+    files,
     selectedFiles,
     highlightedFiles,
     page,

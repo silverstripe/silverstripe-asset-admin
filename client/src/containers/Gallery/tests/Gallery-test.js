@@ -272,40 +272,29 @@ describe('Gallery', () => {
     });
   });
 
-  describe('handleFolderActivate()', () => {
+  describe('handleActivate()', () => {
     let gallery;
 
     beforeEach(() => {
       props.onOpenFolder = jest.genMockFunction();
+      props.onOpenFile = jest.genMockFunction();
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
     });
 
-    it('should call show', () => {
+    it('should call onOpenFolder', () => {
       const folder = { id: 1 };
-      const event = {};
+      const event = new Event('activate');
 
       gallery.handleFolderActivate(event, folder);
 
       expect(props.onOpenFolder).toBeCalledWith(1, folder);
     });
-  });
-
-  describe('handleFileActivate()', () => {
-    let gallery;
-
-    beforeEach(() => {
-      props.onOpenFile = jest.genMockFunction();
-
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-    });
 
     it('should call onOpenFile', () => {
       const file = { id: 1 };
-      const event = {};
+      const event = new Event('activate');
 
       gallery.handleFileActivate(event, file);
 
