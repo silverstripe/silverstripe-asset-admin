@@ -269,40 +269,53 @@ class AssetDropzone extends SilverStripeComponent {
       // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
       // and using the canvas data URI as the thumbnail image instead.
 
-      let thumbnailURL = '';
+      let loadPreview;
 
       if (this.getFileCategory(file.type) === 'image') {
         const img = document.createElement('img');
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
 
-        img.src = event.target.result;
+        loadPreview = new Promise((resolve) => {
+          img.src = event.target.result;
 
-        canvas.width = this.dropzone.options.thumbnailWidth;
-        canvas.height = this.dropzone.options.thumbnailHeight;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
 
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
 
-        thumbnailURL = canvas.toDataURL();
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            const thumbnailURL = canvas.toDataURL();
+
+            resolve({
+              width: canvas.width,
+              height: canvas.height,
+              thumbnailURL,
+            });
+          };
+        });
+      } else {
+        loadPreview = Promise.resolve({});
       }
 
-      this.props.handleAddedFile({
-        attributes: {
+      loadPreview.then((preview) => {
+        this.props.handleAddedFile({
           dimensions: {
-            height: this.dropzone.options.thumbnailHeight,
-            width: this.dropzone.options.thumbnailWidth,
+            height: preview.height,
+            width: preview.width,
           },
-        },
-        category: this.getFileCategory(file.type),
-        filename: file.name,
-        queuedAtTime,
-        size: file.size,
-        title: file.name,
-        type: file.type,
-        url: thumbnailURL,
-      });
+          category: this.getFileCategory(file.type),
+          filename: file.name,
+          queuedAtTime,
+          size: file.size,
+          title: file.name,
+          type: file.type,
+          url: preview.thumbnailURL,
+        });
 
-      this.dropzone.processFile(file);
+        this.dropzone.processFile(file);
+      });
     };
 
     // eslint-disable-next-line no-param-reassign
