@@ -58,9 +58,9 @@
     "gulp-uglify": "^1.5.2",
     "jest-cli": "^0.9.2",
     "npm-shrinkwrap": "^200.4.0",
-    "react": "^0.14.7",
-    "react-addons-test-utils": "^0.14.7",
-    "react-dom": "^0.14.7",
+    "react": "^15.3.1",
+    "react-addons-test-utils": "^15.3.1",
+    "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.5.2",
     "react-router-redux": "^4.0.5",
@@ -75,7 +75,7 @@
   },
   "dependencies": {
     "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
-    "react-addons-css-transition-group": "^0.14.7"
+    "react-addons-css-transition-group": "^15.3.1"
   },
   "babel": {
     "presets": [
