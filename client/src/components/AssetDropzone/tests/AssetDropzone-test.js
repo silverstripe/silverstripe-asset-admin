@@ -79,6 +79,59 @@ describe('AssetDropzone', () => {
   });
 
   describe('handleAddedFile()', () => {
+    let item;
+    let uploadProps;
+
+    beforeEach(() => {
+      uploadProps = Object.assign({}, props, {
+        handleAddedFile: jest.genMockFunction(),
+      });
+    });
+
+    it('restricts uploading', (done) => {
+      uploadProps.canUpload = false;
+
+      item = ReactTestUtils.renderIntoDocument(
+        <AssetDropzone {...uploadProps} />
+      );
+
+      return item.handleAddedFile({})
+        .then(() => {
+          expect("This shouldn't be called").toBeFalsey();
+        })
+        .catch((error) => {
+          expect(error instanceof Error).toBeTruthy();
+        })
+        .then(() => done());
+    });
+
+    it('loads non-images', (done) => {
+      const file = {
+        size: 123,
+        name: 'Test file',
+        type: 'text/plain',
+      };
+
+      item = ReactTestUtils.renderIntoDocument(
+        <AssetDropzone {...uploadProps} />
+      );
+      item.dropzone = {
+        processFile: jest.genMockFunction(),
+      };
+
+      return item.handleAddedFile(file)
+        .then((details) => {
+          expect(uploadProps.handleAddedFile).toBeCalled();
+          expect(item.dropzone.processFile).toBeCalled();
+          expect(details.size).toBe(123);
+          expect(details.title).toBe('Test file');
+          expect(details.url).toBeUndefined();
+        })
+        .catch(() => {
+          expect("This shouldn't be called").toBeFalsey();
+        })
+        .then(() => done());
+    });
   });
 
   describe('setPromptOnRemove()', () => {
