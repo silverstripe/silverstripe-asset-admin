@@ -6,9 +6,9 @@ use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Session;
-use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\FunctionalTest;
 use SilverStripe\Dev\TestOnly;
+use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\SecurityToken;
 use AssetStoreTest_SpyStore;
@@ -34,6 +34,9 @@ class AssetAdminTest extends FunctionalTest
         $memberID = $this->logInWithPermission('ADMIN');
         $this->session = Session::create(array('loggedInAs' => $memberID));
 
+        File::add_extension('SilverStripe\\AssetAdmin\\Tests\\AssetAdminTest_File');
+        Folder::add_extension('SilverStripe\\AssetAdmin\\Tests\\AssetAdminTest_Folder');
+
         // Create a test folders for each of the fixture references
         foreach (File::get()->filter('ClassName', 'SilverStripe\\Assets\\Folder') as $folder) {
             /** @var Folder $folder */
@@ -55,13 +58,16 @@ class AssetAdminTest extends FunctionalTest
 
     public function tearDown()
     {
+        File::remove_extension('SilverStripe\\AssetAdmin\\Tests\\AssetAdminTest_File');
+        Folder::remove_extension('SilverStripe\\AssetAdmin\\Tests\\AssetAdminTest_Folder');
+
         AssetStoreTest_SpyStore::reset();
         parent::tearDown();
     }
 
     public function testItCreatesFolder()
     {
-        $folder1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder', 'folder1');
+        $folder1 = $this->objFromFixture('SilverStripe\\Assets\\Folder', 'folder1');
 
         $response = Director::test(
             'admin/assets/api/createFolder',
@@ -83,16 +89,13 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItRestrictsCreateFolderByCanCreate()
     {
-        $folder = $this->objFromFixture(
-            'SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder',
-            'disallowCanCreate'
-        );
+        $folder = $this->objFromFixture('SilverStripe\\Assets\\Folder', 'folder1');
 
         $response = Director::test(
             'admin/assets/api/createFolder',
             [
                 'ParentID' => $folder->ID,
-                'Name' => 'testItRestrictsCreateFolderByCanCreate',
+                'Name' => 'disallowCanCreate',
                 'SecurityID' => SecurityToken::inst()->getValue(),
             ],
             $this->session,
@@ -104,10 +107,7 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItRestrictsCreateFolderByCanAddChildren()
     {
-        $folder = $this->objFromFixture(
-            'SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder',
-            'disallowCanAddChildren'
-        );
+        $folder = $this->objFromFixture('SilverStripe\\Assets\\Folder', 'disallowCanAddChildren');
 
         $response = Director::test(
             'admin/assets/api/createFolder',
@@ -125,20 +125,21 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItCreatesFile()
     {
-        $folder1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder', 'folder1');
+        $folder1 = $this->objFromFixture('SilverStripe\\Assets\\Folder', 'folder1');
 
         /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'testItCreatesFile.txt'));
         $_FILES = $fileData;
-        $response = Director::test(
-            'admin/assets/api/createFile',
-            array_merge(
+        $postedData = array_merge(
                 $fileData,
                 [
                     'ParentID' => $folder1->ID,
                     'SecurityID' => SecurityToken::inst()->getValue(),
                 ]
-            ),
+        );
+        $response = Director::test(
+            'admin/assets/api/createFile',
+            $postedData,
             $this->session,
             'POST'
         );
@@ -148,17 +149,28 @@ class AssetAdminTest extends FunctionalTest
         $this->assertNotNull($newFile);
         $this->assertEquals($folder1->ID, $newFile->ParentID);
         $this->assertEquals('testItCreatesFile.txt', $newFile->Name);
+
+        // Test that duplicate uploads are renamed
+        $response = Director::test(
+            'admin/assets/api/createFile',
+            $postedData,
+            $this->session,
+            'POST'
+        );
+        $this->assertFalse($response->isError());
+        $responseData = json_decode($response->getBody(), true);
+        $newFile2 = File::get()->byID($responseData[0]['id']);
+        $this->assertNotNull($newFile2);
+        $this->assertEquals($folder1->ID, $newFile2->ParentID);
+        $this->assertNotEquals($newFile->ID, $newFile2->ID);
+        $this->assertEquals('testItCreatesFile-v2.txt', $newFile2->Name);
     }
 
     public function testItRestrictsCreateFileOnCanCreate()
     {
-        $folder = $this->objFromFixture(
-            'SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder',
-            'disallowCanCreate'
-        );
+        $folder = $this->objFromFixture('SilverStripe\\Assets\\Folder', 'folder1');
 
-        /** @skipUpgrade */
-        $fileData = array('Upload' => $this->getUploadFile('Upload', 'test.txt'));
+        $fileData = array('Upload' => $this->getUploadFile('Upload', 'disallowCanCreate.txt'));
         $_FILES = $fileData;
         $response = Director::test(
             'admin/assets/api/createFile',
@@ -178,10 +190,7 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItRestrictsCreateFileOnCanAddChildren()
     {
-        $folder = $this->objFromFixture(
-            'SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder',
-            'disallowCanAddChildren'
-        );
+        $folder = $this->objFromFixture('SilverStripe\\Assets\\Folder', 'disallowCanAddChildren');
 
         /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'test.txt'));
@@ -205,7 +214,7 @@ class AssetAdminTest extends FunctionalTest
     public function testItRestrictsCreateFileOnExtension()
     {
         $folder1 = $this->objFromFixture(
-            'SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder',
+            'SilverStripe\\Assets\\Folder',
             'folder1'
         );
 
@@ -235,8 +244,8 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItFiltersByDateInSearch()
     {
-        $file1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
-        $file2 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file2');
+        $file1 = $this->objFromFixture('SilverStripe\\Assets\\File', 'file1');
+        $file2 = $this->objFromFixture('SilverStripe\\Assets\\File', 'file2');
 
         // Force creation times
         $file1->Created = '2014-01-05 23:11:39';
@@ -288,9 +297,9 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItDoesNotFilterByDefaultInSearch()
     {
-        $rootfile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'rootfile');
-        $file1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
-        $folder1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder', 'folder1');
+        $rootfile = $this->objFromFixture('SilverStripe\\Assets\\File', 'rootfile');
+        $file1 = $this->objFromFixture('SilverStripe\\Assets\\File', 'file1');
+        $folder1 = $this->objFromFixture('SilverStripe\\Assets\\Folder', 'folder1');
 
         $results = $this->getResultsForSearch();
         $this->assertContains($rootfile->ID, array_column($results['files'], 'id'),
@@ -306,8 +315,8 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItFiltersByParentInSearch()
     {
-        $file1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
-        $file2 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file2');
+        $file1 = $this->objFromFixture('SilverStripe\\Assets\\File', 'file1');
+        $file2 = $this->objFromFixture('SilverStripe\\Assets\\File', 'file2');
         $file1Folder = $file1->Parent();
         $file2Folder = $file2->Parent();
 
@@ -325,7 +334,7 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItFiltersByNameInSearch()
     {
-        $file1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
+        $file1 = $this->objFromFixture('SilverStripe\\Assets\\File', 'file1');
 
         $results = $this->getResultsForSearch(['Name' => $file1->Name]);
         $this->assertEquals(count($results['files']), 1,
@@ -342,8 +351,8 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItRestrictsViewInSearch()
     {
-        $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
-        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'disallowCanView');
+        $allowedFile = $this->objFromFixture('SilverStripe\\Assets\\File', 'file1');
+        $disallowedFile = $this->objFromFixture('SilverStripe\\Assets\\File', 'disallowCanView');
 
         $results = $this->getResultsForSearch(['Name' => $allowedFile->Name]);
         $this->assertEquals(count($results['files']), 1);
@@ -355,9 +364,9 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItRestrictsViewInReadFolder()
     {
-        $folder1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder', 'folder1');
-        $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
-        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'disallowCanView');
+        $folder1 = $this->objFromFixture('SilverStripe\\Assets\\Folder', 'folder1');
+        $allowedFile = $this->objFromFixture('SilverStripe\\Assets\\File', 'file1');
+        $disallowedFile = $this->objFromFixture('SilverStripe\\Assets\\File', 'disallowCanView');
 
         $response = $this->get('admin/assets/api/readFolder?' . http_build_query(['id' => $folder1->ID]));
         $files = json_decode($response->getBody(), true);
@@ -373,14 +382,15 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItRestrictsUpdateFile()
     {
-        $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
-        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'disallowCanEdit');
+        $allowedFile = $this->objFromFixture('SilverStripe\\Assets\\File', 'file1');
+        $disallowedFile = $this->objFromFixture('SilverStripe\\Assets\\File', 'disallowCanEdit');
 
         $response = Director::test(
             'admin/assets/FileEditForm',
             [
                 'action_save' => 1,
                 'ID' => $allowedFile->ID,
+                'Name' => 'disallowCanEdit.txt',
                 'Title' => 'new',
                 'SecurityID' => SecurityToken::inst()->getValue(),
             ],
@@ -403,8 +413,8 @@ class AssetAdminTest extends FunctionalTest
 
     public function testItRestrictsDelete()
     {
-        $allowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File', 'file1');
-        $disallowedFile = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_File',
+        $allowedFile = $this->objFromFixture('SilverStripe\\Assets\\File', 'file1');
+        $disallowedFile = $this->objFromFixture('SilverStripe\\Assets\\File',
             'disallowCanDelete');
 
         $response = Director::test(
@@ -469,48 +479,67 @@ class AssetAdminTest extends FunctionalTest
     }
 }
 
-class AssetAdminTest_File extends File implements TestOnly
+class AssetAdminTest_File extends DataExtension implements TestOnly
 {
     public function canView($member = null)
     {
-        return ($this->Name != 'disallowCanView.txt');
+        if ($this->owner->Name === 'disallowCanView.txt') {
+            return false;
+        }
     }
 
     public function canEdit($member = null)
     {
-        return ($this->Name != 'disallowCanEdit.txt');
+        if ($this->owner->Name === 'disallowCanEdit.txt') {
+            return false;
+        }
     }
 
     public function canDelete($member = null)
     {
-        return ($this->Name != 'disallowCanDelete.txt');
+        if ($this->owner->Name === 'disallowCanDelete.txt') {
+            return false;
+        }
+    }
+
+    public function canCreate($member = null, $context = [])
+    {
+        if (isset($context['Parent']) && $context['Parent']->Name === 'disallowCanAddChildren') {
+            return false;
+        }
+        if (isset($context['Upload']['name']) && $context['Upload']['name'] === 'disallowCanCreate.txt') {
+            return false;
+        }
     }
 }
 
-class AssetAdminTest_Folder extends Folder implements TestOnly
+class AssetAdminTest_Folder extends DataExtension implements TestOnly
 {
     public function canView($member = null, $context = array())
     {
-        return ($this->Name != 'disallowCanView');
+        if ($this->owner->Name === 'disallowCanView') {
+            return false;
+        }
     }
 
     public function canEdit($member = null, $context = array())
     {
-        return ($this->Name != 'disallowCanEdit');
+        if ($this->owner->Name === 'disallowCanEdit') {
+            return false;
+        }
     }
 
     public function canDelete($member = null, $context = array())
     {
-        return ($this->Name != 'disallowCanDelete');
+        if ($this->owner->Name === 'disallowCanDelete') {
+            return false;
+        }
     }
 
     public function canCreate($member = null, $context = array())
     {
-        return ($this->Name != 'disallowCanCreate');
+        if (isset($context['Name']) && $context['Name'] === 'disallowCanCreate') {
+            return false;
     }
-
-    public function canAddChildren($member = null, $context = array())
-    {
-        return ($this->Name != 'disallowCanAddChildren');
     }
 }

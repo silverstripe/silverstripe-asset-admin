@@ -313,24 +313,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return new HTTPResponse(null, 400);
         }
 
-        // check canAddChildren permissions
+        // Check parent record
+        /** @var Folder $parentRecord */
+        $parentRecord = null;
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
             $parentRecord = Folder::get()->byID($data['ParentID']);
-            if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
-                return (new HTTPResponse(json_encode(['status' => 'error']), 403))
-                    ->addHeader('Content-Type', 'application/json');
-            }
-        } else {
-            $parentRecord = Folder::singleton();
         }
+        $data['Parent'] = $parentRecord;
 
-        // check create permissions
-        if (!$parentRecord->canCreate()) {
-            return (new HTTPResponse(json_encode(['status' => 'error']), 403))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        /** @skipUpgrade */
         $tmpFile = $request->postVar('Upload');
         if(!$upload->validate($tmpFile)) {
             $result = ['error' => $upload->getErrors()];
@@ -340,7 +330,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // TODO Allow batch uploads
         $fileClass = File::get_class_for_file_extension(File::get_file_extension($tmpFile['name']));
+        /** @var File $file */
         $file = Injector::inst()->create($fileClass);
+
+        // check canCreate permissions
+        if (!$file->canCreate(null, $data)) {
+            return (new HTTPResponse(json_encode(['status' => 'error']), 403))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
         $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
         if(!$uploadResult) {
             $result = ['error' => 'unknown'];
@@ -348,7 +346,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ->addHeader('Content-Type', 'application/json');
         }
 
-        $file->ParentID = $parentRecord->ID;
+        $file->ParentID = $parentRecord ? $parentRecord->ID : 0;
         $file->write();
 
         $result = [$this->getObjectFromData($file)];
@@ -376,22 +374,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // check addchildren permissions
+        /** @var Folder $parentRecord */
+        $parentRecord = null;
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
             $parentRecord = DataObject::get_by_id($class, $data['ParentID']);
-            if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
-                return (new HTTPResponse(null, 403))
-                    ->addHeader('Content-Type', 'application/json');
-            }
-        } else {
-            $parentRecord = singleton($class);
         }
-        $data['ParentID'] = ($parentRecord->exists()) ? (int)$parentRecord->ID : 0;
-
-        // check create permissions
-        if (!$parentRecord->canCreate()) {
-            return (new HTTPResponse(null, 403))
-                ->addHeader('Content-Type', 'application/json');
-        }
+        $data['Parent'] = $parentRecord;
+        $data['ParentID'] = $parentRecord ? (int)$parentRecord->ID : 0;
 
         // Build filename
         $baseFilename = isset($data['Name'])
@@ -415,6 +404,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Create record
         /** @var Folder $record */
         $record = Injector::inst()->create($class);
+
+        // check create permissions
+        if (!$record->canCreate(null, $data)) {
+            return (new HTTPResponse(null, 403))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
         $record->ParentID = $data['ParentID'];
         $record->Name = $record->Title = basename($data['Name']);
         $record->write();
@@ -470,9 +466,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Customize fields
         $dateHeader = HeaderField::create('Date', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
         $dateFrom = DateField::create('CreatedFrom', _t('CMSSearch.FILTERDATEFROM', 'From'))
-            ->setConfig('showcalendar', true);
+        ->setConfig('showcalendar', true);
         $dateTo = DateField::create('CreatedTo', _t('CMSSearch.FILTERDATETO', 'To'))
-            ->setConfig('showcalendar', true);
+        ->setConfig('showcalendar', true);
         $dateGroup = FieldGroup::create(
             $dateHeader,
             $dateFrom,
@@ -735,6 +731,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $context->removeFilterByName('Name');
 
         // Lazy loaded list. Allows adding new filters through SearchContext.
+        /** @var DataList $list */
         $list = $context->getResults($params);
 
         // Re-add previously removed "Name" filter as combined filter
