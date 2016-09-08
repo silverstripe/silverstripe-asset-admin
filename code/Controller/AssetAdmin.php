@@ -5,47 +5,37 @@ namespace SilverStripe\AssetAdmin\Controller;
 use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
-use SilverStripe\Filesystem\Storage\AssetNameGenerator;
+use SilverStripe\Assets\File;
+use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Storage\AssetNameGenerator;
+use SilverStripe\Assets\Upload;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\SS_HTTPRequest;
+use SilverStripe\Control\SS_HTTPResponse;
+use SilverStripe\Core\Convert;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\DateField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldGroup;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\PopoverField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\ORM\Search\SearchContext;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\SecurityToken;
-use SearchContext;
-use DateField;
-use DropdownField;
-use Controller;
-use FieldList;
-use Form;
-use CheckboxField;
-use File;
-use Requirements;
-use Injector;
-use Folder;
-use HeaderField;
-use FieldGroup;
-use SS_HTTPRequest;
-use SS_HTTPResponse;
-use Upload;
-use Config;
-use FormAction;
-use TextField;
-use HiddenField;
-use ReadonlyField;
-use LiteralField;
-use PopoverField;
-use HTMLReadonlyField;
-use Convert;
-use DatetimeField;
+use SilverStripe\View\Requirements;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
  * It provides an interface for manipulating the File and Folder objects in the system.
- *
- * @package cms
- * @subpackage assets
  */
 class AssetAdmin extends LeftAndMain implements PermissionProvider
 {
@@ -55,7 +45,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     private static $menu_title = 'Files';
 
-    private static $tree_class = 'Folder';
+    private static $tree_class = 'SilverStripe\\Assets\\Folder';
 
     private static $url_handlers = [
         // Legacy redirect for SS3-style detail view
@@ -114,7 +104,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         Requirements::javascript(ASSET_ADMIN_DIR . "/client/dist/js/bundle.js");
         Requirements::css(ASSET_ADMIN_DIR . "/client/dist/styles/bundle.css");
 
-        CMSBatchActionHandler::register('delete', 'SilverStripe\AssetAdmin\BatchAction\DeleteAssets', 'Folder');
+        CMSBatchActionHandler::register(
+            'delete',
+            'SilverStripe\AssetAdmin\BatchAction\DeleteAssets',
+            'SilverStripe\\Assets\\Folder'
+        );
     }
 
     public function getClientConfig()
@@ -183,7 +177,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $folderID = (int)$params['id'];
         /** @var Folder $folder */
-        $folder = $folderID ? Folder::get()->byID($folderID) : singleton('Folder');
+        $folder = $folderID ? Folder::get()->byID($folderID) : Folder::singleton();
 
         if (!$folder) {
             $this->httpError(400);
@@ -327,7 +321,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                     ->addHeader('Content-Type', 'application/json');
             }
         } else {
-            $parentRecord = singleton('Folder');
+            $parentRecord = Folder::singleton();
         }
 
         // check create permissions
@@ -336,6 +330,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ->addHeader('Content-Type', 'application/json');
         }
 
+        /** @skipUpgrade */
         $tmpFile = $request->postVar('Upload');
         if(!$upload->validate($tmpFile)) {
             $result = ['error' => $upload->getErrors()];
@@ -372,7 +367,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $data = $request->postVars();
 
-        $class = 'Folder';
+        $class = 'SilverStripe\\Assets\\Folder';
 
         // CSRF check
         $token = SecurityToken::inst();
@@ -437,6 +432,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function legacyRedirectForEditView($request)
     {
         $fileID = $request->param('FileID');
+        /** @var File $file */
         $file = File::get()->byID($fileID);
         $link = $this->getFileEditLink($file) ?: $this->Link();
         $this->redirect($link);
@@ -474,15 +470,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Customize fields
         $dateHeader = HeaderField::create('Date', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
         $dateFrom = DateField::create('CreatedFrom', _t('CMSSearch.FILTERDATEFROM', 'From'))
-        ->setConfig('showcalendar', true);
+            ->setConfig('showcalendar', true);
         $dateTo = DateField::create('CreatedTo', _t('CMSSearch.FILTERDATETO', 'To'))
-        ->setConfig('showcalendar', true);
+            ->setConfig('showcalendar', true);
         $dateGroup = FieldGroup::create(
             $dateHeader,
             $dateFrom,
             $dateTo
         );
         $context->addField($dateGroup);
+        /** @skipUpgrade */
         $appCategories = array(
             'archive' => _t('AssetAdmin.AppCategoryArchive', 'Archive', 'A collection of files'),
             'audio' => _t('AssetAdmin.AppCategoryAudio', 'Audio'),
@@ -578,7 +575,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $actions->push(
             FormAction::create(
                 'delete',
-                _t('SilverStripe\AssetAdmin\Controller\AssetAdmin.DELETE_BUTTON', 'Delete')
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.DELETE_BUTTON', 'Delete')
             )
                 ->setIcon('trash-bin')
         );
@@ -588,8 +585,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             $actions->push(PopoverField::create([
                 FormAction::create(
                     'addtocampaign',
-                    _t('CAMPAIGNS.ADDTOCAMPAIGN',
-                        'Add to campaign')
+                    _t('CAMPAIGNS.ADDTOCAMPAIGN', 'Add to campaign')
                 ),
             ])
                 ->setPlacement('top')
@@ -661,7 +657,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Return the record data in the same response as the schema to save a postback
         $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
         $schemaData['record'] = $this->getObjectFromData($record);
-        $response = new SS_HTTPResponse(\Convert::raw2json($schemaData));
+        $response = new SS_HTTPResponse(Convert::raw2json($schemaData));
         $response->addHeader('Content-Type', 'application/json');
         return $response;
     }
@@ -681,8 +677,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'parent' => null,
             'title' => $file->Title,
             'exists' => $file->exists(), // Broken file check
-            'type' => $file->is_a('Folder') ? 'folder' : $file->FileType,
-            'category' => $file->is_a('Folder') ? 'folder' : $file->appCategory(),
+            'type' => $file instanceof Folder ? 'folder' : $file->FileType,
+            'category' => $file instanceof Folder ? 'folder' : $file->appCategory(),
             'name' => $file->Name,
             'filename' => $file->Filename,
             'extension' => $file->Extension,
@@ -873,7 +869,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $upload = Upload::create();
         $upload->getValidator()->setAllowedExtensions(
             // filter out '' since this would be a regex problem on JS end
-            array_filter(Config::inst()->get('File', 'allowed_extensions'))
+            array_filter(File::config()->get('allowed_extensions'))
         );
 
         return $upload;

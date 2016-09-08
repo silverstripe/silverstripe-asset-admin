@@ -3,15 +3,12 @@
 namespace SilverStripe\AssetAdmin\BatchAction;
 
 use SilverStripe\Admin\CMSBatchAction;
-use Convert;
+use SilverStripe\Core\Convert;
 use SilverStripe\ORM\SS_List;
 
 /**
  * Delete multiple {@link Folder} records (and the associated filesystem nodes).
  * Usually used through the {@link AssetAdmin} interface.
- *
- * @package cms
- * @subpackage batchactions
  */
 class DeleteAssets extends CMSBatchAction
 {

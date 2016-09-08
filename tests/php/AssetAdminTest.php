@@ -2,15 +2,16 @@
 
 namespace SilverStripe\AssetAdmin\Tests;
 
+use SilverStripe\Assets\File;
+use SilverStripe\Assets\Folder;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\Session;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\FunctionalTest;
+use SilverStripe\Dev\TestOnly;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\SecurityToken;
-use FunctionalTest;
-use File;
-use Folder;
 use AssetStoreTest_SpyStore;
-use Director;
-use Injector;
-use Session;
 
 /**
  * Tests {@see AssetAdmin}
@@ -31,17 +32,17 @@ class AssetAdminTest extends FunctionalTest
 
         AssetStoreTest_SpyStore::activate('AssetAdminTest');
         $memberID = $this->logInWithPermission('ADMIN');
-        $this->session = Injector::inst()->create('Session', array('loggedInAs' => $memberID));
+        $this->session = Session::create(array('loggedInAs' => $memberID));
 
         // Create a test folders for each of the fixture references
-        foreach (File::get()->filter('ClassName', 'Folder') as $folder) {
+        foreach (File::get()->filter('ClassName', 'SilverStripe\\Assets\\Folder') as $folder) {
             /** @var Folder $folder */
             $folder->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         }
 
         // Create a test files for each of the fixture references
         $content = str_repeat('x', 1000000);
-        foreach (File::get()->exclude('ClassName', 'Folder') as $file) {
+        foreach (File::get()->exclude('ClassName', 'SilverStripe\\Assets\\Folder') as $file) {
             /** @var File $file */
             $file->setFromString($content, $file->generateFilename());
             $file->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
@@ -74,7 +75,7 @@ class AssetAdminTest extends FunctionalTest
         );
         $this->assertFalse($response->isError());
         $responseData = json_decode($response->getBody(), true);
-        $newFolder = \Folder::get()->byID($responseData['id']);
+        $newFolder = Folder::get()->byID($responseData['id']);
         $this->assertNotNull($newFolder);
         $this->assertEquals($folder1->ID, $newFolder->ParentID);
         $this->assertEquals('testItCreatesFolder', $newFolder->Name);
@@ -126,6 +127,7 @@ class AssetAdminTest extends FunctionalTest
     {
         $folder1 = $this->objFromFixture('SilverStripe\AssetAdmin\Tests\AssetAdminTest_Folder', 'folder1');
 
+        /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'testItCreatesFile.txt'));
         $_FILES = $fileData;
         $response = Director::test(
@@ -142,7 +144,7 @@ class AssetAdminTest extends FunctionalTest
         );
         $this->assertFalse($response->isError());
         $responseData = json_decode($response->getBody(), true);
-        $newFile = \File::get()->byID($responseData[0]['id']);
+        $newFile = File::get()->byID($responseData[0]['id']);
         $this->assertNotNull($newFile);
         $this->assertEquals($folder1->ID, $newFile->ParentID);
         $this->assertEquals('testItCreatesFile.txt', $newFile->Name);
@@ -155,6 +157,7 @@ class AssetAdminTest extends FunctionalTest
             'disallowCanCreate'
         );
 
+        /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'test.txt'));
         $_FILES = $fileData;
         $response = Director::test(
@@ -180,6 +183,7 @@ class AssetAdminTest extends FunctionalTest
             'disallowCanAddChildren'
         );
 
+        /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'test.txt'));
         $_FILES = $fileData;
         $response = Director::test(
@@ -205,6 +209,7 @@ class AssetAdminTest extends FunctionalTest
             'folder1'
         );
 
+        /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'disallowed.php'));
         $_FILES = $fileData;
         $response = Director::test(
@@ -464,7 +469,7 @@ class AssetAdminTest extends FunctionalTest
     }
 }
 
-class AssetAdminTest_File extends File implements \TestOnly
+class AssetAdminTest_File extends File implements TestOnly
 {
     public function canView($member = null)
     {
@@ -482,7 +487,7 @@ class AssetAdminTest_File extends File implements \TestOnly
     }
 }
 
-class AssetAdminTest_Folder extends Folder implements \TestOnly
+class AssetAdminTest_Folder extends Folder implements TestOnly
 {
     public function canView($member = null, $context = array())
     {
