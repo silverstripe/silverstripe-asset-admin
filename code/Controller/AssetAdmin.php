@@ -10,8 +10,8 @@ use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Storage\AssetNameGenerator;
 use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
-use SilverStripe\Control\SS_HTTPRequest;
-use SilverStripe\Control\SS_HTTPResponse;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxField;
@@ -161,10 +161,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Fetches a collection of files by ParentID.
      *
-     * @param SS_HTTPRequest $request
-     * @return SS_HTTPResponse
+     * @param HTTPRequest $request
+     * @return HTTPResponse
      */
-    public function apiReadFolder(SS_HTTPRequest $request)
+    public function apiReadFolder(HTTPRequest $request)
     {
         $params = $request->requestVars();
         $items = array();
@@ -213,7 +213,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Build response
-        $response = new SS_HTTPResponse();
+        $response = new HTTPResponse();
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(json_encode([
             'files' => $items,
@@ -230,16 +230,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-     * @param SS_HTTPRequest $request
+     * @param HTTPRequest $request
      *
-     * @return SS_HTTPResponse
+     * @return HTTPResponse
      */
-    public function apiSearch(SS_HTTPRequest $request)
+    public function apiSearch(HTTPRequest $request)
     {
         $params = $request->getVars();
         $list = $this->getList($params);
 
-        $response = new SS_HTTPResponse();
+        $response = new HTTPResponse();
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(json_encode([
             // Serialisation
@@ -253,22 +253,22 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-     * @param SS_HTTPRequest $request
+     * @param HTTPRequest $request
      *
-     * @return SS_HTTPResponse
+     * @return HTTPResponse
      */
-    public function apiDelete(SS_HTTPRequest $request)
+    public function apiDelete(HTTPRequest $request)
     {
         parse_str($request->getBody(), $vars);
 
         // CSRF check
         $token = SecurityToken::inst();
         if (empty($vars[$token->getName()]) || !$token->check($vars[$token->getName()])) {
-            return new SS_HTTPResponse(null, 400);
+            return new HTTPResponse(null, 400);
         }
 
         if (!isset($vars['ids']) || !$vars['ids']) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+            return (new HTTPResponse(json_encode(['status' => 'error']), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
 
@@ -276,14 +276,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $files = $this->getList()->filter("ID", $fileIds)->toArray();
 
         if (!count($files)) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
+            return (new HTTPResponse(json_encode(['status' => 'error']), 404))
                 ->addHeader('Content-Type', 'application/json');
         }
 
         if (!min(array_map(function (File $file) {
             return $file->canDelete();
         }, $files))) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+            return (new HTTPResponse(json_encode(['status' => 'error']), 401))
                 ->addHeader('Content-Type', 'application/json');
         }
 
@@ -292,17 +292,17 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             $file->delete();
         }
 
-        return (new SS_HTTPResponse(json_encode(['status' => 'file was deleted'])))
+        return (new HTTPResponse(json_encode(['status' => 'file was deleted'])))
             ->addHeader('Content-Type', 'application/json');
     }
 
     /**
      * Creates a single file based on a form-urlencoded upload.
      *
-     * @param SS_HTTPRequest $request
-     * @return SS_HTTPRequest|SS_HTTPResponse
+     * @param HTTPRequest $request
+     * @return HTTPRequest|HTTPResponse
      */
-    public function apiCreateFile(SS_HTTPRequest $request)
+    public function apiCreateFile(HTTPRequest $request)
     {
         $data = $request->postVars();
         $upload = $this->getUpload();
@@ -310,14 +310,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // CSRF check
         $token = SecurityToken::inst();
         if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
-            return new SS_HTTPResponse(null, 400);
+            return new HTTPResponse(null, 400);
         }
 
         // check canAddChildren permissions
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
             $parentRecord = Folder::get()->byID($data['ParentID']);
             if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
-                return (new SS_HTTPResponse(json_encode(['status' => 'error']), 403))
+                return (new HTTPResponse(json_encode(['status' => 'error']), 403))
                     ->addHeader('Content-Type', 'application/json');
             }
         } else {
@@ -326,7 +326,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // check create permissions
         if (!$parentRecord->canCreate()) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 403))
+            return (new HTTPResponse(json_encode(['status' => 'error']), 403))
                 ->addHeader('Content-Type', 'application/json');
         }
 
@@ -334,7 +334,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $tmpFile = $request->postVar('Upload');
         if(!$upload->validate($tmpFile)) {
             $result = ['error' => $upload->getErrors()];
-            return (new SS_HTTPResponse(json_encode($result), 400))
+            return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
 
@@ -344,7 +344,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
         if(!$uploadResult) {
             $result = ['error' => 'unknown'];
-            return (new SS_HTTPResponse(json_encode($result), 400))
+            return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
 
@@ -353,17 +353,17 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $result = [$this->getObjectFromData($file)];
 
-        return (new SS_HTTPResponse(json_encode($result)))
+        return (new HTTPResponse(json_encode($result)))
             ->addHeader('Content-Type', 'application/json');
     }
 
     /**
      * Creates a single folder, within an optional parent folder.
      *
-     * @param SS_HTTPRequest $request
-     * @return SS_HTTPRequest|SS_HTTPResponse
+     * @param HTTPRequest $request
+     * @return HTTPRequest|HTTPResponse
      */
-    public function apiCreateFolder(SS_HTTPRequest $request)
+    public function apiCreateFolder(HTTPRequest $request)
     {
         $data = $request->postVars();
 
@@ -372,14 +372,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // CSRF check
         $token = SecurityToken::inst();
         if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
-            return new SS_HTTPResponse(null, 400);
+            return new HTTPResponse(null, 400);
         }
 
         // check addchildren permissions
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
             $parentRecord = DataObject::get_by_id($class, $data['ParentID']);
             if ($parentRecord->hasMethod('canAddChildren') && !$parentRecord->canAddChildren()) {
-                return (new SS_HTTPResponse(null, 403))
+                return (new HTTPResponse(null, 403))
                     ->addHeader('Content-Type', 'application/json');
             }
         } else {
@@ -389,7 +389,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // check create permissions
         if (!$parentRecord->canCreate()) {
-            return (new SS_HTTPResponse(null, 403))
+            return (new HTTPResponse(null, 403))
                 ->addHeader('Content-Type', 'application/json');
         }
 
@@ -421,13 +421,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $result = $this->getObjectFromData($record);
 
-        return (new SS_HTTPResponse(json_encode($result)))->addHeader('Content-Type', 'application/json');
+        return (new HTTPResponse(json_encode($result)))->addHeader('Content-Type', 'application/json');
     }
 
     /**
      * Redirects 3.x style detail links to new 4.x style routing.
      *
-     * @param SS_HTTPRequest $request
+     * @param HTTPRequest $request
      */
     public function legacyRedirectForEditView($request)
     {
@@ -629,12 +629,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * @param array $data
      * @param Form $form
-     * @return SS_HTTPResponse
+     * @return HTTPResponse
      */
     public function save($data, $form)
     {
         if (!isset($data['ID']) || !is_numeric($data['ID'])) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 400))
+            return (new HTTPResponse(json_encode(['status' => 'error']), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
 
@@ -642,12 +642,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $record = $this->getList()->filter('ID', $id)->first();
 
         if (!$record) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 404))
+            return (new HTTPResponse(json_encode(['status' => 'error']), 404))
                 ->addHeader('Content-Type', 'application/json');
         }
 
         if (!$record->canEdit()) {
-            return (new SS_HTTPResponse(json_encode(['status' => 'error']), 401))
+            return (new HTTPResponse(json_encode(['status' => 'error']), 401))
                 ->addHeader('Content-Type', 'application/json');
         }
 
@@ -657,7 +657,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Return the record data in the same response as the schema to save a postback
         $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
         $schemaData['record'] = $this->getObjectFromData($record);
-        $response = new SS_HTTPResponse(Convert::raw2json($schemaData));
+        $response = new HTTPResponse(Convert::raw2json($schemaData));
         $response->addHeader('Content-Type', 'application/json');
         return $response;
     }
@@ -793,7 +793,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      *
      * @param array $data
      * @param Form $form
-     * @return DBHTMLText|SS_HTTPResponse
+     * @return DBHTMLText|HTTPResponse
      */
     public function addtocampaign($data, $form)
     {
@@ -808,7 +808,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 $data = $this->getSchemaForForm($handler->Form($record));
                 $data['message'] = $results;
 
-                $response = new SS_HTTPResponse(Convert::raw2json($data));
+                $response = new HTTPResponse(Convert::raw2json($data));
                 $response->addHeader('Content-Type', 'application/json');
                 return $response;
             }
@@ -819,7 +819,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Url handler for add to campaign form
      *
-     * @param SS_HTTPRequest $request
+     * @param HTTPRequest $request
      * @return Form
      */
     public function AddToCampaignForm($request)
