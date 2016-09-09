@@ -107,7 +107,7 @@ class Editor extends Component {
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
 
 
-    return (<div className="editor form--no-dividers container-fluid">
+    return (<div className="panel panel--padded panel--scrollable form--no-dividers editor">
       { this.getCancelButton() }
 
       <div className="editor__details">
