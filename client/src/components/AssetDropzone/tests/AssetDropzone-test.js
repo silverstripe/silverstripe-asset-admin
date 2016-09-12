@@ -8,7 +8,7 @@ import ReactTestUtils from 'react-addons-test-utils';
 import AssetDropzone from '../AssetDropzone.js';
 
 describe('AssetDropzone', () => {
-  let props;
+  let props = null;
 
   beforeEach(() => {
     props = {
@@ -25,7 +25,7 @@ describe('AssetDropzone', () => {
   });
 
   describe('constructor()', () => {
-    let item;
+    let item = null;
 
     beforeEach(() => {
       item = ReactTestUtils.renderIntoDocument(
@@ -42,7 +42,7 @@ describe('AssetDropzone', () => {
   });
 
   describe('componentDidMount()', () => {
-    let item;
+    let item = null;
 
     beforeEach(() => {
       props.promptOnRemove = 'prompt';
@@ -62,7 +62,7 @@ describe('AssetDropzone', () => {
   });
 
   describe('componentWillUnmount()', () => {
-    let item;
+    let item = null;
 
     beforeEach(() => {
       item = ReactTestUtils.renderIntoDocument(
@@ -79,8 +79,8 @@ describe('AssetDropzone', () => {
   });
 
   describe('handleAddedFile()', () => {
-    let item;
-    let uploadProps;
+    let item = null;
+    let uploadProps = null;
 
     beforeEach(() => {
       uploadProps = Object.assign({}, props, {
@@ -135,7 +135,7 @@ describe('AssetDropzone', () => {
   });
 
   describe('setPromptOnRemove()', () => {
-    let item;
+    let item = null;
 
     beforeEach(() => {
       item = ReactTestUtils.renderIntoDocument(

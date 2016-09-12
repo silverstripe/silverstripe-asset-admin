@@ -12,7 +12,7 @@ import ReactTestUtils from 'react-addons-test-utils';
 import { Gallery } from '../Gallery';
 
 describe('Gallery', () => {
-  let props;
+  let props = null;
 
   beforeEach(() => {
     props = {
@@ -88,7 +88,7 @@ describe('Gallery', () => {
   });
 
   describe('handleSort()', () => {
-    let gallery;
+    let gallery = null;
     const event = {
       target: {
         dataset: {
@@ -142,7 +142,7 @@ describe('Gallery', () => {
   });
 
   describe('getBackButton()', () => {
-    let gallery;
+    let gallery = null;
 
     beforeEach(() => {
       gallery = ReactTestUtils.renderIntoDocument(
@@ -168,7 +168,7 @@ describe('Gallery', () => {
   });
 
   describe('getBulkActionsComponent()', () => {
-    let gallery;
+    let gallery = null;
 
     beforeEach(() => {
       props.bulkActions = true;
@@ -193,7 +193,7 @@ describe('Gallery', () => {
   });
 
   describe('getMoreButton()', () => {
-    let gallery;
+    let gallery = null;
 
     beforeEach(() => {
       props.files = [1];
@@ -223,7 +223,7 @@ describe('Gallery', () => {
   });
 
   describe('handleItemDelete()', () => {
-    let gallery;
+    let gallery = null;
     const item = { id: 1 };
     const event = {};
 
@@ -253,7 +253,7 @@ describe('Gallery', () => {
   });
 
   describe('itemIsSelected()', () => {
-    let gallery;
+    let gallery = null;
 
     beforeEach(() => {
       props.selectedFiles = [1];
@@ -273,7 +273,7 @@ describe('Gallery', () => {
   });
 
   describe('handleActivate()', () => {
-    let gallery;
+    let gallery = null;
 
     beforeEach(() => {
       props.onOpenFolder = jest.genMockFunction();
@@ -303,7 +303,7 @@ describe('Gallery', () => {
   });
 
   describe('handleToggleSelect()', () => {
-    let gallery;
+    let gallery = null;
     const event = {};
 
     beforeEach(() => {
@@ -334,7 +334,7 @@ describe('Gallery', () => {
   });
 
   describe('handleCreateFolder()', () => {
-    let gallery;
+    let gallery = null;
     const mockFile = { name: 'newFolder' };
     const promise = Promise.resolve(mockFile);
 

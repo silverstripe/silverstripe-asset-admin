@@ -23,7 +23,7 @@ const initialState = {
  * @param object [action.payload] - Optional data passed with the action.
  */
 export default function galleryReducer(state = initialState, action) {
-  let nextState;
+  let nextState = null;
 
   switch (action.type) {
 
@@ -86,7 +86,7 @@ export default function galleryReducer(state = initialState, action) {
     }
 
     case GALLERY.SELECT_FILES: {
-      let selectedFiles;
+      let selectedFiles = null;
 
       if (action.payload.ids === null) {
         // No param was passed, so select everything.
@@ -104,7 +104,7 @@ export default function galleryReducer(state = initialState, action) {
     }
 
     case GALLERY.DESELECT_FILES: {
-      let selectedFiles;
+      let selectedFiles = null;
       if (action.payload.ids === null) {
         // No param was passed, deselect everything.
         selectedFiles = [];

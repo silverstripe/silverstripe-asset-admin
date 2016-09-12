@@ -7,7 +7,7 @@ import ReactTestUtils from 'react-addons-test-utils';
 import GalleryItem from '../GalleryItem.js';
 
 describe('GalleryItem', () => {
-  let props;
+  let props = null;
 
   beforeEach(() => {
     props = {
@@ -30,8 +30,8 @@ describe('GalleryItem', () => {
   });
 
   describe('handleActivate()', () => {
-    let item;
-    let event;
+    let item = null;
+    let event = null;
 
     beforeEach(() => {
       item = ReactTestUtils.renderIntoDocument(
@@ -60,8 +60,8 @@ describe('GalleryItem', () => {
   });
 
   describe('handleToggleSelect()', () => {
-    let item;
-    let event;
+    let item = null;
+    let event = null;
 
     beforeEach(() => {
       item = ReactTestUtils.renderIntoDocument(
@@ -90,7 +90,7 @@ describe('GalleryItem', () => {
   });
 
   describe('getThumbnailStyles()', () => {
-    let item;
+    let item = null;
 
     beforeEach(() => {
       props.item.url = 'myurl';
@@ -114,7 +114,7 @@ describe('GalleryItem', () => {
   });
 
   describe('getThumbnailClassNames()', () => {
-    let item;
+    let item = null;
 
     beforeEach(() => {
       item = ReactTestUtils.renderIntoDocument(
@@ -137,7 +137,7 @@ describe('GalleryItem', () => {
   });
 
   describe('getItemClassNames()', () => {
-    let item;
+    let item = null;
 
     it('should return the file\'s category', () => {
       props.item.category = 'image';
@@ -161,7 +161,7 @@ describe('GalleryItem', () => {
   });
 
   describe('isImageSmallerThanThumbnail()', () => {
-    let item;
+    let item = null;
 
     beforeEach(() => {
       item = ReactTestUtils.renderIntoDocument(
@@ -184,8 +184,8 @@ describe('GalleryItem', () => {
   });
 
   describe('handleKeyDown()', () => {
-    let item;
-    let event;
+    let item = null;
+    let event = null;
 
     beforeEach(() => {
       props.spaceKey = 32;
@@ -237,8 +237,8 @@ describe('GalleryItem', () => {
   });
 
   describe('preventFocus()', () => {
-    let item;
-    let event;
+    let item = null;
+    let event = null;
 
     beforeEach(() => {
       item = ReactTestUtils.renderIntoDocument(

@@ -8,7 +8,7 @@ import { BulkActions } from '../BulkActions.js';
 
 describe('BulkActions', () => {
   describe('canApply()', () => {
-    let props;
+    let props = null;
     beforeEach(() => {
       props = {
         actions: [
@@ -49,8 +49,8 @@ describe('BulkActions', () => {
   });
 
   describe('getOptionByValue()', () => {
-    let bulkActions;
-    let props;
+    let bulkActions = null;
+    let props = null;
 
     beforeEach(() => {
       props = {
@@ -78,9 +78,9 @@ describe('BulkActions', () => {
   });
 
   describe('onChangeValue()', () => {
-    let bulkActions;
-    let event;
-    let props;
+    let bulkActions = null;
+    let event = null;
+    let props = null;
 
     beforeEach(() => {
       props = {

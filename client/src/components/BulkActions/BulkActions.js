@@ -76,7 +76,7 @@ export class BulkActions extends SilverStripeComponent {
    * @returns {Promise|null}
    */
   onChangeValue(event) {
-    let promise;
+    let promise = null;
 
     // Make sure a valid option has been selected.
     const option = this.getOptionByValue(event.target.value);
