@@ -51,7 +51,7 @@ class GalleryItem extends SilverStripeComponent {
    * @returns {Object}
    */
   getThumbnailStyles() {
-    if (this.isImage() && this.exists()) {
+    if (this.isImage() && (this.exists() || this.uploading())) {
       return {
         backgroundImage: `url(${this.props.item.url})`,
       };
@@ -117,7 +117,7 @@ class GalleryItem extends SilverStripeComponent {
   getItemClassNames() {
     const itemClassNames = [`gallery-item gallery-item--${this.props.item.category}`];
 
-    if (!this.exists()) {
+    if (!this.exists() && !this.uploading()) {
       itemClassNames.push('gallery-item--error');
     }
 
@@ -154,13 +154,17 @@ class GalleryItem extends SilverStripeComponent {
     return this.props.item.exists;
   }
 
+  uploading() {
+    return this.props.uploading;
+  }
+
   /**
    * Determine that this record is an image, and the thumbnail is smaller than the given thumbnail area
    *
    * @returns {boolean}
    */
   isImageSmallerThanThumbnail() {
-    if (!this.isImage() || !this.exists()) {
+    if (!this.isImage() || (!this.exists() && !this.uploading())) {
       return false;
     }
     const dimensions = this.props.item.dimensions;
@@ -225,7 +229,7 @@ class GalleryItem extends SilverStripeComponent {
       },
     };
 
-    if (!this.hasError() && this.props.uploading) {
+    if (!this.hasError() && this.uploading()) {
       progressBar = (
         <div className="gallery-item__upload-progress">
           <div {...progressBarProps}></div>
@@ -238,8 +242,9 @@ class GalleryItem extends SilverStripeComponent {
 
   render() {
     let actionInputCheckbox;
+    let overlay;
 
-    if (this.props.uploading) {
+    if (this.uploading()) {
       actionInputCheckbox = (<label
         className="gallery-item__checkbox-label font-icon-cancel"
         onClick={this.handleCancelUpload}
@@ -264,6 +269,8 @@ class GalleryItem extends SilverStripeComponent {
         tabIndex="-1"
         onMouseDown={this.preventFocus}
       /></label>);
+
+      overlay = <div className="gallery-item--overlay font-icon-edit">View</div>;
     }
 
     return (
@@ -279,7 +286,7 @@ class GalleryItem extends SilverStripeComponent {
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
         >
-          <div className="gallery-item--overlay font-icon-edit">View</div>
+          {overlay}
         </div>
         {this.getProgressBar()}
         {this.getErrorMessage()}

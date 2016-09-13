@@ -12,6 +12,15 @@ class AssetDropzone extends SilverStripeComponent {
 
     this.dropzone = null;
     this.dragging = false;
+
+    this.handleAddedFile = this.handleAddedFile.bind(this);
+    this.handleDragEnter = this.handleDragEnter.bind(this);
+    this.handleDragLeave = this.handleDragLeave.bind(this);
+    this.handleDrop = this.handleDrop.bind(this);
+    this.handleUploadProgress = this.handleUploadProgress.bind(this);
+    this.handleError = this.handleError.bind(this);
+    this.handleSending = this.handleSending.bind(this);
+    this.handleSuccess = this.handleSuccess.bind(this);
   }
 
   componentDidMount() {
@@ -86,19 +95,19 @@ class AssetDropzone extends SilverStripeComponent {
 
       // By default Dropzone adds markup to the DOM for displaying a thumbnail preview.
       // Here we're relpacing that default behaviour with our own React / Redux implementation.
-      addedfile: this.handleAddedFile.bind(this),
+      addedfile: this.handleAddedFile,
 
       // When the user drags a file into the dropzone.
-      dragenter: this.handleDragEnter.bind(this),
+      dragenter: this.handleDragEnter,
 
       // When the user's cursor leaves the dropzone while dragging a file.
-      dragleave: this.handleDragLeave.bind(this),
+      dragleave: this.handleDragLeave,
 
       // When the user drops a file onto the dropzone.
-      drop: this.handleDrop.bind(this),
+      drop: this.handleDrop,
 
       // Whenever the file upload progress changes
-      uploadprogress: this.handleUploadProgress.bind(this),
+      uploadprogress: this.handleUploadProgress,
 
       // The text used before any files are dropped
       dictDefaultMessage: i18n._t('AssetAdmin.DROPZONE_DEFAULT_MESSAGE'),
@@ -132,13 +141,13 @@ class AssetDropzone extends SilverStripeComponent {
       dictMaxFilesExceeded: i18n._t('AssetAdmin.DROPZONE_MAX_FILES_EXCEEDED'),
 
       // When a file upload fails.
-      error: this.handleError.bind(this),
+      error: this.handleError,
 
       // When file file is sent to the server.
-      sending: this.handleSending.bind(this),
+      sending: this.handleSending,
 
       // When a file upload succeeds.
-      success: this.handleSuccess.bind(this),
+      success: this.handleSuccess,
 
       thumbnailHeight: 150,
 
@@ -250,72 +259,98 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Event handler for files being added. Called before the request is made to the server.
    *
-   * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleAddedFile(file) {
     if (!this.props.canUpload) {
-      return;
+      return Promise.reject(new Error(i18n._t('AssetAdmin.DROPZONE_CANNOT_UPLOAD')));
     }
 
-    const reader = new FileReader();
-
     // The queuedAtTime is used to uniquely identify file while it's in the queue.
-    const queuedAtTime = Date.now();
+    // eslint-disable-next-line no-param-reassign
+    file._queuedAtTime = Date.now();
 
-    reader.onload = (event) => {
-      // If the user uploads multiple large images, we could run into memory issues
-      // by simply using the `event.target.result` data URI as the thumbnail image.
-      //
-      // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
-      // and using the canvas data URI as the thumbnail image instead.
+    const loadPreview = new Promise((resolve) => {
+      const reader = new FileReader();
 
-      let thumbnailURL = '';
+      reader.onload = (event) => {
+        // If the user uploads multiple large images, we could run into memory issues
+        // by simply using the `event.target.result` data URI as the thumbnail image.
+        //
+        // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
+        // and using the canvas data URI as the thumbnail image instead.
 
-      if (this.getFileCategory(file.type) === 'image') {
-        const img = document.createElement('img');
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        if (this.getFileCategory(file.type) === 'image') {
+          const img = document.createElement('img');
 
-        img.src = event.target.result;
+          resolve(this.loadImage(img, event.target.result));
+        } else {
+          resolve({});
+        }
+      };
 
-        canvas.width = this.dropzone.options.thumbnailWidth;
-        canvas.height = this.dropzone.options.thumbnailHeight;
+      reader.readAsDataURL(file);
+    });
 
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-        thumbnailURL = canvas.toDataURL();
-      }
-
-      this.props.handleAddedFile({
-        attributes: {
-          dimensions: {
-            height: this.dropzone.options.thumbnailHeight,
-            width: this.dropzone.options.thumbnailWidth,
-          },
+    return loadPreview.then((preview) => {
+      const details = {
+        dimensions: {
+          height: preview.height,
+          width: preview.width,
         },
         category: this.getFileCategory(file.type),
         filename: file.name,
-        queuedAtTime,
+        queuedAtTime: file._queuedAtTime,
         size: file.size,
         title: file.name,
         type: file.type,
-        url: thumbnailURL,
-      });
+        url: preview.thumbnailURL,
+      };
 
+      this.props.handleAddedFile(details);
       this.dropzone.processFile(file);
-    };
 
-    // eslint-disable-next-line no-param-reassign
-    file._queuedAtTime = queuedAtTime;
+      return details;
+    });
+  }
 
-    reader.readAsDataURL(file);
+  /**
+   * Returns a promise for loading an image to get the dataURL for previewing.
+   *
+   * @param img (image)
+   * @param newSource (string)
+   * @returns {Promise}
+   */
+  loadImage(img, newSource) {
+    return new Promise((resolve) => {
+      // eslint-disable-next-line no-param-reassign
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const thumbnailURL = canvas.toDataURL();
+
+        resolve({
+          width: canvas.width,
+          height: canvas.height,
+          thumbnailURL,
+        });
+      };
+      // eslint-disable-next-line no-param-reassign
+      img.src = newSource;
+    });
   }
 
   /**
    * Event handler for failed uploads.
    *
-   * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
-   * @param string errorMessage
+   * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param errorMessage (string)
    */
   handleError(file, errorMessage) {
     if (typeof this.props.handleSending === 'function') {

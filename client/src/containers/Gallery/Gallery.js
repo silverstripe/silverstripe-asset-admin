@@ -229,6 +229,7 @@ export class Gallery extends Component {
   }
 
   handleCancelUpload(fileData) {
+    // abort wasn't defined..?
     fileData.xhr.abort();
     this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedAtTime);
   }

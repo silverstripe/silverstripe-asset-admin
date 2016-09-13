@@ -20,6 +20,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DELETE": "Delete",
     "AssetAdmin.DIM": "Dimensions",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Cancel upload",
+    "AssetAdmin.DROPZONE_CANNOT_UPLOAD": "You can't upload files here",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD_CONFIRMATION": "Are you sure you want to cancel this upload?",
     "AssetAdmin.DROPZONE_DEFAULT_MESSAGE": "Drop files here to upload",
     "AssetAdmin.DROPZONE_FAILED_UPLOAD": "Failed to upload file",
