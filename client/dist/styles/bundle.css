@@ -425,10 +425,6 @@
   overflow: hidden;
   text-overflow: ellipsis; }
 
-.editor__url-icon::before {
-  color: #a1aab2;
-  vertical-align: middle; }
-
 .editor__file-preview {
   text-align: center;
   margin: 1.5385rem -1.5385rem;
