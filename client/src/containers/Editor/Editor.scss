@@ -37,10 +37,6 @@
   text-overflow: ellipsis;
 }
 
-.editor__url-icon::before {
-  color: lighten($gray, 30);
-}
-
 .editor__file-preview {
   text-align: center;
   margin: $grid-gutter-width-half #{-$grid-gutter-width-half};
