@@ -11,7 +11,6 @@ const initialState = {
   focus: false,
   path: null, // The current location path the app is on
   selectedFiles: [],
-  highlightedFiles: [],
   page: 0,
 };
 
@@ -118,14 +117,6 @@ export default function galleryReducer(state = initialState, action) {
       return deepFreeze(Object.assign({}, state, {
         selectedFiles,
       }));
-    }
-
-    case GALLERY.HIGHLIGHT_FILES: {
-      nextState = deepFreeze(Object.assign({}, state, {
-        highlightedFiles: action.payload.ids || [],
-      }));
-
-      return nextState;
     }
 
     // De-select and remove the files listed in payload.ids

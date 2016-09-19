@@ -128,19 +128,6 @@ export function deselectFiles(ids = null) {
 }
 
 /**
- * Highlight files. If no param is passed all files are highlighted.
- *
- * @param Array ids - Array of file ids to select.
- */
-export function highlightFiles(ids = null) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.HIGHLIGHT_FILES,
-      payload: { ids },
-    });
-}
-
-/**
  * Sorts files in some order.
  *
  * @param func comparator - Used to determine the sort order.

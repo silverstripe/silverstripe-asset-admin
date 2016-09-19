@@ -334,7 +334,7 @@ export class Gallery extends Component {
    * @return {Boolean}
    */
   itemIsHighlighted(id) {
-    return this.props.highlightedFiles.indexOf(id) > -1;
+    return this.props.fileId === id;
   }
 
   /**
@@ -558,7 +558,6 @@ Gallery.propTypes = {
   }),
   files: React.PropTypes.array, // all files as full objects (incl. ids)
   selectedFiles: React.PropTypes.arrayOf(React.PropTypes.number), // ids only
-  highlightedFiles: React.PropTypes.arrayOf(React.PropTypes.number), // ids only
   bulkActions: React.PropTypes.bool,
   limit: React.PropTypes.number,
   page: React.PropTypes.number,
@@ -585,7 +584,6 @@ function mapStateToProps(state) {
     count,
     files,
     selectedFiles,
-    highlightedFiles,
     page,
   } = state.assetAdmin.gallery;
   return {
@@ -593,7 +591,6 @@ function mapStateToProps(state) {
     count,
     files,
     selectedFiles,
-    highlightedFiles,
     page,
     queuedFiles: state.assetAdmin.queuedFiles,
   };
