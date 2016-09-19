@@ -95,7 +95,7 @@ return{breadcrumbs:e.breadcrumbs,sectionConfig:i,fileId:parseInt(t.params.fileId
 editor:(0,m.bindActionCreators)(S,e),breadcrumbsActions:(0,m.bindActionCreators)(P,e)}}}Object.defineProperty(t,"__esModule",{value:!0})
 var d=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},p=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),c=n(15),f=r(c),h=n(16),m=n(2),g=n(17),y=n(18),v=r(y),E=n(19),b=r(E),_=n(3),F=r(_),A=n(11),T=r(A),D=n(20),C=i(D),O=n(21),S=i(O),w=n(22),P=i(w),k=n(23),I=r(k),L=n(27),U=r(L),R=n(38),N=r(R),M=n(39),x=r(M),z=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),c=n(15),f=r(c),h=n(16),m=n(2),g=n(17),y=n(18),v=r(y),E=n(19),b=r(E),_=n(3),F=r(_),A=n(11),T=r(A),D=n(20),C=i(D),O=n(21),S=i(O),w=n(22),P=i(w),k=n(23),I=r(k),L=n(27),U=r(L),R=n(38),M=r(R),N=n(39),x=r(N),z=function(e){
 function t(){o(this,t)
 var e=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this))
 e.handleOpenFile=e.handleOpenFile.bind(e),e.handleCloseFile=e.handleCloseFile.bind(e),e["delete"]=e["delete"].bind(e),e.handleSubmitEditor=e.handleSubmitEditor.bind(e),e.handleOpenFolder=e.handleOpenFolder.bind(e),
@@ -120,7 +120,7 @@ t.props.router.push("/"+e+"/show/"+n.parent.id)})}},{key:"render",value:function
 return t.id===parseInt(e.props.fileId,10)}),o=(r||this.props.fileId===this.props.folderId)&&f["default"].createElement(I["default"],{fileId:this.props.fileId,onClose:this.handleCloseFile,editFileSchemaUrl:t.form.FileEditForm.schemaUrl,
 actions:this.props.actions.editor,onSubmit:this.handleSubmitEditor,onDelete:this["delete"],addToCampaignSchemaUrl:t.form.AddToCampaignForm.schemaUrl}),l=!(!this.props.folder||!this.props.folder.id)
 return f["default"].createElement("div",{className:"cms-content__inner no-preview"},f["default"].createElement("div",{className:"cms-content__left cms-gallery collapse in"},f["default"].createElement(x["default"],{
-showBackButton:l,handleBackButtonClick:this.handleBackButtonClick},f["default"].createElement(N["default"],{multiline:!0,crumbs:this.props.breadcrumbs})),f["default"].createElement("div",{className:"gallery"
+showBackButton:l,handleBackButtonClick:this.handleBackButtonClick},f["default"].createElement(M["default"],{multiline:!0,crumbs:this.props.breadcrumbs})),f["default"].createElement("div",{className:"gallery"
 },o,f["default"].createElement(U["default"],{files:this.props.files,fileId:this.props.fileId,folderId:this.props.folderId,folder:this.props.folder,name:this.props.name,limit:this.props.limit,page:this.props.page,
 bulkActions:this.props.bulkActions,createFileApiUrl:n,createFileApiMethod:i,createFolderApi:this.endpoints.createFolderApi,readFolderApi:this.endpoints.readFolderApi,updateFolderApi:this.endpoints.updateFolderApi,
 deleteApi:this.endpoints.deleteApi,onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,sectionConfig:this.props.sectionConfig}))))}}]),t}(v["default"])
@@ -195,7 +195,7 @@ return{loading:n,count:i,files:r,selectedFiles:o,page:l,queuedFiles:e.assetAdmin
 }}}Object.defineProperty(t,"__esModule",{value:!0}),t.Gallery=void 0
 var p=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},c=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),S=n(3),w=r(S),P=n(32),k=r(P),I=n(35),L=r(I),U=n(36),R=r(U),N=n(25),M=r(N),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),S=n(3),w=r(S),P=n(32),k=r(P),I=n(35),L=r(I),U=n(36),R=r(U),M=n(25),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
 function t(e){o(this,t)
 var n=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.sort="name",n.direction="asc",n.sorters=[{field:"title",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_ASC")},{field:"title",direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_DESC")
@@ -215,7 +215,7 @@ t.chosen({allow_single_deselect:!0,disable_search_threshold:20}),t.on("change",f
 
 return null!==this.props.folder.parentID?v["default"].createElement("button",{className:e,onClick:this.handleBackClick,ref:"backButton"}):null}},{key:"getBulkActionsComponent",value:function f(){var e=this,t=function o(t){
 var n=t.map(function(e){return e.id})
-e.props.actions.gallery.deleteItems(e.props.deleteApi,n)},n=function l(t){e.props.onOpenFile(t[0].id)},i=M["default"].BULK_ACTIONS.map(function(e){return"delete"!==e.value||e.callback?"edit"!==e.value||e.callback?e:p({},e,{
+e.props.actions.gallery.deleteItems(e.props.deleteApi,n)},n=function l(t){e.props.onOpenFile(t[0].id)},i=N["default"].BULK_ACTIONS.map(function(e){return"delete"!==e.value||e.callback?"edit"!==e.value||e.callback?e:p({},e,{
 callback:n}):p({},e,{callback:t})}),r=this.props.selectedFiles.map(function(t){return e.props.files.find(function(e){return t===e.id})})
 return r.length>0&&this.props.bulkActions?v["default"].createElement(R["default"],{actions:i,items:r,key:r.length>0}):null}},{key:"getMoreButton",value:function m(){return this.props.count>this.props.files.length?v["default"].createElement("button",{
 className:"gallery__load-more",onClick:this.handleMoreClick},g["default"]._t("AssetAdmin.LOADMORE")):null}},{key:"checkLoadingIndicator",value:function y(){var e=(0,h["default"])(".cms-content.AssetAdmin")
@@ -232,7 +232,7 @@ progress:t})}},{key:"handleCreateFolder",value:function P(e){var t=this,n=this.p
 n&&this.props.actions.gallery.createFolder(this.props.createFolderApi,this.props.folderId,n).then(function(e){return t.props.actions.gallery.addFiles([e],1),e}),e.preventDefault()}},{key:"handleSuccessfulUpload",
 value:function I(e){var t=JSON.parse(e.xhr.response)
 return"undefined"!=typeof t[0].error?void this.handleFailedUpload(e):(this.props.actions.queuedFiles.removeQueuedFile(e._queuedAtTime),void this.props.actions.gallery.addFiles(t,this.props.count+1))}},{
-key:"handleFailedUpload",value:function U(e){this.props.actions.queuedFiles.failUpload(e._queuedAtTime)}},{key:"handleItemDelete",value:function N(e,t){confirm(g["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.props.deleteApi,[t.id])
+key:"handleFailedUpload",value:function U(e){this.props.actions.queuedFiles.failUpload(e._queuedAtTime)}},{key:"handleItemDelete",value:function M(e,t){confirm(g["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.props.deleteApi,[t.id])
 
 }},{key:"promptFolderName",value:function x(){return prompt(g["default"]._t("AssetAdmin.PROMPTFOLDERNAME"))}},{key:"itemIsSelected",value:function z(e){return this.props.selectedFiles.indexOf(e)>-1}},{
 key:"itemIsHighlighted",value:function j(e){return this.props.fileId===e}},{key:"handleFolderActivate",value:function q(e,t){e.preventDefault(),this.props.onOpenFolder(t.id,t)}},{key:"handleFileActivate",
@@ -243,7 +243,7 @@ var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+this.props.folder.parentID)}},{key:"render",value:function G(){var e=this
 if(!this.props.folder)return v["default"].createElement("div",null)
 var t={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,paramName:"Upload",clickable:"#upload-button"},n=w["default"].get("SecurityID"),i=this.props.folder.canEdit
-return v["default"].createElement("div",{className:"gallery__outer"},v["default"].createElement(F["default"],{transitionName:"bulk-actions",transitionEnterTimeout:M["default"].CSS_TRANSITION_TIME,transitionLeaveTimeout:M["default"].CSS_TRANSITION_TIME
+return v["default"].createElement("div",{className:"gallery__outer"},v["default"].createElement(F["default"],{transitionName:"bulk-actions",transitionEnterTimeout:N["default"].CSS_TRANSITION_TIME,transitionLeaveTimeout:N["default"].CSS_TRANSITION_TIME
 },this.getBulkActionsComponent()),v["default"].createElement("div",{className:"gallery__main panel panel--padded panel--scrollable"},v["default"].createElement("div",{className:"gallery__sort fieldholder-small"
 },v["default"].createElement("select",{className:"dropdown no-change-track no-chzn",tabIndex:"0",style:{width:"160px"}},this.sorters.map(function(t,n){return v["default"].createElement("option",{key:n,
 onClick:e.handleSort,"data-field":t.field,"data-direction":t.direction},t.label)}))),v["default"].createElement("div",{className:"toolbar--content toolbar--space-save"},this.getBackButton(),v["default"].createElement("button",{
@@ -494,7 +494,7 @@ this.options.uploadMultiple&&this.emit("canceledmultiple",i)}else(s=e.status)!==
 
 if(this.options.autoProcessQueue)return this.processQueue()},r=function(){var e,t
 return t=arguments[0],e=2<=arguments.length?d.call(arguments,1):[],"function"==typeof t?t.apply(this,e):t},t.prototype.uploadFile=function(e){return this.uploadFiles([e])},t.prototype.uploadFiles=function(e){
-var i,o,l,a,s,u,d,p,c,f,h,m,g,y,v,E,b,_,F,A,T,D,C,O,S,w,P,k,I,L,U,R,N,M
+var i,o,l,a,s,u,d,p,c,f,h,m,g,y,v,E,b,_,F,A,T,D,C,O,S,w,P,k,I,L,U,R,M,N
 for(F=new XMLHttpRequest,A=0,O=e.length;A<O;A++)i=e[A],i.xhr=F
 m=r(this.options.method,e),b=r(this.options.url,e),F.open(m,b,!0),F.withCredentials=!!this.options.withCredentials,v=null,l=function(t){return function(){var n,r,o
 for(o=[],n=0,r=e.length;n<r;n++)i=e[n],o.push(t._errorProcessing(e,v||t.options.dictResponseError.replace("{{statusCode}}",F.status),F))
@@ -511,8 +511,8 @@ if(o=new FormData,this.options.params){L=this.options.params
 for(h in L)_=L[h],o.append(h,_)}for(T=0,S=e.length;T<S;T++)i=e[T],this.emit("sending",i,F,o)
 if(this.options.uploadMultiple&&this.emit("sendingmultiple",e,F,o),"FORM"===this.element.tagName)for(U=this.element.querySelectorAll("input, textarea, select, button"),D=0,w=U.length;D<w;D++)if(p=U[D],
 c=p.getAttribute("name"),f=p.getAttribute("type"),"SELECT"===p.tagName&&p.hasAttribute("multiple"))for(R=p.options,C=0,P=R.length;C<P;C++)g=R[C],g.selected&&o.append(c,g.value)
-else(!f||"checkbox"!==(N=f.toLowerCase())&&"radio"!==N||p.checked)&&o.append(c,p.value)
-for(d=k=0,M=e.length-1;0<=M?k<=M:k>=M;d=0<=M?++k:--k)o.append(this._getParamName(d),e[d],this._renameFilename(e[d].name))
+else(!f||"checkbox"!==(M=f.toLowerCase())&&"radio"!==M||p.checked)&&o.append(c,p.value)
+for(d=k=0,N=e.length-1;0<=N?k<=N:k>=N;d=0<=N?++k:--k)o.append(this._getParamName(d),e[d],this._renameFilename(e[d].name))
 return this.submitRequest(F,o,e)},t.prototype.submitRequest=function(e,t,n){return e.send(t)},t.prototype._finished=function(e,n,i){var r,o,l
 for(o=0,l=e.length;o<l;o++)r=e[o],r.status=t.SUCCESS,this.emit("success",r,n,i),this.emit("complete",r)
 if(this.options.uploadMultiple&&(this.emit("successmultiple",e,n,i),this.emit("completemultiple",e)),this.options.autoProcessQueue)return this.processQueue()},t.prototype._errorProcessing=function(e,n,i){
@@ -572,12 +572,13 @@ return n.handleToggleSelect=n.handleToggleSelect.bind(n),n.handleDelete=n.handle
 n.preventFocus=n.preventFocus.bind(n),n}return l(t,e),a(t,[{key:"handleActivate",value:function n(e){e.stopPropagation(),this.props.handleActivate(e,this.props.item)}},{key:"handleToggleSelect",value:function i(e){
 e.stopPropagation(),e.preventDefault(),this.props.handleToggleSelect(e,this.props.item)}},{key:"handleDelete",value:function s(e){this.props.handleDelete(e,this.props.item)}},{key:"getThumbnailStyles",
 value:function d(){return this.isImage()&&(this.exists()||this.uploading())?{backgroundImage:"url("+this.props.item.url+")"}:{}}},{key:"hasError",value:function c(){var c=!1
-return Array.isArray(this.props.messages)&&(c=this.props.messages.filter(function(e){return"error"===e.type}).length>0),c}},{key:"getErrorMessage",value:function h(){return this.hasError()?p["default"].createElement("span",{
-className:"gallery-item__error-message"},this.props.messages[0].value):null}},{key:"getThumbnailClassNames",value:function m(){var e=["gallery-item__thumbnail"]
+return Array.isArray(this.props.messages)&&(c=this.props.messages.filter(function(e){return"error"===e.type}).length>0),c}},{key:"getErrorMessage",value:function h(){var e=null
+return this.hasError()?e=this.props.messages[0].value:this.exists()||(e=u["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found")),null!==e?p["default"].createElement("span",{className:"gallery-item__error-message"
+},e):null}},{key:"getThumbnailClassNames",value:function m(){var e=["gallery-item__thumbnail"]
 return this.isImageSmallerThanThumbnail()&&e.push("gallery-item__thumbnail--small"),e.join(" ")}},{key:"getItemClassNames",value:function g(){var e=["gallery-item gallery-item--"+this.props.item.category]
 
 
-return this.exists()||this.uploading()||e.push("gallery-item--error"),this.props.selected&&e.push("gallery-item--selected"),this.props.highlighted&&e.push("gallery-item--highlighted"),this.hasError()&&e.push("gallery-item--error"),
+return this.exists()||this.uploading()||e.push("gallery-item--missing"),this.props.selected&&e.push("gallery-item--selected"),this.props.highlighted&&e.push("gallery-item--highlighted"),this.hasError()&&e.push("gallery-item--error"),
 e.join(" ")}},{key:"isImage",value:function y(){return"image"===this.props.item.category}},{key:"exists",value:function v(){return this.props.item.exists}},{key:"uploading",value:function E(){return this.props.uploading
 
 }},{key:"isImageSmallerThanThumbnail",value:function b(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
@@ -586,15 +587,15 @@ return e&&e.height<f["default"].THUMBNAIL_HEIGHT&&e.width<f["default"].THUMBNAIL
 this.handleToggleSelect(e)),f["default"].RETURN_KEY_CODE===e.keyCode&&this.handleActivate(e)}},{key:"preventFocus",value:function F(e){e.preventDefault()}},{key:"handleCancelUpload",value:function A(e){
 e.stopPropagation(),this.hasError()?this.props.handleRemoveErroredUpload(this.props.item):this.props.handleCancelUpload(this.props.item)}},{key:"getProgressBar",value:function T(){var e=null,t={className:"gallery-item__progress-bar",
 style:{width:this.props.item.progress+"%"}}
-return!this.hasError()&&this.uploading()&&(e=p["default"].createElement("div",{className:"gallery-item__upload-progress"},p["default"].createElement("div",t))),e}},{key:"render",value:function D(){var e=null,t=null
+return!this.hasError()&&this.uploading()&&(e=p["default"].createElement("div",{className:"gallery-item__upload-progress"},p["default"].createElement("div",t))),e}},{key:"render",value:function D(){var e=this.handleToggleSelect,t="font-icon-tick",n=null
 
 
-return this.uploading()?e=p["default"].createElement("label",{className:"gallery-item__checkbox-label font-icon-cancel",onClick:this.handleCancelUpload},p["default"].createElement("input",{className:"gallery-item__checkbox",
-type:"checkbox",title:u["default"]._t("AssetAdmin.SELECT"),tabIndex:"-1",onMouseDown:this.preventFocus,"data-dz-remove":!0})):(e=p["default"].createElement("label",{className:"gallery-item__checkbox-label font-icon-tick",
-onClick:this.handleToggleSelect},p["default"].createElement("input",{className:"gallery-item__checkbox",type:"checkbox",title:u["default"]._t("AssetAdmin.SELECT"),tabIndex:"-1",onMouseDown:this.preventFocus
-})),t=p["default"].createElement("div",{className:"gallery-item--overlay font-icon-edit"},"View")),p["default"].createElement("div",{className:this.getItemClassNames(),"data-id":this.props.item.id,tabIndex:"0",
-onKeyDown:this.handleKeyDown,onClick:this.handleActivate},p["default"].createElement("div",{ref:"thumbnail",className:this.getThumbnailClassNames(),style:this.getThumbnailStyles()},t),this.getProgressBar(),this.getErrorMessage(),p["default"].createElement("div",{
-className:"gallery-item__title",ref:"title"},e,this.props.item.title))}}]),t}(m["default"])
+return this.uploading()?(e=this.handleCancelUpload,t="font-icon-cancel"):this.exists()&&(n=p["default"].createElement("div",{className:"gallery-item--overlay font-icon-edit"},"View")),p["default"].createElement("div",{
+className:this.getItemClassNames(),"data-id":this.props.item.id,tabIndex:"0",onKeyDown:this.handleKeyDown,onClick:this.handleActivate},p["default"].createElement("div",{ref:"thumbnail",className:this.getThumbnailClassNames(),
+style:this.getThumbnailStyles()},n),this.getProgressBar(),this.getErrorMessage(),p["default"].createElement("div",{className:"gallery-item__title",ref:"title"},p["default"].createElement("label",{className:"gallery-item__checkbox-label "+t,
+onClick:e},p["default"].createElement("input",{className:"gallery-item__checkbox",type:"checkbox",title:u["default"]._t("AssetAdmin.SELECT"),tabIndex:"-1",onMouseDown:this.preventFocus})),this.props.item.title))
+
+}}]),t}(m["default"])
 g.propTypes={item:p["default"].PropTypes.shape({dimensions:p["default"].PropTypes.shape({width:p["default"].PropTypes.number,height:p["default"].PropTypes.number}),category:p["default"].PropTypes.string.isRequired,
 id:p["default"].PropTypes.number.isRequired,url:p["default"].PropTypes.string,title:p["default"].PropTypes.string.isRequired,progress:p["default"].PropTypes.number}),highlighted:p["default"].PropTypes.bool,
 selected:p["default"].PropTypes.bool.isRequired,handleActivate:p["default"].PropTypes.func.isRequired,handleToggleSelect:p["default"].PropTypes.func.isRequired,handleDelete:p["default"].PropTypes.func.isRequired,

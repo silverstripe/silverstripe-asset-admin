@@ -203,18 +203,21 @@
   background: $white url(../images/icon_file.png) center center no-repeat;
 }
 
-.gallery-item--error .gallery-item__thumbnail {
-  position: relative;
+.gallery-item--error,
+.gallery-item--missing {
+  .gallery-item__thumbnail {
+    position: relative;
 
-  &::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: $brand-danger;
-    opacity: .8;
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: $brand-danger;
+      opacity: .8;
+    }
   }
 }
 

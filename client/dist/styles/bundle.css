@@ -199,11 +199,11 @@
   background:#fff url(../images/icon_file.png) 50% no-repeat;
 }
 
-.gallery-item--error .gallery-item__thumbnail{
+.gallery-item--error .gallery-item__thumbnail,.gallery-item--missing .gallery-item__thumbnail{
   position:relative;
 }
 
-.gallery-item--error .gallery-item__thumbnail:after{
+.gallery-item--error .gallery-item__thumbnail:after,.gallery-item--missing .gallery-item__thumbnail:after{
   content:"";
   position:absolute;
   top:0;

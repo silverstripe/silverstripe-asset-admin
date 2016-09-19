@@ -83,10 +83,18 @@ class GalleryItem extends SilverStripeComponent {
    * @returns {Object}
    */
   getErrorMessage() {
+    let message = null;
+
     if (this.hasError()) {
+      message = this.props.messages[0].value;
+    } else if (!this.exists()) {
+      message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
+    }
+
+    if (message !== null) {
       return (
         <span className="gallery-item__error-message">
-          {this.props.messages[0].value}
+          {message}
         </span>
       );
     }
@@ -118,7 +126,7 @@ class GalleryItem extends SilverStripeComponent {
     const itemClassNames = [`gallery-item gallery-item--${this.props.item.category}`];
 
     if (!this.exists() && !this.uploading()) {
-      itemClassNames.push('gallery-item--error');
+      itemClassNames.push('gallery-item--missing');
     }
 
     if (this.props.selected) {
@@ -241,35 +249,14 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   render() {
-    let actionInputCheckbox = null;
+    let action = this.handleToggleSelect;
+    let actionIcon = 'font-icon-tick';
     let overlay = null;
 
     if (this.uploading()) {
-      actionInputCheckbox = (<label
-        className="gallery-item__checkbox-label font-icon-cancel"
-        onClick={this.handleCancelUpload}
-      >
-      <input
-        className="gallery-item__checkbox"
-        type="checkbox"
-        title={i18n._t('AssetAdmin.SELECT')}
-        tabIndex="-1"
-        onMouseDown={this.preventFocus}
-        data-dz-remove
-      /></label>);
-    } else {
-      actionInputCheckbox = (<label
-        className="gallery-item__checkbox-label font-icon-tick"
-        onClick={this.handleToggleSelect}
-      >
-      <input
-        className="gallery-item__checkbox"
-        type="checkbox"
-        title={i18n._t('AssetAdmin.SELECT')}
-        tabIndex="-1"
-        onMouseDown={this.preventFocus}
-      /></label>);
-
+      action = this.handleCancelUpload;
+      actionIcon = 'font-icon-cancel';
+    } else if (this.exists()) {
       overlay = <div className="gallery-item--overlay font-icon-edit">View</div>;
     }
 
@@ -291,7 +278,18 @@ class GalleryItem extends SilverStripeComponent {
         {this.getProgressBar()}
         {this.getErrorMessage()}
         <div className="gallery-item__title" ref="title">
-          {actionInputCheckbox}
+          <label
+            className={`gallery-item__checkbox-label ${actionIcon}`}
+            onClick={action}
+          >
+            <input
+              className="gallery-item__checkbox"
+              type="checkbox"
+              title={i18n._t('AssetAdmin.SELECT')}
+              tabIndex="-1"
+              onMouseDown={this.preventFocus}
+            />
+          </label>
           {this.props.item.title}
         </div>
       </div>
