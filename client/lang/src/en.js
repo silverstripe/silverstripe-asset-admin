@@ -33,7 +33,7 @@
     "AssetAdmin.LASTEDIT": "Last changed",
     "AssetAdmin.LOADMORE": "Load more",
     "AssetAdmin.NOITEMSFOUND": "No items found",
-    "AssetAdmin.PROMPTFOLDERNAME": "Please enter a folder name (or blank to cancel)"
+    "AssetAdmin.PROMPTFOLDERNAME": "Please enter a folder name (or blank to cancel)",
     "AssetAdmin.SAVE": "Save",
     "AssetAdmin.SELECT": "Select",
     "AssetAdmin.SIZE": "Size",
