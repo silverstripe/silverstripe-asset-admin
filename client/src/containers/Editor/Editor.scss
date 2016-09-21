@@ -20,7 +20,7 @@
 }
 
 .editor__details {
-  margin-bottom: 32px;
+  margin-bottom: $spacer-y * 2;
 
   .form-group::after {
     margin-bottom: $spacer-y;
@@ -32,11 +32,18 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.editor__specs {
+  color: $text-muted;
+  font-size: $font-size-xs;
+  margin-bottom: $spacer-y;
 }
 
 .editor__file-preview {
   text-align: center;
-  margin: $grid-gutter-width-half #{-$grid-gutter-width-half};
+  margin: 0 #{-$panel-padding-x} $spacer-xs;
   position: relative;
   max-height: $cms-panel-md * .75;
   min-height: 60px;
@@ -60,12 +67,16 @@
     color: $white;
     font-size: 24px;
     opacity: .6;
+    content: "s";
+    font-family: silverstripe;
+    line-height: 27px;
   }
 
   &:hover::before,
   &:active::before {
     text-decoration: none;
-    display: block;
+    //display: block;
+    //cursor: pointer;
   }
 }
 
