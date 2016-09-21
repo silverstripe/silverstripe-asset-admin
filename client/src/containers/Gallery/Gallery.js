@@ -480,7 +480,7 @@ export class Gallery extends Component {
 
             <div className="gallery__folders">
               {this.props.files.map((file, i) => {
-                let component;
+                let component = null;
                 if (file.type === 'folder') {
                   component = (<File
                     key={i}
@@ -513,7 +513,7 @@ export class Gallery extends Component {
                 />)
               )}
               {this.props.files.map((file, i) => {
-                let component;
+                let component = null;
                 if (file.type !== 'folder') {
                   component = (<File
                     key={`file_${i}`}

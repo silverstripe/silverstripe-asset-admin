@@ -12,7 +12,7 @@ export default {
       destructive: true,
       callback: null, // defined in <Gallery> for now
       confirm: () => {
-        let promise;
+        let promise = null;
         const msg = i18n.sprintf(
           i18n._t('AssetAdmin.BULK_ACTIONS_CONFIRM'),
           i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM', 'delete')

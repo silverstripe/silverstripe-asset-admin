@@ -220,7 +220,7 @@ class GalleryItem extends SilverStripeComponent {
    * @returns {Object}
    */
   getProgressBar() {
-    let progressBar;
+    let progressBar = null;
 
     const progressBarProps = {
       className: 'gallery-item__progress-bar',
@@ -241,8 +241,8 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   render() {
-    let actionInputCheckbox;
-    let overlay;
+    let actionInputCheckbox = null;
+    let overlay = null;
 
     if (this.uploading()) {
       actionInputCheckbox = (<label
