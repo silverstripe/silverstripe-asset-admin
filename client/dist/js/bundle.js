@@ -573,8 +573,8 @@ n.preventFocus=n.preventFocus.bind(n),n}return l(t,e),a(t,[{key:"handleActivate"
 e.stopPropagation(),e.preventDefault(),this.props.handleToggleSelect(e,this.props.item)}},{key:"handleDelete",value:function s(e){this.props.handleDelete(e,this.props.item)}},{key:"getThumbnailStyles",
 value:function d(){return this.isImage()&&(this.exists()||this.uploading())?{backgroundImage:"url("+this.props.item.url+")"}:{}}},{key:"hasError",value:function c(){var c=!1
 return Array.isArray(this.props.messages)&&(c=this.props.messages.filter(function(e){return"error"===e.type}).length>0),c}},{key:"getErrorMessage",value:function h(){var e=null
-return this.hasError()?e=this.props.messages[0].value:this.exists()||(e=u["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found")),null!==e?p["default"].createElement("span",{className:"gallery-item__error-message"
-},e):null}},{key:"getThumbnailClassNames",value:function m(){var e=["gallery-item__thumbnail"]
+return this.hasError()?e=this.props.messages[0].value:this.exists()||this.uploading()||(e=u["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found")),null!==e?p["default"].createElement("span",{
+className:"gallery-item__error-message"},e):null}},{key:"getThumbnailClassNames",value:function m(){var e=["gallery-item__thumbnail"]
 return this.isImageSmallerThanThumbnail()&&e.push("gallery-item__thumbnail--small"),e.join(" ")}},{key:"getItemClassNames",value:function g(){var e=["gallery-item gallery-item--"+this.props.item.category]
 
 

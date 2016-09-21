@@ -87,7 +87,7 @@ class GalleryItem extends SilverStripeComponent {
 
     if (this.hasError()) {
       message = this.props.messages[0].value;
-    } else if (!this.exists()) {
+    } else if (!this.exists() && !this.uploading()) {
       message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
     }
 
