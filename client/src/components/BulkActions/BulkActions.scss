@@ -17,6 +17,7 @@ $bulk-actions-width: 300px;
   transition: top 0.5s ease-in-out,
     transform 0.5s ease-in-out;
   transform: scale(1);
+  min-width: 200px;
 
   @include media-breakpoint-down(md) {
     &-enter {
@@ -50,23 +51,23 @@ $bulk-actions-width: 300px;
 
     &-enter {
       top: -$toolbar-height;
-      transform: scale(.95);
+      transform: scale(.95) translateX(-50%);
     }
 
     &-enter-active {
       top: 0;
-      transform: scale(1);
+      transform: scale(1) translateX(-50%);
       transition: top .2s linear, transform .1s ease-in .2s;
     }
 
     &-leave {
       top: 0;
-      transform: scale(1);
+      transform: scale(1) translateX(-50%);
     }
 
     &-leave-active {
       top: -$toolbar-height;
-      transform: scale(.95);
+      transform: scale(.95) translateX(-50%);
       transition: top .2s linear .1s, transform .1s ease-in;
     }
   }
