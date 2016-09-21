@@ -53,10 +53,11 @@
   background-position: center center;
   background-size: cover;
   border-radius: $border-radius-sm $border-radius-sm 0 0;
+}
 
-  &--small {
-    background-size: auto;
-  }
+.gallery-item__thumbnail--small {
+  background-size: auto;
+  background-color: #fff;
 }
 
 .gallery-item__title {

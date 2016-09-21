@@ -70,9 +70,9 @@
 
 .gallery__sort {
   position: absolute;
-  top: 12px;
+  top: $spacer-y;
   right: 0;
-  margin-right: 16px;
+  margin-right: $panel-padding-x;
 
   .gallery & .chosen-single {
     border: 0;
