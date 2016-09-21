@@ -51,13 +51,14 @@ $bulk-actions-width: 300px;
 
     &-enter {
       top: -$toolbar-height;
-      transform: scale(.95) translateX(-50%);
+      transform: scale(.99) translateX(-50%);
+      box-shadow: 0 0 1px $shadow-light;
     }
 
     &-enter-active {
       top: 0;
       transform: scale(1) translateX(-50%);
-      transition: top .2s linear, transform .1s ease-in .2s;
+      transition: top .2s linear, transform .1s ease-out .18s, box-shadow .1s ease-out .18s;
     }
 
     &-leave {
@@ -67,8 +68,9 @@ $bulk-actions-width: 300px;
 
     &-leave-active {
       top: -$toolbar-height;
-      transform: scale(.95) translateX(-50%);
-      transition: top .2s linear .1s, transform .1s ease-in;
+      transform: scale(.99) translateX(-50%);
+      transition: top .2s linear .1s, transform .1s ease-in, box-shadow .1s ease-in;
+      box-shadow: 0 0 1px $shadow-light;
     }
   }
 
