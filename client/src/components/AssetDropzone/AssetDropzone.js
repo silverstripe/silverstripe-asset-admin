@@ -21,6 +21,7 @@ class AssetDropzone extends SilverStripeComponent {
     this.handleError = this.handleError.bind(this);
     this.handleSending = this.handleSending.bind(this);
     this.handleSuccess = this.handleSuccess.bind(this);
+    this.loadImage = this.loadImage.bind(this);
   }
 
   componentDidMount() {
@@ -327,17 +328,33 @@ class AssetDropzone extends SilverStripeComponent {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
+        // two times for retina
+        const previewWidth = this.props.preview.width * 2;
+        const previewHeight = this.props.preview.height * 2;
+        const ratio = img.naturalWidth / img.naturalHeight;
 
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
+        if (img.naturalWidth < previewWidth
+          || img.naturalHeight < previewHeight) {
+          // image is smaller than preview, do not need to scale it down
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+        } else if (ratio < 1) {
+          // width is less than height, so use width as smallest value
+          canvas.width = previewWidth;
+          canvas.height = previewWidth / ratio;
+        } else {
+          // height is less than width, so use height as smallest value
+          canvas.width = previewHeight * ratio;
+          canvas.height = previewHeight;
+        }
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        const thumbnailURL = canvas.toDataURL();
+        const thumbnailURL = canvas.toDataURL('image/png');
 
         resolve({
-          width: canvas.width,
-          height: canvas.height,
+          width: img.naturalWidth,
+          height: img.naturalHeight,
           thumbnailURL,
         });
       };
@@ -394,6 +411,10 @@ AssetDropzone.propTypes = {
   securityID: React.PropTypes.string.isRequired,
   uploadButton: React.PropTypes.bool,
   canUpload: React.PropTypes.bool.isRequired,
+  preview: React.PropTypes.shape({
+    width: React.PropTypes.number,
+    height: React.PropTypes.number,
+  }),
 };
 
 AssetDropzone.defaultProps = {

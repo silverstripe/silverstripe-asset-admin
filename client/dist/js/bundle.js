@@ -92,10 +92,10 @@ e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,wri
 
 
 return{breadcrumbs:e.breadcrumbs,sectionConfig:i,fileId:parseInt(t.params.fileId,10),folderId:parseInt(t.params.folderId,10),files:o,folder:r,limit:i.limit}}function u(e){return{actions:{gallery:(0,m.bindActionCreators)(C,e),
-editor:(0,m.bindActionCreators)(S,e),breadcrumbsActions:(0,m.bindActionCreators)(P,e)}}}Object.defineProperty(t,"__esModule",{value:!0})
+editor:(0,m.bindActionCreators)(w,e),breadcrumbsActions:(0,m.bindActionCreators)(P,e)}}}Object.defineProperty(t,"__esModule",{value:!0})
 var d=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},p=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),c=n(15),f=r(c),h=n(16),m=n(2),g=n(17),y=n(18),v=r(y),E=n(19),b=r(E),_=n(3),F=r(_),A=n(11),T=r(A),D=n(20),C=i(D),O=n(21),S=i(O),w=n(22),P=i(w),k=n(23),I=r(k),L=n(27),U=r(L),R=n(38),M=r(R),N=n(39),x=r(N),z=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),c=n(15),f=r(c),h=n(16),m=n(2),g=n(17),y=n(18),v=r(y),E=n(19),b=r(E),_=n(3),F=r(_),A=n(11),T=r(A),D=n(20),C=i(D),O=n(21),w=i(O),S=n(22),P=i(S),I=n(23),k=r(I),L=n(27),U=r(L),R=n(38),M=r(R),N=n(39),x=r(N),z=function(e){
 function t(){o(this,t)
 var e=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this))
 e.handleOpenFile=e.handleOpenFile.bind(e),e.handleCloseFile=e.handleCloseFile.bind(e),e["delete"]=e["delete"].bind(e),e.handleSubmitEditor=e.handleSubmitEditor.bind(e),e.handleOpenFolder=e.handleOpenFolder.bind(e),
@@ -117,7 +117,7 @@ value:function y(e){var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+e)}},{key:"delete",value:function v(e){var t=this,n=this.props.files.find(function(t){return t.id===e})
 confirm(T["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.endpoints.deleteApi,[n.id]).then(function(){var e=t.props.sectionConfig.url
 t.props.router.push("/"+e+"/show/"+n.parent.id)})}},{key:"render",value:function E(){var e=this,t=this.props.sectionConfig,n=t.createFileEndpoint.url,i=t.createFileEndpoint.method,r=this.props.files.find(function(t){
-return t.id===parseInt(e.props.fileId,10)}),o=(r||this.props.fileId===this.props.folderId)&&f["default"].createElement(I["default"],{fileId:this.props.fileId,onClose:this.handleCloseFile,editFileSchemaUrl:t.form.FileEditForm.schemaUrl,
+return t.id===parseInt(e.props.fileId,10)}),o=(r||this.props.fileId===this.props.folderId)&&f["default"].createElement(k["default"],{fileId:this.props.fileId,onClose:this.handleCloseFile,editFileSchemaUrl:t.form.FileEditForm.schemaUrl,
 actions:this.props.actions.editor,onSubmit:this.handleSubmitEditor,onDelete:this["delete"],addToCampaignSchemaUrl:t.form.AddToCampaignForm.schemaUrl}),l=!(!this.props.folder||!this.props.folder.id)
 return f["default"].createElement("div",{className:"cms-content__inner no-preview"},f["default"].createElement("div",{className:"cms-content__left cms-gallery collapse in"},f["default"].createElement(x["default"],{
 showBackButton:l,handleBackButtonClick:this.handleBackButtonClick},f["default"].createElement(M["default"],{multiline:!0,crumbs:this.props.breadcrumbs})),f["default"].createElement("div",{className:"gallery"
@@ -195,7 +195,7 @@ return{loading:n,count:i,files:r,selectedFiles:o,page:l,queuedFiles:e.assetAdmin
 }}}Object.defineProperty(t,"__esModule",{value:!0}),t.Gallery=void 0
 var p=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},c=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),S=n(3),w=r(S),P=n(32),k=r(P),I=n(35),L=r(I),U=n(36),R=r(U),M=n(25),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),w=n(3),S=r(w),P=n(32),I=r(P),k=n(35),L=r(k),U=n(36),R=r(U),M=n(25),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
 function t(e){o(this,t)
 var n=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.sort="name",n.direction="asc",n.sorters=[{field:"title",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_ASC")},{field:"title",direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_DESC")
@@ -227,30 +227,32 @@ this.props.actions.queuedFiles.purgeUploadQueue(),this.props.actions.gallery.sor
 
 }},{key:"handleRemoveErroredUpload",value:function T(e){this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)}},{key:"handleAddedFile",value:function D(e){this.props.actions.queuedFiles.addQueuedFile(e)
 
-}},{key:"handleSending",value:function C(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{xhr:t})}},{key:"handleUploadProgress",value:function S(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{
+}},{key:"handleSending",value:function C(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{xhr:t})}},{key:"handleUploadProgress",value:function w(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{
 progress:t})}},{key:"handleCreateFolder",value:function P(e){var t=this,n=this.promptFolderName()
 n&&this.props.actions.gallery.createFolder(this.props.createFolderApi,this.props.folderId,n).then(function(e){return t.props.actions.gallery.addFiles([e],1),e}),e.preventDefault()}},{key:"handleSuccessfulUpload",
-value:function I(e){var t=JSON.parse(e.xhr.response)
+value:function k(e){var t=JSON.parse(e.xhr.response)
 return"undefined"!=typeof t[0].error?void this.handleFailedUpload(e):(this.props.actions.queuedFiles.removeQueuedFile(e._queuedAtTime),void this.props.actions.gallery.addFiles(t,this.props.count+1))}},{
 key:"handleFailedUpload",value:function U(e){this.props.actions.queuedFiles.failUpload(e._queuedAtTime)}},{key:"handleItemDelete",value:function M(e,t){confirm(g["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.props.deleteApi,[t.id])
 
 }},{key:"promptFolderName",value:function x(){return prompt(g["default"]._t("AssetAdmin.PROMPTFOLDERNAME"))}},{key:"itemIsSelected",value:function z(e){return this.props.selectedFiles.indexOf(e)>-1}},{
 key:"itemIsHighlighted",value:function j(e){return this.props.fileId===e}},{key:"handleFolderActivate",value:function q(e,t){e.preventDefault(),this.props.onOpenFolder(t.id,t)}},{key:"handleFileActivate",
-value:function B(e,t){e.preventDefault(),null!==t.created&&this.props.onOpenFile(t.id,t)}},{key:"handleToggleSelect",value:function Q(e,t){this.props.selectedFiles.indexOf(t.id)===-1?this.props.actions.gallery.selectFiles([t.id]):this.props.actions.gallery.deselectFiles([t.id])
+value:function B(e,t){e.preventDefault(),null!==t.created&&this.props.onOpenFile(t.id,t)}},{key:"handleToggleSelect",value:function H(e,t){this.props.selectedFiles.indexOf(t.id)===-1?this.props.actions.gallery.selectFiles([t.id]):this.props.actions.gallery.deselectFiles([t.id])
 
-}},{key:"handleMoreClick",value:function H(e){e.stopPropagation(),e.preventDefault(),this.props.actions.gallery.deselectFiles()}},{key:"handleBackClick",value:function W(e){e.preventDefault()
+}},{key:"handleMoreClick",value:function Q(e){e.stopPropagation(),e.preventDefault(),this.props.actions.gallery.deselectFiles()}},{key:"handleBackClick",value:function W(e){e.preventDefault()
 var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+this.props.folder.parentID)}},{key:"render",value:function G(){var e=this
 if(!this.props.folder)return v["default"].createElement("div",null)
-var t={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,paramName:"Upload",clickable:"#upload-button"},n=w["default"].get("SecurityID"),i=this.props.folder.canEdit
+var t={height:N["default"].THUMBNAIL_HEIGHT,width:N["default"].THUMBNAIL_WIDTH},n={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,paramName:"Upload",clickable:"#upload-button"},i=S["default"].get("SecurityID"),r=this.props.folder.canEdit
+
+
 return v["default"].createElement("div",{className:"gallery__outer"},v["default"].createElement(F["default"],{transitionName:"bulk-actions",transitionEnterTimeout:N["default"].CSS_TRANSITION_TIME,transitionLeaveTimeout:N["default"].CSS_TRANSITION_TIME
 },this.getBulkActionsComponent()),v["default"].createElement("div",{className:"gallery__main panel panel--padded panel--scrollable"},v["default"].createElement("div",{className:"gallery__sort fieldholder-small"
 },v["default"].createElement("select",{className:"dropdown no-change-track no-chzn",tabIndex:"0",style:{width:"160px"}},this.sorters.map(function(t,n){return v["default"].createElement("option",{key:n,
 onClick:e.handleSort,"data-field":t.field,"data-direction":t.direction},t.label)}))),v["default"].createElement("div",{className:"toolbar--content toolbar--space-save"},this.getBackButton(),v["default"].createElement("button",{
-id:"upload-button",className:"btn btn-secondary font-icon-upload btn--icon-xl",type:"button",disabled:!i},v["default"].createElement("span",{className:"btn__text"},g["default"]._t("AssetAdmin.DROPZONE_UPLOAD"))),v["default"].createElement("button",{
-id:"add-folder-button",className:"btn btn-secondary font-icon-folder-add btn--icon-xl ",type:"button",onClick:this.handleCreateFolder,disabled:!i},v["default"].createElement("span",{className:"btn__text"
-},g["default"]._t("AssetAdmin.ADD_FOLDER_BUTTON")))),v["default"].createElement(k["default"],{canUpload:i,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,
-handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,folderId:this.props.folderId,options:t,securityID:n,uploadButton:!1},v["default"].createElement("div",{className:"gallery__folders"
+id:"upload-button",className:"btn btn-secondary font-icon-upload btn--icon-xl",type:"button",disabled:!r},v["default"].createElement("span",{className:"btn__text"},g["default"]._t("AssetAdmin.DROPZONE_UPLOAD"))),v["default"].createElement("button",{
+id:"add-folder-button",className:"btn btn-secondary font-icon-folder-add btn--icon-xl ",type:"button",onClick:this.handleCreateFolder,disabled:!r},v["default"].createElement("span",{className:"btn__text"
+},g["default"]._t("AssetAdmin.ADD_FOLDER_BUTTON")))),v["default"].createElement(I["default"],{canUpload:r,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,
+handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,preview:t,folderId:this.props.folderId,options:n,securityID:i,uploadButton:!1},v["default"].createElement("div",{className:"gallery__folders"
 },this.props.files.map(function(t,n){var i=null
 return"folder"===t.type&&(i=v["default"].createElement(L["default"],{key:n,item:t,selected:e.itemIsSelected(t.id),highlighted:e.itemIsHighlighted(t.id),handleDelete:e.handleItemDelete,handleToggleSelect:e.handleToggleSelect,
 handleActivate:e.handleFolderActivate})),i})),v["default"].createElement("div",{className:"gallery__files"},this.props.queuedFiles.items.map(function(t,n){return v["default"].createElement(L["default"],{
@@ -283,8 +285,8 @@ var o=i.get
 if(void 0!==o)return o.call(n)},d=n(15),p=i(d),c=n(29),f=i(c),h=n(18),m=i(h),g=n(11),y=i(g),v=n(33),E=i(v),b=n(28),_=i(b),F=function(e){function t(e){r(this,t)
 var n=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.dropzone=null,n.dragging=!1,n.handleAddedFile=n.handleAddedFile.bind(n),n.handleDragEnter=n.handleDragEnter.bind(n),n.handleDragLeave=n.handleDragLeave.bind(n),n.handleDrop=n.handleDrop.bind(n),
-n.handleUploadProgress=n.handleUploadProgress.bind(n),n.handleError=n.handleError.bind(n),n.handleSending=n.handleSending.bind(n),n.handleSuccess=n.handleSuccess.bind(n),n}return l(t,e),s(t,[{key:"componentDidMount",
-value:function n(){u(t.prototype.__proto__||Object.getPrototypeOf(t.prototype),"componentDidMount",this).call(this)
+n.handleUploadProgress=n.handleUploadProgress.bind(n),n.handleError=n.handleError.bind(n),n.handleSending=n.handleSending.bind(n),n.handleSuccess=n.handleSuccess.bind(n),n.loadImage=n.loadImage.bind(n),
+n}return l(t,e),s(t,[{key:"componentDidMount",value:function n(){u(t.prototype.__proto__||Object.getPrototypeOf(t.prototype),"componentDidMount",this).call(this)
 var e=this.getDefaultOptions()
 this.props.uploadButton===!0&&(e.clickable=(0,_["default"])(f["default"].findDOMNode(this)).find(".asset-dropzone__upload-button")[0]),this.dropzone=new E["default"](f["default"].findDOMNode(this),a({},e,this.props.options)),
 "undefined"!=typeof this.props.promptOnRemove&&this.setPromptOnRemove(this.props.promptOnRemove)}},{key:"componentWillUnmount",value:function i(){u(t.prototype.__proto__||Object.getPrototypeOf(t.prototype),"componentWillUnmount",this).call(this),
@@ -311,19 +313,17 @@ i.onload=function(i){if("image"===t.getFileCategory(e.type)){var r=document.crea
 n(t.loadImage(r,i.target.result))}else n({})},i.readAsDataURL(e)})
 return n.then(function(n){var i={dimensions:{height:n.height,width:n.width},category:t.getFileCategory(e.type),filename:e.name,queuedAtTime:e._queuedAtTime,size:e.size,title:e.name,type:e.type,url:n.thumbnailURL
 }
-return t.props.handleAddedFile(i),t.dropzone.processFile(e),i})}},{key:"loadImage",value:function T(e,t){return new Promise(function(n){e.onload=function(){var t=document.createElement("canvas"),i=t.getContext("2d")
-
-
-t.width=e.naturalWidth,t.height=e.naturalHeight,i.drawImage(e,0,0,t.width,t.height)
-var r=t.toDataURL()
-n({width:t.width,height:t.height,thumbnailURL:r})},e.src=t})}},{key:"handleError",value:function D(e,t){"function"==typeof this.props.handleSending&&this.props.handleError(e,t)}},{key:"handleSuccess",value:function C(e){
-this.props.handleSuccess(e)}},{key:"setPromptOnRemove",value:function O(e){this.dropzone.options.dictRemoveFileConfirmation=e}}]),t}(m["default"])
+return t.props.handleAddedFile(i),t.dropzone.processFile(e),i})}},{key:"loadImage",value:function T(e,t){var n=this
+return new Promise(function(i){e.onload=function(){var t=document.createElement("canvas"),r=t.getContext("2d"),o=2*n.props.preview.width,l=2*n.props.preview.height,a=e.naturalWidth/e.naturalHeight
+e.naturalWidth<o||e.naturalHeight<l?(t.width=e.naturalWidth,t.height=e.naturalHeight):a<1?(t.width=o,t.height=o/a):(t.width=l*a,t.height=l),r.drawImage(e,0,0,t.width,t.height)
+var s=t.toDataURL("image/png")
+i({width:e.naturalWidth,height:e.naturalHeight,thumbnailURL:s})},e.src=t})}},{key:"handleError",value:function D(e,t){"function"==typeof this.props.handleSending&&this.props.handleError(e,t)}},{key:"handleSuccess",
+value:function C(e){this.props.handleSuccess(e)}},{key:"setPromptOnRemove",value:function O(e){this.dropzone.options.dictRemoveFileConfirmation=e}}]),t}(m["default"])
 F.propTypes={folderId:p["default"].PropTypes.number.isRequired,handleAddedFile:p["default"].PropTypes.func.isRequired,handleDragEnter:p["default"].PropTypes.func,handleDragLeave:p["default"].PropTypes.func,
 handleDrop:p["default"].PropTypes.func,handleError:p["default"].PropTypes.func.isRequired,handleSending:p["default"].PropTypes.func,handleSuccess:p["default"].PropTypes.func.isRequired,options:p["default"].PropTypes.shape({
-url:p["default"].PropTypes.string.isRequired}),promptOnRemove:p["default"].PropTypes.string,securityID:p["default"].PropTypes.string.isRequired,uploadButton:p["default"].PropTypes.bool,canUpload:p["default"].PropTypes.bool.isRequired
-},F.defaultProps={uploadButton:!0},t["default"]=F},function(e,t,n){(function(e,t){(function(){var n,i,r,o,l,a,s,u,d=[].slice,p={}.hasOwnProperty,c=function(e,t){function n(){this.constructor=e}for(var i in t)p.call(t,i)&&(e[i]=t[i])
-
-
+url:p["default"].PropTypes.string.isRequired}),promptOnRemove:p["default"].PropTypes.string,securityID:p["default"].PropTypes.string.isRequired,uploadButton:p["default"].PropTypes.bool,canUpload:p["default"].PropTypes.bool.isRequired,
+preview:p["default"].PropTypes.shape({width:p["default"].PropTypes.number,height:p["default"].PropTypes.number})},F.defaultProps={uploadButton:!0},t["default"]=F},function(e,t,n){(function(e,t){(function(){
+var n,i,r,o,l,a,s,u,d=[].slice,p={}.hasOwnProperty,c=function(e,t){function n(){this.constructor=e}for(var i in t)p.call(t,i)&&(e[i]=t[i])
 return n.prototype=t.prototype,e.prototype=new n,e.__super__=t.prototype,e}
 s=function(){},i=function(){function e(){}return e.prototype.addEventListener=e.prototype.on,e.prototype.on=function(e,t){return this._callbacks=this._callbacks||{},this._callbacks[e]||(this._callbacks[e]=[]),
 this._callbacks[e].push(t),this},e.prototype.emit=function(){var e,t,n,i,r,o
@@ -494,7 +494,7 @@ this.options.uploadMultiple&&this.emit("canceledmultiple",i)}else(s=e.status)!==
 
 if(this.options.autoProcessQueue)return this.processQueue()},r=function(){var e,t
 return t=arguments[0],e=2<=arguments.length?d.call(arguments,1):[],"function"==typeof t?t.apply(this,e):t},t.prototype.uploadFile=function(e){return this.uploadFiles([e])},t.prototype.uploadFiles=function(e){
-var i,o,l,a,s,u,d,p,c,f,h,m,g,y,v,E,b,_,F,A,T,D,C,O,S,w,P,k,I,L,U,R,M,N
+var i,o,l,a,s,u,d,p,c,f,h,m,g,y,v,E,b,_,F,A,T,D,C,O,w,S,P,I,k,L,U,R,M,N
 for(F=new XMLHttpRequest,A=0,O=e.length;A<O;A++)i=e[A],i.xhr=F
 m=r(this.options.method,e),b=r(this.options.url,e),F.open(m,b,!0),F.withCredentials=!!this.options.withCredentials,v=null,l=function(t){return function(){var n,r,o
 for(o=[],n=0,r=e.length;n<r;n++)i=e[n],o.push(t._errorProcessing(e,v||t.options.dictResponseError.replace("{{statusCode}}",F.status),F))
@@ -504,15 +504,15 @@ else{for(r=!0,o=100,a=0,d=e.length;a<d;a++)i=e[a],100===i.upload.progress&&i.upl
 if(r)return}for(c=[],s=0,p=e.length;s<p;s++)i=e[s],c.push(t.emit("uploadprogress",i,o,i.upload.bytesSent))
 return c}}(this),F.onload=function(n){return function(i){var r
 if(e[0].status!==t.CANCELED&&4===F.readyState){if(v=F.responseText,F.getResponseHeader("content-type")&&~F.getResponseHeader("content-type").indexOf("application/json"))try{v=JSON.parse(v)}catch(o){i=o,
-v="Invalid JSON response from server."}return E(),200<=(r=F.status)&&r<300?n._finished(e,v,i):l()}}}(this),F.onerror=function(n){return function(){if(e[0].status!==t.CANCELED)return l()}}(this),y=null!=(I=F.upload)?I:F,
+v="Invalid JSON response from server."}return E(),200<=(r=F.status)&&r<300?n._finished(e,v,i):l()}}}(this),F.onerror=function(n){return function(){if(e[0].status!==t.CANCELED)return l()}}(this),y=null!=(k=F.upload)?k:F,
 y.onprogress=E,u={Accept:"application/json","Cache-Control":"no-cache","X-Requested-With":"XMLHttpRequest"},this.options.headers&&n(u,this.options.headers)
 for(a in u)s=u[a],s&&F.setRequestHeader(a,s)
 if(o=new FormData,this.options.params){L=this.options.params
-for(h in L)_=L[h],o.append(h,_)}for(T=0,S=e.length;T<S;T++)i=e[T],this.emit("sending",i,F,o)
-if(this.options.uploadMultiple&&this.emit("sendingmultiple",e,F,o),"FORM"===this.element.tagName)for(U=this.element.querySelectorAll("input, textarea, select, button"),D=0,w=U.length;D<w;D++)if(p=U[D],
+for(h in L)_=L[h],o.append(h,_)}for(T=0,w=e.length;T<w;T++)i=e[T],this.emit("sending",i,F,o)
+if(this.options.uploadMultiple&&this.emit("sendingmultiple",e,F,o),"FORM"===this.element.tagName)for(U=this.element.querySelectorAll("input, textarea, select, button"),D=0,S=U.length;D<S;D++)if(p=U[D],
 c=p.getAttribute("name"),f=p.getAttribute("type"),"SELECT"===p.tagName&&p.hasAttribute("multiple"))for(R=p.options,C=0,P=R.length;C<P;C++)g=R[C],g.selected&&o.append(c,g.value)
 else(!f||"checkbox"!==(M=f.toLowerCase())&&"radio"!==M||p.checked)&&o.append(c,p.value)
-for(d=k=0,N=e.length-1;0<=N?k<=N:k>=N;d=0<=N?++k:--k)o.append(this._getParamName(d),e[d],this._renameFilename(e[d].name))
+for(d=I=0,N=e.length-1;0<=N?I<=N:I>=N;d=0<=N?++I:--I)o.append(this._getParamName(d),e[d],this._renameFilename(e[d].name))
 return this.submitRequest(F,o,e)},t.prototype.submitRequest=function(e,t,n){return e.send(t)},t.prototype._finished=function(e,n,i){var r,o,l
 for(o=0,l=e.length;o<l;o++)r=e[o],r.status=t.SUCCESS,this.emit("success",r,n,i),this.emit("complete",r)
 if(this.options.uploadMultiple&&(this.emit("successmultiple",e,n,i),this.emit("completemultiple",e)),this.options.autoProcessQueue)return this.processQueue()},t.prototype._errorProcessing=function(e,n,i){
