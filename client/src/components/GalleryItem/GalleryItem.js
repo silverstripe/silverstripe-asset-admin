@@ -1,6 +1,6 @@
 import i18n from 'i18n';
 import React from 'react';
-import constants from 'constants/index';
+import CONSTANTS from 'constants/index';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 
 class GalleryItem extends SilverStripeComponent {
@@ -180,8 +180,8 @@ class GalleryItem extends SilverStripeComponent {
     // Note: dimensions will be null if the back-end image is lost
     return (
       dimensions
-      && dimensions.height < constants.THUMBNAIL_HEIGHT
-      && dimensions.width < constants.THUMBNAIL_WIDTH
+      && dimensions.height < CONSTANTS.THUMBNAIL_HEIGHT
+      && dimensions.width < CONSTANTS.THUMBNAIL_WIDTH
     );
   }
 
@@ -192,13 +192,13 @@ class GalleryItem extends SilverStripeComponent {
     event.stopPropagation();
 
     // If space is pressed, select file
-    if (constants.SPACE_KEY_CODE === event.keyCode) {
+    if (CONSTANTS.SPACE_KEY_CODE === event.keyCode) {
       event.preventDefault(); // Stop page scrolling if spaceKey is pressed
       this.handleToggleSelect(event);
     }
 
     // If return is pressed, navigate folder
-    if (constants.RETURN_KEY_CODE === event.keyCode) {
+    if (CONSTANTS.RETURN_KEY_CODE === event.keyCode) {
       this.handleActivate(event);
     }
   }

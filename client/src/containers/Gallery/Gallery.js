@@ -398,6 +398,10 @@ export class Gallery extends Component {
       return <div />;
     }
 
+    const dimensions = {
+      height: CONSTANTS.THUMBNAIL_HEIGHT,
+      width: CONSTANTS.THUMBNAIL_WIDTH,
+    };
     const dropzoneOptions = {
       url: this.props.createFileApiUrl,
       method: this.props.createFileApiMethod,
@@ -472,6 +476,7 @@ export class Gallery extends Component {
             handleSuccess={this.handleSuccessfulUpload}
             handleSending={this.handleSending}
             handleUploadProgress={this.handleUploadProgress}
+            preview={dimensions}
             folderId={this.props.folderId}
             options={dropzoneOptions}
             securityID={securityID}
