@@ -55,8 +55,8 @@ filename:null,id:0,lastUpdated:null,messages:null,owner:{id:0,title:null},parent
 
 
 switch(t.type){case d["default"].ADD_QUEUED_FILE:return(0,s["default"])(l({},e,{items:e.items.concat([l({},r(),t.payload.file)])}))
-case d["default"].FAIL_UPLOAD:return(0,s["default"])(l({},e,{items:e.items.map(function(e){return e.queuedAtTime===t.payload.queuedAtTime?l({},e,{messages:[{value:c["default"]._t("AssetAdmin.DROPZONE_FAILED_UPLOAD"),
-type:"error",extraClass:"error"}]}):e})}))
+case d["default"].FAIL_UPLOAD:return(0,s["default"])(l({},e,{items:e.items.map(function(e){return e.queuedAtTime===t.payload.queuedAtTime?l({},e,{messages:t.payload.messages.error.map(function(e){return{
+value:e,type:"error",extraClass:"error"}})}):e})}))
 case d["default"].PURGE_UPLOAD_QUEUE:return(0,s["default"])(l({},e,{items:e.items.filter(function(e){return!Array.isArray(e.messages)||!e.messages.filter(function(e){return"error"===e.type||"success"===e.type
 
 }).length>0})}))
@@ -232,7 +232,7 @@ progress:t})}},{key:"handleCreateFolder",value:function P(e){var t=this,n=this.p
 n&&this.props.actions.gallery.createFolder(this.props.createFolderApi,this.props.folderId,n).then(function(e){return t.props.actions.gallery.addFiles([e],1),e}),e.preventDefault()}},{key:"handleSuccessfulUpload",
 value:function k(e){var t=JSON.parse(e.xhr.response)
 return"undefined"!=typeof t[0].error?void this.handleFailedUpload(e):(this.props.actions.queuedFiles.removeQueuedFile(e._queuedAtTime),void this.props.actions.gallery.addFiles(t,this.props.count+1))}},{
-key:"handleFailedUpload",value:function U(e){this.props.actions.queuedFiles.failUpload(e._queuedAtTime)}},{key:"handleItemDelete",value:function M(e,t){confirm(g["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.props.deleteApi,[t.id])
+key:"handleFailedUpload",value:function U(e,t){this.props.actions.queuedFiles.failUpload(e._queuedAtTime,t)}},{key:"handleItemDelete",value:function M(e,t){confirm(g["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.props.deleteApi,[t.id])
 
 }},{key:"promptFolderName",value:function x(){return prompt(g["default"]._t("AssetAdmin.PROMPTFOLDERNAME"))}},{key:"itemIsSelected",value:function z(e){return this.props.selectedFiles.indexOf(e)>-1}},{
 key:"itemIsHighlighted",value:function j(e){return this.props.fileId===e}},{key:"handleFolderActivate",value:function q(e,t){e.preventDefault(),this.props.onOpenFolder(t.id,t)}},{key:"handleFileActivate",
@@ -317,7 +317,7 @@ return t.props.handleAddedFile(i),t.dropzone.processFile(e),i})}},{key:"loadImag
 return new Promise(function(i){e.onload=function(){var t=document.createElement("canvas"),r=t.getContext("2d"),o=2*n.props.preview.width,l=2*n.props.preview.height,a=e.naturalWidth/e.naturalHeight
 e.naturalWidth<o||e.naturalHeight<l?(t.width=e.naturalWidth,t.height=e.naturalHeight):a<1?(t.width=o,t.height=o/a):(t.width=l*a,t.height=l),r.drawImage(e,0,0,t.width,t.height)
 var s=t.toDataURL("image/png")
-i({width:e.naturalWidth,height:e.naturalHeight,thumbnailURL:s})},e.src=t})}},{key:"handleError",value:function D(e,t){"function"==typeof this.props.handleSending&&this.props.handleError(e,t)}},{key:"handleSuccess",
+i({width:e.naturalWidth,height:e.naturalHeight,thumbnailURL:s})},e.src=t})}},{key:"handleError",value:function D(e,t){"function"==typeof this.props.handleError&&this.props.handleError(e,t)}},{key:"handleSuccess",
 value:function C(e){this.props.handleSuccess(e)}},{key:"setPromptOnRemove",value:function O(e){this.dropzone.options.dictRemoveFileConfirmation=e}}]),t}(m["default"])
 F.propTypes={folderId:p["default"].PropTypes.number.isRequired,handleAddedFile:p["default"].PropTypes.func.isRequired,handleDragEnter:p["default"].PropTypes.func,handleDragLeave:p["default"].PropTypes.func,
 handleDrop:p["default"].PropTypes.func,handleError:p["default"].PropTypes.func.isRequired,handleSending:p["default"].PropTypes.func,handleSuccess:p["default"].PropTypes.func.isRequired,options:p["default"].PropTypes.shape({
@@ -623,8 +623,8 @@ n)}}]),t}(g["default"])
 b.propTypes={items:c["default"].PropTypes.array,actions:c["default"].PropTypes.arrayOf(c["default"].PropTypes.shape({value:c["default"].PropTypes.string.isRequired,label:c["default"].PropTypes.string.isRequired,
 className:c["default"].PropTypes.string,destructive:c["default"].PropTypes.bool,callback:c["default"].PropTypes.func,canApply:c["default"].PropTypes.func,confirm:c["default"].PropTypes.func}))},t["default"]=(0,
 E.connect)(a)(b)},function(e,t,n){"use strict"
-function i(e){return e&&e.__esModule?e:{"default":e}}function r(e){return function(t){return t({type:p["default"].ADD_QUEUED_FILE,payload:{file:e}})}}function o(e){return function(t){return t({type:p["default"].FAIL_UPLOAD,
-payload:{queuedAtTime:e}})}}function l(){return function(e){return e({type:p["default"].PURGE_UPLOAD_QUEUE,payload:null})}}function a(e){return function(t){return t({type:p["default"].REMOVE_QUEUED_FILE,
+function i(e){return e&&e.__esModule?e:{"default":e}}function r(e){return function(t){return t({type:p["default"].ADD_QUEUED_FILE,payload:{file:e}})}}function o(e,t){return function(n){return n({type:p["default"].FAIL_UPLOAD,
+payload:{queuedAtTime:e,messages:t}})}}function l(){return function(e){return e({type:p["default"].PURGE_UPLOAD_QUEUE,payload:null})}}function a(e){return function(t){return t({type:p["default"].REMOVE_QUEUED_FILE,
 payload:{queuedAtTime:e}})}}function s(e){return function(t){return t({type:p["default"].SUCCEED_UPLOAD,payload:{queuedAtTime:e}})}}function u(e,t){return function(n){return n({type:p["default"].UPDATE_QUEUED_FILE,
 payload:{queuedAtTime:e,updates:t}})}}Object.defineProperty(t,"__esModule",{value:!0}),t.addQueuedFile=r,t.failUpload=o,t.purgeUploadQueue=l,t.removeQueuedFile=a,t.succeedUpload=s,t.updateQueuedFile=u
 var d=n(10),p=i(d)},function(e,t){e.exports=Breadcrumb},function(e,t){e.exports=Toolbar},function(e,t){}])

@@ -369,9 +369,9 @@ class AssetDropzone extends SilverStripeComponent {
    * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    * @param errorMessage (string)
    */
-  handleError(file, errorMessage) {
-    if (typeof this.props.handleSending === 'function') {
-      this.props.handleError(file, errorMessage);
+  handleError(file, messages) {
+    if (typeof this.props.handleError === 'function') {
+      this.props.handleError(file, messages);
     }
   }
 
