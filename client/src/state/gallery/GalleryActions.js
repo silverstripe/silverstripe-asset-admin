@@ -70,6 +70,7 @@ export function loadFolderContents(listApi, folderId, limit, page) {
             id: parseInt(data.folderID, 10),
             title: data.title,
             parents: data.parents,
+            parent: data.parent,
             canEdit: data.canEdit,
             canDelete: data.canDelete,
             // Distinguish between null and 0
