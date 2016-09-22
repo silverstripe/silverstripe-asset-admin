@@ -36,6 +36,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.EDIT": "Edit",
     "AssetAdmin.FILENAME": "Filename",
     "AssetAdmin.FILES": "Files",
+    "AssetAdmin.FILE_MISSING": "File cannot be found",
     "AssetAdmin.FILTER_DATE_ASC": "oldest",
     "AssetAdmin.FILTER_DATE_DESC": "newest",
     "AssetAdmin.FILTER_TITLE_ASC": "title a-z",
