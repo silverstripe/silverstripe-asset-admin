@@ -166,13 +166,21 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {number} fileId
    */
   delete(fileId) {
-    const file = this.props.files.find((next) => next.id === fileId);
+    let file = this.props.files.find((next) => next.id === fileId);
+    if (!file && this.props.folder && this.props.folder.id === fileId) {
+      file = this.props.folder;
+    }
+    if (!file) {
+      throw new Error('File selected for deletion cannot be found');
+    }
+    const parentId = file.parent ? file.parent.id : 0;
+
     // eslint-disable-next-line no-alert
     if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
       this.props.actions.gallery.deleteItems(this.endpoints.deleteApi, [file.id])
         .then(() => {
           const base = this.props.sectionConfig.url;
-          this.props.router.push(`/${base}/show/${file.parent.id}`);
+          this.props.router.push(`/${base}/show/${parentId}`);
         });
     }
   }

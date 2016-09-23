@@ -204,6 +204,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             array_unshift($parents, [
                 'id' => $next->ID,
                 'title' => $next->getTitle(),
+                'filename' => $next->getFilename(),
             ]);
             if($next->ParentID) {
                 $next = $next->Parent();
@@ -220,6 +221,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'title' => $folder->getTitle(),
             'count' => count($items),
             'parents' => $parents,
+            'parent' => $parents ? $parents[count($parents) - 1] : null,
             'parentID' => $folder->exists() ? $folder->ParentID : null, // grandparent
             'folderID' => $folderID,
             'canEdit' => $folder->canEdit(),
