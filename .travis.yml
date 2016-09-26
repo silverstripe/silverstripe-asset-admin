@@ -10,11 +10,14 @@ matrix:
     - php: 5.5
     - php: 5.6
     - php: 7.0
-      env:
+      env: PHPUNIT_COVERAGE_TEST=1
     - php: 5.6
       env: NPM_TEST=1
 
 before_script:
+    - composer self-update || true
+    - phpenv rehash
+    - phpenv config-rm xdebug.ini
     - git clone -b "pulls/alias-and-installer-branch" git://github.com/chillu/silverstripe-travis-support.git ~/travis-support
     - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss
     - cd ~/builds/ss
@@ -26,6 +29,8 @@ script:
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm install --silent); fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run test); fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run lint); fi"
+    - "if [ \"$PHPUNIT_COVERAGE_TEST\" = \"1\" ]; then phpdbg -qrr vendor/bin/phpunit asset-admin/tests --coverage-clover=coverage.xml; fi"
+    - "if [ \"$PHPUNIT_COVERAGE_TEST\" = \"1\" ]; then bash <(curl -s https://codecov.io/bash) -f coverage.xml; fi"
 
 notifications:
   slack: silverstripeltd:Cls1xnypKBLFhv0YIRtNLzlQ
