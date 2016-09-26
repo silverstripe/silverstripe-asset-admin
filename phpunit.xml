@@ -9,14 +9,19 @@
     stopOnFailure="false"
     syntaxCheck="false"
     >
+
     <testsuites>
         <testsuite>
             <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
+
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">code</directory>
+            <directory suffix=".php">.</directory>
+            <exclude>
+                <directory suffix=".php">tests/</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>
