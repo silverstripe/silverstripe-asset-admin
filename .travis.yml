@@ -25,6 +25,7 @@ script:
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd framework && nvm use 4 && npm install --silent); fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm install --silent); fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run test); fi"
+    - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run lint); fi"
 
 notifications:
   slack: silverstripeltd:Cls1xnypKBLFhv0YIRtNLzlQ
