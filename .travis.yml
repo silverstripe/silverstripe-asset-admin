@@ -8,11 +8,17 @@ env:
 matrix:
   include:
     - php: 5.5
+      env: DB=MYSQL PHPUNIT_TEST=1
+    - php: 5.5
+      env: DB=PGSQL PHPUNIT_TEST=1
+    - php: 5.5
+      env: DB=SQLITE PHPUNIT_TEST=1
     - php: 5.6
-    - php: 7.0
-      env: PHPUNIT_COVERAGE_TEST=1
+      env: DB=MYSQL PDO=1 PHPUNIT_TEST=1
     - php: 5.6
       env: NPM_TEST=1
+    - php: 7.0
+      env: DB=MYSQL PDO=1 PHPUNIT_COVERAGE_TEST=1
 
 before_script:
     - composer self-update || true
@@ -23,7 +29,7 @@ before_script:
     - cd ~/builds/ss
 
 script:
-    - "if [ \"$NPM_TEST\" = \"\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
+    - "if [ \"$PHPUNIT_TEST\" = \"1\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (nvm install 4); fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd framework && nvm use 4 && npm install --silent); fi"
     - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm install --silent); fi"
