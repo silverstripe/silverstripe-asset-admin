@@ -291,8 +291,8 @@ export class Gallery extends Component {
     this.props.actions.gallery.addFiles(json, this.props.count + 1);
   }
 
-  handleFailedUpload(file) {
-    this.props.actions.queuedFiles.failUpload(file._queuedAtTime);
+  handleFailedUpload(file, errorMessage) {
+    this.props.actions.queuedFiles.failUpload(file._queuedAtTime, errorMessage);
   }
 
   /**

@@ -124,10 +124,10 @@
 }
 
 .gallery-item__error-message{
-  top:calc(50% - 40px);
+  top:calc(50% - 20px);
   left:50%;
-  -webkit-transform:translateX(-50%) translateY(50%);
-          transform:translateX(-50%) translateY(50%);
+  -webkit-transform:translateX(-50%) translateY(-50%);
+          transform:translateX(-50%) translateY(-50%);
   width:75%;
 }
 
@@ -218,10 +218,10 @@
   height:18px;
   width:75%;
   position:absolute;
-  top:calc(50% - 40px);
+  top:calc(50% - 20px);
   left:50%;
-  -webkit-transform:translateX(-50%) translateY(50%);
-          transform:translateX(-50%) translateY(50%);
+  -webkit-transform:translateX(-50%) translateY(-50%);
+          transform:translateX(-50%) translateY(-50%);
   border-radius:10px;
   overflow:hidden;
 }

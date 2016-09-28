@@ -56,11 +56,11 @@ function queuedFilesReducer(state = initialState, action) {
         items: state.items.map((file) => {
           if (file.queuedAtTime === action.payload.queuedAtTime) {
             return Object.assign({}, file, {
-              messages: [{
-                value: i18n._t('AssetAdmin.DROPZONE_FAILED_UPLOAD'),
+              messages: action.payload.messages.error.map((message) => ({
+                value: message,
                 type: 'error',
                 extraClass: 'error',
-              }],
+              })),
             });
           }
 

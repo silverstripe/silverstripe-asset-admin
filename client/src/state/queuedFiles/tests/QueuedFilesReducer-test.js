@@ -101,13 +101,14 @@ describe('queuedFilesReducer', () => {
       }],
     };
 
-    it('should set an error message on the file', () => {
+    it('should set an error message', () => {
       const nextState = queuedFilesReducer(initialState, {
         type,
         payload: {
-          file: {
-            name: 'unclepaul.png',
-            size: 123,
+          messages: {
+            error: [
+              'There was a problem.',
+            ],
           },
         },
       });

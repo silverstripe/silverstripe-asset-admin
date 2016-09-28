@@ -1,3 +1,5 @@
+$gallery-item-label-height: 40px;
+
 .gallery-item {
   position: relative;
   float: left;
@@ -85,7 +87,7 @@
 // Label acts as a trigger for input
 .gallery-item__checkbox-label {
   width: 30px;
-  height: 40px;
+  height: $gallery-item-label-height;
   position: absolute;
   right: 0;
   top: 0;
@@ -132,9 +134,9 @@
 
 .gallery-item__error-message {
   position: absolute;
-  top: calc(50% - 40px);
+  top: calc(50% - (#{$gallery-item-label-height} / 2));
   left: 50%;
-  transform: translateX(-50%) translateY(50%);
+  transform: translateX(-50%) translateY(-50%);
   width: 75%;
   color: $white;
   text-align: center;
@@ -226,9 +228,9 @@
   height: 18px;
   width: 75%;
   position: absolute;
-  top: calc(50% - 40px);
+  top: calc(50% - (#{$gallery-item-label-height} / 2));
   left: 50%;
-  transform: translateX(-50%) translateY(50%);
+  transform: translateX(-50%) translateY(-50%);
   border-radius: 10px;
   overflow: hidden;
 

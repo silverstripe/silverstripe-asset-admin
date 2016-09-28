@@ -18,11 +18,14 @@ export function addQueuedFile(file) {
  *
  * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
  */
-export function failUpload(queuedAtTime) {
+export function failUpload(queuedAtTime, messages) {
   return (dispatch) =>
     dispatch({
       type: ACTION_TYPES.FAIL_UPLOAD,
-      payload: { queuedAtTime },
+      payload: {
+        queuedAtTime,
+        messages,
+      },
     });
 }
 
