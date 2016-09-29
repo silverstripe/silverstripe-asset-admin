@@ -589,34 +589,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $fields = $file->getCMSFields();
 
-        $actions = FieldList::create([
-            FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
-                ->setIcon('save')
-        ]);
-
-        // Delete action
-        $actions->push(
-            FormAction::create(
-                'delete',
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.DELETE_BUTTON', 'Delete')
-            )
-                ->setIcon('trash-bin')
-        );
-
-        // Add to campaign action
-        if (!$file instanceof Folder) {
-            $actions->push(PopoverField::create([
-                FormAction::create(
-                    'addtocampaign',
-                    _t(
-                        'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ADDTOCAMPAIGN',
-                        'Add to campaign'
-                    )
-                ),
-            ])
-                ->setPlacement('top')
-            );
-        }
+        $actions = $this->getFileEditActions($file);
 
         $form = Form::create(
             $this,
@@ -659,12 +632,35 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function save($data, $form)
     {
+        return $this->saveOrPublish($data, $form, false);
+    }
+
+
+    /**
+     * @param array $data
+     * @param Form $form
+     * @return HTTPResponse
+     */
+    public function publish($data, $form) {
+        return $this->saveOrPublish($data, $form, true);
+    }
+
+    /**
+     * Update thisrecord
+     *
+     * @param array $data
+     * @param Form $form
+     * @param bool $doPublish
+     * @return HTTPResponse
+     */
+    protected function saveOrPublish($data, $form, $doPublish = false) {
         if (!isset($data['ID']) || !is_numeric($data['ID'])) {
             return (new HTTPResponse(json_encode(['status' => 'error']), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
 
         $id = (int) $data['ID'];
+        /** @var File $record */
         $record = $this->getList()->filter('ID', $id)->first();
 
         if (!$record) {
@@ -672,13 +668,48 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ->addHeader('Content-Type', 'application/json');
         }
 
-        if (!$record->canEdit()) {
+        if (!$record->canEdit() || ($doPublish && !$record->canPublish())) {
             return (new HTTPResponse(json_encode(['status' => 'error']), 401))
                 ->addHeader('Content-Type', 'application/json');
         }
 
         $form->saveInto($record);
         $record->write();
+
+        // Publish this record and owned objects
+        if ($doPublish) {
+            $record->publishRecursive();
+        }
+
+        // Return the record data in the same response as the schema to save a postback
+        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
+        $schemaData['record'] = $this->getObjectFromData($record);
+        $response = new HTTPResponse(Convert::raw2json($schemaData));
+        $response->addHeader('Content-Type', 'application/json');
+        return $response;
+    }
+
+    public function unpublish($data, $form) {
+        if (!isset($data['ID']) || !is_numeric($data['ID'])) {
+            return (new HTTPResponse(json_encode(['status' => 'error']), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $id = (int) $data['ID'];
+        /** @var File $record */
+        $record = $this->getList()->filter('ID', $id)->first();
+
+        if (!$record) {
+            return (new HTTPResponse(json_encode(['status' => 'error']), 404))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        if (!$record->canUnpublish()) {
+            return (new HTTPResponse(json_encode(['status' => 'error']), 401))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        $record->doUnpublish();
 
         // Return the record data in the same response as the schema to save a postback
         $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
@@ -910,5 +941,76 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         );
 
         return $upload;
+    }
+
+    /**
+     * Get actions for file edit
+     *
+     * @param File $file
+     * @return FieldList
+     */
+    protected function getFileEditActions($file)
+    {
+        $actions = FieldList::create();
+
+        // Save and/or publish
+        if ($file->canEdit()) {
+            // Create save button
+            $saveAction = FormAction::create('save', _t('CMSMain.SAVE', 'Save'));
+            $saveAction->setIcon('save');
+            $actions->push($saveAction);
+
+            // Folders are automatically published
+            if ($file->canPublish() && (!$file instanceof Folder)) {
+                $publishText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PUBLISH_BUTTON', 'Publish');
+                $publishAction = FormAction::create('publish', $publishText);
+                $publishAction->setIcon('rocket');
+                $publishAction->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
+                $actions->push($publishAction);
+            }
+        }
+
+        // Delete action
+        $deleteText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.DELETE_BUTTON', 'Delete');
+        $deleteAction = FormAction::create('delete', $deleteText);
+        //$deleteAction->setSchemaData(['data' => ['buttonStyle' => 'danger']]);
+        $deleteAction->setIcon('trash-bin');
+
+        // Add file-specific actions
+        if (!$file instanceof Folder) {
+            // Add to campaign action
+            $addToCampaignAction = FormAction::create(
+                'addtocampaign',
+                _t(
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ADDTOCAMPAIGN',
+                    'Add to campaign'
+                )
+            );
+            $popoverActions = [
+                $addToCampaignAction
+            ];
+            // Add unpublish if available
+            if ($file->isPublished() && $file->canUnpublish()) {
+                $unpublishText = _t(
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UNPUBLISH_BUTTON',
+                    'Unpublish'
+                );
+                $unpublishAction = FormAction::create('unpublish', $unpublishText);
+                $unpublishAction->setIcon('cancel-circled');
+                $popoverActions[] = $unpublishAction;
+            }
+            // Delete
+            $popoverActions[] = $deleteAction;
+
+            // Build popover menu
+            $popoverField = PopoverField::create($popoverActions);
+            $popoverField->setPlacement('top');
+            $actions->push($popoverField);
+        } else {
+            $actions->push($deleteAction);
+        }
+
+        $this->extend('updateFileEditActions', $actions);
+        return $actions;
     }
 }
