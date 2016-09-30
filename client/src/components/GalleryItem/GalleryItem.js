@@ -52,8 +52,9 @@ class GalleryItem extends SilverStripeComponent {
    */
   getThumbnailStyles() {
     if (this.isImage() && (this.exists() || this.uploading())) {
+      const thumbnail = this.props.item.thumbnail || this.props.item.url;
       return {
-        backgroundImage: `url(${this.props.item.url})`,
+        backgroundImage: `url(${thumbnail})`,
       };
     }
 

@@ -7,11 +7,13 @@ use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\ImageManipulation;
 use SilverStripe\Assets\Storage\AssetNameGenerator;
 use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxField;
@@ -92,6 +94,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
+    
+    private static $thumbnail_width = 400;
+    
+    private static $thumbnail_height = 300;
 
     /**
      * Set up the controller
@@ -709,6 +715,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         /** @var File $file */
         if ($file->getIsImage()) {
+            $width = (int)Config::inst()->get(self::class, 'thumbnail_width');
+            $height = (int)Config::inst()->get(self::class, 'thumbnail_height');
+    
+            $object['thumbnail'] = $file->FitMax($width, $height)->getAbsoluteURL();
             $object['dimensions']['width'] = $file->Width;
             $object['dimensions']['height'] = $file->Height;
         }

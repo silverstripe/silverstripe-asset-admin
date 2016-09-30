@@ -575,7 +575,8 @@ var n=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleToggleSelect=n.handleToggleSelect.bind(n),n.handleDelete=n.handleDelete.bind(n),n.handleActivate=n.handleActivate.bind(n),n.handleKeyDown=n.handleKeyDown.bind(n),n.handleCancelUpload=n.handleCancelUpload.bind(n),
 n.preventFocus=n.preventFocus.bind(n),n}return l(t,e),a(t,[{key:"handleActivate",value:function n(e){e.stopPropagation(),this.props.handleActivate(e,this.props.item)}},{key:"handleToggleSelect",value:function i(e){
 e.stopPropagation(),e.preventDefault(),this.props.handleToggleSelect(e,this.props.item)}},{key:"handleDelete",value:function s(e){this.props.handleDelete(e,this.props.item)}},{key:"getThumbnailStyles",
-value:function d(){return this.isImage()&&(this.exists()||this.uploading())?{backgroundImage:"url("+this.props.item.url+")"}:{}}},{key:"hasError",value:function c(){var c=!1
+value:function d(){if(this.isImage()&&(this.exists()||this.uploading())){var e=this.props.item.thumbnail||this.props.item.url
+return{backgroundImage:"url("+e+")"}}return{}}},{key:"hasError",value:function c(){var c=!1
 return Array.isArray(this.props.messages)&&(c=this.props.messages.filter(function(e){return"error"===e.type}).length>0),c}},{key:"getErrorMessage",value:function h(){var e=null
 return this.hasError()?e=this.props.messages[0].value:this.exists()||this.uploading()||(e=u["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found")),null!==e?p["default"].createElement("span",{
 className:"gallery-item__error-message"},e):null}},{key:"getThumbnailClassNames",value:function m(){var e=["gallery-item__thumbnail"]
