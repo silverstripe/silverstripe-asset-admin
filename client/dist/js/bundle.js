@@ -166,8 +166,8 @@ null)}},{key:"openModal",value:function h(){this.setState({openModal:!0})}},{key
 this.closeModal(),e&&e.preventDefault()}},{key:"render",value:function E(){var e=this.props.editFileSchemaUrl+"/"+this.props.fileId,t=this.props.addToCampaignSchemaUrl+"/"+this.props.fileId
 return p["default"].createElement("div",{className:"panel panel--padded panel--scrollable form--no-dividers editor"},this.getCancelButton(),p["default"].createElement("div",{className:"editor__details"
 },p["default"].createElement(f["default"],{schemaUrl:e,handleSubmit:this.handleSubmit,handleAction:this.handleAction}),p["default"].createElement(y["default"],{show:this.state.openModal,handleHide:this.closeModal,
-handleSubmit:this.handleSubmitModal,schemaUrl:t,bodyClassName:"add-to-campaign__dialog",responseClassBad:"add-to-campaign__response add-to-campaign__response--error",responseClassGood:"add-to-campaign__response add-to-campaign__response--good"
-})))}}]),t}(d.Component)
+handleSubmit:this.handleSubmitModal,schemaUrl:t,bodyClassName:"modal__dialog",responseClassBad:"modal__response modal__response--error",responseClassGood:"modal__response modal__response--good"})))}}]),
+t}(d.Component)
 v.propTypes={fileId:p["default"].PropTypes.number.isRequired,actions:p["default"].PropTypes.object,onClose:p["default"].PropTypes.func.isRequired,onSubmit:p["default"].PropTypes.func.isRequired,onDelete:p["default"].PropTypes.func.isRequired,
 editFileSchemaUrl:p["default"].PropTypes.string.isRequired,addToCampaignSchemaUrl:p["default"].PropTypes.string,openAddCampaignModal:p["default"].PropTypes.bool},t["default"]=v},function(e,t){e.exports=FormBuilder
 
