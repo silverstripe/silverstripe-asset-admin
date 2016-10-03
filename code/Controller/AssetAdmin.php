@@ -94,9 +94,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
-    
+
     private static $thumbnail_width = 400;
-    
+
     private static $thumbnail_height = 300;
 
     /**
@@ -717,8 +717,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         if ($file->getIsImage()) {
             $width = (int)Config::inst()->get(self::class, 'thumbnail_width');
             $height = (int)Config::inst()->get(self::class, 'thumbnail_height');
-    
-            $object['thumbnail'] = $file->FitMax($width, $height)->getAbsoluteURL();
+
+            $thumbnail = $file->FitMax($width, $height);
+            if ($thumbnail && $thumbnail->exists()) {
+                $object['thumbnail'] = $thumbnail->getAbsoluteURL();
+            }
             $object['dimensions']['width'] = $file->Width;
             $object['dimensions']['height'] = $file->Height;
         }
