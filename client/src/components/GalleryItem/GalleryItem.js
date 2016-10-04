@@ -145,6 +145,24 @@ class GalleryItem extends SilverStripeComponent {
     return itemClassNames.join(' ');
   }
 
+  getStatusFlags() {
+    const flags = [];
+    if (this.props.item.type !== 'folder') {
+      if (this.props.item.draft) {
+        flags.push(<span
+          title={i18n._t('File.DRAFT', 'Draft')}
+          className="gallery-item--draft"
+        />);
+      } else if (this.props.item.modified) {
+        flags.push(<span
+          title={i18n._t('File.MODIFIED', 'Modified')}
+          className="gallery-item--modified"
+        />);
+      }
+    }
+    return flags;
+  }
+
   /**
    * Determine if this is an image type
    *
@@ -275,6 +293,7 @@ class GalleryItem extends SilverStripeComponent {
           style={this.getThumbnailStyles()}
         >
           {overlay}
+          {this.getStatusFlags()}
         </div>
         {this.getProgressBar()}
         {this.getErrorMessage()}

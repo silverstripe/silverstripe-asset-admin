@@ -236,6 +236,29 @@
   width:0;
 }
 
+.gallery-item--draft,.gallery-item--modified{
+  position:absolute;
+  top:.41027rem;
+  left:.6154rem;
+  display:block;
+  width:13px;
+  height:13px;
+  border:1px solid #fff;
+  border-radius:100%;
+}
+
+.gallery-item--draft{
+  background-color:#fff2e8;
+}
+
+.gallery-item--draft,.gallery-item--modified{
+  box-shadow:0 1px 1px rgba(0,0,0,.3),inset 0 0 0 2px #f46b00;
+}
+
+.gallery-item--modified{
+  background-color:#ff7f22;
+}
+
 .bulk-actions{
   width:100%;
   padding:.76925rem 1.5385rem;
@@ -573,6 +596,18 @@
   overflow:hidden;
   text-overflow:ellipsis;
   margin-bottom:2px;
+}
+
+.editor__status-flag{
+  color:#f46b00;
+  background-color:#fff7f2;
+  border-color:#f46b00;
+  clear:both;
+  text-transform:uppercase;
+  display:inline-block;
+  position:relative;
+  line-height:1rem;
+  margin-left:3px;
 }
 
 .editor__specs{

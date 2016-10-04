@@ -244,3 +244,24 @@ $gallery-item-label-height: 40px;
   background: $brand-primary;
   width: 0%;
 }
+
+.gallery-item--draft, .gallery-item--modified {
+  position: absolute;
+  top: ($spacer/3);
+  left: ($spacer/2);
+  display: block;
+  width: $font-size-root;
+  height: $font-size-root;
+  border: 1px solid #fff;
+  border-radius: 100%;
+}
+
+.gallery-item--draft {
+  background-color: #fff2e8;
+  box-shadow: 0 1px 1px rgba(0,0,0,.3), inset 0 0 0 2px #f46b00;
+}
+
+.gallery-item--modified {
+  background-color: #ff7f22;
+  box-shadow: 0 1px 1px rgba(0,0,0,.3), inset 0 0 0 2px #f46b00;
+}

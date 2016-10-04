@@ -92,10 +92,10 @@ e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,wri
 
 
 return{breadcrumbs:e.breadcrumbs,sectionConfig:i,fileId:parseInt(t.params.fileId,10),folderId:parseInt(t.params.folderId,10),files:o,folder:r,limit:i.limit}}function u(e){return{actions:{gallery:(0,m.bindActionCreators)(C,e),
-editor:(0,m.bindActionCreators)(w,e),breadcrumbsActions:(0,m.bindActionCreators)(P,e)}}}Object.defineProperty(t,"__esModule",{value:!0})
+editor:(0,m.bindActionCreators)(w,e),breadcrumbsActions:(0,m.bindActionCreators)(I,e)}}}Object.defineProperty(t,"__esModule",{value:!0})
 var d=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},p=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),c=n(15),f=r(c),h=n(16),m=n(2),g=n(17),y=n(18),v=r(y),E=n(19),b=r(E),_=n(3),F=r(_),A=n(11),T=r(A),D=n(20),C=i(D),O=n(21),w=i(O),S=n(22),P=i(S),I=n(23),k=r(I),L=n(27),U=r(L),R=n(38),M=r(R),N=n(39),x=r(N),z=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),c=n(15),f=r(c),h=n(16),m=n(2),g=n(17),y=n(18),v=r(y),E=n(19),b=r(E),_=n(3),F=r(_),A=n(11),T=r(A),D=n(20),C=i(D),O=n(21),w=i(O),S=n(22),I=i(S),P=n(23),k=r(P),L=n(27),U=r(L),R=n(38),M=r(R),N=n(39),x=r(N),z=function(e){
 function t(){o(this,t)
 var e=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this))
 e.handleOpenFile=e.handleOpenFile.bind(e),e.handleCloseFile=e.handleCloseFile.bind(e),e["delete"]=e["delete"].bind(e),e.handleSubmitEditor=e.handleSubmitEditor.bind(e),e.handleOpenFolder=e.handleOpenFolder.bind(e),
@@ -199,7 +199,7 @@ return{loading:n,count:i,files:r,selectedFiles:o,page:l,queuedFiles:e.assetAdmin
 }}}Object.defineProperty(t,"__esModule",{value:!0}),t.Gallery=void 0
 var p=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},c=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),w=n(3),S=r(w),P=n(32),I=r(P),k=n(35),L=r(k),U=n(36),R=r(U),M=n(25),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),w=n(3),S=r(w),I=n(32),P=r(I),k=n(35),L=r(k),U=n(36),R=r(U),M=n(25),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
 function t(e){o(this,t)
 var n=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.sort="name",n.direction="asc",n.sorters=[{field:"title",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_ASC")},{field:"title",direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_DESC")
@@ -232,7 +232,7 @@ this.props.actions.queuedFiles.purgeUploadQueue(),this.props.actions.gallery.sor
 }},{key:"handleRemoveErroredUpload",value:function T(e){this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)}},{key:"handleAddedFile",value:function D(e){this.props.actions.queuedFiles.addQueuedFile(e)
 
 }},{key:"handleSending",value:function C(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{xhr:t})}},{key:"handleUploadProgress",value:function w(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{
-progress:t})}},{key:"handleCreateFolder",value:function P(e){var t=this,n=this.promptFolderName()
+progress:t})}},{key:"handleCreateFolder",value:function I(e){var t=this,n=this.promptFolderName()
 n&&this.props.actions.gallery.createFolder(this.props.createFolderApi,this.props.folderId,n).then(function(e){return t.props.actions.gallery.addFiles([e],1),e}),e.preventDefault()}},{key:"handleSuccessfulUpload",
 value:function k(e){var t=JSON.parse(e.xhr.response)
 return"undefined"!=typeof t[0].error?void this.handleFailedUpload(e):(this.props.actions.queuedFiles.removeQueuedFile(e._queuedAtTime),void this.props.actions.gallery.addFiles(t,this.props.count+1))}},{
@@ -255,7 +255,7 @@ return v["default"].createElement("div",{className:"gallery__outer"},v["default"
 onClick:e.handleSort,"data-field":t.field,"data-direction":t.direction},t.label)}))),v["default"].createElement("div",{className:"toolbar--content toolbar--space-save"},this.getBackButton(),v["default"].createElement("button",{
 id:"upload-button",className:"btn btn-secondary font-icon-upload btn--icon-xl",type:"button",disabled:!r},v["default"].createElement("span",{className:"btn__text"},g["default"]._t("AssetAdmin.DROPZONE_UPLOAD"))),v["default"].createElement("button",{
 id:"add-folder-button",className:"btn btn-secondary font-icon-folder-add btn--icon-xl ",type:"button",onClick:this.handleCreateFolder,disabled:!r},v["default"].createElement("span",{className:"btn__text"
-},g["default"]._t("AssetAdmin.ADD_FOLDER_BUTTON")))),v["default"].createElement(I["default"],{canUpload:r,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,
+},g["default"]._t("AssetAdmin.ADD_FOLDER_BUTTON")))),v["default"].createElement(P["default"],{canUpload:r,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,
 handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,preview:t,folderId:this.props.folderId,options:n,securityID:i,uploadButton:!1},v["default"].createElement("div",{className:"gallery__folders"
 },this.props.files.map(function(t,n){var i=null
 return"folder"===t.type&&(i=v["default"].createElement(L["default"],{key:n,item:t,selected:e.itemIsSelected(t.id),highlighted:e.itemIsHighlighted(t.id),handleDelete:e.handleItemDelete,handleToggleSelect:e.handleToggleSelect,
@@ -498,7 +498,7 @@ this.options.uploadMultiple&&this.emit("canceledmultiple",i)}else(s=e.status)!==
 
 if(this.options.autoProcessQueue)return this.processQueue()},r=function(){var e,t
 return t=arguments[0],e=2<=arguments.length?d.call(arguments,1):[],"function"==typeof t?t.apply(this,e):t},t.prototype.uploadFile=function(e){return this.uploadFiles([e])},t.prototype.uploadFiles=function(e){
-var i,o,l,a,s,u,d,p,c,f,h,m,g,y,v,E,b,_,F,A,T,D,C,O,w,S,P,I,k,L,U,R,M,N
+var i,o,l,a,s,u,d,p,c,f,h,m,g,y,v,E,b,_,F,A,T,D,C,O,w,S,I,P,k,L,U,R,M,N
 for(F=new XMLHttpRequest,A=0,O=e.length;A<O;A++)i=e[A],i.xhr=F
 m=r(this.options.method,e),b=r(this.options.url,e),F.open(m,b,!0),F.withCredentials=!!this.options.withCredentials,v=null,l=function(t){return function(){var n,r,o
 for(o=[],n=0,r=e.length;n<r;n++)i=e[n],o.push(t._errorProcessing(e,v||t.options.dictResponseError.replace("{{statusCode}}",F.status),F))
@@ -514,9 +514,9 @@ for(a in u)s=u[a],s&&F.setRequestHeader(a,s)
 if(o=new FormData,this.options.params){L=this.options.params
 for(h in L)_=L[h],o.append(h,_)}for(T=0,w=e.length;T<w;T++)i=e[T],this.emit("sending",i,F,o)
 if(this.options.uploadMultiple&&this.emit("sendingmultiple",e,F,o),"FORM"===this.element.tagName)for(U=this.element.querySelectorAll("input, textarea, select, button"),D=0,S=U.length;D<S;D++)if(p=U[D],
-c=p.getAttribute("name"),f=p.getAttribute("type"),"SELECT"===p.tagName&&p.hasAttribute("multiple"))for(R=p.options,C=0,P=R.length;C<P;C++)g=R[C],g.selected&&o.append(c,g.value)
+c=p.getAttribute("name"),f=p.getAttribute("type"),"SELECT"===p.tagName&&p.hasAttribute("multiple"))for(R=p.options,C=0,I=R.length;C<I;C++)g=R[C],g.selected&&o.append(c,g.value)
 else(!f||"checkbox"!==(M=f.toLowerCase())&&"radio"!==M||p.checked)&&o.append(c,p.value)
-for(d=I=0,N=e.length-1;0<=N?I<=N:I>=N;d=0<=N?++I:--I)o.append(this._getParamName(d),e[d],this._renameFilename(e[d].name))
+for(d=P=0,N=e.length-1;0<=N?P<=N:P>=N;d=0<=N?++P:--P)o.append(this._getParamName(d),e[d],this._renameFilename(e[d].name))
 return this.submitRequest(F,o,e)},t.prototype.submitRequest=function(e,t,n){return e.send(t)},t.prototype._finished=function(e,n,i){var r,o,l
 for(o=0,l=e.length;o<l;o++)r=e[o],r.status=t.SUCCESS,this.emit("success",r,n,i),this.emit("complete",r)
 if(this.options.uploadMultiple&&(this.emit("successmultiple",e,n,i),this.emit("completemultiple",e)),this.options.autoProcessQueue)return this.processQueue()},t.prototype._errorProcessing=function(e,n,i){
@@ -584,23 +584,25 @@ return this.isImageSmallerThanThumbnail()&&e.push("gallery-item__thumbnail--smal
 
 
 return this.exists()||this.uploading()||e.push("gallery-item--missing"),this.props.selected&&e.push("gallery-item--selected"),this.props.highlighted&&e.push("gallery-item--highlighted"),this.hasError()&&e.push("gallery-item--error"),
-e.join(" ")}},{key:"isImage",value:function y(){return"image"===this.props.item.category}},{key:"exists",value:function v(){return this.props.item.exists}},{key:"uploading",value:function E(){return this.props.uploading
+e.join(" ")}},{key:"getStatusFlags",value:function y(){var e=[]
+return"folder"!==this.props.item.type&&(this.props.item.draft?e.push(p["default"].createElement("span",{title:u["default"]._t("File.DRAFT","Draft"),className:"gallery-item--draft"})):this.props.item.modified&&e.push(p["default"].createElement("span",{
+title:u["default"]._t("File.MODIFIED","Modified"),className:"gallery-item--modified"}))),e}},{key:"isImage",value:function v(){return"image"===this.props.item.category}},{key:"exists",value:function E(){
+return this.props.item.exists}},{key:"uploading",value:function b(){return this.props.uploading}},{key:"isImageSmallerThanThumbnail",value:function _(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
 
-}},{key:"isImageSmallerThanThumbnail",value:function b(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
+
 var e=this.props.item.dimensions
-return e&&e.height<f["default"].THUMBNAIL_HEIGHT&&e.width<f["default"].THUMBNAIL_WIDTH}},{key:"handleKeyDown",value:function _(e){e.stopPropagation(),f["default"].SPACE_KEY_CODE===e.keyCode&&(e.preventDefault(),
-this.handleToggleSelect(e)),f["default"].RETURN_KEY_CODE===e.keyCode&&this.handleActivate(e)}},{key:"preventFocus",value:function F(e){e.preventDefault()}},{key:"handleCancelUpload",value:function A(e){
-e.stopPropagation(),this.hasError()?this.props.handleRemoveErroredUpload(this.props.item):this.props.handleCancelUpload(this.props.item)}},{key:"getProgressBar",value:function T(){var e=null,t={className:"gallery-item__progress-bar",
+return e&&e.height<f["default"].THUMBNAIL_HEIGHT&&e.width<f["default"].THUMBNAIL_WIDTH}},{key:"handleKeyDown",value:function F(e){e.stopPropagation(),f["default"].SPACE_KEY_CODE===e.keyCode&&(e.preventDefault(),
+this.handleToggleSelect(e)),f["default"].RETURN_KEY_CODE===e.keyCode&&this.handleActivate(e)}},{key:"preventFocus",value:function A(e){e.preventDefault()}},{key:"handleCancelUpload",value:function T(e){
+e.stopPropagation(),this.hasError()?this.props.handleRemoveErroredUpload(this.props.item):this.props.handleCancelUpload(this.props.item)}},{key:"getProgressBar",value:function D(){var e=null,t={className:"gallery-item__progress-bar",
 style:{width:this.props.item.progress+"%"}}
-return!this.hasError()&&this.uploading()&&(e=p["default"].createElement("div",{className:"gallery-item__upload-progress"},p["default"].createElement("div",t))),e}},{key:"render",value:function D(){var e=this.handleToggleSelect,t="font-icon-tick",n=null
+return!this.hasError()&&this.uploading()&&(e=p["default"].createElement("div",{className:"gallery-item__upload-progress"},p["default"].createElement("div",t))),e}},{key:"render",value:function C(){var e=this.handleToggleSelect,t="font-icon-tick",n=null
 
 
 return this.uploading()?(e=this.handleCancelUpload,t="font-icon-cancel"):this.exists()&&(n=p["default"].createElement("div",{className:"gallery-item--overlay font-icon-edit"},"View")),p["default"].createElement("div",{
 className:this.getItemClassNames(),"data-id":this.props.item.id,tabIndex:"0",onKeyDown:this.handleKeyDown,onClick:this.handleActivate},p["default"].createElement("div",{ref:"thumbnail",className:this.getThumbnailClassNames(),
-style:this.getThumbnailStyles()},n),this.getProgressBar(),this.getErrorMessage(),p["default"].createElement("div",{className:"gallery-item__title",ref:"title"},p["default"].createElement("label",{className:"gallery-item__checkbox-label "+t,
-onClick:e},p["default"].createElement("input",{className:"gallery-item__checkbox",type:"checkbox",title:u["default"]._t("AssetAdmin.SELECT"),tabIndex:"-1",onMouseDown:this.preventFocus})),this.props.item.title))
-
-}}]),t}(m["default"])
+style:this.getThumbnailStyles()},n,this.getStatusFlags()),this.getProgressBar(),this.getErrorMessage(),p["default"].createElement("div",{className:"gallery-item__title",ref:"title"},p["default"].createElement("label",{
+className:"gallery-item__checkbox-label "+t,onClick:e},p["default"].createElement("input",{className:"gallery-item__checkbox",type:"checkbox",title:u["default"]._t("AssetAdmin.SELECT"),tabIndex:"-1",onMouseDown:this.preventFocus
+})),this.props.item.title))}}]),t}(m["default"])
 g.propTypes={item:p["default"].PropTypes.shape({dimensions:p["default"].PropTypes.shape({width:p["default"].PropTypes.number,height:p["default"].PropTypes.number}),category:p["default"].PropTypes.string.isRequired,
 id:p["default"].PropTypes.number.isRequired,url:p["default"].PropTypes.string,title:p["default"].PropTypes.string.isRequired,progress:p["default"].PropTypes.number}),highlighted:p["default"].PropTypes.bool,
 selected:p["default"].PropTypes.bool.isRequired,handleActivate:p["default"].PropTypes.func.isRequired,handleToggleSelect:p["default"].PropTypes.func.isRequired,handleDelete:p["default"].PropTypes.func.isRequired,

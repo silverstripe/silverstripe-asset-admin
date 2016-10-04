@@ -568,6 +568,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         $file = $this->getList()->byID($id);
 
+        if (!$file->canView()) {
+            $this->httpError(403, _t(
+                'AssetAdmin.ErrorItemPermissionDenied',
+                'It seems you don\'t have the necessary permissions to add {ObjectTitle} to a campaign',
+                '',
+                ['ObjectTitle' => _t('File.SINGULARNAME')]
+            ));
+            return null;
+        }
+        
         $fields = $file->getCMSFields();
 
         $actions = FieldList::create([
@@ -688,8 +698,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'extension' => $file->Extension,
             'size' => $file->Size,
             'url' => $file->AbsoluteURL,
+            'published' => $file->isPublished(),
+            'modified' => $file->getIsModifiedOnStage(),
+            'draft' => $file->getIsAddedToStage(),
             'canEdit' => $file->canEdit(),
-            'canDelete' => $file->canDelete()
+            'canDelete' => $file->canDelete(),
         );
 
         /** @var Member $owner */
