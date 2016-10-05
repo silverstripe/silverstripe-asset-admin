@@ -60,27 +60,35 @@ export function loadFolderContents(listApi, folderId, limit, page) {
     });
 
     return listApi({ id: folderId, limit, page })
-    .then((data) => {
-      dispatch({
-        type: GALLERY.LOAD_FOLDER_SUCCESS,
-        payload: {
-          files: data.files,
-          // TODO Return as consistent data structure from API signature
-          folder: {
-            id: parseInt(data.folderID, 10),
-            title: data.title,
-            parents: data.parents,
-            parent: data.parent,
-            canEdit: data.canEdit,
-            canDelete: data.canDelete,
-            // Distinguish between null and 0
-            parentID: (data.parentID === null) ? null : parseInt(data.parentID, 10),
+      .then((data) => {
+        dispatch({
+          type: GALLERY.LOAD_FOLDER_SUCCESS,
+          payload: {
+            files: data.files,
+            // TODO Return as consistent data structure from API signature
+            folder: {
+              id: parseInt(data.folderID, 10),
+              title: data.title,
+              parents: data.parents,
+              parent: data.parent,
+              canEdit: data.canEdit,
+              canDelete: data.canDelete,
+              // Distinguish between null and 0
+              parentID: (data.parentID === null) ? null : parseInt(data.parentID, 10),
+            },
+            // TODO Remove once all code is using 'folder' defined above
+            folderId: parseInt(data.folderID, 10),
           },
-          // TODO Remove once all code is using 'folder' defined above
-          folderId: parseInt(data.folderID, 10),
-        },
+        });
+      })
+      .catch((e) => {
+          dispatch({
+            type: GALLERY.LOAD_FOLDER_FAILURE,
+            payload: {
+              message: e.message,
+            },
+          });
       });
-    });
   };
 }
 

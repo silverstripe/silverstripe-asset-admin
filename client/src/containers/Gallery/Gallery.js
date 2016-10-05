@@ -395,6 +395,18 @@ export class Gallery extends Component {
 
   render() {
     if (!this.props.folder) {
+      if (this.props.errorMessage) {
+        return (
+          <div className="gallery__error">
+            <div className="gallery__error-message">
+              <h3>{ this.props.errorMessage &&
+                i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.')
+              }</h3>
+              <p>{ this.props.errorMessage }</p>
+            </div>
+          </div>
+        );
+      }
       return <div />;
     }
 
@@ -590,8 +602,10 @@ function mapStateToProps(state) {
     files,
     selectedFiles,
     page,
+    errorMessage,
   } = state.assetAdmin.gallery;
   return {
+    errorMessage,
     loading,
     count,
     files,
