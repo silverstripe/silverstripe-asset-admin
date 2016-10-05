@@ -1,5 +1,6 @@
 en:
-  AssetAdmin:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Add to campaign'
     AppCategoryArchive: Archive
     AppCategoryAudio: Audio
     AppCategoryDocument: Document
@@ -7,15 +8,13 @@ en:
     AppCategoryImage: Image
     AppCategoryVideo: Video
     CurrentFolderOnly: 'Limit to current folder?'
-    ErrorItemPermissionDenied: 'It seems you don''t have the necessary permissions to add {ObjectTitle} to a campaign'
+    DELETE_BUTTON: Delete
+    ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
     ErrorNotFound: 'That {Type} couldn''t be found'
     Filetype: 'File type'
+    MENUTITLE: Files
     NEWFOLDER: NewFolder
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Delete folders'
   CMSSearch:
     FILTERDATEHEADING: Date
-  SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Files
-  SilverStripe\\AssetAdmin\\Controller\\AssetAdmin:
-    DELETE_BUTTON: Delete
