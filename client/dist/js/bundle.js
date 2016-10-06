@@ -122,11 +122,11 @@ confirm(T["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery
 t.props.router.push("/"+e+"/show/"+i)})}},{key:"render",value:function E(){var e=this,t=this.props.sectionConfig,n=t.createFileEndpoint.url,i=t.createFileEndpoint.method,r=this.props.files.find(function(t){
 return t.id===parseInt(e.props.fileId,10)}),o=(r||this.props.fileId===this.props.folderId)&&f["default"].createElement(k["default"],{fileId:this.props.fileId,onClose:this.handleCloseFile,editFileSchemaUrl:t.form.FileEditForm.schemaUrl,
 actions:this.props.actions.editor,onSubmit:this.handleSubmitEditor,onDelete:this["delete"],addToCampaignSchemaUrl:t.form.AddToCampaignForm.schemaUrl}),l=!(!this.props.folder||!this.props.folder.id)
-return f["default"].createElement("div",{className:"cms-content__inner no-preview"},f["default"].createElement("div",{className:"cms-content__left cms-gallery collapse in"},f["default"].createElement(x["default"],{
-showBackButton:l,handleBackButtonClick:this.handleBackButtonClick},f["default"].createElement(M["default"],{multiline:!0,crumbs:this.props.breadcrumbs})),f["default"].createElement("div",{className:"gallery"
-},o,f["default"].createElement(U["default"],{files:this.props.files,fileId:this.props.fileId,folderId:this.props.folderId,folder:this.props.folder,name:this.props.name,limit:this.props.limit,page:this.props.page,
-bulkActions:this.props.bulkActions,createFileApiUrl:n,createFileApiMethod:i,createFolderApi:this.endpoints.createFolderApi,readFolderApi:this.endpoints.readFolderApi,updateFolderApi:this.endpoints.updateFolderApi,
-deleteApi:this.endpoints.deleteApi,onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,sectionConfig:this.props.sectionConfig}))))}}]),t}(v["default"])
+return f["default"].createElement("div",{className:"fill-height cms-gallery no-preview collapse in"},f["default"].createElement(x["default"],{showBackButton:l,handleBackButtonClick:this.handleBackButtonClick
+},f["default"].createElement(M["default"],{multiline:!0,crumbs:this.props.breadcrumbs})),f["default"].createElement("div",{className:"flexbox-area-grow fill-width gallery"},o,f["default"].createElement(U["default"],{
+files:this.props.files,fileId:this.props.fileId,folderId:this.props.folderId,folder:this.props.folder,name:this.props.name,limit:this.props.limit,page:this.props.page,bulkActions:this.props.bulkActions,
+createFileApiUrl:n,createFileApiMethod:i,createFolderApi:this.endpoints.createFolderApi,readFolderApi:this.endpoints.readFolderApi,updateFolderApi:this.endpoints.updateFolderApi,deleteApi:this.endpoints.deleteApi,
+onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,sectionConfig:this.props.sectionConfig})))}}]),t}(v["default"])
 z.propTypes={config:f["default"].PropTypes.shape({forms:f["default"].PropTypes.shape({editForm:f["default"].PropTypes.shape({schemaUrl:f["default"].PropTypes.string})})}),sectionConfig:f["default"].PropTypes.shape({
 url:f["default"].PropTypes.string}),file:f["default"].PropTypes.object,folder:f["default"].PropTypes.shape({id:f["default"].PropTypes.number,title:f["default"].PropTypes.string,parents:f["default"].PropTypes.array,
 parentID:f["default"].PropTypes.number,canView:f["default"].PropTypes.bool,canEdit:f["default"].PropTypes.bool})},t["default"]=(0,g.withRouter)((0,h.connect)(s,u)(z))},function(e,t){e.exports=React},function(e,t){
@@ -251,10 +251,10 @@ if(!this.props.folder)return this.props.errorMessage?v["default"].createElement(
 var t={height:N["default"].THUMBNAIL_HEIGHT,width:N["default"].THUMBNAIL_WIDTH},n={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,paramName:"Upload",clickable:"#upload-button"},i=S["default"].get("SecurityID"),r=this.props.folder.canEdit
 
 
-return v["default"].createElement("div",{className:"gallery__outer"},v["default"].createElement(F["default"],{transitionName:"bulk-actions",transitionEnterTimeout:N["default"].CSS_TRANSITION_TIME,transitionLeaveTimeout:N["default"].CSS_TRANSITION_TIME
-},this.getBulkActionsComponent()),v["default"].createElement("div",{className:"gallery__main panel panel--padded panel--scrollable"},v["default"].createElement("div",{className:"gallery__sort fieldholder-small"
-},v["default"].createElement("select",{className:"dropdown no-change-track no-chzn",tabIndex:"0",style:{width:"160px"}},this.sorters.map(function(t,n){return v["default"].createElement("option",{key:n,
-onClick:e.handleSort,"data-field":t.field,"data-direction":t.direction},t.label)}))),v["default"].createElement("div",{className:"toolbar--content toolbar--space-save"},this.getBackButton(),v["default"].createElement("button",{
+return v["default"].createElement("div",{className:"flexbox-area-grow gallery__outer"},v["default"].createElement(F["default"],{transitionName:"bulk-actions",transitionEnterTimeout:N["default"].CSS_TRANSITION_TIME,
+transitionLeaveTimeout:N["default"].CSS_TRANSITION_TIME},this.getBulkActionsComponent()),v["default"].createElement("div",{className:"gallery__main panel panel--padded panel--scrollable"},v["default"].createElement("div",{
+className:"gallery__sort fieldholder-small"},v["default"].createElement("select",{className:"dropdown no-change-track no-chzn",tabIndex:"0",style:{width:"160px"}},this.sorters.map(function(t,n){return v["default"].createElement("option",{
+key:n,onClick:e.handleSort,"data-field":t.field,"data-direction":t.direction},t.label)}))),v["default"].createElement("div",{className:"toolbar--content toolbar--space-save"},this.getBackButton(),v["default"].createElement("button",{
 id:"upload-button",className:"btn btn-secondary font-icon-upload btn--icon-xl",type:"button",disabled:!r},v["default"].createElement("span",{className:"btn__text"},g["default"]._t("AssetAdmin.DROPZONE_UPLOAD"))),v["default"].createElement("button",{
 id:"add-folder-button",className:"btn btn-secondary font-icon-folder-add btn--icon-xl ",type:"button",onClick:this.handleCreateFolder,disabled:!r},v["default"].createElement("span",{className:"btn__text"
 },g["default"]._t("AssetAdmin.ADD_FOLDER_BUTTON")))),v["default"].createElement(P["default"],{canUpload:r,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,
