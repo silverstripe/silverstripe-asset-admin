@@ -35,6 +35,18 @@
   margin-bottom: 2px;
 }
 
+.editor__status-flag {
+  color: #f46b00;
+  background-color: #fff7f2;
+  border-color: #f46b00;
+  clear: both;
+  text-transform: uppercase;
+  display: inline-block;
+  position: relative;
+  line-height: 1rem;
+  margin-left: 3px;
+}
+
 .editor__specs {
   color: $text-muted;
   font-size: $font-size-xs;

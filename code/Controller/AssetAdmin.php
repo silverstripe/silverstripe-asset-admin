@@ -7,7 +7,6 @@ use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
-use SilverStripe\Assets\ImageManipulation;
 use SilverStripe\Assets\Storage\AssetNameGenerator;
 use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
@@ -393,7 +392,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Build filename
         $baseFilename = isset($data['Name'])
             ? basename($data['Name'])
-            : _t('AssetAdmin.NEWFOLDER', "NewFolder");
+            : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.NEWFOLDER', "NewFolder");
 
         if ($parentRecord && $parentRecord->ID) {
             $baseFilename = $parentRecord->getFilename() . '/' . $baseFilename;
@@ -485,25 +484,35 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $context->addField($dateGroup);
         /** @skipUpgrade */
         $appCategories = array(
-            'archive' => _t('AssetAdmin.AppCategoryArchive', 'Archive', 'A collection of files'),
-            'audio' => _t('AssetAdmin.AppCategoryAudio', 'Audio'),
-            'document' => _t('AssetAdmin.AppCategoryDocument', 'Document'),
-            'flash' => _t('AssetAdmin.AppCategoryFlash', 'Flash', 'The fileformat'),
-            'image' => _t('AssetAdmin.AppCategoryImage', 'Image'),
-            'video' => _t('AssetAdmin.AppCategoryVideo', 'Video'),
+            'archive' => _t(
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryArchive',
+                'Archive'
+            ),
+            'audio' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryAudio', 'Audio'),
+            'document' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryDocument', 'Document'),
+            'flash' => _t(
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryFlash', 'Flash',
+                'The fileformat'
+            ),
+            'image' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryImage', 'Image'),
+            'video' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryVideo', 'Video'),
         );
         $context->addField(
             $typeDropdown = new DropdownField(
                 'AppCategory',
-                _t('AssetAdmin.Filetype', 'File type'),
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Filetype', 'File type'),
                 $appCategories
             )
         );
 
         $typeDropdown->setEmptyString(' ');
 
+        $currentfolderLabel = _t(
+            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CurrentFolderOnly',
+            'Limit to current folder?'
+        );
         $context->addField(
-            new CheckboxField('CurrentFolderOnly', _t('AssetAdmin.CurrentFolderOnly', 'Limit to current folder?'))
+            new CheckboxField('CurrentFolderOnly', $currentfolderLabel)
         );
         $context->getFields()->removeByName('Title');
 
@@ -568,6 +577,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         $file = $this->getList()->byID($id);
 
+        if (!$file->canView()) {
+            $this->httpError(403, _t(
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
+                'You don\'t have the necessary permissions to modify {ObjectTitle}',
+                '',
+                ['ObjectTitle' => $file->i18n_singular_name()]
+            ));
+            return null;
+        }
+
         $fields = $file->getCMSFields();
 
         $actions = FieldList::create([
@@ -589,7 +608,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             $actions->push(PopoverField::create([
                 FormAction::create(
                     'addtocampaign',
-                    _t('CAMPAIGNS.ADDTOCAMPAIGN', 'Add to campaign')
+                    _t(
+                        'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ADDTOCAMPAIGN',
+                        'Add to campaign'
+                    )
                 ),
             ])
                 ->setPlacement('top')
@@ -688,8 +710,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'extension' => $file->Extension,
             'size' => $file->Size,
             'url' => $file->AbsoluteURL,
+            'published' => $file->isPublished(),
+            'modified' => $file->isModifiedOnDraft(),
+            'draft' => $file->isOnDraftOnly(),
             'canEdit' => $file->canEdit(),
-            'canDelete' => $file->canDelete()
+            'canDelete' => $file->canDelete(),
         );
 
         /** @var Member $owner */
@@ -852,19 +877,19 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         if (!$record) {
             $this->httpError(404, _t(
-                'AssetAdmin.ErrorNotFound',
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorNotFound',
                 'That {Type} couldn\'t be found',
                 '',
-                ['Type' => _t('File.SINGULARNAME')]
+                ['Type' => File::singleton()->i18n_singular_name()]
             ));
             return null;
         }
         if (!$record->canView()) {
             $this->httpError(403, _t(
-                'AssetAdmin.ErrorItemPermissionDenied',
-                'It seems you don\'t have the necessary permissions to add {ObjectTitle} to a campaign',
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
+                'You don\'t have the necessary permissions to modify {ObjectTitle}',
                 '',
-                ['ObjectTitle' => _t('File.SINGULARNAME')]
+                ['ObjectTitle' => $record->i18n_singular_name()]
             ));
             return null;
         }
