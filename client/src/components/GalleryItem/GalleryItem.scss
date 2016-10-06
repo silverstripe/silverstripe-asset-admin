@@ -245,7 +245,8 @@ $gallery-item-label-height: 40px;
   width: 0%;
 }
 
-.gallery-item--draft, .gallery-item--modified {
+.gallery-item--draft,
+.gallery-item--modified {
   position: absolute;
   top: ($spacer/3);
   left: ($spacer/2);
@@ -258,10 +259,10 @@ $gallery-item-label-height: 40px;
 
 .gallery-item--draft {
   background-color: #fff2e8;
-  box-shadow: 0 1px 1px rgba(0,0,0,.3), inset 0 0 0 2px #f46b00;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .3), inset 0 0 0 2px #f46b00;
 }
 
 .gallery-item--modified {
   background-color: #ff7f22;
-  box-shadow: 0 1px 1px rgba(0,0,0,.3), inset 0 0 0 2px #f46b00;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .3), inset 0 0 0 2px #f46b00;
 }
