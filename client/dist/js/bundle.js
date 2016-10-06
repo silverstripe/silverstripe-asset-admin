@@ -32,8 +32,9 @@ case d["default"].DELETE_ITEM_SUCCESS:return(0,s["default"])(l({},e,{selectedFil
 }),count:e.files.filter(function(e){return t.payload.ids.indexOf(e.id)===-1}).length}))
 case d["default"].SORT_FILES:var f=e.files.filter(function(e){return"folder"===e.type}),h=e.files.filter(function(e){return"folder"!==e.type})
 return(0,s["default"])(l({},e,{files:f.sort(t.payload.comparator).concat(h.sort(t.payload.comparator))}))
-case d["default"].LOAD_FOLDER_REQUEST:return(0,s["default"])(l({},e,{folderId:t.payload.folderId,selectedFiles:[],files:[],count:0,loading:!0}))
+case d["default"].LOAD_FOLDER_REQUEST:return(0,s["default"])(l({},e,{errorMessage:null,folderId:t.payload.folderId,selectedFiles:[],files:[],count:0,loading:!0}))
 case d["default"].LOAD_FOLDER_SUCCESS:return(0,s["default"])(l({},e,{folder:t.payload.folder,files:t.payload.files,count:t.payload.files.length,loading:!1}))
+case d["default"].LOAD_FOLDER_FAILURE:return(0,s["default"])(l({},e,{errorMessage:t.payload.message,loading:!1}))
 case d["default"].ADD_FOLDER_REQUEST:return e
 case d["default"].ADD_FOLDER_FAILURE:return e
 case d["default"].ADD_FOLDER_SUCCESS:return e
@@ -42,13 +43,13 @@ var o="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){re
 for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e}
 t["default"]=r
-var a=n(7),s=i(a),u=n(8),d=i(u),p={count:0,editorFields:[],file:null,files:[],fileId:0,folderId:0,focus:!1,path:null,selectedFiles:[],page:0}},function(e,t){e.exports=DeepFreezeStrict},function(e,t){"use strict"
+var a=n(7),s=i(a),u=n(8),d=i(u),p={count:0,editorFields:[],file:null,files:[],fileId:0,folderId:0,focus:!1,path:null,selectedFiles:[],page:0,errorMessage:null}},function(e,t){e.exports=DeepFreezeStrict
 
-
+},function(e,t){"use strict"
 function n(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}Object.defineProperty(t,"__esModule",{value:!0})
 var i=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e}
-t["default"]=["ADD_FILES","DESELECT_FILES","REMOVE_FILES","SELECT_FILES","SORT_FILES","LOAD_FILE_REQUEST","LOAD_FILE_SUCCESS","CREATE_FOLDER_REQUEST","CREATE_FOLDER_SUCCESS","CREATE_FOLDER_FAILURE","DELETE_ITEM_REQUEST","DELETE_ITEM_SUCCESS","DELETE_ITEM_FAILURE","LOAD_FOLDER_REQUEST","LOAD_FOLDER_SUCCESS","HIGHLIGHT_FILES","UPDATE_BATCH_ACTIONS"].reduce(function(e,t){
+t["default"]=["ADD_FILES","DESELECT_FILES","REMOVE_FILES","SELECT_FILES","SORT_FILES","LOAD_FILE_REQUEST","LOAD_FILE_SUCCESS","CREATE_FOLDER_REQUEST","CREATE_FOLDER_SUCCESS","CREATE_FOLDER_FAILURE","DELETE_ITEM_REQUEST","DELETE_ITEM_SUCCESS","DELETE_ITEM_FAILURE","LOAD_FOLDER_REQUEST","LOAD_FOLDER_SUCCESS","LOAD_FOLDER_FAILURE","HIGHLIGHT_FILES","UPDATE_BATCH_ACTIONS"].reduce(function(e,t){
 return i(e,n({},t,"GALLERY."+t))},{})},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(){return(0,s["default"])({attributes:{dimensions:{height:null,width:null}},name:null,canDelete:!1,canEdit:!1,category:null,created:null,extension:null,
 filename:null,id:0,lastUpdated:null,messages:null,owner:{id:0,title:null},parent:{filename:null,id:0,title:null},queuedAtTime:null,size:null,title:null,type:null,url:null,xhr:null})}function o(){var e=arguments.length<=0||void 0===arguments[0]?f:arguments[0],t=arguments[1]
@@ -134,9 +135,8 @@ function i(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){return func
 payload:{ids:t}}),e({ids:t}).then(function(e){return n({type:f["default"].DELETE_ITEM_SUCCESS,payload:{ids:t}}),n({type:f["default"].SET_FILE,payload:{fileId:null}}),e})["catch"](function(e){n({type:f["default"].DELETE_ITEM_FAILURE,
 payload:{error:e}})})}}function l(e,t,n,i){return function(r){return r({type:f["default"].LOAD_FOLDER_REQUEST,payload:{folderId:parseInt(t,10)}}),e({id:t,limit:n,page:i}).then(function(e){r({type:f["default"].LOAD_FOLDER_SUCCESS,
 payload:{files:e.files,folder:{id:parseInt(e.folderID,10),title:e.title,parents:e.parents,parent:e.parent,canEdit:e.canEdit,canDelete:e.canDelete,parentID:null===e.parentID?null:parseInt(e.parentID,10)
-},folderId:parseInt(e.folderID,10)}})})}}function a(e,t){return function(n){n({type:f["default"].LOAD_FILE_SUCCESS,payload:{id:e,file:t}})}}function s(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
-
-
+},folderId:parseInt(e.folderID,10)}})})["catch"](function(e){r({type:f["default"].LOAD_FOLDER_FAILURE,payload:{message:e.message}})})}}function a(e,t){return function(n){n({type:f["default"].LOAD_FILE_SUCCESS,
+payload:{id:e,file:t}})}}function s(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 return function(t){return t({type:f["default"].SELECT_FILES,payload:{ids:e}})}}function u(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 return function(t){return t({type:f["default"].DESELECT_FILES,payload:{ids:e}})}}function d(e){return function(t){return t({type:f["default"].SORT_FILES,payload:{comparator:e}})}}function p(e,t,n){return function(i){
 return i({type:f["default"].CREATE_FOLDER_REQUEST,payload:{name:n}}),e({ParentID:isNaN(t)?0:t,Name:n}).then(function(e){return i({type:f["default"].CREATE_FOLDER_SUCCESS,payload:{name:n}}),e})["catch"](function(e){
@@ -194,8 +194,8 @@ e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,wri
 var r=n[e].toLowerCase(),o=i[e].toLowerCase()
 if("asc"===t){if(r<o)return-1
 if(r>o)return 1}else{if(r>o)return-1
-if(r<o)return 1}return 0}}function u(e){var t=e.assetAdmin.gallery,n=t.loading,i=t.count,r=t.files,o=t.selectedFiles,l=t.page
-return{loading:n,count:i,files:r,selectedFiles:o,page:l,queuedFiles:e.assetAdmin.queuedFiles}}function d(e){return{actions:{gallery:(0,D.bindActionCreators)(z,e),queuedFiles:(0,D.bindActionCreators)(q,e)
+if(r<o)return 1}return 0}}function u(e){var t=e.assetAdmin.gallery,n=t.loading,i=t.count,r=t.files,o=t.selectedFiles,l=t.page,a=t.errorMessage
+return{errorMessage:a,loading:n,count:i,files:r,selectedFiles:o,page:l,queuedFiles:e.assetAdmin.queuedFiles}}function d(e){return{actions:{gallery:(0,D.bindActionCreators)(z,e),queuedFiles:(0,D.bindActionCreators)(q,e)
 }}}Object.defineProperty(t,"__esModule",{value:!0}),t.Gallery=void 0
 var p=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},c=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
@@ -245,7 +245,9 @@ value:function B(e,t){e.preventDefault(),null!==t.created&&this.props.onOpenFile
 }},{key:"handleMoreClick",value:function Q(e){e.stopPropagation(),e.preventDefault(),this.props.actions.gallery.deselectFiles()}},{key:"handleBackClick",value:function W(e){e.preventDefault()
 var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+this.props.folder.parentID)}},{key:"render",value:function G(){var e=this
-if(!this.props.folder)return v["default"].createElement("div",null)
+if(!this.props.folder)return this.props.errorMessage?v["default"].createElement("div",{className:"gallery__error"},v["default"].createElement("div",{className:"gallery__error-message"},v["default"].createElement("h3",null,this.props.errorMessage&&g["default"]._t("AssetAdmin.DROPZONE_RESPONSE_ERROR","Server responded with an error.")),v["default"].createElement("p",null,this.props.errorMessage))):v["default"].createElement("div",null)
+
+
 var t={height:N["default"].THUMBNAIL_HEIGHT,width:N["default"].THUMBNAIL_WIDTH},n={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,paramName:"Upload",clickable:"#upload-button"},i=S["default"].get("SecurityID"),r=this.props.folder.canEdit
 
 

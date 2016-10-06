@@ -17,6 +17,7 @@ export default [
   'DELETE_ITEM_FAILURE',
   'LOAD_FOLDER_REQUEST',
   'LOAD_FOLDER_SUCCESS',
+  'LOAD_FOLDER_FAILURE',
   'HIGHLIGHT_FILES',
   'UPDATE_BATCH_ACTIONS',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});

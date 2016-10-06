@@ -12,6 +12,7 @@ const initialState = {
   path: null, // The current location path the app is on
   selectedFiles: [],
   page: 0,
+  errorMessage: null,
 };
 
 /**
@@ -139,6 +140,7 @@ export default function galleryReducer(state = initialState, action) {
 
     case GALLERY.LOAD_FOLDER_REQUEST: {
       return deepFreeze(Object.assign({}, state, {
+        errorMessage: null,
         // Mark "loaded" at the start of the request to avoid infinite loop of load events
         folderId: action.payload.folderId,
         selectedFiles: [],
@@ -153,6 +155,13 @@ export default function galleryReducer(state = initialState, action) {
         folder: action.payload.folder,
         files: action.payload.files,
         count: action.payload.files.length,
+        loading: false,
+      }));
+    }
+
+    case GALLERY.LOAD_FOLDER_FAILURE: {
+      return deepFreeze(Object.assign({}, state, {
+        errorMessage: action.payload.message,
         loading: false,
       }));
     }
