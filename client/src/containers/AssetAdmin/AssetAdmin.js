@@ -206,7 +206,7 @@ class AssetAdmin extends SilverStripeComponent {
     const showBackButton = !!(this.props.folder && this.props.folder.id);
 
     return (
-      <div className="fill-height cms-gallery no-preview collapse in">
+      <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           <Breadcrumb multiline crumbs={this.props.breadcrumbs} />
         </Toolbar>

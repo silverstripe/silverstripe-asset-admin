@@ -434,8 +434,7 @@ export class Gallery extends Component {
           {this.getBulkActionsComponent()}
         </ReactCSSTransitionGroup>
 
-        <div className="gallery__main panel panel--padded panel--scrollable">
-
+        <div className="panel panel--padded panel--scrollable gallery__main">
           <div className="gallery__sort fieldholder-small">
             <select
               className="dropdown no-change-track no-chzn"

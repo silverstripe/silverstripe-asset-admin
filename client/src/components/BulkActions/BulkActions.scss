@@ -16,7 +16,7 @@ $bulk-actions-width: 300px;
   background-color: $background-darker;
   transition: top 0.5s ease-in-out, transform 0.5s ease-in-out;
   transform: scale(1);
-  min-width: 200px;
+  min-width: 160px;
 
   @include media-breakpoint-down(md) {
     &-enter {
