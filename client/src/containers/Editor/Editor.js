@@ -32,7 +32,9 @@ class Editor extends Component {
     />);
   }
 
-  handleAction(event, name, fieldValues) {
+  handleAction(event, data) {
+    const name = event.currentTarget.name;
+
     // intercept the Add to Campaign submit and open the modal dialog instead
     if (name === 'action_addtocampaign') {
       this.openModal();
@@ -41,7 +43,7 @@ class Editor extends Component {
     }
 
     if (name === 'action_delete') {
-      this.props.onDelete(fieldValues.ID);
+      this.props.onDelete(data.ID);
       event.preventDefault();
       return;
     }
@@ -57,19 +59,24 @@ class Editor extends Component {
     }
   }
 
-  handleSubmit(event, fieldValues, submitFn) {
+  /**
+   * Catches the <FormBuilder> event to allow custom handling.
+   *
+   * @param {Object} data
+   * @param {String} action
+   * @param {Function} submitFn The original submit function
+   * @returns {Promise}
+   */
+  handleSubmit(data, action, submitFn) {
     if (typeof this.props.onSubmit === 'function') {
-      return this.props.onSubmit(event, fieldValues, submitFn);
+      return this.props.onSubmit(data, action, submitFn);
     }
 
-    event.preventDefault();
     return submitFn();
   }
 
-  handleSubmitModal(event, fieldValues, submitFn) {
-    event.preventDefault();
-
-    if (!fieldValues.Campaign) {
+  handleSubmitModal(data, action, submitFn) {
+    if (!data.Campaign) {
       // TODO invisible submit disable, remove this when validation is implemented
       // eslint-disable-next-line no-alert
       alert(i18n._t(

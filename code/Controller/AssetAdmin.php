@@ -702,7 +702,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Return the record data in the same response as the schema to save a postback
-        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
+        $schemaId = Controller::join_links($this->Link('schema/FileEditForm'), $record->exists() ? $record->ID : '');
+        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id), $schemaId);
         $schemaData['record'] = $this->getObjectFromData($record);
         $response = new HTTPResponse(Convert::raw2json($schemaData));
         $response->addHeader('Content-Type', 'application/json');
