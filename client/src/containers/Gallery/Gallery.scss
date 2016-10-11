@@ -1,28 +1,14 @@
 .gallery {
-  width: 100%;
-  height: calc(100% - #{$toolbar-total-height});
-  position: absolute;
-  top: $toolbar-total-height;
+  flex-direction: row-reverse;
 }
 
 // Required for bulk-actions position
 .gallery__outer {
-  height: 100%;
   position: relative;
 }
 
-// If editor is present reduce size of gallery
-.editor + .gallery__outer {
-  @include media-breakpoint-up(lg) {
-    width: calc(100% - #{$cms-panel-sm});
-  }
-
-  @include media-breakpoint-up(xl) {
-    width: calc(100% - #{$cms-panel-md});
-  }
-}
-
 .gallery__main {
+  height: 100%;
   position: relative;
 }
 

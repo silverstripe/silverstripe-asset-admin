@@ -206,33 +206,31 @@ class AssetAdmin extends SilverStripeComponent {
     const showBackButton = !!(this.props.folder && this.props.folder.id);
 
     return (
-      <div className="cms-content__inner no-preview">
-        <div className="cms-content__left cms-gallery collapse in">
-          <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
-            <Breadcrumb multiline crumbs={this.props.breadcrumbs} />
-          </Toolbar>
-          <div className="gallery">
-            {editor}
-            <Gallery
-              files={this.props.files}
-              fileId={this.props.fileId}
-              folderId={this.props.folderId}
-              folder={this.props.folder}
-              name={this.props.name}
-              limit={this.props.limit}
-              page={this.props.page}
-              bulkActions={this.props.bulkActions}
-              createFileApiUrl={createFileApiUrl}
-              createFileApiMethod={createFileApiMethod}
-              createFolderApi={this.endpoints.createFolderApi}
-              readFolderApi={this.endpoints.readFolderApi}
-              updateFolderApi={this.endpoints.updateFolderApi}
-              deleteApi={this.endpoints.deleteApi}
-              onOpenFile={this.handleOpenFile}
-              onOpenFolder={this.handleOpenFolder}
-              sectionConfig={this.props.sectionConfig}
-            />
-          </div>
+      <div className="fill-height">
+        <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
+          <Breadcrumb multiline crumbs={this.props.breadcrumbs} />
+        </Toolbar>
+        <div className="flexbox-area-grow fill-width gallery">
+          {editor}
+          <Gallery
+            files={this.props.files}
+            fileId={this.props.fileId}
+            folderId={this.props.folderId}
+            folder={this.props.folder}
+            name={this.props.name}
+            limit={this.props.limit}
+            page={this.props.page}
+            bulkActions={this.props.bulkActions}
+            createFileApiUrl={createFileApiUrl}
+            createFileApiMethod={createFileApiMethod}
+            createFolderApi={this.endpoints.createFolderApi}
+            readFolderApi={this.endpoints.readFolderApi}
+            updateFolderApi={this.endpoints.updateFolderApi}
+            deleteApi={this.endpoints.deleteApi}
+            onOpenFile={this.handleOpenFile}
+            onOpenFolder={this.handleOpenFolder}
+            sectionConfig={this.props.sectionConfig}
+          />
         </div>
       </div>
     );

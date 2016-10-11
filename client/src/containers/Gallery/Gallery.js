@@ -425,7 +425,7 @@ export class Gallery extends Component {
     const canEdit = this.props.folder.canEdit;
 
     return (
-      <div className="gallery__outer">
+      <div className="flexbox-area-grow gallery__outer">
         <ReactCSSTransitionGroup
           transitionName="bulk-actions"
           transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
@@ -434,8 +434,7 @@ export class Gallery extends Component {
           {this.getBulkActionsComponent()}
         </ReactCSSTransitionGroup>
 
-        <div className="gallery__main panel panel--padded panel--scrollable">
-
+        <div className="panel panel--padded panel--scrollable gallery__main">
           <div className="gallery__sort fieldholder-small">
             <select
               className="dropdown no-change-track no-chzn"

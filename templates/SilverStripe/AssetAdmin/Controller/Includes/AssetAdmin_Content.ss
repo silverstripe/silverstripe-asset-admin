@@ -1,2 +1,2 @@
-<div class="cms-content center ss-uploadfield-dropzone $BaseCSSClasses">
+<div class="cms-content flexbox-area-grow ss-uploadfield-dropzone $BaseCSSClasses">
 </div>
