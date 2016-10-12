@@ -1,0 +1,17 @@
+SilverStripe\Assets\Folder:
+  parent:
+    Name: files
+SilverStripe\Assets\File:
+  file1:
+    Title: File1
+    FileFilename: files/testfile.txt
+    FileHash: 6adf67caca20b8e7c45283d398321f4319d3b07e
+    Name: testfile.txt
+    ParentID: =>SilverStripe\Assets\Folder.parent
+SilverStripe\Assets\Image:
+  image1:
+    Title: File1
+    FileFilename: files/testimage.jpg
+    FileHash: 906835357dbe9118937789e4dd4576a1c17de923
+    Name: testimage.jpg
+    ParentID: =>SilverStripe\Assets\Folder.parent

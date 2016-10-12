@@ -5,8 +5,14 @@ namespace SilverStripe\AssetAdmin\Controller;
 use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\AssetAdmin\Forms\AssetFormFactory;
+use SilverStripe\AssetAdmin\Forms\FileFormFactory;
+use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
+use SilverStripe\Forms\DefaultFormFactory;
+use SilverStripe\AssetAdmin\Forms\ImageFormBuilder;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Storage\AssetNameGenerator;
 use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
@@ -19,11 +25,9 @@ use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
-use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
-use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\HeaderField;
-use SilverStripe\Forms\PopoverField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -119,7 +123,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getClientConfig()
     {
         $baseLink = $this->Link();
-        return array_merge( parent::getClientConfig(), [
+        return array_merge(parent::getClientConfig(), [
             'reactRouter' => true,
             'createFileEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/createFile'),
@@ -205,13 +209,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Build parents (for breadcrumbs)
         $parents = [];
         $next = $folder->Parent();
-        while($next && $next->exists()) {
+        while ($next && $next->exists()) {
             array_unshift($parents, [
                 'id' => $next->ID,
                 'title' => $next->getTitle(),
                 'filename' => $next->getFilename(),
             ]);
-            if($next->ParentID) {
+            if ($next->ParentID) {
                 $next = $next->Parent();
             } else {
                 break;
@@ -250,7 +254,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(json_encode([
             // Serialisation
-            "files" => array_map(function($file) {
+            "files" => array_map(function ($file) {
                 return $this->getObjectFromData($file);
             }, $list->toArray()),
             "count" => $list->count(),
@@ -329,7 +333,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $data['Parent'] = $parentRecord;
 
         $tmpFile = $request->postVar('Upload');
-        if(!$upload->validate($tmpFile)) {
+        if (!$upload->validate($tmpFile)) {
             $result = ['error' => $upload->getErrors()];
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
@@ -347,7 +351,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
-        if(!$uploadResult) {
+        if (!$uploadResult) {
             $result = ['error' => 'unknown'];
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
@@ -447,8 +451,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @param File $file
      * @return string
      */
-    public function getFileEditLink($file) {
-        if(!$file || !$file->isInDB()) {
+    public function getFileEditLink($file)
+    {
+        if (!$file || !$file->isInDB()) {
             return null;
         }
 
@@ -491,7 +496,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'audio' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryAudio', 'Audio'),
             'document' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryDocument', 'Document'),
             'flash' => _t(
-                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryFlash', 'Flash',
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryFlash',
+                'Flash',
                 'The fileformat'
             ),
             'image' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryImage', 'Image'),
@@ -564,6 +570,25 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
+     * Build a form scaffolder for this model
+     *
+     * NOTE: Volatile api. May be moved to {@see LeftAndMain}
+     *
+     * @param File $file
+     * @return FormFactory
+     */
+    public function getFormFactory(File $file)
+    {
+        if ($file instanceof Folder) {
+            return Injector::inst()->create(FolderFormFactory::class, $this, $file);
+        }
+        if ($file instanceof Image) {
+            return Injector::inst()->create(ImageFormBuilder::class, $this, $file);
+        }
+        return Injector::inst()->create(FileFormFactory::class, $this, $file);
+    }
+
+    /**
      * The form is used to generate a form schema,
      * as well as an intermediary object to process data through API endpoints.
      * Since it's used directly on API endpoints, it does not have any form actions.
@@ -587,25 +612,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return null;
         }
 
-        $fields = $file->getCMSFields();
-
-        $actions = $this->getFileEditActions($file);
-
-        $form = Form::create(
-            $this,
-            'FileEditForm',
-            $fields,
-            $actions
-        );
-
-        // Load into form
-        if($id && $file) {
-            $form->loadDataFrom($file);
-        }
+        $scaffolder = $this->getFormFactory($file);
+        $form = $scaffolder->getForm('FileEditForm');
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
-        $form->setValidationResponseCallback(function() use ($form) {
+        $form->setValidationResponseCallback(function () use ($form) {
             return $this->getSchemaResponse($form);
         });
 
@@ -641,7 +653,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @param Form $form
      * @return HTTPResponse
      */
-    public function publish($data, $form) {
+    public function publish($data, $form)
+    {
         return $this->saveOrPublish($data, $form, true);
     }
 
@@ -653,7 +666,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @param bool $doPublish
      * @return HTTPResponse
      */
-    protected function saveOrPublish($data, $form, $doPublish = false) {
+    protected function saveOrPublish($data, $form, $doPublish = false)
+    {
         if (!isset($data['ID']) || !is_numeric($data['ID'])) {
             return (new HTTPResponse(json_encode(['status' => 'error']), 400))
                 ->addHeader('Content-Type', 'application/json');
@@ -689,7 +703,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $response;
     }
 
-    public function unpublish($data, $form) {
+    public function unpublish($data, $form)
+    {
         if (!isset($data['ID']) || !is_numeric($data['ID'])) {
             return (new HTTPResponse(json_encode(['status' => 'error']), 400))
                 ->addHeader('Content-Type', 'application/json');
@@ -807,7 +822,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Re-add previously removed "Name" filter as combined filter
         // TODO Replace with composite SearchFilter once that API exists
-        if(!empty($params['Name'])) {
+        if (!empty($params['Name'])) {
             $list = $list->filterAny(array(
                 'Name:PartialMatch' => $params['Name'],
                 'Title:PartialMatch' => $params['Name']
@@ -815,7 +830,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Optionally limit search to a folder (non-recursive)
-        if(!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
+        if (!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
             $list = $list->filter('ParentID', $params['ParentID']);
         }
 
@@ -849,7 +864,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Access checks
-        $list = $list->filterByCallback(function(File $file) {
+        $list = $list->filterByCallback(function (File $file) {
             return $file->canView();
         });
 
@@ -872,7 +887,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $results = $handler->addToCampaign($record, $data['Campaign']);
         if (!is_null($results)) {
             $request = $this->getRequest();
-            if($request->getHeader('X-Formschema-Request')) {
+            if ($request->getHeader('X-Formschema-Request')) {
                 $data = $this->getSchemaForForm($handler->Form($record));
                 $data['message'] = $results;
 
@@ -941,76 +956,5 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         );
 
         return $upload;
-    }
-
-    /**
-     * Get actions for file edit
-     *
-     * @param File $file
-     * @return FieldList
-     */
-    protected function getFileEditActions($file)
-    {
-        $actions = FieldList::create();
-
-        // Save and/or publish
-        if ($file->canEdit()) {
-            // Create save button
-            $saveAction = FormAction::create('save', _t('CMSMain.SAVE', 'Save'));
-            $saveAction->setIcon('save');
-            $actions->push($saveAction);
-
-            // Folders are automatically published
-            if ($file->canPublish() && (!$file instanceof Folder)) {
-                $publishText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PUBLISH_BUTTON', 'Publish');
-                $publishAction = FormAction::create('publish', $publishText);
-                $publishAction->setIcon('rocket');
-                $publishAction->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
-                $actions->push($publishAction);
-            }
-        }
-
-        // Delete action
-        $deleteText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.DELETE_BUTTON', 'Delete');
-        $deleteAction = FormAction::create('delete', $deleteText);
-        //$deleteAction->setSchemaData(['data' => ['buttonStyle' => 'danger']]);
-        $deleteAction->setIcon('trash-bin');
-
-        // Add file-specific actions
-        if (!$file instanceof Folder) {
-            // Add to campaign action
-            $addToCampaignAction = FormAction::create(
-                'addtocampaign',
-                _t(
-                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ADDTOCAMPAIGN',
-                    'Add to campaign'
-                )
-            );
-            $popoverActions = [
-                $addToCampaignAction
-            ];
-            // Add unpublish if available
-            if ($file->isPublished() && $file->canUnpublish()) {
-                $unpublishText = _t(
-                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UNPUBLISH_BUTTON',
-                    'Unpublish'
-                );
-                $unpublishAction = FormAction::create('unpublish', $unpublishText);
-                $unpublishAction->setIcon('cancel-circled');
-                $popoverActions[] = $unpublishAction;
-            }
-            // Delete
-            $popoverActions[] = $deleteAction;
-
-            // Build popover menu
-            $popoverField = PopoverField::create($popoverActions);
-            $popoverField->setPlacement('top');
-            $actions->push($popoverField);
-        } else {
-            $actions->push($deleteAction);
-        }
-
-        $this->extend('updateFileEditActions', $actions);
-        return $actions;
     }
 }
