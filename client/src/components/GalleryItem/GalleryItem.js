@@ -150,11 +150,13 @@ class GalleryItem extends SilverStripeComponent {
     if (this.props.item.type !== 'folder') {
       if (this.props.item.draft) {
         flags.push(<span
+          key="status-draft"
           title={i18n._t('File.DRAFT', 'Draft')}
           className="gallery-item--draft"
         />);
       } else if (this.props.item.modified) {
         flags.push(<span
+          key="status-modified"
           title={i18n._t('File.MODIFIED', 'Modified')}
           className="gallery-item--modified"
         />);

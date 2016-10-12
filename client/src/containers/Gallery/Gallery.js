@@ -592,6 +592,7 @@ Gallery.propTypes = {
     url: React.PropTypes.string,
   }),
   router: React.PropTypes.object,
+  errorMessage: React.PropTypes.string,
 };
 
 function mapStateToProps(state) {

@@ -274,8 +274,9 @@ folder:v["default"].PropTypes.shape({id:v["default"].PropTypes.number,parentID:v
 selectedFiles:v["default"].PropTypes.arrayOf(v["default"].PropTypes.number),bulkActions:v["default"].PropTypes.bool,limit:v["default"].PropTypes.number,page:v["default"].PropTypes.number,queuedFiles:v["default"].PropTypes.shape({
 items:v["default"].PropTypes.array.isRequired}),onOpenFile:v["default"].PropTypes.func.isRequired,onOpenFolder:v["default"].PropTypes.func.isRequired,createFileApiUrl:v["default"].PropTypes.string,createFileApiMethod:v["default"].PropTypes.string,
 createFolderApi:v["default"].PropTypes.func,readFolderApi:v["default"].PropTypes.func,deleteApi:v["default"].PropTypes.func,actions:v["default"].PropTypes.object,sectionConfig:v["default"].PropTypes.shape({
-url:v["default"].PropTypes.string}),router:v["default"].PropTypes.object},t["default"]=(0,T.withRouter)((0,A.connect)(u,d)(B))},function(e,t){e.exports=jQuery},function(e,t){e.exports=ReactDom},function(e,t){
-e.exports=ReactAddonsCssTransitionGroup},function(e,t){e.exports=ReactAddonsTestUtils},function(e,t,n){"use strict"
+url:v["default"].PropTypes.string}),router:v["default"].PropTypes.object,errorMessage:v["default"].PropTypes.string},t["default"]=(0,T.withRouter)((0,A.connect)(u,d)(B))},function(e,t){e.exports=jQuery
+
+},function(e,t){e.exports=ReactDom},function(e,t){e.exports=ReactAddonsCssTransitionGroup},function(e,t){e.exports=ReactAddonsTestUtils},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function o(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
 
 
@@ -590,9 +591,9 @@ return this.isImageSmallerThanThumbnail()&&e.push("gallery-item__thumbnail--smal
 
 return this.exists()||this.uploading()||e.push("gallery-item--missing"),this.props.selected&&e.push("gallery-item--selected"),this.props.highlighted&&e.push("gallery-item--highlighted"),this.hasError()&&e.push("gallery-item--error"),
 e.join(" ")}},{key:"getStatusFlags",value:function y(){var e=[]
-return"folder"!==this.props.item.type&&(this.props.item.draft?e.push(p["default"].createElement("span",{title:u["default"]._t("File.DRAFT","Draft"),className:"gallery-item--draft"})):this.props.item.modified&&e.push(p["default"].createElement("span",{
-title:u["default"]._t("File.MODIFIED","Modified"),className:"gallery-item--modified"}))),e}},{key:"isImage",value:function v(){return"image"===this.props.item.category}},{key:"exists",value:function E(){
-return this.props.item.exists}},{key:"uploading",value:function b(){return this.props.uploading}},{key:"isImageSmallerThanThumbnail",value:function _(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
+return"folder"!==this.props.item.type&&(this.props.item.draft?e.push(p["default"].createElement("span",{key:"status-draft",title:u["default"]._t("File.DRAFT","Draft"),className:"gallery-item--draft"})):this.props.item.modified&&e.push(p["default"].createElement("span",{
+key:"status-modified",title:u["default"]._t("File.MODIFIED","Modified"),className:"gallery-item--modified"}))),e}},{key:"isImage",value:function v(){return"image"===this.props.item.category}},{key:"exists",
+value:function E(){return this.props.item.exists}},{key:"uploading",value:function b(){return this.props.uploading}},{key:"isImageSmallerThanThumbnail",value:function _(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
 
 
 var e=this.props.item.dimensions

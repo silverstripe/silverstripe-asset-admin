@@ -82,12 +82,12 @@ export function loadFolderContents(listApi, folderId, limit, page) {
         });
       })
       .catch((e) => {
-          dispatch({
-            type: GALLERY.LOAD_FOLDER_FAILURE,
-            payload: {
-              message: e.message,
-            },
-          });
+        dispatch({
+          type: GALLERY.LOAD_FOLDER_FAILURE,
+          payload: {
+            message: e.message,
+          },
+        });
       });
   };
 }
