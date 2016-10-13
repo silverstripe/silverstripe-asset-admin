@@ -43,7 +43,8 @@ class AssetAdminFile extends DataExtension
      *
      * @return int|null
      */
-    public function getInsertWidth() {
+    public function getInsertWidth()
+    {
         $size = $this->getInsertDimensions();
         return $size ? $size['width'] : null;
     }
@@ -53,7 +54,8 @@ class AssetAdminFile extends DataExtension
      *
      * @return int
      */
-    public function getInsertHeight() {
+    public function getInsertHeight()
+    {
         $size = $this->getInsertDimensions();
         return $size ? $size['height'] : null;
     }
@@ -63,7 +65,8 @@ class AssetAdminFile extends DataExtension
      *
      * @return array|null
      */
-    protected function getInsertDimensions() {
+    protected function getInsertDimensions()
+    {
         $dimensions = $this->owner->getDimensions('array');
         if (!$dimensions) {
             return null;
@@ -82,20 +85,19 @@ class AssetAdminFile extends DataExtension
         }
 
         // Check if sizing by height or width
-		if( ($width * $maxHeight) < ($height * $maxWidth) ) {
-			// Size by height
+        if (($width * $maxHeight) < ($height * $maxWidth)) {
+            // Size by height
             return [
                 'width' => intval(($width * $maxHeight) / $height + 0.5),
                 'height' => $maxHeight,
             ];
-
-		} else {
-			// Size by width
+        } else {
+            // Size by width
             return [
                 'width' => $maxWidth,
                 'height' => intval(($height * $maxWidth) / $width + 0.5),
             ];
-		}
+        }
     }
 
     /**
@@ -104,8 +106,9 @@ class AssetAdminFile extends DataExtension
      *
      * @return string
      */
-    public function humanizedChanges($from, $to) {
-        if(!$from) {
+    public function humanizedChanges($from, $to)
+    {
+        if (!$from) {
             return _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UPLOADEDFILE', "Uploaded file");
         }
 
@@ -117,26 +120,38 @@ class AssetAdminFile extends DataExtension
 
         $k = array_search('LastEdited', $changes);
 
-        if($k !== false) {
+        if ($k !== false) {
             unset($changes[$k]);
         }
 
         $output = array();
 
-        foreach($changes as $change) {
+        foreach ($changes as $change) {
             $human = $change;
 
-            if($change == "ParentID") {
+            if ($change == "ParentID") {
                 // updated folder ID
-                $human = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile.MOVEDFOLDER', "Moved file");
-            } else if($change == 'Title') {
-                $human = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile.RENAMEDTITLE', "Updated title to ") . $fromRecord->Title;
-            } else if($change == 'Name') {
-                $human = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile.RENAMEDFILE', "Renamed file to ") . $fromRecord->Filename;
-            } else if($change == 'File') {
+                $human = _t(
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile.MOVEDFOLDER',
+                    "Moved file"
+                );
+            } elseif ($change == 'Title') {
+                $human = _t(
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile.RENAMEDTITLE',
+                    "Updated title to "
+                ) . $fromRecord->Title;
+            } elseif ($change == 'Name') {
+                $human = _t(
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile.RENAMEDFILE',
+                    "Renamed file to "
+                ) . $fromRecord->Filename;
+            } elseif ($change == 'File') {
                 // check to make sure the files are actually different
-                if($fromRecord->getHash() != $toRecord->getHash()) {
-                    $human = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile.RENAMEDFILE', "Replaced file");
+                if ($fromRecord->getHash() != $toRecord->getHash()) {
+                    $human = _t(
+                        'SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile.RENAMEDFILE',
+                        "Replaced file"
+                    );
                 } else {
                     $human = false;
                 }
@@ -144,7 +159,7 @@ class AssetAdminFile extends DataExtension
                 $human = false;
             }
 
-            if($human) {
+            if ($human) {
                 $output[] = $human;
             }
         }

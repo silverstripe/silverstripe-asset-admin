@@ -26,32 +26,33 @@ abstract class AssetFormFactory implements FormFactory
     use Injectable;
     use Configurable;
 
-	public function __construct() {
-		$this->constructExtensions();
-	}
+    public function __construct()
+    {
+        $this->constructExtensions();
+    }
 
-	public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
-	{
-		// Validate context
-		foreach($this->getRequiredContext() as $required) {
-			if (!isset($context[$required])) {
-				throw new InvalidArgumentException("Missing required context $required");
-			}
-		}
+    public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
+    {
+        // Validate context
+        foreach ($this->getRequiredContext() as $required) {
+            if (!isset($context[$required])) {
+                throw new InvalidArgumentException("Missing required context $required");
+            }
+        }
 
-		$fields = $this->getFormFields($controller, $name, $context);
-		$actions = $this->getFormActions($controller, $name, $context);
-		$form = Form::create($controller, $name, $fields, $actions);
+        $fields = $this->getFormFields($controller, $name, $context);
+        $actions = $this->getFormActions($controller, $name, $context);
+        $form = Form::create($controller, $name, $fields, $actions);
 
         $form->getValidator()->addRequiredField('Name');
-		// Extend form
-		$this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
+        // Extend form
+        $this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
 
-		// Populate form from record
-		$form->loadDataFrom($context['Record']);
+        // Populate form from record
+        $form->loadDataFrom($context['Record']);
 
-		return $form;
-	}
+        return $form;
+    }
 
     /**
      * Get raw HTML for image markup
@@ -111,7 +112,7 @@ abstract class AssetFormFactory implements FormFactory
         return null;
     }
 
-	protected function getFormActions(Controller $controller, $name, $context = [])
+    protected function getFormActions(Controller $controller, $name, $context = [])
     {
         $record = $context['Record'];
 

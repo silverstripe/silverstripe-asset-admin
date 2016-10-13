@@ -1,15 +1,15 @@
 <?php
 
-namespace SilverStripe\AssetAdmin\Tests;
+namespace SilverStripe\AssetAdmin\Tests\Controller;
 
+use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
+use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Session;
 use SilverStripe\Dev\FunctionalTest;
-use SilverStripe\Dev\TestOnly;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\SecurityToken;
 
@@ -34,8 +34,8 @@ class AssetAdminTest extends FunctionalTest
         $memberID = $this->logInWithPermission('ADMIN');
         $this->session = Session::create(array('loggedInAs' => $memberID));
 
-        File::add_extension(AssetAdminTest_File::class);
-        Folder::add_extension(AssetAdminTest_Folder::class);
+        File::add_extension(FileExtension::class);
+        Folder::add_extension(FolderExtension::class);
 
         // Create a test folders for each of the fixture references
         foreach (File::get()->filter('ClassName', Folder::class) as $folder) {
@@ -58,15 +58,16 @@ class AssetAdminTest extends FunctionalTest
 
     public function tearDown()
     {
-        File::remove_extension(AssetAdminTest_File::class);
-        Folder::remove_extension(AssetAdminTest_Folder::class);
+        File::remove_extension(FileExtension::class);
+        Folder::remove_extension(FolderExtension::class);
 
         TestAssetStore::reset();
         parent::tearDown();
     }
 
 
-    public function testApiHistory() {
+    public function testApiHistory()
+    {
         $file = $this->objFromFixture(File::class, 'file1');
         $response = Director::test(
             'admin/assets/api/history?fileId='. $file->ID,
@@ -153,8 +154,8 @@ class AssetAdminTest extends FunctionalTest
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'testItCreatesFile.txt'));
         $_FILES = $fileData;
         $postedData = array_merge(
-                $fileData,
-                [
+            $fileData,
+            [
                     'ParentID' => $folder1->ID,
                     'SecurityID' => SecurityToken::inst()->getValue(),
                 ]
@@ -324,34 +325,42 @@ class AssetAdminTest extends FunctionalTest
         $folder1 = $this->objFromFixture(Folder::class, 'folder1');
 
         $results = $this->getResultsForSearch();
-        $this->assertContains($rootfile->ID, array_column($results['files'], 'id'),
+        $this->assertContains(
+            $rootfile->ID,
+            array_column($results['files'], 'id'),
             'Contains top level file'
         );
-        $this->assertContains($folder1->ID, array_column($results['files'], 'id'),
+        $this->assertContains(
+            $folder1->ID,
+            array_column($results['files'], 'id'),
             'Contains top level folder'
         );
-        $this->assertContains($file1->ID, array_column($results['files'], 'id'),
+        $this->assertContains(
+            $file1->ID,
+            array_column($results['files'], 'id'),
             'Contains files in subfolder'
         );
     }
 
     public function testItFiltersByParentInSearch()
     {
-        /** @var File $file1 */
         $file1 = $this->objFromFixture(File::class, 'file1');
-        /** @var File $file2 */
         $file2 = $this->objFromFixture(File::class, 'file2');
         $file1Folder = $file1->Parent();
         $file2Folder = $file2->Parent();
 
         $results = $this->getResultsForSearch(['Name' => $file1->Name, 'ParentID' => $file1Folder->ID]);
         $this->assertEquals(count($results['files']), 1);
-        $this->assertContains($file1->ID, array_column($results['files'], 'id'),
+        $this->assertContains(
+            $file1->ID,
+            array_column($results['files'], 'id'),
             'Returns file when contained in correct folder'
         );
 
         $results = $this->getResultsForSearch(['Name' => $file1->Name, 'ParentID' => $file2Folder->ID]);
-        $this->assertEquals(count($results['files']), 0,
+        $this->assertEquals(
+            count($results['files']),
+            0,
             'Does not return file when contained in different folder'
         );
     }
@@ -361,13 +370,17 @@ class AssetAdminTest extends FunctionalTest
         $file1 = $this->objFromFixture(File::class, 'file1');
 
         $results = $this->getResultsForSearch(['Name' => $file1->Name]);
-        $this->assertEquals(count($results['files']), 1,
+        $this->assertEquals(
+            count($results['files']),
+            1,
             'Finds by Name property'
         );
         $this->assertContains($file1->ID, array_column($results['files'], 'id'));
 
         $results = $this->getResultsForSearch(['Name' => 'First']);
-        $this->assertEquals(count($results['files']), 1,
+        $this->assertEquals(
+            count($results['files']),
+            1,
             'Finds by Title property'
         );
         $this->assertContains($file1->ID, array_column($results['files'], 'id'));
@@ -499,86 +512,5 @@ class AssetAdminTest extends FunctionalTest
             'tmp_name' => $tmpFilePath,
             'error' => UPLOAD_ERR_OK,
         );
-    }
-}
-
-class AssetAdminTest_File extends DataExtension implements TestOnly
-{
-    public function canView($member = null)
-    {
-        if ($this->owner->Name === 'disallowCanView.txt') {
-            return false;
-        }
-        return null;
-    }
-
-    public function canEdit($member = null)
-    {
-        if ($this->owner->Name === 'disallowCanEdit.txt') {
-            return false;
-        }
-        return null;
-    }
-
-    public function canDelete($member = null)
-    {
-        if ($this->owner->Name === 'disallowCanDelete.txt') {
-            return false;
-        }
-        return null;
-    }
-
-    public function canArchive($member = null)
-    {
-        if ($this->owner->Name === 'disallowCanDelete.txt') {
-            return false;
-        }
-        return $this->owner->canDelete($member);
-    }
-
-    public function canCreate($member = null, $context = [])
-    {
-        if (isset($context['Parent']) && $context['Parent']->Name === 'disallowCanAddChildren') {
-            return false;
-        }
-        if (isset($context['Upload']['name']) && $context['Upload']['name'] === 'disallowCanCreate.txt') {
-            return false;
-        }
-        return null;
-    }
-}
-
-class AssetAdminTest_Folder extends DataExtension implements TestOnly
-{
-    public function canView($member = null, $context = array())
-    {
-        if ($this->owner->Name === 'disallowCanView') {
-            return false;
-        }
-        return null;
-    }
-
-    public function canEdit($member = null, $context = array())
-    {
-        if ($this->owner->Name === 'disallowCanEdit') {
-            return false;
-        }
-        return null;
-    }
-
-    public function canDelete($member = null, $context = array())
-    {
-        if ($this->owner->Name === 'disallowCanDelete') {
-            return false;
-        }
-        return null;
-    }
-
-    public function canCreate($member = null, $context = array())
-    {
-        if (isset($context['Name']) && $context['Name'] === 'disallowCanCreate') {
-            return false;
-        }
-        return null;
     }
 }

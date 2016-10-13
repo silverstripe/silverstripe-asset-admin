@@ -2,6 +2,7 @@
   "name": "silverstripe/asset-admin",
   "description": "Asset management for the SilverStripe CMS",
   "type": "silverstripe-module",
+  "license": "BSD-3-Clause",
   "require": {
     "php": ">=5.5.0",
     "silverstripe/cms": "^4",

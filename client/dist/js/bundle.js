@@ -10,7 +10,7 @@ return t["default"]=e,t}function i(e){return e&&e.__esModule?e:{"default":e}}fun
 
 
 return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function a(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t)
-e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function s(e,t){var n=e.config.sections[I],r=t.fileAttributes.ID,i=e.config.sections[I],o=r&&i.form.FileInsertForm.schemaUrl+"/"+r
+e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function s(e,t){var n=e.config.sections[I],r=t.fileAttributes.ID,i=e.config.sections[I],o=r&&i.form.fileInsertForm.schemaUrl+"/"+r
 
 
 return{sectionConfig:n,schemaUrl:o}}function u(e){return{actions:{schema:(0,m.bindActionCreators)(F,e)}}}Object.defineProperty(t,"__esModule",{value:!0}),t.InsertMediaModal=void 0
@@ -88,9 +88,9 @@ var e=this.props.sectionConfig,t=e.createFileEndpoint.url,n=e.createFileEndpoint
 return f["default"].createElement(w["default"],{dialog:this.props.dialog,files:this.props.files,fileId:this.props.fileId,folderId:this.props.folderId,folder:this.props.folder,type:this.props.type,limit:r,
 page:i,createFileApiUrl:t,createFileApiMethod:n,createFolderApi:this.endpoints.createFolderApi,readFolderApi:this.endpoints.readFolderApi,updateFolderApi:this.endpoints.updateFolderApi,deleteApi:this.endpoints.deleteApi,
 onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,onSort:this.handleSort,sort:o,sectionConfig:e})}},{key:"renderEditor",value:function A(){var e=this,t=this.props.sectionConfig,n=this.props.files.find(function(t){
-return t.id===parseInt(e.props.fileId,10)}),r="insert"===this.props.type?t.form.FileInsertForm.schemaUrl:t.form.FileEditForm.schemaUrl
+return t.id===parseInt(e.props.fileId,10)}),r="insert"===this.props.type?t.form.fileInsertForm.schemaUrl:t.form.fileEditForm.schemaUrl
 return n||this.props.fileId===this.props.folderId?f["default"].createElement(O["default"],{dialog:this.props.dialog,fileId:this.props.fileId,onClose:this.handleCloseFile,editFileSchemaUrl:r,onSubmit:this.handleSubmitEditor,
-onDelete:this["delete"],addToCampaignSchemaUrl:t.form.AddToCampaignForm.schemaUrl}):null}},{key:"render",value:function P(){var e=!(!this.props.folder||!this.props.folder.id)
+onDelete:this["delete"],addToCampaignSchemaUrl:t.form.addToCampaignForm.schemaUrl}):null}},{key:"render",value:function P(){var e=!(!this.props.folder||!this.props.folder.id)
 return f["default"].createElement("div",{className:"fill-height"},f["default"].createElement(k["default"],{showBackButton:e,handleBackButtonClick:this.handleBackButtonClick},f["default"].createElement(S["default"],{
 multiline:!0})),f["default"].createElement("div",{className:"flexbox-area-grow fill-width fill-height gallery"},this.renderGallery(),this.renderEditor()))}}]),t}(g["default"])
 U.propTypes={dialog:c.PropTypes.bool,sectionConfig:c.PropTypes.shape({url:c.PropTypes.string,limit:c.PropTypes.number,form:c.PropTypes.object}),fileId:c.PropTypes.number,folderId:c.PropTypes.number,onBrowse:c.PropTypes.func,
@@ -858,7 +858,7 @@ function t(e){i(this,t)
 var n=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 n.state={detailView:null,history:[],loadedDetails:!0},n.handleClick=n.handleClick.bind(n),n.handleBack=n.handleBack.bind(n)
 var r=h["default"].getSection("SilverStripe\\AssetAdmin\\Controller\\AssetAdmin")
-return n.props.historySchemaUrl=r.form.FileHistoryForm.schemaUrl,n.api=n.createEndpoint(r.historyEndpoint),n}return l(t,e),s(t,[{key:"componentDidMount",value:function n(){this.refreshHistoryIfNeeded()
+return n.props.historySchemaUrl=r.form.fileHistoryForm.schemaUrl,n.api=n.createEndpoint(r.historyEndpoint),n}return l(t,e),s(t,[{key:"componentDidMount",value:function n(){this.refreshHistoryIfNeeded()
 
 }},{key:"componentDidUpdate",value:function r(e){this.refreshHistoryIfNeeded(e)}},{key:"getContainerClassName",value:function u(){return this.state.viewDetails&&!this.state.loadedDetails?"file-history history-container--loading":"file-history"
 

@@ -22,10 +22,13 @@ matrix:
       env: PHPUNIT_TEST=1
     - php: 5.6
       env: NPM_TEST=1
+    - php: 5.6
+      env: PHPCS_TEST=1
 
 before_script:
   - printf "\n" | pecl install imagick
   - composer self-update || true
+  - "if [ \"$PHPCS_TEST\" = \"1\" ]; then pyrus install pear/PHP_CodeSniffer; fi"
   - phpenv rehash
   - phpenv config-rm xdebug.ini
   - git clone git://github.com/silverstripe-labs/silverstripe-travis-support.git ~/travis-support
@@ -43,6 +46,7 @@ script:
   - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run test); fi"
   - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run lint); fi"
   - "if [ \"$BEHAT_TEST\" = \"1\" ]; then vendor/bin/behat @asset-admin --config=./asset-admin/behat.yml; fi"
+  - "if [ \"$PHPCS_TEST\" = \"1\" ]; then phpcs  --standard=asset-admin/tests/phpcs/ruleset.xml asset-admin/code/ asset-admin/tests/; fi"
 
 notifications:
   slack: silverstripeltd:Cls1xnypKBLFhv0YIRtNLzlQ

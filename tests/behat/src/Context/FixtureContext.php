@@ -18,7 +18,8 @@ class FixtureContext extends BaseFixtureContext
      * @param string $type
      * @param string $name
      */
-    public function stepISelectGalleryItem($type, $name) {
+    public function stepISelectGalleryItem($type, $name)
+    {
         $page = $this->getSession()->getPage();
         $gallery = $page->find(
             'xpath',

@@ -21,7 +21,7 @@ export class HistoryList extends Component {
 
 
     const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
-    this.props.historySchemaUrl = sectionConfig.form.FileHistoryForm.schemaUrl;
+    this.props.historySchemaUrl = sectionConfig.form.fileHistoryForm.schemaUrl;
 
     this.api = this.createEndpoint(sectionConfig.historyEndpoint);
   }
