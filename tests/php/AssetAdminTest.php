@@ -502,6 +502,14 @@ class AssetAdminTest_File extends DataExtension implements TestOnly
         }
     }
 
+    public function canArchive($member = null)
+    {
+        if ($this->owner->Name === 'disallowCanDelete.txt') {
+            return false;
+        }
+        return $this->owner->canDelete($member);
+    }
+
     public function canCreate($member = null, $context = [])
     {
         if (isset($context['Parent']) && $context['Parent']->Name === 'disallowCanAddChildren') {
