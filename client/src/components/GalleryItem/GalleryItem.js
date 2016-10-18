@@ -124,7 +124,8 @@ class GalleryItem extends SilverStripeComponent {
    * @returns {string}
    */
   getItemClassNames() {
-    const itemClassNames = [`gallery-item gallery-item--${this.props.item.category}`];
+    const category = this.props.item.category || 'none';
+    const itemClassNames = [`gallery-item gallery-item--${category}`];
 
     if (!this.exists() && !this.uploading()) {
       itemClassNames.push('gallery-item--missing');
@@ -325,7 +326,7 @@ GalleryItem.propTypes = {
       width: React.PropTypes.number,
       height: React.PropTypes.number,
     }),
-    category: React.PropTypes.string.isRequired,
+    category: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]).isRequired,
     id: React.PropTypes.number.isRequired,
     url: React.PropTypes.string,
     title: React.PropTypes.string.isRequired,

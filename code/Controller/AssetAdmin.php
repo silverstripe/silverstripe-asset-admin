@@ -334,7 +334,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $tmpFile = $request->postVar('Upload');
         if(!$upload->validate($tmpFile)) {
-            $result = ['error' => $upload->getErrors()];
+            $result = ['messages' => []];
+            foreach ($upload->getErrors() as $error) {
+                $result['messages'][] = [
+                    'type' => 'error',
+                    'value' => $error,
+                ];
+            }
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
@@ -346,13 +352,20 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // check canCreate permissions
         if (!$file->canCreate(null, $data)) {
-            return (new HTTPResponse(json_encode(['status' => 'error']), 403))
+            $result = ['messages' => [
+                'type' => 'error',
+                'value' => 'unknown',
+            ]];
+            return (new HTTPResponse(json_encode($result), 403))
                 ->addHeader('Content-Type', 'application/json');
         }
 
         $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
         if(!$uploadResult) {
-            $result = ['error' => 'unknown'];
+            $result = ['messages' => [
+                'type' => 'error',
+                'value' => 'unknown',
+            ]];
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }

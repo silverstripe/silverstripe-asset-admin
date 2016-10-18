@@ -105,11 +105,12 @@ describe('queuedFilesReducer', () => {
       const nextState = queuedFilesReducer(initialState, {
         type,
         payload: {
-          messages: {
-            error: [
-              'There was a problem.',
-            ],
-          },
+          messages: [
+            {
+              value: 'There was a problem.',
+              type: 'error',
+            }
+          ],
         },
       });
 
