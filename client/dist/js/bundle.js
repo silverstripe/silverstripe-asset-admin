@@ -161,20 +161,20 @@ n.closeModal=n.closeModal.bind(n),n.openModal=n.openModal.bind(n),n.state={openM
 className:"btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl",onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,type:"button","aria-label":u["default"]._t("AssetAdmin.CANCEL")})}},{
 key:"handleAction",value:function i(e,t){var n=e.currentTarget.name
 return"action_addtocampaign"===n?(this.openModal(),void e.preventDefault()):"action_delete"===n?(this.props.onDelete(t.ID),void e.preventDefault()):void 0}},{key:"handleCancelKeyDown",value:function s(e){
-e.keyCode!==m["default"].SPACE_KEY_CODE&&e.keyCode!==m["default"].RETURN_KEY_CODE||this.handleClose(e)}},{key:"handleSubmit",value:function d(e,t,n){return"function"==typeof this.props.onSubmit?this.props.onSubmit(e,t,n):n()
+e.keyCode!==f["default"].SPACE_KEY_CODE&&e.keyCode!==f["default"].RETURN_KEY_CODE||this.handleClose(e)}},{key:"handleSubmit",value:function d(e,t,n){return"function"==typeof this.props.onSubmit?this.props.onSubmit(e,t,n):n()
 
 }},{key:"handleSubmitModal",value:function c(e,t,n){return e.Campaign?n():(alert(u["default"]._t("AddToCampaigns.ErrorCampaignNotSelected","There was no campaign selected to be added to")),null)}},{key:"openModal",
 value:function h(){this.setState({openModal:!0})}},{key:"closeModal",value:function g(){this.setState({openModal:!1})}},{key:"handleClose",value:function v(e){this.props.onClose(),this.closeModal(),e&&e.preventDefault()
 
 }},{key:"render",value:function E(){var e=this.props.editFileSchemaUrl+"/"+this.props.fileId,t=this.props.addToCampaignSchemaUrl+"/"+this.props.fileId
 return p["default"].createElement("div",{className:"panel panel--padded panel--scrollable form--no-dividers editor"},this.getCancelButton(),p["default"].createElement("div",{className:"editor__details"
-},p["default"].createElement(f["default"],{schemaUrl:e,handleSubmit:this.handleSubmit,handleAction:this.handleAction}),p["default"].createElement(y["default"],{show:this.state.openModal,handleHide:this.closeModal,
+},p["default"].createElement(m["default"],{schemaUrl:e,handleSubmit:this.handleSubmit,handleAction:this.handleAction}),p["default"].createElement(y["default"],{show:this.state.openModal,handleHide:this.closeModal,
 handleSubmit:this.handleSubmitModal,schemaUrl:t,bodyClassName:"modal__dialog",responseClassBad:"modal__response modal__response--error",responseClassGood:"modal__response modal__response--good"})))}}]),
 t}(d.Component)
 v.propTypes={fileId:p["default"].PropTypes.number.isRequired,actions:p["default"].PropTypes.object,onClose:p["default"].PropTypes.func.isRequired,onSubmit:p["default"].PropTypes.func.isRequired,onDelete:p["default"].PropTypes.func.isRequired,
-editFileSchemaUrl:p["default"].PropTypes.string.isRequired,addToCampaignSchemaUrl:p["default"].PropTypes.string,openAddCampaignModal:p["default"].PropTypes.bool},t["default"]=v},function(e,t){e.exports=FormBuilder
+editFileSchemaUrl:p["default"].PropTypes.string.isRequired,addToCampaignSchemaUrl:p["default"].PropTypes.string,openAddCampaignModal:p["default"].PropTypes.bool},t["default"]=v},function(e,t,n){"use strict"
 
-},function(e,t,n){"use strict"
+
 function i(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(t,"__esModule",{value:!0})
 var r=n(11),o=i(r)
 t["default"]={CSS_TRANSITION_TIME:300,THUMBNAIL_HEIGHT:150,THUMBNAIL_WIDTH:200,BULK_ACTIONS:[{value:"delete",label:o["default"]._t("AssetAdmin.BULK_ACTIONS_DELETE","Delete"),className:"font-icon-trash",
@@ -183,9 +183,9 @@ destructive:!0,callback:null,confirm:function(e){function t(){return e.apply(thi
 
 return e=confirm(t)?Promise.resolve():Promise.reject()})},{value:"edit",label:o["default"]._t("AssetAdmin.BULK_ACTIONS_EDIT","Edit"),className:"font-icon-edit",destructive:!1,canApply:function l(e){return 1===e.length
 
-},callback:null}],BULK_ACTIONS_PLACEHOLDER:o["default"]._t("AssetAdmin.BULK_ACTIONS_PLACEHOLDER"),SPACE_KEY_CODE:32,RETURN_KEY_CODE:13}},function(e,t){e.exports=FormBuilderModal},function(e,t,n){"use strict"
+},callback:null}],BULK_ACTIONS_PLACEHOLDER:o["default"]._t("AssetAdmin.BULK_ACTIONS_PLACEHOLDER"),SPACE_KEY_CODE:32,RETURN_KEY_CODE:13}},function(e,t){e.exports=FormBuilderLoader},function(e,t){e.exports=FormBuilderModal
 
-
+},function(e,t,n){"use strict"
 function i(e){if(e&&e.__esModule)return e
 var t={}
 if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n])
@@ -202,7 +202,7 @@ return{errorMessage:a,loading:n,count:i,files:r,selectedFiles:o,page:l,queuedFil
 }}}Object.defineProperty(t,"__esModule",{value:!0}),t.Gallery=void 0
 var p=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},c=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),w=n(3),S=r(w),I=n(32),P=r(I),k=n(35),L=r(k),U=n(36),R=r(U),M=n(25),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),w=n(3),S=r(w),I=n(32),P=r(I),k=n(35),L=r(k),U=n(36),R=r(U),M=n(24),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
 function t(e){o(this,t)
 var n=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.sort="name",n.direction="asc",n.sorters=[{field:"title",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_ASC")},{field:"title",direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_DESC")
@@ -575,7 +575,7 @@ return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function l(e,t){if("funct
 e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{
 value:!0})
 var a=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),s=n(11),u=i(s),d=n(15),p=i(d),c=n(25),f=i(c),h=n(18),m=i(h),g=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),s=n(11),u=i(s),d=n(15),p=i(d),c=n(24),f=i(c),h=n(18),m=i(h),g=function(e){
 function t(e){r(this,t)
 var n=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleToggleSelect=n.handleToggleSelect.bind(n),n.handleDelete=n.handleDelete.bind(n),n.handleActivate=n.handleActivate.bind(n),n.handleKeyDown=n.handleKeyDown.bind(n),n.handleCancelUpload=n.handleCancelUpload.bind(n),

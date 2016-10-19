@@ -1,7 +1,7 @@
 import i18n from 'i18n';
 import React, { Component } from 'react';
-import FormBuilder from 'components/FormBuilder/FormBuilder';
 import CONSTANTS from 'constants/index';
+import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 
 class Editor extends Component {
@@ -60,7 +60,7 @@ class Editor extends Component {
   }
 
   /**
-   * Catches the <FormBuilder> event to allow custom handling.
+   * Catches the <FormBuilderLoader> event to allow custom handling.
    *
    * @param {Object} data
    * @param {String} action
@@ -118,7 +118,7 @@ class Editor extends Component {
       { this.getCancelButton() }
 
       <div className="editor__details">
-        <FormBuilder
+        <FormBuilderLoader
           schemaUrl={formSchemaUrl}
           handleSubmit={this.handleSubmit}
           handleAction={this.handleAction}
