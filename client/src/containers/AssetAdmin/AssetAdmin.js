@@ -142,10 +142,9 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   handleSubmitEditor(data, action, submitFn) {
-    submitFn()
+    return submitFn()
       .then((response) => {
         this.props.actions.gallery.loadFile(this.props.fileId, response.record);
-
         return response;
       });
   }

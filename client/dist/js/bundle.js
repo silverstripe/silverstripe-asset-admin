@@ -113,7 +113,7 @@ e&&e.id&&(e.parents&&e.parents.forEach(function(e){n.push({text:e.title,href:"/"
 }})),this.props.actions.breadcrumbsActions.setBreadcrumbs(n)}},{key:"compare",value:function u(e,t){return!!(e&&!t||t&&!e)||e&&t&&(e.id!==t.id||e.name!==t.name)}},{key:"handleFolderIcon",value:function c(e){
 this.handleOpenFile(this.props.folderId),e.preventDefault()}},{key:"handleOpenFile",value:function h(e){var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+this.props.folderId+"/edit/"+e)}},{key:"handleSubmitEditor",value:function m(e,t,n){var i=this
-n().then(function(e){return i.props.actions.gallery.loadFile(i.props.fileId,e.record),e})}},{key:"handleCloseFile",value:function g(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",
+return n().then(function(e){return i.props.actions.gallery.loadFile(i.props.fileId,e.record),e})}},{key:"handleCloseFile",value:function g(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",
 value:function y(e){var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+e)}},{key:"delete",value:function v(e){var t=this,n=this.props.files.find(function(t){return t.id===e})
 if(!n&&this.props.folder&&this.props.folder.id===e&&(n=this.props.folder),!n)throw new Error("File selected for deletion cannot be found")
