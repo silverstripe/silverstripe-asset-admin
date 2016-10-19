@@ -3,11 +3,10 @@
 namespace SilverStripe\AssetAdmin\Tests;
 
 use AssetStoreTest_SpyStore;
-use InvalidArgumentException;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
-use SilverStripe\AssetAdmin\Forms\ImageFormBuilder;
+use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
@@ -38,8 +37,8 @@ class FileFormBuilderTest extends SapphireTest
 
         $file = $this->objFromFixture(File::class, 'file1');
         $controller = new AssetAdmin();
-        $builder = new FileFormFactory($controller, $file);
-        $form = $builder->getForm('EditForm');
+        $builder = new FileFormFactory();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
 
         // Verify file form is scaffolded correctly
         $this->assertEquals('EditForm', $form->getName());
@@ -83,15 +82,26 @@ class FileFormBuilderTest extends SapphireTest
     public function testCreateFileForm() {
         $this->logInWithPermission('ADMIN');
 
-        $file = File::singleton();
+        $file = $this->objFromFixture(File::class, 'file1');
         $controller = new AssetAdmin();
-        $builder = new FileFormFactory($controller, $file);
-        $form = $builder->getForm('EditForm');
+        $builder = new FileFormFactory();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
 
         // Test fields
-        $this->assertEmpty($form->Fields()->fieldByName('FileSpecs')->getContent());
-        $this->assertEmpty($form->Fields()->fieldByName('Editor.Details.Path')->dataValue());
-        $this->assertEmpty($form->Fields()->fieldByName('Editor.Details.ClickableURL')->dataValue());
+        $this->assertEquals(
+            '<div class="editor__specs">11 bytes <span class="editor__status-flag">Draft</span></div>',
+            $form->Fields()->fieldByName('FileSpecs')->getContent()
+        );
+        $this->assertEquals(
+            'files/',
+            $form->Fields()->fieldByName('Editor.Details.Path')->dataValue()
+        );
+        $this->assertEquals(
+            '<i class="font-icon-link btn--icon-large form-control-static__icon"></i>'
+            . '<a href="/assets/files/6adf67caca/testfile.txt" target="_blank">'
+            . '/assets/files/6adf67caca/testfile.txt</a>',
+            $form->Fields()->fieldByName('Editor.Details.ClickableURL')->dataValue()
+        );
 
         // Test actions
         $this->assertNotNull($form->Actions()->fieldByName('action_save'));
@@ -102,8 +112,8 @@ class FileFormBuilderTest extends SapphireTest
 
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
-        $builder = new FileFormFactory($controller, $image);
-        $form = $builder->getForm('EditForm');
+        $builder = new ImageFormFactory();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image]);
 
         // Check thumbnail
         // Note: force_resample is turned off for testing
@@ -120,7 +130,7 @@ class FileFormBuilderTest extends SapphireTest
         $folder = $this->objFromFixture(Folder::class, 'parent');
         $controller = new AssetAdmin();
         $builder = new FolderFormFactory($controller, $folder);
-        $form = $builder->getForm('EditForm');
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $folder]);
 
         // Check fields
         $this->assertNull($form->Fields()->fieldByName('FileSpecs'));
@@ -146,7 +156,7 @@ class FileFormBuilderTest extends SapphireTest
     public function testScaffolderFactory() {
         $controller = new AssetAdmin();
         $this->assertInstanceOf(FileFormFactory::class, $controller->getFormFactory(File::singleton()));
-        $this->assertInstanceOf(ImageFormBuilder::class, $controller->getFormFactory(Image::singleton()));
+        $this->assertInstanceOf(ImageFormFactory::class, $controller->getFormFactory(Image::singleton()));
         $this->assertInstanceOf(FolderFormFactory::class, $controller->getFormFactory(Folder::singleton()));
     }
 

@@ -3,6 +3,7 @@
 namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Assets\File;
+use SilverStripe\Control\Controller;
 use SilverStripe\Core\Convert;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\FieldList;
@@ -21,13 +22,12 @@ class FileFormFactory extends AssetFormFactory
     /**
      * Get markdown for clickable link
      *
+     * @param File $record
      * @return string HTML markdown for link
      */
-    protected function getClickableLinkMarkdown()
+    protected function getClickableLinkMarkdown($record)
     {
-        /** @var File $record */
-        $record = $this->getRecord();
-        if (!$record->isInDB()) {
+        if (!$record || !$record->isInDB()) {
             return null;
         }
         $link = $record->Link();
@@ -39,24 +39,24 @@ class FileFormFactory extends AssetFormFactory
         return $clickableLink;
     }
 
-    protected function getFormFieldTabs()
+    protected function getFormFieldTabs($record)
     {
         // Add extra tab
         $tabs = TabSet::create(
             'Editor',
-            $this->getFormFieldDetailsTab(),
-            $this->getFormFieldUsageTab()
+            $this->getFormFieldDetailsTab($record),
+            $this->getFormFieldUsageTab($record)
         );
-        $this->extendAll('updateFormFieldTabs', $tabs);
         return $tabs;
     }
 
     /**
      * Build "Usage" tab
      *
+     * @param File $record
      * @return Tab
      */
-    protected function getFormFieldUsageTab()
+    protected function getFormFieldUsageTab($record)
     {
         // Add new tab for usage
         return Tab::create(
@@ -68,44 +68,46 @@ class FileFormFactory extends AssetFormFactory
         );
     }
 
-    protected function getFormFieldDetailsTab()
+    protected function getFormFieldDetailsTab($record)
     {
         // Update details tab
         return Tab::create(
             'Details',
-            TextField::create("Title", $this->record->fieldLabel('Title')),
-            TextField::create('Name', $this->getRecord()->fieldLabel('Filename')),
-            ReadonlyField::create("Path", _t('AssetTableField.PATH', 'Path'), $this->getPath()),
+            TextField::create("Title", File::singleton()->fieldLabel('Title')),
+            TextField::create('Name', File::singleton()->fieldLabel('Filename')),
+            ReadonlyField::create("Path", _t('AssetTableField.PATH', 'Path'), $this->getPath($record)),
             HTMLReadonlyField::create(
                 'ClickableURL',
                 _t('AssetTableField.URL', 'URL'),
-                $this->getClickableLinkMarkdown()
+                $this->getClickableLinkMarkdown($record)
             )
         );
     }
 
-    protected function getFormFields()
+    protected function getFormFields(Controller $controller, $name, $context = [])
     {
+        $record = $context['Record'];
+
         // Add status flag before extensions are triggered
-        $this->beforeExtending('updateFormFields', function (FieldList $fields) {
+        $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record) {
             $fields->insertAfter(
                 'TitleHeader',
-                LiteralField::create('FileSpecs', $this->getSpecsMarkup())
+                LiteralField::create('FileSpecs', $this->getSpecsMarkup($record))
             );
         });
-        return parent::getFormFields();
+
+        return parent::getFormFields($controller, $name, $context);
     }
 
     /**
      * Get publish action
      *
+     * @param File $record
      * @return FormAction
      */
-    protected function getPublishAction()
+    protected function getPublishAction($record)
     {
-        /** @var File $record */
-        $record = $this->getRecord();
-        if (!$record->canPublish()) {
+        if (!$record || !$record->canPublish()) {
             return null;
         }
 
@@ -116,50 +118,49 @@ class FileFormFactory extends AssetFormFactory
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
     }
 
-    protected function getFormActions()
+    protected function getFormActions(Controller $controller, $name, $context = [])
     {
+        $record = $context['Record'];
+
         // Build top level bar
         $actions = new FieldList(array_filter([
-            $this->getSaveAction(),
-            $this->getPublishAction(),
-            $this->getPopoverMenu()
+            $this->getSaveAction($record),
+            $this->getPublishAction($record),
+            $this->getPopoverMenu($record)
         ]));
 
         // Update
-        $this->extendAll('updateFormActions', $actions);
+        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
         return $actions;
     }
 
     /**
      * get HTML for status icon
      *
-     * @return string|null
+     * @param File $record
+     * @return null|string
      */
-    protected function getSpecsMarkup()
+    protected function getSpecsMarkup($record)
     {
-        /** @var File $record */
-        $record = $this->getRecord();
-        if (!$record->isInDB()) {
+        if (!$record || !$record->exists()) {
             return null;
         }
         return sprintf(
             '<div class="editor__specs">%s %s</div>',
             $record->getSize(),
-            $this->getStatusFlagMarkup()
+            $this->getStatusFlagMarkup($record)
         );
     }
 
     /**
      * Get published status flag
      *
+     * @param File $record
      * @return null|string
      */
-    protected function getStatusFlagMarkup()
+    protected function getStatusFlagMarkup($record)
     {
-        /** @var File $record */
-        $record = $this->getRecord();
-        $statusTitle = $record->getStatusTitle();
-        if ($statusTitle) {
+        if ($record && ($statusTitle = $record->getStatusTitle())) {
             return "<span class=\"editor__status-flag\">{$statusTitle}</span>";
         }
         return null;
@@ -168,43 +169,48 @@ class FileFormFactory extends AssetFormFactory
     /**
      * Get user-visible "Path" for this record
      *
+     * @param File $record
      * @return string
      */
-    protected function getPath()
+    protected function getPath($record)
     {
-        /** @var File $record */
-        $record = $this->getRecord();
-        if (!$record->isInDB()) {
-            return null;
+        if ($record && $record->isInDB()) {
+            if ($record->ParentID) {
+                return $record->Parent()->getFilename();
+            } else {
+                return '/';
+            }
         }
-        $path = $record->ParentID ? $record->Parent()->getFilename() : '/';
-        return $path;
+        return null;
     }
 
     /**
      * Get action for adding to campaign
      *
-     * @return FormAction
+     * @param File $record
+     * @return FormAction|null
      */
-    protected function getAddToCampaignAction()
+    protected function getAddToCampaignAction($record)
     {
-        return FormAction::create(
-            'addtocampaign',
-            _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ADDTOCAMPAIGN', 'Add to campaign')
-        );
+        if ($record && $record->canPublish()) {
+            return FormAction::create(
+                'addtocampaign',
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ADDTOCAMPAIGN', 'Add to campaign')
+            );
+        }
+        return null;
     }
 
     /**
      * Get action for publishing
      *
+     * @param File $record
      * @return FormAction
      */
-    protected function getUnpublishAction()
+    protected function getUnpublishAction($record)
     {
         // Check if record is unpublishable
-        /** @var File $record */
-        $record = $this->getRecord();
-        if (!$record->isPublished() || !$record->canUnpublish()) {
+        if (!$record || !$record->isPublished() || !$record->canUnpublish()) {
             return null;
         }
 
@@ -220,15 +226,16 @@ class FileFormFactory extends AssetFormFactory
     /**
      * Build popup menu
      *
+     * @param File $record
      * @return PopoverField
      */
-    protected function getPopoverMenu()
+    protected function getPopoverMenu($record)
     {
         // Build popover actions
         $popoverActions = array_filter([
-            $this->getAddToCampaignAction(),
-            $this->getUnpublishAction(),
-            $this->getDeleteAction()
+            $this->getAddToCampaignAction($record),
+            $this->getUnpublishAction($record),
+            $this->getDeleteAction($record)
         ]);
         if ($popoverActions) {
             return PopoverField::create($popoverActions)

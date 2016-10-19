@@ -9,7 +9,7 @@ use SilverStripe\AssetAdmin\Forms\AssetFormFactory;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\Forms\DefaultFormFactory;
-use SilverStripe\AssetAdmin\Forms\ImageFormBuilder;
+use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
@@ -579,13 +579,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFormFactory(File $file)
     {
+        // Get service name based on file class
+        $name = null;
         if ($file instanceof Folder) {
-            return Injector::inst()->create(FolderFormFactory::class, $this, $file);
+            $name = FolderFormFactory::class;
+        } elseif ($file instanceof Image) {
+            $name = ImageFormFactory::class;
+        } else {
+            $name = FileFormFactory::class;
         }
-        if ($file instanceof Image) {
-            return Injector::inst()->create(ImageFormBuilder::class, $this, $file);
-        }
-        return Injector::inst()->create(FileFormFactory::class, $this, $file);
+        return Injector::inst()->get($name);
     }
 
     /**
@@ -613,7 +616,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $scaffolder = $this->getFormFactory($file);
-        $form = $scaffolder->getForm('FileEditForm');
+        $form = $scaffolder->getForm($this, 'FileEditForm', [
+            'Record' => $file
+        ]);
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
