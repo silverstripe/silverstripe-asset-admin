@@ -39,12 +39,14 @@ export function deleteItems(deleteApi, ids) {
 
       return json;
     })
-    .catch((error) => {
+    .catch((e) => {
       // Failure finish message
       dispatch({
         type: GALLERY.DELETE_ITEM_FAILURE,
-        payload: { error },
+        payload: { e },
       });
+
+      throw e;
     });
   };
 }
@@ -80,6 +82,8 @@ export function loadFolderContents(listApi, folderId, limit, page) {
             folderId: parseInt(data.folderID, 10),
           },
         });
+
+        return data;
       })
       .catch((e) => {
         dispatch({
@@ -88,6 +92,8 @@ export function loadFolderContents(listApi, folderId, limit, page) {
             message: e.message,
           },
         });
+        // so the error is no longer silent.
+        throw e;
       });
   };
 }
@@ -174,12 +180,14 @@ export function createFolder(createFolderApi, parentId, name) {
       });
       return json;
     })
-    .catch((err) => {
+    .catch((e) => {
       // Failure finish message
       dispatch({
         type: GALLERY.CREATE_FOLDER_FAILURE,
-        payload: { error: `Couldn\'t create ${name}: ${err}` },
+        payload: { error: `Couldn\'t create ${name}: ${e}` },
       });
+
+      throw e;
     });
   };
 }

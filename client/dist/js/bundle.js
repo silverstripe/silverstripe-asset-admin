@@ -132,16 +132,16 @@ url:f["default"].PropTypes.string}),file:f["default"].PropTypes.object,folder:f[
 parentID:f["default"].PropTypes.number,canView:f["default"].PropTypes.bool,canEdit:f["default"].PropTypes.bool})},t["default"]=(0,g.withRouter)((0,h.connect)(s,u)(z))},function(e,t){e.exports=React},function(e,t){
 e.exports=ReactRedux},function(e,t){e.exports=ReactRouter},function(e,t){e.exports=SilverStripeComponent},function(e,t){e.exports=Backend},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){return function(n){return n({type:f["default"].ADD_FILES,payload:{files:e,count:t}})}}function o(e,t){return function(n){return n({type:f["default"].DELETE_ITEM_REQUEST,
-payload:{ids:t}}),e({ids:t}).then(function(e){return n({type:f["default"].DELETE_ITEM_SUCCESS,payload:{ids:t}}),n({type:f["default"].SET_FILE,payload:{fileId:null}}),e})["catch"](function(e){n({type:f["default"].DELETE_ITEM_FAILURE,
-payload:{error:e}})})}}function l(e,t,n,i){return function(r){return r({type:f["default"].LOAD_FOLDER_REQUEST,payload:{folderId:parseInt(t,10)}}),e({id:t,limit:n,page:i}).then(function(e){r({type:f["default"].LOAD_FOLDER_SUCCESS,
+payload:{ids:t}}),e({ids:t}).then(function(e){return n({type:f["default"].DELETE_ITEM_SUCCESS,payload:{ids:t}}),n({type:f["default"].SET_FILE,payload:{fileId:null}}),e})["catch"](function(e){throw n({type:f["default"].DELETE_ITEM_FAILURE,
+payload:{e:e}}),e})}}function l(e,t,n,i){return function(r){return r({type:f["default"].LOAD_FOLDER_REQUEST,payload:{folderId:parseInt(t,10)}}),e({id:t,limit:n,page:i}).then(function(e){return r({type:f["default"].LOAD_FOLDER_SUCCESS,
 payload:{files:e.files,folder:{id:parseInt(e.folderID,10),title:e.title,parents:e.parents,parent:e.parent,canEdit:e.canEdit,canDelete:e.canDelete,parentID:null===e.parentID?null:parseInt(e.parentID,10)
-},folderId:parseInt(e.folderID,10)}})})["catch"](function(e){r({type:f["default"].LOAD_FOLDER_FAILURE,payload:{message:e.message}})})}}function a(e,t){return function(n){n({type:f["default"].LOAD_FILE_SUCCESS,
+},folderId:parseInt(e.folderID,10)}}),e})["catch"](function(e){throw r({type:f["default"].LOAD_FOLDER_FAILURE,payload:{message:e.message}}),e})}}function a(e,t){return function(n){n({type:f["default"].LOAD_FILE_SUCCESS,
 payload:{id:e,file:t}})}}function s(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 return function(t){return t({type:f["default"].SELECT_FILES,payload:{ids:e}})}}function u(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 return function(t){return t({type:f["default"].DESELECT_FILES,payload:{ids:e}})}}function d(e){return function(t){return t({type:f["default"].SORT_FILES,payload:{comparator:e}})}}function p(e,t,n){return function(i){
 return i({type:f["default"].CREATE_FOLDER_REQUEST,payload:{name:n}}),e({ParentID:isNaN(t)?0:t,Name:n}).then(function(e){return i({type:f["default"].CREATE_FOLDER_SUCCESS,payload:{name:n}}),e})["catch"](function(e){
-i({type:f["default"].CREATE_FOLDER_FAILURE,payload:{error:"Couldn't create "+n+": "+e}})})}}Object.defineProperty(t,"__esModule",{value:!0}),t.addFiles=r,t.deleteItems=o,t.loadFolderContents=l,t.loadFile=a,
-t.selectFiles=s,t.deselectFiles=u,t.sortFiles=d,t.createFolder=p
+throw i({type:f["default"].CREATE_FOLDER_FAILURE,payload:{error:"Couldn't create "+n+": "+e}}),e})}}Object.defineProperty(t,"__esModule",{value:!0}),t.addFiles=r,t.deleteItems=o,t.loadFolderContents=l,
+t.loadFile=a,t.selectFiles=s,t.deselectFiles=u,t.sortFiles=d,t.createFolder=p
 var c=n(8),f=i(c)},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(e){return function(t){return t({type:l["default"].UPDATE_ADDTOCAMPAIGN_MODAL,payload:{show:e}})}}Object.defineProperty(t,"__esModule",{value:!0
 }),t.updateAddToCampaignModal=r
