@@ -39,6 +39,7 @@ module.exports = {
     'components/FormBuilderModal/FormBuilderModal': 'FormBuilderModal',
     'components/FormBuilder/FormBuilder': 'FormBuilder',
     'components/Toolbar/Toolbar': 'Toolbar',
+    'containers/FormBuilderLoader/FormBuilderLoader': 'FormBuilderLoader',
     'state/breadcrumbs/BreadcrumbsActions': 'BreadcrumbsActions',
     'deep-freeze-strict': 'DeepFreezeStrict',
     i18n: 'i18n',

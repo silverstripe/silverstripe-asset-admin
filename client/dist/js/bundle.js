@@ -113,7 +113,7 @@ e&&e.id&&(e.parents&&e.parents.forEach(function(e){n.push({text:e.title,href:"/"
 }})),this.props.actions.breadcrumbsActions.setBreadcrumbs(n)}},{key:"compare",value:function u(e,t){return!!(e&&!t||t&&!e)||e&&t&&(e.id!==t.id||e.name!==t.name)}},{key:"handleFolderIcon",value:function c(e){
 this.handleOpenFile(this.props.folderId),e.preventDefault()}},{key:"handleOpenFile",value:function h(e){var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+this.props.folderId+"/edit/"+e)}},{key:"handleSubmitEditor",value:function m(e,t,n){var i=this
-e.preventDefault(),n().then(function(e){return i.props.actions.gallery.loadFile(i.props.fileId,e.record),e})}},{key:"handleCloseFile",value:function g(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",
+return n().then(function(e){return i.props.actions.gallery.loadFile(i.props.fileId,e.record),e})}},{key:"handleCloseFile",value:function g(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",
 value:function y(e){var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+e)}},{key:"delete",value:function v(e){var t=this,n=this.props.files.find(function(t){return t.id===e})
 if(!n&&this.props.folder&&this.props.folder.id===e&&(n=this.props.folder),!n)throw new Error("File selected for deletion cannot be found")
@@ -132,16 +132,16 @@ url:f["default"].PropTypes.string}),file:f["default"].PropTypes.object,folder:f[
 parentID:f["default"].PropTypes.number,canView:f["default"].PropTypes.bool,canEdit:f["default"].PropTypes.bool})},t["default"]=(0,g.withRouter)((0,h.connect)(s,u)(z))},function(e,t){e.exports=React},function(e,t){
 e.exports=ReactRedux},function(e,t){e.exports=ReactRouter},function(e,t){e.exports=SilverStripeComponent},function(e,t){e.exports=Backend},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){return function(n){return n({type:f["default"].ADD_FILES,payload:{files:e,count:t}})}}function o(e,t){return function(n){return n({type:f["default"].DELETE_ITEM_REQUEST,
-payload:{ids:t}}),e({ids:t}).then(function(e){return n({type:f["default"].DELETE_ITEM_SUCCESS,payload:{ids:t}}),n({type:f["default"].SET_FILE,payload:{fileId:null}}),e})["catch"](function(e){n({type:f["default"].DELETE_ITEM_FAILURE,
-payload:{error:e}})})}}function l(e,t,n,i){return function(r){return r({type:f["default"].LOAD_FOLDER_REQUEST,payload:{folderId:parseInt(t,10)}}),e({id:t,limit:n,page:i}).then(function(e){r({type:f["default"].LOAD_FOLDER_SUCCESS,
+payload:{ids:t}}),e({ids:t}).then(function(e){return n({type:f["default"].DELETE_ITEM_SUCCESS,payload:{ids:t}}),n({type:f["default"].SET_FILE,payload:{fileId:null}}),e})["catch"](function(e){throw n({type:f["default"].DELETE_ITEM_FAILURE,
+payload:{e:e}}),e})}}function l(e,t,n,i){return function(r){return r({type:f["default"].LOAD_FOLDER_REQUEST,payload:{folderId:parseInt(t,10)}}),e({id:t,limit:n,page:i}).then(function(e){return r({type:f["default"].LOAD_FOLDER_SUCCESS,
 payload:{files:e.files,folder:{id:parseInt(e.folderID,10),title:e.title,parents:e.parents,parent:e.parent,canEdit:e.canEdit,canDelete:e.canDelete,parentID:null===e.parentID?null:parseInt(e.parentID,10)
-},folderId:parseInt(e.folderID,10)}})})["catch"](function(e){r({type:f["default"].LOAD_FOLDER_FAILURE,payload:{message:e.message}})})}}function a(e,t){return function(n){n({type:f["default"].LOAD_FILE_SUCCESS,
+},folderId:parseInt(e.folderID,10)}}),e})["catch"](function(e){throw r({type:f["default"].LOAD_FOLDER_FAILURE,payload:{message:e.message}}),e})}}function a(e,t){return function(n){n({type:f["default"].LOAD_FILE_SUCCESS,
 payload:{id:e,file:t}})}}function s(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 return function(t){return t({type:f["default"].SELECT_FILES,payload:{ids:e}})}}function u(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 return function(t){return t({type:f["default"].DESELECT_FILES,payload:{ids:e}})}}function d(e){return function(t){return t({type:f["default"].SORT_FILES,payload:{comparator:e}})}}function p(e,t,n){return function(i){
 return i({type:f["default"].CREATE_FOLDER_REQUEST,payload:{name:n}}),e({ParentID:isNaN(t)?0:t,Name:n}).then(function(e){return i({type:f["default"].CREATE_FOLDER_SUCCESS,payload:{name:n}}),e})["catch"](function(e){
-i({type:f["default"].CREATE_FOLDER_FAILURE,payload:{error:"Couldn't create "+n+": "+e}})})}}Object.defineProperty(t,"__esModule",{value:!0}),t.addFiles=r,t.deleteItems=o,t.loadFolderContents=l,t.loadFile=a,
-t.selectFiles=s,t.deselectFiles=u,t.sortFiles=d,t.createFolder=p
+throw i({type:f["default"].CREATE_FOLDER_FAILURE,payload:{error:"Couldn't create "+n+": "+e}}),e})}}Object.defineProperty(t,"__esModule",{value:!0}),t.addFiles=r,t.deleteItems=o,t.loadFolderContents=l,
+t.loadFile=a,t.selectFiles=s,t.deselectFiles=u,t.sortFiles=d,t.createFolder=p
 var c=n(8),f=i(c)},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(e){return function(t){return t({type:l["default"].UPDATE_ADDTOCAMPAIGN_MODAL,payload:{show:e}})}}Object.defineProperty(t,"__esModule",{value:!0
 }),t.updateAddToCampaignModal=r
@@ -159,19 +159,22 @@ var n=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleCancelKeyDown=n.handleCancelKeyDown.bind(n),n.handleClose=n.handleClose.bind(n),n.handleSubmit=n.handleSubmit.bind(n),n.handleAction=n.handleAction.bind(n),n.handleSubmitModal=n.handleSubmitModal.bind(n),
 n.closeModal=n.closeModal.bind(n),n.openModal=n.openModal.bind(n),n.state={openModal:!1},n}return l(t,e),a(t,[{key:"getCancelButton",value:function n(){return p["default"].createElement("a",{tabIndex:"0",
 className:"btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl",onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,type:"button","aria-label":u["default"]._t("AssetAdmin.CANCEL")})}},{
-key:"handleAction",value:function i(e,t,n){return"action_addtocampaign"===t?(this.openModal(),void e.preventDefault()):"action_delete"===t?(this.props.onDelete(n.ID),void e.preventDefault()):void 0}},{
-key:"handleCancelKeyDown",value:function s(e){e.keyCode!==m["default"].SPACE_KEY_CODE&&e.keyCode!==m["default"].RETURN_KEY_CODE||this.handleClose(e)}},{key:"handleSubmit",value:function d(e,t,n){return"function"==typeof this.props.onSubmit?this.props.onSubmit(e,t,n):(e.preventDefault(),
-n())}},{key:"handleSubmitModal",value:function c(e,t,n){return e.preventDefault(),t.Campaign?n():(alert(u["default"]._t("AddToCampaigns.ErrorCampaignNotSelected","There was no campaign selected to be added to")),
-null)}},{key:"openModal",value:function h(){this.setState({openModal:!0})}},{key:"closeModal",value:function g(){this.setState({openModal:!1})}},{key:"handleClose",value:function v(e){this.props.onClose(),
-this.closeModal(),e&&e.preventDefault()}},{key:"render",value:function E(){var e=this.props.editFileSchemaUrl+"/"+this.props.fileId,t=this.props.addToCampaignSchemaUrl+"/"+this.props.fileId
+key:"handleAction",value:function i(e,t){var n=e.currentTarget.name
+return"action_addtocampaign"===n?(this.openModal(),void e.preventDefault()):"action_delete"===n?(this.props.onDelete(t.ID),void e.preventDefault()):void 0}},{key:"handleCancelKeyDown",value:function s(e){
+e.keyCode!==f["default"].SPACE_KEY_CODE&&e.keyCode!==f["default"].RETURN_KEY_CODE||this.handleClose(e)}},{key:"handleSubmit",value:function d(e,t,n){return"function"==typeof this.props.onSubmit?this.props.onSubmit(e,t,n):n()
+
+}},{key:"handleSubmitModal",value:function c(e,t,n){return e.Campaign?n():(alert(u["default"]._t("AddToCampaigns.ErrorCampaignNotSelected","There was no campaign selected to be added to")),null)}},{key:"openModal",
+value:function h(){this.setState({openModal:!0})}},{key:"closeModal",value:function g(){this.setState({openModal:!1})}},{key:"handleClose",value:function v(e){this.props.onClose(),this.closeModal(),e&&e.preventDefault()
+
+}},{key:"render",value:function E(){var e=this.props.editFileSchemaUrl+"/"+this.props.fileId,t=this.props.addToCampaignSchemaUrl+"/"+this.props.fileId
 return p["default"].createElement("div",{className:"panel panel--padded panel--scrollable form--no-dividers editor"},this.getCancelButton(),p["default"].createElement("div",{className:"editor__details"
-},p["default"].createElement(f["default"],{schemaUrl:e,handleSubmit:this.handleSubmit,handleAction:this.handleAction}),p["default"].createElement(y["default"],{show:this.state.openModal,handleHide:this.closeModal,
+},p["default"].createElement(m["default"],{schemaUrl:e,handleSubmit:this.handleSubmit,handleAction:this.handleAction}),p["default"].createElement(y["default"],{show:this.state.openModal,handleHide:this.closeModal,
 handleSubmit:this.handleSubmitModal,schemaUrl:t,bodyClassName:"modal__dialog",responseClassBad:"modal__response modal__response--error",responseClassGood:"modal__response modal__response--good"})))}}]),
 t}(d.Component)
 v.propTypes={fileId:p["default"].PropTypes.number.isRequired,actions:p["default"].PropTypes.object,onClose:p["default"].PropTypes.func.isRequired,onSubmit:p["default"].PropTypes.func.isRequired,onDelete:p["default"].PropTypes.func.isRequired,
-editFileSchemaUrl:p["default"].PropTypes.string.isRequired,addToCampaignSchemaUrl:p["default"].PropTypes.string,openAddCampaignModal:p["default"].PropTypes.bool},t["default"]=v},function(e,t){e.exports=FormBuilder
+editFileSchemaUrl:p["default"].PropTypes.string.isRequired,addToCampaignSchemaUrl:p["default"].PropTypes.string,openAddCampaignModal:p["default"].PropTypes.bool},t["default"]=v},function(e,t,n){"use strict"
 
-},function(e,t,n){"use strict"
+
 function i(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(t,"__esModule",{value:!0})
 var r=n(11),o=i(r)
 t["default"]={CSS_TRANSITION_TIME:300,THUMBNAIL_HEIGHT:150,THUMBNAIL_WIDTH:200,BULK_ACTIONS:[{value:"delete",label:o["default"]._t("AssetAdmin.BULK_ACTIONS_DELETE","Delete"),className:"font-icon-trash",
@@ -180,9 +183,9 @@ destructive:!0,callback:null,confirm:function(e){function t(){return e.apply(thi
 
 return e=confirm(t)?Promise.resolve():Promise.reject()})},{value:"edit",label:o["default"]._t("AssetAdmin.BULK_ACTIONS_EDIT","Edit"),className:"font-icon-edit",destructive:!1,canApply:function l(e){return 1===e.length
 
-},callback:null}],BULK_ACTIONS_PLACEHOLDER:o["default"]._t("AssetAdmin.BULK_ACTIONS_PLACEHOLDER"),SPACE_KEY_CODE:32,RETURN_KEY_CODE:13}},function(e,t){e.exports=FormBuilderModal},function(e,t,n){"use strict"
+},callback:null}],BULK_ACTIONS_PLACEHOLDER:o["default"]._t("AssetAdmin.BULK_ACTIONS_PLACEHOLDER"),SPACE_KEY_CODE:32,RETURN_KEY_CODE:13}},function(e,t){e.exports=FormBuilderLoader},function(e,t){e.exports=FormBuilderModal
 
-
+},function(e,t,n){"use strict"
 function i(e){if(e&&e.__esModule)return e
 var t={}
 if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n])
@@ -199,7 +202,7 @@ return{errorMessage:a,loading:n,count:i,files:r,selectedFiles:o,page:l,queuedFil
 }}}Object.defineProperty(t,"__esModule",{value:!0}),t.Gallery=void 0
 var p=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(e[i]=n[i])}return e},c=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),w=n(3),S=r(w),I=n(32),P=r(I),k=n(35),L=r(k),U=n(36),R=r(U),M=n(25),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),f=n(28),h=r(f),m=n(11),g=r(m),y=n(15),v=r(y),E=n(29),b=r(E),_=n(30),F=r(_),A=n(16),T=n(17),D=n(2),C=n(31),O=r(C),w=n(3),S=r(w),I=n(32),P=r(I),k=n(35),L=r(k),U=n(36),R=r(U),M=n(24),N=r(M),x=n(20),z=i(x),j=n(37),q=i(j),B=t.Gallery=function(e){
 function t(e){o(this,t)
 var n=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.sort="name",n.direction="asc",n.sorters=[{field:"title",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_ASC")},{field:"title",direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_DESC")
@@ -271,8 +274,9 @@ folder:v["default"].PropTypes.shape({id:v["default"].PropTypes.number,parentID:v
 selectedFiles:v["default"].PropTypes.arrayOf(v["default"].PropTypes.number),bulkActions:v["default"].PropTypes.bool,limit:v["default"].PropTypes.number,page:v["default"].PropTypes.number,queuedFiles:v["default"].PropTypes.shape({
 items:v["default"].PropTypes.array.isRequired}),onOpenFile:v["default"].PropTypes.func.isRequired,onOpenFolder:v["default"].PropTypes.func.isRequired,createFileApiUrl:v["default"].PropTypes.string,createFileApiMethod:v["default"].PropTypes.string,
 createFolderApi:v["default"].PropTypes.func,readFolderApi:v["default"].PropTypes.func,deleteApi:v["default"].PropTypes.func,actions:v["default"].PropTypes.object,sectionConfig:v["default"].PropTypes.shape({
-url:v["default"].PropTypes.string}),router:v["default"].PropTypes.object},t["default"]=(0,T.withRouter)((0,A.connect)(u,d)(B))},function(e,t){e.exports=jQuery},function(e,t){e.exports=ReactDom},function(e,t){
-e.exports=ReactAddonsCssTransitionGroup},function(e,t){e.exports=ReactAddonsTestUtils},function(e,t,n){"use strict"
+url:v["default"].PropTypes.string}),router:v["default"].PropTypes.object,errorMessage:v["default"].PropTypes.string},t["default"]=(0,T.withRouter)((0,A.connect)(u,d)(B))},function(e,t){e.exports=jQuery
+
+},function(e,t){e.exports=ReactDom},function(e,t){e.exports=ReactAddonsCssTransitionGroup},function(e,t){e.exports=ReactAddonsTestUtils},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function o(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
 
 
@@ -571,7 +575,7 @@ return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function l(e,t){if("funct
 e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{
 value:!0})
 var a=function(){function e(e,t){for(var n=0;n<t.length;n++){var i=t[n]
-i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),s=n(11),u=i(s),d=n(15),p=i(d),c=n(25),f=i(c),h=n(18),m=i(h),g=function(e){
+i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}return function(t,n,i){return n&&e(t.prototype,n),i&&e(t,i),t}}(),s=n(11),u=i(s),d=n(15),p=i(d),c=n(24),f=i(c),h=n(18),m=i(h),g=function(e){
 function t(e){r(this,t)
 var n=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleToggleSelect=n.handleToggleSelect.bind(n),n.handleDelete=n.handleDelete.bind(n),n.handleActivate=n.handleActivate.bind(n),n.handleKeyDown=n.handleKeyDown.bind(n),n.handleCancelUpload=n.handleCancelUpload.bind(n),
@@ -587,9 +591,9 @@ return this.isImageSmallerThanThumbnail()&&e.push("gallery-item__thumbnail--smal
 
 return this.exists()||this.uploading()||e.push("gallery-item--missing"),this.props.selected&&e.push("gallery-item--selected"),this.props.highlighted&&e.push("gallery-item--highlighted"),this.hasError()&&e.push("gallery-item--error"),
 e.join(" ")}},{key:"getStatusFlags",value:function y(){var e=[]
-return"folder"!==this.props.item.type&&(this.props.item.draft?e.push(p["default"].createElement("span",{title:u["default"]._t("File.DRAFT","Draft"),className:"gallery-item--draft"})):this.props.item.modified&&e.push(p["default"].createElement("span",{
-title:u["default"]._t("File.MODIFIED","Modified"),className:"gallery-item--modified"}))),e}},{key:"isImage",value:function v(){return"image"===this.props.item.category}},{key:"exists",value:function E(){
-return this.props.item.exists}},{key:"uploading",value:function b(){return this.props.uploading}},{key:"isImageSmallerThanThumbnail",value:function _(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
+return"folder"!==this.props.item.type&&(this.props.item.draft?e.push(p["default"].createElement("span",{key:"status-draft",title:u["default"]._t("File.DRAFT","Draft"),className:"gallery-item--draft"})):this.props.item.modified&&e.push(p["default"].createElement("span",{
+key:"status-modified",title:u["default"]._t("File.MODIFIED","Modified"),className:"gallery-item--modified"}))),e}},{key:"isImage",value:function v(){return"image"===this.props.item.category}},{key:"exists",
+value:function E(){return this.props.item.exists}},{key:"uploading",value:function b(){return this.props.uploading}},{key:"isImageSmallerThanThumbnail",value:function _(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
 
 
 var e=this.props.item.dimensions

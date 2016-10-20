@@ -123,7 +123,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getClientConfig()
     {
         $baseLink = $this->Link();
-        return array_merge(parent::getClientConfig(), [
+        return array_merge( parent::getClientConfig(), [
             'reactRouter' => true,
             'createFileEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/createFile'),
@@ -209,13 +209,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Build parents (for breadcrumbs)
         $parents = [];
         $next = $folder->Parent();
-        while ($next && $next->exists()) {
+        while($next && $next->exists()) {
             array_unshift($parents, [
                 'id' => $next->ID,
                 'title' => $next->getTitle(),
                 'filename' => $next->getFilename(),
             ]);
-            if ($next->ParentID) {
+            if($next->ParentID) {
                 $next = $next->Parent();
             } else {
                 break;
@@ -254,7 +254,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(json_encode([
             // Serialisation
-            "files" => array_map(function ($file) {
+            "files" => array_map(function($file) {
                 return $this->getObjectFromData($file);
             }, $list->toArray()),
             "count" => $list->count(),
@@ -333,7 +333,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $data['Parent'] = $parentRecord;
 
         $tmpFile = $request->postVar('Upload');
-        if (!$upload->validate($tmpFile)) {
+        if(!$upload->validate($tmpFile)) {
             $result = ['error' => $upload->getErrors()];
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
@@ -351,7 +351,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
-        if (!$uploadResult) {
+        if(!$uploadResult) {
             $result = ['error' => 'unknown'];
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
@@ -453,7 +453,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFileEditLink($file)
     {
-        if (!$file || !$file->isInDB()) {
+        if(!$file || !$file->isInDB()) {
             return null;
         }
 
@@ -622,8 +622,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
-        $form->setValidationResponseCallback(function () use ($form) {
-            return $this->getSchemaResponse($form);
+        $form->setValidationResponseCallback(function() use ($form, $file) {
+            $schemaId = Controller::join_links($this->Link('schema/FileEditForm'), $file->exists() ? $file->ID : '');
+            return $this->getSchemaResponse($form, $schemaId);
         });
 
         return $form;
@@ -701,7 +702,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Return the record data in the same response as the schema to save a postback
-        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
+        $schemaId = Controller::join_links($this->Link('schema/FileEditForm'), $record->exists() ? $record->ID : '');
+        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id), $schemaId);
         $schemaData['record'] = $this->getObjectFromData($record);
         $response = new HTTPResponse(Convert::raw2json($schemaData));
         $response->addHeader('Content-Type', 'application/json');
@@ -732,7 +734,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $record->doUnpublish();
 
         // Return the record data in the same response as the schema to save a postback
-        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id));
+        $schemaId = Controller::join_links($this->Link('schema/FileEditForm'), $record->exists() ? $record->ID : '');
+        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id), $schemaId);
         $schemaData['record'] = $this->getObjectFromData($record);
         $response = new HTTPResponse(Convert::raw2json($schemaData));
         $response->addHeader('Content-Type', 'application/json');
@@ -827,7 +830,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Re-add previously removed "Name" filter as combined filter
         // TODO Replace with composite SearchFilter once that API exists
-        if (!empty($params['Name'])) {
+        if(!empty($params['Name'])) {
             $list = $list->filterAny(array(
                 'Name:PartialMatch' => $params['Name'],
                 'Title:PartialMatch' => $params['Name']
@@ -835,7 +838,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Optionally limit search to a folder (non-recursive)
-        if (!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
+        if(!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
             $list = $list->filter('ParentID', $params['ParentID']);
         }
 
@@ -869,7 +872,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Access checks
-        $list = $list->filterByCallback(function (File $file) {
+        $list = $list->filterByCallback(function(File $file) {
             return $file->canView();
         });
 
@@ -892,7 +895,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $results = $handler->addToCampaign($record, $data['Campaign']);
         if (!is_null($results)) {
             $request = $this->getRequest();
-            if ($request->getHeader('X-Formschema-Request')) {
+            if($request->getHeader('X-Formschema-Request')) {
                 $data = $this->getSchemaForForm($handler->Form($record));
                 $data['message'] = $results;
 

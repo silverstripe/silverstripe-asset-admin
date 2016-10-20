@@ -141,12 +141,10 @@ class AssetAdmin extends SilverStripeComponent {
     this.props.router.push(`/${base}/show/${this.props.folderId}/edit/${fileId}`);
   }
 
-  handleSubmitEditor(event, fieldValues, submitFn) {
-    event.preventDefault();
-    submitFn()
+  handleSubmitEditor(data, action, submitFn) {
+    return submitFn()
       .then((response) => {
         this.props.actions.gallery.loadFile(this.props.fileId, response.record);
-
         return response;
       });
   }
