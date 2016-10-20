@@ -10,7 +10,8 @@ use SilverStripe\ORM\DataExtension;
  */
 class AssetAdminFile extends DataExtension
 {
-    public function updateCMSEditLink(&$link) {
+    public function updateCMSEditLink(&$link)
+    {
         // Update edit link for this file to point to the new asset admin
         $controller = AssetAdmin::singleton();
         $link = Director::absoluteURL($controller->getFileEditLink($this->owner));
