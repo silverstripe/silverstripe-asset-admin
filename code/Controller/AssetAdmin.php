@@ -234,7 +234,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'parentID' => $folder->exists() ? $folder->ParentID : null, // grandparent
             'folderID' => $folderID,
             'canEdit' => $folder->canEdit(),
-            'canDelete' => $folder->canDelete(),
+            'canDelete' => $folder->canArchive(),
         ]));
 
         return $response;
@@ -292,7 +292,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         if (!min(array_map(function (File $file) {
-            return $file->canDelete();
+            return $file->canArchive();
         }, $files))) {
             return (new HTTPResponse(json_encode(['status' => 'error']), 401))
                 ->addHeader('Content-Type', 'application/json');
@@ -300,7 +300,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         /** @var File $file */
         foreach ($files as $file) {
-            $file->delete();
+            $file->doArchive();
         }
 
         return (new HTTPResponse(json_encode(['status' => 'file was deleted'])))
@@ -768,7 +768,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'modified' => $file->isModifiedOnDraft(),
             'draft' => $file->isOnDraftOnly(),
             'canEdit' => $file->canEdit(),
-            'canDelete' => $file->canDelete(),
+            'canDelete' => $file->canArchive(),
         );
 
         /** @var Member $owner */
