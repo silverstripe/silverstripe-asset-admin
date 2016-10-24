@@ -524,7 +524,7 @@ export class Gallery extends Component {
                   handleActivate={this.handleFileActivate}
                   handleCancelUpload={this.handleCancelUpload}
                   handleRemoveErroredUpload={this.handleRemoveErroredUpload}
-                  messages={file.messages}
+                  message={file.message}
                   uploading
                 />)
               )}

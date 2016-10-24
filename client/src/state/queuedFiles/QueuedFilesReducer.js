@@ -56,7 +56,7 @@ function queuedFilesReducer(state = initialState, action) {
         items: state.items.map((file) => {
           if (file.queuedAtTime === action.payload.queuedAtTime) {
             return Object.assign({}, file, {
-              messages: action.payload.messages,
+              message: action.payload.message,
             });
           }
 
@@ -70,9 +70,9 @@ function queuedFilesReducer(state = initialState, action) {
       // Pending uploads are ignored.
       return deepFreeze(Object.assign({}, state, {
         items: state.items.filter((file) => {
-          if (Array.isArray(file.messages)) {
+          if (file.message) {
             // If any of the file's messages are of type 'error' or 'success' then return false.
-            return !file.messages.filter(message => message.type === 'error' || message.type === 'success').length > 0;
+            return file.message.type !== 'error' && file.message.type !== 'success';
           }
 
           return true;

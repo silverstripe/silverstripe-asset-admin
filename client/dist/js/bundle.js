@@ -56,10 +56,8 @@ filename:null,id:0,lastUpdated:null,messages:null,owner:{id:0,title:null},parent
 
 
 switch(t.type){case d["default"].ADD_QUEUED_FILE:return(0,s["default"])(l({},e,{items:e.items.concat([l({},r(),t.payload.file)])}))
-case d["default"].FAIL_UPLOAD:return(0,s["default"])(l({},e,{items:e.items.map(function(e){return e.queuedAtTime===t.payload.queuedAtTime?l({},e,{messages:t.payload.messages}):e})}))
-case d["default"].PURGE_UPLOAD_QUEUE:return(0,s["default"])(l({},e,{items:e.items.filter(function(e){return!Array.isArray(e.messages)||!e.messages.filter(function(e){return"error"===e.type||"success"===e.type
-
-}).length>0})}))
+case d["default"].FAIL_UPLOAD:return(0,s["default"])(l({},e,{items:e.items.map(function(e){return e.queuedAtTime===t.payload.queuedAtTime?l({},e,{message:t.payload.message}):e})}))
+case d["default"].PURGE_UPLOAD_QUEUE:return(0,s["default"])(l({},e,{items:e.items.filter(function(e){return!e.message||"error"!==e.message.type&&"success"!==e.message.type})}))
 case d["default"].REMOVE_QUEUED_FILE:return(0,s["default"])(l({},e,{items:e.items.filter(function(e){return e.queuedAtTime!==t.payload.queuedAtTime})}))
 case d["default"].SUCCEED_UPLOAD:return(0,s["default"])(l({},e,{items:e.items.map(function(e){return e.queuedAtTime===t.payload.queuedAtTime?l({},e,{messages:[{value:c["default"]._t("AssetAdmin.DROPZONE_SUCCESS_UPLOAD"),
 type:"success",extraClass:"success"}]}):e})}))
@@ -265,7 +263,7 @@ handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,
 return"folder"===t.type&&(i=v["default"].createElement(L["default"],{key:n,item:t,selected:e.itemIsSelected(t.id),highlighted:e.itemIsHighlighted(t.id),handleDelete:e.handleItemDelete,handleToggleSelect:e.handleToggleSelect,
 handleActivate:e.handleFolderActivate})),i})),v["default"].createElement("div",{className:"gallery__files"},this.props.queuedFiles.items.map(function(t,n){return v["default"].createElement(L["default"],{
 key:"queued_file_"+n,item:t,selected:e.itemIsSelected(t.id),highlighted:e.itemIsHighlighted(t.id),handleDelete:e.handleItemDelete,handleToggleSelect:e.handleToggleSelect,handleActivate:e.handleFileActivate,
-handleCancelUpload:e.handleCancelUpload,handleRemoveErroredUpload:e.handleRemoveErroredUpload,messages:t.messages,uploading:!0})}),this.props.files.map(function(t,n){var i=null
+handleCancelUpload:e.handleCancelUpload,handleRemoveErroredUpload:e.handleRemoveErroredUpload,message:t.message,uploading:!0})}),this.props.files.map(function(t,n){var i=null
 return"folder"!==t.type&&(i=v["default"].createElement(L["default"],{key:"file_"+n,item:t,selected:e.itemIsSelected(t.id),highlighted:e.itemIsHighlighted(t.id),handleDelete:e.handleItemDelete,handleToggleSelect:e.handleToggleSelect,
 handleActivate:e.handleFileActivate})),i})),this.getNoItemsNotice(),v["default"].createElement("div",{className:"gallery__load"},this.getMoreButton()))))}}]),t}(y.Component)
 B.defaultProps={bulkActions:!0},B.propTypes={loading:v["default"].PropTypes.bool,count:v["default"].PropTypes.number,fileId:v["default"].PropTypes.number,folderId:v["default"].PropTypes.number.isRequired,
@@ -582,9 +580,9 @@ n.preventFocus=n.preventFocus.bind(n),n}return l(t,e),a(t,[{key:"handleActivate"
 e.stopPropagation(),e.preventDefault(),this.props.handleToggleSelect(e,this.props.item)}},{key:"handleDelete",value:function s(e){this.props.handleDelete(e,this.props.item)}},{key:"getThumbnailStyles",
 value:function d(){if(this.isImage()&&(this.exists()||this.uploading())){var e=this.props.item.thumbnail||this.props.item.url
 return{backgroundImage:"url("+e+")"}}return{}}},{key:"hasError",value:function c(){var c=!1
-return Array.isArray(this.props.messages)&&(c=this.props.messages.filter(function(e){return"error"===e.type}).length>0),c}},{key:"getErrorMessage",value:function h(){var e=null
-return this.hasError()?e=this.props.messages[0].value:this.exists()||this.uploading()||(e=u["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found")),null!==e?p["default"].createElement("span",{
-className:"gallery-item__error-message"},e):null}},{key:"getThumbnailClassNames",value:function m(){var e=["gallery-item__thumbnail"]
+return this.props.message&&(c="error"===this.props.message.type),c}},{key:"getErrorMessage",value:function h(){var e=null
+return this.hasError()?e=this.props.message.value:this.exists()||this.uploading()||(e=u["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found")),null!==e?p["default"].createElement("span",{className:"gallery-item__error-message"
+},e):null}},{key:"getThumbnailClassNames",value:function m(){var e=["gallery-item__thumbnail"]
 return this.isImageSmallerThanThumbnail()&&e.push("gallery-item__thumbnail--small"),e.join(" ")}},{key:"getItemClassNames",value:function g(){var e=this.props.item.category||"none",t=["gallery-item gallery-item--"+e]
 
 
@@ -611,7 +609,7 @@ className:"gallery-item__checkbox-label "+t,onClick:e},p["default"].createElemen
 g.propTypes={item:p["default"].PropTypes.shape({dimensions:p["default"].PropTypes.shape({width:p["default"].PropTypes.number,height:p["default"].PropTypes.number}),category:p["default"].PropTypes.oneOfType([p["default"].PropTypes.bool,p["default"].PropTypes.string]).isRequired,
 id:p["default"].PropTypes.number.isRequired,url:p["default"].PropTypes.string,title:p["default"].PropTypes.string.isRequired,progress:p["default"].PropTypes.number}),highlighted:p["default"].PropTypes.bool,
 selected:p["default"].PropTypes.bool.isRequired,handleActivate:p["default"].PropTypes.func.isRequired,handleToggleSelect:p["default"].PropTypes.func.isRequired,handleDelete:p["default"].PropTypes.func.isRequired,
-messages:p["default"].PropTypes.array,uploading:p["default"].PropTypes.bool},t["default"]=g},function(e,t,n){"use strict"
+message:p["default"].PropTypes.shape({value:p["default"].PropTypes.string,type:p["default"].PropTypes.string}),uploading:p["default"].PropTypes.bool},t["default"]=g},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function o(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
 
 
@@ -635,10 +633,8 @@ n)}}]),t}(g["default"])
 b.propTypes={items:c["default"].PropTypes.array,actions:c["default"].PropTypes.arrayOf(c["default"].PropTypes.shape({value:c["default"].PropTypes.string.isRequired,label:c["default"].PropTypes.string.isRequired,
 className:c["default"].PropTypes.string,destructive:c["default"].PropTypes.bool,callback:c["default"].PropTypes.func,canApply:c["default"].PropTypes.func,confirm:c["default"].PropTypes.func}))},t["default"]=(0,
 E.connect)(a)(b)},function(e,t,n){"use strict"
-function i(e){return e&&e.__esModule?e:{"default":e}}function r(e){return function(t){return t({type:p["default"].ADD_QUEUED_FILE,payload:{file:e}})}}function o(e,t){return function(n){var i=t.messages
-
-
-return"string"==typeof t&&(i=[{value:t,type:"error"}]),n({type:p["default"].FAIL_UPLOAD,payload:{queuedAtTime:e,messages:i}})}}function l(){return function(e){return e({type:p["default"].PURGE_UPLOAD_QUEUE,
+function i(e){return e&&e.__esModule?e:{"default":e}}function r(e){return function(t){return t({type:p["default"].ADD_QUEUED_FILE,payload:{file:e}})}}function o(e,t){return function(n){var i=t.message
+return"string"==typeof t&&(i={value:t,type:"error"}),n({type:p["default"].FAIL_UPLOAD,payload:{queuedAtTime:e,message:i}})}}function l(){return function(e){return e({type:p["default"].PURGE_UPLOAD_QUEUE,
 payload:null})}}function a(e){return function(t){return t({type:p["default"].REMOVE_QUEUED_FILE,payload:{queuedAtTime:e}})}}function s(e){return function(t){return t({type:p["default"].SUCCEED_UPLOAD,payload:{
 queuedAtTime:e}})}}function u(e,t){return function(n){return n({type:p["default"].UPDATE_QUEUED_FILE,payload:{queuedAtTime:e,updates:t}})}}Object.defineProperty(t,"__esModule",{value:!0}),t.addQueuedFile=r,
 t.failUpload=o,t.purgeUploadQueue=l,t.removeQueuedFile=a,t.succeedUpload=s,t.updateQueuedFile=u

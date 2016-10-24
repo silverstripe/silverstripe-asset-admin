@@ -9,6 +9,8 @@ en:
     AppCategoryVideo: Video
     CurrentFolderOnly: 'Limit to current folder?'
     DELETE_BUTTON: Delete
+    LoadIntoFileFailed: 'Failed to load file'
+    CreatePermissionDenied: 'You do not have permission to add files'
     ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
     ErrorNotFound: 'That {Type} couldn''t be found'
     Filetype: 'File type'

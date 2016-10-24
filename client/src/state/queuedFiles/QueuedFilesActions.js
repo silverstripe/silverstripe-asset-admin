@@ -20,20 +20,20 @@ export function addQueuedFile(file) {
  */
 export function failUpload(queuedAtTime, response) {
   return (dispatch) => {
-    let messages = response.messages;
+    let message = response.message;
 
     // if we're given a string, then use it as the error message
     if (typeof response === 'string') {
-      messages = [{
+      message = {
         value: response,
         type: 'error',
-      }];
+      };
     }
     return dispatch({
       type: ACTION_TYPES.FAIL_UPLOAD,
       payload: {
         queuedAtTime,
-        messages,
+        message,
       },
     });
   };
