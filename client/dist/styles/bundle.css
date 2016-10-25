@@ -446,7 +446,7 @@
           flex-direction:row-reverse;
 }
 
-.gallery__main,.gallery__outer{
+.gallery,.gallery__main,.gallery__outer{
   position:relative;
 }
 
@@ -550,13 +550,15 @@
 .editor{
   background-color:#f6f7f8;
   z-index:2;
-  position:relative;
+  position:absolute;
+  height:100%;
 }
 
 @media (min-width:992px){
   .editor{
     width:300px;
     border-left:1px solid #d9dee2;
+    position:relative;
   }
 }
 

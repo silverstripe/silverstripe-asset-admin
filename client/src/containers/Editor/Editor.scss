@@ -1,11 +1,13 @@
 .editor {
   background-color: $body-bg;
   z-index: 2;
-  position: relative;
+  position: absolute;
+  height: 100%;
 
   @include media-breakpoint-up(lg) {
     width: $cms-panel-sm;
     border-left: 1px solid $border-color;
+    position: relative;
   }
 
   @include media-breakpoint-up(xl) {
