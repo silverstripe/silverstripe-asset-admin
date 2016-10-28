@@ -291,8 +291,8 @@ export class Gallery extends Component {
     this.props.actions.gallery.addFiles(json, this.props.count + 1);
   }
 
-  handleFailedUpload(file, errorMessage) {
-    this.props.actions.queuedFiles.failUpload(file._queuedAtTime, errorMessage);
+  handleFailedUpload(file, response) {
+    this.props.actions.queuedFiles.failUpload(file._queuedAtTime, response);
   }
 
   /**
@@ -524,7 +524,7 @@ export class Gallery extends Component {
                   handleActivate={this.handleFileActivate}
                   handleCancelUpload={this.handleCancelUpload}
                   handleRemoveErroredUpload={this.handleRemoveErroredUpload}
-                  messages={file.messages}
+                  message={file.message}
                   uploading
                 />)
               )}

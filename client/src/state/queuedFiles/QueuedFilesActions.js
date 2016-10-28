@@ -18,15 +18,25 @@ export function addQueuedFile(file) {
  *
  * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
  */
-export function failUpload(queuedAtTime, messages) {
-  return (dispatch) =>
-    dispatch({
+export function failUpload(queuedAtTime, response) {
+  return (dispatch) => {
+    let message = response.message;
+
+    // if we're given a string, then use it as the error message
+    if (typeof response === 'string') {
+      message = {
+        value: response,
+        type: 'error',
+      };
+    }
+    return dispatch({
       type: ACTION_TYPES.FAIL_UPLOAD,
       payload: {
         queuedAtTime,
-        messages,
+        message,
       },
     });
+  };
 }
 
 /**

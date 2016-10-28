@@ -40,7 +40,8 @@ abstract class AssetFormFactory implements FormFactory
 		$fields = $this->getFormFields($controller, $name, $context);
 		$actions = $this->getFormActions($controller, $name, $context);
 		$form = Form::create($controller, $name, $fields, $actions);
-
+        
+        $form->getValidator()->addRequiredField('Name');
 		// Extend form
 		$this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
 

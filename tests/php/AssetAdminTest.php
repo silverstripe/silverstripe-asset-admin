@@ -238,7 +238,7 @@ class AssetAdminTest extends FunctionalTest
         $responseData = json_decode($response->getBody(), true);
         $this->assertContains(
             'Extension is not allowed',
-            $responseData['error'][0]
+            $responseData['message']['value']
         );
     }
 

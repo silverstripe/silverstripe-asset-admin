@@ -334,7 +334,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $tmpFile = $request->postVar('Upload');
         if(!$upload->validate($tmpFile)) {
-            $result = ['error' => $upload->getErrors()];
+            $result = ['message' => null];
+            $errors = $upload->getErrors();
+            if ($message = array_shift($errors)) {
+                $result['message'] = [
+                    'type' => 'error',
+                    'value' => $message,
+                ];
+            }
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
@@ -346,13 +353,26 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // check canCreate permissions
         if (!$file->canCreate(null, $data)) {
-            return (new HTTPResponse(json_encode(['status' => 'error']), 403))
+            $result = ['message' => [
+                'type' => 'error',
+                'value' => _t(
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CreatePermissionDenied',
+                    'You do not have permission to add files'
+                )
+            ]];
+            return (new HTTPResponse(json_encode($result), 403))
                 ->addHeader('Content-Type', 'application/json');
         }
 
         $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
         if(!$uploadResult) {
-            $result = ['error' => 'unknown'];
+            $result = ['message' => [
+                'type' => 'error',
+                'value' => _t(
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LoadIntoFileFailed',
+                    'Failed to load file'
+                )
+            ]];
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }

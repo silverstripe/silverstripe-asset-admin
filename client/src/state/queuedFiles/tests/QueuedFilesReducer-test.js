@@ -15,19 +15,19 @@ describe('queuedFilesReducer', () => {
         items: [
           {
             id: 0,
-            messages: [{
+            message: {
               value: 'Failed to upload file',
               type: 'error',
               extraClass: 'error',
-            }],
+            },
           },
           {
             id: 1,
-            messages: [{
+            message: {
               value: 'Uploading...',
               type: 'pending',
               extraClass: 'pending',
-            }],
+            },
           },
         ],
       };
@@ -42,19 +42,19 @@ describe('queuedFilesReducer', () => {
         items: [
           {
             id: 0,
-            messages: [{
+            message: {
               value: 'File uploaded',
               type: 'success',
               extraClass: 'success',
-            }],
+            },
           },
           {
             id: 1,
-            messages: [{
+            message: {
               value: 'Uploading...',
               type: 'pending',
               extraClass: 'pending',
-            }],
+            },
           },
         ],
       };
@@ -69,19 +69,19 @@ describe('queuedFilesReducer', () => {
         items: [
           {
             id: 0,
-            messages: [{
+            message: {
               value: 'Uploading...',
               type: 'pending',
               extraClass: 'pending',
-            }],
+            },
           },
           {
             id: 1,
-            messages: [{
+            message: {
               value: 'Uploading...',
               type: 'pending',
               extraClass: 'pending',
-            }],
+            },
           },
         ],
       };
@@ -105,15 +105,14 @@ describe('queuedFilesReducer', () => {
       const nextState = queuedFilesReducer(initialState, {
         type,
         payload: {
-          messages: {
-            error: [
-              'There was a problem.',
-            ],
+          message: {
+            value: 'There was a problem.',
+            type: 'error',
           },
         },
       });
 
-      expect(nextState.items[0].messages.length).toBe(1);
+      expect(nextState.items[0].message.type).toBe('error');
     });
   });
 

@@ -69,10 +69,8 @@ class GalleryItem extends SilverStripeComponent {
   hasError() {
     let hasError = false;
 
-    if (Array.isArray(this.props.messages)) {
-      hasError = this.props.messages
-        .filter(message => message.type === 'error')
-        .length > 0;
+    if (this.props.message) {
+      hasError = this.props.message.type === 'error';
     }
 
     return hasError;
@@ -87,7 +85,7 @@ class GalleryItem extends SilverStripeComponent {
     let message = null;
 
     if (this.hasError()) {
-      message = this.props.messages[0].value;
+      message = this.props.message.value;
     } else if (!this.exists() && !this.uploading()) {
       message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
     }
@@ -124,7 +122,8 @@ class GalleryItem extends SilverStripeComponent {
    * @returns {string}
    */
   getItemClassNames() {
-    const itemClassNames = [`gallery-item gallery-item--${this.props.item.category}`];
+    const category = this.props.item.category || 'none';
+    const itemClassNames = [`gallery-item gallery-item--${category}`];
 
     if (!this.exists() && !this.uploading()) {
       itemClassNames.push('gallery-item--missing');
@@ -325,7 +324,7 @@ GalleryItem.propTypes = {
       width: React.PropTypes.number,
       height: React.PropTypes.number,
     }),
-    category: React.PropTypes.string.isRequired,
+    category: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]).isRequired,
     id: React.PropTypes.number.isRequired,
     url: React.PropTypes.string,
     title: React.PropTypes.string.isRequired,
@@ -338,7 +337,10 @@ GalleryItem.propTypes = {
   handleActivate: React.PropTypes.func.isRequired,
   handleToggleSelect: React.PropTypes.func.isRequired,
   handleDelete: React.PropTypes.func.isRequired,
-  messages: React.PropTypes.array,
+  message: React.PropTypes.shape({
+    value: React.PropTypes.string,
+    type: React.PropTypes.string,
+  }),
   uploading: React.PropTypes.bool,
 };
 
