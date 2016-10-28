@@ -32,11 +32,6 @@ export function deleteItems(deleteApi, ids) {
         payload: { ids },
       });
 
-      dispatch({
-        type: GALLERY.SET_FILE,
-        payload: { fileId: null },
-      });
-
       return json;
     })
     .catch((e) => {

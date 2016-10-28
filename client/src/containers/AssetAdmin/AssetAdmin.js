@@ -164,12 +164,12 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {number} fileId
    */
   delete(fileId) {
-    let file = this.props.files.find((next) => next.id === fileId);
+    let file = this.props.files.find((item) => item.id === fileId);
     if (!file && this.props.folder && this.props.folder.id === fileId) {
       file = this.props.folder;
     }
     if (!file) {
-      throw new Error('File selected for deletion cannot be found');
+      throw new Error(`File selected for deletion cannot be found: ${fileId}`);
     }
     const parentId = file.parent ? file.parent.id : 0;
 
