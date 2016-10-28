@@ -208,8 +208,7 @@ class AssetAdmin extends SilverStripeComponent {
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           <Breadcrumb multiline crumbs={this.props.breadcrumbs} />
         </Toolbar>
-        <div className="flexbox-area-grow fill-width gallery">
-          {editor}
+        <div className="flexbox-area-grow fill-width fill-height gallery">
           <Gallery
             files={this.props.files}
             fileId={this.props.fileId}
@@ -229,6 +228,7 @@ class AssetAdmin extends SilverStripeComponent {
             onOpenFolder={this.handleOpenFolder}
             sectionConfig={this.props.sectionConfig}
           />
+          {editor}
         </div>
       </div>
     );
