@@ -439,13 +439,6 @@
   content:"";
 }
 
-.gallery{
-  -webkit-box-orient:horizontal;
-  -webkit-box-direction:reverse;
-      -ms-flex-direction:row-reverse;
-          flex-direction:row-reverse;
-}
-
 .gallery,.gallery__main,.gallery__outer{
   position:relative;
 }
@@ -552,6 +545,7 @@
   z-index:2;
   position:absolute;
   height:100%;
+  left:0;
 }
 
 @media (min-width:992px){
