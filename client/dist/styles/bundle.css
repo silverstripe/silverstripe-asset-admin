@@ -439,14 +439,7 @@
   content:"";
 }
 
-.gallery{
-  -webkit-box-orient:horizontal;
-  -webkit-box-direction:reverse;
-      -ms-flex-direction:row-reverse;
-          flex-direction:row-reverse;
-}
-
-.gallery__main,.gallery__outer{
+.gallery,.gallery__main,.gallery__outer{
   position:relative;
 }
 
@@ -550,13 +543,16 @@
 .editor{
   background-color:#f6f7f8;
   z-index:2;
-  position:relative;
+  position:absolute;
+  height:100%;
+  left:0;
 }
 
 @media (min-width:992px){
   .editor{
     width:300px;
     border-left:1px solid #d9dee2;
+    position:relative;
   }
 }
 

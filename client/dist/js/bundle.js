@@ -120,10 +120,10 @@ t.props.router.push("/"+e+"/show/"+i)})}},{key:"render",value:function E(){var e
 return t.id===parseInt(e.props.fileId,10)}),o=(r||this.props.fileId===this.props.folderId)&&f["default"].createElement(k["default"],{fileId:this.props.fileId,onClose:this.handleCloseFile,editFileSchemaUrl:t.form.FileEditForm.schemaUrl,
 actions:this.props.actions.editor,onSubmit:this.handleSubmitEditor,onDelete:this["delete"],addToCampaignSchemaUrl:t.form.AddToCampaignForm.schemaUrl}),l=!(!this.props.folder||!this.props.folder.id)
 return f["default"].createElement("div",{className:"fill-height"},f["default"].createElement(x["default"],{showBackButton:l,handleBackButtonClick:this.handleBackButtonClick},f["default"].createElement(M["default"],{
-multiline:!0,crumbs:this.props.breadcrumbs})),f["default"].createElement("div",{className:"flexbox-area-grow fill-width gallery"},o,f["default"].createElement(U["default"],{files:this.props.files,fileId:this.props.fileId,
-folderId:this.props.folderId,folder:this.props.folder,name:this.props.name,limit:this.props.limit,page:this.props.page,bulkActions:this.props.bulkActions,createFileApiUrl:n,createFileApiMethod:i,createFolderApi:this.endpoints.createFolderApi,
-readFolderApi:this.endpoints.readFolderApi,updateFolderApi:this.endpoints.updateFolderApi,deleteApi:this.endpoints.deleteApi,onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,sectionConfig:this.props.sectionConfig
-})))}}]),t}(v["default"])
+multiline:!0,crumbs:this.props.breadcrumbs})),f["default"].createElement("div",{className:"flexbox-area-grow fill-width fill-height gallery"},f["default"].createElement(U["default"],{files:this.props.files,
+fileId:this.props.fileId,folderId:this.props.folderId,folder:this.props.folder,name:this.props.name,limit:this.props.limit,page:this.props.page,bulkActions:this.props.bulkActions,createFileApiUrl:n,createFileApiMethod:i,
+createFolderApi:this.endpoints.createFolderApi,readFolderApi:this.endpoints.readFolderApi,updateFolderApi:this.endpoints.updateFolderApi,deleteApi:this.endpoints.deleteApi,onOpenFile:this.handleOpenFile,
+onOpenFolder:this.handleOpenFolder,sectionConfig:this.props.sectionConfig}),o))}}]),t}(v["default"])
 z.propTypes={config:f["default"].PropTypes.shape({forms:f["default"].PropTypes.shape({editForm:f["default"].PropTypes.shape({schemaUrl:f["default"].PropTypes.string})})}),sectionConfig:f["default"].PropTypes.shape({
 url:f["default"].PropTypes.string}),file:f["default"].PropTypes.object,folder:f["default"].PropTypes.shape({id:f["default"].PropTypes.number,title:f["default"].PropTypes.string,parents:f["default"].PropTypes.array,
 parentID:f["default"].PropTypes.number,canView:f["default"].PropTypes.bool,canEdit:f["default"].PropTypes.bool})},t["default"]=(0,g.withRouter)((0,h.connect)(s,u)(z))},function(e,t){e.exports=React},function(e,t){
