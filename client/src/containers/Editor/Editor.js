@@ -76,15 +76,6 @@ class Editor extends Component {
   }
 
   handleSubmitModal(data, action, submitFn) {
-    if (!data.Campaign) {
-      // TODO invisible submit disable, remove this when validation is implemented
-      // eslint-disable-next-line no-alert
-      alert(i18n._t(
-        'AddToCampaigns.ErrorCampaignNotSelected',
-        'There was no campaign selected to be added to'
-      ));
-      return null;
-    }
     return submitFn();
   }
 
