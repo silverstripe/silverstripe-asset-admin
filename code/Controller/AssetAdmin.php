@@ -969,7 +969,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $handler = AddToCampaignHandler::create($this, $record);
-        return $handler->Form($record);
+        $form = $handler->Form($record);
+        
+        $form->setValidationResponseCallback(function() use ($form, $id) {
+            $schemaId = Controller::join_links($this->Link('schema/AddToCampaignForm'), $id);
+            return $this->getSchemaResponse($form, $schemaId);
+        });
+    
+        return $form;
     }
 
     /**
