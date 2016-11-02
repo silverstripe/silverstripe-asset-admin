@@ -18,27 +18,6 @@ use SilverStripe\Forms\TextField;
 
 class FileFormFactory extends AssetFormFactory
 {
-
-    /**
-     * Get markdown for clickable link
-     *
-     * @param File $record
-     * @return string HTML markdown for link
-     */
-    protected function getClickableLinkMarkdown($record)
-    {
-        if (!$record || !$record->isInDB()) {
-            return null;
-        }
-        $link = $record->Link();
-        $clickableLink = sprintf(
-            '<i class="%1$s"></i><a href="%2$s" target="_blank">%2$s</a>',
-            'font-icon-link btn--icon-large form-control-static__icon',
-            Convert::raw2xml($link)
-        );
-        return $clickableLink;
-    }
-
     protected function getFormFieldTabs($record)
     {
         // Add extra tab
@@ -75,12 +54,7 @@ class FileFormFactory extends AssetFormFactory
             'Details',
             TextField::create("Title", File::singleton()->fieldLabel('Title')),
             TextField::create('Name', File::singleton()->fieldLabel('Filename')),
-            ReadonlyField::create("Path", _t('AssetTableField.PATH', 'Path'), $this->getPath($record)),
-            HTMLReadonlyField::create(
-                'ClickableURL',
-                _t('AssetTableField.URL', 'URL'),
-                $this->getClickableLinkMarkdown($record)
-            )
+            ReadonlyField::create("Path", _t('AssetTableField.PATH', 'Path'), $this->getPath($record))
         );
     }
 
@@ -133,6 +107,28 @@ class FileFormFactory extends AssetFormFactory
         $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
         return $actions;
     }
+    
+    /**
+     * Get raw HTML for image markup
+     *
+     * @param File $file
+     * @return string
+     */
+    protected function getIconMarkup($file)
+    {
+        $markup = parent::getIconMarkup($file);
+        if (!$markup) {
+            return null;
+        }
+        $link = $file->Link();
+        $linkedImage = sprintf(
+            '<a class="%s" href="%s" target="_blank">%s</a>',
+            'editor__file-preview-link',
+            $link,
+            $markup
+        );
+        return $linkedImage;
+    }
 
     /**
      * get HTML for status icon
@@ -165,7 +161,7 @@ class FileFormFactory extends AssetFormFactory
         }
         return null;
     }
-
+    
     /**
      * Get user-visible "Path" for this record
      *

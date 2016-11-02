@@ -60,10 +60,11 @@
   display: block;
   align-items: center;
   text-decoration: none;
+}
 
+.editor__file-preview-link {
   &::before {
     position: absolute;
-    display: none;
     top: 50%;
     left: 50%;
     margin-top: -25px;
@@ -75,7 +76,7 @@
     background-color: $black;
     color: $white;
     font-size: 24px;
-    opacity: .6;
+    opacity: 0;
     content: "s";
     font-family: silverstripe;
     line-height: 27px;
@@ -84,8 +85,7 @@
   &:hover::before,
   &:active::before {
     text-decoration: none;
-    //display: block;
-    //cursor: pointer;
+    opacity: .6;
   }
 }
 
