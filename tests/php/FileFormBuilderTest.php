@@ -49,18 +49,14 @@ class FileFormBuilderTest extends SapphireTest
             '<div class="editor__specs">11 bytes <span class="editor__status-flag">Draft</span></div>',
             $fileSpecs
         );
-        $fileURL = $form->Fields()->fieldByName('Editor.Details.ClickableURL')->Value();
-        $this->assertEquals(
-            '<i class="font-icon-link btn--icon-large form-control-static__icon"></i>'
-            . '<a href="/assets/files/6adf67caca/testfile.txt" target="_blank">/assets/files/6adf67caca/testfile.txt</a>',
-            $fileURL
-        );
         $filePath = $form->Fields()->fieldByName('Editor.Details.Path')->Value();
         $this->assertEquals('files/', $filePath);
 
         $fileThumbnail = $form->Fields()->fieldByName('IconFull')->getContent();
         $this->assertEquals(
-            '<img src="framework/client/dist/images/app_icons/generic_32.png" class="editor__thumbnail" />',
+            '<a class="editor__file-preview-link" href="/assets/files/6adf67caca/testfile.txt" target="_blank">'.
+                '<img src="framework/client/dist/images/app_icons/generic_32.png" class="editor__thumbnail" />'.
+            '</a>',
             $fileThumbnail
         );
 
@@ -95,12 +91,6 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertEquals(
             'files/',
             $form->Fields()->fieldByName('Editor.Details.Path')->dataValue()
-        );
-        $this->assertEquals(
-            '<i class="font-icon-link btn--icon-large form-control-static__icon"></i>'
-            . '<a href="/assets/files/6adf67caca/testfile.txt" target="_blank">'
-            . '/assets/files/6adf67caca/testfile.txt</a>',
-            $form->Fields()->fieldByName('Editor.Details.ClickableURL')->dataValue()
         );
 
         // Test actions
