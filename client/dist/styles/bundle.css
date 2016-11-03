@@ -611,6 +611,11 @@
   text-decoration:none;
 }
 
+.editor__file-preview:hover .editor__thumbnail{
+  -webkit-transform:scale(1.04);
+          transform:scale(1.04);
+}
+
 .editor__file-preview-link:before{
   position:absolute;
   top:50%;
@@ -621,18 +626,21 @@
   height:50px;
   width:50px;
   border-radius:50%;
-  background-color:#000;
+  background-color:rgba(0,0,0,.6);
   color:#fff;
   font-size:24px;
   opacity:0;
   content:"s";
   font-family:silverstripe;
   line-height:27px;
+  z-index:1;
+  -webkit-transition:all .5s;
+  transition:all .5s;
 }
 
-.editor__file-preview-link:active:before,.editor__file-preview-link:hover:before{
+.editor__file-preview-link:active:before,.editor__file-preview-link:hover,.editor__file-preview-link:hover:before{
   text-decoration:none;
-  opacity:.6;
+  opacity:1;
 }
 
 .editor__thumbnail{
@@ -640,6 +648,10 @@
   max-height:336px;
   min-height:60px;
   margin:auto;
+  -webkit-transform:scale(1);
+          transform:scale(1);
+  -webkit-transition:all .5s;
+  transition:all .5s;
 }
 
 .cms .AssetAdmin .cms-content-view{

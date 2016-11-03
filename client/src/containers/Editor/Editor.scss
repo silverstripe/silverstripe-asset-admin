@@ -60,9 +60,14 @@
   display: block;
   align-items: center;
   text-decoration: none;
+
+  &:hover .editor__thumbnail {
+    transform: scale(1.04);
+  }
 }
 
 .editor__file-preview-link {
+
   &::before {
     position: absolute;
     top: 50%;
@@ -73,19 +78,22 @@
     height: 50px;
     width: 50px;
     border-radius: 50%;
-    background-color: $black;
+    background-color: rgba($black, 0.6);
     color: $white;
     font-size: 24px;
     opacity: 0;
     content: "s";
     font-family: silverstripe;
     line-height: 27px;
+    z-index: 1;
+    transition: all .5s;
   }
 
+  &:hover,
   &:hover::before,
   &:active::before {
     text-decoration: none;
-    opacity: .6;
+    opacity: 1;
   }
 }
 
@@ -94,4 +102,6 @@
   max-height: $cms-panel-md * .75;
   min-height: 60px;
   margin: auto;
+  transform: scale(1);
+  transition: all .5s;
 }
