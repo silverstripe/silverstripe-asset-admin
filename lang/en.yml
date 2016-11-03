@@ -10,6 +10,8 @@ en:
     ErrorItemPermissionDenied: 'It seems you don''t have the necessary permissions to add {ObjectTitle} to a campaign'
     ErrorNotFound: 'That {Type} couldn''t be found'
     Filetype: 'File type'
+    FILE_MISSING: 'File cannot be found'
+    MENUTITLE: Files
     NEWFOLDER: NewFolder
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Delete folders'

@@ -120,6 +120,12 @@ class FileFormFactory extends AssetFormFactory
         if (!$markup) {
             return null;
         }
+        if (!$file->exists()) {
+            return sprintf('<div class="%s">%s</div>',
+                'editor__file-preview-message--file-missing',
+                _t('AssetAdmin.FILE_MISSING', 'File cannot be found')
+            );
+        }
         $link = $file->Link();
         $linkedImage = sprintf(
             '<a class="%s" href="%s" target="_blank">%s</a>',
