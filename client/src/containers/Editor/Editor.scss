@@ -105,3 +105,9 @@
   transform: scale(1);
   transition: all .5s;
 }
+
+.editor__file-preview-message--file-missing {
+  margin: #{$spacer-y * 2} 0 $spacer-y;
+  font-size: $font-size-lg;
+  color: $brand-danger;
+}

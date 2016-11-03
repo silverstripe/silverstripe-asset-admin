@@ -654,6 +654,12 @@
   transition:all .5s;
 }
 
+.editor__file-preview-message--file-missing{
+  margin:2.4616rem 0 1.2308rem;
+  font-size:1.23rem;
+  color:#d40404;
+}
+
 .cms .AssetAdmin .cms-content-view{
   position:relative;
   min-height:100%;
