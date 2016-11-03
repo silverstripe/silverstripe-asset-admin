@@ -34,6 +34,11 @@ class AssetDropzone extends SilverStripeComponent {
         .find('.asset-dropzone__upload-button')[0];
     }
 
+    if (this.props.uploadSelector) {
+      defaultOptions.clickable = $(ReactDOM.findDOMNode(this))
+        .find(this.props.uploadSelector)[0];
+    }
+
     this.dropzone = new DropzoneLib(
       ReactDOM.findDOMNode(this),
       Object.assign({},
@@ -57,6 +62,10 @@ class AssetDropzone extends SilverStripeComponent {
 
   render() {
     const className = ['asset-dropzone'];
+
+    if (this.props.className) {
+      className.push(this.props.className);
+    }
 
     const buttonProps = {
       className: 'asset-dropzone__upload-button ss-ui-button font-icon-upload',
@@ -258,6 +267,20 @@ class AssetDropzone extends SilverStripeComponent {
   }
 
   /**
+   * Generate approximate guid.
+   * Credit to http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523
+   *
+   * @returns {String}
+   */
+  generateQueuedId() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = Math.random() * 16 | 0;
+      const v = (c === 'x') ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+
+  /**
    * Event handler for files being added. Called before the request is made to the server.
    *
    * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
@@ -267,9 +290,9 @@ class AssetDropzone extends SilverStripeComponent {
       return Promise.reject(new Error(i18n._t('AssetAdmin.DROPZONE_CANNOT_UPLOAD')));
     }
 
-    // The queuedAtTime is used to uniquely identify file while it's in the queue.
+    // The queuedId is used to uniquely identify file while it's in the queue.
     // eslint-disable-next-line no-param-reassign
-    file._queuedAtTime = Date.now();
+    file._queuedId = this.generateQueuedId();
 
     const loadPreview = new Promise((resolve) => {
       const reader = new FileReader();
@@ -293,6 +316,7 @@ class AssetDropzone extends SilverStripeComponent {
       reader.readAsDataURL(file);
     });
 
+    // JS Synonym for AssetAdmin::getObjectFromData()
     return loadPreview.then((preview) => {
       const details = {
         dimensions: {
@@ -301,9 +325,10 @@ class AssetDropzone extends SilverStripeComponent {
         },
         category: this.getFileCategory(file.type),
         filename: file.name,
-        queuedAtTime: file._queuedAtTime,
-        size: file.size,
-        title: file.name,
+        queuedId: file._queuedId,
+        size: this.getFileSize(file.size),
+        title: this.getFileTitle(file.name),
+        extension: this.getFileExtension(file.name),
         type: file.type,
         url: preview.thumbnailURL,
       };
@@ -313,6 +338,64 @@ class AssetDropzone extends SilverStripeComponent {
 
       return details;
     });
+  }
+
+  /**
+   * JS Synonym for File::setName()
+   *
+   * @param {String} filename
+   * @returns {String}
+   */
+  getFileTitle(filename) {
+    return filename
+      .replace(/[.][^.]+$/, '')
+      .replace(/-_/, ' ');
+  }
+
+  getFileExtension(filename) {
+    return /[.]/.exec(filename)
+      ? filename.replace(/^.+[.]/, '')
+      : undefined;
+  }
+
+  /**
+   * JS Synonym for File::format_size()
+   *
+   * @param {Integer} filesize
+   * @return {String}
+   */
+  getFileSize(filesize) {
+    if (filesize < 1024) {
+      return `${filesize} bytes`;
+    }
+
+    if (filesize < 1024 * 10) {
+      // Rount to 1dp
+      const kb = Math.round((filesize / 1024) * 10) / 10;
+      return `${kb} KB`;
+    }
+
+    if (filesize < 1024 * 1024) {
+      // Round to 0dp
+      const kb = Math.round(filesize / 1024);
+      return `${kb} KB`;
+    }
+
+    if (filesize < 1024 * 1024 * 10) {
+      // Round to 1dp
+      const mb = Math.round((filesize / (1024 * 1024)) * 10) / 10;
+      return `${mb} MB`;
+    }
+
+    if (filesize < 1024 * 1024 * 1024) {
+      // Round to 0dp
+      const mb = Math.round(filesize / (1024 * 1024));
+      return `${mb} MB`;
+    }
+
+    // Round to 1dp
+    const gb = Math.round((filesize / (1024 * 1024 * 1024)) * 10) / 10;
+    return `${gb} GB`;
   }
 
   /**
@@ -410,11 +493,13 @@ AssetDropzone.propTypes = {
   promptOnRemove: React.PropTypes.string,
   securityID: React.PropTypes.string.isRequired,
   uploadButton: React.PropTypes.bool,
+  uploadSelector: React.PropTypes.string,
   canUpload: React.PropTypes.bool.isRequired,
   preview: React.PropTypes.shape({
     width: React.PropTypes.number,
     height: React.PropTypes.number,
   }),
+  className: React.PropTypes.string,
 };
 
 AssetDropzone.defaultProps = {

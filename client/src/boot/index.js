@@ -5,8 +5,13 @@ import reducerRegister from 'lib/ReducerRegister';
 import galleryReducer from 'state/gallery/GalleryReducer';
 import queuedFilesReducer from 'state/queuedFiles/QueuedFilesReducer';
 import AssetAdminRouter from 'containers/AssetAdmin/AssetAdminRouter';
+import fileFieldReducer from 'state/fileField/FileFieldReducer';
+import Injector from 'lib/Injector';
+import FileField from 'components/FileField/FileField';
 
 document.addEventListener('DOMContentLoaded', () => {
+  Injector.register('FileField', FileField);
+
   const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
   reactRouteRegister.add({
     path: sectionConfig.url,
@@ -37,5 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
   reducerRegister.add('assetAdmin', combineReducers({
     gallery: galleryReducer,
     queuedFiles: queuedFilesReducer,
+    fileField: fileFieldReducer,
   }));
 });

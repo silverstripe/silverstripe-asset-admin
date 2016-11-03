@@ -8,6 +8,10 @@ The Dropzone component uses the [Dropzone library](http://www.dropzonejs.com/) t
 
 The ID of the folder to upload files to.
 
+### className (string)
+
+Extra CSS class
+
 ### handleAddedFile (function - required)
 
 An event handler which is called when a file is added. The handler is called _before_ a request is made to the server. This can be used to display a preview of the file, before it has been upload to the server.

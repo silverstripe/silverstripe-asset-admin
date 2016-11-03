@@ -16,9 +16,9 @@ export function addQueuedFile(file) {
 /**
  * Updates a queued file if it fails to upload.
  *
- * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
+ * @param {String} queuedId - Temporary id assigned when this file was queued
  */
-export function failUpload(queuedAtTime, response) {
+export function failUpload(queuedId, response) {
   return (dispatch) => {
     let message = response.message;
 
@@ -32,7 +32,7 @@ export function failUpload(queuedAtTime, response) {
     return dispatch({
       type: ACTION_TYPES.FAIL_UPLOAD,
       payload: {
-        queuedAtTime,
+        queuedId,
         message,
       },
     });
@@ -56,39 +56,39 @@ export function purgeUploadQueue() {
 /**
  * Removes a file from the queue.
  *
- * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
+ * @param {String} queuedId - Temporary id assigned when this file was queued
  */
-export function removeQueuedFile(queuedAtTime) {
+export function removeQueuedFile(queuedId) {
   return (dispatch) =>
     dispatch({
       type: ACTION_TYPES.REMOVE_QUEUED_FILE,
-      payload: { queuedAtTime },
+      payload: { queuedId },
     });
 }
 
 /**
  * Updates a queued file when it successfully uploads.
  *
- * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
+ * @param {String} queuedId - Temporary id assigned when this file was queued
  */
-export function succeedUpload(queuedAtTime) {
+export function succeedUpload(queuedId) {
   return (dispatch) =>
     dispatch({
       type: ACTION_TYPES.SUCCEED_UPLOAD,
-      payload: { queuedAtTime },
+      payload: { queuedId },
     });
 }
 
 /**
  * Override the values of a currently queued file.
  *
- * @param number queuedAtTime - Timestamp (Date.now()) when the file was queued.
+ * @param {String} queuedId - Temporary id assigned when this file was queued
  * @param object updates - The values to update.
  */
-export function updateQueuedFile(queuedAtTime, updates) {
+export function updateQueuedFile(queuedId, updates) {
   return (dispatch) =>
     dispatch({
       type: ACTION_TYPES.UPDATE_QUEUED_FILE,
-      payload: { queuedAtTime, updates },
+      payload: { queuedId, updates },
     });
 }

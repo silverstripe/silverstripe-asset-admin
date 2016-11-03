@@ -1,42 +1,7 @@
 import deepFreeze from 'deep-freeze-strict';
 import ACTION_TYPES from './QueuedFilesActionTypes';
+import fileFactory from 'lib/FileFactory';
 import i18n from 'i18n';
-
-function fileFactory() {
-  return deepFreeze({
-    attributes: {
-      dimensions: {
-        height: null,
-        width: null,
-      },
-    },
-    name: null,
-    canDelete: false,
-    canEdit: false,
-    category: null,
-    created: null,
-    extension: null,
-    filename: null,
-    id: 0,
-    lastUpdated: null,
-    messages: null,
-    owner: {
-      id: 0,
-      title: null,
-    },
-    parent: {
-      filename: null,
-      id: 0,
-      title: null,
-    },
-    queuedAtTime: null,
-    size: null,
-    title: null,
-    type: null,
-    url: null,
-    xhr: null,
-  });
-}
 
 const initialState = {
   items: [],
@@ -54,7 +19,7 @@ function queuedFilesReducer(state = initialState, action) {
       // Add an error message to the failed file.
       return deepFreeze(Object.assign({}, state, {
         items: state.items.map((file) => {
-          if (file.queuedAtTime === action.payload.queuedAtTime) {
+          if (file.queuedId === action.payload.queuedId) {
             return Object.assign({}, file, {
               message: action.payload.message,
             });
@@ -82,14 +47,14 @@ function queuedFilesReducer(state = initialState, action) {
     case ACTION_TYPES.REMOVE_QUEUED_FILE:
       return deepFreeze(Object.assign({}, state, {
         items: state.items.filter(
-          (file) => file.queuedAtTime !== action.payload.queuedAtTime
+          (file) => file.queuedId !== action.payload.queuedId
         ),
       }));
 
     case ACTION_TYPES.SUCCEED_UPLOAD:
       return deepFreeze(Object.assign({}, state, {
         items: state.items.map((file) => {
-          if (file.queuedAtTime === action.payload.queuedAtTime) {
+          if (file.queuedId === action.payload.queuedId) {
             return Object.assign({}, file, {
               messages: [{
                 value: i18n._t('AssetAdmin.DROPZONE_SUCCESS_UPLOAD'),
@@ -106,7 +71,7 @@ function queuedFilesReducer(state = initialState, action) {
     case ACTION_TYPES.UPDATE_QUEUED_FILE:
       return deepFreeze(Object.assign({}, state, {
         items: state.items.map((file) => {
-          if (file.queuedAtTime === action.payload.queuedAtTime) {
+          if (file.queuedId === action.payload.queuedId) {
             return Object.assign({}, file, action.payload.updates);
           }
 

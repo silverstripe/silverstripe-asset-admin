@@ -191,11 +191,11 @@ class Gallery extends Component {
   handleCancelUpload(fileData) {
     // abort wasn't defined..?
     fileData.xhr.abort();
-    this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedAtTime);
+    this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedId);
   }
 
   handleRemoveErroredUpload(fileData) {
-    this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedAtTime);
+    this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedId);
   }
 
   handleAddedFile(data) {
@@ -209,11 +209,11 @@ class Gallery extends Component {
    * @param {Object} xhr
    */
   handleSending(file, xhr) {
-    this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { xhr });
+    this.props.actions.queuedFiles.updateQueuedFile(file._queuedId, { xhr });
   }
 
   handleUploadProgress(file, progress) {
-    this.props.actions.queuedFiles.updateQueuedFile(file._queuedAtTime, { progress });
+    this.props.actions.queuedFiles.updateQueuedFile(file._queuedId, { progress });
   }
 
   /**
@@ -247,7 +247,7 @@ class Gallery extends Component {
       return;
     }
 
-    this.props.actions.queuedFiles.removeQueuedFile(file._queuedAtTime);
+    this.props.actions.queuedFiles.removeQueuedFile(file._queuedId);
     this.props.actions.gallery.addFiles(json, this.props.count + 1);
 
     // redirect to open the last uploaded file for 'insert modal' type only
@@ -261,7 +261,7 @@ class Gallery extends Component {
   }
 
   handleFailedUpload(file, response) {
-    this.props.actions.queuedFiles.failUpload(file._queuedAtTime, response);
+    this.props.actions.queuedFiles.failUpload(file._queuedId, response);
   }
 
   /**

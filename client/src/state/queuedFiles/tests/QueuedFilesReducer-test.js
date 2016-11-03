@@ -119,17 +119,17 @@ describe('queuedFilesReducer', () => {
   describe('REMOVE_QUEUED_FILE', () => {
     const type = 'REMOVE_QUEUED_FILE';
     const initialState = {
-      items: [{ queuedAtTime: 123 }, { queuedAtTime: 456 }],
+      items: [{ queuedId: '123' }, { queuedId: '456' }],
     };
 
     it('should remove the file from the queue', () => {
       const nextState = queuedFilesReducer(initialState, {
         type,
-        payload: { queuedAtTime: 456 },
+        payload: { queuedId: '456' },
       });
 
       expect(nextState.items.length).toBe(1);
-      expect(nextState.items[0].queuedAtTime).toBe(123);
+      expect(nextState.items[0].queuedId).toBe('123');
     });
   });
 });

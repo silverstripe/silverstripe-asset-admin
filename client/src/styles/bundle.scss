@@ -10,8 +10,10 @@
 
 // Components
 @import "../components/GalleryItem/GalleryItem";
+@import "../components/FileFieldItem/FileFieldItem";
 @import "../components/BulkActions/BulkActions";
 @import "../components/AssetDropzone/AssetDropzone";
+@import "../components/FileField/FileField";
 
 // Layout and sections
 @import "../containers/Gallery/Gallery";
