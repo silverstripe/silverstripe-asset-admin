@@ -1,6 +1,5 @@
 en:
-  SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    ADDTOCAMPAIGN: 'Add to campaign'
+  AssetAdmin:
     AppCategoryArchive: Archive
     AppCategoryAudio: Audio
     AppCategoryDocument: Document
@@ -8,15 +7,31 @@ en:
     AppCategoryImage: Image
     AppCategoryVideo: Video
     CurrentFolderOnly: 'Limit to current folder?'
-    DELETE_BUTTON: Delete
-    LoadIntoFileFailed: 'Failed to load file'
-    CreatePermissionDenied: 'You do not have permission to add files'
-    ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
+    ErrorItemPermissionDenied: 'It seems you don''t have the necessary permissions to add {ObjectTitle} to a campaign'
     ErrorNotFound: 'That {Type} couldn''t be found'
     Filetype: 'File type'
-    MENUTITLE: Files
     NEWFOLDER: NewFolder
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Delete folders'
   CMSSearch:
     FILTERDATEHEADING: Date
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    MENUTITLE: Files
+  SilverStripe\\AssetAdmin\\Controller\\AssetAdmin:
+    ADDTOCAMPAIGN: 'Add to campaign'
+    AppCategoryArchive: Archive
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Document
+    AppCategoryFlash: Flash
+    AppCategoryImage: Image
+    AppCategoryVideo: Video
+    CreatePermissionDenied: 'You do not have permission to add files'
+    CurrentFolderOnly: 'Limit to current folder?'
+    DELETE_BUTTON: Delete
+    ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
+    ErrorNotFound: 'That {Type} couldn''t be found'
+    Filetype: 'File type'
+    LoadIntoFileFailed: 'Failed to load file'
+    NEWFOLDER: NewFolder
+    PUBLISH_BUTTON: Publish
+    UNPUBLISH_BUTTON: Unpublish
