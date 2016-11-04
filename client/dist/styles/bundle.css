@@ -179,7 +179,7 @@
 }
 
 .gallery-item--archive .gallery-item__thumbnail{
-  background:#fff url(../images/icon_zip.png) 50% no-repeat;
+  background:#fff url(../images/icon_archive.png) 50% no-repeat;
 }
 
 .gallery-item--audio .gallery-item__thumbnail{
@@ -191,7 +191,7 @@
 }
 
 .gallery-item--document .gallery-item__thumbnail{
-  background:#fff url(../images/icon_doc.png) 50% no-repeat;
+  background:#fff url(../images/icon_document.png) 50% no-repeat;
 }
 
 .gallery-item--false .gallery-item__thumbnail{

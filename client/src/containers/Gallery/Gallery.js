@@ -4,10 +4,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
-import Config from 'lib/Config';
 import Dropzone from 'components/AssetDropzone/AssetDropzone';
 import File from 'components/GalleryItem/GalleryItem';
 import BulkActions from 'components/BulkActions/BulkActions';
@@ -46,9 +44,6 @@ export class Gallery extends Component {
 
   constructor(props) {
     super(props);
-
-    this.sort = 'name';
-    this.direction = 'asc';
 
     this.sorters = [
       {
@@ -217,15 +212,28 @@ export class Gallery extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.sort) {
+      return;
+    }
+    if (this.props.files.length !== nextProps.files.length
+      || !this.props.sort
+      || this.props.sort !== nextProps.sort) {
+      const [field, direction] = nextProps.sort.split(',');
+      this.props.actions.gallery.sortFiles(getComparator(field, direction));
+    }
+  }
+
   /**
    * Handler for when the user changes the sort order.
    *
    * @param {Object} event - Click event.
    */
   handleSort(event) {
-    const data = event.target.dataset;
-    this.props.actions.queuedFiles.purgeUploadQueue();
-    this.props.actions.gallery.sortFiles(getComparator(data.field, data.direction));
+    if (typeof this.props.onSort === 'function') {
+      this.props.actions.queuedFiles.purgeUploadQueue();
+      this.props.onSort(event.target.value);
+    }
   }
 
   handleCancelUpload(fileData) {
@@ -345,7 +353,7 @@ export class Gallery extends Component {
    */
   handleFolderActivate(event, folder) {
     event.preventDefault();
-    this.props.onOpenFolder(folder.id, folder);
+    this.props.onOpenFolder(folder.id);
   }
 
   /**
@@ -389,8 +397,7 @@ export class Gallery extends Component {
 
   handleBackClick(event) {
     event.preventDefault();
-    const base = this.props.sectionConfig.url;
-    this.props.router.push(`/${base}/show/${this.props.folder.parentID}`);
+    this.props.onOpenFolder(this.props.folder.parentID);
   }
 
   render() {
@@ -420,8 +427,8 @@ export class Gallery extends Component {
       paramName: 'Upload',
       clickable: '#upload-button',
     };
-    // TODO Use this.props.config once the store is consolidated with framework
-    const securityID = Config.get('SecurityID');
+
+    const securityID = this.props.securityId;
     const canEdit = this.props.folder.canEdit;
 
     return (
@@ -440,6 +447,7 @@ export class Gallery extends Component {
               className="dropdown no-change-track no-chzn"
               tabIndex="0"
               style={{ width: '160px' }}
+              defaultValue={this.props.sort}
             >
               {this.sorters.map((sorter, i) =>
                 (
@@ -448,6 +456,7 @@ export class Gallery extends Component {
                     onClick={this.handleSort}
                     data-field={sorter.field}
                     data-direction={sorter.direction}
+                    value={`${sorter.field},${sorter.direction}`}
                   >
                     {sorter.label}
                   </option>
@@ -562,8 +571,6 @@ Gallery.defaultProps = {
 };
 
 Gallery.propTypes = {
-  loading: React.PropTypes.bool,
-  count: React.PropTypes.number,
   fileId: React.PropTypes.number,
   folderId: React.PropTypes.number.isRequired,
   folder: React.PropTypes.shape({
@@ -572,27 +579,29 @@ Gallery.propTypes = {
     canView: React.PropTypes.bool,
     canEdit: React.PropTypes.bool,
   }),
-  files: React.PropTypes.array, // all files as full objects (incl. ids)
-  selectedFiles: React.PropTypes.arrayOf(React.PropTypes.number), // ids only
   bulkActions: React.PropTypes.bool,
-  limit: React.PropTypes.number,
-  page: React.PropTypes.number,
   queuedFiles: React.PropTypes.shape({
     items: React.PropTypes.array.isRequired,
   }),
   onOpenFile: React.PropTypes.func.isRequired,
   onOpenFolder: React.PropTypes.func.isRequired,
+  onSort: React.PropTypes.func,
   createFileApiUrl: React.PropTypes.string,
   createFileApiMethod: React.PropTypes.string,
   createFolderApi: React.PropTypes.func,
   readFolderApi: React.PropTypes.func,
   deleteApi: React.PropTypes.func,
   actions: React.PropTypes.object,
-  sectionConfig: React.PropTypes.shape({
-    url: React.PropTypes.string,
-  }),
-  router: React.PropTypes.object,
+  sort: React.PropTypes.string,
+  limit: React.PropTypes.number,
+  page: React.PropTypes.number,
+
+  loading: React.PropTypes.bool,
+  count: React.PropTypes.number,
+  files: React.PropTypes.array, // all files as full objects (incl. ids)
+  selectedFiles: React.PropTypes.arrayOf(React.PropTypes.number), // ids only
   errorMessage: React.PropTypes.string,
+  securityId: React.PropTypes.string,
 };
 
 function mapStateToProps(state) {
@@ -601,17 +610,17 @@ function mapStateToProps(state) {
     count,
     files,
     selectedFiles,
-    page,
     errorMessage,
   } = state.assetAdmin.gallery;
+
   return {
-    errorMessage,
     loading,
     count,
     files,
     selectedFiles,
-    page,
+    errorMessage,
     queuedFiles: state.assetAdmin.queuedFiles,
+    securityId: state.config.SecurityID,
   };
 }
 
@@ -624,4 +633,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Gallery));
+export default connect(mapStateToProps, mapDispatchToProps)(Gallery);

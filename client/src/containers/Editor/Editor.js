@@ -132,7 +132,6 @@ class Editor extends Component {
 
 Editor.propTypes = {
   fileId: React.PropTypes.number.isRequired,
-  actions: React.PropTypes.object,
   onClose: React.PropTypes.func.isRequired,
   onSubmit: React.PropTypes.func.isRequired,
   onDelete: React.PropTypes.func.isRequired,

@@ -122,7 +122,7 @@ class GalleryItem extends SilverStripeComponent {
    * @returns {string}
    */
   getItemClassNames() {
-    const category = this.props.item.category || 'none';
+    const category = this.props.item.category || 'false';
     const itemClassNames = [`gallery-item gallery-item--${category}`];
 
     if (!this.exists() && !this.uploading()) {
