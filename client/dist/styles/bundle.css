@@ -237,25 +237,39 @@
 
 .gallery-item--draft,.gallery-item--modified{
   position:absolute;
-  top:.41027rem;
-  left:.6154rem;
+  top:.76925rem;
+  left:.76925rem;
   display:block;
-  width:13px;
-  height:13px;
-  border:1px solid #fff;
+  width:8px;
+  height:8px;
+  border:1px solid #f46b00;
+  box-shadow:0 0 1px .5px #fff;
   border-radius:100%;
+}
+
+.gallery-item--draft:hover:after,.gallery-item--modified:hover:after{
+  top:-4px;
+  font-size:10px;
+  font-weight:200;
+  position:absolute;
+  color:#fff;
+  margin-left:.9231rem;
 }
 
 .gallery-item--draft{
   background-color:#fff2e8;
 }
 
-.gallery-item--draft,.gallery-item--modified{
-  box-shadow:0 1px 1px rgba(0,0,0,.3),inset 0 0 0 2px #f46b00;
+.gallery-item--draft:hover:after{
+  content:"DRAFT";
 }
 
 .gallery-item--modified{
   background-color:#ff7f22;
+}
+
+.gallery-item--modified:hover:after{
+  content:"MODIFIED";
 }
 
 .bulk-actions{
