@@ -17,7 +17,8 @@
     "node": "4.x"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --bail",
+    "watch": "webpack --watch",
     "test": "NODE_PATH=\"./client/src:../framework/client/src:../framework/admin/client/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
