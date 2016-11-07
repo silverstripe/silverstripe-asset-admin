@@ -444,7 +444,7 @@
 }
 
 .gallery__main{
-  height:100%;
+  height:calc(100vh - 53px);
 }
 
 .gallery__no-item-notice{
@@ -544,7 +544,7 @@
   background-color:#f6f7f8;
   z-index:2;
   position:absolute;
-  height:100%;
+  height:calc(100vh - 53px);
   left:0;
 }
 
