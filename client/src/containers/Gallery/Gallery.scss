@@ -8,7 +8,7 @@
 }
 
 .gallery__main {
-  height: 100%;
+  height: calc(100vh - #{$toolbar-total-height}); // Safari fix for scroll, should be better fix
   position: relative;
 }
 

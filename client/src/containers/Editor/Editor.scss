@@ -2,7 +2,7 @@
   background-color: $body-bg;
   z-index: 2;
   position: absolute;
-  height: 100%;
+  height: calc(100vh - #{$toolbar-total-height}); // Safari fix for scroll, should be better fix
   left: 0;
 
   @include media-breakpoint-up(lg) {
