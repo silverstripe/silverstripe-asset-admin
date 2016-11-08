@@ -23,16 +23,18 @@
   }
 }
 
-.gallery__folders {
-  display: inline-block;
-  margin-bottom: -6px;
-  width: 100%;
+.gallery__folders,
+.gallery__files {
+  display: flex;
+  flex-flow: row wrap;
 }
 
-.gallery__files {
-  display: inline-block;
-  width: 100%;
-  margin-bottom: $toolbar-total-height; // leave space at bottom for bulk-actions on smaller screens
+
+// leave space at bottom for bulk-actions on smaller screens
+@include media-breakpoint-down(md) {
+  .gallery__files {
+    margin-bottom: $toolbar-total-height;
+  }
 }
 
 .gallery__load {
