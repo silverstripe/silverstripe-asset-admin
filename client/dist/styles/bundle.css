@@ -249,7 +249,7 @@
 
 .gallery-item--draft:hover:after,.gallery-item--modified:hover:after{
   top:-4px;
-  font-size:10px;
+  font-size:.769rem;
   font-weight:200;
   position:absolute;
   color:#fff;

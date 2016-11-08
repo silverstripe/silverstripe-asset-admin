@@ -258,7 +258,7 @@ $gallery-item-label-height: 40px;
 
   &:hover::after {
     top: -4px;
-    font-size: 10px;
+    font-size: $font-size-xxs;
     font-weight: 200;
     position: absolute;
     color: $white;
