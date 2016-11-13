@@ -113,7 +113,7 @@ this.props.router.push("/"+t+"/show/"+this.props.folderId+"/edit/"+e)}},{key:"ha
 return n().then(function(e){return i.props.actions.gallery.loadFile(i.props.fileId,e.record),e})}},{key:"handleCloseFile",value:function g(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",
 value:function y(e){var t=this.props.sectionConfig.url
 this.props.router.push("/"+t+"/show/"+e)}},{key:"delete",value:function v(e){var t=this,n=this.props.files.find(function(t){return t.id===e})
-if(!n&&this.props.folder&&this.props.folder.id===e&&(n=this.props.folder),!n)throw new Error("File selected for deletion cannot be found")
+if(!n&&this.props.folder&&this.props.folder.id===e&&(n=this.props.folder),!n)throw new Error("File selected for deletion cannot be found: "+e)
 var i=n.parent?n.parent.id:0
 confirm(T["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.endpoints.deleteApi,[n.id]).then(function(){var e=t.props.sectionConfig.url
 t.props.router.push("/"+e+"/show/"+i)})}},{key:"render",value:function E(){var e=this,t=this.props.sectionConfig,n=t.createFileEndpoint.url,i=t.createFileEndpoint.method,r=this.props.files.find(function(t){
@@ -129,8 +129,9 @@ url:f["default"].PropTypes.string}),file:f["default"].PropTypes.object,folder:f[
 parentID:f["default"].PropTypes.number,canView:f["default"].PropTypes.bool,canEdit:f["default"].PropTypes.bool})},t["default"]=(0,g.withRouter)((0,h.connect)(s,u)(z))},function(e,t){e.exports=React},function(e,t){
 e.exports=ReactRedux},function(e,t){e.exports=ReactRouter},function(e,t){e.exports=SilverStripeComponent},function(e,t){e.exports=Backend},function(e,t,n){"use strict"
 function i(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){return function(n){return n({type:f["default"].ADD_FILES,payload:{files:e,count:t}})}}function o(e,t){return function(n){return n({type:f["default"].DELETE_ITEM_REQUEST,
-payload:{ids:t}}),e({ids:t}).then(function(e){return n({type:f["default"].DELETE_ITEM_SUCCESS,payload:{ids:t}}),n({type:f["default"].SET_FILE,payload:{fileId:null}}),e})["catch"](function(e){throw n({type:f["default"].DELETE_ITEM_FAILURE,
-payload:{e:e}}),e})}}function l(e,t,n,i){return function(r){return r({type:f["default"].LOAD_FOLDER_REQUEST,payload:{folderId:parseInt(t,10)}}),e({id:t,limit:n,page:i}).then(function(e){return r({type:f["default"].LOAD_FOLDER_SUCCESS,
+payload:{ids:t}}),e({ids:t}).then(function(e){return n({type:f["default"].DELETE_ITEM_SUCCESS,payload:{ids:t}}),e})["catch"](function(e){throw n({type:f["default"].DELETE_ITEM_FAILURE,payload:{e:e}}),e
+
+})}}function l(e,t,n,i){return function(r){return r({type:f["default"].LOAD_FOLDER_REQUEST,payload:{folderId:parseInt(t,10)}}),e({id:t,limit:n,page:i}).then(function(e){return r({type:f["default"].LOAD_FOLDER_SUCCESS,
 payload:{files:e.files,folder:{id:parseInt(e.folderID,10),title:e.title,parents:e.parents,parent:e.parent,canEdit:e.canEdit,canDelete:e.canDelete,parentID:null===e.parentID?null:parseInt(e.parentID,10)
 },folderId:parseInt(e.folderID,10)}}),e})["catch"](function(e){throw r({type:f["default"].LOAD_FOLDER_FAILURE,payload:{message:e.message}}),e})}}function a(e,t){return function(n){n({type:f["default"].LOAD_FILE_SUCCESS,
 payload:{id:e,file:t}})}}function s(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
