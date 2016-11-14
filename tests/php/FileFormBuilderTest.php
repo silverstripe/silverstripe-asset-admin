@@ -96,7 +96,7 @@ class FileFormBuilderTest extends SapphireTest
         // Test actions
         $this->assertNotNull($form->Actions()->fieldByName('action_save'));
     }
-
+    
     public function testEditImageForm() {
         $this->logInWithPermission('ADMIN');
 
@@ -112,6 +112,20 @@ class FileFormBuilderTest extends SapphireTest
             '/FileFormBuilderTest/files/906835357d/testimage.png',
             $fileThumbnail
         );
+    }
+    
+    public function testInsertImageForm() {
+        $this->logInWithPermission('ADMIN');
+        
+        $image = $this->objFromFixture(Image::class, 'image1');
+        $controller = new AssetAdmin();
+        $builder = new ImageFormFactory();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => 'insert']);
+        
+        // Check thumbnail
+        // Note: force_resample is turned off for testing
+        $altTextField = $form->Fields()->dataFieldByName('AltText');
+        $this->assertNotNull($altTextField);
     }
 
     public function testFolderForm() {

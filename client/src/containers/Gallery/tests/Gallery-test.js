@@ -41,6 +41,7 @@ describe('Gallery', () => {
       files: [],
       count: 0,
       folderId: 1,
+      fileId: null,
       folder: {
         id: 1,
         parentID: null,
@@ -50,12 +51,112 @@ describe('Gallery', () => {
       queuedFiles: {
         items: [],
       },
+      sort: '',
       onOpenFile: () => {},
       onOpenFolder: () => {},
     };
   });
 
-  describe('handleSuccessfulUpload', () => {
+  describe('renderBulkActions()', () => {
+    beforeEach(() => {
+      props.type = 'admin';
+      props.selectedFiles = [15, 20];
+      props.files = [
+        { id: 15 },
+        { id: 20 },
+        { id: 45 },
+      ];
+    });
+
+    it('should render bulk actions if there are selected files and admin type', () => {
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+      const bulkActions = gallery.renderBulkActions();
+
+      expect(bulkActions).not.toBeNull();
+    });
+
+    it('should not render bulk actions if not admin type', () => {
+      props.type = 'insert';
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+      const bulkActions = gallery.renderBulkActions();
+
+      expect(bulkActions).toBeNull();
+    });
+
+    it('should not render bulk actions if no files were selected', () => {
+      props.selectedFiles = [];
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+      const bulkActions = gallery.renderBulkActions();
+
+      expect(bulkActions).toBeNull();
+    });
+  });
+
+  describe('renderBackButton()', () => {
+    it('should not render if parentID is not set', () => {
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+      const backButton = gallery.renderBackButton();
+
+      expect(backButton).toBeNull();
+    });
+
+    it('should render a react component if parentID is set', () => {
+      props.folder.parentID = 15;
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+      const backButton = gallery.renderBackButton();
+
+      expect(backButton).not.toBeNull();
+    });
+  });
+
+  describe('handleBackClick()', () => {
+    it('should open folder with parentID', () => {
+      props.folder.parentID = 15;
+      props.onOpenFolder = jest.genMockFunction();
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      gallery.handleBackClick(new Event('click'));
+      expect(props.onOpenFolder).toBeCalledWith(15);
+    });
+  });
+
+  describe('componentWillUnmount()', () => {
+    it('should unload folder data when the component is going to unmount', () => {
+      props.actions.gallery.unloadFolderContents = jest.genMockFunction();
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      gallery.componentWillUnmount();
+      expect(props.actions.gallery.unloadFolderContents).toBeCalled();
+    });
+  });
+
+  describe('componentWillReceiveProps()', () => {
+    let gallery = null;
+
+    beforeEach(() => {
+      props.files = [
+        { id: 14 },
+      ];
+      props.actions.gallery.sortFiles = jest.genMockFunction();
+      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+    });
+
+    it('should not call sort if no sort given', () => {
+      const newProps = {};
+      gallery.componentWillReceiveProps(newProps);
+
+      expect(props.actions.gallery.sortFiles).not.toBeCalled();
+    });
+
+    it('should call sort if files length changes', () => {
+      const newProps = { sort: 'created,asc', files: [...props.files, { id: 23 }] };
+      gallery.componentWillReceiveProps(newProps);
+
+      expect(props.actions.gallery.sortFiles).toBeCalled();
+    });
+  });
+
+  describe('handleSuccessfulUpload()', () => {
     const file = {
       exists: true,
       category: 'image',
@@ -85,6 +186,48 @@ describe('Gallery', () => {
       gallery.handleSuccessfulUpload(file);
       expect(props.actions.gallery.addFiles).toBeCalled();
     });
+
+    it('should openFile if type is "insert"', () => {
+      props.type = 'insert';
+      props.onOpenFile = jest.genMockFunction();
+
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      gallery.handleSuccessfulUpload(file);
+      expect(props.onOpenFile).toBeCalled();
+    });
+
+    it('should not openFile if type is not "insert"', () => {
+      props.type = 'admin';
+      props.onOpenFile = jest.genMockFunction();
+
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      gallery.handleSuccessfulUpload(file);
+      expect(props.onOpenFile).not.toBeCalled();
+    });
+
+    it('should not openFile if a file is open', () => {
+      props.type = 'insert';
+      props.fileId = 10;
+      props.onOpenFile = jest.genMockFunction();
+
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      gallery.handleSuccessfulUpload(file);
+      expect(props.onOpenFile).not.toBeCalled();
+    });
+
+    it('should not openFile if items are still in the queue', () => {
+      props.type = 'insert';
+      props.queuedFiles.items.push({ _queuedAtTime: 35 });
+      props.onOpenFile = jest.genMockFunction();
+
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      gallery.handleSuccessfulUpload(file);
+      expect(props.onOpenFile).not.toBeCalled();
+    });
   });
 
   describe('handleSort()', () => {
@@ -100,7 +243,7 @@ describe('Gallery', () => {
 
     beforeEach(() => {
       props.actions.queuedFiles.purgeUploadQueue = jest.genMockFunction();
-      props.actions.gallery.sortFiles = jest.genMockFunction();
+      props.onSort = jest.genMockFunction();
 
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
@@ -110,11 +253,7 @@ describe('Gallery', () => {
     it('should purge the upload queue', () => {
       gallery.handleSort(event);
       expect(props.actions.queuedFiles.purgeUploadQueue).toBeCalled();
-    });
-
-    it('should call props.actions.sortFiles() with the event\'s dataset', () => {
-      gallery.handleSort(event);
-      expect(props.actions.gallery.sortFiles).toBeCalled();
+      expect(props.onSort).toBeCalled();
     });
   });
 
@@ -151,7 +290,7 @@ describe('Gallery', () => {
     });
 
     it('should not return a back button it we\'re at the top level', () => {
-      expect(gallery.getBackButton()).toBe(null);
+      expect(gallery.renderBackButton()).toBe(null);
     });
 
     it('should return a back button if parentID is set.', () => {
@@ -159,7 +298,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      const button = gallery.getBackButton();
+      const button = gallery.renderBackButton();
 
       expect(button).not.toBe(null);
       expect(button.type).toBe('button');
@@ -179,7 +318,7 @@ describe('Gallery', () => {
     });
 
     it('should not return a BulkActionsComponent if there are no selected items', () => {
-      expect(gallery.getBulkActionsComponent()).toBe(null);
+      expect(gallery.renderBulkActions()).toBe(null);
     });
 
     it('should return a BulkActionsComponent if there are items in the selectedFiles array.', () => {
@@ -188,7 +327,7 @@ describe('Gallery', () => {
         <Gallery {...props} />
       );
 
-      expect(gallery.getBulkActionsComponent()).not.toBe(null);
+      expect(gallery.renderBulkActions()).not.toBe(null);
     });
   });
 
@@ -289,7 +428,7 @@ describe('Gallery', () => {
 
       gallery.handleFolderActivate(event, folder);
 
-      expect(props.onOpenFolder).toBeCalledWith(1, folder);
+      expect(props.onOpenFolder).toBeCalledWith(1);
     });
 
     it('should call onOpenFile', () => {

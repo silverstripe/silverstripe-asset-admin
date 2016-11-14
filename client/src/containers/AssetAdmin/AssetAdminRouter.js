@@ -14,34 +14,6 @@ class AssetAdminRouter extends Component {
   }
 
   /**
-   * Handle browsing with the router.
-   * To clear the query string, pass in `null` as the parameter, otherwise it will default to the
-   * existing query string.
-   *
-   * @param {number} folderId
-   * @param {number} fileId
-   * @param {object|null} newQuery
-   */
-  handleBrowse(folderId, fileId, newQuery) {
-
-    const pathname = this.getUrl(folderId, fileId);
-
-    let query = newQuery;
-
-    if (newQuery !== null && !newQuery) {
-      query = this.props.location.query;
-    }
-
-    this.props.router.push(Object.assign({},
-      this.props.location,
-      {
-        pathname,
-        query,
-      }
-    ));
-  }
-
-  /**
    * Generates the Url for a given folder and file ID.
    *
    * @param {number} folderId
@@ -58,23 +30,58 @@ class AssetAdminRouter extends Component {
     return url;
   }
 
+  /**
+   * Generates the properties for this section
+   *
+   * @returns {object}
+   */
+  getSectionProps() {
+    return {
+      sectionConfig: this.props.sectionConfig,
+      type: 'admin',
+      folderId: parseInt(this.props.params.folderId, 10),
+      fileId: parseInt(this.props.params.fileId, 10),
+      query: this.props.location.query,
+      getUrl: this.getUrl,
+      onBrowse: this.handleBrowse,
+    };
+  }
+
+  /**
+   * Handle browsing with the router.
+   * To clear the query string, pass in `null` as the parameter, otherwise it will default to the
+   * existing query string.
+   *
+   * @param {number} folderId
+   * @param {number} fileId
+   * @param {object|null} newQuery
+   */
+  handleBrowse(folderId, fileId, newQuery) {
+
+    const pathname = this.getUrl(folderId, fileId);
+
+    let query = null;
+
+    if (newQuery !== null && !newQuery) {
+      query = this.props.location.query;
+    } else {
+      query = Object.assign({}, this.props.location.query, newQuery);
+    }
+
+    this.props.router.push(Object.assign({},
+      this.props.location,
+      {
+        pathname,
+        query,
+      }
+    ));
+  }
+
   render() {
     if (!this.props.sectionConfig) {
       return null;
     }
-    const fileId = parseInt(this.props.params.fileId, 10);
-    const folderId = parseInt(this.props.params.folderId, 10);
-    const query = this.props.location.query;
-
-    const sectionProps = {
-      sectionConfig: this.props.sectionConfig,
-      fileId,
-      folderId,
-      query,
-      getUrl: this.getUrl,
-      onBrowse: this.handleBrowse,
-    };
-
+    const sectionProps = this.getSectionProps();
     return (
       <AssetAdmin {...sectionProps} />
     );
@@ -82,6 +89,14 @@ class AssetAdminRouter extends Component {
 }
 
 AssetAdminRouter.propTypes = {
+  sectionConfig: PropTypes.shape({
+    url: PropTypes.string,
+    form: PropTypes.object,
+  }),
+  location: PropTypes.shape({
+    pathname: PropTypes.string,
+    query: PropTypes.object,
+  }),
   params: PropTypes.shape({
     fileId: PropTypes.string,
     folderId: PropTypes.string,
@@ -96,5 +111,7 @@ function mapStateToProps(state) {
     sectionConfig,
   };
 }
+
+export { AssetAdminRouter };
 
 export default withRouter(connect(mapStateToProps)(AssetAdminRouter));

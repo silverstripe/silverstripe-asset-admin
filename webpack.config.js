@@ -35,7 +35,9 @@ module.exports = {
     filename: 'js/[name].js',
   },
   externals: {
+    'containers/InsertMediaModal/InsertMediaModal': 'InsertMediaModal',
     'components/Breadcrumb/Breadcrumb': 'Breadcrumb',
+    'state/schema/SchemaActions': 'SchemaActions',
     'components/FormBuilderModal/FormBuilderModal': 'FormBuilderModal',
     'components/FormBuilder/FormBuilder': 'FormBuilder',
     'components/Toolbar/Toolbar': 'Toolbar',

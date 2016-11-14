@@ -86,6 +86,12 @@ export default function galleryReducer(state = initialState, action) {
       return state;
     }
 
+    case GALLERY.UNLOAD_FOLDER: {
+      return Object.assign({}, state, {
+        files: [],
+      });
+    }
+
     case GALLERY.SELECT_FILES: {
       let selectedFiles = null;
 

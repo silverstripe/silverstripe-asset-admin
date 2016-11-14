@@ -1,0 +1,43 @@
+.insert-media-modal {
+
+  // Additional width for maximum screen size
+  .modal-lg {
+    width: $modal-xl;
+    max-width: 1600px;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    height: calc(100% - #{$toolbar-total-height}); // IE10 fix
+  }
+
+  .modal-content {
+    height: 100%; // IE10 fix
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  .modal-body {
+    padding: 0;
+    height: 100%;
+  }
+
+  @include media-breakpoint-up(lg) {
+    .btn--close-panel {
+      display: none;
+    }
+  }
+
+  .tab-content {
+    margin-bottom: $spacer-y;
+  }
+
+  // spacing between width and height
+  .fieldgroup.fill-width .field.flexbox-area-grow:first-child {
+    margin-right: $panel-padding-x;
+  }
+}
+
+// If gallery is in dialog
+.insert-media-modal__main  {
+  height: calc(100vh - #{$toolbar-total-height * 2}); // Fix for Safari
+}

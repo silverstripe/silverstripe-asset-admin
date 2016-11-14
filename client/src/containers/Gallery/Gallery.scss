@@ -12,6 +12,11 @@
   position: relative;
 }
 
+.gallery__main--dialog {
+  // Include 30px margin within dialog
+  height: calc(100vh - (#{$toolbar-total-height} + 80px));
+}
+
 .gallery__no-item-notice {
   width: 100%;
   text-align: center;

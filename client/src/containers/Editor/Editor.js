@@ -12,7 +12,6 @@ class Editor extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAction = this.handleAction.bind(this);
-    this.handleSubmitModal = this.handleSubmitModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
 
@@ -75,10 +74,6 @@ class Editor extends Component {
     return submitFn();
   }
 
-  handleSubmitModal(data, action, submitFn) {
-    return submitFn();
-  }
-
   openModal() {
     this.setState({
       openModal: true,
@@ -104,20 +99,17 @@ class Editor extends Component {
     const formSchemaUrl = `${this.props.editFileSchemaUrl}/${this.props.fileId}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
 
-
-    return (<div className="panel panel--padded panel--scrollable form--no-dividers editor">
-      { this.getCancelButton() }
-
+    return (<div className={editorClasses.join(' ')}>
       <div className="editor__details">
         <FormBuilderLoader
           schemaUrl={formSchemaUrl}
+          afterMessages={this.getCancelButton()}
           handleSubmit={this.handleSubmit}
           handleAction={this.handleAction}
         />
         <FormBuilderModal
           show={this.state.openModal}
           handleHide={this.closeModal}
-          handleSubmit={this.handleSubmitModal}
           schemaUrl={modalSchemaUrl}
           bodyClassName="modal__dialog"
           responseClassBad="modal__response modal__response--error"

@@ -62,7 +62,7 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item__title {
-  padding: 11px 29px 11px 12px;
+  padding: 11px 12px;
   height: $gallery-title-height;
   width: $gallery-thumb-width;
   margin: 0;
@@ -71,6 +71,10 @@ $gallery-item-label-height: 40px;
   text-overflow: ellipsis;
   white-space: nowrap;
   position: relative;
+
+  .gallery-item--selectable & {
+    padding-right: 29px;
+  }
 }
 
 // ACTIONS
@@ -92,7 +96,7 @@ $gallery-item-label-height: 40px;
   top: 0;
   margin-bottom: 0;
 
-  &::before {
+  .gallery-item--selectable &::before {
     cursor: pointer;
     top: 0;
     right: 0;
@@ -106,7 +110,7 @@ $gallery-item-label-height: 40px;
     background-color: $white;
   }
 
-  &:hover::before {
+  .gallery-item--selectable &:hover::before {
     border: 1px solid $component-active-border-color;
   }
 }

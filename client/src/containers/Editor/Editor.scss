@@ -111,3 +111,33 @@
   font-size: $font-size-lg;
   color: $brand-danger;
 }
+
+@include media-breakpoint-down(md) {
+  .editor__heading,
+  .editor__specs {
+    text-align: center;
+    margin-right: $spacer-x * 1.5;
+    margin-left: $spacer-x * 1.5;
+  }
+
+  // Changes a .btn-close-panel into a back arrow for smaller screens
+  .btn--close-panel {
+    float: left;
+    right: auto;
+    margin-right: 0;
+    position: absolute;
+    margin-left: -15px;
+    color: $body-color-light;
+
+    &::before {
+      content: "5";
+    }
+  }
+}
+
+@include media-breakpoint-down(lg) {
+  .editor {
+    height: 100%;
+    padding-bottom: 0;
+  }
+}

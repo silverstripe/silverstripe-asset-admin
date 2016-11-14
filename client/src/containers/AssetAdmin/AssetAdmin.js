@@ -38,7 +38,7 @@ class AssetAdmin extends SilverStripeComponent {
       readFolderApi: this.createEndpoint(config.readFolderEndpoint, false),
       updateFolderApi: this.createEndpoint(config.updateFolderEndpoint),
       deleteApi: this.createEndpoint(config.deleteEndpoint),
-    }
+    };
   }
 
   componentWillReceiveProps(props) {
@@ -106,8 +106,6 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {Object} folder
      */
   setBreadcrumbs(folder) {
-    const base = this.props.sectionConfig.url;
-
     // Set root breadcrumb
     const breadcrumbs = [{
       text: i18n._t('AssetAdmin.FILES', 'Files'),
@@ -120,7 +118,8 @@ class AssetAdmin extends SilverStripeComponent {
         folder.parents.forEach((parent) => {
           breadcrumbs.push({
             text: parent.title,
-            href: this.props.getUrl(parent.id),
+            href: this.props.getUrl && this.props.getUrl(parent.id),
+            onClick: () => this.handleBrowse(parent.id),
           });
         });
       }
@@ -182,16 +181,23 @@ class AssetAdmin extends SilverStripeComponent {
    * @returns {Promise}
    */
   handleSubmitEditor(data, action, submitFn) {
+    let promise = null;
 
-    if (action === 'insert') {
+    if (typeof this.props.onSubmitEditor === 'function') {
       const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
-
-      // return a separate promise object without submitting for insert action.
-      return Promise.resolve(Object.assign({}, file, data));
+      promise = this.props.onSubmitEditor(data, action, submitFn, file);
+    } else {
+      promise = submitFn();
     }
-    return submitFn()
+
+    if (!promise) {
+      throw new Error('Promise was not returned for submitting');
+    }
+    return promise
       .then((response) => {
-        this.props.actions.gallery.loadFile(this.props.fileId, response.record);
+        if (response && response.record) {
+          this.props.actions.gallery.loadFile(this.props.fileId, response.record);
+        }
         return response;
       });
   }
@@ -253,13 +259,14 @@ class AssetAdmin extends SilverStripeComponent {
 
     return (
       <Gallery
+        dialog={this.props.dialog}
         files={this.props.files}
         fileId={this.props.fileId}
         folderId={this.props.folderId}
         folder={this.props.folder}
+        type={this.props.type}
         limit={limit}
         page={page}
-        bulkActions={!this.props.selectMode}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         createFolderApi={this.endpoints.createFolderApi}
@@ -283,8 +290,8 @@ class AssetAdmin extends SilverStripeComponent {
   renderEditor() {
     const config = this.props.sectionConfig;
     const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
-    const schemaUrl = (this.props.selectMode)
-      ? config.form.FileSelectForm.schemaUrl
+    const schemaUrl = (this.props.type === 'insert')
+      ? config.form.FileInsertForm.schemaUrl
       : config.form.FileEditForm.schemaUrl;
 
     if (!file && this.props.fileId !== this.props.folderId) {
@@ -321,6 +328,7 @@ class AssetAdmin extends SilverStripeComponent {
 }
 
 AssetAdmin.propTypes = {
+  dialog: PropTypes.boolean,
   sectionConfig: PropTypes.shape({
     url: PropTypes.string,
     limit: PropTypes.number,
@@ -328,7 +336,14 @@ AssetAdmin.propTypes = {
   }),
   fileId: PropTypes.number,
   folderId: PropTypes.number,
-  file: PropTypes.object,
+  onBrowse: PropTypes.func,
+  getUrl: PropTypes.func,
+  query: PropTypes.shape({
+    sort: PropTypes.string,
+  }),
+  onSubmitEditor: PropTypes.func,
+  type: PropTypes.oneOf(['insert', 'admin']),
+  files: PropTypes.array,
   folder: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
@@ -337,16 +352,10 @@ AssetAdmin.propTypes = {
     canView: PropTypes.bool,
     canEdit: PropTypes.bool,
   }),
-  onBrowse: PropTypes.func,
-  getUrl: PropTypes.func.isRequired,
-  selectMode: PropTypes.bool,
-  query: PropTypes.shape({
-    sort: PropTypes.string,
-  }),
 };
 
 AssetAdmin.defaultProps = {
-  selectMode: false,
+  type: 'admin',
 };
 
 function mapStateToProps(state, ownProps) {
