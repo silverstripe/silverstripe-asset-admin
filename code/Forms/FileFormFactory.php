@@ -22,7 +22,8 @@ class FileFormFactory extends AssetFormFactory
         $tabs = TabSet::create(
             'Editor',
             $this->getFormFieldDetailsTab($record, $context),
-            $this->getFormFieldUsageTab($record, $context)
+            $this->getFormFieldUsageTab($record, $context),
+            $this->getFormFieldHistoryTab($record, $context)
         );
 
         if (isset($context['Type']) && $context['Type'] === 'insert') {
@@ -94,6 +95,21 @@ class FileFormFactory extends AssetFormFactory
                 ) .'</p>'
             ),
             TextField::create('Caption', _t('AssetAdmin.Caption', 'Caption'))
+        );
+    }
+
+    protected function getFormFieldHistoryTab($record, $context = [])
+    {
+        return Tab::create(
+            'History',
+            LiteralField::create('HistoryList','')
+             ->setSchemaComponent('HistoryList')
+             ->setSchemaData(array(
+                'data' => array(
+                    'fileId' => $record->ID,
+                    'latestVersionId' => $record->Version
+                )
+            ))
         );
     }
 
@@ -192,8 +208,17 @@ class FileFormFactory extends AssetFormFactory
         if (!$record || !$record->exists()) {
             return null;
         }
+        /**
+         * Can remove .label and .label-info when Bootstrap has been updated to BS4 Beta
+         * .label is being replaced with .tag
+         */
         return sprintf(
-            '<div class="editor__specs">%s %s</div>',
+            '<div class="editor__specs">
+                <span class="label label-info tag tag-info">v.%s</span> %s %s, %s %s
+            </div>',
+            $record->Version,
+            ($record->WasPublished) ? _t('File.PUBLISHED', 'Published') : _t('File.SAVED', 'Saved'),
+            $record->dbObject('LastEdited')->Ago(),
             $record->getSize(),
             $this->getStatusFlagMarkup($record)
         );

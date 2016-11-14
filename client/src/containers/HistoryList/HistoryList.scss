@@ -1,0 +1,31 @@
+.file-history {
+  position: relative;
+
+  > .list-group {
+    margin-top: calc(-#{$panel-padding-y} - 1px);
+  }
+
+  .editor__file-preview-link,
+  .editor__file-preview-message--file-missing {
+    max-width: 50%;
+    position: relative;
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    padding: 10px;
+    background: $background-darker;
+    border: 1px solid $border-color-light;
+    margin: 0 auto 10px;
+  }
+
+  .editor__specs {
+    text-align: center;
+  }
+}
+
+.file-history__back {
+  padding: 5px;
+  position: absolute;
+  top: 0;
+  left: -$panel-padding-x / 2;
+}

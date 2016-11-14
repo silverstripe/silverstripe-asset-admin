@@ -65,6 +65,31 @@ class AssetAdminTest extends FunctionalTest
         parent::tearDown();
     }
 
+
+    public function testApiHistory() {
+        $file = $this->objFromFixture(
+            'SilverStripe\\Assets\\File',
+            'file1'
+        );
+        $response = Director::test(
+            'admin/assets/api/history?fileId='. $file->ID,
+            null,
+            $this->session,
+            'GET'
+        );
+
+        $this->assertFalse($response->isError());
+
+        $body = json_decode($response->getBody());
+
+        $this->assertArrayHasKey('summary', $body[0]);
+        $this->assertArrayHasKey('versionid', $body[0]);
+        $this->assertArrayHasKey('summary', $body[0]);
+
+        // test permission filtering and
+    }
+
+
     public function testItCreatesFolder()
     {
         $folder1 = $this->objFromFixture(Folder::class, 'folder1');

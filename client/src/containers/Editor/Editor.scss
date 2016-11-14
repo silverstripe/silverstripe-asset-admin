@@ -14,6 +14,12 @@
   @include media-breakpoint-up(xl) {
     width: $cms-panel-md;
   }
+
+  // Position tabs above history items
+  .nav-tabs {
+    z-index: 1;
+    position: relative;
+  }
 }
 
 .editor__details {
