@@ -2,30 +2,47 @@ language: php
 
 env:
   global:
-    - DB=MYSQL CORE_RELEASE=master
+    # todo - travis artifacts setup
+    - DB=MYSQL
+    - CORE_RELEASE=master
+    - COMPOSER_ROOT_VERSION=1.0.x-dev
+    - DISPLAY=":99"
+    - XVFBARGS=":99 -ac -screen 0 1024x768x16"
     - secure: "YIQpRHDAPLBf+Uu4mChBHYA3QjUQO1ty+2E9bcYqXmptIjkA+kdpzt1ImShLBC62ruzesucRQFF3/pGrqERXqc+hVyKyOl/VJkAD+7VqSfGUd/wX+mXKLO5opD1L7tHOkbhu4YLKE7nqjSPzWwur9rKe90BD0BKeNHt0vO9R0glolcuTzN0SzwJ3+113/zmdz8eXsUCbWaW4I05Hfvjn4BBGeg2rKPCuPVCKH3+CSP2KjlR7fSQf39EzOp+l4qH/QG1fWq8lDKRQ0BDTTn+b0GJbn77t6FAAs6s4vvRrZo5iBxhUo4mtKn9ffR7Il3jjZiT36GBBwH7URMOEuDdydvgQKnEtmBelU2Vtp0h88gDAewwaYHTNk86+hqA7E6ncxaKnmIiJ5cJ59LWvd38duv8yOPez1nF9Fj7NxGowbHUcgNSXlsBLojmszRYNJ07jG0gG9dQ/aCm3tixDY7lsYSzUfSCKNLOeXdU16Yz7pc/yey84Gfim0+d/+Ia3mbUzB6bIhaaasLLu3hzNSxH0qadWl6lLRdDkwlXO9QWVRwhTlg3tPIN5FRyBTrHCwex85sEUjXbvDaWsAZQHZNtWUhySZaoYi6vo6sbrJwmMoxMBBlxwGNEgA3Q+cDvhFW6lAuvjrDA99kDO4sRmqAgZB6vJkRSi+miEHdc2iJmNZcE="
 
 matrix:
   include:
     - php: 5.5
+      env: PHPUNIT_TEST=1
     - php: 5.6
+      env: PHPUNIT_TEST=1
+    - php: 5.6
+      env: BEHAT_TEST=1
     - php: 7.0
-      env:
+      env: PHPUNIT_TEST=1
     - php: 5.6
       env: NPM_TEST=1
 
 before_script:
-    - git clone -b "pulls/alias-and-installer-branch" git://github.com/chillu/silverstripe-travis-support.git ~/travis-support
-    - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss
-    - cd ~/builds/ss
+  - printf "\n" | pecl install imagick
+  - composer self-update || true
+  - phpenv rehash
+  - phpenv config-rm xdebug.ini
+  - git clone git://github.com/silverstripe-labs/silverstripe-travis-support.git ~/travis-support
+  - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss
+  - cd ~/builds/ss
+  - "if [ \"$BEHAT_TEST\" = \"1\" ]; then sh -e /etc/init.d/xvfb start; sleep 3; fi"
+  - "if [ \"$BEHAT_TEST\" = \"1\" ]; then (vendor/bin/selenium-server-standalone > selenium.log 2>&1 &); fi"
+  - "if [ \"$BEHAT_TEST\" = \"1\" ]; then (vendor/bin/serve --bootstrap-file cms/tests/behat/serve-bootstrap.php &> serve.log &); fi"
 
 script:
-    - "if [ \"$NPM_TEST\" = \"\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
-    - "if [ \"$NPM_TEST\" = \"1\" ]; then (nvm install 4); fi"
-    - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd framework && nvm use 4 && npm install --silent); fi"
-    - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm install --silent); fi"
-    - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run test); fi"
-    - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run lint); fi"
+  - "if [ \"$PHPUNIT_TEST\" = \"1\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (nvm install 4); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd framework && nvm use 4 && npm install --silent); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm install --silent); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run test); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run lint); fi"
+  - "if [ \"$BEHAT_TEST\" = \"1\" ]; then vendor/bin/behat @asset-admin --config=./asset-admin/behat.yml; fi"
 
 notifications:
   slack: silverstripeltd:Cls1xnypKBLFhv0YIRtNLzlQ

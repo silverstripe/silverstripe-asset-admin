@@ -8,7 +8,11 @@
     "silverstripe/framework": "^4"
   },
   "require-dev": {
-    "phpunit/PHPUnit": "~4.8"
+    "phpunit/PHPUnit": "~4.8",
+    "silverstripe/behat-extension": "^2.1.0",
+    "silverstripe/serve": "dev-master",
+    "silverstripe/testsession": "^2.0.0-alpha3",
+    "se/selenium-server-standalone": "2.41.0"
   },
   "extra": {
     "branch-alias": {
@@ -17,7 +21,9 @@
   },
   "autoload": {
     "psr-4": {
-      "SilverStripe\\AssetAdmin\\": "code/"
+      "SilverStripe\\AssetAdmin\\": "code/",
+      "SilverStripe\\AssetAdmin\\Tests\\": "tests/php/",
+      "SilverStripe\\AssetAdmin\\Tests\\Behat\\": "tests/behat/src/"
     }
   },
   "config": {

@@ -55,7 +55,7 @@ class FileFormBuilderTest extends SapphireTest
         $fileThumbnail = $form->Fields()->fieldByName('IconFull')->getContent();
         $this->assertEquals(
             '<a class="editor__file-preview-link" href="/assets/files/6adf67caca/testfile.txt" target="_blank">'.
-                '<img src="framework/client/dist/images/app_icons/generic_32.png" class="editor__thumbnail" />'.
+                '<img src="framework/client/dist/images/app_icons/document_32.png" class="editor__thumbnail" />'.
             '</a>',
             $fileThumbnail
         );
