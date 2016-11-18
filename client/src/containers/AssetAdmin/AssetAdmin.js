@@ -17,14 +17,16 @@ class AssetAdmin extends SilverStripeComponent {
     super(props);
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
-    this.delete = this.delete.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.handleSubmitEditor = this.handleSubmitEditor.bind(this);
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.handleSort = this.handleSort.bind(this);
+    this.handleSetPage = this.handleSetPage.bind(this);
     this.createEndpoint = this.createEndpoint.bind(this);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.handleFolderIcon = this.handleFolderIcon.bind(this);
     this.handleBrowse = this.handleBrowse.bind(this);
+    this.handleViewChange = this.handleViewChange.bind(this);
     this.compare = this.compare.bind(this);
   }
 
@@ -52,8 +54,8 @@ class AssetAdmin extends SilverStripeComponent {
   /**
    * Handles browsing within this section.
    *
-   * @param {string|number} folderId
-   * @param {string|number} [fileId]
+   * @param {number} [folderId]
+   * @param {number} [fileId]
    * @param {object|null} [query]
    */
   handleBrowse(folderId, fileId, query) {
@@ -64,12 +66,39 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   /**
+   * Handles when the pagination page changes
+   *
+   * @param {number} page
+   */
+  handleSetPage(page) {
+    this.handleBrowse(this.props.folderId, this.props.fileId, {
+      page,
+    });
+  }
+
+  /**
    * Handles configuring sorting with browsing history.onOpenFolder
    *
    * @param {string} sort
    */
   handleSort(sort) {
-    this.handleBrowse(this.props.folderId, this.props.fileId, { sort });
+    this.handleBrowse(this.props.folderId, this.props.fileId, {
+      sort,
+      // clear pagination
+      limit: undefined,
+      page: undefined,
+    });
+  }
+
+  /**
+   * Handles when the view for the component changes
+   *
+   * @param {string} view
+   */
+  handleViewChange(view) {
+    this.handleBrowse(this.props.folderId, this.props.fileId, {
+      view,
+    });
   }
 
   /**
@@ -110,7 +139,11 @@ class AssetAdmin extends SilverStripeComponent {
     // Set root breadcrumb
     const breadcrumbs = [{
       text: i18n._t('AssetAdmin.FILES', 'Files'),
-      href: this.props.sectionConfig.url,
+      href: this.props.getUrl && this.props.getUrl(),
+      onClick: (event) => {
+        event.preventDefault();
+        this.handleBrowse();
+      },
     }];
 
     if (folder && folder.id) {
@@ -120,7 +153,10 @@ class AssetAdmin extends SilverStripeComponent {
           breadcrumbs.push({
             text: parent.title,
             href: this.props.getUrl && this.props.getUrl(parent.id),
-            onClick: () => this.handleBrowse(parent.id),
+            onClick: (event) => {
+              event.preventDefault();
+              this.handleBrowse(parent.id);
+            },
           });
         });
       }
@@ -225,21 +261,20 @@ class AssetAdmin extends SilverStripeComponent {
    *
    * @param {number} fileId
    */
-  delete(fileId) {
+  handleDelete(fileId) {
     let file = this.props.files.find((item) => item.id === fileId);
     if (!file && this.props.folder && this.props.folder.id === fileId) {
       file = this.props.folder;
     }
-    if (!file) {
-      throw new Error(`File selected for deletion cannot be found: ${fileId}`);
-    }
-    const parentId = file.parent ? file.parent.id : 0;
 
     // eslint-disable-next-line no-alert
     if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
-      this.props.actions.gallery.deleteItems(this.endpoints.deleteApi, [file.id])
+      this.props.actions.gallery.deleteItems(this.endpoints.deleteApi, [fileId])
         .then(() => {
-          this.handleBrowse(parentId);
+          // redirect to open parent folder if the file/folder is open and on screen to close it
+          if (file) {
+            this.handleBrowse((file.parent) ? file.parent.id : 0);
+          }
         });
     }
   }
@@ -254,21 +289,21 @@ class AssetAdmin extends SilverStripeComponent {
     const createFileApiUrl = config.createFileEndpoint.url;
     const createFileApiMethod = config.createFileEndpoint.method;
 
-    const limit = this.props.query && this.props.query.limit;
-    const page = this.props.query && this.props.query.page;
+    const limit = this.props.query && parseInt(this.props.query.limit || config.limit, 10);
+    const page = this.props.query && parseInt(this.props.query.page || 0, 10);
 
     const sort = this.props.query && this.props.query.sort;
+    const view = this.props.query && this.props.query.view;
 
     return (
       <Gallery
-        dialog={this.props.dialog}
-        files={this.props.files}
         fileId={this.props.fileId}
         folderId={this.props.folderId}
         folder={this.props.folder}
         type={this.props.type}
         limit={limit}
         page={page}
+        view={view}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         createFolderApi={this.endpoints.createFolderApi}
@@ -278,6 +313,8 @@ class AssetAdmin extends SilverStripeComponent {
         onOpenFile={this.handleOpenFile}
         onOpenFolder={this.handleOpenFolder}
         onSort={this.handleSort}
+        onSetPage={this.handleSetPage}
+        onViewChange={this.handleViewChange}
         sort={sort}
         sectionConfig={config}
       />
@@ -291,7 +328,6 @@ class AssetAdmin extends SilverStripeComponent {
    */
   renderEditor() {
     const config = this.props.sectionConfig;
-    const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
     // Types are:
     // 'insert' -> Insert into html area with options
     // 'select' -> Select a file with no editable fields
@@ -310,18 +346,18 @@ class AssetAdmin extends SilverStripeComponent {
         break;
     }
 
-    if (!file && this.props.fileId !== this.props.folderId) {
+    if (!this.props.fileId) {
       return null;
     }
 
     return (
       <Editor
-        dialog={this.props.dialog}
+        className={(this.props.type === 'insert') ? 'editor--dialog' : ''}
         fileId={this.props.fileId}
         onClose={this.handleCloseFile}
         editFileSchemaUrl={schemaUrl}
         onSubmit={this.handleSubmitEditor}
-        onDelete={this.delete}
+        onDelete={this.handleDelete}
         addToCampaignSchemaUrl={config.form.addToCampaignForm.schemaUrl}
       />
     );
@@ -339,6 +375,10 @@ class AssetAdmin extends SilverStripeComponent {
           {this.renderGallery()}
           {this.renderEditor()}
         </div>
+        {this.props.type === 'insert' && this.props.loading &&
+        [<div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
+        <div key="spinner" className="cms-content-loading-spinner"></div>]
+        }
       </div>
     );
   }
@@ -357,6 +397,8 @@ AssetAdmin.propTypes = {
   getUrl: PropTypes.func,
   query: PropTypes.shape({
     sort: PropTypes.string,
+    limit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    page: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   }),
   onSubmitEditor: PropTypes.func,
   type: PropTypes.oneOf(['insert', 'select', 'admin']),
@@ -375,14 +417,17 @@ AssetAdmin.defaultProps = {
   type: 'admin',
 };
 
-function mapStateToProps(state, ownProps) {
-  const folder = state.assetAdmin.gallery.folder;
-  const files = state.assetAdmin.gallery.files;
+function mapStateToProps(state) {
+  const {
+    loading,
+    folder,
+    files,
+  } = state.assetAdmin.gallery;
 
   return {
+    loading,
     files,
     folder,
-    limit: ownProps.sectionConfig.limit,
     securityId: state.config.SecurityID,
   };
 }

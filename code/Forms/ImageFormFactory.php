@@ -30,7 +30,7 @@ class ImageFormFactory extends FileFormFactory
     protected function getFormFieldAttributesTab($record, $context = [])
     {
         /** @var Tab $tab */
-        $tab = parent::getFormFieldAttributesTab($record);
+        $tab = parent::getFormFieldAttributesTab($record, $context);
 
         $alignments = array(
             'leftAlone' => _t('AssetAdmin.AlignmentLeftAlone', 'On the left, on its own.'),

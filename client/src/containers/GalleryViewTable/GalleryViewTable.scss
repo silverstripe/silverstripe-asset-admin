@@ -1,0 +1,30 @@
+.gallery__table {
+  td,
+  th {
+    word-wrap: break-word;
+  }
+
+  td {
+    word-break: break-all;
+
+    &.gallery__table-column-image {
+      padding: 5px;
+    }
+  }
+}
+
+.gallery__table-image {
+  max-width: 60px;
+  max-height: 60px;
+  display: block;
+  margin: 0 auto;
+}
+
+.griddle-footer > div {
+  display: flex;
+}
+
+.griddle-page {
+  flex: 1;
+  text-align: center;
+}

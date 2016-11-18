@@ -57,10 +57,9 @@
 }
 
 .gallery__sort {
-  position: absolute;
-  top: $spacer-y;
-  right: 0;
-  margin-right: $panel-padding-x;
+  display: inline-block;
+  vertical-align: middle;
+  padding: $btn-padding-y $btn-padding-x;
 
   .gallery & .chosen-single {
     border: 0;
@@ -107,4 +106,8 @@
   display: table-cell;
   vertical-align: middle;
   text-align: center;
+}
+
+.gallery__view-change-button .icon:before {
+  vertical-align: middle;
 }

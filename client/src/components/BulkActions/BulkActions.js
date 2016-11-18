@@ -39,7 +39,7 @@ export class BulkActions extends SilverStripeComponent {
       }
 
       const className = [
-        'bulk-actions_action',
+        'bulk-actions__action',
         'ss-ui-button',
         'ui-corner-all',
         action.className || 'font-icon-info-circled',

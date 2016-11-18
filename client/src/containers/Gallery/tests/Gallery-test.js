@@ -6,6 +6,8 @@ jest.unmock('react-redux');
 jest.unmock('react-addons-test-utils');
 jest.unmock('../../../components/BulkActions/BulkActions');
 jest.unmock('../Gallery');
+// mock GriddlePagination because it gives mutation warnings all over the place!
+jest.mock('griddle-react', () => null);
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
@@ -18,15 +20,13 @@ describe('Gallery', () => {
     props = {
       actions: {
         gallery: {
-          addFiles: () => null,
-          selectFiles: () => null,
-          deselectFiles: () => null,
-          setPath: () => null,
-          setFolder: () => null,
-          setFile: () => null,
-          sortFiles: () => null,
-          loadFolderContents: () => Promise.resolve(),
-          deleteItems: () => null,
+          addFiles: () => {},
+          selectFiles: () => {},
+          deselectFiles: () => {},
+          setPath: () => {},
+          setFile: () => {},
+          loadFolderContents: () => {},
+          deleteItems: () => {},
         },
         queuedFiles: {
           addQueuedFile: () => null,
@@ -52,9 +52,67 @@ describe('Gallery', () => {
         items: [],
       },
       sort: '',
+      page: 2,
       onOpenFile: () => {},
       onOpenFolder: () => {},
+      onSort: () => {},
+      onSetPage: () => {},
+      onViewChange: () => {},
     };
+  });
+
+  describe('refreshFolderIfNeeded()', () => {
+    let gallery = null;
+    beforeEach(() => {
+      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+      // these are called on componentDidMount()...
+      props.actions.gallery.deselectFiles = jest.genMockFunction();
+      props.actions.gallery.loadFolderContents = jest.genMockFunction();
+    });
+
+    it('should call deselectFiles and loadFolderContents with empty props', () => {
+      gallery.refreshFolderIfNeeded(null, props);
+      expect(props.actions.gallery.deselectFiles).toBeCalled();
+      expect(props.actions.gallery.loadFolderContents).toBeCalled();
+    });
+    it('should not call deselectFiles and loadFolderContents if props do not change', () => {
+      const nextProps = Object.assign({}, props);
+
+      gallery.refreshFolderIfNeeded(props, nextProps);
+      expect(nextProps.actions.gallery.deselectFiles.mock.calls.length).toBe(0);
+      expect(nextProps.actions.gallery.loadFolderContents.mock.calls.length).toBe(0);
+    });
+    it('should call deselectFiles and loadFolderContents if folderId changes', () => {
+      const nextProps = Object.assign({}, props, { folderId: 3 });
+
+      gallery.refreshFolderIfNeeded(props, nextProps);
+      expect(props.actions.gallery.deselectFiles).toBeCalled();
+      expect(props.actions.gallery.loadFolderContents).toBeCalled();
+    });
+    it('should call deselectFiles and loadFolderContents if page changes', () => {
+      const nextProps = Object.assign({}, props, { page: 0 });
+
+      gallery.refreshFolderIfNeeded(props, nextProps);
+      expect(props.actions.gallery.deselectFiles).toBeCalled();
+      expect(props.actions.gallery.loadFolderContents).toBeCalled();
+    });
+    it('should call deselectFiles and loadFolderContents if sort changes', () => {
+      const nextProps = Object.assign({}, props, { sort: 'title,asc' });
+
+      gallery.refreshFolderIfNeeded(props, nextProps);
+      expect(props.actions.gallery.deselectFiles).toBeCalled();
+      expect(props.actions.gallery.loadFolderContents).toBeCalled();
+    });
+  });
+
+  describe('handleSetPage', () => {
+    it('should return the set page for callback', () => {
+      props.onSetPage = jest.genMockFunction();
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      gallery.handleSetPage(5);
+      expect(props.onSetPage).toBeCalledWith(5);
+    });
   });
 
   describe('renderBulkActions()', () => {
@@ -127,32 +185,6 @@ describe('Gallery', () => {
 
       gallery.componentWillUnmount();
       expect(props.actions.gallery.unloadFolderContents).toBeCalled();
-    });
-  });
-
-  describe('componentWillReceiveProps()', () => {
-    let gallery = null;
-
-    beforeEach(() => {
-      props.files = [
-        { id: 14 },
-      ];
-      props.actions.gallery.sortFiles = jest.genMockFunction();
-      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-    });
-
-    it('should not call sort if no sort given', () => {
-      const newProps = {};
-      gallery.componentWillReceiveProps(newProps);
-
-      expect(props.actions.gallery.sortFiles).not.toBeCalled();
-    });
-
-    it('should call sort if files length changes', () => {
-      const newProps = { sort: 'created,asc', files: [...props.files, { id: 23 }] };
-      gallery.componentWillReceiveProps(newProps);
-
-      expect(props.actions.gallery.sortFiles).toBeCalled();
     });
   });
 
@@ -232,14 +264,6 @@ describe('Gallery', () => {
 
   describe('handleSort()', () => {
     let gallery = null;
-    const event = {
-      target: {
-        dataset: {
-          field: 'field',
-          direction: 'direction',
-        },
-      },
-    };
 
     beforeEach(() => {
       props.actions.queuedFiles.purgeUploadQueue = jest.genMockFunction();
@@ -251,13 +275,34 @@ describe('Gallery', () => {
     });
 
     it('should purge the upload queue', () => {
-      gallery.handleSort(event);
+      gallery.handleSort('title,asc');
       expect(props.actions.queuedFiles.purgeUploadQueue).toBeCalled();
-      expect(props.onSort).toBeCalled();
+      expect(props.onSort).toBeCalledWith('title,asc');
     });
   });
 
-  describe('getNoItemsNotice()', () => {
+  describe('handleSelectSort()', () => {
+    let gallery = null;
+    const event = {
+      currentTarget: {
+        value: 'title,desc',
+      },
+    };
+
+    beforeEach(() => {
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+      gallery.handleSort = jest.genMockFunction();
+    });
+
+    it('should purge the upload queue', () => {
+      gallery.handleSelectSort(event);
+      expect(gallery.handleSort).toBeCalledWith('title,desc');
+    });
+  });
+
+  describe('renderNoItemsNotice()', () => {
     it('should return the no items notice if there are no files', () => {
       props.count = 0;
 
@@ -265,7 +310,7 @@ describe('Gallery', () => {
         <Gallery {...props} />
       );
 
-      expect(JSON.stringify(gallery.getNoItemsNotice())).toContain('gallery__no-item-notice');
+      expect(JSON.stringify(gallery.renderNoItemsNotice())).toContain('gallery__no-item-notice');
     });
 
     it('should return null if there is at least one file', () => {
@@ -276,7 +321,7 @@ describe('Gallery', () => {
         <Gallery {...props} />
       );
 
-      expect(gallery.getNoItemsNotice()).toBe(null);
+      expect(gallery.renderNoItemsNotice()).toBe(null);
     });
   });
 
@@ -331,66 +376,6 @@ describe('Gallery', () => {
     });
   });
 
-  describe('getMoreButton()', () => {
-    let gallery = null;
-
-    beforeEach(() => {
-      props.files = [1];
-
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-    });
-
-    it('should not return a more button if all files are loaded', () => {
-      props.count = 1;
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-
-      expect(gallery.getMoreButton()).toBe(null);
-    });
-
-    it('should return a more button if all files are loaded.', () => {
-      props.count = 2;
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-
-      expect(gallery.getMoreButton()).not.toBe(null);
-    });
-  });
-
-  describe('handleItemDelete()', () => {
-    let gallery = null;
-    const item = { id: 1 };
-    const event = {};
-
-    beforeEach(() => {
-      props.actions.gallery.deleteItems = jest.genMockFunction();
-
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-    });
-
-    it('should call props.actions.gallery.deleteItems with the item id.', () => {
-      const mock = jest.genMockFunction();
-      const originalConfirm = window.confirm;
-
-      mock.mockReturnValueOnce(true);
-      window.confirm = mock;
-      // i18n.sprintf = jest.genMockFunction();
-
-      gallery.handleItemDelete(event, item);
-
-      expect(props.actions.gallery.deleteItems).toBeCalled();
-      expect(window.confirm).toBeCalled();
-
-      window.confirm = originalConfirm;
-    });
-  });
-
   describe('itemIsSelected()', () => {
     let gallery = null;
 
@@ -426,7 +411,7 @@ describe('Gallery', () => {
       const folder = { id: 1 };
       const event = new Event('activate');
 
-      gallery.handleFolderActivate(event, folder);
+      gallery.handleOpenFolder(event, folder);
 
       expect(props.onOpenFolder).toBeCalledWith(1);
     });
@@ -435,13 +420,13 @@ describe('Gallery', () => {
       const file = { id: 1 };
       const event = new Event('activate');
 
-      gallery.handleFileActivate(event, file);
+      gallery.handleOpenFile(event, file);
 
       expect(props.onOpenFile).toBeCalledWith(1, file);
     });
   });
 
-  describe('handleToggleSelect()', () => {
+  describe('handleSelect()', () => {
     let gallery = null;
     const event = {};
 
@@ -458,7 +443,7 @@ describe('Gallery', () => {
     it('should set deselect the file is currently selected', () => {
       const item = { id: 1 };
 
-      gallery.handleToggleSelect(event, item);
+      gallery.handleSelect(event, item);
 
       expect(props.actions.gallery.deselectFiles).toBeCalledWith([1]);
     });
@@ -466,7 +451,7 @@ describe('Gallery', () => {
     it('should set select the file is not currently selected', () => {
       const item = { id: 2 };
 
-      gallery.handleToggleSelect(event, item);
+      gallery.handleSelect(event, item);
 
       expect(props.actions.gallery.selectFiles).toBeCalledWith([2]);
     });

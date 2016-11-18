@@ -1,127 +1,107 @@
+// TODO pull out jQuery library to separate HOC
 import $ from 'jQuery';
 import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import ReactTestUtils from 'react-addons-test-utils';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ReactTestUtils from 'react-addons-test-utils';
-import Dropzone from 'components/AssetDropzone/AssetDropzone';
-import GalleryItem from 'components/GalleryItem/GalleryItem';
+import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
 import BulkActions from 'components/BulkActions/BulkActions';
+import GalleryViewTile from 'containers/GalleryViewTile/GalleryViewTile';
+import GalleryViewTable from 'containers/GalleryViewTable/GalleryViewTable';
 import CONSTANTS from 'constants/index';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 
-function getComparator(field, direction) {
-  return (a, b) => {
-    const fieldA = a[field].toLowerCase();
-    const fieldB = b[field].toLowerCase();
-
-    if (direction === 'asc') {
-      if (fieldA < fieldB) {
-        return -1;
-      }
-
-      if (fieldA > fieldB) {
-        return 1;
-      }
-    } else {
-      if (fieldA > fieldB) {
-        return -1;
-      }
-
-      if (fieldA < fieldB) {
-        return 1;
-      }
-    }
-
-    return 0;
-  };
-}
+/**
+ * List of sorters for tile view, required here because it's rendered outside the tile view
+ * component
+ *
+ * @type {array} sorters
+ */
+const sorters = [
+  {
+    field: 'title',
+    direction: 'asc',
+    label: i18n._t('AssetAdmin.FILTER_TITLE_ASC', 'title a-z'),
+  },
+  {
+    field: 'title',
+    direction: 'desc',
+    label: i18n._t('AssetAdmin.FILTER_TITLE_DESC', 'title z-a'),
+  },
+  {
+    field: 'created',
+    direction: 'desc',
+    label: i18n._t('AssetAdmin.FILTER_DATE_DESC', 'newest'),
+  },
+  {
+    field: 'created',
+    direction: 'asc',
+    label: i18n._t('AssetAdmin.FILTER_DATE_ASC', 'oldest'),
+  },
+];
 
 class Gallery extends Component {
 
   constructor(props) {
     super(props);
 
-    this.sorters = [
-      {
-        field: 'title',
-        direction: 'asc',
-        label: i18n._t('AssetAdmin.FILTER_TITLE_ASC'),
-      },
-      {
-        field: 'title',
-        direction: 'desc',
-        label: i18n._t('AssetAdmin.FILTER_TITLE_DESC'),
-      },
-      {
-        field: 'created',
-        direction: 'desc',
-        label: i18n._t('AssetAdmin.FILTER_DATE_DESC'),
-      },
-      {
-        field: 'created',
-        direction: 'asc',
-        label: i18n._t('AssetAdmin.FILTER_DATE_ASC'),
-      },
-    ];
-
-    this.handleFolderActivate = this.handleFolderActivate.bind(this);
-    this.handleFileActivate = this.handleFileActivate.bind(this);
-    this.handleToggleSelect = this.handleToggleSelect.bind(this);
+    this.handleOpenFolder = this.handleOpenFolder.bind(this);
+    this.handleOpenFile = this.handleOpenFile.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.handleSelectSort = this.handleSelectSort.bind(this);
     this.handleAddedFile = this.handleAddedFile.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
     this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
     this.handleUploadProgress = this.handleUploadProgress.bind(this);
     this.handleSending = this.handleSending.bind(this);
-    this.handleItemDelete = this.handleItemDelete.bind(this);
     this.handleBackClick = this.handleBackClick.bind(this);
-    this.handleMoreClick = this.handleMoreClick.bind(this);
     this.handleSort = this.handleSort.bind(this);
+    this.handleSetPage = this.handleSetPage.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
+    this.handleViewChange = this.handleViewChange.bind(this);
+    this.renderNoItemsNotice = this.renderNoItemsNotice.bind(this);
   }
 
   componentDidMount() {
-    this.refreshFolderIfNeeded();
+    // load contents when mounted
+    this.refreshFolderIfNeeded(null, this.props);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!nextProps.sort && !nextProps.files) {
-      return;
+    // turn off chosen.js
+    if (nextProps.view !== 'tile') {
+      const $select = this.getSortElement();
+
+      $select.off('change');
     }
-    if (this.props.files.length !== nextProps.files.length
-      || this.props.sort !== nextProps.sort
-    ) {
-      const sort = nextProps.sort || `${this.sorters[0].field},${this.sorters[0].direction}`;
-      const [field, direction] = sort.split(',');
-      this.props.actions.gallery.sortFiles(getComparator(field, direction));
-    }
+
+    // check if contents need a refresh
+    this.refreshFolderIfNeeded(this.props, nextProps);
   }
 
-  componentWillUpdate() {
-    const $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
-    $select.off('change');
-  }
+  componentDidUpdate() {
+    // turn on chosen if required
+    if (this.props.view === 'tile') {
+      const $select = this.getSortElement();
 
-  componentDidUpdate(prevProps) {
-    const $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
+      // We opt-out of letting the CMS handle Chosen because it doesn't
+      // re-apply the behaviour correctly.
+      // So after the gallery has been rendered we apply Chosen.
+      $select.chosen({
+        allow_single_deselect: true,
+        disable_search_threshold: 20,
+      });
 
-    // We opt-out of letting the CMS handle Chosen because it doesn't
-    // re-apply the behaviour correctly.
-    // So after the gallery has been rendered we apply Chosen.
-    $select.chosen({
-      allow_single_deselect: true,
-      disable_search_threshold: 20,
-    });
+      // Chosen stops the change event from reaching React so we have to simulate a click.
+      $select.on('change', () => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
+    }
 
-    // Chosen stops the change event from reaching React so we have to simulate a click.
-    $select.on('change', () => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
-
-    this.refreshFolderIfNeeded(prevProps);
     this.checkLoadingIndicator();
   }
 
@@ -130,82 +110,123 @@ class Gallery extends Component {
     this.props.actions.gallery.unloadFolderContents();
   }
 
-  getNoItemsNotice() {
-    if (this.props.files.length < 1 && this.props.queuedFiles.items.length < 1 && !this.props.loading) {
-      return <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>;
-    }
-
-    return null;
+  /**
+   * Gets the element which represents the sorter dropdown for jQuery plugin usage
+   *
+   * @returns {jQuery}
+   */
+  getSortElement() {
+    return $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
   }
 
-  getMoreButton() {
-    if (this.props.count > this.props.files.length) {
-      return (
-        <button
-          className="gallery__load-more"
-          onClick={this.handleMoreClick}
-        >
-          {i18n._t('AssetAdmin.LOADMORE')}
-        </button>
-      );
-    }
-
-    return null;
-  }
-
+  /**
+   * Required anti-pattern, because `.cms-content` is the container for the React component.
+   *
+   * Adds or removes the load class from `.cms-content` if it is for the AssetAdmin
+   */
   checkLoadingIndicator() {
     const $sectionWrapper = $('.cms-content.AssetAdmin');
 
-    if (this.props.loading && !$sectionWrapper.hasClass('loading')) {
+    if (this.props.loading) {
       $sectionWrapper.addClass('loading');
-    } else if (!this.props.loading && $sectionWrapper.hasClass('loading')) {
+    } else {
       $sectionWrapper.removeClass('loading');
     }
   }
 
-  refreshFolderIfNeeded(prevProps) {
-    if (!prevProps || this.props.folderId !== prevProps.folderId) {
+  /**
+   * Checks if key properties were changed and if they have then start a request to get new data
+   * from the server.
+   * Properties are:
+   *    - folderId
+   *    - limit
+   *    - page
+   *    - sort
+   *
+   * @param {object} prevProps
+   * @param {object} nextProps
+   */
+  refreshFolderIfNeeded(prevProps, nextProps) {
+    if (!prevProps
+      || nextProps.folderId !== prevProps.folderId
+      || nextProps.limit !== prevProps.limit
+      || nextProps.page !== prevProps.page
+      || nextProps.sort !== prevProps.sort
+    ) {
+      // TODO move this to AssetAdmin, anti-pattern for child to set props/state for parent
       this.props.actions.gallery.deselectFiles();
       this.props.actions.gallery.loadFolderContents(
-        this.props.readFolderApi,
-        this.props.folderId,
-        this.props.limit,
-        this.props.page
+        nextProps.readFolderApi,
+        nextProps.folderId,
+        nextProps.limit,
+        nextProps.page,
+        nextProps.sort
       );
     }
   }
 
   /**
-   * Handler for when the user changes the sort order.
+   * Handler for when the user changes the sort order
    *
-   * @param {Object} event - Click event.
+   * @param {string} value
    */
-  handleSort(event) {
-    if (typeof this.props.onSort === 'function') {
-      this.props.actions.queuedFiles.purgeUploadQueue();
-      this.props.onSort(event.target.value);
-      // this will flow round to `componentWillReceiveProps` and update sort there.
-    }
+  handleSort(value) {
+    this.props.actions.queuedFiles.purgeUploadQueue();
+    this.props.onSort(value);
+    // this will flow round to `componentWillReceiveProps` and update sort there.
   }
 
+  /**
+   * Handler for when the sorter dropdown value is changed
+   *
+   * @param {Event} event
+   */
+  handleSelectSort(event) {
+    this.handleSort(event.currentTarget.value);
+  }
+
+  /**
+   * Handles setting the pagination page number
+   *
+   * @param {number} page
+   */
+  handleSetPage(page) {
+    this.props.onSetPage(page);
+  }
+
+  /**
+   * Handles removing an upload and cancelling the request made to upload
+   *
+   * @param {object} fileData
+   */
   handleCancelUpload(fileData) {
-    // abort wasn't defined..?
     fileData.xhr.abort();
     this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedId);
   }
 
+  /**
+   * Handles removing an upload that had errored during/after upload
+   *
+   * @param {object} fileData
+   */
   handleRemoveErroredUpload(fileData) {
     this.props.actions.queuedFiles.removeQueuedFile(fileData.queuedId);
   }
 
-  handleAddedFile(data) {
-    this.props.actions.queuedFiles.addQueuedFile(data);
+  /**
+   * Handler for when a file was added to be uploaded
+   *
+   * @param {object} fileData
+   */
+  handleAddedFile(fileData) {
+    this.props.actions.queuedFiles.addQueuedFile(fileData);
   }
 
   /**
    * Triggered just before the xhr request is sent.
    *
-   * @param {Object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {Object} fileData - File interface.
+   *      See https://developer.mozilla.org/en-US/docs/Web/API/File
    * @param {Object} xhr
    */
   handleSending(file, xhr) {
@@ -219,14 +240,14 @@ class Gallery extends Component {
   /**
    * Handler for when the user changes clicks the add folder button
    *
-   * @param {Object} event - Click event.
+   * @param {Event} event
    */
   handleCreateFolder(event) {
     const folderName = this.promptFolderName();
-    if (folderName) {
+    if (folderName !== null) {
       this.props.actions.gallery.createFolder(this.props.createFolderApi, this.props.folderId, folderName)
         .then(data => {
-          this.props.actions.gallery.addFiles([data], 1);
+          this.refreshFolderIfNeeded(null, this.props);
           return data;
         });
     }
@@ -236,14 +257,15 @@ class Gallery extends Component {
   /**
    * Handles successful file uploads.
    *
-   * @param {Object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {Object} fileXhr - File interface.
+   *      See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
-  handleSuccessfulUpload(file) {
-    const json = JSON.parse(file.xhr.response);
+  handleSuccessfulUpload(fileXhr) {
+    const json = JSON.parse(fileXhr.xhr.response);
 
     // SilverStripe send back a success code with an error message sometimes...
     if (typeof json[0].error !== 'undefined') {
-      this.handleFailedUpload(file);
+      this.handleFailedUpload(fileXhr);
       return;
     }
 
@@ -265,20 +287,9 @@ class Gallery extends Component {
   }
 
   /**
-   * Handles deleting a file or folder.
+   * Prompts for a folder name from the user
    *
-   * @param {Object} event
-   * @param {Object} item - The file or folder to delete.
-   */
-  handleItemDelete(event, item) {
-    // eslint-disable-next-line no-alert
-    if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
-      this.props.actions.gallery.deleteItems(this.props.deleteApi, [item.id]);
-    }
-  }
-
-	/**
-   * @return {String}
+   * @return {string|null}
    */
   promptFolderName() {
     // eslint-disable-next-line no-alert
@@ -312,7 +323,7 @@ class Gallery extends Component {
    * @param {Object} event - Event object.
    * @param {Object} folder - The folder that's being activated.
    */
-  handleFolderActivate(event, folder) {
+  handleOpenFolder(event, folder) {
     event.preventDefault();
     this.props.onOpenFolder(folder.id);
   }
@@ -323,7 +334,7 @@ class Gallery extends Component {
    * @param {Object} event - Event object.
    * @param {Object} file - The file that's being activated.
    */
-  handleFileActivate(event, file) {
+  handleOpenFile(event, file) {
     event.preventDefault();
     // Disable file editing if the file has not finished uploading
     // or the upload has errored.
@@ -340,7 +351,7 @@ class Gallery extends Component {
    * @param {Object} event - Event object.
    * @param {Object} item - The item being selected/deselected
    */
-  handleToggleSelect(event, item) {
+  handleSelect(event, item) {
     if (this.props.selectedFiles.indexOf(item.id) === -1) {
       this.props.actions.gallery.selectFiles([item.id]);
     } else {
@@ -348,60 +359,36 @@ class Gallery extends Component {
     }
   }
 
-  handleMoreClick(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    this.props.actions.gallery.deselectFiles();
-
-    // TO DO: Load more
-  }
-
+  /**
+   * Handles browsing back/up one folder
+   *
+   * @param {Event} event
+   */
   handleBackClick(event) {
     event.preventDefault();
     this.props.onOpenFolder(this.props.folder.parentID);
   }
 
   /**
-   * Generates the react components needed for the Toolbar part of this component.
+   * Handles changing the view type when the view button is clicked
    *
-   * @returns {Component}
+   * @param event
    */
-  renderToolbar() {
-    const canEdit = this.props.folder.canEdit;
+  handleViewChange(event) {
+    const view = event.currentTarget.value;
 
-    return (
-      <div className="toolbar--content toolbar--space-save">
-
-        {this.renderBackButton()}
-
-        <button
-          id="upload-button"
-          className="btn btn-secondary font-icon-upload btn--icon-xl"
-          type="button"
-          disabled={!canEdit}
-        >
-          <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
-        </button>
-
-        <button
-          id="add-folder-button"
-          className="btn btn-secondary font-icon-folder-add btn--icon-xl "
-          type="button"
-          onClick={this.handleCreateFolder}
-          disabled={!canEdit}
-        >
-          <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
-        </button>
-      </div>
-    );
+    this.props.onViewChange(view);
   }
 
   /**
-   * Generates the react components needed for the Sorter part of this component.
+   * Generates the react components needed for the Sorter part of this component
    *
-   * @returns {Component}
+   * @returns {XML}
    */
   renderSort() {
+    if (this.props.view !== 'tile') {
+      return null;
+    }
     return (
       <div className="gallery__sort fieldholder-small">
         <select
@@ -410,28 +397,104 @@ class Gallery extends Component {
           style={{ width: '160px' }}
           defaultValue={this.props.sort}
         >
-          {this.sorters.map((sorter, i) =>
-            (
-              <option
-                key={i}
-                onClick={this.handleSort}
-                data-field={sorter.field}
-                data-direction={sorter.direction}
-                value={`${sorter.field},${sorter.direction}`}
-              >
-                {sorter.label}
-              </option>
-            )
-          )}
+          {sorters.map((sorter, i) => (
+            <option
+              key={i}
+              onClick={this.handleSelectSort}
+              data-field={sorter.field}
+              data-direction={sorter.direction}
+              value={`${sorter.field},${sorter.direction}`}
+            >
+              {sorter.label}
+            </option>
+          ))}
         </select>
       </div>
     );
   }
 
   /**
+   * Generates the react components needed for the Toolbar part of this component.
+   *
+   * @returns {XML}
+   */
+  renderToolbar() {
+    const canEdit = this.props.folder.canEdit;
+
+    return (
+      <div className="toolbar--content toolbar--space-save">
+        <div className="fill-width">
+          <div className="flexbox-area-grow">
+            {this.renderBackButton()}
+
+            <button
+              id="upload-button"
+              className="btn btn-secondary font-icon-upload btn--icon-xl"
+              type="button"
+              disabled={!canEdit}
+            >
+              <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
+            </button>
+
+            <button
+              id="add-folder-button"
+              className="btn btn-secondary font-icon-folder-add btn--icon-xl"
+              type="button"
+              onClick={this.handleCreateFolder}
+              disabled={!canEdit}
+            >
+              <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
+            </button>
+          </div>
+
+          <div className="toolbar__state-buttons">
+            {this.renderSort()}
+            <div className="btn-group" role="group" aria-label="View mode">
+              {this.renderViewChangeButtons()}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /**
+   * Renders the react component buttons for changing the view that is currently being used
+   *
+   * @returns {Array} buttons
+   */
+  renderViewChangeButtons() {
+    const views = ['tile', 'table'];
+    return views.map((view, index) => {
+      const icon = (view === 'table') ? 'list' : 'thumbnails';
+      const classNames = [
+        'gallery__view-change-button',
+        'btn btn-secondary',
+        'btn--icon-xl',
+      ];
+
+      if (view === this.props.view) {
+        return null;
+      }
+      return (
+        <button
+          id={`button-view-${view}`}
+          key={index}
+          className={classNames.join(' ')}
+          type="button"
+          onClick={this.handleViewChange}
+          value={view}
+        >
+          <span className={`icon font-icon-${icon}`} />
+        </button>
+      );
+    });
+  }
+
+  /**
    * Generates the react components needed for the Back button.
    *
-   * @returns {Component}
+   * @returns {XML|null} button
    */
   renderBackButton() {
     const classes = [
@@ -459,7 +522,7 @@ class Gallery extends Component {
   /**
    * Generates the react components needed for the BulkActions part of this component.
    *
-   * @returns {Component}
+   * @returns {XML}
    */
   renderBulkActions() {
     const deleteAction = (items) => {
@@ -469,7 +532,7 @@ class Gallery extends Component {
     const editAction = (items) => {
       this.props.onOpenFile(items[0].id);
     };
-    const actions = CONSTANTS.BULK_ACTIONS.map(action => {
+    const actions = CONSTANTS.BULK_ACTIONS.map((action) => {
       if (action.value === 'delete' && !action.callback) {
         return Object.assign({}, action, { callback: deleteAction });
       }
@@ -499,6 +562,70 @@ class Gallery extends Component {
     return null;
   }
 
+  /**
+   * Renders the message for when there was no items to display
+   *
+   * @returns {XML|null}
+   */
+  renderNoItemsNotice() {
+    if (this.props.files.length === 0 && !this.props.loading) {
+      return <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>;
+    }
+
+    return null;
+  }
+
+  /**
+   * Renders the core view for this component, the component is determined by the view property
+   *
+   * @returns {XML}
+   */
+  renderGalleryView() {
+    const GalleryView = (this.props.view === 'table') ? GalleryViewTable : GalleryViewTile;
+
+    const allFiles = this.props.files
+      .map((file) => Object.assign({}, file, {
+        selected: this.itemIsSelected(file.id),
+        highlighted: this.itemIsHighlighted(file.id),
+      }));
+    const queuedFiles = this.props.queuedFiles.items
+      .map((file) => Object.assign({}, file, {
+        uploading: true,
+      }));
+    const files = [
+      ...queuedFiles,
+      ...allFiles,
+    ];
+    const {
+      type,
+      loading,
+      page,
+      count,
+      limit,
+      sort,
+    } = this.props;
+
+    const props = {
+      selectableItems: type === 'admin',
+      files,
+      loading,
+      page,
+      count,
+      limit,
+      sort,
+      onSort: this.handleSort,
+      onSetPage: this.handleSetPage,
+      onOpenFile: this.handleOpenFile,
+      onOpenFolder: this.handleOpenFolder,
+      onSelect: this.handleSelect,
+      onCancelUpload: this.handleCancelUpload,
+      onRemoveErroredUpload: this.handleRemoveErroredUpload,
+      renderNoItemsNotice: this.renderNoItemsNotice,
+    };
+
+    return <GalleryView {...props} />;
+  }
+
   render() {
     if (!this.props.folder) {
       if (this.props.errorMessage) {
@@ -513,7 +640,7 @@ class Gallery extends Component {
           </div>
         );
       }
-      return <div />;
+      return null;
     }
 
     const dimensions = {
@@ -530,11 +657,10 @@ class Gallery extends Component {
     const securityID = this.props.securityId;
     const canEdit = this.props.folder.canEdit;
 
-    const selectableItem = this.props.type === 'admin';
     const galleryClasses = [
       'panel', 'panel--padded', 'panel--scrollable', 'gallery__main',
     ];
-    if (this.props.dialog) {
+    if (this.props.type === 'insert') {
       galleryClasses.push('insert-media-modal__main');
     }
 
@@ -542,95 +668,75 @@ class Gallery extends Component {
       <div className="flexbox-area-grow gallery__outer">
         {this.renderBulkActions()}
 
-        <div className={galleryClasses.join(' ')}>
-          {this.renderSort()}
+        <AssetDropzone
+          canUpload={canEdit}
+          handleAddedFile={this.handleAddedFile}
+          handleError={this.handleFailedUpload}
+          handleSuccess={this.handleSuccessfulUpload}
+          handleSending={this.handleSending}
+          handleUploadProgress={this.handleUploadProgress}
+          preview={dimensions}
+          folderId={this.props.folderId}
+          options={dropzoneOptions}
+          securityID={securityID}
+          uploadButton={false}
+        >
 
-          {this.renderToolbar()}
+          <div className={galleryClasses.join(' ')}>
+            {this.renderToolbar()}
 
-          <Dropzone
-            canUpload={canEdit}
-            handleAddedFile={this.handleAddedFile}
-            handleError={this.handleFailedUpload}
-            handleSuccess={this.handleSuccessfulUpload}
-            handleSending={this.handleSending}
-            handleUploadProgress={this.handleUploadProgress}
-            preview={dimensions}
-            folderId={this.props.folderId}
-            options={dropzoneOptions}
-            securityID={securityID}
-            uploadButton={false}
-          >
-
-            <div className="gallery__folders">
-              {this.props.files.map((file, i) => (
-                (file.type === 'folder')
-                  ? (
-                  <GalleryItem
-                    key={i}
-                    item={file}
-                    selectable={selectableItem}
-                    selected={this.itemIsSelected(file.id)}
-                    highlighted={this.itemIsHighlighted(file.id)}
-                    handleDelete={this.handleItemDelete}
-                    handleToggleSelect={this.handleToggleSelect}
-                    handleActivate={this.handleFolderActivate}
-                  />
-                )
-                  : null
-              ))}
-            </div>
-
-            <div className="gallery__files">
-              {this.props.queuedFiles.items.map((file, i) => (
-                <GalleryItem
-                  key={`queued_file_${i}`}
-                  item={file}
-                  selectable={selectableItem}
-                  selected={this.itemIsSelected(file.id)}
-                  highlighted={this.itemIsHighlighted(file.id)}
-                  handleDelete={this.handleItemDelete}
-                  handleActivate={this.handleFileActivate}
-                  handleCancelUpload={this.handleCancelUpload}
-                  handleRemoveErroredUpload={this.handleRemoveErroredUpload}
-                  message={file.message}
-                  uploading
-                />
-              ))}
-              {this.props.files.map((file, i) => (
-                (file.type !== 'folder')
-                  ? (
-                  <GalleryItem
-                    key={`file_${i}`}
-                    item={file}
-                    selectable={selectableItem}
-                    selected={this.itemIsSelected(file.id)}
-                    highlighted={this.itemIsHighlighted(file.id)}
-                    handleDelete={this.handleItemDelete}
-                    handleToggleSelect={this.handleToggleSelect}
-                    handleActivate={this.handleFileActivate}
-                  />
-                )
-                  : null
-              ))}
-            </div>
-
-            {this.getNoItemsNotice()}
-
-            <div className="gallery__load">
-              {this.getMoreButton()}
-            </div>
-          </Dropzone>
-        </div>
+            {this.renderGalleryView()}
+          </div>
+        </AssetDropzone>
       </div>
     );
   }
 }
 
-Gallery.defaultProps = {
-  type: 'admin',
+const sharedDefaultProps = {
+  page: 0,
+  limit: 15,
+  sort: `${sorters[0].field},${sorters[0].direction}`,
 };
 
-Gallery.propTypes = {
+const sharedPropTypes = {
+  loading: PropTypes.bool,
+  sort: PropTypes.string,
+  files: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    parent: PropTypes.shape({
+      id: PropTypes.number,
+    }),
+  })).isRequired,
+  count: PropTypes.number,
+  page: PropTypes.number,
+  limit: PropTypes.number,
+  onOpenFile: PropTypes.func.isRequired,
+  onOpenFolder: PropTypes.func.isRequired,
+  onSort: PropTypes.func.isRequired,
+  onSetPage: PropTypes.func.isRequired,
+};
+
+const galleryViewDefaultProps = Object.assign({}, sharedDefaultProps, {
+  selectableItems: false,
+});
+
+const galleryViewPropTypes = Object.assign({}, sharedPropTypes, {
+  selectableItems: PropTypes.bool,
+  onSelect: PropTypes.func,
+  onCancelUpload: PropTypes.func,
+  onRemoveErroredUpload: PropTypes.func,
+  renderNoItemsNotice: PropTypes.func.isRequired,
+});
+
+Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
+  type: 'admin',
+  view: 'tile',
+});
+
+Gallery.propTypes = Object.assign({}, sharedPropTypes, {
+  type: PropTypes.oneOf(['insert', 'admin']),
+  view: PropTypes.oneOf(['tile', 'table']),
   dialog: PropTypes.bool,
   fileId: PropTypes.number,
   folderId: PropTypes.number.isRequired,
@@ -643,27 +749,18 @@ Gallery.propTypes = {
   queuedFiles: PropTypes.shape({
     items: PropTypes.array.isRequired,
   }),
-  onOpenFile: PropTypes.func.isRequired,
-  onOpenFolder: PropTypes.func.isRequired,
-  onSort: PropTypes.func,
+  selectedFiles: PropTypes.arrayOf(PropTypes.number),
+  errorMessage: PropTypes.string,
+  actions: PropTypes.object.isRequired,
+  securityId: PropTypes.string,
+  onViewChange: PropTypes.func.isRequired,
+
   createFileApiUrl: PropTypes.string,
   createFileApiMethod: PropTypes.string,
   createFolderApi: PropTypes.func,
   readFolderApi: PropTypes.func,
   deleteApi: PropTypes.func,
-  actions: PropTypes.object,
-  sort: PropTypes.string,
-  type: PropTypes.oneOf(['insert', 'admin']),
-  limit: PropTypes.number,
-  page: PropTypes.number,
-
-  loading: PropTypes.bool,
-  count: PropTypes.number,
-  files: PropTypes.array, // all files as full objects (incl. ids)
-  selectedFiles: PropTypes.arrayOf(PropTypes.number), // ids only
-  errorMessage: PropTypes.string,
-  securityId: PropTypes.string,
-};
+});
 
 function mapStateToProps(state) {
   const {
@@ -694,6 +791,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { Gallery };
+export { Gallery, sorters, galleryViewPropTypes, galleryViewDefaultProps };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Gallery);

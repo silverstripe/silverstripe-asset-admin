@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
+import { urlQuery } from 'lib/DataFormat';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -16,16 +17,22 @@ class AssetAdminRouter extends Component {
   /**
    * Generates the Url for a given folder and file ID.
    *
-   * @param {number} folderId
-   * @param {number} fileId
+   * @param {number} [folderId]
+   * @param {number} [fileId]
+   * @param {object|null} [newQuery]
    * @returns {string}
    */
-  getUrl(folderId, fileId) {
+  getUrl(folderId = 0, fileId, newQuery) {
     const base = this.props.sectionConfig.url;
-    let url = `${base}/show/${folderId || 0}`;
+    let url = `${base}/show/${folderId}`;
 
     if (fileId) {
       url = `${url}/edit/${fileId}`;
+    }
+
+    const search = urlQuery(this.props.location, newQuery);
+    if (search) {
+      url = `${url}${search}`;
     }
     return url;
   }
@@ -52,37 +59,22 @@ class AssetAdminRouter extends Component {
    * To clear the query string, pass in `null` as the parameter, otherwise it will default to the
    * existing query string.
    *
-   * @param {number} folderId
-   * @param {number} fileId
-   * @param {object|null} newQuery
+   * @param {number} [folderId]
+   * @param {number} [fileId]
+   * @param {object|null} [query]
    */
-  handleBrowse(folderId, fileId, newQuery) {
-    const pathname = this.getUrl(folderId, fileId);
+  handleBrowse(folderId, fileId, query) {
+    const pathname = this.getUrl(folderId, fileId, query);
 
-    let query = null;
-
-    if (newQuery !== null && !newQuery) {
-      query = this.props.location.query;
-    } else {
-      query = Object.assign({}, this.props.location.query, newQuery);
-    }
-
-    this.props.router.push(Object.assign({},
-      this.props.location,
-      {
-        pathname,
-        query,
-      }
-    ));
+    this.props.router.push(pathname);
   }
 
   render() {
     if (!this.props.sectionConfig) {
       return null;
     }
-    const sectionProps = this.getSectionProps();
     return (
-      <AssetAdmin {...sectionProps} />
+      <AssetAdmin {...this.getSectionProps()} />
     );
   }
 }

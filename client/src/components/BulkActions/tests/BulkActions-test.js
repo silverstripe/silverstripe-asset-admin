@@ -32,7 +32,7 @@ describe('BulkActions', () => {
       const bulkActions = ReactTestUtils.renderIntoDocument(
         <BulkActions {...propsWithItems} />
       );
-      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions_action')
+      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions__action')
         .find(el => el.value === 'action-with-apply');
       expect(matchedBulkAction).toBeTruthy();
     });
@@ -42,7 +42,7 @@ describe('BulkActions', () => {
       const bulkActions = ReactTestUtils.renderIntoDocument(
         <BulkActions {...propsWithItems } />
       );
-      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions_action')
+      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions__action')
         .find(el => el.value === 'action-with-apply');
       expect(matchedBulkAction).toBeFalsy();
     });
