@@ -227,13 +227,17 @@ className:"gallery__load-more",onClick:this.handleMoreClick},g["default"]._t("As
 
 
 this.props.loading&&!e.hasClass("loading")?e.addClass("loading"):!this.props.loading&&e.hasClass("loading")&&e.removeClass("loading")}},{key:"refreshFolderIfNeeded",value:function E(e){e&&this.props.folderId===e.folderId||(this.props.actions.gallery.deselectFiles(),
-this.props.actions.gallery.loadFolderContents(this.props.readFolderApi,this.props.folderId,this.props.limit,this.props.page))}},{key:"handleSort",value:function _(e){var t=e.target.dataset
-this.props.actions.queuedFiles.purgeUploadQueue(),this.props.actions.gallery.sortFiles(s(t.field,t.direction))}},{key:"handleCancelUpload",value:function A(e){e.xhr.abort(),this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)
+this.props.actions.gallery.loadFolderContents(this.props.readFolderApi,this.props.folderId,this.props.limit,this.props.page))}},{key:"handleSort",value:function _(e){var t=e.target?e.target:e.srcElement,n=null,i=null
 
-}},{key:"handleRemoveErroredUpload",value:function T(e){this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)}},{key:"handleAddedFile",value:function D(e){this.props.actions.queuedFiles.addQueuedFile(e)
 
-}},{key:"handleSending",value:function C(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{xhr:t})}},{key:"handleUploadProgress",value:function w(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{
-progress:t})}},{key:"handleCreateFolder",value:function P(e){var t=this,n=this.promptFolderName()
+void 0!==t.dataset?(n=t.dataset.field,i=t.dataset.direction):(n=t.getAttribute("data-field"),i=t.getAttribute("data-direction")),this.props.actions.queuedFiles.purgeUploadQueue(),this.props.actions.gallery.sortFiles(s(n,i))
+
+}},{key:"handleCancelUpload",value:function A(e){e.xhr.abort(),this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)}},{key:"handleRemoveErroredUpload",value:function T(e){this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)
+
+}},{key:"handleAddedFile",value:function D(e){this.props.actions.queuedFiles.addQueuedFile(e)}},{key:"handleSending",value:function C(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{
+xhr:t})}},{key:"handleUploadProgress",value:function w(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{progress:t})}},{key:"handleCreateFolder",value:function P(e){var t=this,n=this.promptFolderName()
+
+
 n&&this.props.actions.gallery.createFolder(this.props.createFolderApi,this.props.folderId,n).then(function(e){return t.props.actions.gallery.addFiles([e],1),e}),e.preventDefault()}},{key:"handleSuccessfulUpload",
 value:function k(e){var t=JSON.parse(e.xhr.response)
 return"undefined"!=typeof t[0].error?void this.handleFailedUpload(e):(this.props.actions.queuedFiles.removeQueuedFile(e._queuedAtTime),void this.props.actions.gallery.addFiles(t,this.props.count+1))}},{

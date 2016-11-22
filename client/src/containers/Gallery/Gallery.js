@@ -223,9 +223,21 @@ export class Gallery extends Component {
    * @param {Object} event - Click event.
    */
   handleSort(event) {
-    const data = event.target.dataset;
+    const target = event.target ? event.target : event.srcElement;
+
+    let field = null;
+    let direction = null;
+
+    if (target.dataset !== undefined) {
+      field = target.dataset.field;
+      direction = target.dataset.direction;
+    } else {
+      field = target.getAttribute('data-field'); // IE approach
+      direction = target.getAttribute('data-direction');
+    }
+
     this.props.actions.queuedFiles.purgeUploadQueue();
-    this.props.actions.gallery.sortFiles(getComparator(data.field, data.direction));
+    this.props.actions.gallery.sortFiles(getComparator(field, direction));
   }
 
   handleCancelUpload(fileData) {
