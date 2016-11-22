@@ -218,7 +218,7 @@
 }
 
 .gallery-item--error:hover .gallery-item__thumbnail:after,.gallery-item--missing:hover .gallery-item__thumbnail:after{
-  background:#bf0404;
+  background:#b40303;
 }
 
 .gallery-item__upload-progress{
