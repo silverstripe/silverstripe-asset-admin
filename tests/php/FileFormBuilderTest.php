@@ -2,7 +2,6 @@
 
 namespace SilverStripe\AssetAdmin\Tests;
 
-use AssetStoreTest_SpyStore;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
@@ -10,7 +9,9 @@ use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
+use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\Forms\LiteralField;
 
 class FileFormBuilderTest extends SapphireTest
 {
@@ -20,7 +21,7 @@ class FileFormBuilderTest extends SapphireTest
 		parent::setUp();
 
 		// Set backend and base url
-		AssetStoreTest_SpyStore::activate('FileFormBuilderTest');
+		TestAssetStore::activate('FileFormBuilderTest');
 
         /** @var File $testfile */
         $testfile = $this->objFromFixture(File::class, 'file1');
@@ -44,7 +45,9 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertEquals('EditForm', $form->getName());
 
         // Test fields exist
-        $fileSpecs = $form->Fields()->fieldByName('FileSpecs')->getContent();
+        /** @var LiteralField $fileSpecsField */
+        $fileSpecsField = $form->Fields()->fieldByName('FileSpecs');
+        $fileSpecs = $fileSpecsField->getContent();
         $this->assertEquals(
             '<div class="editor__specs">11 bytes <span class="editor__status-flag">Draft</span></div>',
             $fileSpecs
@@ -52,10 +55,12 @@ class FileFormBuilderTest extends SapphireTest
         $filePath = $form->Fields()->fieldByName('Editor.Details.Path')->Value();
         $this->assertEquals('files/', $filePath);
 
-        $fileThumbnail = $form->Fields()->fieldByName('IconFull')->getContent();
+        /** @var LiteralField $iconFullField */
+        $iconFullField = $form->Fields()->fieldByName('IconFull');
+        $fileThumbnail = $iconFullField->getContent();
         $this->assertEquals(
             '<a class="editor__file-preview-link" href="/assets/files/6adf67caca/testfile.txt" target="_blank">'.
-                '<img src="framework/client/dist/images/app_icons/document_32.png" class="editor__thumbnail" />'.
+                '<img src="framework/client/dist/images/app_icons/document_92.png" class="editor__thumbnail" />'.
             '</a>',
             $fileThumbnail
         );
@@ -84,9 +89,11 @@ class FileFormBuilderTest extends SapphireTest
         $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
 
         // Test fields
+        /** @var LiteralField $fileSpecsField */
+        $fileSpecsField = $form->Fields()->fieldByName('FileSpecs');
         $this->assertEquals(
             '<div class="editor__specs">11 bytes <span class="editor__status-flag">Draft</span></div>',
-            $form->Fields()->fieldByName('FileSpecs')->getContent()
+            $fileSpecsField->getContent()
         );
         $this->assertEquals(
             'files/',
@@ -96,7 +103,7 @@ class FileFormBuilderTest extends SapphireTest
         // Test actions
         $this->assertNotNull($form->Actions()->fieldByName('action_save'));
     }
-    
+
     public function testEditImageForm() {
         $this->logInWithPermission('ADMIN');
 
@@ -107,21 +114,23 @@ class FileFormBuilderTest extends SapphireTest
 
         // Check thumbnail
         // Note: force_resample is turned off for testing
-        $fileThumbnail = $form->Fields()->fieldByName('IconFull')->getContent();
+        /** @var LiteralField $iconFullField */
+        $iconFullField = $form->Fields()->fieldByName('IconFull');
+        $fileThumbnail = $iconFullField->getContent();
         $this->assertContains(
             '/FileFormBuilderTest/files/906835357d/testimage.png',
             $fileThumbnail
         );
     }
-    
+
     public function testInsertImageForm() {
         $this->logInWithPermission('ADMIN');
-        
+
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
         $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => 'insert']);
-        
+
         // Check thumbnail
         // Note: force_resample is turned off for testing
         $altTextField = $form->Fields()->dataFieldByName('AltText');
@@ -141,8 +150,9 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertNull($form->Fields()->fieldByName('Editor.Details.ClickableURL'));
         $this->assertNull($form->Fields()->fieldByName('Editor.Usage'));
 
-
-        $fileThumbnail = $form->Fields()->fieldByName('IconFull')->getContent();
+        /** @var LiteralField $iconField */
+        $iconField = $form->Fields()->fieldByName('IconFull');
+        $fileThumbnail = $iconField->getContent();
         $this->assertEquals(
             '<img src="framework/client/dist/images/app_icons/folder_icon_large.png" class="editor__thumbnail" />',
             $fileThumbnail
