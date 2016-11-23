@@ -150,6 +150,7 @@ describe('GalleryItem', () => {
     });
 
     it('should return selected if the selected prop is true', () => {
+      props.selectable = true;
       props.selected = true;
 
       item = ReactTestUtils.renderIntoDocument(
@@ -157,6 +158,17 @@ describe('GalleryItem', () => {
       );
 
       expect(item.getItemClassNames()).toContain('item--selected');
+    });
+
+    it('should return not selected if the selected prop is true but not selectable', () => {
+      props.selectable = false;
+      props.selected = true;
+
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
+      );
+
+      expect(item.getItemClassNames()).not.toContain('item--selected');
     });
   });
 

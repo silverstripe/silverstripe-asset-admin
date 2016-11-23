@@ -4,11 +4,9 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Control\Controller;
-use SilverStripe\Core\Convert;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\HTMLReadonlyField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\PopoverField;
 use SilverStripe\Forms\ReadonlyField;
@@ -18,14 +16,21 @@ use SilverStripe\Forms\TextField;
 
 class FileFormFactory extends AssetFormFactory
 {
-    protected function getFormFieldTabs($record)
+    protected function getFormFieldTabs($record, $context = [])
     {
         // Add extra tab
         $tabs = TabSet::create(
             'Editor',
-            $this->getFormFieldDetailsTab($record),
-            $this->getFormFieldUsageTab($record)
+            $this->getFormFieldDetailsTab($record, $context),
+            $this->getFormFieldUsageTab($record, $context)
         );
+
+        if (isset($context['Type']) && $context['Type'] === 'insert') {
+            $tabs->setReadonly(true);
+
+            $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
+        }
+
         return $tabs;
     }
 
@@ -33,9 +38,10 @@ class FileFormFactory extends AssetFormFactory
      * Build "Usage" tab
      *
      * @param File $record
+     * @param array $context
      * @return Tab
      */
-    protected function getFormFieldUsageTab($record)
+    protected function getFormFieldUsageTab($record, $context = [])
     {
         // Add new tab for usage
         return Tab::create(
@@ -47,14 +53,47 @@ class FileFormFactory extends AssetFormFactory
         );
     }
 
-    protected function getFormFieldDetailsTab($record)
+    protected function getFormFieldDetailsTab($record, $context = [])
     {
         // Update details tab
-        return Tab::create(
+        $tab = Tab::create(
             'Details',
             TextField::create("Title", File::singleton()->fieldLabel('Title')),
             TextField::create('Name', File::singleton()->fieldLabel('Filename')),
             ReadonlyField::create("Path", _t('AssetTableField.PATH', 'Path'), $this->getPath($record))
+        );
+
+        if (isset($context['Type']) && $context['Type'] === 'insert') {
+            $tab->push(LiteralField::create('EditLink',
+                sprintf('<a href="%s" class="%s" target="_blank"><i class="%s" />%s</a>',
+                    $record->CMSEditLink(),
+                    'btn btn-secondary-outline font-icon-edit editor__edit-link',
+                    '',
+                    _t('AssetAdmin.EditLink', 'Edit original file')
+                )
+            ));
+        }
+        return $tab;
+    }
+
+    /**
+     * Create tab for file attributes
+     *
+     * @param File $record
+     * @param array $context
+     * @return Tab
+     */
+    protected function getFormFieldAttributesTab($record, $context = [])
+    {
+        return Tab::create(
+            'Placement',
+            LiteralField::create('AttributesDescription',
+                '<p>'. _t(
+                    'AssetAdmin.AttributesDescription',
+                    'These changes will only affect this particular placement of the file.'
+                ) .'</p>'
+            ),
+            TextField::create('Caption', _t('AssetAdmin.Caption', 'Caption'))
         );
     }
 
@@ -96,18 +135,24 @@ class FileFormFactory extends AssetFormFactory
     {
         $record = $context['Record'];
 
-        // Build top level bar
-        $actions = new FieldList(array_filter([
-            $this->getSaveAction($record),
-            $this->getPublishAction($record),
-            $this->getPopoverMenu($record)
-        ]));
+        if (isset($context['Type']) && $context['Type'] === 'insert') {
+            $actions = new FieldList(array_filter([
+                $this->getInsertAction($record),
+            ]));
+        } else {
+            // Build top level bar
+            $actions = new FieldList(array_filter([
+                $this->getSaveAction($record),
+                $this->getPublishAction($record),
+                $this->getPopoverMenu($record),
+            ]));
+        }
 
         // Update
         $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
         return $actions;
     }
-    
+
     /**
      * Get raw HTML for image markup
      *
@@ -167,7 +212,7 @@ class FileFormFactory extends AssetFormFactory
         }
         return null;
     }
-    
+
     /**
      * Get user-visible "Path" for this record
      *
@@ -245,4 +290,18 @@ class FileFormFactory extends AssetFormFactory
         }
         return null;
     }
+
+    /**
+     * @param File $record
+     * @return FormAction
+     */
+    protected function getInsertAction($record)
+    {
+        if ($record && $record->isInDB() && $record->canEdit()) {
+            return FormAction::create('insert', _t('CMSMain.INSERT', 'Insert file'))
+                ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
+        }
+        return null;
+    }
+
 }

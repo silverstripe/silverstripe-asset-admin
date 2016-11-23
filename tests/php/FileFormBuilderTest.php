@@ -55,7 +55,7 @@ class FileFormBuilderTest extends SapphireTest
         $fileThumbnail = $form->Fields()->fieldByName('IconFull')->getContent();
         $this->assertEquals(
             '<a class="editor__file-preview-link" href="/assets/files/6adf67caca/testfile.txt" target="_blank">'.
-                '<img src="framework/client/dist/images/app_icons/generic_32.png" class="editor__thumbnail" />'.
+                '<img src="framework/client/dist/images/app_icons/document_32.png" class="editor__thumbnail" />'.
             '</a>',
             $fileThumbnail
         );
@@ -96,7 +96,7 @@ class FileFormBuilderTest extends SapphireTest
         // Test actions
         $this->assertNotNull($form->Actions()->fieldByName('action_save'));
     }
-
+    
     public function testEditImageForm() {
         $this->logInWithPermission('ADMIN');
 
@@ -112,6 +112,20 @@ class FileFormBuilderTest extends SapphireTest
             '/FileFormBuilderTest/files/906835357d/testimage.png',
             $fileThumbnail
         );
+    }
+    
+    public function testInsertImageForm() {
+        $this->logInWithPermission('ADMIN');
+        
+        $image = $this->objFromFixture(Image::class, 'image1');
+        $controller = new AssetAdmin();
+        $builder = new ImageFormFactory();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => 'insert']);
+        
+        // Check thumbnail
+        // Note: force_resample is turned off for testing
+        $altTextField = $form->Fields()->dataFieldByName('AltText');
+        $this->assertNotNull($altTextField);
     }
 
     public function testFolderForm() {

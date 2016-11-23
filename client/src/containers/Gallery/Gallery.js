@@ -1,15 +1,13 @@
 import $ from 'jQuery';
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import ReactTestUtils from 'react-addons-test-utils';
-import Config from 'lib/Config';
 import Dropzone from 'components/AssetDropzone/AssetDropzone';
-import File from 'components/GalleryItem/GalleryItem';
+import GalleryItem from 'components/GalleryItem/GalleryItem';
 import BulkActions from 'components/BulkActions/BulkActions';
 import CONSTANTS from 'constants/index';
 import * as galleryActions from 'state/gallery/GalleryActions';
@@ -42,13 +40,10 @@ function getComparator(field, direction) {
   };
 }
 
-export class Gallery extends Component {
+class Gallery extends Component {
 
   constructor(props) {
     super(props);
-
-    this.sort = 'name';
-    this.direction = 'asc';
 
     this.sorters = [
       {
@@ -94,6 +89,19 @@ export class Gallery extends Component {
     this.refreshFolderIfNeeded();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.sort && !nextProps.files) {
+      return;
+    }
+    if (this.props.files.length !== nextProps.files.length
+      || this.props.sort !== nextProps.sort
+    ) {
+      const sort = nextProps.sort || `${this.sorters[0].field},${this.sorters[0].direction}`;
+      const [field, direction] = sort.split(',');
+      this.props.actions.gallery.sortFiles(getComparator(field, direction));
+    }
+  }
+
   componentWillUpdate() {
     const $select = $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
     $select.off('change');
@@ -117,64 +125,14 @@ export class Gallery extends Component {
     this.checkLoadingIndicator();
   }
 
+  componentWillUnmount() {
+    // clear existing folder content, so behaviour of component is predictable for the Modal
+    this.props.actions.gallery.unloadFolderContents();
+  }
+
   getNoItemsNotice() {
     if (this.props.files.length < 1 && this.props.queuedFiles.items.length < 1 && !this.props.loading) {
       return <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>;
-    }
-
-    return null;
-  }
-
-  getBackButton() {
-    const classes = [
-      'btn',
-      'btn-secondary',
-      'btn--no-text',
-      'font-icon-level-up',
-      'btn--icon-large',
-      'gallery__back',
-    ].join(' ');
-    if (this.props.folder.parentID !== null) {
-      return (
-        <button
-          className={classes}
-          onClick={this.handleBackClick}
-          ref="backButton"
-        >
-        </button>
-      );
-    }
-
-    return null;
-  }
-
-  getBulkActionsComponent() {
-    const deleteAction = (items) => {
-      const ids = items.map(item => item.id);
-      this.props.actions.gallery.deleteItems(this.props.deleteApi, ids);
-    };
-    const editAction = (items) => {
-      this.props.onOpenFile(items[0].id);
-    };
-    const actions = CONSTANTS.BULK_ACTIONS.map(action => {
-      if (action.value === 'delete' && !action.callback) {
-        return Object.assign({}, action, { callback: deleteAction });
-      }
-      if (action.value === 'edit' && !action.callback) {
-        return Object.assign({}, action, { callback: editAction });
-      }
-      return action;
-    });
-    const selectedFileObjs = this.props.selectedFiles.map(id => this.props.files.find(file => id === file.id));
-
-    if (selectedFileObjs.length > 0 && this.props.bulkActions) {
-      return (
-        <BulkActions
-          actions={actions}
-          items={selectedFileObjs}
-          key={selectedFileObjs.length > 0}
-        />
-      );
     }
 
     return null;
@@ -223,9 +181,11 @@ export class Gallery extends Component {
    * @param {Object} event - Click event.
    */
   handleSort(event) {
-    const data = event.target.dataset;
-    this.props.actions.queuedFiles.purgeUploadQueue();
-    this.props.actions.gallery.sortFiles(getComparator(data.field, data.direction));
+    if (typeof this.props.onSort === 'function') {
+      this.props.actions.queuedFiles.purgeUploadQueue();
+      this.props.onSort(event.target.value);
+      // this will flow round to `componentWillReceiveProps` and update sort there.
+    }
   }
 
   handleCancelUpload(fileData) {
@@ -289,6 +249,15 @@ export class Gallery extends Component {
 
     this.props.actions.queuedFiles.removeQueuedFile(file._queuedAtTime);
     this.props.actions.gallery.addFiles(json, this.props.count + 1);
+
+    // redirect to open the last uploaded file for 'insert modal' type only
+    if (this.props.type === 'insert'
+      && !this.props.fileId
+      && this.props.queuedFiles.items.length === 0
+    ) {
+      const lastFile = json.pop();
+      this.props.onOpenFile(lastFile.id);
+    }
   }
 
   handleFailedUpload(file, response) {
@@ -345,7 +314,7 @@ export class Gallery extends Component {
    */
   handleFolderActivate(event, folder) {
     event.preventDefault();
-    this.props.onOpenFolder(folder.id, folder);
+    this.props.onOpenFolder(folder.id);
   }
 
   /**
@@ -389,8 +358,145 @@ export class Gallery extends Component {
 
   handleBackClick(event) {
     event.preventDefault();
-    const base = this.props.sectionConfig.url;
-    this.props.router.push(`/${base}/show/${this.props.folder.parentID}`);
+    this.props.onOpenFolder(this.props.folder.parentID);
+  }
+
+  /**
+   * Generates the react components needed for the Toolbar part of this component.
+   *
+   * @returns {Component}
+   */
+  renderToolbar() {
+    const canEdit = this.props.folder.canEdit;
+
+    return (
+      <div className="toolbar--content toolbar--space-save">
+
+        {this.renderBackButton()}
+
+        <button
+          id="upload-button"
+          className="btn btn-secondary font-icon-upload btn--icon-xl"
+          type="button"
+          disabled={!canEdit}
+        >
+          <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
+        </button>
+
+        <button
+          id="add-folder-button"
+          className="btn btn-secondary font-icon-folder-add btn--icon-xl "
+          type="button"
+          onClick={this.handleCreateFolder}
+          disabled={!canEdit}
+        >
+          <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
+        </button>
+      </div>
+    );
+  }
+
+  /**
+   * Generates the react components needed for the Sorter part of this component.
+   *
+   * @returns {Component}
+   */
+  renderSort() {
+    return (
+      <div className="gallery__sort fieldholder-small">
+        <select
+          className="dropdown no-change-track no-chzn"
+          tabIndex="0"
+          style={{ width: '160px' }}
+          defaultValue={this.props.sort}
+        >
+          {this.sorters.map((sorter, i) =>
+            (
+              <option
+                key={i}
+                onClick={this.handleSort}
+                data-field={sorter.field}
+                data-direction={sorter.direction}
+                value={`${sorter.field},${sorter.direction}`}
+              >
+                {sorter.label}
+              </option>
+            )
+          )}
+        </select>
+      </div>
+    );
+  }
+
+  /**
+   * Generates the react components needed for the Back button.
+   *
+   * @returns {Component}
+   */
+  renderBackButton() {
+    const classes = [
+      'btn',
+      'btn-secondary',
+      'btn--no-text',
+      'font-icon-level-up',
+      'btn--icon-large',
+      'gallery__back',
+    ].join(' ');
+    if (this.props.folder.parentID !== null) {
+      return (
+        <button
+          className={classes}
+          onClick={this.handleBackClick}
+          ref="backButton"
+        >
+        </button>
+      );
+    }
+
+    return null;
+  }
+
+  /**
+   * Generates the react components needed for the BulkActions part of this component.
+   *
+   * @returns {Component}
+   */
+  renderBulkActions() {
+    const deleteAction = (items) => {
+      const ids = items.map(item => item.id);
+      this.props.actions.gallery.deleteItems(this.props.deleteApi, ids);
+    };
+    const editAction = (items) => {
+      this.props.onOpenFile(items[0].id);
+    };
+    const actions = CONSTANTS.BULK_ACTIONS.map(action => {
+      if (action.value === 'delete' && !action.callback) {
+        return Object.assign({}, action, { callback: deleteAction });
+      }
+      if (action.value === 'edit' && !action.callback) {
+        return Object.assign({}, action, { callback: editAction });
+      }
+      return action;
+    });
+    const selectedFileObjs = this.props.selectedFiles.map(id => this.props.files.find(file => id === file.id));
+
+    if (selectedFileObjs.length > 0 && this.props.type === 'admin') {
+      return (
+        <ReactCSSTransitionGroup
+          transitionName="bulk-actions"
+          transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
+          transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
+        >
+          <BulkActions
+            actions={actions}
+            items={selectedFileObjs}
+            key={selectedFileObjs.length > 0}
+          />
+        </ReactCSSTransitionGroup>
+      );
+    }
+
+    return null;
   }
 
   render() {
@@ -420,65 +526,26 @@ export class Gallery extends Component {
       paramName: 'Upload',
       clickable: '#upload-button',
     };
-    // TODO Use this.props.config once the store is consolidated with framework
-    const securityID = Config.get('SecurityID');
+
+    const securityID = this.props.securityId;
     const canEdit = this.props.folder.canEdit;
+
+    const selectableItem = this.props.type === 'admin';
+    const galleryClasses = [
+      'panel', 'panel--padded', 'panel--scrollable', 'gallery__main',
+    ];
+    if (this.props.dialog) {
+      galleryClasses.push('insert-media-modal__main');
+    }
 
     return (
       <div className="flexbox-area-grow gallery__outer">
-        <ReactCSSTransitionGroup
-          transitionName="bulk-actions"
-          transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-          transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-        >
-          {this.getBulkActionsComponent()}
-        </ReactCSSTransitionGroup>
+        {this.renderBulkActions()}
 
-        <div className="panel panel--padded panel--scrollable gallery__main">
-          <div className="gallery__sort fieldholder-small">
-            <select
-              className="dropdown no-change-track no-chzn"
-              tabIndex="0"
-              style={{ width: '160px' }}
-            >
-              {this.sorters.map((sorter, i) =>
-                (
-                  <option
-                    key={i}
-                    onClick={this.handleSort}
-                    data-field={sorter.field}
-                    data-direction={sorter.direction}
-                  >
-                    {sorter.label}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
+        <div className={galleryClasses.join(' ')}>
+          {this.renderSort()}
 
-          <div className="toolbar--content toolbar--space-save">
-
-            {this.getBackButton()}
-
-            <button
-              id="upload-button"
-              className="btn btn-secondary font-icon-upload btn--icon-xl"
-              type="button"
-              disabled={!canEdit}
-            >
-              <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
-            </button>
-
-            <button
-              id="add-folder-button"
-              className="btn btn-secondary font-icon-folder-add btn--icon-xl "
-              type="button"
-              onClick={this.handleCreateFolder}
-              disabled={!canEdit}
-            >
-              <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
-            </button>
-          </div>
+          {this.renderToolbar()}
 
           <Dropzone
             canUpload={canEdit}
@@ -495,54 +562,56 @@ export class Gallery extends Component {
           >
 
             <div className="gallery__folders">
-              {this.props.files.map((file, i) => {
-                let component = null;
-                if (file.type === 'folder') {
-                  component = (<File
+              {this.props.files.map((file, i) => (
+                (file.type === 'folder')
+                  ? (
+                  <GalleryItem
                     key={i}
                     item={file}
+                    selectable={selectableItem}
                     selected={this.itemIsSelected(file.id)}
                     highlighted={this.itemIsHighlighted(file.id)}
                     handleDelete={this.handleItemDelete}
                     handleToggleSelect={this.handleToggleSelect}
                     handleActivate={this.handleFolderActivate}
-                  />);
-                }
-                return component;
-              })}
+                  />
+                )
+                  : null
+              ))}
             </div>
 
             <div className="gallery__files">
-              {this.props.queuedFiles.items.map((file, i) =>
-                (<File
+              {this.props.queuedFiles.items.map((file, i) => (
+                <GalleryItem
                   key={`queued_file_${i}`}
                   item={file}
+                  selectable={selectableItem}
                   selected={this.itemIsSelected(file.id)}
                   highlighted={this.itemIsHighlighted(file.id)}
                   handleDelete={this.handleItemDelete}
-                  handleToggleSelect={this.handleToggleSelect}
                   handleActivate={this.handleFileActivate}
                   handleCancelUpload={this.handleCancelUpload}
                   handleRemoveErroredUpload={this.handleRemoveErroredUpload}
                   message={file.message}
                   uploading
-                />)
-              )}
-              {this.props.files.map((file, i) => {
-                let component = null;
-                if (file.type !== 'folder') {
-                  component = (<File
+                />
+              ))}
+              {this.props.files.map((file, i) => (
+                (file.type !== 'folder')
+                  ? (
+                  <GalleryItem
                     key={`file_${i}`}
                     item={file}
+                    selectable={selectableItem}
                     selected={this.itemIsSelected(file.id)}
                     highlighted={this.itemIsHighlighted(file.id)}
                     handleDelete={this.handleItemDelete}
                     handleToggleSelect={this.handleToggleSelect}
                     handleActivate={this.handleFileActivate}
-                  />);
-                }
-                return component;
-              })}
+                  />
+                )
+                  : null
+              ))}
             </div>
 
             {this.getNoItemsNotice()}
@@ -558,41 +627,42 @@ export class Gallery extends Component {
 }
 
 Gallery.defaultProps = {
-  bulkActions: true,
+  type: 'admin',
 };
 
 Gallery.propTypes = {
-  loading: React.PropTypes.bool,
-  count: React.PropTypes.number,
-  fileId: React.PropTypes.number,
-  folderId: React.PropTypes.number.isRequired,
-  folder: React.PropTypes.shape({
-    id: React.PropTypes.number,
-    parentID: React.PropTypes.number,
-    canView: React.PropTypes.bool,
-    canEdit: React.PropTypes.bool,
+  dialog: PropTypes.bool,
+  fileId: PropTypes.number,
+  folderId: PropTypes.number.isRequired,
+  folder: PropTypes.shape({
+    id: PropTypes.number,
+    parentID: PropTypes.number,
+    canView: PropTypes.bool,
+    canEdit: PropTypes.bool,
   }),
-  files: React.PropTypes.array, // all files as full objects (incl. ids)
-  selectedFiles: React.PropTypes.arrayOf(React.PropTypes.number), // ids only
-  bulkActions: React.PropTypes.bool,
-  limit: React.PropTypes.number,
-  page: React.PropTypes.number,
-  queuedFiles: React.PropTypes.shape({
-    items: React.PropTypes.array.isRequired,
+  queuedFiles: PropTypes.shape({
+    items: PropTypes.array.isRequired,
   }),
-  onOpenFile: React.PropTypes.func.isRequired,
-  onOpenFolder: React.PropTypes.func.isRequired,
-  createFileApiUrl: React.PropTypes.string,
-  createFileApiMethod: React.PropTypes.string,
-  createFolderApi: React.PropTypes.func,
-  readFolderApi: React.PropTypes.func,
-  deleteApi: React.PropTypes.func,
-  actions: React.PropTypes.object,
-  sectionConfig: React.PropTypes.shape({
-    url: React.PropTypes.string,
-  }),
-  router: React.PropTypes.object,
-  errorMessage: React.PropTypes.string,
+  onOpenFile: PropTypes.func.isRequired,
+  onOpenFolder: PropTypes.func.isRequired,
+  onSort: PropTypes.func,
+  createFileApiUrl: PropTypes.string,
+  createFileApiMethod: PropTypes.string,
+  createFolderApi: PropTypes.func,
+  readFolderApi: PropTypes.func,
+  deleteApi: PropTypes.func,
+  actions: PropTypes.object,
+  sort: PropTypes.string,
+  type: PropTypes.oneOf(['insert', 'admin']),
+  limit: PropTypes.number,
+  page: PropTypes.number,
+
+  loading: PropTypes.bool,
+  count: PropTypes.number,
+  files: PropTypes.array, // all files as full objects (incl. ids)
+  selectedFiles: PropTypes.arrayOf(PropTypes.number), // ids only
+  errorMessage: PropTypes.string,
+  securityId: PropTypes.string,
 };
 
 function mapStateToProps(state) {
@@ -601,17 +671,17 @@ function mapStateToProps(state) {
     count,
     files,
     selectedFiles,
-    page,
     errorMessage,
   } = state.assetAdmin.gallery;
+
   return {
-    errorMessage,
     loading,
     count,
     files,
     selectedFiles,
-    page,
+    errorMessage,
     queuedFiles: state.assetAdmin.queuedFiles,
+    securityId: state.config.SecurityID,
   };
 }
 
@@ -624,4 +694,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Gallery));
+export { Gallery };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Gallery);

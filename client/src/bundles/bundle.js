@@ -1,3 +1,5 @@
-require('../boot/index.js');
+require('expose?InsertMediaModal!containers/InsertMediaModal/InsertMediaModal');
 
-require('../styles/bundle.scss');
+require('boot');
+
+require('styles/bundle.scss');

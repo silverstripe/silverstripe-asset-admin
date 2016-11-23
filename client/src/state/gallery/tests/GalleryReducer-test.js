@@ -10,6 +10,26 @@ import galleryReducer from '../GalleryReducer.js';
 import GALLERY from '../GalleryActionTypes.js';
 
 describe('galleryReducer', () => {
+  describe('UNLOAD_FOLDER', () => {
+    const type = GALLERY.UNLOAD_FOLDER;
+    const initialState = {
+      count: 0,
+      files: [
+        { id: 2 },
+        { id: 4 },
+        { id: 7 },
+      ],
+    };
+
+    it('should clear the list of files', () => {
+      const nextState = galleryReducer(initialState, {
+        type,
+      });
+
+      expect(nextState.files.length).toBe(0);
+    });
+  });
+
   describe('ADD_FILES', () => {
     const type = GALLERY.ADD_FILES;
     const initialState = {

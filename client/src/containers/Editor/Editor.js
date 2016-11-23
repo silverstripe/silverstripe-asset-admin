@@ -12,7 +12,6 @@ class Editor extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAction = this.handleAction.bind(this);
-    this.handleSubmitModal = this.handleSubmitModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
 
@@ -21,10 +20,10 @@ class Editor extends Component {
     };
   }
 
-  getCancelButton() {
+  renderCancelButton() {
     return (<a
       tabIndex="0"
-      className="btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl"
+      className="btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl"
       onClick={this.handleClose}
       onKeyDown={this.handleCancelKeyDown}
       type="button"
@@ -75,10 +74,6 @@ class Editor extends Component {
     return submitFn();
   }
 
-  handleSubmitModal(data, action, submitFn) {
-    return submitFn();
-  }
-
   openModal() {
     this.setState({
       openModal: true,
@@ -103,21 +98,24 @@ class Editor extends Component {
   render() {
     const formSchemaUrl = `${this.props.editFileSchemaUrl}/${this.props.fileId}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
+    const editorClasses = [
+      'panel', 'panel--padded', 'panel--scrollable', 'form--no-dividers', 'editor',
+    ];
+    if (this.props.dialog) {
+      editorClasses.push('editor--dialog');
+    }
 
-
-    return (<div className="panel panel--padded panel--scrollable form--no-dividers editor">
-      { this.getCancelButton() }
-
+    return (<div className={editorClasses.join(' ')}>
       <div className="editor__details">
         <FormBuilderLoader
           schemaUrl={formSchemaUrl}
+          afterMessages={this.renderCancelButton()}
           handleSubmit={this.handleSubmit}
           handleAction={this.handleAction}
         />
         <FormBuilderModal
           show={this.state.openModal}
           handleHide={this.closeModal}
-          handleSubmit={this.handleSubmitModal}
           schemaUrl={modalSchemaUrl}
           bodyClassName="modal__dialog"
           responseClassBad="modal__response modal__response--error"
@@ -131,8 +129,8 @@ class Editor extends Component {
 }
 
 Editor.propTypes = {
+  dialog: React.PropTypes.bool,
   fileId: React.PropTypes.number.isRequired,
-  actions: React.PropTypes.object,
   onClose: React.PropTypes.func.isRequired,
   onSubmit: React.PropTypes.func.isRequired,
   onDelete: React.PropTypes.func.isRequired,

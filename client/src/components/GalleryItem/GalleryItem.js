@@ -1,5 +1,5 @@
 import i18n from 'i18n';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import CONSTANTS from 'constants/index';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 
@@ -33,7 +33,9 @@ class GalleryItem extends SilverStripeComponent {
   handleToggleSelect(event) {
     event.stopPropagation();
     event.preventDefault();
-    this.props.handleToggleSelect(event, this.props.item);
+    if (typeof this.props.handleToggleSelect === 'function') {
+      this.props.handleToggleSelect(event, this.props.item);
+    }
   }
 
   /**
@@ -122,15 +124,19 @@ class GalleryItem extends SilverStripeComponent {
    * @returns {string}
    */
   getItemClassNames() {
-    const category = this.props.item.category || 'none';
+    const category = this.props.item.category || 'false';
     const itemClassNames = [`gallery-item gallery-item--${category}`];
 
     if (!this.exists() && !this.uploading()) {
       itemClassNames.push('gallery-item--missing');
     }
 
-    if (this.props.selected) {
-      itemClassNames.push('gallery-item--selected');
+    if (this.props.selectable) {
+      itemClassNames.push('gallery-item--selectable');
+
+      if (this.props.selected) {
+        itemClassNames.push('gallery-item--selected');
+      }
     }
 
     if (this.props.highlighted) {
@@ -269,9 +275,14 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   render() {
-    let action = this.handleToggleSelect;
-    let actionIcon = 'font-icon-tick';
+    let action = null;
+    let actionIcon = null;
     let overlay = null;
+
+    if (this.props.selectable) {
+      action = this.handleToggleSelect;
+      actionIcon = 'font-icon-tick';
+    }
 
     if (this.uploading()) {
       action = this.handleCancelUpload;
@@ -319,29 +330,30 @@ class GalleryItem extends SilverStripeComponent {
 }
 
 GalleryItem.propTypes = {
-  item: React.PropTypes.shape({
-    dimensions: React.PropTypes.shape({
-      width: React.PropTypes.number,
-      height: React.PropTypes.number,
+  item: PropTypes.shape({
+    dimensions: PropTypes.shape({
+      width: PropTypes.number,
+      height: PropTypes.number,
     }),
-    category: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]).isRequired,
-    id: React.PropTypes.number.isRequired,
-    url: React.PropTypes.string,
-    title: React.PropTypes.string.isRequired,
-    progress: React.PropTypes.number,
+    category: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]).isRequired,
+    id: PropTypes.number.isRequired,
+    url: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    progress: PropTypes.number,
   }),
   // Can be used to highlight a currently edited file
-  highlighted: React.PropTypes.bool,
+  highlighted: PropTypes.bool,
   // Styles according to the checkbox selection state
-  selected: React.PropTypes.bool.isRequired,
-  handleActivate: React.PropTypes.func.isRequired,
-  handleToggleSelect: React.PropTypes.func.isRequired,
-  handleDelete: React.PropTypes.func.isRequired,
-  message: React.PropTypes.shape({
-    value: React.PropTypes.string,
-    type: React.PropTypes.string,
+  selected: PropTypes.bool.isRequired,
+  handleActivate: PropTypes.func.isRequired,
+  handleToggleSelect: PropTypes.func,
+  handleDelete: PropTypes.func.isRequired,
+  message: PropTypes.shape({
+    value: PropTypes.string,
+    type: PropTypes.string,
   }),
-  uploading: React.PropTypes.bool,
+  uploading: PropTypes.bool,
+  selectable: PropTypes.bool,
 };
 
 export default GalleryItem;

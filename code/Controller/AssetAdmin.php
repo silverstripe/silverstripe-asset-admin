@@ -94,6 +94,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiSearch',
         'FileEditForm',
         'AddToCampaignForm',
+        'FileInsertForm',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -159,6 +160,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'form' => [
                 'FileEditForm' => [
                     'schemaUrl' => $this->Link('schema/FileEditForm')
+                ],
+                'FileInsertForm' => [
+                    'schemaUrl' => $this->Link('schema/FileInsertForm')
                 ],
                 'AddToCampaignForm' => [
                     'schemaUrl' => $this->Link('schema/AddToCampaignForm')
@@ -662,6 +666,52 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $id = $request->param('ID') ?: $request->postVar('ID');
         return $this->getFileEditForm($id);
     }
+    
+    /**
+     * The form is used to generate a form schema,
+     * as well as an intermediary object to process data through API endpoints.
+     * Since it's used directly on API endpoints, it does not have any form actions.
+     * It handles both {@link File} and {@link Folder} records.
+     *
+     * @param int $id
+     * @return Form
+     */
+    public function getFileInsertForm($id)
+    {
+        /** @var File $file */
+        $file = $this->getList()->byID($id);
+        
+        if (!$file->canView()) {
+            $this->httpError(403, _t(
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
+                'You don\'t have the necessary permissions to modify {ObjectTitle}',
+                '',
+                ['ObjectTitle' => $file->i18n_singular_name()]
+            ));
+            return null;
+        }
+        
+        $scaffolder = $this->getFormFactory($file);
+        $form = $scaffolder->getForm($this, 'FileInsertForm', [
+            'Record' => $file,
+            'Type' => 'insert',
+        ]);
+        
+        return $form;
+    }
+    
+    /**
+     * Get file insert form
+     *
+     * @return Form
+     */
+    public function FileInsertForm()
+    {
+        // Get ID either from posted back value, or url parameter
+        $request = $this->getRequest();
+        $id = $request->param('ID') ?: $request->postVar('ID');
+        return $this->getFileInsertForm($id);
+    }
 
     /**
      * @param array $data
@@ -672,7 +722,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         return $this->saveOrPublish($data, $form, false);
     }
-
 
     /**
      * @param array $data
@@ -827,7 +876,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         return $object;
     }
-
 
     /**
      * Returns the files and subfolders contained in the currently selected folder,

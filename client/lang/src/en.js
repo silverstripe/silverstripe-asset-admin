@@ -79,5 +79,6 @@
     "AssetGalleryField.TITLE": "Title",
     "AssetGalleryField.TYPE": "File type",
     "AssetGalleryField.URL": "URL",
-    "Folder.Name": "Folder name"
+    "Folder.Name": "Folder name",
+    "HTMLEditorField_Toolbar.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
 }

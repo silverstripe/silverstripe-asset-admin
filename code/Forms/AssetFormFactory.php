@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
 use SilverStripe\Control\Controller;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
@@ -23,6 +24,7 @@ abstract class AssetFormFactory implements FormFactory
 {
     use Extensible;
     use Injectable;
+    use Configurable;
 
 	public function __construct() {
 		$this->constructExtensions();
@@ -40,7 +42,7 @@ abstract class AssetFormFactory implements FormFactory
 		$fields = $this->getFormFields($controller, $name, $context);
 		$actions = $this->getFormActions($controller, $name, $context);
 		$form = Form::create($controller, $name, $fields, $actions);
-        
+
         $form->getValidator()->addRequiredField('Name');
 		// Extend form
 		$this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
@@ -72,9 +74,10 @@ abstract class AssetFormFactory implements FormFactory
      * @param File $record
      * @return TabSet
      */
-    protected function getFormFieldTabs($record)
+    protected function getFormFieldTabs($record, $context = [])
     {
         $tabs = TabSet::create('Editor', $this->getFormFieldDetailsTab($record));
+
         return $tabs;
     }
 
@@ -132,7 +135,7 @@ abstract class AssetFormFactory implements FormFactory
                 ->addExtraClass('editor__heading'),
             LiteralField::create("IconFull", $this->getIconMarkup($record))
                 ->addExtraClass('editor__file-preview'),
-            $this->getFormFieldTabs($record)
+            $this->getFormFieldTabs($record, $context)
         );
         if ($record) {
             $fields->push(HiddenField::create('ID', $record->ID));
@@ -146,9 +149,10 @@ abstract class AssetFormFactory implements FormFactory
      * Build "details" formfield tab
      *
      * @param File $record
+     * @param array $context
      * @return Tab
      */
-    protected function getFormFieldDetailsTab($record)
+    protected function getFormFieldDetailsTab($record, $context = [])
     {
         return Tab::create(
             'Details',

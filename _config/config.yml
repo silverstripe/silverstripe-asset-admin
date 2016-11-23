@@ -7,5 +7,5 @@ SilverStripe\Assets\File:
   extensions:
     - 'SilverStripe\AssetAdmin\Controller\AssetAdminFile'
 SilverStripe\Admin\LeftAndMain:
-  extra_requirements_javascript:
-    - asset-admin/client/dist/js/bundle.js
+  extensions:
+    - SilverStripe\AssetAdmin\Controller\AssetAdminFieldsExtension

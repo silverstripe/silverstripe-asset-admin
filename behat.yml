@@ -1,0 +1,22 @@
+# Run asset-admin behat tests with this command (installed with silverstripe/installer)
+# Note that asset-admin behat tests require CMS module
+# ========================================================================= #
+# vendor/bin/selenium-server-standalone -Dwebdriver.firefox.bin="/Applications/Firefox31.app/Contents/MacOS/firefox-bin"
+# vendor/bin/serve --bootstrap-file cms/tests/behat/serve-bootstrap.php
+# vendor/bin/behat @asset-admin --config=./asset-admin/behat.yml
+# ========================================================================= #
+default:
+  context:
+    class: SilverStripe\AssetAdmin\Tests\Behat\Context\FeatureContext
+  extensions:
+    SilverStripe\BehatExtension\Extension:
+      framework_path: ../framework
+      bootstrap_file: "cms/tests/behat/serve-bootstrap.php"
+    Behat\MinkExtension\Extension:
+      # Adjust this to your local environment
+      base_url:  http://localhost:8080/
+      files_path: %behat.paths.base%/tests/behat/files/
+      default_session: selenium2
+      javascript_session: selenium2
+      selenium2:
+        browser: firefox

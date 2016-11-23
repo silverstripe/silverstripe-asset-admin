@@ -94,6 +94,17 @@ export function loadFolderContents(listApi, folderId, limit, page) {
 }
 
 /**
+ * Clears the contents for folders
+ *
+ * @returns {object}
+ */
+export function unloadFolderContents() {
+  return {
+    type: GALLERY.UNLOAD_FOLDER,
+  };
+}
+
+/**
  * Updates a file with new data.
  *
  * @param number id - The id of the file to update.

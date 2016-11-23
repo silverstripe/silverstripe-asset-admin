@@ -13,6 +13,19 @@ en:
     FILE_MISSING: 'File cannot be found'
     MENUTITLE: Files
     NEWFOLDER: NewFolder
+    AttributesDescription: 'These changes will only affect this particular placement of the file.'
+    Alignment: 'Alignment / style'
+    AlignmentCenter: 'Centered, on its own.'
+    AlignmentLeft: 'On the left, with text wrapping around.'
+    AlignmentLeftAlone: 'On the left, on its own.'
+    AlignmentRight: 'On the right, with text wrapping around.'
+    Caption: Caption
+    AltText: 'Alternative text (alt)'
+    TitleTooltip: 'Title text (tooltip)'
+    TitleTooltipDescription: 'For additional information about the image'
+    ImageSpecs: 'Dimensions'
+    ImageWidth: 'Width'
+    ImageHeight: 'Height'
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Delete folders'
   CMSSearch:
