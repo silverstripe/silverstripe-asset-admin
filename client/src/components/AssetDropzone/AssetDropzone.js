@@ -5,6 +5,8 @@ import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
 import $ from 'jQuery';
 
+let idCounter = 0;
+
 class AssetDropzone extends SilverStripeComponent {
 
   constructor(props) {
@@ -267,17 +269,12 @@ class AssetDropzone extends SilverStripeComponent {
   }
 
   /**
-   * Generate approximate guid.
-   * Credit to http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#2117523
+   * Generate unique ID
    *
    * @returns {String}
    */
   generateQueuedId() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0;
-      const v = (c === 'x') ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
+    return ++idCounter;
   }
 
   /**
@@ -355,7 +352,7 @@ class AssetDropzone extends SilverStripeComponent {
   getFileExtension(filename) {
     return /[.]/.exec(filename)
       ? filename.replace(/^.+[.]/, '')
-      : undefined;
+      : '';
   }
 
   /**

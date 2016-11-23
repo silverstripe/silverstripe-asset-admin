@@ -45,7 +45,7 @@ class FileFieldItem extends SilverStripeComponent {
    *
    * @returns {Object}
    */
-  getErrorMessage() {
+  renderErrorMessage() {
     let message = null;
 
     if (this.hasError()) {
@@ -188,7 +188,7 @@ class FileFieldItem extends SilverStripeComponent {
    *
    * @returns {Object}
    */
-  getProgressBar() {
+  renderProgressBar() {
     const progressBarProps = {
       className: 'file-field-item__progress-bar',
       style: {
@@ -217,7 +217,7 @@ class FileFieldItem extends SilverStripeComponent {
    *
    * @returns {XML}
    */
-  getRemoveButton() {
+  renderRemoveButton() {
     const classes = [
       'btn',
       'file-field-item__remove-btn',
@@ -241,7 +241,7 @@ class FileFieldItem extends SilverStripeComponent {
    *
    * @returns {XML}
    */
-  getFileDetails() {
+  renderFileDetails() {
     return (
       <div className="file-field-item__details fill-width flexbox-area-grow">
         <span className="file-field-item__title" ref="title">
@@ -268,10 +268,10 @@ class FileFieldItem extends SilverStripeComponent {
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
         ></div>
-        {this.getFileDetails()}
-        {this.getProgressBar()}
-        {this.getErrorMessage()}
-        {this.getRemoveButton()}
+        {this.renderFileDetails()}
+        {this.renderProgressBar()}
+        {this.renderErrorMessage()}
+        {this.renderRemoveButton()}
       </div>
     );
   }

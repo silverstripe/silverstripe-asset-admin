@@ -4,7 +4,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\Assets\Folder;
-use SilverStripe\Forms\FileUploadable;
+use SilverStripe\Forms\FileUploadReceiver;
 use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
@@ -22,7 +22,7 @@ use SilverStripe\ORM\SS_List;
  */
 class FileField extends FormField
 {
-    use FileUploadable;
+    use FileUploadReceiver;
 
     /**
      * @config
@@ -45,22 +45,23 @@ class FileField extends FormField
      */
     protected $multiUpload = null;
 
-	/**
-	 * Create a new file field.
-	 *
-	 * @param string $name The internal field name, passed to forms.
-	 * @param string $title The field label.
-	 * @param SS_List $items Items assigned to this field
-	 */
-	public function __construct($name, $title = null, SS_List $items = null) {
-		$this->constructFileUploadable();
-		parent::__construct($name, $title);
-		if($items) {
-			$this->setItems($items);
-		}
-	}
+    /**
+     * Create a new file field.
+     *
+     * @param string $name The internal field name, passed to forms.
+     * @param string $title The field label.
+     * @param SS_List $items Items assigned to this field
+     */
+    public function __construct($name, $title = null, SS_List $items = null)
+    {
+        $this->constructFileUploadReceiver();
+        parent::__construct($name, $title);
+        if($items) {
+            $this->setItems($items);
+        }
+    }
 
-	public function getSchemaDataDefaults()
+    public function getSchemaDataDefaults()
     {
         $defaults = parent::getSchemaDataDefaults();
         $uploadLink = AssetAdmin::singleton()->Link('api/createFile');
@@ -79,7 +80,8 @@ class FileField extends FormField
      *
      * @return int
      */
-    protected function getFolderID() {
+    protected function getFolderID()
+    {
         $folderName = $this->getFolderName();
         if (!$folderName) {
             return 0;
@@ -115,7 +117,8 @@ class FileField extends FormField
      *
      * @return bool
      */
-    public function getIsMultiUpload() {
+    public function getIsMultiUpload()
+    {
         if (isset($this->multiUpload)) {
             return $this->multiUpload;
         }
@@ -132,9 +135,13 @@ class FileField extends FormField
 
     /**
      * Set upload type to multi / single
+     *
      * @param $multi
+     * @return $this
      */
-    public function setIsMultiUpload($multi) {
+    public function setIsMultiUpload($multi)
+    {
         $this->multiUpload = $multi;
+        return $this;
     }
 }

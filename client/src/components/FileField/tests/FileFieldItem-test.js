@@ -97,14 +97,14 @@ describe('FileFieldItem', () => {
     });
   });
 
-  describe('getProgressBar()', () => {
+  describe('renderProgressBar()', () => {
     it('displays partial progress correctly', () => {
       props.item.progress = 50;
       props.item.uploaded = true;
       file = ReactTestUtils.renderIntoDocument(
         <FileFieldItem {...props} />
       );
-      const progress = file.getProgressBar();
+      const progress = file.renderProgressBar();
       expect(progress.type).toBe('div');
       expect(progress.props.className).toBe('file-field-item__upload-progress');
       expect(progress.props.children.props.style.width).toBe('50%');
@@ -117,7 +117,7 @@ describe('FileFieldItem', () => {
       file = ReactTestUtils.renderIntoDocument(
         <FileFieldItem {...props} />
       );
-      const progress = file.getProgressBar();
+      const progress = file.renderProgressBar();
       expect(progress.type).toBe('div');
       expect(progress.props.className).toBe('file-field-item__complete-icon');
     });
@@ -128,7 +128,7 @@ describe('FileFieldItem', () => {
       file = ReactTestUtils.renderIntoDocument(
         <FileFieldItem {...props} />
       );
-      const progress = file.getProgressBar();
+      const progress = file.renderProgressBar();
       expect(progress).toBe(null);
     });
 
@@ -144,12 +144,12 @@ describe('FileFieldItem', () => {
       file = ReactTestUtils.renderIntoDocument(
         <FileFieldItem {...props} />
       );
-      const progress = file.getProgressBar();
+      const progress = file.renderProgressBar();
       expect(progress).toBe(null);
     });
   });
 
-  describe('getErrorMessage()', () => {
+  describe('renderErrorMessage()', () => {
     it('displays error messages', () => {
       props.item.message = {
         value: 'Error uploading',
@@ -158,7 +158,7 @@ describe('FileFieldItem', () => {
       file = ReactTestUtils.renderIntoDocument(
         <FileFieldItem {...props} />
       );
-      const error = file.getErrorMessage();
+      const error = file.renderErrorMessage();
       expect(error.type).toBe('div');
       expect(error.props.className).toBe('file-field-item__error-message');
       expect(error.props.children).toBe('Error uploading');
@@ -168,7 +168,7 @@ describe('FileFieldItem', () => {
       file = ReactTestUtils.renderIntoDocument(
         <FileFieldItem {...props} />
       );
-      const error = file.getErrorMessage();
+      const error = file.renderErrorMessage();
       expect(error).toBe(null);
     });
   });

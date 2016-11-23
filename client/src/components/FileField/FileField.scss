@@ -1,3 +1,6 @@
+// Custom lighter version of $background-main
+$filefield-background-color: #fafbfc;
+
 // Override asset-dropzone styles
 .file-field__dropzone {
   position: relative;
@@ -11,7 +14,7 @@
   border-color: $border-color-dark;
   border-radius: 5px;
   padding: 0;
-  background: #fafbfc;
+  background: $filefield-background-color;
 
   &:hover {
     cursor: pointer;

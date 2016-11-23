@@ -20,17 +20,6 @@ class Editor extends Component {
     };
   }
 
-  renderCancelButton() {
-    return (<a
-      tabIndex="0"
-      className="btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl"
-      onClick={this.handleClose}
-      onKeyDown={this.handleCancelKeyDown}
-      type="button"
-      aria-label={i18n._t('AssetAdmin.CANCEL')}
-    />);
-  }
-
   handleAction(event, data) {
     const name = event.currentTarget.name;
 
@@ -74,6 +63,15 @@ class Editor extends Component {
     return submitFn();
   }
 
+  handleClose(event) {
+    this.props.onClose();
+    this.closeModal();
+
+    if (event) {
+      event.preventDefault();
+    }
+  }
+
   openModal() {
     this.setState({
       openModal: true,
@@ -86,13 +84,15 @@ class Editor extends Component {
     });
   }
 
-  handleClose(event) {
-    this.props.onClose();
-    this.closeModal();
-
-    if (event) {
-      event.preventDefault();
-    }
+  renderCancelButton() {
+    return (<a
+      tabIndex="0"
+      className="btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl"
+      onClick={this.handleClose}
+      onKeyDown={this.handleCancelKeyDown}
+      type="button"
+      aria-label={i18n._t('AssetAdmin.CANCEL')}
+    />);
   }
 
   render() {

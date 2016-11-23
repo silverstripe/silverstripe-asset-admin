@@ -46,7 +46,7 @@ export function failUpload(fieldId, queuedId, response) {
       };
     }
     return dispatch({
-      type: ACTION_TYPES.FILEFIELD_FAIL_UPLOAD,
+      type: ACTION_TYPES.FILEFIELD_UPLOAD_FAILURE,
       payload: { fieldId, queuedId, message },
     });
   };
@@ -76,7 +76,7 @@ export function removeFile(fieldId, file) {
 export function succeedUpload(fieldId, queuedId, json) {
   return (dispatch) =>
     dispatch({
-      type: ACTION_TYPES.FILEFIELD_SUCCEED_UPLOAD,
+      type: ACTION_TYPES.FILEFIELD_UPLOAD_SUCCESS,
       payload: { fieldId, queuedId, json },
     });
 }

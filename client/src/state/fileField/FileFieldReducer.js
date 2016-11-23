@@ -1,43 +1,6 @@
 import deepFreeze from 'deep-freeze-strict';
 import ACTION_TYPES from './FileFieldActionTypes';
-
-export function fileFactory() {
-  return deepFreeze({
-    attributes: {
-      dimensions: {
-        height: null,
-        width: null,
-      },
-    },
-    name: null,
-    canDelete: false,
-    canEdit: false,
-    category: null,
-    created: null,
-    extension: null,
-    filename: null,
-    id: 0,
-    lastUpdated: null,
-    messages: null,
-    owner: {
-      id: 0,
-      title: null,
-    },
-    parent: {
-      filename: null,
-      id: 0,
-      title: null,
-    },
-    queuedId: null,
-    size: null,
-    title: null,
-    type: null,
-    url: null,
-    xhr: null,
-    progress: 0,
-    uploaded: false, // Set to true if file is uploaded. False if existing / attached
-  });
-}
+import fileStructure from 'lib/FileStructure';
 
 const initialState = {
   fields: {},
@@ -51,7 +14,7 @@ function fileFieldReducer(state = initialState, action) {
         fields: Object.assign({}, state.fields, {
           [action.payload.fieldId]: [
             ...(state.fields[action.payload.fieldId] || []),
-            Object.assign({}, fileFactory(), action.payload.file),
+            Object.assign({}, fileStructure, action.payload.file),
           ],
         }),
       }));
@@ -63,7 +26,7 @@ function fileFieldReducer(state = initialState, action) {
         }),
       }));
 
-    case ACTION_TYPES.FILEFIELD_FAIL_UPLOAD:
+    case ACTION_TYPES.FILEFIELD_UPLOAD_FAILURE:
       // Add an error message to the failed file.
       return deepFreeze(Object.assign({}, state, {
         fields: Object.assign({}, state.fields, {
@@ -91,7 +54,7 @@ function fileFieldReducer(state = initialState, action) {
         }),
       }));
 
-    case ACTION_TYPES.FILEFIELD_SUCCEED_UPLOAD:
+    case ACTION_TYPES.FILEFIELD_UPLOAD_SUCCESS:
       return deepFreeze(Object.assign({}, state, {
         fields: Object.assign({}, state.fields, {
           [action.payload.fieldId]: (state.fields[action.payload.fieldId] || [])

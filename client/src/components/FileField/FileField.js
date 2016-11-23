@@ -1,10 +1,11 @@
+import i18n from 'i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CONSTANTS from 'constants/index';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
-import FileFieldItem from 'components/FileFieldItem/FileFieldItem';
+import FileFieldItem from 'components/FileField/FileFieldItem';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
 import fileShape from 'lib/fileShape';
 import * as fileFieldActions from 'state/fileField/FileFieldActions';
@@ -179,7 +180,7 @@ class FileField extends SilverStripeComponent {
       >
         <div className="file-field__dropzone-area">
           <span className="file-field__droptext">
-            <a className="file-field__upload-button">Browse</a>
+            <a className="file-field__upload-button">{i18n._t('AssetAdminFileField.BROWSE', 'Browse')}</a>
           </span>
         </div>
       </AssetDropzone>
