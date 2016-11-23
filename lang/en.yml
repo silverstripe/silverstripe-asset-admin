@@ -13,7 +13,7 @@ en:
     FILE_MISSING: 'File cannot be found'
     MENUTITLE: Files
     NEWFOLDER: NewFolder
-    AttributesDescription: 'These changes will only affect the attributes of this particular file.'
+    AttributesDescription: 'These changes will only affect this particular placement of the file.'
     Alignment: 'Alignment / style'
     AlignmentCenter: 'Centered, on its own.'
     AlignmentLeft: 'On the left, with text wrapping around.'

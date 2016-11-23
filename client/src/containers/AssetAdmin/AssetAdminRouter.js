@@ -57,7 +57,6 @@ class AssetAdminRouter extends Component {
    * @param {object|null} newQuery
    */
   handleBrowse(folderId, fileId, newQuery) {
-
     const pathname = this.getUrl(folderId, fileId);
 
     let query = null;

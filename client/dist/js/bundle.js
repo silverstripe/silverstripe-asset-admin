@@ -10,7 +10,7 @@ return t["default"]=e,t}function i(e){return e&&e.__esModule?e:{"default":e}}fun
 
 
 return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t)
-e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function a(e,t){var n=e.config.sections[A],r=t.fileAttributes.ID,i=e.config.sections[A],o=r&&i.form.FileInsertForm.schemaUrl+"/"+r
+e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function a(e,t){var n=e.config.sections[T],r=t.fileAttributes.ID,i=e.config.sections[T],o=r&&i.form.FileInsertForm.schemaUrl+"/"+r
 
 
 return{sectionConfig:n,schemaUrl:o}}function u(e){return{actions:{schema:(0,m.bindActionCreators)(F,e)}}}Object.defineProperty(t,"__esModule",{value:!0}),t.InsertMediaModal=void 0
@@ -20,7 +20,7 @@ if(Array.isArray(t))return t
 if(Symbol.iterator in Object(t))return e(t,n)
 throw new TypeError("Invalid attempt to destructure non-iterable instance")}}(),p=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},c=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
-r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),f=n(3),h=i(f),m=n(4),y=n(5),g=n(6),v=i(g),E=n(16),b=i(E),_=n(31),F=r(_),A="SilverStripe\\AssetAdmin\\Controller\\AssetAdmin",T=function(e){
+r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),f=n(3),h=i(f),m=n(4),y=n(5),g=n(6),v=i(g),E=n(16),b=i(E),_=n(31),F=r(_),T="SilverStripe\\AssetAdmin\\Controller\\AssetAdmin",A=function(e){
 function t(e){o(this,t)
 var n=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleSubmit=n.handleSubmit.bind(n),n.handleBrowse=n.handleBrowse.bind(n),n.getUrl=n.getUrl.bind(n),n.state={folderId:0,fileId:e.fileAttributes.ID,query:{}},n}return s(t,e),c(t,[{key:"componentWillMount",
@@ -39,9 +39,9 @@ r=null===n||n?p({},this.state.query,n):this.state.query,this.setState({folderId:
 
 
 return h["default"].createElement(b["default"],e,n)}}]),t}(f.Component)
-T.propTypes={sectionConfig:f.PropTypes.shape({url:f.PropTypes.string,form:f.PropTypes.object}),schemaUrl:f.PropTypes.string,show:f.PropTypes.bool,onInsert:f.PropTypes.func.isRequired,fileAttributes:f.PropTypes.shape({
-ID:f.PropTypes.number,AltText:f.PropTypes.string,Width:f.PropTypes.number,Height:f.PropTypes.number,TitleTooltip:f.PropTypes.string,Alignment:f.PropTypes.string}),fileId:f.PropTypes.number,onHide:f.PropTypes.bool,
-className:f.PropTypes.string,actions:f.PropTypes.object},T.defaultProps={className:"",fileAttributes:{}},t.InsertMediaModal=T,t["default"]=(0,y.connect)(a,u)(T)},function(e,t){e.exports=React},function(e,t){
+A.propTypes={sectionConfig:f.PropTypes.shape({url:f.PropTypes.string,form:f.PropTypes.object}),schemaUrl:f.PropTypes.string,show:f.PropTypes.bool,onInsert:f.PropTypes.func.isRequired,fileAttributes:f.PropTypes.shape({
+ID:f.PropTypes.number,AltText:f.PropTypes.string,Width:f.PropTypes.number,Height:f.PropTypes.number,TitleTooltip:f.PropTypes.string,Alignment:f.PropTypes.string}),fileId:f.PropTypes.number,onHide:f.PropTypes.func,
+className:f.PropTypes.string,actions:f.PropTypes.object},A.defaultProps={className:"",fileAttributes:{}},t.InsertMediaModal=A,t["default"]=(0,y.connect)(a,u)(A)},function(e,t){e.exports=React},function(e,t){
 e.exports=Redux},function(e,t){e.exports=ReactRedux},function(e,t,n){"use strict"
 function r(e){if(e&&e.__esModule)return e
 var t={}
@@ -53,11 +53,11 @@ return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("funct
 e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function a(e,t){var n=e.assetAdmin.gallery.folder,r=e.assetAdmin.gallery.files
 
 
-return{files:r,folder:n,limit:t.sectionConfig.limit,securityId:e.config.SecurityID}}function u(e){return{actions:{gallery:(0,m.bindActionCreators)(A,e),breadcrumbsActions:(0,m.bindActionCreators)(O,e)}
+return{files:r,folder:n,limit:t.sectionConfig.limit,securityId:e.config.SecurityID}}function u(e){return{actions:{gallery:(0,m.bindActionCreators)(T,e),breadcrumbsActions:(0,m.bindActionCreators)(O,e)}
 }}Object.defineProperty(t,"__esModule",{value:!0}),t.AssetAdmin=void 0
 var d=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},p=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
-r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),c=n(3),f=i(c),h=n(5),m=n(4),y=n(7),g=i(y),v=n(8),E=i(v),b=n(9),_=i(b),F=n(10),A=r(F),T=n(12),O=r(T),w=n(13),D=i(w),C=n(17),P=i(C),I=n(29),S=i(I),k=n(30),L=i(k),U=function(e){
+r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),c=n(3),f=i(c),h=n(5),m=n(4),y=n(7),g=i(y),v=n(8),E=i(v),b=n(9),_=i(b),F=n(10),T=r(F),A=n(12),O=r(A),w=n(13),D=i(w),P=n(17),C=i(P),I=n(29),S=i(I),k=n(30),U=i(k),L=function(e){
 function t(e){o(this,t)
 var n=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleOpenFile=n.handleOpenFile.bind(n),n.handleCloseFile=n.handleCloseFile.bind(n),n["delete"]=n["delete"].bind(n),n.handleSubmitEditor=n.handleSubmitEditor.bind(n),n.handleOpenFolder=n.handleOpenFolder.bind(n),
@@ -78,39 +78,38 @@ if("function"==typeof this.props.onSubmitEditor){var o=this.props.files.find(fun
 i=this.props.onSubmitEditor(e,t,n,o)}else i=n()
 if(!i)throw new Error("Promise was not returned for submitting")
 return i.then(function(e){return e&&e.record&&r.props.actions.gallery.loadFile(r.props.fileId,e.record),e})}},{key:"handleCloseFile",value:function b(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",
-value:function F(e){this.handleBrowse(e)}},{key:"delete",value:function A(e){var t=this,n=this.props.files.find(function(t){return t.id===e})
+value:function F(e){this.handleBrowse(e)}},{key:"delete",value:function T(e){var t=this,n=this.props.files.find(function(t){return t.id===e})
 if(!n&&this.props.folder&&this.props.folder.id===e&&(n=this.props.folder),!n)throw new Error("File selected for deletion cannot be found: "+e)
 var r=n.parent?n.parent.id:0
-confirm(_["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.endpoints.deleteApi,[n.id]).then(function(){t.handleBrowse(r)})}},{key:"renderGallery",value:function T(){
+confirm(_["default"]._t("AssetAdmin.CONFIRMDELETE"))&&this.props.actions.gallery.deleteItems(this.endpoints.deleteApi,[n.id]).then(function(){t.handleBrowse(r)})}},{key:"renderGallery",value:function A(){
 var e=this.props.sectionConfig,t=e.createFileEndpoint.url,n=e.createFileEndpoint.method,r=this.props.query&&this.props.query.limit,i=this.props.query&&this.props.query.page,o=this.props.query&&this.props.query.sort
 
 
-return f["default"].createElement(P["default"],{dialog:this.props.dialog,files:this.props.files,fileId:this.props.fileId,folderId:this.props.folderId,folder:this.props.folder,type:this.props.type,limit:r,
+return f["default"].createElement(C["default"],{dialog:this.props.dialog,files:this.props.files,fileId:this.props.fileId,folderId:this.props.folderId,folder:this.props.folder,type:this.props.type,limit:r,
 page:i,createFileApiUrl:t,createFileApiMethod:n,createFolderApi:this.endpoints.createFolderApi,readFolderApi:this.endpoints.readFolderApi,updateFolderApi:this.endpoints.updateFolderApi,deleteApi:this.endpoints.deleteApi,
 onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,onSort:this.handleSort,sort:o,sectionConfig:e})}},{key:"renderEditor",value:function O(){var e=this,t=this.props.sectionConfig,n=this.props.files.find(function(t){
 return t.id===parseInt(e.props.fileId,10)}),r="insert"===this.props.type?t.form.FileInsertForm.schemaUrl:t.form.FileEditForm.schemaUrl
-return n||this.props.fileId===this.props.folderId?f["default"].createElement(D["default"],{fileId:this.props.fileId,onClose:this.handleCloseFile,editFileSchemaUrl:r,onSubmit:this.handleSubmitEditor,onDelete:this["delete"],
-addToCampaignSchemaUrl:t.form.AddToCampaignForm.schemaUrl}):null}},{key:"render",value:function w(){var e=!(!this.props.folder||!this.props.folder.id)
-return f["default"].createElement("div",{className:"fill-height"},f["default"].createElement(L["default"],{showBackButton:e,handleBackButtonClick:this.handleBackButtonClick},f["default"].createElement(S["default"],{
+return n||this.props.fileId===this.props.folderId?f["default"].createElement(D["default"],{dialog:this.props.dialog,fileId:this.props.fileId,onClose:this.handleCloseFile,editFileSchemaUrl:r,onSubmit:this.handleSubmitEditor,
+onDelete:this["delete"],addToCampaignSchemaUrl:t.form.AddToCampaignForm.schemaUrl}):null}},{key:"render",value:function w(){var e=!(!this.props.folder||!this.props.folder.id)
+return f["default"].createElement("div",{className:"fill-height"},f["default"].createElement(U["default"],{showBackButton:e,handleBackButtonClick:this.handleBackButtonClick},f["default"].createElement(S["default"],{
 multiline:!0})),f["default"].createElement("div",{className:"flexbox-area-grow fill-width fill-height gallery"},this.renderGallery(),this.renderEditor()))}}]),t}(g["default"])
-U.propTypes={dialog:c.PropTypes["boolean"],sectionConfig:c.PropTypes.shape({url:c.PropTypes.string,limit:c.PropTypes.number,form:c.PropTypes.object}),fileId:c.PropTypes.number,folderId:c.PropTypes.number,
-onBrowse:c.PropTypes.func,getUrl:c.PropTypes.func,query:c.PropTypes.shape({sort:c.PropTypes.string}),onSubmitEditor:c.PropTypes.func,type:c.PropTypes.oneOf(["insert","admin"]),files:c.PropTypes.array,folder:c.PropTypes.shape({
-id:c.PropTypes.number,title:c.PropTypes.string,parents:c.PropTypes.array,parentID:c.PropTypes.number,canView:c.PropTypes.bool,canEdit:c.PropTypes.bool})},U.defaultProps={type:"admin"},t.AssetAdmin=U,t["default"]=(0,
-h.connect)(a,u)(U)},function(e,t){e.exports=SilverStripeComponent},function(e,t){e.exports=Backend},function(e,t){e.exports=i18n},function(e,t,n){"use strict"
+L.propTypes={dialog:c.PropTypes.bool,sectionConfig:c.PropTypes.shape({url:c.PropTypes.string,limit:c.PropTypes.number,form:c.PropTypes.object}),fileId:c.PropTypes.number,folderId:c.PropTypes.number,onBrowse:c.PropTypes.func,
+getUrl:c.PropTypes.func,query:c.PropTypes.shape({sort:c.PropTypes.string}),onSubmitEditor:c.PropTypes.func,type:c.PropTypes.oneOf(["insert","admin"]),files:c.PropTypes.array,folder:c.PropTypes.shape({id:c.PropTypes.number,
+title:c.PropTypes.string,parents:c.PropTypes.array,parentID:c.PropTypes.number,canView:c.PropTypes.bool,canEdit:c.PropTypes.bool})},L.defaultProps={type:"admin"},t.AssetAdmin=L,t["default"]=(0,h.connect)(a,u)(L)
+
+},function(e,t){e.exports=SilverStripeComponent},function(e,t){e.exports=Backend},function(e,t){e.exports=i18n},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{"default":e}}function i(e,t){return function(n){return n({type:h["default"].ADD_FILES,payload:{files:e,count:t}})}}function o(e,t){return function(n){return n({type:h["default"].DELETE_ITEM_REQUEST,
 payload:{ids:t}}),e({ids:t}).then(function(e){return n({type:h["default"].DELETE_ITEM_SUCCESS,payload:{ids:t}}),e})["catch"](function(e){throw n({type:h["default"].DELETE_ITEM_FAILURE,payload:{e:e}}),e
 
 })}}function l(e,t,n,r){return function(i){return i({type:h["default"].LOAD_FOLDER_REQUEST,payload:{folderId:parseInt(t,10)}}),e({id:t,limit:n,page:r}).then(function(e){return i({type:h["default"].LOAD_FOLDER_SUCCESS,
 payload:{files:e.files,folder:{id:parseInt(e.folderID,10),title:e.title,parents:e.parents,parent:e.parent,canEdit:e.canEdit,canDelete:e.canDelete,parentID:null===e.parentID?null:parseInt(e.parentID,10)
-},folderId:parseInt(e.folderID,10)}}),e})["catch"](function(e){throw i({type:h["default"].LOAD_FOLDER_FAILURE,payload:{message:e.message}}),e})}}function s(){return{type:h["default"].UNLOAD_FOLDER}}function s(){
-return{type:h["default"].UNLOAD_FOLDER}}function a(e,t){return function(n){n({type:h["default"].LOAD_FILE_SUCCESS,payload:{id:e,file:t}})}}function u(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
-
-
+},folderId:parseInt(e.folderID,10)}}),e})["catch"](function(e){throw i({type:h["default"].LOAD_FOLDER_FAILURE,payload:{message:e.message}}),e})}}function s(){return{type:h["default"].UNLOAD_FOLDER}}function a(e,t){
+return function(n){n({type:h["default"].LOAD_FILE_SUCCESS,payload:{id:e,file:t}})}}function u(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 return function(t){return t({type:h["default"].SELECT_FILES,payload:{ids:e}})}}function d(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 return function(t){return t({type:h["default"].DESELECT_FILES,payload:{ids:e}})}}function p(e){return function(t){return t({type:h["default"].SORT_FILES,payload:{comparator:e}})}}function c(e,t,n){return function(r){
 return r({type:h["default"].CREATE_FOLDER_REQUEST,payload:{name:n}}),e({ParentID:isNaN(t)?0:t,Name:n}).then(function(e){return r({type:h["default"].CREATE_FOLDER_SUCCESS,payload:{name:n}}),e})["catch"](function(e){
 throw r({type:h["default"].CREATE_FOLDER_FAILURE,payload:{error:"Couldn't create "+n+": "+e}}),e})}}Object.defineProperty(t,"__esModule",{value:!0}),t.addFiles=i,t.deleteItems=o,t.loadFolderContents=l,
-t.unloadFolderContents=s,t.unloadFolderContents=s,t.loadFile=a,t.selectFiles=u,t.deselectFiles=d,t.sortFiles=p,t.createFolder=c
+t.unloadFolderContents=s,t.loadFile=a,t.selectFiles=u,t.deselectFiles=d,t.sortFiles=p,t.createFolder=c
 var f=n(11),h=r(f)},function(e,t){"use strict"
 function n(e,t,n){return t in e?Object.defineProperty(e,t,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[t]=n,e}Object.defineProperty(t,"__esModule",{value:!0})
 var r=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
@@ -128,17 +127,19 @@ r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Obj
 function t(e){i(this,t)
 var n=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleCancelKeyDown=n.handleCancelKeyDown.bind(n),n.handleClose=n.handleClose.bind(n),n.handleSubmit=n.handleSubmit.bind(n),n.handleAction=n.handleAction.bind(n),n.closeModal=n.closeModal.bind(n),
-n.openModal=n.openModal.bind(n),n.state={openModal:!1},n}return l(t,e),s(t,[{key:"getCancelButton",value:function n(){return p["default"].createElement("a",{tabIndex:"0",className:"btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl",
+n.openModal=n.openModal.bind(n),n.state={openModal:!1},n}return l(t,e),s(t,[{key:"renderCancelButton",value:function n(){return p["default"].createElement("a",{tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",
 onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,type:"button","aria-label":u["default"]._t("AssetAdmin.CANCEL")})}},{key:"handleAction",value:function r(e,t){var n=e.currentTarget.name
 return"action_addtocampaign"===n?(this.openModal(),void e.preventDefault()):"action_delete"===n?(this.props.onDelete(t.ID),void e.preventDefault()):void 0}},{key:"handleCancelKeyDown",value:function a(e){
 e.keyCode!==f["default"].SPACE_KEY_CODE&&e.keyCode!==f["default"].RETURN_KEY_CODE||this.handleClose(e)}},{key:"handleSubmit",value:function d(e,t,n){return"function"==typeof this.props.onSubmit?this.props.onSubmit(e,t,n):n()
 
 }},{key:"openModal",value:function c(){this.setState({openModal:!0})}},{key:"closeModal",value:function h(){this.setState({openModal:!1})}},{key:"handleClose",value:function y(e){this.props.onClose(),this.closeModal(),
-e&&e.preventDefault()}},{key:"render",value:function v(){var e=this.props.editFileSchemaUrl+"/"+this.props.fileId,t=this.props.addToCampaignSchemaUrl+"/"+this.props.fileId
-return p["default"].createElement("div",{className:editorClasses.join(" ")},p["default"].createElement("div",{className:"editor__details"},p["default"].createElement(m["default"],{schemaUrl:e,afterMessages:this.getCancelButton(),
-handleSubmit:this.handleSubmit,handleAction:this.handleAction}),p["default"].createElement(g["default"],{show:this.state.openModal,handleHide:this.closeModal,schemaUrl:t,bodyClassName:"modal__dialog",responseClassBad:"modal__response modal__response--error",
-responseClassGood:"modal__response modal__response--good"})))}}]),t}(d.Component)
-v.propTypes={fileId:p["default"].PropTypes.number.isRequired,onClose:p["default"].PropTypes.func.isRequired,onSubmit:p["default"].PropTypes.func.isRequired,onDelete:p["default"].PropTypes.func.isRequired,
+e&&e.preventDefault()}},{key:"render",value:function v(){var e=this.props.editFileSchemaUrl+"/"+this.props.fileId,t=this.props.addToCampaignSchemaUrl+"/"+this.props.fileId,n=["panel","panel--padded","panel--scrollable","form--no-dividers","editor"]
+
+
+return this.props.dialog&&n.push("editor--dialog"),p["default"].createElement("div",{className:n.join(" ")},p["default"].createElement("div",{className:"editor__details"},p["default"].createElement(m["default"],{
+schemaUrl:e,afterMessages:this.renderCancelButton(),handleSubmit:this.handleSubmit,handleAction:this.handleAction}),p["default"].createElement(g["default"],{show:this.state.openModal,handleHide:this.closeModal,
+schemaUrl:t,bodyClassName:"modal__dialog",responseClassBad:"modal__response modal__response--error",responseClassGood:"modal__response modal__response--good"})))}}]),t}(d.Component)
+v.propTypes={dialog:p["default"].PropTypes.bool,fileId:p["default"].PropTypes.number.isRequired,onClose:p["default"].PropTypes.func.isRequired,onSubmit:p["default"].PropTypes.func.isRequired,onDelete:p["default"].PropTypes.func.isRequired,
 editFileSchemaUrl:p["default"].PropTypes.string.isRequired,addToCampaignSchemaUrl:p["default"].PropTypes.string,openAddCampaignModal:p["default"].PropTypes.bool},t["default"]=v},function(e,t,n){"use strict"
 
 
@@ -173,7 +174,7 @@ try{for(var l=e[Symbol.iterator](),s;!(r=(s=l.next()).done)&&(n.push(s.value),!t
 if(Array.isArray(t))return t
 if(Symbol.iterator in Object(t))return e(t,n)
 throw new TypeError("Invalid attempt to destructure non-iterable instance")}}(),f=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
-r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),h=n(18),m=i(h),y=n(9),g=i(y),v=n(3),E=i(v),b=n(19),_=i(b),F=n(20),A=i(F),T=n(5),O=n(4),w=n(21),D=i(w),C=n(22),P=i(C),I=n(25),S=i(I),k=n(26),L=i(k),U=n(14),R=i(U),M=n(10),N=r(M),x=n(27),q=r(x),j=function(e){
+r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),h=n(18),m=i(h),y=n(9),g=i(y),v=n(3),E=i(v),b=n(19),_=i(b),F=n(20),T=i(F),A=n(5),O=n(4),w=n(21),D=i(w),P=n(22),C=i(P),I=n(25),S=i(I),k=n(26),U=i(k),L=n(14),R=i(L),M=n(10),N=r(M),x=n(27),q=r(x),j=function(e){
 function t(e){o(this,t)
 var n=l(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.sorters=[{field:"title",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_ASC")},{field:"title",direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_DESC")},{field:"created",
@@ -194,13 +195,13 @@ className:"gallery__load-more",onClick:this.handleMoreClick},g["default"]._t("As
 
 this.props.loading&&!e.hasClass("loading")?e.addClass("loading"):!this.props.loading&&e.hasClass("loading")&&e.removeClass("loading")}},{key:"refreshFolderIfNeeded",value:function b(e){e&&this.props.folderId===e.folderId||(this.props.actions.gallery.deselectFiles(),
 this.props.actions.gallery.loadFolderContents(this.props.readFolderApi,this.props.folderId,this.props.limit,this.props.page))}},{key:"handleSort",value:function F(e){"function"==typeof this.props.onSort&&(this.props.actions.queuedFiles.purgeUploadQueue(),
-this.props.onSort(e.target.value))}},{key:"handleCancelUpload",value:function T(e){e.xhr.abort(),this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)}},{key:"handleRemoveErroredUpload",value:function O(e){
-this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)}},{key:"handleAddedFile",value:function w(e){this.props.actions.queuedFiles.addQueuedFile(e)}},{key:"handleSending",value:function C(e,t){
+this.props.onSort(e.target.value))}},{key:"handleCancelUpload",value:function A(e){e.xhr.abort(),this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)}},{key:"handleRemoveErroredUpload",value:function O(e){
+this.props.actions.queuedFiles.removeQueuedFile(e.queuedAtTime)}},{key:"handleAddedFile",value:function w(e){this.props.actions.queuedFiles.addQueuedFile(e)}},{key:"handleSending",value:function P(e,t){
 this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{xhr:t})}},{key:"handleUploadProgress",value:function I(e,t){this.props.actions.queuedFiles.updateQueuedFile(e._queuedAtTime,{progress:t})
 
 }},{key:"handleCreateFolder",value:function k(e){var t=this,n=this.promptFolderName()
 n&&this.props.actions.gallery.createFolder(this.props.createFolderApi,this.props.folderId,n).then(function(e){return t.props.actions.gallery.addFiles([e],1),e}),e.preventDefault()}},{key:"handleSuccessfulUpload",
-value:function U(e){var t=JSON.parse(e.xhr.response)
+value:function L(e){var t=JSON.parse(e.xhr.response)
 if("undefined"!=typeof t[0].error)return void this.handleFailedUpload(e)
 if(this.props.actions.queuedFiles.removeQueuedFile(e._queuedAtTime),this.props.actions.gallery.addFiles(t,this.props.count+1),"insert"===this.props.type&&!this.props.fileId&&0===this.props.queuedFiles.items.length){
 var n=t.pop()
@@ -224,16 +225,16 @@ return null!==this.props.folder.parentID?E["default"].createElement("button",{cl
 var n=t.map(function(e){return e.id})
 e.props.actions.gallery.deleteItems(e.props.deleteApi,n)},n=function l(t){e.props.onOpenFile(t[0].id)},r=R["default"].BULK_ACTIONS.map(function(e){return"delete"!==e.value||e.callback?"edit"!==e.value||e.callback?e:p({},e,{
 callback:n}):p({},e,{callback:t})}),i=this.props.selectedFiles.map(function(t){return e.props.files.find(function(e){return t===e.id})})
-return i.length>0&&"admin"===this.props.type?E["default"].createElement(A["default"],{transitionName:"bulk-actions",transitionEnterTimeout:R["default"].CSS_TRANSITION_TIME,transitionLeaveTimeout:R["default"].CSS_TRANSITION_TIME
-},E["default"].createElement(L["default"],{actions:r,items:i,key:i.length>0})):null}},{key:"render",value:function Y(){var e=this
+return i.length>0&&"admin"===this.props.type?E["default"].createElement(T["default"],{transitionName:"bulk-actions",transitionEnterTimeout:R["default"].CSS_TRANSITION_TIME,transitionLeaveTimeout:R["default"].CSS_TRANSITION_TIME
+},E["default"].createElement(U["default"],{actions:r,items:i,key:i.length>0})):null}},{key:"render",value:function Y(){var e=this
 if(!this.props.folder)return this.props.errorMessage?E["default"].createElement("div",{className:"gallery__error"},E["default"].createElement("div",{className:"gallery__error-message"},E["default"].createElement("h3",null,this.props.errorMessage&&g["default"]._t("AssetAdmin.DROPZONE_RESPONSE_ERROR","Server responded with an error.")),E["default"].createElement("p",null,this.props.errorMessage))):E["default"].createElement("div",null)
 
 
 var t={height:R["default"].THUMBNAIL_HEIGHT,width:R["default"].THUMBNAIL_WIDTH},n={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,paramName:"Upload",clickable:"#upload-button"},r=this.props.securityId,i=this.props.folder.canEdit,o="admin"===this.props.type,l=["panel","panel--padded","panel--scrollable","gallery__main"]
 
 
-return this.props.dialog&&l.push("gallery__main--dialog"),E["default"].createElement("div",{className:"flexbox-area-grow gallery__outer"},this.renderBulkActions(),E["default"].createElement("div",{className:l.join(" ")
-},this.renderSort(),this.renderToolbar(),E["default"].createElement(P["default"],{canUpload:i,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,
+return this.props.dialog&&l.push("insert-media-modal__main"),E["default"].createElement("div",{className:"flexbox-area-grow gallery__outer"},this.renderBulkActions(),E["default"].createElement("div",{className:l.join(" ")
+},this.renderSort(),this.renderToolbar(),E["default"].createElement(C["default"],{canUpload:i,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,
 handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,preview:t,folderId:this.props.folderId,options:n,securityID:r,uploadButton:!1},E["default"].createElement("div",{className:"gallery__folders"
 },this.props.files.map(function(t,n){return"folder"===t.type?E["default"].createElement(S["default"],{key:n,item:t,selectable:o,selected:e.itemIsSelected(t.id),highlighted:e.itemIsHighlighted(t.id),handleDelete:e.handleItemDelete,
 handleToggleSelect:e.handleToggleSelect,handleActivate:e.handleFolderActivate}):null})),E["default"].createElement("div",{className:"gallery__files"},this.props.queuedFiles.items.map(function(t,n){return E["default"].createElement(S["default"],{
@@ -242,11 +243,11 @@ handleRemoveErroredUpload:e.handleRemoveErroredUpload,message:t.message,uploadin
 item:t,selectable:o,selected:e.itemIsSelected(t.id),highlighted:e.itemIsHighlighted(t.id),handleDelete:e.handleItemDelete,handleToggleSelect:e.handleToggleSelect,handleActivate:e.handleFileActivate}):null
 
 })),this.getNoItemsNotice(),E["default"].createElement("div",{className:"gallery__load"},this.getMoreButton()))))}}]),t}(v.Component)
-j.defaultProps={type:"admin"},j.propTypes={dialog:v.PropTypes["boolean"],fileId:v.PropTypes.number,folderId:v.PropTypes.number.isRequired,folder:v.PropTypes.shape({id:v.PropTypes.number,parentID:v.PropTypes.number,
+j.defaultProps={type:"admin"},j.propTypes={dialog:v.PropTypes.bool,fileId:v.PropTypes.number,folderId:v.PropTypes.number.isRequired,folder:v.PropTypes.shape({id:v.PropTypes.number,parentID:v.PropTypes.number,
 canView:v.PropTypes.bool,canEdit:v.PropTypes.bool}),queuedFiles:v.PropTypes.shape({items:v.PropTypes.array.isRequired}),onOpenFile:v.PropTypes.func.isRequired,onOpenFolder:v.PropTypes.func.isRequired,onSort:v.PropTypes.func,
 createFileApiUrl:v.PropTypes.string,createFileApiMethod:v.PropTypes.string,createFolderApi:v.PropTypes.func,readFolderApi:v.PropTypes.func,deleteApi:v.PropTypes.func,actions:v.PropTypes.object,sort:v.PropTypes.string,
 type:v.PropTypes.oneOf(["insert","admin"]),limit:v.PropTypes.number,page:v.PropTypes.number,loading:v.PropTypes.bool,count:v.PropTypes.number,files:v.PropTypes.array,selectedFiles:v.PropTypes.arrayOf(v.PropTypes.number),
-errorMessage:v.PropTypes.string,securityId:v.PropTypes.string},t.Gallery=j,t["default"]=(0,T.connect)(u,d)(j)},function(e,t){e.exports=jQuery},function(e,t){e.exports=ReactDom},function(e,t){e.exports=ReactAddonsCssTransitionGroup
+errorMessage:v.PropTypes.string,securityId:v.PropTypes.string},t.Gallery=j,t["default"]=(0,A.connect)(u,d)(j)},function(e,t){e.exports=jQuery},function(e,t){e.exports=ReactDom},function(e,t){e.exports=ReactAddonsCssTransitionGroup
 
 },function(e,t){e.exports=ReactAddonsTestUtils},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{"default":e}}function i(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function o(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
@@ -257,12 +258,12 @@ e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,wri
 value:!0})
 var s=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},a=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
-r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),u=function A(e,t,n){null===e&&(e=Function.prototype)
+r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),u=function T(e,t,n){null===e&&(e=Function.prototype)
 
 
 var r=Object.getOwnPropertyDescriptor(e,t)
 if(void 0===r){var i=Object.getPrototypeOf(e)
-return null===i?void 0:A(i,t,n)}if("value"in r)return r.value
+return null===i?void 0:T(i,t,n)}if("value"in r)return r.value
 var o=r.get
 if(void 0!==o)return o.call(n)},d=n(3),p=r(d),c=n(19),f=r(c),h=n(7),m=r(h),y=n(9),g=r(y),v=n(23),E=r(v),b=n(18),_=r(b),F=function(e){function t(e){i(this,t)
 var n=o(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
@@ -287,7 +288,7 @@ this.props.canUpload&&e.target===t&&(this.dragging=!1,this.forceUpdate(),"functi
 
 }},{key:"handleSending",value:function F(e,t,n){n.append("SecurityID",this.props.securityID),n.append("ParentID",this.props.folderId),"function"==typeof this.props.handleSending&&this.props.handleSending(e,t,n)
 
-}},{key:"handleAddedFile",value:function A(e){var t=this
+}},{key:"handleAddedFile",value:function T(e){var t=this
 if(!this.props.canUpload)return Promise.reject(new Error(g["default"]._t("AssetAdmin.DROPZONE_CANNOT_UPLOAD")))
 e._queuedAtTime=Date.now()
 var n=new Promise(function(n){var r=new FileReader
@@ -295,7 +296,7 @@ r.onload=function(r){if("image"===t.getFileCategory(e.type)){var i=document.crea
 n(t.loadImage(i,r.target.result))}else n({})},r.readAsDataURL(e)})
 return n.then(function(n){var r={dimensions:{height:n.height,width:n.width},category:t.getFileCategory(e.type),filename:e.name,queuedAtTime:e._queuedAtTime,size:e.size,title:e.name,type:e.type,url:n.thumbnailURL
 }
-return t.props.handleAddedFile(r),t.dropzone.processFile(e),r})}},{key:"loadImage",value:function T(e,t){var n=this
+return t.props.handleAddedFile(r),t.dropzone.processFile(e),r})}},{key:"loadImage",value:function A(e,t){var n=this
 return new Promise(function(r){e.onload=function(){var t=document.createElement("canvas"),i=t.getContext("2d"),o=2*n.props.preview.width,l=2*n.props.preview.height,s=e.naturalWidth/e.naturalHeight
 e.naturalWidth<o||e.naturalHeight<l?(t.width=e.naturalWidth,t.height=e.naturalHeight):s<1?(t.width=o,t.height=o/s):(t.width=l*s,t.height=l),i.drawImage(e,0,0,t.width,t.height)
 var a=t.toDataURL("image/png")
@@ -476,8 +477,8 @@ this.options.uploadMultiple&&this.emit("canceledmultiple",r)}else(a=e.status)!==
 
 if(this.options.autoProcessQueue)return this.processQueue()},i=function(){var e,t
 return t=arguments[0],e=2<=arguments.length?d.call(arguments,1):[],"function"==typeof t?t.apply(this,e):t},t.prototype.uploadFile=function(e){return this.uploadFiles([e])},t.prototype.uploadFiles=function(e){
-var r,o,l,s,a,u,d,p,c,f,h,m,y,g,v,E,b,_,F,A,T,O,w,D,C,P,I,S,k,L,U,R,M,N
-for(F=new XMLHttpRequest,A=0,D=e.length;A<D;A++)r=e[A],r.xhr=F
+var r,o,l,s,a,u,d,p,c,f,h,m,y,g,v,E,b,_,F,T,A,O,w,D,P,C,I,S,k,U,L,R,M,N
+for(F=new XMLHttpRequest,T=0,D=e.length;T<D;T++)r=e[T],r.xhr=F
 m=i(this.options.method,e),b=i(this.options.url,e),F.open(m,b,!0),F.withCredentials=!!this.options.withCredentials,v=null,l=function(t){return function(){var n,i,o
 for(o=[],n=0,i=e.length;n<i;n++)r=e[n],o.push(t._errorProcessing(e,v||t.options.dictResponseError.replace("{{statusCode}}",F.status),F))
 return o}}(this),E=function(t){return function(n){var i,o,l,s,a,u,d,p,c
@@ -489,9 +490,9 @@ if(e[0].status!==t.CANCELED&&4===F.readyState){if(v=F.responseText,F.getResponse
 v="Invalid JSON response from server."}return E(),200<=(i=F.status)&&i<300?n._finished(e,v,r):l()}}}(this),F.onerror=function(n){return function(){if(e[0].status!==t.CANCELED)return l()}}(this),g=null!=(k=F.upload)?k:F,
 g.onprogress=E,u={Accept:"application/json","Cache-Control":"no-cache","X-Requested-With":"XMLHttpRequest"},this.options.headers&&n(u,this.options.headers)
 for(s in u)a=u[s],a&&F.setRequestHeader(s,a)
-if(o=new FormData,this.options.params){L=this.options.params
-for(h in L)_=L[h],o.append(h,_)}for(T=0,C=e.length;T<C;T++)r=e[T],this.emit("sending",r,F,o)
-if(this.options.uploadMultiple&&this.emit("sendingmultiple",e,F,o),"FORM"===this.element.tagName)for(U=this.element.querySelectorAll("input, textarea, select, button"),O=0,P=U.length;O<P;O++)if(p=U[O],
+if(o=new FormData,this.options.params){U=this.options.params
+for(h in U)_=U[h],o.append(h,_)}for(A=0,P=e.length;A<P;A++)r=e[A],this.emit("sending",r,F,o)
+if(this.options.uploadMultiple&&this.emit("sendingmultiple",e,F,o),"FORM"===this.element.tagName)for(L=this.element.querySelectorAll("input, textarea, select, button"),O=0,C=L.length;O<C;O++)if(p=L[O],
 c=p.getAttribute("name"),f=p.getAttribute("type"),"SELECT"===p.tagName&&p.hasAttribute("multiple"))for(R=p.options,w=0,I=R.length;w<I;w++)y=R[w],y.selected&&o.append(c,y.value)
 else(!f||"checkbox"!==(M=f.toLowerCase())&&"radio"!==M||p.checked)&&o.append(c,p.value)
 for(d=S=0,N=e.length-1;0<=N?S<=N:S>=N;d=0<=N?++S:--S)o.append(this._getParamName(d),e[d],this._renameFilename(e[d].name))
@@ -571,7 +572,7 @@ value:function E(){return this.props.item.exists}},{key:"uploading",value:functi
 
 var e=this.props.item.dimensions
 return e&&e.height<f["default"].THUMBNAIL_HEIGHT&&e.width<f["default"].THUMBNAIL_WIDTH}},{key:"handleKeyDown",value:function F(e){e.stopPropagation(),f["default"].SPACE_KEY_CODE===e.keyCode&&(e.preventDefault(),
-this.handleToggleSelect(e)),f["default"].RETURN_KEY_CODE===e.keyCode&&this.handleActivate(e)}},{key:"preventFocus",value:function A(e){e.preventDefault()}},{key:"handleCancelUpload",value:function T(e){
+this.handleToggleSelect(e)),f["default"].RETURN_KEY_CODE===e.keyCode&&this.handleActivate(e)}},{key:"preventFocus",value:function T(e){e.preventDefault()}},{key:"handleCancelUpload",value:function A(e){
 e.stopPropagation(),this.hasError()?this.props.handleRemoveErroredUpload(this.props.item):this.props.handleCancelUpload(this.props.item)}},{key:"getProgressBar",value:function O(){var e=null,t={className:"gallery-item__progress-bar",
 style:{width:this.props.item.progress+"%"}}
 return!this.hasError()&&this.uploading()&&(e=p["default"].createElement("div",{className:"gallery-item__upload-progress"},p["default"].createElement("div",t))),e}},{key:"render",value:function w(){var e=null,t=null,n=null

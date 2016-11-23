@@ -535,7 +535,7 @@ class Gallery extends Component {
       'panel', 'panel--padded', 'panel--scrollable', 'gallery__main',
     ];
     if (this.props.dialog) {
-      galleryClasses.push('gallery__main--dialog');
+      galleryClasses.push('insert-media-modal__main');
     }
 
     return (
@@ -631,7 +631,7 @@ Gallery.defaultProps = {
 };
 
 Gallery.propTypes = {
-  dialog: PropTypes.boolean,
+  dialog: PropTypes.bool,
   fileId: PropTypes.number,
   folderId: PropTypes.number.isRequired,
   folder: PropTypes.shape({

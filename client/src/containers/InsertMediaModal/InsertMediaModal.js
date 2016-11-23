@@ -197,7 +197,7 @@ InsertMediaModal.propTypes = {
     Alignment: PropTypes.string,
   }),
   fileId: PropTypes.number,
-  onHide: PropTypes.bool,
+  onHide: PropTypes.func,
   className: PropTypes.string,
   actions: PropTypes.object,
 };

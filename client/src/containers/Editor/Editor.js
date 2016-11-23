@@ -20,10 +20,10 @@ class Editor extends Component {
     };
   }
 
-  getCancelButton() {
+  renderCancelButton() {
     return (<a
       tabIndex="0"
-      className="btn btn--top-right btn--no-text font-icon-cancel btn--icon-xl"
+      className="btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl"
       onClick={this.handleClose}
       onKeyDown={this.handleCancelKeyDown}
       type="button"
@@ -98,12 +98,18 @@ class Editor extends Component {
   render() {
     const formSchemaUrl = `${this.props.editFileSchemaUrl}/${this.props.fileId}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
+    const editorClasses = [
+      'panel', 'panel--padded', 'panel--scrollable', 'form--no-dividers', 'editor',
+    ];
+    if (this.props.dialog) {
+      editorClasses.push('editor--dialog');
+    }
 
     return (<div className={editorClasses.join(' ')}>
       <div className="editor__details">
         <FormBuilderLoader
           schemaUrl={formSchemaUrl}
-          afterMessages={this.getCancelButton()}
+          afterMessages={this.renderCancelButton()}
           handleSubmit={this.handleSubmit}
           handleAction={this.handleAction}
         />
@@ -123,6 +129,7 @@ class Editor extends Component {
 }
 
 Editor.propTypes = {
+  dialog: React.PropTypes.bool,
   fileId: React.PropTypes.number.isRequired,
   onClose: React.PropTypes.func.isRequired,
   onSubmit: React.PropTypes.func.isRequired,

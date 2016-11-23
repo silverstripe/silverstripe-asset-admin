@@ -93,12 +93,6 @@ export function loadFolderContents(listApi, folderId, limit, page) {
   };
 }
 
-export function unloadFolderContents() {
-  return {
-    type: GALLERY.UNLOAD_FOLDER,
-  };
-}
-
 /**
  * Clears the contents for folders
  *

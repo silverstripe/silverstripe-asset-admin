@@ -11,23 +11,6 @@ use SilverStripe\Forms\TextField;
 
 class ImageFormFactory extends FileFormFactory
 {
-    use Configurable;
-
-    /**
-     * Default insertion width for Images and Media
-     *
-     * @config
-     * @var int
-     */
-    private static $insert_width = 600;
-
-    /**
-     * Default insert height for images and media
-     *
-     * @config
-     * @var int
-     */
-    private static $insert_height = 360;
 
     protected function getSpecsMarkup($record)
     {
@@ -62,16 +45,14 @@ class ImageFormFactory extends FileFormFactory
         $tab->push(
             FieldGroup::create(_t('AssetAdmin.ImageSpecs', 'Dimensions'),
                 TextField::create(
-                    'Width',
-                    _t('AssetAdmin.ImageWidth', 'Width'),
-                    $this->getInsertWidth($record)
+                    'InsertWidth',
+                    _t('AssetAdmin.ImageWidth', 'Width')
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow'),
                 TextField::create(
-                    'Height',
-                    _t('AssetAdmin.ImageHeight', 'Height'),
-                    $this->getInsertHeight($record)
+                    'InsertHeight',
+                    _t('AssetAdmin.ImageHeight', 'Height')
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow')
@@ -91,38 +72,6 @@ class ImageFormFactory extends FileFormFactory
         );
 
         return $tab;
-    }
-
-    /**
-     * Provide an initial width for inserted media, restricted based on $embed_width
-     *
-     * @param File $file
-     * @return int
-     */
-    protected function getInsertWidth($file)
-    {
-        $maxWidth = $this->config()->insert_width;
-
-        $width = max($file->getWidth(), $maxWidth);
-
-        return min($width, $maxWidth);
-    }
-
-    /**
-     * Provide an initial height for inserted media, scaled proportionally to the initial width
-     *
-     * @param File $file
-     * @return int
-     */
-    protected function getInsertHeight($file)
-    {
-        $maxWidth = $this->config()->insert_width;
-        $maxHeight = $this->config()->insert_height;
-
-        $width = max($file->getWidth(), $maxWidth);
-        $height = max($file->getHeight(), $maxHeight);
-
-        return ($width <= $maxWidth) ? $height : round($height * ($maxWidth / $width));
     }
 
 }

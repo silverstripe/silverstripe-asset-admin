@@ -67,8 +67,8 @@ class FileFormFactory extends AssetFormFactory
             $tab->push(LiteralField::create('EditLink',
                 sprintf('<a href="%s" class="%s" target="_blank"><i class="%s" />%s</a>',
                     $record->CMSEditLink(),
-                    'btn btn-secondary editor__edit-link',
-                    'font-icon-edit',
+                    'btn btn-secondary-outline font-icon-edit editor__edit-link',
+                    '',
                     _t('AssetAdmin.EditLink', 'Edit original file')
                 )
             ));
@@ -86,11 +86,11 @@ class FileFormFactory extends AssetFormFactory
     protected function getFormFieldAttributesTab($record, $context = [])
     {
         return Tab::create(
-            'Attributes',
+            'Placement',
             LiteralField::create('AttributesDescription',
                 '<p>'. _t(
                     'AssetAdmin.AttributesDescription',
-                    'These changes will only affect the attributes of this particular file.'
+                    'These changes will only affect this particular placement of the file.'
                 ) .'</p>'
             ),
             TextField::create('Caption', _t('AssetAdmin.Caption', 'Caption'))
@@ -298,7 +298,7 @@ class FileFormFactory extends AssetFormFactory
     protected function getInsertAction($record)
     {
         if ($record && $record->isInDB() && $record->canEdit()) {
-            return FormAction::create('insert', _t('CMSMain.INSERT', 'Insert'))
+            return FormAction::create('insert', _t('CMSMain.INSERT', 'Insert file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return null;

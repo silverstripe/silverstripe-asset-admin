@@ -473,10 +473,6 @@
   height:calc(100vh - 53px);
 }
 
-.gallery__main--dialog{
-  height:calc(100vh - 133px);
-}
-
 .gallery__no-item-notice{
   width:100%;
   text-align:center;

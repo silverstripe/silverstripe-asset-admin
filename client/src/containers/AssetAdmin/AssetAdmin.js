@@ -300,6 +300,7 @@ class AssetAdmin extends SilverStripeComponent {
 
     return (
       <Editor
+        dialog={this.props.dialog}
         fileId={this.props.fileId}
         onClose={this.handleCloseFile}
         editFileSchemaUrl={schemaUrl}
@@ -328,7 +329,7 @@ class AssetAdmin extends SilverStripeComponent {
 }
 
 AssetAdmin.propTypes = {
-  dialog: PropTypes.boolean,
+  dialog: PropTypes.bool,
   sectionConfig: PropTypes.shape({
     url: PropTypes.string,
     limit: PropTypes.number,

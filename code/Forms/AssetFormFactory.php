@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
 use SilverStripe\Control\Controller;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
@@ -23,6 +24,7 @@ abstract class AssetFormFactory implements FormFactory
 {
     use Extensible;
     use Injectable;
+    use Configurable;
 
 	public function __construct() {
 		$this->constructExtensions();
