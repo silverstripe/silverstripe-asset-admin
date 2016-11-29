@@ -20,7 +20,7 @@ use SilverStripe\ORM\SS_List;
  * Additionally supports writing directly to the File table not attached
  * to any parent record.
  */
-class FileField extends FormField
+class UploadField extends FormField
 {
     use FileUploadReceiver;
 
@@ -38,7 +38,7 @@ class FileField extends FormField
 
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
 
-    protected $schemaComponent = 'FileField';
+    protected $schemaComponent = 'UploadField';
 
     /**
      * @var bool|null

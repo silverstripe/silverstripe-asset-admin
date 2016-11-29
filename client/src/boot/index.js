@@ -5,12 +5,12 @@ import reducerRegister from 'lib/ReducerRegister';
 import galleryReducer from 'state/gallery/GalleryReducer';
 import queuedFilesReducer from 'state/queuedFiles/QueuedFilesReducer';
 import AssetAdminRouter from 'containers/AssetAdmin/AssetAdminRouter';
-import fileFieldReducer from 'state/fileField/FileFieldReducer';
+import uploadFieldReducer from 'state/uploadField/UploadFieldReducer';
 import Injector from 'lib/Injector';
-import FileField from 'components/FileField/FileField';
+import UploadField from 'components/UploadField/UploadField';
 
 document.addEventListener('DOMContentLoaded', () => {
-  Injector.register('FileField', FileField);
+  Injector.register('UploadField', UploadField);
 
   const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
   reactRouteRegister.add({
@@ -42,6 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
   reducerRegister.add('assetAdmin', combineReducers({
     gallery: galleryReducer,
     queuedFiles: queuedFilesReducer,
-    fileField: fileFieldReducer,
+    uploadField: uploadFieldReducer,
   }));
 });

@@ -1,12 +1,12 @@
 import deepFreeze from 'deep-freeze-strict';
-import ACTION_TYPES from './FileFieldActionTypes';
-import fileStructure from 'lib/FileStructure';
+import ACTION_TYPES from './UploadFieldActionTypes';
+import fileStructure from 'lib/fileStructure';
 
 const initialState = {
   fields: {},
 };
 
-function fileFieldReducer(state = initialState, action) {
+function uploadFieldReducer(state = initialState, action) {
   switch (action.type) {
 
     case ACTION_TYPES.FILEFIELD_ADD_FILE:
@@ -85,4 +85,4 @@ function fileFieldReducer(state = initialState, action) {
   }
 }
 
-export default fileFieldReducer;
+export default uploadFieldReducer;

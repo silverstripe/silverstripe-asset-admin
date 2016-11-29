@@ -5,7 +5,7 @@ namespace SilverStripe\AssetAdmin\Controller;
 use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
-use SilverStripe\AssetAdmin\Forms\FileField;
+use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
@@ -664,7 +664,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $id = $request->param('ID') ?: $request->postVar('ID');
         return $this->getFileEditForm($id);
     }
-    
+
     /**
      * The form is used to generate a form schema,
      * as well as an intermediary object to process data through API endpoints.
@@ -678,7 +678,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         /** @var File $file */
         $file = $this->getList()->byID($id);
-        
+
         if (!$file->canView()) {
             $this->httpError(403, _t(
                 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
@@ -688,16 +688,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             ));
             return null;
         }
-        
+
         $scaffolder = $this->getFormFactory($file);
         $form = $scaffolder->getForm($this, 'FileInsertForm', [
             'Record' => $file,
             'Type' => 'insert',
         ]);
-        
+
         return $form;
     }
-    
+
     /**
      * Get file insert form
      *
@@ -862,8 +862,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         if ($file->getIsImage()) {
             // Small thumbnail
-            $smallWidth = FileField::config()->get('thumbnail_width');
-            $smallHeight = FileField::config()->get('thumbnail_height');
+            $smallWidth = UploadField::config()->get('thumbnail_width');
+            $smallHeight = UploadField::config()->get('thumbnail_height');
             $smallThumbnail = $file->FitMax($smallWidth, $smallHeight);
             if ($smallThumbnail && $smallThumbnail->exists()) {
                 $object['smallThumbnail'] = $smallThumbnail->getAbsoluteURL();

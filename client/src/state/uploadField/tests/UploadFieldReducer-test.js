@@ -1,14 +1,14 @@
 /* global jest, describe, it, expect, beforeEach, jasmine */
 
 jest.unmock('deep-freeze-strict');
-jest.unmock('../FileFieldActionTypes.js');
-jest.unmock('../FileFieldReducer.js');
+jest.unmock('../UploadFieldActionTypes.js');
+jest.unmock('../UploadFieldReducer.js');
 
-import fileFieldReducer from '../FileFieldReducer';
+import uploadFieldReducer from '../UploadFieldReducer';
 import fileStructure from '../../../lib/fileStructure';
-import ACTION_TYPES from '../FileFieldActionTypes';
+import ACTION_TYPES from '../UploadFieldActionTypes';
 
-describe('fileFieldReducer', () => {
+describe('uploadFieldReducer', () => {
   let initialState = {};
 
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe('fileFieldReducer', () => {
 
   describe('FILEFIELD_ADD_FILE', () => {
     it('should add a new file to a list', () => {
-      const nextState = fileFieldReducer(initialState, {
+      const nextState = uploadFieldReducer(initialState, {
         type: ACTION_TYPES.FILEFIELD_ADD_FILE,
         payload: {
           fieldId: 'myfield',
@@ -44,7 +44,7 @@ describe('fileFieldReducer', () => {
 
   describe('FILEFIELD_SET_FILES', () => {
     it('should replace existing files', () => {
-      const nextState = fileFieldReducer(initialState, {
+      const nextState = uploadFieldReducer(initialState, {
         type: ACTION_TYPES.FILEFIELD_SET_FILES,
         payload: {
           fieldId: 'myfield',
@@ -63,7 +63,7 @@ describe('fileFieldReducer', () => {
 
   describe('FILEFIELD_UPLOAD_FAILURE', () => {
     it('should update error messages on failed uploads', () => {
-      const nextState = fileFieldReducer(initialState, {
+      const nextState = uploadFieldReducer(initialState, {
         type: ACTION_TYPES.FILEFIELD_UPLOAD_FAILURE,
         payload: {
           fieldId: 'anotherfield',
@@ -84,7 +84,7 @@ describe('fileFieldReducer', () => {
 
   describe('FILEFIELD_REMOVE_FILE', () => {
     it('should remove the specified saved file', () => {
-      const nextState = fileFieldReducer(initialState, {
+      const nextState = uploadFieldReducer(initialState, {
         type: ACTION_TYPES.FILEFIELD_REMOVE_FILE,
         payload: {
           fieldId: 'anotherfield',
@@ -97,7 +97,7 @@ describe('fileFieldReducer', () => {
     });
 
     it('should remove the specified in-progress file', () => {
-      const nextState = fileFieldReducer(initialState, {
+      const nextState = uploadFieldReducer(initialState, {
         type: ACTION_TYPES.FILEFIELD_REMOVE_FILE,
         payload: {
           fieldId: 'anotherfield',
@@ -112,7 +112,7 @@ describe('fileFieldReducer', () => {
 
   describe('FILEFIELD_UPLOAD_SUCCESS', () => {
     it('should update in-progress files on successful upload', () => {
-      const nextState = fileFieldReducer(initialState, {
+      const nextState = uploadFieldReducer(initialState, {
         type: ACTION_TYPES.FILEFIELD_UPLOAD_SUCCESS,
         payload: {
           fieldId: 'anotherfield',
@@ -135,7 +135,7 @@ describe('fileFieldReducer', () => {
 
   describe('FILEFIELD_UPDATE_QUEUED_FILE', () => {
     it('updates progress of queued files', () => {
-      const nextState = fileFieldReducer(initialState, {
+      const nextState = uploadFieldReducer(initialState, {
         type: ACTION_TYPES.FILEFIELD_UPDATE_QUEUED_FILE,
         payload: {
           fieldId: 'anotherfield',

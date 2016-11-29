@@ -1,12 +1,12 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('../FileField.js');
+jest.unmock('../UploadField.js');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { FileField } from '../FileField.js';
+import { UploadField } from '../UploadField.js';
 
-describe('FileField', () => {
+describe('UploadField', () => {
   let props = {};
   let file = null;
   const files = [
@@ -22,7 +22,7 @@ describe('FileField', () => {
       files,
       onChange: jest.genMockFunction(),
       actions: {
-        fileField: {
+        uploadField: {
           setFiles: jest.genMockFunction(),
           removeFile: jest.genMockFunction(),
         },
@@ -37,18 +37,18 @@ describe('FileField', () => {
   describe('componentDidMount()', () => {
     it('should set the files for redux-form to use for submit', () => {
       file = ReactTestUtils.renderIntoDocument(
-        <FileField {...props} />
+        <UploadField {...props} />
       );
       file.componentDidMount();
 
-      expect(props.actions.fileField.setFiles).toBeCalled();
+      expect(props.actions.uploadField.setFiles).toBeCalled();
     });
   });
 
   describe('componentWillReceiveProps', () => {
     beforeEach(() => {
       file = ReactTestUtils.renderIntoDocument(
-        <FileField {...props} />
+        <UploadField {...props} />
       );
     });
 

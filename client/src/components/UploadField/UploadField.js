@@ -5,12 +5,12 @@ import { bindActionCreators } from 'redux';
 import CONSTANTS from 'constants/index';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
-import FileFieldItem from 'components/FileField/FileFieldItem';
+import UploadFieldItem from 'components/UploadField/UploadFieldItem';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
 import fileShape from 'lib/fileShape';
-import * as fileFieldActions from 'state/fileField/FileFieldActions';
+import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
-class FileField extends SilverStripeComponent {
+class UploadField extends SilverStripeComponent {
 
   constructor(props) {
     super(props);
@@ -26,7 +26,7 @@ class FileField extends SilverStripeComponent {
 
   componentDidMount() {
     // Copy form schema data into redux and then ignore it
-    this.props.actions.fileField.setFiles(this.props.id, this.props.data.files);
+    this.props.actions.uploadField.setFiles(this.props.id, this.props.data.files);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,7 +62,7 @@ class FileField extends SilverStripeComponent {
 
   handleAddedFile(data) {
     const file = Object.assign({}, data, { uploaded: true });
-    this.props.actions.fileField.addFile(this.props.id, file);
+    this.props.actions.uploadField.addFile(this.props.id, file);
   }
 
   /**
@@ -72,7 +72,7 @@ class FileField extends SilverStripeComponent {
    * @param {Object} xhr
    */
   handleSending(file, xhr) {
-    this.props.actions.fileField.updateQueuedFile(this.props.id, file._queuedId, { xhr });
+    this.props.actions.uploadField.updateQueuedFile(this.props.id, file._queuedId, { xhr });
   }
 
   /**
@@ -82,7 +82,7 @@ class FileField extends SilverStripeComponent {
    * @param {Number} progress
    */
   handleUploadProgress(file, progress) {
-    this.props.actions.fileField.updateQueuedFile(this.props.id, file._queuedId, { progress });
+    this.props.actions.uploadField.updateQueuedFile(this.props.id, file._queuedId, { progress });
   }
 
   /**
@@ -100,15 +100,15 @@ class FileField extends SilverStripeComponent {
     }
 
     // @todo - Should successful uploads be moved to another state?
-    this.props.actions.fileField.succeedUpload(this.props.id, file._queuedId, json[0]);
+    this.props.actions.uploadField.succeedUpload(this.props.id, file._queuedId, json[0]);
   }
 
   handleFailedUpload(file, response) {
-    this.props.actions.fileField.failUpload(this.props.id, file._queuedId, response);
+    this.props.actions.uploadField.failUpload(this.props.id, file._queuedId, response);
   }
 
   handleItemRemove(event, item) {
-    this.props.actions.fileField.removeFile(this.props.id, item);
+    this.props.actions.uploadField.removeFile(this.props.id, item);
   }
 
   /**
@@ -127,9 +127,13 @@ class FileField extends SilverStripeComponent {
     }
   }
 
+  handleSelect(event) {
+    event.preventDefault();
+  }
+
   render() {
     return (
-      <div className="file-field">
+      <div className="uploadfield">
         {this.renderDropzone()}
         {this.props.files.map(this.renderChild)}
       </div>
@@ -143,8 +147,7 @@ class FileField extends SilverStripeComponent {
    * @returns {XML}
    */
   renderDropzone() {
-    // If single upload and there is a file, don't render dropzone
-    if (this.props.files.length && !this.props.data.multi) {
+    if (!this.props.data.createFileEndpoint) {
       return null;
     }
     const dimensions = {
@@ -158,6 +161,15 @@ class FileField extends SilverStripeComponent {
       thumbnailWidth: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
       thumbnailHeight: CONSTANTS.SMALL_THUMBNAIL_HEIGHT,
     };
+    if (!this.props.data.multi) {
+      dropzoneOptions.maxFiles = 1;
+    }
+
+    // If single upload and there is a file, don't render dropzone
+    const classNames = ['uploadfield__dropzone'];
+    if (this.props.files.length && !this.props.data.multi) {
+      classNames.push('uploadfield__dropzone--hidden');
+    }
 
     const securityID = this.props.securityId;
 
@@ -166,7 +178,7 @@ class FileField extends SilverStripeComponent {
       <AssetDropzone
         canUpload
         uploadButton={false}
-        uploadSelector=".file-field__dropzone-area"
+        uploadSelector=".uploadfield__dropzone-area"
         folderId={this.props.data.parentid}
         handleAddedFile={this.handleAddedFile}
         handleError={this.handleFailedUpload}
@@ -176,11 +188,13 @@ class FileField extends SilverStripeComponent {
         preview={dimensions}
         options={dropzoneOptions}
         securityID={securityID}
-        className="file-field__dropzone"
+        className={classNames.join(' ')}
       >
-        <div className="file-field__dropzone-area">
-          <span className="file-field__droptext">
-            <a className="file-field__upload-button">{i18n._t('AssetAdminFileField.BROWSE', 'Browse')}</a>
+        <div className="uploadfield__dropzone-area">
+          <span className="uploadfield__droptext">
+            <a href="#" onClick={this.handleSelect} className="uploadfield__upload-button">
+              {i18n._t('AssetAdminUploadField.BROWSE', 'Browse')}
+            </a>
           </span>
         </div>
       </AssetDropzone>
@@ -200,11 +214,11 @@ class FileField extends SilverStripeComponent {
       name: this.props.name,
       handleRemove: this.handleItemRemove,
     };
-    return <FileFieldItem {...itemProps} />;
+    return <UploadFieldItem {...itemProps} />;
   }
 }
 
-FileField.propTypes = {
+UploadField.propTypes = {
   extraClass: React.PropTypes.string,
   id: React.PropTypes.string.isRequired,
   name: React.PropTypes.string.isRequired,
@@ -226,7 +240,7 @@ FileField.propTypes = {
   }),
 };
 
-FileField.defaultProps = {
+UploadField.defaultProps = {
   value: { Files: [] },
   extraClass: '',
   className: '',
@@ -235,8 +249,8 @@ FileField.defaultProps = {
 function mapStateToProps(state, ownprops) {
   const id = ownprops.id;
   let files = [];
-  if (state.assetAdmin && state.assetAdmin.fileField && state.assetAdmin.fileField.fields) {
-    files = state.assetAdmin.fileField.fields[id] || [];
+  if (state.assetAdmin && state.assetAdmin.uploadField && state.assetAdmin.uploadField.fields) {
+    files = state.assetAdmin.uploadField.fields[id] || [];
   }
   const securityId = state.config.SecurityID;
   return { files, securityId };
@@ -245,11 +259,11 @@ function mapStateToProps(state, ownprops) {
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
-      fileField: bindActionCreators(fileFieldActions, dispatch),
+      uploadField: bindActionCreators(uploadFieldActions, dispatch),
     },
   };
 }
 
-export { FileField };
+export { UploadField };
 
-export default fieldHolder(connect(mapStateToProps, mapDispatchToProps)(FileField));
+export default fieldHolder(connect(mapStateToProps, mapDispatchToProps)(UploadField));

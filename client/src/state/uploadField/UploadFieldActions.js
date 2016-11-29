@@ -1,9 +1,9 @@
-import ACTION_TYPES from './FileFieldActionTypes';
+import ACTION_TYPES from './UploadFieldActionTypes';
 
 /**
  * Adds a file which has not been persisted to the server yet.
  *
- * @param {String} fieldId Identifier of FileField
+ * @param {String} fieldId Identifier of UploadField
  * @param {Object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
  */
 export function addFile(fieldId, file) {
@@ -17,7 +17,7 @@ export function addFile(fieldId, file) {
 /**
  * Initialise all values for the given field with the list of files
  *
- * @param {String} fieldId - Identifier of FileField
+ * @param {String} fieldId - Identifier of UploadField
  * @param {Array} files - List of files to assign
  */
 export function setFiles(fieldId, files) {
@@ -31,7 +31,7 @@ export function setFiles(fieldId, files) {
 /**
  * Updates a queued file if it fails to upload.
  *
- * @param {String} fieldId - Identifier of FileField
+ * @param {String} fieldId - Identifier of UploadField
  * @param {String} queuedId - Temporary id assigned when this file was queued
  */
 export function failUpload(fieldId, queuedId, response) {
@@ -55,7 +55,7 @@ export function failUpload(fieldId, queuedId, response) {
 /**
  * Removes a file from the queue.
  *
- * @param {String} fieldId - Identifier of FileField
+ * @param {String} fieldId - Identifier of UploadField
  * @param {Object} file - File record to remove. Will have either an id or queuedId to identify this file
  */
 export function removeFile(fieldId, file) {
@@ -69,7 +69,7 @@ export function removeFile(fieldId, file) {
 /**
  * Updates a queued file when it successfully uploads.
  *
- * @param {String} fieldId - Identifier of FileField
+ * @param {String} fieldId - Identifier of UploadField
  * @param {String} queuedId - Temporary id assigned when this file was queued
  * @param {Object} json - json encoded data for object sent from server
  */
@@ -84,7 +84,7 @@ export function succeedUpload(fieldId, queuedId, json) {
 /**
  * Override the values of a currently queued file.
  *
- * @param {String} fieldId - Identifier of FileField
+ * @param {String} fieldId - Identifier of UploadField
  * @param {String} queuedId - Temporary id assigned when this file was queued
  * @param {Object} updates - The values to update.
  */

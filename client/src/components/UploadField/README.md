@@ -1,11 +1,11 @@
-# FileField Component
+# UploadField Component
 
 Generates a file upload field
 
 ## Example
 
 ```js
-<FileField />
+<UploadField />
 ```
 
 ## Properties
@@ -14,7 +14,7 @@ Generates a file upload field
 * `extraClass` (string): Extra classes the component should have.
 * `name` (string) (required): The name for the component.
 * `onChange` (function): Event handler for when the component changes.
-* `value` (object): FileField value is an object with a single property 'Files'. This property
+* `value` (object): UploadField value is an object with a single property 'Files'. This property
   is a list of file IDs assigned to this value.
 * `data` List of custom options for this field. Data keys include:
   - `data.createFileEndpoint` (object) Endpoint this field should use to upload new files to
@@ -27,14 +27,14 @@ Generates a file upload field
 * `disabled`
 
 
-# FileFieldItem Component
+# UploadFieldItem Component
 
-Represents a single item in a FileField
+Represents a single item in an UploadField
 
 ## Example
 
 ```js
-<FileFieldItem />
+<UploadFieldItem />
 ```
 
 ## Properties
@@ -48,4 +48,4 @@ Represents a single item in a FileField
 * `handleRemove` (function): A callback which will be invoked in case the 'remove' button is clicked. This
   callback has these arguments:
     - `event` (object): The event
-    - `item` (object): The file record for the FileFieldItem instance being removed
+    - `item` (object): The file record for the UploadFieldItem instance being removed

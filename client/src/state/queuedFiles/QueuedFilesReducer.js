@@ -1,6 +1,6 @@
 import deepFreeze from 'deep-freeze-strict';
 import ACTION_TYPES from './QueuedFilesActionTypes';
-import fileStructure from 'lib/FileStructure';
+import fileStructure from 'lib/fileStructure';
 import i18n from 'i18n';
 
 const initialState = {

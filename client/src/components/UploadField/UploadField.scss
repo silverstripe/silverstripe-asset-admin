@@ -1,8 +1,5 @@
-// Custom lighter version of $background-main
-$filefield-background-color: #fafbfc;
-
 // Override asset-dropzone styles
-.file-field__dropzone {
+.uploadfield__dropzone {
   position: relative;
   left: 0;
   top: 0;
@@ -14,7 +11,7 @@ $filefield-background-color: #fafbfc;
   border-color: $border-color-dark;
   border-radius: 5px;
   padding: 0;
-  background: $filefield-background-color;
+  background: lighten($background-main, 2%);
 
   &:hover {
     cursor: pointer;
@@ -31,11 +28,16 @@ $filefield-background-color: #fafbfc;
   }
 }
 
-.file-field__dropzone-area {
+.uploadfield__dropzone--hidden {
+  // Hide dropzone if can not add any more files
+  display: none;
+}
+
+.uploadfield__dropzone-area {
   padding: 20px;
 }
 
-.file-field__droptext {
+.uploadfield__droptext {
   text-align: center;
   display: block;
 

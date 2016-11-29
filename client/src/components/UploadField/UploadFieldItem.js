@@ -4,7 +4,7 @@ import SilverStripeComponent from 'lib/SilverStripeComponent';
 import CONSTANTS from 'constants/index';
 import fileShape from 'lib/fileShape';
 
-class FileFieldItem extends SilverStripeComponent {
+class UploadFieldItem extends SilverStripeComponent {
   constructor(props) {
     super(props);
 
@@ -56,7 +56,7 @@ class FileFieldItem extends SilverStripeComponent {
 
     if (message !== null) {
       return (
-        <div className="file-field-item__error-message">
+        <div className="uploadfield-item__error-message">
           {message}
         </div>
       );
@@ -71,10 +71,10 @@ class FileFieldItem extends SilverStripeComponent {
    * @returns {string}
    */
   getThumbnailClassNames() {
-    const thumbnailClassNames = ['file-field-item__thumbnail'];
+    const thumbnailClassNames = ['uploadfield-item__thumbnail'];
 
     if (this.isImageSmallerThanThumbnail()) {
-      thumbnailClassNames.push('file-field-item__thumbnail--small');
+      thumbnailClassNames.push('uploadfield-item__thumbnail--small');
     }
 
     return thumbnailClassNames.join(' ');
@@ -89,16 +89,16 @@ class FileFieldItem extends SilverStripeComponent {
     const category = this.props.item.category || 'none';
     const itemClassNames = [
       'fill-width',
-      'file-field-item',
-      `file-field-item--${category}`,
+      'uploadfield-item',
+      `uploadfield-item--${category}`,
     ];
 
     if (!this.exists() && !this.uploading()) {
-      itemClassNames.push('file-field-item--missing');
+      itemClassNames.push('uploadfield-item--missing');
     }
 
     if (this.hasError()) {
-      itemClassNames.push('file-field-item--error');
+      itemClassNames.push('uploadfield-item--error');
     }
 
     return itemClassNames.join(' ');
@@ -190,7 +190,7 @@ class FileFieldItem extends SilverStripeComponent {
    */
   renderProgressBar() {
     const progressBarProps = {
-      className: 'file-field-item__progress-bar',
+      className: 'uploadfield-item__progress-bar',
       style: {
         width: `${this.props.item.progress}%`,
       },
@@ -199,11 +199,11 @@ class FileFieldItem extends SilverStripeComponent {
     if (!this.hasError() && this.uploading()) {
       if (this.complete()) {
         return (
-          <div className="file-field-item__complete-icon"></div>
+          <div className="uploadfield-item__complete-icon"></div>
         );
       }
       return (
-        <div className="file-field-item__upload-progress">
+        <div className="uploadfield-item__upload-progress">
           <div {...progressBarProps}></div>
         </div>
       );
@@ -220,7 +220,7 @@ class FileFieldItem extends SilverStripeComponent {
   renderRemoveButton() {
     const classes = [
       'btn',
-      'file-field-item__remove-btn',
+      'uploadfield-item__remove-btn',
       'btn-secondary',
       'btn--no-text',
       'font-icon-cancel',
@@ -243,11 +243,11 @@ class FileFieldItem extends SilverStripeComponent {
    */
   renderFileDetails() {
     return (
-      <div className="file-field-item__details fill-width flexbox-area-grow">
-        <span className="file-field-item__title" ref="title">
+      <div className="uploadfield-item__details fill-width flexbox-area-grow">
+        <span className="uploadfield-item__title" ref="title">
           {this.props.item.title}
         </span>
-        <span className="file-field-item__meta">
+        <span className="uploadfield-item__meta">
           {this.props.item.extension}, {this.props.item.size}
         </span>
       </div>
@@ -277,10 +277,10 @@ class FileFieldItem extends SilverStripeComponent {
   }
 }
 
-FileFieldItem.propTypes = {
+UploadFieldItem.propTypes = {
   name: React.PropTypes.string.isRequired,
   item: fileShape,
   handleRemove: React.PropTypes.func,
 };
 
-export default FileFieldItem;
+export default UploadFieldItem;
