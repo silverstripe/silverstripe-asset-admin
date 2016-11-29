@@ -1,0 +1,159 @@
+$file-item-thumb-width:   60px;
+$file-item-thumb-height:  60px;
+
+$uploadfield-item-height:   $file-item-thumb-width + 1; // include top border
+$gallery-title-height:  40px;
+
+$gallery-folder-height:	  54px;
+$gallery-folder-title-height: $gallery-folder-height - 2;
+
+$uploadfield-item-label-height: 40px;
+
+.uploadfield-item {
+  position: relative;
+  margin: 0;
+  background-color: $white;
+  border: 1px solid;
+  border-color: $border-color;
+  border-bottom-width: 0;
+  width: auto;
+  transition: box-shadow $transition-speed-fast;
+  height: $uploadfield-item-height;
+
+  &:first-child {
+    border-top-left-radius: $border-radius-sm;
+    border-top-right-radius: $border-radius-sm;
+  }
+
+  &:last-child {
+    border-bottom-width: 1px;
+    height: $uploadfield-item-height + 1;
+    border-bottom-left-radius: $border-radius-sm;
+    border-bottom-right-radius: $border-radius-sm;
+  }
+
+  &:not(.uploadfield-item--error):not(.uploadfield-item--folder):hover .uploadfield-item--overlay {
+    opacity: 1;
+    display: block;
+  }
+}
+
+.uploadfield__dropzone + .uploadfield-item {
+  border-top-left-radius: $border-radius-sm;
+  border-top-right-radius: $border-radius-sm;
+}
+
+.uploadfield-item--folder {
+  .uploadfield-item__thumbnail {
+    background: url("../images/folder.png") 12px 14px no-repeat;
+    background-size: 27px 24px;
+  }
+}
+
+.uploadfield-item__thumbnail {
+  height: $file-item-thumb-height;
+  width: $file-item-thumb-width;
+  margin: 0;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  border-radius: $border-radius-sm $border-radius-sm 0 0;
+}
+
+.uploadfield-item__thumbnail--small {
+  background-size: auto;
+  background-color: #fff;
+}
+
+.uploadfield-item__details {
+  padding: 11px 12px;
+  height: 100%;
+  line-height: $file-item-thumb-width - 22;
+  margin: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  display: block;
+  min-width: 30px;
+}
+
+.uploadfield-item__title {
+  font-weight: bold;
+}
+
+.uploadfield-item__meta {
+  padding-left: 5px;
+  text-transform: uppercase;
+}
+
+// ACTIONS
+// Hidden checkbox is controlled via it's label
+// @todo - need this?
+.uploadfield-item__remove-btn {
+  margin: 0;
+}
+
+.uploadfield-item--archive .uploadfield-item__thumbnail {
+  background: $white url("../images/icon_archive.png") center center no-repeat;
+}
+
+.uploadfield-item--audio .uploadfield-item__thumbnail {
+  background: $white url("../images/icon_audio.png") center center no-repeat;
+}
+
+.uploadfield-item--video .uploadfield-item__thumbnail {
+  background: $white url("../images/icon_video.png") center center no-repeat;
+}
+
+.uploadfield-item--document .uploadfield-item__thumbnail {
+  background: $white url("../images/icon_document.png") center center no-repeat;
+}
+
+.uploadfield-item--false .uploadfield-item__thumbnail {
+  background: $white url("../images/icon_file.png") center center no-repeat;
+}
+
+// Individual progress bar
+.uploadfield-item__upload-progress {
+  height: 16px;
+  margin: 22px 5px;
+  width: 30%;
+  border-radius: 10px;
+  overflow: hidden;
+
+  + .uploadfield-item__title .uploadfield-item__checkbox-label::before {
+    color: $body-color;
+  }
+}
+
+.uploadfield-item__progress-bar {
+  height: 100%;
+  background: $brand-primary;
+  width: 0%;
+}
+
+.uploadfield-item__error-message {
+  line-height: 28px;
+  height: 28px;
+  margin: 16px 5px;
+  padding: 0 10px;
+  color: white;
+  background: $brand-danger;
+  border-radius: 14px;
+}
+
+
+.uploadfield-item__complete-icon {
+  line-height: 38px;
+  padding: 11px 5px;
+
+  &::after {
+    color: $brand-success;
+    font-size: 30px;
+    display: inline;
+    font-family: silverstripe, sans-serif;
+    content: "I";
+  }
+}

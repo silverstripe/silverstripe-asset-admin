@@ -17,7 +17,8 @@
     "node": "4.x"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --bail",
+    "watch": "webpack --watch",
     "test": "NODE_PATH=\"./client/src:../framework/client/src:../framework/admin/client/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
@@ -27,7 +28,8 @@
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "testDirectoryName": "tests",
     "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react"
+      "<rootDir>/node_modules/react",
+      "../framework/node_modules/react-bootstrap-ss"
     ],
     "mocksPattern": "mocks",
     "testPathDirs": [

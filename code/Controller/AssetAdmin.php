@@ -5,10 +5,9 @@ namespace SilverStripe\AssetAdmin\Controller;
 use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
-use SilverStripe\AssetAdmin\Forms\AssetFormFactory;
+use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
-use SilverStripe\Forms\DefaultFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
@@ -18,7 +17,6 @@ use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Core\Config\Config;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxField;
@@ -666,7 +664,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $id = $request->param('ID') ?: $request->postVar('ID');
         return $this->getFileEditForm($id);
     }
-    
+
     /**
      * The form is used to generate a form schema,
      * as well as an intermediary object to process data through API endpoints.
@@ -680,7 +678,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         /** @var File $file */
         $file = $this->getList()->byID($id);
-        
+
         if (!$file->canView()) {
             $this->httpError(403, _t(
                 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
@@ -690,16 +688,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             ));
             return null;
         }
-        
+
         $scaffolder = $this->getFormFactory($file);
         $form = $scaffolder->getForm($this, 'FileInsertForm', [
             'Record' => $file,
             'Type' => 'insert',
         ]);
-        
+
         return $form;
     }
-    
+
     /**
      * Get file insert form
      *
@@ -816,7 +814,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      *
      * @return array
      */
-    protected function getObjectFromData(File $file)
+    public function getObjectFromData(File $file)
     {
         $object = array(
             'id' => $file->ID,
@@ -863,9 +861,17 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         /** @var File $file */
         if ($file->getIsImage()) {
-            $width = (int)Config::inst()->get(self::class, 'thumbnail_width');
-            $height = (int)Config::inst()->get(self::class, 'thumbnail_height');
+            // Small thumbnail
+            $smallWidth = UploadField::config()->get('thumbnail_width');
+            $smallHeight = UploadField::config()->get('thumbnail_height');
+            $smallThumbnail = $file->FitMax($smallWidth, $smallHeight);
+            if ($smallThumbnail && $smallThumbnail->exists()) {
+                $object['smallThumbnail'] = $smallThumbnail->getAbsoluteURL();
+            }
 
+            // Large thumbnail
+            $width = $this->config()->get('thumbnail_width');
+            $height = $this->config()->get('thumbnail_height');
             $thumbnail = $file->FitMax($width, $height);
             if ($thumbnail && $thumbnail->exists()) {
                 $object['thumbnail'] = $thumbnail->getAbsoluteURL();
@@ -961,18 +967,19 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $handler = AddToCampaignHandler::create($this, $record);
         $results = $handler->addToCampaign($record, $data['Campaign']);
-        if (!is_null($results)) {
-            $request = $this->getRequest();
-            if($request->getHeader('X-Formschema-Request')) {
-                $data = $this->getSchemaForForm($handler->Form($record));
-                $data['message'] = $results;
-
-                $response = new HTTPResponse(Convert::raw2json($data));
-                $response->addHeader('Content-Type', 'application/json');
-                return $response;
-            }
-            return $results;
+        if (!isset($results)) {
+            return null;
         }
+        $request = $this->getRequest();
+        if($request->getHeader('X-Formschema-Request')) {
+            $data = $this->getSchemaForForm($handler->Form($record));
+            $data['message'] = $results;
+
+            $response = new HTTPResponse(Convert::raw2json($data));
+            $response->addHeader('Content-Type', 'application/json');
+            return $response;
+        }
+        return $results;
     }
 
     /**
@@ -1018,12 +1025,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $handler = AddToCampaignHandler::create($this, $record);
         $form = $handler->Form($record);
-        
+
         $form->setValidationResponseCallback(function() use ($form, $id) {
             $schemaId = Controller::join_links($this->Link('schema/AddToCampaignForm'), $id);
             return $this->getSchemaResponse($form, $schemaId);
         });
-    
+
         return $form;
     }
 

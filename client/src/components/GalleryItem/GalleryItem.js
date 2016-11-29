@@ -2,6 +2,7 @@ import i18n from 'i18n';
 import React, { PropTypes } from 'react';
 import CONSTANTS from 'constants/index';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
+import fileShape from 'lib/fileShape';
 
 class GalleryItem extends SilverStripeComponent {
   constructor(props) {
@@ -330,17 +331,7 @@ class GalleryItem extends SilverStripeComponent {
 }
 
 GalleryItem.propTypes = {
-  item: PropTypes.shape({
-    dimensions: PropTypes.shape({
-      width: PropTypes.number,
-      height: PropTypes.number,
-    }),
-    category: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]).isRequired,
-    id: PropTypes.number.isRequired,
-    url: PropTypes.string,
-    title: PropTypes.string.isRequired,
-    progress: PropTypes.number,
-  }),
+  item: fileShape,
   // Can be used to highlight a currently edited file
   highlighted: PropTypes.bool,
   // Styles according to the checkbox selection state
