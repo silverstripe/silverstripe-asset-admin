@@ -217,6 +217,10 @@
   opacity:.8;
 }
 
+.gallery-item--error:hover .gallery-item__thumbnail:after,.gallery-item--missing:hover .gallery-item__thumbnail:after{
+  background:#b40303;
+}
+
 .gallery-item__upload-progress{
   height:18px;
   width:75%;
@@ -249,6 +253,7 @@
   border:1px solid #f46b00;
   box-shadow:0 0 1px .5px #fff;
   border-radius:100%;
+  z-index:1;
 }
 
 .gallery-item--draft:hover:after,.gallery-item--modified:hover:after{

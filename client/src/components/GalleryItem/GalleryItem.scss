@@ -224,6 +224,10 @@ $gallery-item-label-height: 40px;
       opacity: .8;
     }
   }
+
+  &:hover .gallery-item__thumbnail::after {
+    background: mix($black, $brand-danger, 15);
+  }
 }
 
 // Individual progress bar
@@ -259,6 +263,7 @@ $gallery-item-label-height: 40px;
   border: 1px solid $state-draft;
   box-shadow: 0 0 1px .5px $white;
   border-radius: 100%;
+  z-index: 1;
 
   &:hover::after {
     top: -4px;
