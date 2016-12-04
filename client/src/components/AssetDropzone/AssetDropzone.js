@@ -31,14 +31,16 @@ class AssetDropzone extends SilverStripeComponent {
 
     const defaultOptions = this.getDefaultOptions();
 
-    if (this.props.uploadButton === true) {
-      defaultOptions.clickable = $(ReactDOM.findDOMNode(this))
-        .find('.asset-dropzone__upload-button')[0];
+    let uploadSelector = this.props.uploadSelector;
+    if (!uploadSelector && this.props.uploadButton) {
+      uploadSelector = '.asset-dropzone__upload-button';
     }
 
-    if (this.props.uploadSelector) {
-      defaultOptions.clickable = $(ReactDOM.findDOMNode(this))
-        .find(this.props.uploadSelector)[0];
+    if (uploadSelector) {
+      const found = $(ReactDOM.findDOMNode(this)).find(uploadSelector);
+      if (found && found.length) {
+        defaultOptions.clickable = found.toArray();
+      }
     }
 
     this.dropzone = new DropzoneLib(

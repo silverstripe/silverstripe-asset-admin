@@ -26,10 +26,15 @@ class FileFormFactory extends AssetFormFactory
             $this->getFormFieldHistoryTab($record, $context)
         );
 
-        if (isset($context['Type']) && $context['Type'] === 'insert') {
-            $tabs->setReadonly(true);
-
-            $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
+        // All non-admin forms are typically readonly
+        switch ($this->getFormType($context)) {
+            case static::TYPE_INSERT:
+                $tabs->setReadonly(true);
+                $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
+                break;
+            case static::TYPE_SELECT:
+                $tabs->setReadonly(true);
+                break;
         }
 
         return $tabs;
@@ -64,7 +69,7 @@ class FileFormFactory extends AssetFormFactory
             ReadonlyField::create("Path", _t('AssetTableField.PATH', 'Path'), $this->getPath($record))
         );
 
-        if (isset($context['Type']) && $context['Type'] === 'insert') {
+        if ($this->getFormType($context) !== static::TYPE_ADMIN) {
             $tab->push(LiteralField::create(
                 'EditLink',
                 sprintf(
@@ -154,7 +159,7 @@ class FileFormFactory extends AssetFormFactory
     {
         $record = $context['Record'];
 
-        if (isset($context['Type']) && $context['Type'] === 'insert') {
+        if ($this->getFormType($context) !== static::TYPE_ADMIN) {
             $actions = new FieldList(array_filter([
                 $this->getInsertAction($record),
             ]));

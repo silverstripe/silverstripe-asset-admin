@@ -481,10 +481,7 @@
   border-radius:5px;
   padding:0;
   background:#fcfcfc;
-}
-
-.uploadfield__dropzone:hover{
-  cursor:pointer;
+  height:78px;
 }
 
 .uploadfield__dropzone:after{
@@ -501,13 +498,21 @@
   display:none;
 }
 
-.uploadfield__dropzone-area{
-  padding:20px;
+.uploadfield__backdrop{
+  position:absolute;
+  left:0;
+  top:0;
+  right:0;
+  bottom:0;
+  cursor:pointer;
 }
 
 .uploadfield__droptext{
+  position:absolute;
+  top:20px;
+  left:40%;
+  display:inline-block;
   text-align:center;
-  display:block;
 }
 
 .uploadfield__droptext a{
