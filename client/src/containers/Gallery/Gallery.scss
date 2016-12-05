@@ -42,6 +42,7 @@
   display: inline-block;
 }
 
+// Note: no longer exists but should be implemented at later time
 .gallery__load-more {
   display: block;
   color: $white;
@@ -60,6 +61,7 @@
   display: inline-block;
   vertical-align: middle;
   padding: $btn-padding-y $btn-padding-x;
+  margin-bottom: -4px;
 
   .gallery & .chosen-single {
     border: 0;
@@ -111,3 +113,95 @@
 .gallery__view-change-button .icon:before {
   vertical-align: middle;
 }
+
+.gallery__state-buttons {
+  margin-right: -$spacer-sm;
+}
+
+.gallery__view-change-button {
+  margin-right: -$panel-padding-x / 2;
+}
+
+// Griddle overrides
+// Pagination styles override griddle default styles
+
+.griddle-footer > div {
+  display: flex;
+}
+
+.griddle-page {
+  flex: 1;
+  text-align: center;
+  margin-top: -3px;
+
+  select { // Replicate .form-control;
+    height: calc(#{$line-height-base} + #{$spacer-y});
+    padding: $input-padding-y $input-padding-x;
+    line-height: $line-height;
+    color: $input-color;
+    border: $input-btn-border-width solid $input-border-color;
+    background-color: $input-bg;
+    background-image: none;
+    text-align: center;
+    display: inline;
+    @include form-control-focus();
+  }
+}
+
+.griddle-footer {
+  width: 200px; // approx width to allow for 1000's of images
+  margin: 0 auto;
+}
+
+$griddle-button-width: 36px;
+$griddle-button-height: 30px;
+
+.griddle-previous,
+.griddle-next {
+  width: $griddle-button-width; // hold space so pagination doesn't move around
+
+  button {
+    white-space: nowrap;
+    border: 0;
+    background: transparent;
+    width: $griddle-button-width;
+    height: $griddle-button-height;
+    position: relative;
+    border-radius: $btn-border-radius;
+    overflow: hidden;
+
+    &:hover {
+      background-color: $gray-lighter;
+      border-color: transparent;
+
+      &::before {
+        background-color: $gray-lighter;
+      }
+    }
+
+    &::before {
+      font-family: silverstripe;
+      color: $body-color-light;
+      width: $griddle-button-width;
+      height: $griddle-button-height;
+      background-color: $background-main;
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: $btn-padding-y;
+      transition: all .2s ease-in-out;
+      font-size: $font-size-lg;
+      -webkit-font-smoothing: antialiased;
+      line-height: $line-height-base;
+    }
+  }
+}
+
+.griddle-previous button::before {
+  content: "'";
+}
+
+.griddle-next button::before {
+  content: "&";
+}
+// Pagination end

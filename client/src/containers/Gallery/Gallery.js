@@ -447,7 +447,7 @@ class Gallery extends Component {
             </button>
           </div>
 
-          <div className="toolbar__state-buttons">
+          <div className="gallery__state-buttons">
             {this.renderSort()}
             <div className="btn-group" role="group" aria-label="View mode">
               {this.renderViewChangeButtons()}
@@ -470,12 +470,14 @@ class Gallery extends Component {
       const classNames = [
         'gallery__view-change-button',
         'btn btn-secondary',
-        'btn--icon-xl',
+        'btn--icon-sm',
+        'btn--no-text',
       ];
 
       if (view === this.props.view) {
         return null;
       }
+      classNames.push(`font-icon-${icon}`);
       return (
         <button
           id={`button-view-${view}`}
@@ -485,7 +487,6 @@ class Gallery extends Component {
           onClick={this.handleViewChange}
           value={view}
         >
-          <span className={`icon font-icon-${icon}`} />
         </button>
       );
     });

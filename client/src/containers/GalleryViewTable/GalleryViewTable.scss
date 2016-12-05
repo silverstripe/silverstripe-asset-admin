@@ -1,4 +1,6 @@
 .gallery__table {
+  margin-bottom: -$panel-padding-y;
+
   td,
   th {
     word-wrap: break-word;
@@ -8,23 +10,116 @@
     word-break: break-all;
 
     &.gallery__table-column-image {
-      padding: 5px;
+      padding: 0;
     }
+  }
+
+  th {
+    cursor: pointer;
+
+    > span {
+      display: inline;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &::after {
+        color: lighten($text-muted, 20%);
+        content: ")";
+        display: inline-block;
+        font-family: silverstripe;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  tbody td {
+    padding-top: $table-lg-cell-padding;
+    padding-bottom: $table-lg-cell-padding;
+
+    // hide details for smaller screens
+    @include media-breakpoint-down(sm) {
+      &:nth-child(n+4) {
+        display: none;
+      }
+    }
+  }
+
+  thead {
+    th,
+    td {
+      height: $toolbar-height;
+    }
+
+    th {
+      &:hover {
+        background-color: $background-darker;
+      }
+
+      // hide details for smaller screens
+      @include media-breakpoint-down(sm) {
+        &:nth-child(n+4) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // Note: Requires nesting
+  .sort-descending,
+  .sort-ascending {
+    border-bottom: 1px solid $component-active-border-color;
+
+    > span::after {
+      color: $component-active-border-color;
+    }
+  }
+
+  .sort-descending > span::after {
+    content: "*";
+  }
+
+  .sort-ascending > span::after {
+    content: "(";
+  }
+
+  .footer-container,
+  .footer-container:hover {
+    background-color: $background-main;
+    border-bottom: 0;
+  }
+}
+
+.gallery__table-row {
+  cursor: pointer;
+}
+
+.gallery__table-column--select {
+  width: 1%;
+
+  // Increase size of checkbox slightly
+  input[type=checkbox] {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+$gallery-list-thumb-width: 60px;
+$gallery-list-thumb-height: 68px;
+
+.gallery__table-column--image {
+  width: $gallery-list-thumb-width;
+  max-width: $gallery-list-thumb-width;
+  height: $gallery-list-thumb-height + $table-border-width;
+  text-align: center;
+
+  .gallery__table .gallery__table-row > & {
+    padding: 0;
+    vertical-align: middle;
   }
 }
 
 .gallery__table-image {
-  max-width: 60px;
-  max-height: 60px;
-  display: block;
-  margin: 0 auto;
-}
-
-.griddle-footer > div {
-  display: flex;
-}
-
-.griddle-page {
-  flex: 1;
-  text-align: center;
+  max-height: $gallery-list-thumb-height;
+  max-width: $gallery-list-thumb-width;
 }
