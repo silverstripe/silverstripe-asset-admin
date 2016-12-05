@@ -1,10 +1,11 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('../GalleryItem.js');
+jest.unmock('react');
+jest.unmock('../GalleryItem');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import GalleryItem from '../GalleryItem.js';
+import GalleryItem from '../GalleryItem';
 
 describe('GalleryItem', () => {
   let props = null;

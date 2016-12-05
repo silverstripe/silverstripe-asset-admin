@@ -1,5 +1,6 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
+jest.unmock('react');
 jest.unmock('../BulkActions.js');
 
 import React from 'react';

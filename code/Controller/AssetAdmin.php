@@ -259,6 +259,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             if (!isset($a[$column]) || !isset($b[$column])) {
                 return 0;
             }
+            if ($a['type'] === 'folder' && $b['type'] !== 'folder') {
+                return -1;
+            }
+            if ($b['type'] === 'folder' && $a['type'] !== 'folder') {
+                return 1;
+            }
             $numeric = (is_numeric($a[$column]) && is_numeric($b[$column]));
             $fieldA = ($numeric) ? floatval($a[$column]) : strtolower($a[$column]);
             $fieldB = ($numeric) ? floatval($b[$column]) : strtolower($b[$column]);

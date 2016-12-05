@@ -4,7 +4,7 @@ import i18n from 'i18n';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import { fileSize } from 'lib/DataFormat';
 
-class GalleryViewTable extends Component {
+class TableView extends Component {
   constructor(props) {
     super(props);
 
@@ -276,8 +276,8 @@ class GalleryViewTable extends Component {
   }
 }
 
-GalleryViewTable.defaultProps = galleryViewDefaultProps;
+TableView.defaultProps = galleryViewDefaultProps;
 
-GalleryViewTable.propTypes = galleryViewPropTypes;
+TableView.propTypes = galleryViewPropTypes;
 
-export default GalleryViewTable;
+export default TableView;

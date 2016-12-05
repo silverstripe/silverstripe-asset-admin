@@ -4,7 +4,7 @@ import GalleryItem from 'components/GalleryItem/GalleryItem';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import Griddle from 'griddle-react';
 
-class GalleryViewTile extends Component {
+class ThumbnailView extends Component {
   constructor(props) {
     super(props);
 
@@ -143,8 +143,8 @@ class GalleryViewTile extends Component {
   }
 }
 
-GalleryViewTile.defaultProps = galleryViewDefaultProps;
+ThumbnailView.defaultProps = galleryViewDefaultProps;
 
-GalleryViewTile.propTypes = galleryViewPropTypes;
+ThumbnailView.propTypes = galleryViewPropTypes;
 
-export default GalleryViewTile;
+export default ThumbnailView;

@@ -1,11 +1,12 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('../AssetDropzone.js');
+jest.unmock('react');
 jest.unmock('dropzone');
+jest.unmock('../AssetDropzone');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import AssetDropzone from '../AssetDropzone.js';
+import AssetDropzone from '../AssetDropzone';
 
 describe('AssetDropzone', () => {
   let props = null;

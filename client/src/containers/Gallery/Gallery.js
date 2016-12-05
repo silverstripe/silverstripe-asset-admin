@@ -9,8 +9,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
 import BulkActions from 'components/BulkActions/BulkActions';
-import GalleryViewTile from 'containers/GalleryViewTile/GalleryViewTile';
-import GalleryViewTable from 'containers/GalleryViewTable/GalleryViewTable';
+import ThumbnailView from 'containers/ThumbnailView/ThumbnailView';
+import TableView from 'containers/TableView/TableView';
 import CONSTANTS from 'constants/index';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
@@ -582,7 +582,7 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderGalleryView() {
-    const GalleryView = (this.props.view === 'table') ? GalleryViewTable : GalleryViewTile;
+    const GalleryView = (this.props.view === 'table') ? TableView : ThumbnailView;
 
     const allFiles = this.props.files
       .map((file) => Object.assign({}, file, {

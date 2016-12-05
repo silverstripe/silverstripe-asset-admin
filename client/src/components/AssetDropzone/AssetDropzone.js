@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
+import { fileSize } from 'lib/DataFormat';
 import $ from 'jQuery';
 
 let idCounter = 0;
@@ -325,7 +326,7 @@ class AssetDropzone extends SilverStripeComponent {
         category: this.getFileCategory(file.type),
         filename: file.name,
         queuedId: file._queuedId,
-        size: this.getFileSize(file.size),
+        size: fileSize(file.size),
         title: this.getFileTitle(file.name),
         extension: this.getFileExtension(file.name),
         type: file.type,
@@ -355,46 +356,6 @@ class AssetDropzone extends SilverStripeComponent {
     return /[.]/.exec(filename)
       ? filename.replace(/^.+[.]/, '')
       : '';
-  }
-
-  /**
-   * JS Synonym for File::format_size()
-   *
-   * @param {Integer} filesize
-   * @return {String}
-   */
-  getFileSize(filesize) {
-    if (filesize < 1024) {
-      return `${filesize} bytes`;
-    }
-
-    if (filesize < 1024 * 10) {
-      // Rount to 1dp
-      const kb = Math.round((filesize / 1024) * 10) / 10;
-      return `${kb} KB`;
-    }
-
-    if (filesize < 1024 * 1024) {
-      // Round to 0dp
-      const kb = Math.round(filesize / 1024);
-      return `${kb} KB`;
-    }
-
-    if (filesize < 1024 * 1024 * 10) {
-      // Round to 1dp
-      const mb = Math.round((filesize / (1024 * 1024)) * 10) / 10;
-      return `${mb} MB`;
-    }
-
-    if (filesize < 1024 * 1024 * 1024) {
-      // Round to 0dp
-      const mb = Math.round(filesize / (1024 * 1024));
-      return `${mb} MB`;
-    }
-
-    // Round to 1dp
-    const gb = Math.round((filesize / (1024 * 1024 * 1024)) * 10) / 10;
-    return `${gb} GB`;
   }
 
   /**

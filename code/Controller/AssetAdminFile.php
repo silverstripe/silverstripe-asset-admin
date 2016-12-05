@@ -4,7 +4,6 @@ namespace SilverStripe\AssetAdmin\Controller;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Control\Director;
-use SilverStripe\Dev\Debug;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\ORM\Versioning\DataDifferencer;
