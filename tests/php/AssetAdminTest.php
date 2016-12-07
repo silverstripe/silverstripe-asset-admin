@@ -67,10 +67,7 @@ class AssetAdminTest extends FunctionalTest
 
 
     public function testApiHistory() {
-        $file = $this->objFromFixture(
-            'SilverStripe\\Assets\\File',
-            'file1'
-        );
+        $file = $this->objFromFixture(File::class, 'file1');
         $response = Director::test(
             'admin/assets/api/history?fileId='. $file->ID,
             null,
@@ -80,7 +77,7 @@ class AssetAdminTest extends FunctionalTest
 
         $this->assertFalse($response->isError());
 
-        $body = json_decode($response->getBody());
+        $body = json_decode($response->getBody(), true);
 
         $this->assertArrayHasKey('summary', $body[0]);
         $this->assertArrayHasKey('versionid', $body[0]);

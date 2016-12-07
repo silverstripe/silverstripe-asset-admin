@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use InvalidArgumentException;
 use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
@@ -105,6 +106,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'FileHistoryForm',
         'AddToCampaignForm',
         'FileInsertForm',
+        'schema',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -829,14 +831,27 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-     *
+     * @param array $context
+     * @return Form
+     * @throws InvalidArgumentException
      */
-    public function getFileHistoryForm($id)
+    public function getFileHistoryForm($context)
     {
-        /** @var File $file */
-        $file = $this->getList()->byID($id);
+        // Check context
+        if (!isset($context['RecordID']) || !isset($context['RecordVersion'])) {
+            throw new InvalidArgumentException("Missing RecordID / RecordVersion for this form");
+        }
+        $id = $context['RecordID'];
+        $versionId = $context['RecordVersion'];
+        if(!$id || !$versionId) {
+            return $this->httpError(404);
+        }
 
-        $request = $this->getRequest();
+        /** @var File $file */
+        $file = Versioned::get_version(File::class, $id, $versionId);
+        if (!$file) {
+            return $this->httpError(404);
+        }
 
         if (!$file->canView()) {
             $this->httpError(403, _t(
@@ -848,34 +863,52 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return null;
         }
 
-        $versionId = $request->param('OtherItemID');
-        $version = Versioned::get_version($this->getList()->dataClass(), $id, $versionId);
-
-        if(!$version) {
-            return $this->httpError(404);
-        }
-
-        if(!$version->canView()) {
-            return $this->httpError(403);
-        }
-
+        $effectiveContext = array_merge($context, ['Record' => $file]);
+        /** @var FormFactory $scaffolder */
         $scaffolder = Injector::inst()->get(FileHistoryFormFactory::class);
-        $form = $scaffolder->getForm($this, 'FileHistoryForm', [
-            'Record' => $version
-        ]);
+        $form = $scaffolder->getForm($this, 'FileHistoryForm', $effectiveContext);
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
-        $form->setValidationResponseCallback(function() use ($form, $file) {
-            $schemaId = Controller::join_links($this->Link('schema/FileHistoryForm'), $file->exists() ? $file->ID : '');
-
+        $form->setValidationResponseCallback(function() use ($form, $id, $versionId) {
+            $schemaId = Controller::join_links($this->Link('schema/FileHistoryForm'), $id, $versionId);
             return $this->getSchemaResponse($form, $schemaId);
         });
 
-        $form->makeReadonly();
 
         return $form;
     }
+
+    /**
+	 * Gets a JSON schema representing the current edit form.
+	 *
+	 * WARNING: Experimental API.
+	 *
+	 * @param HTTPRequest $request
+	 * @return HTTPResponse
+	 */
+	public function schema($request) {
+		$formName = $request->param('FormName');
+        if ($formName !== 'FileHistoryForm') {
+            return parent::schema($request);
+        }
+
+        // Get schema for history form
+        // @todo Eventually all form scaffolding will be based on context rather than record ID
+        // See https://github.com/silverstripe/silverstripe-framework/issues/6362
+		$itemID = $request->param('ItemID');
+        $version = $request->param('OtherItemID');
+        $form = $this->getFileHistoryForm([
+            'RecordID' => $itemID,
+            'RecordVersion' => $version,
+        ]);
+
+        // Respond with this schema
+		$response = $this->getResponse();
+        $response->addHeader('Content-Type', 'application/json');
+        $response->setBody(Convert::raw2json($this->getSchemaForForm($form)));
+        return $response;
+	}
 
     /**
      * Get file history form
@@ -886,8 +919,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $request = $this->getRequest();
         $id = $request->param('ID') ?: $request->postVar('ID');
-        $form = $this->getFileHistoryForm($id);
-
+        $version = $request->param('OtherID') ?: $request->postVar('Version');
+        $form = $this->getFileHistoryForm([
+            'RecordID' => $id,
+            'RecordVersion' => $version,
+        ]);
         return $form;
     }
 

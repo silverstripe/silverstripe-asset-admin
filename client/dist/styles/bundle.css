@@ -913,6 +913,11 @@
   }
 }
 
+.relative-time[title]{
+  cursor:pointer;
+  text-decoration:underline;
+}
+
 @media (max-width:1199px){
   .editor{
     height:100%;

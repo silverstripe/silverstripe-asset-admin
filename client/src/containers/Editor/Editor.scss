@@ -141,6 +141,11 @@
   }
 }
 
+.relative-time[title] {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 @include media-breakpoint-down(lg) {
   .editor {
     height: 100%;

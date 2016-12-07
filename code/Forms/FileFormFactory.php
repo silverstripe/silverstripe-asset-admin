@@ -208,17 +208,8 @@ class FileFormFactory extends AssetFormFactory
         if (!$record || !$record->exists()) {
             return null;
         }
-        /**
-         * Can remove .label and .label-info when Bootstrap has been updated to BS4 Beta
-         * .label is being replaced with .tag
-         */
         return sprintf(
-            '<div class="editor__specs">
-                <span class="label label-info tag tag-info">v.%s</span> %s %s, %s %s
-            </div>',
-            $record->Version,
-            ($record->WasPublished) ? _t('File.PUBLISHED', 'Published') : _t('File.SAVED', 'Saved'),
-            $record->dbObject('LastEdited')->Ago(),
+            '<div class="editor__specs">%s %s</div>',
             $record->getSize(),
             $this->getStatusFlagMarkup($record)
         );
