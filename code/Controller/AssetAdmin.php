@@ -2,12 +2,14 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use InvalidArgumentException;
 use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
+use SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
@@ -35,6 +37,7 @@ use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\View\Requirements;
+use SilverStripe\ORM\Versioning\Versioned;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -62,6 +65,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'PUT api/updateFolder' => 'apiUpdateFolder',
         'DELETE api/delete' => 'apiDelete',
         'GET api/search' => 'apiSearch',
+        'GET api/history' => 'apiHistory'
     ];
 
     /**
@@ -80,6 +84,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     private static $allowed_max_file_size;
 
     /**
+     * @config
+     *
+     * @var int
+     */
+    private static $max_history_entries = 100;
+
+    /**
      * @var array
      */
     private static $allowed_actions = array(
@@ -88,11 +99,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiCreateFile',
         'apiReadFolder',
         'apiUpdateFolder',
+        'apiHistory',
         'apiDelete',
         'apiSearch',
         'FileEditForm',
+        'FileHistoryForm',
         'AddToCampaignForm',
         'FileInsertForm',
+        'schema',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -154,6 +168,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'method' => 'delete',
                 'payloadFormat' => 'urlencoded',
             ],
+            'historyEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/history'),
+                'method' => 'get',
+                'responseFormat' => 'json'
+            ],
             'limit' => $this->config()->page_length,
             'form' => [
                 'FileEditForm' => [
@@ -165,6 +184,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'AddToCampaignForm' => [
                     'schemaUrl' => $this->Link('schema/AddToCampaignForm')
                 ],
+                'FileHistoryForm' => [
+                    'schemaUrl' => $this->Link('schema/FileHistoryForm')
+                ]
             ],
         ]);
     }
@@ -387,6 +409,103 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return (new HTTPResponse(json_encode($result)))
             ->addHeader('Content-Type', 'application/json');
     }
+
+    /**
+     * Returns a JSON array for history of a given file ID. Returns a list of all the history.
+     *
+     * @param HTTPRequest
+     *
+     * @return HTTPResponse
+     */
+    public function apiHistory(HTTPRequest $request)
+    {
+        // CSRF check not required as the GET request has no side effects.
+        $fileId = $request->getVar('fileId');
+
+        if(!$fileId || !is_numeric($fileId)) {
+            return new HTTPResponse(null, 400);
+        }
+
+        $class = File::class;
+        $file = DataObject::get($class)->byId($fileId);
+
+        if(!$file) {
+            return new HTTPResponse(null, 404);
+        }
+
+        if(!$file->canView()) {
+            return new HTTPResponse(null, 403);
+        }
+
+        $versions = Versioned::get_all_versions($class, $fileId)
+            ->limit($this->config()->max_history_entries)
+            ->sort('Version', 'DESC');
+
+        $output = array();
+        $next = array();
+        $prev = null;
+
+        // swap the order so we can get the version number to compare against.
+        // i.e version 3 needs to know version 2 is the previous version
+        $copy = $versions->map('Version', 'Version')->toArray();
+        foreach(array_reverse($copy) as $k => $v) {
+            if($prev) {
+                $next[$v] = $prev;
+            }
+
+            $prev = $v;
+        }
+
+        $_cachedMembers = array();
+
+        foreach($versions as $version) {
+            $author = null;
+
+            if($version->AuthorID) {
+                if(!isset($_cachedMembers[$version->AuthorID])) {
+                    $_cachedMembers[$version->AuthorID] = DataObject::get(Member::class)
+                        ->byId($version->AuthorID);
+                }
+
+                $author = $_cachedMembers[$version->AuthorID];
+            }
+
+            if($version->canView()) {
+                $published = true;
+
+                if(isset($next[$version->Version])) {
+                    $summary = $version->humanizedChanges(
+                        $version->Version,
+                        $next[$version->Version]
+                    );
+
+                    // if no summary returned by humanizedChanges, i.e we cannot work out what changed, just show a
+                    // generic message
+                    if(!$summary) {
+                        $summary = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.SAVEDFILE', "Saved file");
+                    }
+                } else {
+                    $summary = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UPLOADEDFILE', "Uploaded file");
+                }
+
+                $output[] = array(
+                    'versionid' => $version->Version,
+                    'date_ago' => $version->dbObject('LastEdited')->Ago(),
+                    'date_formatted' => $version->dbObject('LastEdited')->Nice(),
+                    'status' => ($version->WasPublished) ? _t('File.PUBLISHED', 'Published') : '',
+                    'author' => ($author)
+                        ? $author->Name
+                        : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UNKNOWN', "Unknown"),
+                    'summary' => ($summary) ? $summary : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.NOSUMMARY', "No summary available")
+                );
+            }
+        }
+
+        return
+            (new HTTPResponse(json_encode($output)))->addHeader('Content-Type', 'application/json');
+
+    }
+
 
     /**
      * Creates a single folder, within an optional parent folder.
@@ -709,6 +828,103 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $request = $this->getRequest();
         $id = $request->param('ID') ?: $request->postVar('ID');
         return $this->getFileInsertForm($id);
+    }
+
+    /**
+     * @param array $context
+     * @return Form
+     * @throws InvalidArgumentException
+     */
+    public function getFileHistoryForm($context)
+    {
+        // Check context
+        if (!isset($context['RecordID']) || !isset($context['RecordVersion'])) {
+            throw new InvalidArgumentException("Missing RecordID / RecordVersion for this form");
+        }
+        $id = $context['RecordID'];
+        $versionId = $context['RecordVersion'];
+        if(!$id || !$versionId) {
+            return $this->httpError(404);
+        }
+
+        /** @var File $file */
+        $file = Versioned::get_version(File::class, $id, $versionId);
+        if (!$file) {
+            return $this->httpError(404);
+        }
+
+        if (!$file->canView()) {
+            $this->httpError(403, _t(
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
+                'You don\'t have the necessary permissions to modify {ObjectTitle}',
+                '',
+                ['ObjectTitle' => $file->i18n_singular_name()]
+            ));
+            return null;
+        }
+
+        $effectiveContext = array_merge($context, ['Record' => $file]);
+        /** @var FormFactory $scaffolder */
+        $scaffolder = Injector::inst()->get(FileHistoryFormFactory::class);
+        $form = $scaffolder->getForm($this, 'FileHistoryForm', $effectiveContext);
+
+        // Configure form to respond to validation errors with form schema
+        // if requested via react.
+        $form->setValidationResponseCallback(function() use ($form, $id, $versionId) {
+            $schemaId = Controller::join_links($this->Link('schema/FileHistoryForm'), $id, $versionId);
+            return $this->getSchemaResponse($form, $schemaId);
+        });
+
+
+        return $form;
+    }
+
+    /**
+	 * Gets a JSON schema representing the current edit form.
+	 *
+	 * WARNING: Experimental API.
+	 *
+	 * @param HTTPRequest $request
+	 * @return HTTPResponse
+	 */
+	public function schema($request) {
+		$formName = $request->param('FormName');
+        if ($formName !== 'FileHistoryForm') {
+            return parent::schema($request);
+        }
+
+        // Get schema for history form
+        // @todo Eventually all form scaffolding will be based on context rather than record ID
+        // See https://github.com/silverstripe/silverstripe-framework/issues/6362
+		$itemID = $request->param('ItemID');
+        $version = $request->param('OtherItemID');
+        $form = $this->getFileHistoryForm([
+            'RecordID' => $itemID,
+            'RecordVersion' => $version,
+        ]);
+
+        // Respond with this schema
+		$response = $this->getResponse();
+        $response->addHeader('Content-Type', 'application/json');
+        $response->setBody(Convert::raw2json($this->getSchemaForForm($form)));
+        return $response;
+	}
+
+    /**
+     * Get file history form
+     *
+     * @return Form
+     */
+    public function FileHistoryForm()
+    {
+        $request = $this->getRequest();
+        $id = $request->param('ID') ?: $request->postVar('ID');
+        $version = $request->param('OtherID') ?: $request->postVar('Version');
+        $form = $this->getFileHistoryForm([
+            'RecordID' => $id,
+            'RecordVersion' => $version,
+        ]);
+        return $form;
     }
 
     /**

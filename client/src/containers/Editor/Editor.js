@@ -95,6 +95,17 @@ class Editor extends Component {
     />);
   }
 
+  renderCancelButton() {
+    return (<a
+      tabIndex="0"
+      className="btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl"
+      onClick={this.handleClose}
+      onKeyDown={this.handleCancelKeyDown}
+      type="button"
+      aria-label={i18n._t('AssetAdmin.CANCEL')}
+    />);
+  }
+
   render() {
     const formSchemaUrl = `${this.props.editFileSchemaUrl}/${this.props.fileId}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;

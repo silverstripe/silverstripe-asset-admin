@@ -1,0 +1,44 @@
+.history-item {
+  padding-top: 1rem;
+
+  &:hover,
+  &:focus {
+    background-color: $background-darker;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  // Replicate tab border
+  .list-group-flush:first-child & {
+    &:first-child {
+      border-top: 1px solid $nav-tabs-border-color;
+    }
+  }
+}
+
+.history-item__date,
+.history-item__version {
+  opacity: 0.7;
+  font-size: $font-size-xs;
+  margin-bottom: 1px;
+}
+
+.history-item__date {
+  display: block;
+}
+
+.history-item__version {
+  position: absolute;
+  right: $panel-padding-x;
+  top: $spacer-sm;
+  font-size: $font-size-xs;
+  opacity: 0.7;
+}
+
+.history-item__status-flag {
+  color: $brand-success;
+  text-transform: uppercase;
+  font-size: $font-size-sm;
+}

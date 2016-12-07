@@ -8,11 +8,16 @@ import AssetAdminRouter from 'containers/AssetAdmin/AssetAdminRouter';
 import uploadFieldReducer from 'state/uploadField/UploadFieldReducer';
 import Injector from 'lib/Injector';
 import UploadField from 'components/UploadField/UploadField';
+import HistoryList from 'containers/HistoryList/HistoryList';
+import injector from 'lib/Injector';
 
 document.addEventListener('DOMContentLoaded', () => {
   Injector.register('UploadField', UploadField);
 
   const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
+
+  injector.register('HistoryList', HistoryList);
+
   reactRouteRegister.add({
     path: sectionConfig.url,
     component: AssetAdminRouter,

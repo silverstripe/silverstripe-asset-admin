@@ -38,6 +38,7 @@ class AssetAdmin extends SilverStripeComponent {
       readFolderApi: this.createEndpoint(config.readFolderEndpoint, false),
       updateFolderApi: this.createEndpoint(config.updateFolderEndpoint),
       deleteApi: this.createEndpoint(config.deleteEndpoint),
+      historyApi: this.createEndpoint(config.historyEndpoint),
     };
   }
 
@@ -198,6 +199,7 @@ class AssetAdmin extends SilverStripeComponent {
         if (response && response.record) {
           this.props.actions.gallery.loadFile(this.props.fileId, response.record);
         }
+
         return response;
       });
   }

@@ -789,6 +789,11 @@
   }
 }
 
+.editor .nav-tabs{
+  z-index:1;
+  position:relative;
+}
+
 .editor__details{
   margin-bottom:2.4616rem;
 }
@@ -908,6 +913,11 @@
   }
 }
 
+.relative-time[title]{
+  cursor:pointer;
+  text-decoration:underline;
+}
+
 @media (max-width:1199px){
   .editor{
     height:100%;
@@ -997,6 +1007,77 @@
 
 .insert-media-modal__main{
   height:calc(100vh - 106px);
+}
+
+.history-item{
+  padding-top:1rem;
+}
+
+.history-item:focus,.history-item:hover{
+  background-color:#f0f2f4;
+}
+
+.history-item p{
+  margin-bottom:0;
+}
+
+.list-group-flush:first-child .history-item:first-child{
+  border-top:1px solid #d9dee2;
+}
+
+.history-item__date,.history-item__version{
+  opacity:.7;
+  font-size:.846rem;
+  margin-bottom:1px;
+}
+
+.history-item__date{
+  display:block;
+}
+
+.history-item__version{
+  position:absolute;
+  right:1.5385rem;
+  top:.9231rem;
+  font-size:.846rem;
+  opacity:.7;
+}
+
+.history-item__status-flag{
+  color:#3fa142;
+  text-transform:uppercase;
+  font-size:.923rem;
+}
+
+.file-history{
+  position:relative;
+}
+
+.file-history>.list-group{
+  margin-top:calc(-1.5385rem - 1px);
+}
+
+.file-history .editor__file-preview-link,.file-history .editor__file-preview-message--file-missing{
+  max-width:50%;
+  position:relative;
+  display:block;
+  text-align:center;
+  font-size:10px;
+  padding:10px;
+  background:#f0f2f4;
+  border:1px solid #e5e8eb;
+  margin:0 auto 10px;
+}
+
+.file-history .editor__specs{
+  text-align:center;
+}
+
+.file-history__back{
+  padding:5px;
+  position:absolute;
+  top:0;
+  left:-.76925rem;
 }
 
 

@@ -22,7 +22,8 @@ class FileFormFactory extends AssetFormFactory
         $tabs = TabSet::create(
             'Editor',
             $this->getFormFieldDetailsTab($record, $context),
-            $this->getFormFieldUsageTab($record, $context)
+            $this->getFormFieldUsageTab($record, $context),
+            $this->getFormFieldHistoryTab($record, $context)
         );
 
         if (isset($context['Type']) && $context['Type'] === 'insert') {
@@ -94,6 +95,21 @@ class FileFormFactory extends AssetFormFactory
                 ) .'</p>'
             ),
             TextField::create('Caption', _t('AssetAdmin.Caption', 'Caption'))
+        );
+    }
+
+    protected function getFormFieldHistoryTab($record, $context = [])
+    {
+        return Tab::create(
+            'History',
+            LiteralField::create('HistoryList','')
+             ->setSchemaComponent('HistoryList')
+             ->setSchemaData(array(
+                'data' => array(
+                    'fileId' => $record->ID,
+                    'latestVersionId' => $record->Version
+                )
+            ))
         );
     }
 
