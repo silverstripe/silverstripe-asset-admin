@@ -34,6 +34,8 @@
       "../framework/node_modules/react",
       "../framework/node_modules/redux-form",
       "<rootDir>/node_modules/griddle-react",
+      "../framework/node_modules/react",
+      "../framework/node_modules/redux-form",
       "../framework/node_modules/react-bootstrap-ss"
     ],
     "mocksPattern": "mocks",

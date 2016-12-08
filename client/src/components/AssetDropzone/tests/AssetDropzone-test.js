@@ -3,6 +3,7 @@
 jest.unmock('react');
 jest.unmock('dropzone');
 jest.unmock('../AssetDropzone');
+jest.unmock('lib/DataFormat');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

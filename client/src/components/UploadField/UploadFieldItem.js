@@ -1,7 +1,7 @@
 import i18n from 'i18n';
 import React from 'react';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
-import CONSTANTS from 'constants/index';
+import CONSTANTS from 'constants';
 import fileShape from 'lib/fileShape';
 
 class UploadFieldItem extends SilverStripeComponent {

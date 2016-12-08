@@ -344,10 +344,7 @@ GalleryItem.propTypes = {
   // Can be used to highlight a currently edited file
   highlighted: PropTypes.bool,
   // Styles according to the checkbox selection state
-  selected: PropTypes.bool.isRequired,
-  handleActivate: PropTypes.func.isRequired,
-  handleToggleSelect: PropTypes.func,
-  handleDelete: PropTypes.func.isRequired,
+  selected: PropTypes.bool,
   message: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,

@@ -269,7 +269,7 @@ class Gallery extends Component {
       return;
     }
 
-    this.props.actions.queuedFiles.removeQueuedFile(file._queuedId);
+    this.props.actions.queuedFiles.removeQueuedFile(fileXhr._queuedId);
     this.props.actions.gallery.addFiles(json, this.props.count + 1);
 
     // redirect to open the last uploaded file for 'insert modal' type only
@@ -282,8 +282,8 @@ class Gallery extends Component {
     }
   }
 
-  handleFailedUpload(file, response) {
-    this.props.actions.queuedFiles.failUpload(file._queuedId, response);
+  handleFailedUpload(fileXhr, response) {
+    this.props.actions.queuedFiles.failUpload(fileXhr._queuedId, response);
   }
 
   /**
