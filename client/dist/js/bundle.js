@@ -1511,10 +1511,9 @@ return n.getColumns=n.getColumns.bind(n),n.handleSort=n.handleSort.bind(n),n.han
 enableSort:!1},n}return s(t,e),a(t,[{key:"componentDidMount",value:function n(){this.setState({enableSort:!0})}},{key:"componentWillUnmount",value:function r(){this.setState({enableSort:!1})}},{key:"getColumns",
 value:function u(){var e=["thumbnail","title","size","lastUpdated"]
 return this.props.selectableItems&&e.unshift("selected"),e}},{key:"getColumnConfig",value:function d(){return[{columnName:"selected",sortable:!1,displayName:"",cssClassName:"gallery__table-column--select",
-customComponent:this.renderSelect},{columnName:"thumbnail",sortable:!1,displayName:"",cssClassName:"gallery__table-column--image",customComponent:this.renderThumbnail},{columnName:"lastUpdated",displayName:"Modified",
-customComponent:this.renderDate},{columnName:"size",displayName:"Size",customComponent:this.renderSize}]}},{key:"getTableProps",value:function f(){var e=this.props.sort.split(","),t=l(e,2),n=t[0],r=t[1]
-
-
+customComponent:this.renderSelect},{columnName:"thumbnail",sortable:!1,displayName:"",cssClassName:"gallery__table-column--image",customComponent:this.renderThumbnail},{columnName:"title",customCompareFn:function e(){
+return 0}},{columnName:"lastUpdated",displayName:"Modified",customComponent:this.renderDate},{columnName:"size",displayName:"Size",customComponent:this.renderSize}]}},{key:"getTableProps",value:function f(){
+var e=this.props.sort.split(","),t=l(e,2),n=t[0],r=t[1]
 return{tableClassName:"gallery__table table table-hover",gridClassName:"gallery__main-view--table",rowMetadata:{bodyCssClassName:"gallery__table-row"},sortAscendingComponent:"",sortDescendingComponent:"",
 useExternal:!0,externalSetPage:this.handleSetPage,externalChangeSort:this.handleSort,externalSetFilter:function o(){return null},externalSetPageSize:function i(){return null},externalCurrentPage:this.props.page,
 externalMaxPage:Math.ceil(this.props.count/this.props.limit),externalSortColumn:n,externalSortAscending:this.state.enableSort?"asc"===r:"asc"!==r,initialSort:n,columns:this.getColumns(),columnMetadata:this.getColumnConfig(),

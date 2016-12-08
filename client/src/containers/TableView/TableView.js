@@ -75,6 +75,10 @@ class TableView extends Component {
         customComponent: this.renderThumbnail,
       },
       {
+        columnName: 'title',
+        customCompareFn: () => (0), // Suppress griddle re-sorting
+      },
+      {
         columnName: 'lastUpdated',
         displayName: 'Modified',
         customComponent: this.renderDate,
