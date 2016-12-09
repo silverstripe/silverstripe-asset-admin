@@ -249,7 +249,7 @@ class TableView extends Component {
       <div className="gallery__progress-bar">
         <div {...progressBarProps}></div>
       </div>
-    )
+    );
   }
 
   /**
@@ -266,7 +266,7 @@ class TableView extends Component {
         <div className="flexbox-area-grow">{props.data}</div>
         {progress}
       </div>
-    )
+    );
   }
 
   /**

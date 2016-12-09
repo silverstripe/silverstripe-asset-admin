@@ -1757,10 +1757,10 @@ function r(e){return e&&e.__esModule?e:{"default":e}}function o(e,t){if(!(e inst
 
 
 return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t)
-e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function l(e,t){var n=e.config.sections["SilverStripe\\AssetAdmin\\Controller\\AssetAdmin"]
+e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function l(e){var t=e.config.sections["SilverStripe\\AssetAdmin\\Controller\\AssetAdmin"]
 
 
-return{sectionConfig:n,historySchemaUrl:n.form.FileHistoryForm.schemaUrl}}Object.defineProperty(t,"__esModule",{value:!0}),t.HistoryList=void 0
+return{sectionConfig:t,historySchemaUrl:t.form.fileHistoryForm.schemaUrl}}Object.defineProperty(t,"__esModule",{value:!0}),t.HistoryList=void 0
 var a=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},u=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
 r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),p=n(3),d=r(p),c=n(5),f=n(8),h=r(f),m=n(278),g=r(m),y=n(296),v=r(y),b=n(15),C=r(b),E=t.HistoryList=function(e){
@@ -1780,9 +1780,10 @@ if(this.state.viewDetails){var n=[this.props.historySchemaUrl,this.props.data.fi
 return d["default"].createElement("div",{className:t},d["default"].createElement("a",{className:r,onClick:this.handleBack}),d["default"].createElement(C["default"],{schemaUrl:n}))}return d["default"].createElement("div",{
 className:t},d["default"].createElement("ul",{className:"list-group list-group-flush file-history__list"},this.state.history.map(function(t){return d["default"].createElement(v["default"],a({key:t.versionid
 },t,{onClick:e.handleClick}))})))}}]),t}(p.Component)
-E.propTypes={historySchemaUrl:d["default"].PropTypes.string,data:d["default"].PropTypes.object},E.defaultProps={data:{fieldId:0}},t.HistoryList=E,t["default"]=(0,c.connect)(l)(E)},function(e,t,n){"use strict"
+E.propTypes={sectionConfig:d["default"].PropTypes.shape({form:d["default"].PropTypes.object,historyEndpoint:d["default"].PropTypes.shape({url:d["default"].PropTypes.string,method:d["default"].PropTypes.string,
+responseFormat:d["default"].PropTypes.string})}),historySchemaUrl:d["default"].PropTypes.string,data:d["default"].PropTypes.object},E.defaultProps={data:{fieldId:0}},t.HistoryList=E,t["default"]=(0,c.connect)(l)(E)
 
-
+},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{"default":e}}function o(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
 
 

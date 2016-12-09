@@ -247,15 +247,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 break;
             }
         }
-    
+
         $column = 'title';
         $direction = 'asc';
         if (isset($params['sort'])) {
             list($column, $direction) = explode(',', $params['sort']);
         }
         $multiplier = ($direction === 'asc') ? 1 : -1;
-        
-        usort($items, function($a, $b) use ($column, $multiplier) {
+
+        usort($items, function ($a, $b) use ($column, $multiplier) {
             if (!isset($a[$column]) || !isset($b[$column])) {
                 return 0;
             }
@@ -279,7 +279,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
             return 0;
         });
-        
+
         $page = (isset($params['page'])) ? $params['page'] : 0;
         $limit = (isset($params['limit'])) ? $params['limit'] : $this->config()->page_length;
         $filteredItems = array_slice($items, $page * $limit, $limit);

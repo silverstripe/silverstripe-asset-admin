@@ -145,6 +145,14 @@ export class HistoryList extends Component {
 }
 
 HistoryList.propTypes = {
+  sectionConfig: React.PropTypes.shape({
+    form: React.PropTypes.object,
+    historyEndpoint: React.PropTypes.shape({
+      url: React.PropTypes.string,
+      method: React.PropTypes.string,
+      responseFormat: React.PropTypes.string,
+    }),
+  }),
   historySchemaUrl: React.PropTypes.string,
   data: React.PropTypes.object,
 };
@@ -155,11 +163,11 @@ HistoryList.defaultProps = {
   },
 };
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   const sectionConfig = state.config.sections['SilverStripe\\AssetAdmin\\Controller\\AssetAdmin'];
   return {
     sectionConfig,
-    historySchemaUrl: sectionConfig.form.FileHistoryForm.schemaUrl,
+    historySchemaUrl: sectionConfig.form.fileHistoryForm.schemaUrl,
   };
 }
 
