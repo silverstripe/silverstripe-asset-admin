@@ -817,7 +817,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
-        $form->setValidationResponseCallback(function(ValidationResult $error) use ($form, $id, $name) {
+        $form->setValidationResponseCallback(function (ValidationResult $error) use ($form, $id, $name) {
             $schemaId = Controller::join_links($this->Link('schema'), $name, $id);
             return $this->getSchemaResponse($schemaId, $form, $error);
         });
@@ -1198,7 +1198,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $extraData = ['message' => $results];
         $schemaId = Controller::join_links($this->Link('schema/addToCampaignForm'), $id);
         return $this->getSchemaResponse($schemaId, $form, null, $extraData);
-        }
+    }
 
     /**
      * Url handler for add to campaign form

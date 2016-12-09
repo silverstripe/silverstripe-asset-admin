@@ -110,14 +110,8 @@ class FileFormFactory extends AssetFormFactory
     {
         return Tab::create(
             'History',
-            LiteralField::create('HistoryList', '')
-             ->setSchemaComponent('HistoryList')
-             ->setSchemaData(array(
-                'data' => array(
-                    'fileId' => $record->ID,
-                    'latestVersionId' => $record->Version
-                )
-             ))
+            HistoryListField::create('HistoryList')
+                ->setRecord($record)
         );
     }
 
