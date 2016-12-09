@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import backend from 'lib/Backend';
 import Config from 'lib/Config';
 import HistoryItem from 'containers/HistoryList/HistoryItem';
@@ -19,11 +20,7 @@ export class HistoryList extends Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleBack = this.handleBack.bind(this);
 
-
-    const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
-    this.props.historySchemaUrl = sectionConfig.form.fileHistoryForm.schemaUrl;
-
-    this.api = this.createEndpoint(sectionConfig.historyEndpoint);
+    this.api = this.createEndpoint(props.sectionConfig.historyEndpoint);
   }
 
   componentDidMount() {
@@ -148,7 +145,7 @@ export class HistoryList extends Component {
 }
 
 HistoryList.propTypes = {
-  historySchemaUrl: React.PropTypes.String,
+  historySchemaUrl: React.PropTypes.string,
   data: React.PropTypes.object,
 };
 
@@ -158,4 +155,14 @@ HistoryList.defaultProps = {
   },
 };
 
-export default HistoryList;
+function mapStateToProps(state, ownProps) {
+  const sectionConfig = state.config.sections['SilverStripe\\AssetAdmin\\Controller\\AssetAdmin'];
+  return {
+    sectionConfig,
+    historySchemaUrl: sectionConfig.form.FileHistoryForm.schemaUrl,
+  };
+}
+
+export { HistoryList };
+
+export default connect(mapStateToProps)(HistoryList);
