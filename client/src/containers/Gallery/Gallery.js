@@ -272,8 +272,8 @@ class Gallery extends Component {
     this.props.actions.queuedFiles.removeQueuedFile(fileXhr._queuedId);
     this.props.actions.gallery.addFiles(json, this.props.count + 1);
 
-    // redirect to open the last uploaded file for 'insert modal' type only
-    if (this.props.type === 'insert'
+    // redirect to open the last uploaded file for 'insert/select modal' type only
+    if (this.props.type !== 'admin'
       && !this.props.fileId
       && this.props.queuedFiles.items.length === 0
     ) {
@@ -736,7 +736,7 @@ Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
-  type: PropTypes.oneOf(['insert', 'admin']),
+  type: PropTypes.oneOf(['insert', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
   dialog: PropTypes.bool,
   fileId: PropTypes.number,

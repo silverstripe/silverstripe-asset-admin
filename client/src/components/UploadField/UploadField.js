@@ -140,6 +140,7 @@ class UploadField extends SilverStripeComponent {
    */
   handleSelect(event) {
     event.preventDefault();
+    return false;
   }
 
   /**
@@ -150,6 +151,7 @@ class UploadField extends SilverStripeComponent {
   handleAddShow(event) {
     event.preventDefault();
     this.setState({ selecting: true });
+    return false;
   }
 
   /**
@@ -231,15 +233,15 @@ class UploadField extends SilverStripeComponent {
       >
         <div className="uploadfield__backdrop"></div>
         <span className="uploadfield__droptext">
-          <a href="#" onClick={this.handleSelect} className="uploadfield__upload-button">
+          <button onClick={this.handleSelect} className="uploadfield__upload-button">
             {i18n._t('AssetAdminUploadField.BROWSE', 'Browse')}
-          </a>
+          </button>
           {' '}
           {i18n._t('AssetAdminUploadField.OR', 'or')}
           {' '}
-          <a href="#" onClick={this.handleAddShow} className="uploadfield__add-button">
+          <button onClick={this.handleAddShow} className="uploadfield__add-button">
             {i18n._t('AssetAdminUploadField.ADD_FILES', 'Add from files')}
-          </a>
+          </button>
         </span>
       </AssetDropzone>
     );
@@ -326,6 +328,8 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { UploadField };
+const ConnectedUploadField = connect(mapStateToProps, mapDispatchToProps)(UploadField);
+
+export { UploadField, ConnectedUploadField };
 
 export default fieldHolder(connect(mapStateToProps, mapDispatchToProps)(UploadField));
