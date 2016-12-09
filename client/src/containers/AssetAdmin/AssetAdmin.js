@@ -293,8 +293,8 @@ class AssetAdmin extends SilverStripeComponent {
     const config = this.props.sectionConfig;
     const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
     const schemaUrl = (this.props.type === 'insert')
-      ? config.form.FileInsertForm.schemaUrl
-      : config.form.FileEditForm.schemaUrl;
+      ? config.form.fileInsertForm.schemaUrl
+      : config.form.fileEditForm.schemaUrl;
 
     if (!file && this.props.fileId !== this.props.folderId) {
       return null;
@@ -308,7 +308,7 @@ class AssetAdmin extends SilverStripeComponent {
         editFileSchemaUrl={schemaUrl}
         onSubmit={this.handleSubmitEditor}
         onDelete={this.delete}
-        addToCampaignSchemaUrl={config.form.AddToCampaignForm.schemaUrl}
+        addToCampaignSchemaUrl={config.form.addToCampaignForm.schemaUrl}
       />
     );
   }

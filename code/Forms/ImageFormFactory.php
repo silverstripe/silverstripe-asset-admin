@@ -43,7 +43,8 @@ class ImageFormFactory extends FileFormFactory
             DropdownField::create('Alignment', _t('AssetAdmin.Alignment', 'Alignment'), $alignments)
         );
         $tab->push(
-            FieldGroup::create(_t('AssetAdmin.ImageSpecs', 'Dimensions'),
+            FieldGroup::create(
+                _t('AssetAdmin.ImageSpecs', 'Dimensions'),
                 TextField::create(
                     'InsertWidth',
                     _t('AssetAdmin.ImageWidth', 'Width')
@@ -62,7 +63,10 @@ class ImageFormFactory extends FileFormFactory
         $tab->insertBefore(
             'Caption',
             TextField::create('AltText', _t('AssetAdmin.AltText', 'Alternative text (alt)'))
-                ->setDescription(_t('AssetAdmin.AltTextDescription', 'Shown to screen readers or if image can\'t be displayed'))
+                ->setDescription(_t(
+                    'AssetAdmin.AltTextDescription',
+                    'Shown to screen readers or if image can\'t be displayed'
+                ))
         );
         $tab->insertAfter(
             'AltText',
@@ -73,5 +77,4 @@ class ImageFormFactory extends FileFormFactory
 
         return $tab;
     }
-
 }

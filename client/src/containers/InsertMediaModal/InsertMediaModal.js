@@ -213,7 +213,7 @@ function mapStateToProps(state, ownProps) {
   // get the schemaUrl to use as a key for overrides
   const fileId = ownProps.fileAttributes.ID;
   const section = state.config.sections[sectionConfigKey];
-  const schemaUrl = fileId && `${section.form.FileInsertForm.schemaUrl}/${fileId}`;
+  const schemaUrl = fileId && `${section.form.fileInsertForm.schemaUrl}/${fileId}`;
 
   return {
     sectionConfig,

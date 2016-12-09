@@ -17,11 +17,12 @@ class FileFormBuilderTest extends SapphireTest
 {
     protected static $fixture_file = 'FileFormBuilderTest.yml';
 
-    public function setUp() {
-		parent::setUp();
+    public function setUp()
+    {
+        parent::setUp();
 
-		// Set backend and base url
-		TestAssetStore::activate('FileFormBuilderTest');
+        // Set backend and base url
+        TestAssetStore::activate('FileFormBuilderTest');
 
         /** @var File $testfile */
         $testfile = $this->objFromFixture(File::class, 'file1');
@@ -31,9 +32,10 @@ class FileFormBuilderTest extends SapphireTest
         /** @var Image $testimage */
         $testimage = $this->objFromFixture(Image::class, 'image1');
         $testimage->setFromLocalFile(__DIR__.'/fixtures/testimage.png', 'files/testimage.png');
-	}
+    }
 
-    public function testEditFileForm() {
+    public function testEditFileForm()
+    {
         $this->logInWithPermission('ADMIN');
 
         $file = $this->objFromFixture(File::class, 'file1');
@@ -80,7 +82,8 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertNull($form->Actions()->fieldByName('actionaddtocampaignactiondelete.action_unpublish'));
     }
 
-    public function testCreateFileForm() {
+    public function testCreateFileForm()
+    {
         $this->logInWithPermission('ADMIN');
 
         $file = $this->objFromFixture(File::class, 'file1');
@@ -104,7 +107,8 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertNotNull($form->Actions()->fieldByName('action_save'));
     }
 
-    public function testEditImageForm() {
+    public function testEditImageForm()
+    {
         $this->logInWithPermission('ADMIN');
 
         $image = $this->objFromFixture(Image::class, 'image1');
@@ -123,7 +127,8 @@ class FileFormBuilderTest extends SapphireTest
         );
     }
 
-    public function testInsertImageForm() {
+    public function testInsertImageForm()
+    {
         $this->logInWithPermission('ADMIN');
 
         $image = $this->objFromFixture(Image::class, 'image1');
@@ -137,7 +142,8 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertNotNull($altTextField);
     }
 
-    public function testFolderForm() {
+    public function testFolderForm()
+    {
         $this->logInWithPermission('ADMIN');
 
         $folder = $this->objFromFixture(Folder::class, 'parent');
@@ -167,12 +173,11 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertNull($form->Actions()->dataFieldByName('action_unpublish'));
     }
 
-    public function testScaffolderFactory() {
+    public function testScaffolderFactory()
+    {
         $controller = new AssetAdmin();
         $this->assertInstanceOf(FileFormFactory::class, $controller->getFormFactory(File::singleton()));
         $this->assertInstanceOf(ImageFormFactory::class, $controller->getFormFactory(Image::singleton()));
         $this->assertInstanceOf(FolderFormFactory::class, $controller->getFormFactory(Folder::singleton()));
     }
-
-
 }

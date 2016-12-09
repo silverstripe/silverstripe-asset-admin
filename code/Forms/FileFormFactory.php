@@ -65,8 +65,10 @@ class FileFormFactory extends AssetFormFactory
         );
 
         if (isset($context['Type']) && $context['Type'] === 'insert') {
-            $tab->push(LiteralField::create('EditLink',
-                sprintf('<a href="%s" class="%s" target="_blank"><i class="%s" />%s</a>',
+            $tab->push(LiteralField::create(
+                'EditLink',
+                sprintf(
+                    '<a href="%s" class="%s" target="_blank"><i class="%s" />%s</a>',
                     $record->CMSEditLink(),
                     'btn btn-secondary-outline font-icon-edit editor__edit-link',
                     '',
@@ -88,7 +90,8 @@ class FileFormFactory extends AssetFormFactory
     {
         return Tab::create(
             'Placement',
-            LiteralField::create('AttributesDescription',
+            LiteralField::create(
+                'AttributesDescription',
                 '<p>'. _t(
                     'AssetAdmin.AttributesDescription',
                     'These changes will only affect this particular placement of the file.'
@@ -102,14 +105,14 @@ class FileFormFactory extends AssetFormFactory
     {
         return Tab::create(
             'History',
-            LiteralField::create('HistoryList','')
+            LiteralField::create('HistoryList', '')
              ->setSchemaComponent('HistoryList')
              ->setSchemaData(array(
                 'data' => array(
                     'fileId' => $record->ID,
                     'latestVersionId' => $record->Version
                 )
-            ))
+             ))
         );
     }
 
@@ -182,7 +185,8 @@ class FileFormFactory extends AssetFormFactory
             return null;
         }
         if (!$file->exists()) {
-            return sprintf('<div class="%s">%s</div>',
+            return sprintf(
+                '<div class="%s">%s</div>',
                 'editor__file-preview-message--file-missing',
                 _t('AssetAdmin.FILE_MISSING', 'File cannot be found')
             );
@@ -319,5 +323,4 @@ class FileFormFactory extends AssetFormFactory
         }
         return null;
     }
-
 }

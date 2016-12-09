@@ -56,7 +56,7 @@ class UploadField extends FormField
     {
         $this->constructFileUploadReceiver();
         parent::__construct($name, $title);
-        if($items) {
+        if ($items) {
             $this->setItems($items);
         }
     }

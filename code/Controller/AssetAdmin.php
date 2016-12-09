@@ -102,10 +102,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiHistory',
         'apiDelete',
         'apiSearch',
-        'FileEditForm',
-        'FileHistoryForm',
-        'AddToCampaignForm',
-        'FileInsertForm',
+        'fileEditForm',
+        'fileHistoryForm',
+        'addToCampaignForm',
+        'fileInsertForm',
         'schema',
     );
 
@@ -136,7 +136,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getClientConfig()
     {
         $baseLink = $this->Link();
-        return array_merge( parent::getClientConfig(), [
+        return array_merge(parent::getClientConfig(), [
             'reactRouter' => true,
             'createFileEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/createFile'),
@@ -175,17 +175,17 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             ],
             'limit' => $this->config()->page_length,
             'form' => [
-                'FileEditForm' => [
-                    'schemaUrl' => $this->Link('schema/FileEditForm')
+                'fileEditForm' => [
+                    'schemaUrl' => $this->Link('schema/fileEditForm')
                 ],
-                'FileInsertForm' => [
-                    'schemaUrl' => $this->Link('schema/FileInsertForm')
+                'fileInsertForm' => [
+                    'schemaUrl' => $this->Link('schema/fileInsertForm')
                 ],
-                'AddToCampaignForm' => [
-                    'schemaUrl' => $this->Link('schema/AddToCampaignForm')
+                'addToCampaignForm' => [
+                    'schemaUrl' => $this->Link('schema/addToCampaignForm')
                 ],
-                'FileHistoryForm' => [
-                    'schemaUrl' => $this->Link('schema/FileHistoryForm')
+                'fileHistoryForm' => [
+                    'schemaUrl' => $this->Link('schema/fileHistoryForm')
                 ]
             ],
         ]);
@@ -233,13 +233,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Build parents (for breadcrumbs)
         $parents = [];
         $next = $folder->Parent();
-        while($next && $next->exists()) {
+        while ($next && $next->exists()) {
             array_unshift($parents, [
                 'id' => $next->ID,
                 'title' => $next->getTitle(),
                 'filename' => $next->getFilename(),
             ]);
-            if($next->ParentID) {
+            if ($next->ParentID) {
                 $next = $next->Parent();
             } else {
                 break;
@@ -278,7 +278,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(json_encode([
             // Serialisation
-            "files" => array_map(function($file) {
+            "files" => array_map(function ($file) {
                 return $this->getObjectFromData($file);
             }, $list->toArray()),
             "count" => $list->count(),
@@ -357,7 +357,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $data['Parent'] = $parentRecord;
 
         $tmpFile = $request->postVar('Upload');
-        if(!$upload->validate($tmpFile)) {
+        if (!$upload->validate($tmpFile)) {
             $result = ['message' => null];
             $errors = $upload->getErrors();
             if ($message = array_shift($errors)) {
@@ -389,7 +389,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $uploadResult = $upload->loadIntoFile($tmpFile, $file, $parentRecord ? $parentRecord->getFilename() : '/');
-        if(!$uploadResult) {
+        if (!$uploadResult) {
             $result = ['message' => [
                 'type' => 'error',
                 'value' => _t(
@@ -413,8 +413,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Returns a JSON array for history of a given file ID. Returns a list of all the history.
      *
-     * @param HTTPRequest
-     *
+     * @param HTTPRequest $request
      * @return HTTPResponse
      */
     public function apiHistory(HTTPRequest $request)
@@ -422,18 +421,18 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // CSRF check not required as the GET request has no side effects.
         $fileId = $request->getVar('fileId');
 
-        if(!$fileId || !is_numeric($fileId)) {
+        if (!$fileId || !is_numeric($fileId)) {
             return new HTTPResponse(null, 400);
         }
 
         $class = File::class;
-        $file = DataObject::get($class)->byId($fileId);
+        $file = DataObject::get($class)->byID($fileId);
 
-        if(!$file) {
+        if (!$file) {
             return new HTTPResponse(null, 404);
         }
 
-        if(!$file->canView()) {
+        if (!$file->canView()) {
             return new HTTPResponse(null, 403);
         }
 
@@ -448,8 +447,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // swap the order so we can get the version number to compare against.
         // i.e version 3 needs to know version 2 is the previous version
         $copy = $versions->map('Version', 'Version')->toArray();
-        foreach(array_reverse($copy) as $k => $v) {
-            if($prev) {
+        foreach (array_reverse($copy) as $k => $v) {
+            if ($prev) {
                 $next[$v] = $prev;
             }
 
@@ -458,22 +457,22 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $_cachedMembers = array();
 
-        foreach($versions as $version) {
+        foreach ($versions as $version) {
             $author = null;
 
-            if($version->AuthorID) {
-                if(!isset($_cachedMembers[$version->AuthorID])) {
+            if ($version->AuthorID) {
+                if (!isset($_cachedMembers[$version->AuthorID])) {
                     $_cachedMembers[$version->AuthorID] = DataObject::get(Member::class)
-                        ->byId($version->AuthorID);
+                        ->byID($version->AuthorID);
                 }
 
                 $author = $_cachedMembers[$version->AuthorID];
             }
 
-            if($version->canView()) {
+            if ($version->canView()) {
                 $published = true;
 
-                if(isset($next[$version->Version])) {
+                if (isset($next[$version->Version])) {
                     $summary = $version->humanizedChanges(
                         $version->Version,
                         $next[$version->Version]
@@ -481,7 +480,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
                     // if no summary returned by humanizedChanges, i.e we cannot work out what changed, just show a
                     // generic message
-                    if(!$summary) {
+                    if (!$summary) {
                         $summary = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.SAVEDFILE', "Saved file");
                     }
                 } else {
@@ -496,14 +495,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                     'author' => ($author)
                         ? $author->Name
                         : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UNKNOWN', "Unknown"),
-                    'summary' => ($summary) ? $summary : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.NOSUMMARY', "No summary available")
+                    'summary' => ($summary)
+                        ? $summary
+                        : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.NOSUMMARY', "No summary available")
                 );
             }
         }
 
         return
             (new HTTPResponse(json_encode($output)))->addHeader('Content-Type', 'application/json');
-
     }
 
 
@@ -594,7 +594,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFileEditLink($file)
     {
-        if(!$file || !$file->isInDB()) {
+        if (!$file || !$file->isInDB()) {
             return null;
         }
 
@@ -757,14 +757,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $scaffolder = $this->getFormFactory($file);
-        $form = $scaffolder->getForm($this, 'FileEditForm', [
+        $form = $scaffolder->getForm($this, 'fileEditForm', [
             'Record' => $file
         ]);
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
-        $form->setValidationResponseCallback(function() use ($form, $file) {
-            $schemaId = Controller::join_links($this->Link('schema/FileEditForm'), $file->exists() ? $file->ID : '');
+        $form->setValidationResponseCallback(function () use ($form, $file) {
+            $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $file->exists() ? $file->ID : '');
             return $this->getSchemaResponse($form, $schemaId);
         });
 
@@ -776,7 +776,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      *
      * @return Form
      */
-    public function FileEditForm()
+    public function fileEditForm()
     {
         // Get ID either from posted back value, or url parameter
         $request = $this->getRequest();
@@ -809,7 +809,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $scaffolder = $this->getFormFactory($file);
-        $form = $scaffolder->getForm($this, 'FileInsertForm', [
+        $form = $scaffolder->getForm($this, 'fileInsertForm', [
             'Record' => $file,
             'Type' => 'insert',
         ]);
@@ -822,7 +822,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      *
      * @return Form
      */
-    public function FileInsertForm()
+    public function fileInsertForm()
     {
         // Get ID either from posted back value, or url parameter
         $request = $this->getRequest();
@@ -843,7 +843,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
         $id = $context['RecordID'];
         $versionId = $context['RecordVersion'];
-        if(!$id || !$versionId) {
+        if (!$id || !$versionId) {
             return $this->httpError(404);
         }
 
@@ -866,12 +866,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $effectiveContext = array_merge($context, ['Record' => $file]);
         /** @var FormFactory $scaffolder */
         $scaffolder = Injector::inst()->get(FileHistoryFormFactory::class);
-        $form = $scaffolder->getForm($this, 'FileHistoryForm', $effectiveContext);
+        $form = $scaffolder->getForm($this, 'fileHistoryForm', $effectiveContext);
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
-        $form->setValidationResponseCallback(function() use ($form, $id, $versionId) {
-            $schemaId = Controller::join_links($this->Link('schema/FileHistoryForm'), $id, $versionId);
+        $form->setValidationResponseCallback(function () use ($form, $id, $versionId) {
+            $schemaId = Controller::join_links($this->Link('schema/fileHistoryForm'), $id, $versionId);
             return $this->getSchemaResponse($form, $schemaId);
         });
 
@@ -880,23 +880,24 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-	 * Gets a JSON schema representing the current edit form.
-	 *
-	 * WARNING: Experimental API.
-	 *
-	 * @param HTTPRequest $request
-	 * @return HTTPResponse
-	 */
-	public function schema($request) {
-		$formName = $request->param('FormName');
-        if ($formName !== 'FileHistoryForm') {
+     * Gets a JSON schema representing the current edit form.
+     *
+     * WARNING: Experimental API.
+     *
+     * @param HTTPRequest $request
+     * @return HTTPResponse
+     */
+    public function schema($request)
+    {
+        $formName = $request->param('FormName');
+        if ($formName !== 'fileHistoryForm') {
             return parent::schema($request);
         }
 
         // Get schema for history form
         // @todo Eventually all form scaffolding will be based on context rather than record ID
         // See https://github.com/silverstripe/silverstripe-framework/issues/6362
-		$itemID = $request->param('ItemID');
+        $itemID = $request->param('ItemID');
         $version = $request->param('OtherItemID');
         $form = $this->getFileHistoryForm([
             'RecordID' => $itemID,
@@ -904,18 +905,18 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         ]);
 
         // Respond with this schema
-		$response = $this->getResponse();
+        $response = $this->getResponse();
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(Convert::raw2json($this->getSchemaForForm($form)));
         return $response;
-	}
+    }
 
     /**
      * Get file history form
      *
      * @return Form
      */
-    public function FileHistoryForm()
+    public function fileHistoryForm()
     {
         $request = $this->getRequest();
         $id = $request->param('ID') ?: $request->postVar('ID');
@@ -985,7 +986,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Return the record data in the same response as the schema to save a postback
-        $schemaId = Controller::join_links($this->Link('schema/FileEditForm'), $record->exists() ? $record->ID : '');
+        $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $record->exists() ? $record->ID : '');
         $schemaData = $this->getSchemaForForm($this->getFileEditForm($id), $schemaId);
         $schemaData['record'] = $this->getObjectFromData($record);
         $response = new HTTPResponse(Convert::raw2json($schemaData));
@@ -1017,7 +1018,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $record->doUnpublish();
 
         // Return the record data in the same response as the schema to save a postback
-        $schemaId = Controller::join_links($this->Link('schema/FileEditForm'), $record->exists() ? $record->ID : '');
+        $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $record->exists() ? $record->ID : '');
         $schemaData = $this->getSchemaForForm($this->getFileEditForm($id), $schemaId);
         $schemaData['record'] = $this->getObjectFromData($record);
         $response = new HTTPResponse(Convert::raw2json($schemaData));
@@ -1120,7 +1121,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Re-add previously removed "Name" filter as combined filter
         // TODO Replace with composite SearchFilter once that API exists
-        if(!empty($params['Name'])) {
+        if (!empty($params['Name'])) {
             $list = $list->filterAny(array(
                 'Name:PartialMatch' => $params['Name'],
                 'Title:PartialMatch' => $params['Name']
@@ -1128,7 +1129,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Optionally limit search to a folder (non-recursive)
-        if(!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
+        if (!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
             $list = $list->filter('ParentID', $params['ParentID']);
         }
 
@@ -1162,7 +1163,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Access checks
-        $list = $list->filterByCallback(function(File $file) {
+        $list = $list->filterByCallback(function (File $file) {
             return $file->canView();
         });
 
@@ -1187,7 +1188,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return null;
         }
         $request = $this->getRequest();
-        if($request->getHeader('X-Formschema-Request')) {
+        if ($request->getHeader('X-Formschema-Request')) {
             $data = $this->getSchemaForForm($handler->Form($record));
             $data['message'] = $results;
 
@@ -1204,7 +1205,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @param HTTPRequest $request
      * @return Form
      */
-    public function AddToCampaignForm($request)
+    public function addToCampaignForm($request)
     {
         // Get ID either from posted back value, or url parameter
         $id = $request->param('ID') ?: $request->postVar('ID');
@@ -1239,11 +1240,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return null;
         }
 
-        $handler = AddToCampaignHandler::create($this, $record);
+        $handler = AddToCampaignHandler::create($this, $record, 'addToCampaignForm');
         $form = $handler->Form($record);
 
-        $form->setValidationResponseCallback(function() use ($form, $id) {
-            $schemaId = Controller::join_links($this->Link('schema/AddToCampaignForm'), $id);
+        $form->setValidationResponseCallback(function () use ($form, $id) {
+            $schemaId = Controller::join_links($this->Link('schema/addToCampaignForm'), $id);
             return $this->getSchemaResponse($form, $schemaId);
         });
 
