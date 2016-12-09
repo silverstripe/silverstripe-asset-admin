@@ -16,6 +16,7 @@ use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
@@ -42,9 +43,9 @@ abstract class AssetFormFactory implements FormFactory
 
         $fields = $this->getFormFields($controller, $name, $context);
         $actions = $this->getFormActions($controller, $name, $context);
-        $form = Form::create($controller, $name, $fields, $actions);
+        $validator = new RequiredFields('Name');
+        $form = Form::create($controller, $name, $fields, $actions, $validator);
 
-        $form->getValidator()->addRequiredField('Name');
         // Extend form
         $this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
 

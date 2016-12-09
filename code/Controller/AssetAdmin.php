@@ -33,6 +33,7 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Search\SearchContext;
+use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\SecurityToken;
@@ -457,6 +458,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $_cachedMembers = array();
 
+        /** @var File $version */
         foreach ($versions as $version) {
             $author = null;
 
@@ -763,9 +765,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
-        $form->setValidationResponseCallback(function () use ($form, $file) {
-            $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $file->exists() ? $file->ID : '');
-            return $this->getSchemaResponse($form, $schemaId);
+        $form->setValidationResponseCallback(function (ValidationResult $errors) use ($form, $id) {
+            $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $id);
+            return $this->getSchemaResponse($schemaId, $form, $errors);
         });
 
         return $form;
@@ -870,11 +872,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
-        $form->setValidationResponseCallback(function () use ($form, $id, $versionId) {
+        $form->setValidationResponseCallback(function (ValidationResult $errors) use ($form, $id, $versionId) {
             $schemaId = Controller::join_links($this->Link('schema/fileHistoryForm'), $id, $versionId);
-            return $this->getSchemaResponse($form, $schemaId);
+            return $this->getSchemaResponse($schemaId, $form, $errors);
         });
-
 
         return $form;
     }
@@ -907,8 +908,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Respond with this schema
         $response = $this->getResponse();
         $response->addHeader('Content-Type', 'application/json');
-        $response->setBody(Convert::raw2json($this->getSchemaForForm($form)));
-        return $response;
+        $schemaID = $this->getRequest()->getURL();
+        return $this->getSchemaResponse($schemaID, $form);
     }
 
     /**
@@ -985,13 +986,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             $record->publishRecursive();
         }
 
-        // Return the record data in the same response as the schema to save a postback
-        $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $record->exists() ? $record->ID : '');
-        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id), $schemaId);
-        $schemaData['record'] = $this->getObjectFromData($record);
-        $response = new HTTPResponse(Convert::raw2json($schemaData));
-        $response->addHeader('Content-Type', 'application/json');
-        return $response;
+        // Note: Force return of schema / state in success result
+        return $this->getRecordUpdatedResponse($record, $form);
     }
 
     public function unpublish($data, $form)
@@ -1016,14 +1012,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $record->doUnpublish();
-
-        // Return the record data in the same response as the schema to save a postback
-        $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $record->exists() ? $record->ID : '');
-        $schemaData = $this->getSchemaForForm($this->getFileEditForm($id), $schemaId);
-        $schemaData['record'] = $this->getObjectFromData($record);
-        $response = new HTTPResponse(Convert::raw2json($schemaData));
-        $response->addHeader('Content-Type', 'application/json');
-        return $response;
+        return $this->getRecordUpdatedResponse($record, $form);
     }
 
     /**
@@ -1182,21 +1171,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $id = $data['ID'];
         $record = $this->getList()->byID($id);
 
-        $handler = AddToCampaignHandler::create($this, $record);
+        $handler = AddToCampaignHandler::create($this, $record, 'addToCampaignForm');
         $results = $handler->addToCampaign($record, $data['Campaign']);
         if (!isset($results)) {
             return null;
         }
-        $request = $this->getRequest();
-        if ($request->getHeader('X-Formschema-Request')) {
-            $data = $this->getSchemaForForm($handler->Form($record));
-            $data['message'] = $results;
 
-            $response = new HTTPResponse(Convert::raw2json($data));
-            $response->addHeader('Content-Type', 'application/json');
-            return $response;
-        }
-        return $results;
+        // Send extra "message" data with schema response
+        $extraData = ['message' => $results];
+        $schemaId = Controller::join_links($this->Link('schema/addToCampaignForm'), $id);
+        return $this->getSchemaResponse($schemaId, $form, null, $extraData);
     }
 
     /**
@@ -1243,9 +1227,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $handler = AddToCampaignHandler::create($this, $record, 'addToCampaignForm');
         $form = $handler->Form($record);
 
-        $form->setValidationResponseCallback(function () use ($form, $id) {
+        $form->setValidationResponseCallback(function (ValidationResult $errors) use ($form, $id) {
             $schemaId = Controller::join_links($this->Link('schema/addToCampaignForm'), $id);
-            return $this->getSchemaResponse($form, $schemaId);
+            return $this->getSchemaResponse($schemaId, $form, $errors);
         });
 
         return $form;
@@ -1263,5 +1247,20 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         );
 
         return $upload;
+    }
+
+    /**
+     * Get response for successfully updated record
+     *
+     * @param File $record
+     * @param Form $form
+     * @return HTTPResponse
+     */
+    protected function getRecordUpdatedResponse($record, $form)
+    {
+        // Return the record data in the same response as the schema to save a postback
+        $schemaData = ['record' => $this->getObjectFromData($record)];
+        $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $record->ID);
+        return $this->getSchemaResponse($schemaId, $form, null, $schemaData);
     }
 }
