@@ -979,6 +979,27 @@
   max-width:60px;
 }
 
+.gallery__progress-bar-progress{
+  height:100%;
+  background:#29abe2;
+  width:0;
+}
+
+.gallery__progress-bar{
+  height:16px;
+  width:30%;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.gallery__progress-bar--complete:after{
+  color:#3fa142;
+  font-size:20px;
+  display:inline;
+  font-family:silverstripe,sans-serif;
+  content:"I";
+}
+
 .editor{
   background-color:#f6f7f8;
   z-index:2;

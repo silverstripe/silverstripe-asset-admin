@@ -123,3 +123,27 @@ $gallery-list-thumb-height: 68px;
   max-height: $gallery-list-thumb-height;
   max-width: $gallery-list-thumb-width;
 }
+
+
+// Individual progress bar
+.gallery__progress-bar-progress {
+  height: 100%;
+  background: $brand-primary;
+  width: 0%;
+}
+
+.gallery__progress-bar {
+  height: 16px;
+  width: 30%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.gallery__progress-bar--complete::after {
+  color: $brand-success;
+  font-size: 20px;
+  display: inline;
+  font-family: silverstripe, sans-serif;
+  content: "I";
+}
+

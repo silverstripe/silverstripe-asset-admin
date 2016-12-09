@@ -13,6 +13,7 @@ class TableView extends Component {
     this.handleSetPage = this.handleSetPage.bind(this);
     this.handleRowClick = this.handleRowClick.bind(this);
     this.renderSelect = this.renderSelect.bind(this);
+    this.renderTitle = this.renderTitle.bind(this);
 
     this.state = {
       // TODO remove `enableSort` state when Griddle is version bumped up from 0.7.0
@@ -77,6 +78,8 @@ class TableView extends Component {
       {
         columnName: 'title',
         customCompareFn: () => (0), // Suppress griddle re-sorting
+        cssClassName: 'gallery__table-column--title',
+        customComponent: this.renderTitle,
       },
       {
         columnName: 'lastUpdated',
@@ -218,6 +221,52 @@ class TableView extends Component {
     return (
       <span>{description}</span>
     );
+  }
+
+  /**
+   * Renders the progressbar for a given row
+   *
+   * @param rowData
+   * @returns {XML|null}
+   */
+  renderProgressBar(rowData) {
+    if (!rowData.uploading || (rowData.message && rowData.message.type === 'error')) {
+      return null;
+    }
+    if (rowData.id > 0) {
+      return (
+        <div className="gallery__progress-bar--complete"></div>
+      );
+    }
+    const progressBarProps = {
+      className: 'gallery__progress-bar-progress',
+      style: {
+        width: `${rowData.progress}%`,
+      },
+    };
+
+    return (
+      <div className="gallery__progress-bar">
+        <div {...progressBarProps}></div>
+      </div>
+    )
+  }
+
+  /**
+   * Renders the title for the row/item, includes a progress bar if appropriate for uploading
+   *
+   * @param {object} props
+   * @returns {XML}
+   */
+  renderTitle(props) {
+    const progress = this.renderProgressBar(props.rowData);
+
+    return (
+      <div className="fill-width">
+        <div className="flexbox-area-grow">{props.data}</div>
+        {progress}
+      </div>
+    )
   }
 
   /**
