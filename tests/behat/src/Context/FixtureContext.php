@@ -2,7 +2,6 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Behat\Context;
 
-use Behat\Behat\Exception\PendingException;
 use SilverStripe\BehatExtension\Context\FixtureContext as BaseFixtureContext;
 
 /**
@@ -39,5 +38,26 @@ class FixtureContext extends BaseFixtureContext
         $form = $page->find('css', "form#{$id}");
         assertNotNull($form, "form with id $id could not be found");
         assertTrue($form->isVisible(), "form with id $id is not visible");
+    }
+
+    /**
+     * @Given /^I click on the latest history item$/
+     */
+    public function iClickOnTheLatestHistoryItem()
+    {
+        $this->getSession()->wait(
+            5000,
+            "window.jQuery && window.jQuery('.file-history__list li').size() > 0"
+        );
+
+        $page = $this->getSession()->getPage();
+
+        $elements = $page->find('css', '.file-history__list li');
+
+        if (null === $elements) {
+            throw new \InvalidArgumentException(sprintf('Could not find list item'));
+        }
+
+        $elements->click();
     }
 }

@@ -6,22 +6,22 @@ Feature: View File History
 
   Background:
     Given a "image" "folder1/file1.jpg"
-    And a "image" "folder1/file2.jpg"
-    And I am logged in with "ADMIN" permissions
-    And I go to "/admin/assets"
-    And I select the "folder" named "folder1" in the gallery
-    And I click on the "image" named "file1" in the gallery
+      And a "image" "folder1/file2.jpg"
+      And I am logged in with "ADMIN" permissions
+      And I go to "/admin/assets"
+      And I select the "folder" named "folder1" in the gallery
+      And I click on the "image" named "file1" in the gallery
 
   @javascript
   Scenario: I view the history of a file
-    When I click the "History" tab
-    Then I should see a history list
-    And I click on the latest history item
-    Then I should see the history form
+    When I click "History" in the "#Editor .nav-tabs" element
+    Then I should see an ".file-history__list" element
+    When I click on the latest history item
+    Then I should see the "Form_fileHistoryForm" form
 
   Scenario: Editing a file adds history
-    And I click the "Details" tab
-    And I fill in "Test 1" for "Form_FileEditForm_Title"
-    And I press the "Save" button
-    When I click the "History" tab
-    Then the latest history item should contain "Renamed file to Test 1"
+    When I click "Details" in the "#Editor .nav-tabs" element
+      And I fill in "Test 1" for "Form_fileEditForm_Title"
+      And I press the "Save" button
+      And I click "History" in the "#Editor .nav-tabs" element
+    Then I should see "Updated title to Test 1" in the ".file-history__list" element
