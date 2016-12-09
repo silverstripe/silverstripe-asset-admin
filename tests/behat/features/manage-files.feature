@@ -50,12 +50,12 @@ Feature: Manage files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
     When I click on the "folder" named "folder1" in the gallery
       And I check the "image" named "file1" in the gallery
-    Then I should see an ".bulk-actions_action[value='edit']" element
+    Then I should see an ".bulk-actions__action[value='edit']" element
       And the ".bulk-actions-counter" element should contain "1"
     When I check the "image" named "file2" in the gallery
-    Then the ".bulk-actions_action[value='delete']" element should contain "Delete"
+    Then the ".bulk-actions__action[value='delete']" element should contain "Delete"
       And the ".bulk-actions-counter" element should contain "2"
-      And I should not see an ".bulk-actions_action[value='edit']" element
+      And I should not see an ".bulk-actions__action[value='edit']" element
     When I press the "Delete" button, confirming the dialog
       And I wait for 1 second
     Then I should not see the "image" named "file1" in the gallery

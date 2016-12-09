@@ -979,6 +979,22 @@
   max-width:60px;
 }
 
+.gallery__table-image--error{
+  background:#d40404;
+  height:68px;
+  width:60px;
+}
+
+.gallery__table-image--error:after{
+  content:'Q';
+  line-height:68px;
+  font-size:30px;
+  display:inline;
+  font-family:silverstripe,sans-serif;
+  color:#fff;
+  opacity:.8;
+}
+
 .gallery__progress-bar-progress{
   height:100%;
   background:#29abe2;
