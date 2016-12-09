@@ -2,13 +2,11 @@ language: php
 
 env:
   global:
-    # todo - travis artifacts setup
     - DB=MYSQL
     - CORE_RELEASE=master
     - COMPOSER_ROOT_VERSION=1.0.x-dev
     - DISPLAY=":99"
     - XVFBARGS=":99 -ac -screen 0 1024x768x16"
-    - secure: "YIQpRHDAPLBf+Uu4mChBHYA3QjUQO1ty+2E9bcYqXmptIjkA+kdpzt1ImShLBC62ruzesucRQFF3/pGrqERXqc+hVyKyOl/VJkAD+7VqSfGUd/wX+mXKLO5opD1L7tHOkbhu4YLKE7nqjSPzWwur9rKe90BD0BKeNHt0vO9R0glolcuTzN0SzwJ3+113/zmdz8eXsUCbWaW4I05Hfvjn4BBGeg2rKPCuPVCKH3+CSP2KjlR7fSQf39EzOp+l4qH/QG1fWq8lDKRQ0BDTTn+b0GJbn77t6FAAs6s4vvRrZo5iBxhUo4mtKn9ffR7Il3jjZiT36GBBwH7URMOEuDdydvgQKnEtmBelU2Vtp0h88gDAewwaYHTNk86+hqA7E6ncxaKnmIiJ5cJ59LWvd38duv8yOPez1nF9Fj7NxGowbHUcgNSXlsBLojmszRYNJ07jG0gG9dQ/aCm3tixDY7lsYSzUfSCKNLOeXdU16Yz7pc/yey84Gfim0+d/+Ia3mbUzB6bIhaaasLLu3hzNSxH0qadWl6lLRdDkwlXO9QWVRwhTlg3tPIN5FRyBTrHCwex85sEUjXbvDaWsAZQHZNtWUhySZaoYi6vo6sbrJwmMoxMBBlxwGNEgA3Q+cDvhFW6lAuvjrDA99kDO4sRmqAgZB6vJkRSi+miEHdc2iJmNZcE="
 
 matrix:
   include:
@@ -47,6 +45,9 @@ script:
   - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run lint); fi"
   - "if [ \"$BEHAT_TEST\" = \"1\" ]; then vendor/bin/behat @asset-admin --config=./asset-admin/behat.yml; fi"
   - "if [ \"$PHPCS_TEST\" = \"1\" ]; then phpcs  --standard=asset-admin/tests/phpcs/ruleset.xml asset-admin/code/ asset-admin/tests/; fi"
+
+after_failure:
+  - php ./framework/tests/behat/travis-upload-artifacts.php --if-env BEHAT_TEST,ARTIFACTS_BUCKET,ARTIFACTS_KEY,ARTIFACTS_SECRET --target-path $TRAVIS_REPO_SLUG/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID --artifacts-base-url https://s3.amazonaws.com/$ARTIFACTS_BUCKET/
 
 notifications:
   slack: silverstripeltd:Cls1xnypKBLFhv0YIRtNLzlQ

@@ -7,6 +7,7 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\PopoverField;
 use SilverStripe\Forms\ReadonlyField;
@@ -306,7 +307,11 @@ class FileFormFactory extends AssetFormFactory
         ]);
         if ($popoverActions) {
             return PopoverField::create($popoverActions)
-                ->setPlacement('top');
+                ->setPlacement('top')
+                ->setButtonTooltip(_t(
+                    'SilverStripe\\AssetAdmin\\Forms\\FileFormFactory.OTHER_ACTIONS',
+                    'Other actions'
+                ));
         }
         return null;
     }
