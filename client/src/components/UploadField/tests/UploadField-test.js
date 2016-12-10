@@ -1,5 +1,6 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
+jest.unmock('react-addons-test-utils');
 jest.unmock('../UploadField.js');
 
 import React from 'react';

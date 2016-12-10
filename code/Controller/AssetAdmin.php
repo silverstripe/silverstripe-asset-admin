@@ -6,6 +6,8 @@ use InvalidArgumentException;
 use SilverStripe\Admin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\AssetAdmin\BatchAction\DeleteAssets;
+use SilverStripe\AssetAdmin\Forms\AssetFormFactory;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
@@ -19,7 +21,6 @@ use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DateField;
@@ -108,6 +109,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'addToCampaignForm',
         'fileInsertForm',
         'schema',
+        'fileSelectForm',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -127,11 +129,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         Requirements::javascript(ASSET_ADMIN_DIR . "/client/dist/js/bundle.js");
         Requirements::css(ASSET_ADMIN_DIR . "/client/dist/styles/bundle.css");
 
-        CMSBatchActionHandler::register(
-            'delete',
-            'SilverStripe\AssetAdmin\BatchAction\DeleteAssets',
-            'SilverStripe\\Assets\\Folder'
-        );
+        CMSBatchActionHandler::register('delete', DeleteAssets::class, Folder::class);
     }
 
     public function getClientConfig()
@@ -181,6 +179,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ],
                 'fileInsertForm' => [
                     'schemaUrl' => $this->Link('schema/fileInsertForm')
+                ],
+                'fileSelectForm' => [
+                    'schemaUrl' => $this->Link('schema/fileSelectForm')
                 ],
                 'addToCampaignForm' => [
                     'schemaUrl' => $this->Link('schema/addToCampaignForm')
@@ -472,8 +473,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             }
 
             if ($version->canView()) {
-                $published = true;
-
                 if (isset($next[$version->Version])) {
                     $summary = $version->humanizedChanges(
                         $version->Version,
@@ -745,32 +744,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFileEditForm($id)
     {
-        /** @var File $file */
-        $file = $this->getList()->byID($id);
-
-        if (!$file->canView()) {
-            $this->httpError(403, _t(
-                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
-                'You don\'t have the necessary permissions to modify {ObjectTitle}',
-                '',
-                ['ObjectTitle' => $file->i18n_singular_name()]
-            ));
-            return null;
-        }
-
-        $scaffolder = $this->getFormFactory($file);
-        $form = $scaffolder->getForm($this, 'fileEditForm', [
-            'Record' => $file
-        ]);
-
-        // Configure form to respond to validation errors with form schema
-        // if requested via react.
-        $form->setValidationResponseCallback(function (ValidationResult $errors) use ($form, $id) {
-            $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $id);
-            return $this->getSchemaResponse($schemaId, $form, $errors);
-        });
-
-        return $form;
+        return $this->getAbstractFileForm($id, 'fileEditForm');
     }
 
     /**
@@ -797,26 +771,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFileInsertForm($id)
     {
-        /** @var File $file */
-        $file = $this->getList()->byID($id);
-
-        if (!$file->canView()) {
-            $this->httpError(403, _t(
-                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
-                'You don\'t have the necessary permissions to modify {ObjectTitle}',
-                '',
-                ['ObjectTitle' => $file->i18n_singular_name()]
-            ));
-            return null;
-        }
-
-        $scaffolder = $this->getFormFactory($file);
-        $form = $scaffolder->getForm($this, 'fileInsertForm', [
-            'Record' => $file,
-            'Type' => 'insert',
-        ]);
-
-        return $form;
+        return $this->getAbstractFileForm($id, 'fileInsertForm', [ 'Type' => AssetFormFactory::TYPE_INSERT ]);
     }
 
     /**
@@ -830,6 +785,68 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $request = $this->getRequest();
         $id = $request->param('ID') ?: $request->postVar('ID');
         return $this->getFileInsertForm($id);
+    }
+
+    /**
+     * Abstract method for generating a form for a file
+     *
+     * @param int $id Record ID
+     * @param string $name Form name
+     * @param array $context Form context
+     * @return Form
+     */
+    protected function getAbstractFileForm($id, $name, $context = [])
+    {
+        /** @var File $file */
+        $file = $this->getList()->byID($id);
+
+        if (!$file->canView()) {
+            $this->httpError(403, _t(
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
+                'You don\'t have the necessary permissions to modify {ObjectTitle}',
+                '',
+                ['ObjectTitle' => $file->i18n_singular_name()]
+            ));
+            return null;
+        }
+
+        // Pass to form factory
+        $augmentedContext = array_merge($context, ['Record' => $file]);
+        $scaffolder = $this->getFormFactory($file);
+        $form = $scaffolder->getForm($this, $name, $augmentedContext);
+
+        // Configure form to respond to validation errors with form schema
+        // if requested via react.
+        $form->setValidationResponseCallback(function (ValidationResult $error) use ($form, $id, $name) {
+            $schemaId = Controller::join_links($this->Link('schema'), $name, $id);
+            return $this->getSchemaResponse($schemaId, $form, $error);
+        });
+
+        return $form;
+    }
+
+    /**
+     * Get form for selecting a file
+     *
+     * @return Form
+     */
+    public function fileSelectForm()
+    {
+        // Get ID either from posted back value, or url parameter
+        $request = $this->getRequest();
+        $id = $request->param('ID') ?: $request->postVar('ID');
+        return $this->getFileSelectForm($id);
+    }
+
+    /**
+     * Get form for selecting a file
+     *
+     * @param int $id ID of the record being selected
+     * @return Form
+     */
+    public function getFileSelectForm($id)
+    {
+        return $this->getAbstractFileForm($id, 'fileSelectForm', [ 'Type' => AssetFormFactory::TYPE_SELECT ]);
     }
 
     /**

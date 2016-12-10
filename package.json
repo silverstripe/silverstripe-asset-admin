@@ -31,6 +31,8 @@
     "testDirectoryName": "tests",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
+      "../framework/node_modules/react",
+      "../framework/node_modules/redux-form",
       "../framework/node_modules/react-bootstrap-ss"
     ],
     "mocksPattern": "mocks",

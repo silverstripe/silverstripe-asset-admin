@@ -27,6 +27,21 @@ abstract class AssetFormFactory implements FormFactory
     use Injectable;
     use Configurable;
 
+    /**
+     * Insert into HTML content area
+     */
+    const TYPE_INSERT = 'insert';
+
+    /**
+     * Select file by ID only
+     */
+    const TYPE_SELECT = 'select';
+
+    /**
+     * Edit form: Default
+     */
+    const TYPE_ADMIN = 'admin';
+
     public function __construct()
     {
         $this->constructExtensions();
@@ -53,6 +68,17 @@ abstract class AssetFormFactory implements FormFactory
         $form->loadDataFrom($context['Record']);
 
         return $form;
+    }
+
+    /**
+     * Get form type from 'type' context
+     *
+     * @param array $context
+     * @return string
+     */
+    protected function getFormType($context)
+    {
+        return empty($context['Type']) ? static::TYPE_ADMIN : $context['Type'];
     }
 
     /**

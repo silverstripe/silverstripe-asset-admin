@@ -7,6 +7,7 @@ import SilverStripeComponent from 'lib/SilverStripeComponent';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import UploadFieldItem from 'components/UploadField/UploadFieldItem';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
+import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
@@ -15,6 +16,9 @@ class UploadField extends SilverStripeComponent {
   constructor(props) {
     super(props);
     this.renderChild = this.renderChild.bind(this);
+    this.handleAddShow = this.handleAddShow.bind(this);
+    this.handleAddHide = this.handleAddHide.bind(this);
+    this.handleAddInsert = this.handleAddInsert.bind(this);
     this.handleAddedFile = this.handleAddedFile.bind(this);
     this.handleSending = this.handleSending.bind(this);
     this.handleUploadProgress = this.handleUploadProgress.bind(this);
@@ -22,6 +26,8 @@ class UploadField extends SilverStripeComponent {
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleItemRemove = this.handleItemRemove.bind(this);
     this.handleChange = this.handleChange.bind(this);
+
+    this.state = { selecting: false };
   }
 
   componentDidMount() {
@@ -127,8 +133,41 @@ class UploadField extends SilverStripeComponent {
     }
   }
 
+  /**
+   * Handler for 'upload' dialog.
+   *
+   * @param {Object} event - Click event
+   */
   handleSelect(event) {
     event.preventDefault();
+  }
+
+  /**
+   * Open new 'add from files' dialog
+   *
+   * @param {Object} event - Click event
+   */
+  handleAddShow(event) {
+    event.preventDefault();
+    this.setState({ selecting: true });
+  }
+
+  /**
+   * Close 'add from files' dialog
+   */
+  handleAddHide() {
+    this.setState({ selecting: false });
+  }
+
+  /**
+   * Handle file being added by 'add from files' dialog
+   *
+   * @param {Object} data - Submitted insert form data
+   * @param {Object} file - file record
+   */
+  handleAddInsert(data, file) {
+    this.props.actions.uploadField.addFile(this.props.id, file);
+    this.handleAddHide();
   }
 
   render() {
@@ -136,6 +175,7 @@ class UploadField extends SilverStripeComponent {
       <div className="uploadfield">
         {this.renderDropzone()}
         {this.props.files.map(this.renderChild)}
+        {this.renderDialog()}
       </div>
     );
   }
@@ -143,7 +183,6 @@ class UploadField extends SilverStripeComponent {
   /**
    * Render "drop file here" area
    *
-   * @todo i18n
    * @returns {XML}
    */
   renderDropzone() {
@@ -178,7 +217,7 @@ class UploadField extends SilverStripeComponent {
       <AssetDropzone
         canUpload
         uploadButton={false}
-        uploadSelector=".uploadfield__dropzone-area"
+        uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"
         folderId={this.props.data.parentid}
         handleAddedFile={this.handleAddedFile}
         handleError={this.handleFailedUpload}
@@ -190,14 +229,33 @@ class UploadField extends SilverStripeComponent {
         securityID={securityID}
         className={classNames.join(' ')}
       >
-        <div className="uploadfield__dropzone-area">
-          <span className="uploadfield__droptext">
-            <a href="#" onClick={this.handleSelect} className="uploadfield__upload-button">
-              {i18n._t('AssetAdminUploadField.BROWSE', 'Browse')}
-            </a>
-          </span>
-        </div>
+        <div className="uploadfield__backdrop"></div>
+        <span className="uploadfield__droptext">
+          <a href="#" onClick={this.handleSelect} className="uploadfield__upload-button">
+            {i18n._t('AssetAdminUploadField.BROWSE', 'Browse')}
+          </a>
+          {' '}
+          {i18n._t('AssetAdminUploadField.OR', 'or')}
+          {' '}
+          <a href="#" onClick={this.handleAddShow} className="uploadfield__add-button">
+            {i18n._t('AssetAdminUploadField.ADD_FILES', 'Add from files')}
+          </a>
+        </span>
       </AssetDropzone>
+    );
+  }
+
+  renderDialog() {
+    return (
+      <InsertMediaModal
+        title={false}
+        show={this.state.selecting}
+        onInsert={this.handleAddInsert}
+        onHide={this.handleAddHide}
+        bodyClassName="modal__dialog"
+        className="insert-media-react__dialog-wrapper"
+        type="select"
+      />
     );
   }
 
@@ -249,8 +307,12 @@ UploadField.defaultProps = {
 function mapStateToProps(state, ownprops) {
   const id = ownprops.id;
   let files = [];
-  if (state.assetAdmin && state.assetAdmin.uploadField && state.assetAdmin.uploadField.fields) {
-    files = state.assetAdmin.uploadField.fields[id] || [];
+  if (state.assetAdmin
+    && state.assetAdmin.uploadField
+    && state.assetAdmin.uploadField.fields
+    && state.assetAdmin.uploadField.fields[id]
+  ) {
+    files = state.assetAdmin.uploadField.fields[id].files || [];
   }
   const securityId = state.config.SecurityID;
   return { files, securityId };

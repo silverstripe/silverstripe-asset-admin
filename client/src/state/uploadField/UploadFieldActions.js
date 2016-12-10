@@ -9,7 +9,7 @@ import ACTION_TYPES from './UploadFieldActionTypes';
 export function addFile(fieldId, file) {
   return (dispatch) =>
     dispatch({
-      type: ACTION_TYPES.FILEFIELD_ADD_FILE,
+      type: ACTION_TYPES.UPLOADFIELD_ADD_FILE,
       payload: { fieldId, file },
     });
 }
@@ -23,7 +23,7 @@ export function addFile(fieldId, file) {
 export function setFiles(fieldId, files) {
   return (dispatch) =>
     dispatch({
-      type: ACTION_TYPES.FILEFIELD_SET_FILES,
+      type: ACTION_TYPES.UPLOADFIELD_SET_FILES,
       payload: { fieldId, files },
     });
 }
@@ -46,7 +46,7 @@ export function failUpload(fieldId, queuedId, response) {
       };
     }
     return dispatch({
-      type: ACTION_TYPES.FILEFIELD_UPLOAD_FAILURE,
+      type: ACTION_TYPES.UPLOADFIELD_UPLOAD_FAILURE,
       payload: { fieldId, queuedId, message },
     });
   };
@@ -61,7 +61,7 @@ export function failUpload(fieldId, queuedId, response) {
 export function removeFile(fieldId, file) {
   return (dispatch) =>
     dispatch({
-      type: ACTION_TYPES.FILEFIELD_REMOVE_FILE,
+      type: ACTION_TYPES.UPLOADFIELD_REMOVE_FILE,
       payload: { fieldId, file },
     });
 }
@@ -76,7 +76,7 @@ export function removeFile(fieldId, file) {
 export function succeedUpload(fieldId, queuedId, json) {
   return (dispatch) =>
     dispatch({
-      type: ACTION_TYPES.FILEFIELD_UPLOAD_SUCCESS,
+      type: ACTION_TYPES.UPLOADFIELD_UPLOAD_SUCCESS,
       payload: { fieldId, queuedId, json },
     });
 }
@@ -91,7 +91,7 @@ export function succeedUpload(fieldId, queuedId, json) {
 export function updateQueuedFile(fieldId, queuedId, updates) {
   return (dispatch) =>
     dispatch({
-      type: ACTION_TYPES.FILEFIELD_UPDATE_QUEUED_FILE,
+      type: ACTION_TYPES.UPLOADFIELD_UPDATE_QUEUED_FILE,
       payload: { fieldId, queuedId, updates },
     });
 }

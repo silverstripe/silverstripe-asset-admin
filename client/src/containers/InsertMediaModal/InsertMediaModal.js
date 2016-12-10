@@ -101,7 +101,7 @@ class InsertMediaModal extends Component {
   getSectionProps() {
     return {
       dialog: true,
-      type: 'insert',
+      type: this.props.type,
       sectionConfig: this.props.sectionConfig,
       folderId: this.state.folderId,
       fileId: this.state.fileId || this.props.fileId,
@@ -185,6 +185,7 @@ InsertMediaModal.propTypes = {
     url: PropTypes.string,
     form: PropTypes.object,
   }),
+  type: PropTypes.oneOf(['insert', 'select', 'admin']),
   schemaUrl: PropTypes.string,
   show: PropTypes.bool,
   onInsert: PropTypes.func.isRequired,
@@ -205,13 +206,14 @@ InsertMediaModal.propTypes = {
 InsertMediaModal.defaultProps = {
   className: '',
   fileAttributes: {},
+  type: 'insert',
 };
 
 function mapStateToProps(state, ownProps) {
   const sectionConfig = state.config.sections[sectionConfigKey];
 
   // get the schemaUrl to use as a key for overrides
-  const fileId = ownProps.fileAttributes.ID;
+  const fileId = ownProps.fileAttributes ? ownProps.fileAttributes.ID : null;
   const section = state.config.sections[sectionConfigKey];
   const schemaUrl = fileId && `${section.form.fileInsertForm.schemaUrl}/${fileId}`;
 

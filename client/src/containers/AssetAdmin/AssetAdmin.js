@@ -292,9 +292,23 @@ class AssetAdmin extends SilverStripeComponent {
   renderEditor() {
     const config = this.props.sectionConfig;
     const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
-    const schemaUrl = (this.props.type === 'insert')
-      ? config.form.fileInsertForm.schemaUrl
-      : config.form.fileEditForm.schemaUrl;
+    // Types are:
+    // 'insert' -> Insert into html area with options
+    // 'select' -> Select a file with no editable fields
+    // 'edit' (default) -> edit files
+    let schemaUrl = null;
+    switch (this.props.type) {
+      case 'insert':
+        schemaUrl = config.form.fileInsertForm.schemaUrl;
+        break;
+      case 'select':
+        schemaUrl = config.form.fileSelectForm.schemaUrl;
+        break;
+      case 'admin':
+      default:
+        schemaUrl = config.form.fileEditForm.schemaUrl;
+        break;
+    }
 
     if (!file && this.props.fileId !== this.props.folderId) {
       return null;
@@ -345,7 +359,7 @@ AssetAdmin.propTypes = {
     sort: PropTypes.string,
   }),
   onSubmitEditor: PropTypes.func,
-  type: PropTypes.oneOf(['insert', 'admin']),
+  type: PropTypes.oneOf(['insert', 'select', 'admin']),
   files: PropTypes.array,
   folder: PropTypes.shape({
     id: PropTypes.number,
