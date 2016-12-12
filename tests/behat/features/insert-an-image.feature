@@ -15,8 +15,8 @@ Feature: Insert an image into a page
   @assets
   Scenario: I can insert an image from the CMS file store
     When I press the "Insert Media" HTML field button
-    And I select the "folder" named "folder1" in the gallery
-    And I click on the "image" named "file1" in the gallery
+    And I select the file named "folder1" in the gallery
+    And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
     When I press the "Insert file" button
     Then the "Content" HTML field should contain "file1__Resampled.jpg"
@@ -26,8 +26,8 @@ Feature: Insert an image into a page
   @assets
   Scenario: I can edit properties of an image before inserting it
     When I press the "Insert Media" HTML field button
-    And I select the "folder" named "folder1" in the gallery
-    And I click on the "image" named "file1" in the gallery
+    And I select the file named "folder1" in the gallery
+    And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
     When I fill in "Alternative text (alt)" with "My alt"
     And I press the "Insert file" button
