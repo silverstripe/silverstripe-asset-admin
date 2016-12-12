@@ -57,7 +57,10 @@ class InsertMediaModal extends Component {
   setOverrides(props) {
     if (!props || this.props.schemaUrl !== props.schemaUrl) {
       // clear any overrides that may be in place
-      this.props.actions.schema.setSchemaStateOverrides(props.schemaUrl, null);
+      const schemaUrl = props && props.schemaUrl || this.props.schemaUrl;
+      if (schemaUrl) {
+        this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
+      }
     }
     if (props && props.schemaUrl) {
       const attrs = Object.assign({}, props.fileAttributes);

@@ -25,12 +25,13 @@ function t(e){i(this,t)
 var n=s(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleSubmit=n.handleSubmit.bind(n),n.handleBrowse=n.handleBrowse.bind(n),n.getUrl=n.getUrl.bind(n),n.state={folderId:0,fileId:e.fileAttributes.ID,query:{}},n}return l(t,e),c(t,[{key:"componentWillMount",
 value:function n(){this.setOverrides(this.props)}},{key:"componentWillReceiveProps",value:function r(e){!e.show&&this.props.show&&this.setState({folderId:0,fileId:null,query:{}}),e.show&&!this.props.show&&e.fileAttributes.ID&&(this.setOverrides(e),
-this.setState({folderId:0,fileId:e.fileAttributes.ID}))}},{key:"componentWillUnmount",value:function o(){this.setOverrides()}},{key:"setOverrides",value:function a(e){if(e&&this.props.schemaUrl===e.schemaUrl||this.props.actions.schema.setSchemaStateOverrides(e.schemaUrl,null),
-e&&e.schemaUrl){var t=d({},e.fileAttributes)
-delete t.ID
-var n={fields:Object.entries(t).map(function(e){var t=p(e,2),n=t[0],r=t[1]
+this.setState({folderId:0,fileId:e.fileAttributes.ID}))}},{key:"componentWillUnmount",value:function o(){this.setOverrides()}},{key:"setOverrides",value:function a(e){if(!e||this.props.schemaUrl!==e.schemaUrl){
+var t=e&&e.schemaUrl||this.props.schemaUrl
+t&&this.props.actions.schema.setSchemaStateOverrides(t,null)}if(e&&e.schemaUrl){var n=d({},e.fileAttributes)
+delete n.ID
+var r={fields:Object.entries(n).map(function(e){var t=p(e,2),n=t[0],r=t[1]
 return{name:n,value:r}})}
-this.props.actions.schema.setSchemaStateOverrides(e.schemaUrl,n)}}},{key:"getUrl",value:function u(e,t){var n=this.props.sectionConfig.url,r=n+"/show/"+(e||0)
+this.props.actions.schema.setSchemaStateOverrides(e.schemaUrl,r)}}},{key:"getUrl",value:function u(e,t){var n=this.props.sectionConfig.url,r=n+"/show/"+(e||0)
 return t&&(r=r+"/edit/"+t),r}},{key:"getSectionProps",value:function f(){return{dialog:!0,type:this.props.type,sectionConfig:this.props.sectionConfig,folderId:parseInt(this.state.folderId,10),fileId:parseInt(this.state.fileId||this.props.fileId,10),
 query:this.state.query,getUrl:this.getUrl,onBrowse:this.handleBrowse,onSubmitEditor:this.handleSubmit}}},{key:"getModalProps",value:function m(){return d({},this.props,{handleHide:this.props.onHide,className:"insert-media-modal "+this.props.className,
 bsSize:"lg",onHide:void 0,onInsert:void 0,sectionConfig:void 0,schemaUrl:void 0})}},{key:"handleSubmit",value:function g(e,t,n,r){return this.props.onInsert(e,r)}},{key:"handleBrowse",value:function y(e,t,n){
