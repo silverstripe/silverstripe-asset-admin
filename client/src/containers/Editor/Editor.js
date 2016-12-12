@@ -31,7 +31,10 @@ class Editor extends Component {
     }
 
     if (name === 'action_delete') {
-      this.props.onDelete(data.ID);
+      // eslint-disable-next-line no-alert
+      if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
+        this.props.onDelete(data.ID);
+      }
       event.preventDefault();
       return;
     }

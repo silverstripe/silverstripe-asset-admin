@@ -20,6 +20,7 @@ Feature: Replace a file with a new file
     Then I should see a ".preview__toolbar-button--remove" element
       And I should see a ".preview__message--success" element
       And I press the "Save" button
+      And I wait for 1 second
     Then I should not see a ".preview__message--success" element
       And I should not see a ".preview__toolbar-button--remove" element
 

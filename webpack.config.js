@@ -35,6 +35,7 @@ module.exports = {
     filename: 'js/[name].js',
   },
   externals: {
+    'apollo-client': 'ApolloClient',
     'containers/InsertMediaModal/InsertMediaModal': 'InsertMediaModal',
     'components/Breadcrumb/Breadcrumb': 'Breadcrumb',
     'state/schema/SchemaActions': 'SchemaActions',
@@ -48,6 +49,7 @@ module.exports = {
     'containers/FormBuilderLoader/FormBuilderLoader': 'FormBuilderLoader',
     'state/breadcrumbs/BreadcrumbsActions': 'BreadcrumbsActions',
     'deep-freeze-strict': 'DeepFreezeStrict',
+    'graphql-tag': 'GraphQLTag',
     i18n: 'i18n',
     jQuery: 'jQuery',
     'lib/Backend': 'Backend',
@@ -60,6 +62,7 @@ module.exports = {
     'page.js': 'Page',
     'react-addons-css-transition-group': 'ReactAddonsCssTransitionGroup',
     'react-addons-test-utils': 'ReactAddonsTestUtils',
+    'react-apollo': 'ReactApollo',
     'react-dom': 'ReactDom',
     'react-redux': 'ReactRedux',
     'react-bootstrap-ss': 'ReactBootstrap',

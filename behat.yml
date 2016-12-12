@@ -12,6 +12,7 @@ default:
     SilverStripe\BehatExtension\Extension:
       framework_path: ../framework
       bootstrap_file: "cms/tests/behat/serve-bootstrap.php"
+      screenshot_path: %behat.paths.base%/artifacts/screenshots
     Behat\MinkExtension\Extension:
       # Adjust this to your local environment
       base_url:  http://localhost:8080/

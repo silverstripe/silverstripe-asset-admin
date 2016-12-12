@@ -22,7 +22,11 @@ class PreviewImageField extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.data.url && nextProps.data.url !== this.props.data.url) {
+    // Check latest version to detect file save actions
+    if (
+      (this.props.data.url && nextProps.data.url !== this.props.data.url)
+      || (this.props.data.version && nextProps.data.version !== this.props.data.version)
+    ) {
       this.props.actions.previewField.removeFile(this.props.id);
     }
   }
@@ -321,6 +325,7 @@ PreviewImageField.propTypes = {
   onAutofill: PropTypes.func,
   data: PropTypes.shape({
     parentid: PropTypes.number,
+    version: PropTypes.number,
     url: PropTypes.string,
     exists: PropTypes.bool,
     preview: PropTypes.string,

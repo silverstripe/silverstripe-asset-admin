@@ -17,11 +17,11 @@ class PreviewImageField extends FormField
      * @var Integer
      */
     protected $recordID = null;
-    
+
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
-    
+
     protected $schemaComponent = 'PreviewImageField';
-    
+
     public function getSchemaDataDefaults()
     {
         $defaults = parent::getSchemaDataDefaults();
@@ -32,18 +32,19 @@ class PreviewImageField extends FormField
         ];
         return $defaults;
     }
-    
+
     public function getSchemaStateDefaults()
     {
         $defaults = parent::getSchemaStateDefaults();
-        
+
         /** @var File $record */
         if ($record = $this->getRecord()) {
             $parent = $record->Parent();
-            
+
             $defaults['data'] = array_merge_recursive($defaults['data'], [
                 'parentid' => ($parent) ? $parent->ID : 0,
                 'url' => $record->Link(),
+                'version' => $record->Version,
                 'exists' => $record->exists(),
                 'preview' => $record->PreviewLink(),
                 'category' => $record instanceof Folder ? 'folder' : $record->appCategory(),
@@ -57,14 +58,14 @@ class PreviewImageField extends FormField
         }
         return $defaults;
     }
-    
+
     public function performReadonlyTransformation()
     {
         $this->setReadonly(true);
-        
+
         return $this;
     }
-    
+
     /**
      * @return DataObject
      */
@@ -72,7 +73,7 @@ class PreviewImageField extends FormField
     {
         return DataObject::get_by_id(File::class, $this->recordID);
     }
-    
+
     /**
      * @param Integer $recordID
      * @return $this

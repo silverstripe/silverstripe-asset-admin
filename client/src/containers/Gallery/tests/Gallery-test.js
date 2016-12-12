@@ -6,6 +6,7 @@ jest.unmock('react-redux');
 jest.unmock('react-addons-test-utils');
 jest.unmock('../../../components/BulkActions/BulkActions');
 jest.unmock('../Gallery');
+
 // mock GriddlePagination because it gives mutation warnings all over the place!
 jest.mock('griddle-react', () => null);
 
@@ -18,15 +19,13 @@ describe('Gallery', () => {
 
   beforeEach(() => {
     props = {
+      client: jest.genMockFromModule('apollo-client'),
+      mutate: () => {},
       actions: {
         gallery: {
-          addFiles: () => {},
           selectFiles: () => {},
           deselectFiles: () => {},
           setPath: () => {},
-          setFile: () => {},
-          loadFolderContents: () => {},
-          deleteItems: () => {},
         },
         queuedFiles: {
           addQueuedFile: () => null,
@@ -44,7 +43,7 @@ describe('Gallery', () => {
       fileId: null,
       folder: {
         id: 1,
-        parentID: null,
+        parentId: null,
         canView: true,
         canEdit: true,
       },
@@ -61,47 +60,76 @@ describe('Gallery', () => {
     };
   });
 
-  describe('refreshFolderIfNeeded()', () => {
+  describe('compareFiles', () => {
     let gallery = null;
+
     beforeEach(() => {
       gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+    });
+
+    it('should not find differences on identical lists', () => {
+      const left = [
+        { id: 1 },
+      ];
+      const right = [
+        { id: 1 },
+      ];
+
+      expect(gallery.compareFiles(left, right)).toBeFalsy();
+    });
+
+    it('should find differences on array length', () => {
+      const left = [
+        { id: 1 },
+      ];
+      const right = [
+        { id: 1 },
+        { id: 2 },
+      ];
+
+      expect(gallery.compareFiles(left, right)).toBeTruthy();
+    });
+
+    it('should find differences on "id" attribute', () => {
+      const left = [
+        { id: 1 },
+      ];
+      const right = [
+        { id: 2 },
+      ];
+
+      expect(gallery.compareFiles(left, right)).toBeTruthy();
+    });
+  });
+
+  describe('componentWillReceiveProps()', () => {
+    let gallery = null;
+
+    beforeEach(() => {
+      props.files = [
+        { id: 1 },
+      ];
+      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
       // these are called on componentDidMount()...
-      props.actions.gallery.deselectFiles = jest.genMockFunction();
-      props.actions.gallery.loadFolderContents = jest.genMockFunction();
+      props.actions.queuedFiles.purgeUploadQueue = jest.genMockFunction();
     });
 
-    it('should call deselectFiles and loadFolderContents with empty props', () => {
-      gallery.refreshFolderIfNeeded(null, props);
-      expect(props.actions.gallery.deselectFiles).toBeCalled();
-      expect(props.actions.gallery.loadFolderContents).toBeCalled();
+    it('should not call purgeUploadQueue when receiving same files', () => {
+      gallery.componentWillReceiveProps(Object.assign({}, props, {
+        files: [
+          { id: 1 },
+        ],
+      }));
+      expect(props.actions.queuedFiles.purgeUploadQueue).not.toBeCalled();
     });
-    it('should not call deselectFiles and loadFolderContents if props do not change', () => {
-      const nextProps = Object.assign({}, props);
 
-      gallery.refreshFolderIfNeeded(props, nextProps);
-      expect(nextProps.actions.gallery.deselectFiles.mock.calls.length).toBe(0);
-      expect(nextProps.actions.gallery.loadFolderContents.mock.calls.length).toBe(0);
-    });
-    it('should call deselectFiles and loadFolderContents if folderId changes', () => {
-      const nextProps = Object.assign({}, props, { folderId: 3 });
-
-      gallery.refreshFolderIfNeeded(props, nextProps);
-      expect(props.actions.gallery.deselectFiles).toBeCalled();
-      expect(props.actions.gallery.loadFolderContents).toBeCalled();
-    });
-    it('should call deselectFiles and loadFolderContents if page changes', () => {
-      const nextProps = Object.assign({}, props, { page: 0 });
-
-      gallery.refreshFolderIfNeeded(props, nextProps);
-      expect(props.actions.gallery.deselectFiles).toBeCalled();
-      expect(props.actions.gallery.loadFolderContents).toBeCalled();
-    });
-    it('should call deselectFiles and loadFolderContents if sort changes', () => {
-      const nextProps = Object.assign({}, props, { sort: 'title,asc' });
-
-      gallery.refreshFolderIfNeeded(props, nextProps);
-      expect(props.actions.gallery.deselectFiles).toBeCalled();
-      expect(props.actions.gallery.loadFolderContents).toBeCalled();
+    it('should call purgeUploadQueue when receiving new files', () => {
+      gallery.componentWillReceiveProps(Object.assign({}, props, {
+        files: [
+          { id: 2 },
+        ],
+      }));
+      expect(props.actions.queuedFiles.purgeUploadQueue).toBeCalled();
     });
   });
 
@@ -151,15 +179,15 @@ describe('Gallery', () => {
   });
 
   describe('renderBackButton()', () => {
-    it('should not render if parentID is not set', () => {
+    it('should not render if parentId is not set', () => {
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
       const backButton = gallery.renderBackButton();
 
       expect(backButton).toBeNull();
     });
 
-    it('should render a react component if parentID is set', () => {
-      props.folder.parentID = 15;
+    it('should render a react component if parentId is set', () => {
+      props.folder.parentId = 15;
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
       const backButton = gallery.renderBackButton();
 
@@ -168,8 +196,8 @@ describe('Gallery', () => {
   });
 
   describe('handleBackClick()', () => {
-    it('should open folder with parentID', () => {
-      props.folder.parentID = 15;
+    it('should open folder with parentId', () => {
+      props.folder.parentId = 15;
       props.onOpenFolder = jest.genMockFunction();
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
 
@@ -178,45 +206,24 @@ describe('Gallery', () => {
     });
   });
 
-  describe('componentWillUnmount()', () => {
-    it('should unload folder data when the component is going to unmount', () => {
-      props.actions.gallery.unloadFolderContents = jest.genMockFunction();
-      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-
-      gallery.componentWillUnmount();
-      expect(props.actions.gallery.unloadFolderContents).toBeCalled();
-    });
-  });
-
   describe('handleSuccessfulUpload()', () => {
     const file = {
       exists: true,
       category: 'image',
       filename: 'unclepaul.png',
-      dimensions: {
-        width: 10,
-        height: 10,
-      },
+      width: 10,
+      height: 10,
       size: 123,
       xhr: { response: '[{"id":1}]' },
     };
 
-    it('should call an action to remove the file from the `queuedFiles` state', () => {
+    it('should not call an action to remove the file from the `queuedFiles` state', () => {
       props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
 
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
 
       gallery.handleSuccessfulUpload(file);
-      expect(props.actions.queuedFiles.removeQueuedFile).toBeCalled();
-    });
-
-    it('should call an action to add the file to the `files` state', () => {
-      props.actions.gallery.addFiles = jest.genMockFunction();
-
-      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-
-      gallery.handleSuccessfulUpload(file);
-      expect(props.actions.gallery.addFiles).toBeCalled();
+      expect(props.actions.queuedFiles.removeQueuedFile).not.toBeCalled();
     });
 
     it('should openFile if type is "insert"', () => {
@@ -302,29 +309,6 @@ describe('Gallery', () => {
     });
   });
 
-  describe('renderNoItemsNotice()', () => {
-    it('should return the no items notice if there are no files', () => {
-      props.count = 0;
-
-      const gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-
-      expect(JSON.stringify(gallery.renderNoItemsNotice())).toContain('gallery__no-item-notice');
-    });
-
-    it('should return null if there is at least one file', () => {
-      props.files = [{ id: 1 }];
-      props.count = 1;
-
-      const gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-
-      expect(gallery.renderNoItemsNotice()).toBe(null);
-    });
-  });
-
   describe('getBackButton()', () => {
     let gallery = null;
 
@@ -338,8 +322,8 @@ describe('Gallery', () => {
       expect(gallery.renderBackButton()).toBe(null);
     });
 
-    it('should return a back button if parentID is set.', () => {
-      props.folder = { parentID: 0 };
+    it('should return a back button if parentId is set.', () => {
+      props.folder = { parentId: 0 };
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
@@ -471,15 +455,6 @@ describe('Gallery', () => {
         <Gallery {...props} />
       );
       gallery.promptFolderName = () => 'newFolder';
-    });
-
-    it('should add folder after successful create API call', () => {
-      gallery.handleCreateFolder({
-        preventDefault: () => {},
-      }, 'newFolder');
-      return promise.then(() => {
-        expect(props.actions.gallery.addFiles).toBeCalled();
-      });
     });
   });
 });

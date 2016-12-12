@@ -19,7 +19,7 @@ use SilverStripe\Security\SecurityToken;
 class AssetAdminTest extends FunctionalTest
 {
 
-    protected static $fixture_file = 'AssetAdminTest.yml';
+    protected static $fixture_file = '../fixtures.yml';
 
     /**
      * @var Session
@@ -85,65 +85,6 @@ class AssetAdminTest extends FunctionalTest
         $this->assertArrayHasKey('summary', $body[0]);
 
         // test permission filtering and
-    }
-
-
-    public function testItCreatesFolder()
-    {
-        $folder1 = $this->objFromFixture(Folder::class, 'folder1');
-
-        $response = Director::test(
-            'admin/assets/api/createFolder',
-            [
-                'ParentID' => $folder1->ID,
-                'Name' => 'testItCreatesFolder',
-                'SecurityID' => SecurityToken::inst()->getValue(),
-            ],
-            $this->session,
-            'POST'
-        );
-        $this->assertFalse($response->isError());
-        $responseData = json_decode($response->getBody(), true);
-        $newFolder = Folder::get()->byID($responseData['id']);
-        $this->assertNotNull($newFolder);
-        $this->assertEquals($folder1->ID, $newFolder->ParentID);
-        $this->assertEquals('testItCreatesFolder', $newFolder->Name);
-    }
-
-    public function testItRestrictsCreateFolderByCanCreate()
-    {
-        $folder = $this->objFromFixture(Folder::class, 'folder1');
-
-        $response = Director::test(
-            'admin/assets/api/createFolder',
-            [
-                'ParentID' => $folder->ID,
-                'Name' => 'disallowCanCreate',
-                'SecurityID' => SecurityToken::inst()->getValue(),
-            ],
-            $this->session,
-            'POST'
-        );
-        $this->assertTrue($response->isError());
-        $this->assertEquals(403, $response->getStatusCode());
-    }
-
-    public function testItRestrictsCreateFolderByCanAddChildren()
-    {
-        $folder = $this->objFromFixture(Folder::class, 'disallowCanAddChildren');
-
-        $response = Director::test(
-            'admin/assets/api/createFolder',
-            [
-                'ParentID' => $folder->ID,
-                'Name' => 'testItRestrictsCreateFolderByCanAddChildren',
-                'SecurityID' => SecurityToken::inst()->getValue(),
-            ],
-            $this->session,
-            'POST'
-        );
-        $this->assertTrue($response->isError());
-        $this->assertEquals(403, $response->getStatusCode());
     }
 
     public function testItCreatesFile()
@@ -265,158 +206,6 @@ class AssetAdminTest extends FunctionalTest
         );
     }
 
-    public function testItFiltersByDateInSearch()
-    {
-        $file1 = $this->objFromFixture(File::class, 'file1');
-        $file2 = $this->objFromFixture(File::class, 'file2');
-
-        // Force creation times
-        $file1->Created = '2014-01-05 23:11:39';
-        $file1->write();
-        $file2->Created = '2014-01-06 12:00:00';
-        $file2->write();
-
-        // Mock searches for 4th Jan
-        $results = $this->getResultsForSearch([
-            'CreatedFrom' => '2014-01-04',
-            'CreatedTo' => '2014-01-04'
-        ]);
-        $this->assertEquals(count($results['files']), 0);
-
-        // Mock searches for 5th Jan
-        $results = $this->getResultsForSearch([
-            'CreatedFrom' => '2014-01-05',
-            'CreatedTo' => '2014-01-05'
-        ]);
-        $this->assertEquals(count($results['files']), 1);
-        $this->assertContains($file1->ID, array_column($results['files'], 'id'));
-
-
-        // Mock searches for 5th-6th Jan
-        $results = $this->getResultsForSearch([
-            'CreatedFrom' => '2014-01-05',
-            'CreatedTo' => '2014-01-06'
-        ]);
-        $this->assertEquals(count($results['files']), 2);
-        $this->assertContains($file1->ID, array_column($results['files'], 'id'));
-        $this->assertContains($file2->ID, array_column($results['files'], 'id'));
-
-        // Mock searches for 6th Jan
-        $results = $this->getResultsForSearch([
-            'CreatedFrom' => '2014-01-06',
-            'CreatedTo' => '2014-01-06'
-        ]);
-        $this->assertEquals(count($results['files']), 1);
-        $this->assertContains($file2->ID, array_column($results['files'], 'id'));
-
-        // Mock searches for 7th Jan
-        $results = $this->getResultsForSearch([
-            'CreatedFrom' => '2014-01-07',
-            'CreatedTo' => '2014-01-07'
-        ]);
-        $this->assertEquals(count($results['files']), 0);
-    }
-
-
-    public function testItDoesNotFilterByDefaultInSearch()
-    {
-        $rootfile = $this->objFromFixture(File::class, 'rootfile');
-        $file1 = $this->objFromFixture(File::class, 'file1');
-        $folder1 = $this->objFromFixture(Folder::class, 'folder1');
-
-        $results = $this->getResultsForSearch();
-        $this->assertContains(
-            $rootfile->ID,
-            array_column($results['files'], 'id'),
-            'Contains top level file'
-        );
-        $this->assertContains(
-            $folder1->ID,
-            array_column($results['files'], 'id'),
-            'Contains top level folder'
-        );
-        $this->assertContains(
-            $file1->ID,
-            array_column($results['files'], 'id'),
-            'Contains files in subfolder'
-        );
-    }
-
-    public function testItFiltersByParentInSearch()
-    {
-        $file1 = $this->objFromFixture(File::class, 'file1');
-        $file2 = $this->objFromFixture(File::class, 'file2');
-        $file1Folder = $file1->Parent();
-        $file2Folder = $file2->Parent();
-
-        $results = $this->getResultsForSearch(['Name' => $file1->Name, 'ParentID' => $file1Folder->ID]);
-        $this->assertEquals(count($results['files']), 1);
-        $this->assertContains(
-            $file1->ID,
-            array_column($results['files'], 'id'),
-            'Returns file when contained in correct folder'
-        );
-
-        $results = $this->getResultsForSearch(['Name' => $file1->Name, 'ParentID' => $file2Folder->ID]);
-        $this->assertEquals(
-            count($results['files']),
-            0,
-            'Does not return file when contained in different folder'
-        );
-    }
-
-    public function testItFiltersByNameInSearch()
-    {
-        $file1 = $this->objFromFixture(File::class, 'file1');
-
-        $results = $this->getResultsForSearch(['Name' => $file1->Name]);
-        $this->assertEquals(
-            count($results['files']),
-            1,
-            'Finds by Name property'
-        );
-        $this->assertContains($file1->ID, array_column($results['files'], 'id'));
-
-        $results = $this->getResultsForSearch(['Name' => 'First']);
-        $this->assertEquals(
-            count($results['files']),
-            1,
-            'Finds by Title property'
-        );
-        $this->assertContains($file1->ID, array_column($results['files'], 'id'));
-    }
-
-    public function testItRestrictsViewInSearch()
-    {
-        $allowedFile = $this->objFromFixture(File::class, 'file1');
-        $disallowedFile = $this->objFromFixture(File::class, 'disallowCanView');
-
-        $results = $this->getResultsForSearch(['Name' => $allowedFile->Name]);
-        $this->assertEquals(count($results['files']), 1);
-        $this->assertContains($allowedFile->ID, array_column($results['files'], 'id'));
-
-        $results = $this->getResultsForSearch(['Name' => $disallowedFile->Name]);
-        $this->assertEquals(count($results['files']), 0);
-    }
-
-    public function testItRestrictsViewInReadFolder()
-    {
-        $folder1 = $this->objFromFixture(Folder::class, 'folder1');
-        $allowedFile = $this->objFromFixture(File::class, 'file1');
-        $disallowedFile = $this->objFromFixture(File::class, 'disallowCanView');
-
-        $response = $this->get('admin/assets/api/readFolder?' . http_build_query(['id' => $folder1->ID]));
-        $files = json_decode($response->getBody(), true);
-        $this->assertArrayHasKey('files', $files);
-        $ids = array_map(function ($file) {
-            return $file['id'];
-        }, $files['files']);
-        $this->assertContains($allowedFile->ID, $ids);
-        $this->assertEquals($allowedFile->ParentID, $folder1->ID);
-        $this->assertNotContains($disallowedFile->ID, $ids);
-        $this->assertEquals($disallowedFile->ParentID, $folder1->ID);
-    }
-
     public function testItRestrictsUpdateFile()
     {
         $allowedFile = $this->objFromFixture(File::class, 'file1');
@@ -446,48 +235,6 @@ class AssetAdminTest extends FunctionalTest
             $this->session
         );
         $this->assertTrue($response->isError());
-    }
-
-    public function testItRestrictsDelete()
-    {
-        $allowedFile = $this->objFromFixture(File::class, 'file1');
-        $disallowedFile = $this->objFromFixture(File::class, 'disallowCanDelete');
-
-        $response = Director::test(
-            'admin/assets/api/delete',
-            null,
-            $this->session,
-            'DELETE',
-            http_build_query([
-                'ids' => [$allowedFile->ID, $disallowedFile->ID],
-                'SecurityID' => SecurityToken::inst()->getValue(),
-            ])
-        );
-        $this->assertTrue($response->isError());
-
-        $response = Director::test(
-            'admin/assets/api/delete',
-            null,
-            $this->session,
-            'DELETE',
-            http_build_query([
-                'ids' => [$allowedFile->ID],
-                'SecurityID' => SecurityToken::inst()->getValue(),
-            ])
-        );
-        $this->assertFalse($response->isError());
-    }
-
-    /**
-     * @param array $params
-     * @return array
-     */
-    protected function getResultsForSearch($params = array())
-    {
-        $response = $this->get('admin/assets/api/search?' . http_build_query($params));
-        $this->assertFalse($response->isError());
-
-        return json_decode($response->getBody(), true);
     }
 
     /**

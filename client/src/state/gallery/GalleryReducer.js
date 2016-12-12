@@ -2,10 +2,8 @@ import deepFreeze from 'deep-freeze-strict';
 import GALLERY from './GalleryActionTypes';
 
 const initialState = {
-  count: 0, // The number of files in the current view
   editorFields: [], // The input fields for editing files. Hardcoded until form field schema is implemented.
   file: null,
-  files: [],
   fileId: 0,
   folderId: 0,
   focus: false,
@@ -25,30 +23,6 @@ const initialState = {
  */
 export default function galleryReducer(state = initialState, action) {
   switch (action.type) {
-    case GALLERY.ADD_FILES: {
-      const nextFilesState = []; // Clone the state.files array
-
-      action.payload.files.forEach(payloadFile => {
-        let fileInState = false;
-
-        state.files.forEach(stateFile => {
-          // Check if each file given is already in the state
-          if (stateFile.id === payloadFile.id) {
-            fileInState = true;
-          }
-        });
-
-        // Only add the file if it isn't already in the state
-        if (!fileInState) {
-          nextFilesState.push(payloadFile);
-        }
-      });
-
-      return deepFreeze(Object.assign({}, state, {
-        count: typeof action.payload.count !== 'undefined' ? action.payload.count : state.count,
-        files: nextFilesState.concat(state.files),
-      }));
-    }
 
     case GALLERY.LOAD_FILE_SUCCESS: {
       const oldFile = state.files.find(file => file.id === action.payload.id);
@@ -66,13 +40,6 @@ export default function galleryReducer(state = initialState, action) {
         }));
       }
       return state;
-    }
-
-    case GALLERY.UNLOAD_FOLDER: {
-      return Object.assign({}, state, {
-        files: [],
-        count: 0,
-      });
     }
 
     case GALLERY.SELECT_FILES: {
@@ -108,48 +75,6 @@ export default function galleryReducer(state = initialState, action) {
         selectedFiles,
       }));
     }
-
-    // De-select and remove the files listed in payload.ids
-    case GALLERY.DELETE_ITEM_SUCCESS: {
-      return deepFreeze(Object.assign({}, state, {
-        selectedFiles: state.selectedFiles.filter(id => action.payload.ids.indexOf(id) === -1),
-        files: state.files.filter(file => action.payload.ids.indexOf(file.id) === -1),
-        count: state.count - 1,
-      }));
-    }
-
-    case GALLERY.LOAD_FOLDER_REQUEST: {
-      return deepFreeze(Object.assign({}, state, {
-        errorMessage: null,
-        selectedFiles: [],
-        loading: true,
-      }));
-    }
-
-    case GALLERY.LOAD_FOLDER_SUCCESS: {
-      return deepFreeze(Object.assign({}, state, {
-        folder: action.payload.folder,
-        files: action.payload.files,
-        count: action.payload.count,
-        loading: false,
-      }));
-    }
-
-    case GALLERY.LOAD_FOLDER_FAILURE: {
-      return deepFreeze(Object.assign({}, state, {
-        errorMessage: action.payload.message,
-        loading: false,
-      }));
-    }
-
-    case GALLERY.ADD_FOLDER_REQUEST:
-      return state;
-
-    case GALLERY.ADD_FOLDER_FAILURE:
-      return state;
-
-    case GALLERY.ADD_FOLDER_SUCCESS:
-      return state;
 
     default:
       return state;

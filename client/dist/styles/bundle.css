@@ -1094,6 +1094,15 @@
   max-width:60px;
 }
 
+.gallery__table-image--folder{
+  background-image:url(../images/folder_icon_large.png);
+  background-repeat:no-repeat;
+  background-size:60px auto;
+  background-position:50%;
+  height:68px;
+  width:60px;
+}
+
 .gallery__table-image--error{
   background:#d40404;
   height:68px;

@@ -124,6 +124,15 @@ $gallery-list-thumb-height: 68px;
   max-width: $gallery-list-thumb-width;
 }
 
+.gallery__table-image--folder {
+  background-image: url("../images/folder_icon_large.png");
+  background-repeat: no-repeat;
+  background-size: $gallery-list-thumb-width auto;
+  background-position: center center;
+  height: $gallery-list-thumb-height;
+  width: $gallery-list-thumb-width;
+}
+
 .gallery__table-image--error {
   background: $brand-danger;
   height: $gallery-list-thumb-height;

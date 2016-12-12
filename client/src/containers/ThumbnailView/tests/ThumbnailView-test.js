@@ -4,6 +4,7 @@ jest.unmock('react');
 jest.unmock('../ThumbnailView');
 jest.unmock('components/GalleryItem/GalleryItem');
 jest.unmock('components/AssetDropzone/AssetDropzone');
+
 // mock GriddlePagination because it gives mutation warnings all over the place!
 jest.mock('griddle-react', () => null);
 
@@ -83,7 +84,7 @@ describe('ThumbnailView', () => {
 
   describe('renderPagination()', () => {
     it('should render pagination when the count of items exceed the items per page limit', () => {
-      props.count = 40;
+      props.totalCount = 40;
       props.limit = 15;
       const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
       const pagination = view.renderPagination();
@@ -92,7 +93,7 @@ describe('ThumbnailView', () => {
     });
 
     it('should return null when the count of items equals the items per page limit', () => {
-      props.count = 15;
+      props.totalCount = 15;
       props.limit = 15;
       const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
       const pagination = view.renderPagination();
@@ -101,7 +102,7 @@ describe('ThumbnailView', () => {
     });
 
     it('should return null when the count of items is less than the items per page limit', () => {
-      props.count = 5;
+      props.totalCount = 5;
       props.limit = 15;
       const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
       const pagination = view.renderPagination();

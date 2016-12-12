@@ -15,6 +15,12 @@ function jQuery() {
     trigger() {
       return this;
     },
+    on() {
+      return this;
+    },
+    off() {
+      return this;
+    },
   };
 }
 

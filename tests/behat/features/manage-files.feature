@@ -56,8 +56,12 @@ Feature: Manage files
     Then the ".bulk-actions__action[value='delete']" element should contain "Delete"
       And the ".bulk-actions-counter" element should contain "2"
       And I should not see an ".bulk-actions__action[value='edit']" element
-    When I press the "Delete" button, confirming the dialog
+    When I attach the file "testfile.jpg" to dropzone "gallery-container"
+      And I check the file named "testfile" in the gallery
+    Then the ".bulk-actions-counter" element should contain "3"
+      And I press the "Delete" button, confirming the dialog
       And I wait for 1 second
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
+      And I should not see the file named "testfile" in the gallery
 

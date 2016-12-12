@@ -46,6 +46,7 @@
     "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
   },
   "devDependencies": {
+    "apollo-client": "^0.5.22",
     "autoprefixer": "^6.4.0",
     "babel-core": "^6.7.7",
     "babel-jest": "^11.0.2",
@@ -62,12 +63,15 @@
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "graphql-fragments": "^0.1.0",
+    "graphql-tag": "^0.1.17",
     "jest-cli": "^0.9.2",
     "node-sass": "^3.8.0",
     "npm-shrinkwrap": "^200.4.0",
     "postcss-loader": "^0.10.1",
     "react": "^15.3.1",
     "react-addons-test-utils": "^15.3.1",
+    "react-apollo": "^0.7.1",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.5.2",
