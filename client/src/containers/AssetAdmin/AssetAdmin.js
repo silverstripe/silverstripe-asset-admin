@@ -353,7 +353,9 @@ class AssetAdmin extends SilverStripeComponent {
       }
 
       // redirect to open parent folder if the file/folder is open and on screen to close it
-      this.handleBrowse((file.parent) ? file.parent.id : 0);
+      if (file) {
+        this.handleBrowse((file.parent) ? file.parent.id : 0);
+      }
     });
   }
 
@@ -566,7 +568,7 @@ const readFilesQuery = gql`
           ...FileInterfaceFields
           ...FileFields
           ...on Folder {
-	          children(limit:$limit, offset:$offset, filter: $childrenFilter, sortBy:$sortBy) {
+            children(limit:$limit, offset:$offset, filter: $childrenFilter, sortBy:$sortBy) {
               pageInfo {
                 totalCount
               }

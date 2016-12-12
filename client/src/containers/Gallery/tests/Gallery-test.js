@@ -128,7 +128,7 @@ describe('Gallery', () => {
         { id: 1 },
       ];
 
-      expect(gallery.compareFiles(left, right)).toBeFalsy();
+      expect(gallery.compareFiles(left, right)).toBeTruthy();
     });
 
     it('should find differences on array length', () => {
@@ -140,7 +140,7 @@ describe('Gallery', () => {
         { id: 2 },
       ];
 
-      expect(gallery.compareFiles(left, right)).toBeTruthy();
+      expect(gallery.compareFiles(left, right)).toBeFalsy();
     });
 
     it('should find differences on "id" attribute', () => {
@@ -151,7 +151,7 @@ describe('Gallery', () => {
         { id: 2 },
       ];
 
-      expect(gallery.compareFiles(left, right)).toBeTruthy();
+      expect(gallery.compareFiles(left, right)).toBeFalsy();
     });
   });
 

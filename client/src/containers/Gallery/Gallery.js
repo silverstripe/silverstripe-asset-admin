@@ -89,7 +89,7 @@ class Gallery extends Component {
     // The render() logic will merge queuedFiles into the props.files array
     // until this is called, leaving completed uploads temporarily in the current view,
     // even if they're technically not part of props.files.
-    if (this.compareFiles(this.props.files, nextProps.files)) {
+    if (!this.compareFiles(this.props.files, nextProps.files)) {
       nextProps.actions.queuedFiles.purgeUploadQueue();
     }
 
@@ -207,21 +207,21 @@ class Gallery extends Component {
    *
    * @param {Array} left
    * @param {Array} right
-   * @return {Boolean}
+   * @return {Boolean} isEqual
    */
   compareFiles(left, right) {
     if ((left && !right) || (!left && right)) {
-      return true;
+      return false;
     }
     if (left.length !== right.length) {
-      return true;
+      return false;
     }
     for (let i = 0; i < left.length; i++) {
       if (left[i].id !== right[i].id) {
-        return true;
+        return false;
       }
     }
-    return false;
+    return true;
   }
 
   initSortDropdown() {
