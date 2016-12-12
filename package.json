@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "webpack --bail",
-    "watch": "webpack --watch",
+    "watch": "webpack --config ./webpack-dev.config.js --watch",
     "test": "NODE_PATH=\"./client/src:../framework/client/src:../framework/admin/client/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
@@ -31,6 +31,9 @@
     "testDirectoryName": "tests",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
+      "../framework/node_modules/react",
+      "../framework/node_modules/redux-form",
+      "<rootDir>/node_modules/griddle-react",
       "../framework/node_modules/react",
       "../framework/node_modules/redux-form",
       "../framework/node_modules/react-bootstrap-ss"
@@ -83,6 +86,7 @@
   },
   "dependencies": {
     "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
+    "griddle-react": "^0.7.0",
     "react-addons-css-transition-group": "^15.3.1"
   },
   "babel": {

@@ -39,6 +39,7 @@ module.exports = {
     'components/Breadcrumb/Breadcrumb': 'Breadcrumb',
     'state/schema/SchemaActions': 'SchemaActions',
     'components/FieldHolder/FieldHolder': 'FieldHolder',
+    'lib/DataFormat': 'DataFormat',
     'components/FormBuilderModal/FormBuilderModal': 'FormBuilderModal',
     'components/FormBuilder/FormBuilder': 'FormBuilder',
     'components/Toolbar/Toolbar': 'Toolbar',
@@ -66,7 +67,6 @@ module.exports = {
     'redux-thunk': 'ReduxThunk',
     redux: 'Redux',
   },
-  devtool: 'source-map',
   module: {
     loaders: [
       {

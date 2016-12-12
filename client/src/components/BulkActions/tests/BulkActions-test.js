@@ -1,5 +1,6 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
+jest.unmock('react');
 jest.unmock('../BulkActions.js');
 
 import React from 'react';
@@ -32,7 +33,7 @@ describe('BulkActions', () => {
       const bulkActions = ReactTestUtils.renderIntoDocument(
         <BulkActions {...propsWithItems} />
       );
-      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions_action')
+      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions__action')
         .find(el => el.value === 'action-with-apply');
       expect(matchedBulkAction).toBeTruthy();
     });
@@ -42,7 +43,7 @@ describe('BulkActions', () => {
       const bulkActions = ReactTestUtils.renderIntoDocument(
         <BulkActions {...propsWithItems } />
       );
-      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions_action')
+      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions__action')
         .find(el => el.value === 'action-with-apply');
       expect(matchedBulkAction).toBeFalsy();
     });

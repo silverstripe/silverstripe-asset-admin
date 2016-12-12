@@ -248,11 +248,47 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             }
         }
 
+        $column = 'title';
+        $direction = 'asc';
+        if (isset($params['sort'])) {
+            list($column, $direction) = explode(',', $params['sort']);
+        }
+        $multiplier = ($direction === 'asc') ? 1 : -1;
+
+        usort($items, function ($a, $b) use ($column, $multiplier) {
+            if (!isset($a[$column]) || !isset($b[$column])) {
+                return 0;
+            }
+            if ($a['type'] === 'folder' && $b['type'] !== 'folder') {
+                return -1;
+            }
+            if ($b['type'] === 'folder' && $a['type'] !== 'folder') {
+                return 1;
+            }
+            $numeric = (is_numeric($a[$column]) && is_numeric($b[$column]));
+            $fieldA = ($numeric) ? floatval($a[$column]) : strtolower($a[$column]);
+            $fieldB = ($numeric) ? floatval($b[$column]) : strtolower($b[$column]);
+
+            if ($fieldA < $fieldB) {
+                return $multiplier * -1;
+            }
+
+            if ($fieldA > $fieldB) {
+                return $multiplier;
+            }
+
+            return 0;
+        });
+
+        $page = (isset($params['page'])) ? $params['page'] : 0;
+        $limit = (isset($params['limit'])) ? $params['limit'] : $this->config()->page_length;
+        $filteredItems = array_slice($items, $page * $limit, $limit);
+
         // Build response
         $response = new HTTPResponse();
         $response->addHeader('Content-Type', 'application/json');
         $response->setBody(json_encode([
-            'files' => $items,
+            'files' => $filteredItems,
             'title' => $folder->getTitle(),
             'count' => count($items),
             'parents' => $parents,
@@ -1052,7 +1088,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'name' => $file->Name,
             'filename' => $file->Filename,
             'extension' => $file->Extension,
-            'size' => $file->Size,
+            'size' => $file->AbsoluteSize,
             'url' => $file->AbsoluteURL,
             'published' => $file->isPublished(),
             'modified' => $file->isModifiedOnDraft(),
@@ -1101,6 +1137,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             }
             $object['dimensions']['width'] = $file->Width;
             $object['dimensions']['height'] = $file->Height;
+        } else {
+            $object['thumbnail'] = $file->PreviewLink();
         }
 
         return $object;

@@ -106,14 +106,25 @@ class Editor extends Component {
     />);
   }
 
+  renderCancelButton() {
+    return (<a
+      tabIndex="0"
+      className="btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl"
+      onClick={this.handleClose}
+      onKeyDown={this.handleCancelKeyDown}
+      type="button"
+      aria-label={i18n._t('AssetAdmin.CANCEL')}
+    />);
+  }
+
   render() {
     const formSchemaUrl = `${this.props.editFileSchemaUrl}/${this.props.fileId}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
     const editorClasses = [
       'panel', 'panel--padded', 'panel--scrollable', 'form--no-dividers', 'editor',
     ];
-    if (this.props.dialog) {
-      editorClasses.push('editor--dialog');
+    if (this.props.className) {
+      editorClasses.push(this.props.className);
     }
 
     return (<div className={editorClasses.join(' ')}>
@@ -141,6 +152,7 @@ class Editor extends Component {
 
 Editor.propTypes = {
   dialog: React.PropTypes.bool,
+  className: React.PropTypes.string,
   fileId: React.PropTypes.number.isRequired,
   onClose: React.PropTypes.func.isRequired,
   onSubmit: React.PropTypes.func.isRequired,

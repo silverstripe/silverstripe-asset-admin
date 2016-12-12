@@ -103,8 +103,8 @@ class InsertMediaModal extends Component {
       dialog: true,
       type: this.props.type,
       sectionConfig: this.props.sectionConfig,
-      folderId: this.state.folderId,
-      fileId: this.state.fileId || this.props.fileId,
+      folderId: parseInt(this.state.folderId, 10),
+      fileId: parseInt(this.state.fileId || this.props.fileId, 10),
       query: this.state.query,
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
@@ -152,12 +152,12 @@ class InsertMediaModal extends Component {
    * @param {object|null} newQuery
    */
   handleBrowse(folderId, fileId, newQuery) {
-    let query = newQuery;
-
-    if (newQuery !== null && !newQuery) {
+    let query = {};
+    if (newQuery !== null) {
       query = this.state.query;
-    } else {
-      query = Object.assign({}, this.state.query, newQuery);
+      if (newQuery) {
+        query = Object.assign({}, query, newQuery);
+      }
     }
 
     this.setState({

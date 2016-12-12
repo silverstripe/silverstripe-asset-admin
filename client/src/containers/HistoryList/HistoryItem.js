@@ -45,7 +45,6 @@ class HistoryItem extends SilverStripeComponent {
 HistoryItem.propTypes = {
   versionid: PropTypes.number.isRequired,
   summary: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]).isRequired,
-  id: PropTypes.number.isRequired,
   status: PropTypes.string,
   author: PropTypes.string,
   date: PropTypes.string,

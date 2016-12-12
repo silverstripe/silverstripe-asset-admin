@@ -49,14 +49,14 @@ export function deleteItems(deleteApi, ids) {
 /**
  * Load the contents of a folder from the API
  */
-export function loadFolderContents(listApi, folderId, limit, page) {
+export function loadFolderContents(listApi, folderId, limit, page, sort) {
   return (dispatch) => {
     dispatch({
       type: GALLERY.LOAD_FOLDER_REQUEST,
       payload: { folderId: parseInt(folderId, 10) },
     });
 
-    return listApi({ id: folderId, limit, page })
+    return listApi({ id: folderId, limit, page, sort })
       .then((data) => {
         dispatch({
           type: GALLERY.LOAD_FOLDER_SUCCESS,
@@ -73,14 +73,15 @@ export function loadFolderContents(listApi, folderId, limit, page) {
               // Distinguish between null and 0
               parentID: (data.parentID === null) ? null : parseInt(data.parentID, 10),
             },
-            // TODO Remove once all code is using 'folder' defined above
-            folderId: parseInt(data.folderID, 10),
+            count: data.count,
           },
         });
 
         return data;
       })
       .catch((e) => {
+        // eslint-disable-next-line no-console
+        console.trace(e.message);
         dispatch({
           type: GALLERY.LOAD_FOLDER_FAILURE,
           payload: {
@@ -145,19 +146,6 @@ export function deselectFiles(ids = null) {
     dispatch({
       type: GALLERY.DESELECT_FILES,
       payload: { ids },
-    });
-}
-
-/**
- * Sorts files in some order.
- *
- * @param func comparator - Used to determine the sort order.
- */
-export function sortFiles(comparator) {
-  return (dispatch) =>
-    dispatch({
-      type: GALLERY.SORT_FILES,
-      payload: { comparator },
     });
 }
 

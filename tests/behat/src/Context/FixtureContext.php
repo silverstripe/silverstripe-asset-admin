@@ -15,52 +15,48 @@ class FixtureContext extends BaseFixtureContext
     /**
      * Select a gallery item by type and name
      *
-     * @Given /^I (?:(?:click on)|(?:select)) the "([^"]+)" named "([^"]+)" in the gallery$/
-     * @param string $type
+     * @Given /^I (?:(?:click on)|(?:select)) the file named "([^"]+)" in the gallery$/
      * @param string $name
      */
-    public function stepISelectGalleryItem($type, $name)
+    public function stepISelectGalleryItem($name)
     {
-        $item = $this->getGalleryItem($type, $name);
-        assertNotNull($item, ucfirst($type) . " named $name could not be found");
+        $item = $this->getGalleryItem($name);
+        assertNotNull($item, "File named $name could not be found");
         $item->click();
     }
 
     /**
      * Check the checkbox for a given gallery item
-     * @Given /^I check the "([^"]+)" named "([^"]+)" in the gallery$/
-     * @param string $type
+     * @Given /^I check the file named "([^"]+)" in the gallery$/
      * @param string $name
      */
-    public function stepICheckTheGalleryItem($type, $name)
+    public function stepICheckTheGalleryItem($name)
     {
-        $item = $this->getGalleryItem($type, $name);
-        assertNotNull($item, ucfirst($type) . " named $name could not be found");
+        $item = $this->getGalleryItem($name);
+        assertNotNull($item, "File named $name could not be found");
         $checkbox = $item->find('css', 'input[type="checkbox"]');
         assertNotNull($checkbox, "Could not find checkbox for file named {$name}");
         $checkbox->check();
     }
 
     /**
-     * @Then /^I should see the "([^"]+)" named "([^"]+)" in the gallery$/
-     * @param $type
-     * @param $name
+     * @Then /^I should see the file named "([^"]+)" in the gallery$/
+     * @param string $name
      */
-    public function iShouldSeeTheGalleryItem($type, $name)
+    public function iShouldSeeTheGalleryItem($name)
     {
-        $item = $this->getGalleryItem($type, $name);
-        assertNotNull($item, ucfirst($type) . " named {$name} could not be found");
+        $item = $this->getGalleryItem($name);
+        assertNotNull($item, "File named {$name} could not be found");
     }
 
     /**
-     * @Then /^I should not see the "([^"]+)" named "([^"]+)" in the gallery$/
-     * @param $type
-     * @param $name
+     * @Then /^I should not see the file named "([^"]+)" in the gallery$/
+     * @param string $name
      */
-    public function iShouldNotSeeTheGalleryItem($type, $name)
+    public function iShouldNotSeeTheGalleryItem($name)
     {
-        $item = $this->getGalleryItem($type, $name, 0);
-        assertNull($item, ucfirst($type) . " named {$name} was found when it should not be visible");
+        $item = $this->getGalleryItem($name, 0);
+        assertNull($item, "File named {$name} was found when it should not be visible");
     }
 
     /**
@@ -145,20 +141,32 @@ EOS
     /**
      * Helper for finding items in the visible gallery view
      *
-     * @param string $type type. E.g. 'folder', 'image'
      * @param string $name Title of item
      * @param int $timeout
      * @return NodeElement
      */
-    protected function getGalleryItem($type, $name, $timeout = 3)
+    protected function getGalleryItem($name, $timeout = 3)
     {
         /** @var DocumentElement $page */
         $page = $this->getSession()->getPage();
-        return $this->retry(function () use ($page, $type, $name) {
-            return $page->find(
+        return $this->retry(function () use ($page, $name) {
+            // Find by cell
+            $cell = $page->find(
                 'xpath',
-                "//div[contains(@class, 'gallery-item--{$type}')]//div[contains(text(), '{$name}')]"
+                "//div[contains(@class, 'gallery-item')]//div[contains(text(), '{$name}')]"
             );
+            if ($cell) {
+                return $cell;
+            }
+            // Find by row
+            $row = $page->find(
+                'xpath',
+                "//tr[contains(@class, 'gallery__table-row')]//div[contains(text(), '{$name}')]"
+            );
+            if ($row) {
+                return $row;
+            }
+            return null;
         }, $timeout);
     }
 

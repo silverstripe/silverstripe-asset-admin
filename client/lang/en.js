@@ -88,6 +88,8 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetGalleryField.TYPE": "File type",
     "AssetGalleryField.URL": "URL",
     "Folder.Name": "Folder name",
-    "HTMLEditorField_Toolbar.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files"
+    "HTMLEditorField_Toolbar.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
+    "Pagination.NEXT": "Next",
+    "Pagination.PREVIOUS": "Previous"
 });
 }

@@ -8,8 +8,7 @@ class GalleryItem extends SilverStripeComponent {
   constructor(props) {
     super(props);
 
-    this.handleToggleSelect = this.handleToggleSelect.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
     this.handleActivate = this.handleActivate.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
@@ -17,35 +16,28 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   /**
-   * Wrapper around this.props.handleActivate
+   * Wrapper around this.props.onActivate
    *
    * @param {Object} event - Event object.
    */
   handleActivate(event) {
     event.stopPropagation();
-    this.props.handleActivate(event, this.props.item);
-  }
-
-  /**
-   * Wrapper around this.props.handleToggleSelect
-   *
-   * @param {Object} event Event object.
-   */
-  handleToggleSelect(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    if (typeof this.props.handleToggleSelect === 'function') {
-      this.props.handleToggleSelect(event, this.props.item);
+    if (typeof this.props.onActivate === 'function') {
+      this.props.onActivate(event, this.props.item);
     }
   }
 
   /**
-   * Wrapper around this.props.handleDelete
+   * Wrapper around this.props.onSelect
    *
    * @param {Object} event Event object.
    */
-  handleDelete(event) {
-    this.props.handleDelete(event, this.props.item);
+  handleSelect(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    if (typeof this.props.onSelect === 'function') {
+      this.props.onSelect(event, this.props.item);
+    }
   }
 
   /**
@@ -135,12 +127,12 @@ class GalleryItem extends SilverStripeComponent {
     if (this.props.selectable) {
       itemClassNames.push('gallery-item--selectable');
 
-      if (this.props.selected) {
+      if (this.props.item.selected) {
         itemClassNames.push('gallery-item--selected');
       }
     }
 
-    if (this.props.highlighted) {
+    if (this.props.item.highlighted) {
       itemClassNames.push('gallery-item--highlighted');
     }
 
@@ -151,6 +143,11 @@ class GalleryItem extends SilverStripeComponent {
     return itemClassNames.join(' ');
   }
 
+  /**
+   * Get flags for statuses that apply to this item
+   *
+   * @returns {Array}
+   */
   getStatusFlags() {
     const flags = [];
     if (this.props.item.type !== 'folder') {
@@ -189,8 +186,13 @@ class GalleryItem extends SilverStripeComponent {
     return this.props.item.exists;
   }
 
+  /**
+   * Validate that the file is in upload progress
+   *
+   * @returns {boolean}
+   */
   uploading() {
-    return this.props.uploading;
+    return this.props.item.uploading;
   }
 
   /**
@@ -213,6 +215,8 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   /**
+   * To capture keyboard actions, such as selecting or activating an item
+   *
    * @param {Object} event
    */
   handleKeyDown(event) {
@@ -221,7 +225,7 @@ class GalleryItem extends SilverStripeComponent {
     // If space is pressed, select file
     if (CONSTANTS.SPACE_KEY_CODE === event.keyCode) {
       event.preventDefault(); // Stop page scrolling if spaceKey is pressed
-      this.handleToggleSelect(event);
+      this.handleSelect(event);
     }
 
     // If return is pressed, navigate folder
@@ -239,6 +243,11 @@ class GalleryItem extends SilverStripeComponent {
     event.preventDefault();
   }
 
+  /**
+   * Callback for cancelling or removing (if failed) this item when it's still uploading.
+   *
+   * @param event
+   */
   handleCancelUpload(event) {
     event.stopPropagation();
 
@@ -281,7 +290,7 @@ class GalleryItem extends SilverStripeComponent {
     let overlay = null;
 
     if (this.props.selectable) {
-      action = this.handleToggleSelect;
+      action = this.handleSelect;
       actionIcon = 'font-icon-tick';
     }
 
@@ -335,16 +344,16 @@ GalleryItem.propTypes = {
   // Can be used to highlight a currently edited file
   highlighted: PropTypes.bool,
   // Styles according to the checkbox selection state
-  selected: PropTypes.bool.isRequired,
-  handleActivate: PropTypes.func.isRequired,
-  handleToggleSelect: PropTypes.func,
-  handleDelete: PropTypes.func.isRequired,
+  selected: PropTypes.bool,
   message: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,
   }),
-  uploading: PropTypes.bool,
   selectable: PropTypes.bool,
+  onActivate: PropTypes.func,
+  onSelect: PropTypes.func,
+  onCancelUpload: PropTypes.func,
+  onRemoveErroredUpload: PropTypes.func,
 };
 
 export default GalleryItem;

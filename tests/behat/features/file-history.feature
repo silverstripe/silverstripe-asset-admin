@@ -9,8 +9,8 @@ Feature: View File History
       And a "image" "folder1/file2.jpg"
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/assets"
-      And I select the "folder" named "folder1" in the gallery
-      And I click on the "image" named "file1" in the gallery
+      And I select the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
 
   @javascript
   Scenario: I view the history of a file
@@ -24,4 +24,5 @@ Feature: View File History
       And I fill in "Test 1" for "Form_fileEditForm_Title"
       And I press the "Save" button
       And I click "History" in the "#Editor .nav-tabs" element
+      And I wait for 3 seconds
     Then I should see "Updated title to Test 1" in the ".file-history__list" element
