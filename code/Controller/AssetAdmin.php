@@ -8,6 +8,7 @@ use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\AssetAdmin\BatchAction\DeleteAssets;
 use SilverStripe\AssetAdmin\Forms\AssetFormFactory;
+use SilverStripe\AssetAdmin\Forms\FileSearchFormFactory;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
@@ -103,6 +104,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'fileInsertForm',
         'schema',
         'fileSelectForm',
+        'fileSearchForm',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -161,7 +163,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ],
                 'fileHistoryForm' => [
                     'schemaUrl' => $this->Link('schema/fileHistoryForm')
-                ]
+                ],
+                'fileSearchForm' => [
+                    'schemaUrl' => $this->Link('schema/fileSearchForm')
+                ],
             ],
         ]);
     }
@@ -967,17 +972,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     protected function getList($params = array())
     {
-        $context = $this->getSearchContext();
-
-        // Overwrite name filter to search both Name and Title attributes
-        $context->removeFilterByName('Name');
-
-        // Lazy loaded list. Allows adding new filters through SearchContext.
         /** @var DataList $list */
-        $list = $context->getResults($params);
+        $list = File::get();
 
         // Re-add previously removed "Name" filter as combined filter
-        // TODO Replace with composite SearchFilter once that API exists
         if (!empty($params['Name'])) {
             $list = $list->filterAny(array(
                 'Name:PartialMatch' => $params['Name'],
@@ -986,7 +984,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Optionally limit search to a folder (non-recursive)
-        if (!empty($params['ParentID']) && is_numeric($params['ParentID'])) {
+        if (isset($params['ParentID']) && is_numeric($params['ParentID'])) {
             $list = $list->filter('ParentID', $params['ParentID']);
         }
 
@@ -1001,9 +999,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Categories
-        if (!empty($filters['AppCategory']) && !empty(File::config()->app_categories[$filters['AppCategory']])) {
-            $extensions = File::config()->app_categories[$filters['AppCategory']];
-            $list = $list->filter('Name:PartialMatch', $extensions);
+        $categories = File::config()->app_categories;
+        if (!empty($filters['AppCategory']) && !empty($categories[$filters['AppCategory']])) {
+            $extensions = $categories[$filters['AppCategory']];
+            $list = $list->filter('Name:EndsWith', $extensions);
         }
 
         // Sort folders first
@@ -1130,5 +1129,27 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $schemaData = ['record' => $this->getObjectFromData($record)];
         $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $record->ID);
         return $this->getSchemaResponse($schemaId, $form, null, $schemaData);
+    }
+
+    /**
+     * Scaffold a search form.
+     * Note: This form does not submit to itself, but rather uses the apiSearch endpoint
+     * (to be replaced with graphql)
+     *
+     * @return Form
+     */
+    public function fileSearchForm()
+    {
+        $scaffolder = FileSearchFormFactory::singleton();
+        return $scaffolder->getForm($this, 'fileSearchForm', []);
+    }
+
+    /**
+     * Allow search form to be accessible to schema
+     *
+     * @return Form
+     */
+    public function getFileSearchform() {
+        return $this->fileSearchForm();
     }
 }

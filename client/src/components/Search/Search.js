@@ -1,5 +1,6 @@
-import React, {PropTypes} from 'react';
+import React, { PropTypes } from 'react';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
+import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 
 class Search extends SilverStripeComponent {
   render() {
@@ -33,13 +34,15 @@ class Search extends SilverStripeComponent {
 
           {/* TEMP Filter panel start */}
           <div id="collapseExample2" className="collapse search__filter-panel">
+            <FormBuilderLoader schemaUrl={this.props.searchFormSchemaUrl} />
+
             <form className="form--no-dividers">
               <fieldset>
                 <div className="form-group field dropdown">
                   <label className="form__field-label">File type</label>
                   <div className="form__field-holder">
                     <select>
-                      <option selected="selected">Any
+                      <option>Any
                       </option>
                       <option>Example
                       </option>
@@ -93,6 +96,7 @@ class Search extends SilverStripeComponent {
 }
 
 Search.propTypes = {
+  searchFormSchemaUrl: PropTypes.string,
   id: PropTypes.string,
 };
 

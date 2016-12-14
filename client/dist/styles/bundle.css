@@ -800,11 +800,11 @@
   }
 }
 
-.search .CompositeField>.form__field-label{
+.search .fieldgroup>.form__field-label{
   margin-bottom:0;
 }
 
-.search .CompositeField>.field--small{
+.search .fieldgroup>.field--small{
   margin-top:0;
 }
 

@@ -410,12 +410,12 @@ class AssetAdmin extends SilverStripeComponent {
 
   render() {
     const showBackButton = !!(this.props.folder && this.props.folder.id);
-
+    const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
     return (
       <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           {this.props.toolbarChildren}
-          <Search />
+          <Search searchFormSchemaUrl={searchFormSchemaUrl} />
           <Breadcrumb multiline />
         </Toolbar>
         <div className="flexbox-area-grow fill-width fill-height gallery">
@@ -465,7 +465,10 @@ AssetAdmin.propTypes = {
   }),
   loading: PropTypes.bool,
   // Enables custom components to inject additional header buttons (e.g. close modal)
-  toolbarChildren: PropTypes.oneOf(PropTypes.array, PropTypes.object),
+  toolbarChildren: PropTypes.oneOf([
+    PropTypes.array,
+    PropTypes.object,
+  ]),
 };
 
 AssetAdmin.defaultProps = {
