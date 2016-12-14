@@ -346,7 +346,7 @@ class AssetAdmin extends SilverStripeComponent {
         break;
     }
 
-    if (!this.props.fileId) {
+    if (!this.props.fileId || this.props.files.length === 0) {
       return null;
     }
 

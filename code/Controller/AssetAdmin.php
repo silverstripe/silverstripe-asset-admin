@@ -40,6 +40,7 @@ use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\View\Requirements;
 use SilverStripe\ORM\Versioning\Versioned;
+use Exception;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -63,6 +64,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // API access points with structured data
         'POST api/createFolder' => 'apiCreateFolder',
         'POST api/createFile' => 'apiCreateFile',
+        'POST api/uploadFile' => 'apiUploadFile',
         'GET api/readFolder' => 'apiReadFolder',
         'PUT api/updateFolder' => 'apiUpdateFolder',
         'DELETE api/delete' => 'apiDelete',
@@ -99,6 +101,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'legacyRedirectForEditView',
         'apiCreateFolder',
         'apiCreateFile',
+        'apiUploadFile',
         'apiReadFolder',
         'apiUpdateFolder',
         'apiHistory',
@@ -167,10 +170,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'method' => 'delete',
                 'payloadFormat' => 'urlencoded',
             ],
+            'uploadFileEndpoint' => [
+                'url' => Controller::join_links($baseLink, 'api/uploadFile'),
+                'method' => 'post',
+                'payloadFormat' => 'urlencoded',
+            ],
             'historyEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/history'),
                 'method' => 'get',
-                'responseFormat' => 'json'
+                'responseFormat' => 'json',
             ],
             'limit' => $this->config()->page_length,
             'form' => [
@@ -447,7 +455,72 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return (new HTTPResponse(json_encode($result)))
             ->addHeader('Content-Type', 'application/json');
     }
-
+    
+    /**
+     * Creates a single file based on a form-urlencoded upload.
+     *
+     * @param HTTPRequest $request
+     * @return HTTPRequest|HTTPResponse
+     */
+    public function apiUploadFile(HTTPRequest $request) {
+        $data = $request->postVars();
+        $upload = $this->getUpload();
+        
+        // CSRF check
+        $token = SecurityToken::inst();
+        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
+            return new HTTPResponse(null, 400);
+        }
+    
+        // Check parent record
+        /** @var Folder $parentRecord */
+        $parentRecord = null;
+        if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
+            $parentRecord = Folder::get()->byID($data['ParentID']);
+        }
+    
+        $tmpFile = $data['Upload'];
+        if(!$upload->validate($tmpFile)) {
+            $result = ['message' => null];
+            $errors = $upload->getErrors();
+            if ($message = array_shift($errors)) {
+                $result['message'] = [
+                    'type' => 'error',
+                    'value' => $message,
+                ];
+            }
+            return (new HTTPResponse(json_encode($result), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+    
+        $folder = $parentRecord ? $parentRecord->getFilename() : '/';
+    
+        try {
+            $tuple = $upload->load($tmpFile, $folder);
+        } catch (Exception $e) {
+            $result = [
+                'message' => [
+                    'type' => 'error',
+                    'value' => $e->getMessage(),
+                ]
+            ];
+            return (new HTTPResponse(json_encode($result), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+        
+        if ($upload->isError()) {
+            $result['message'] = [
+                'type' => 'error',
+                'value' => implode(' ' . PHP_EOL, $upload->getErrors()),
+            ];
+            return (new HTTPResponse(json_encode($result), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+        
+        return (new HTTPResponse(json_encode($tuple)))
+            ->addHeader('Content-Type', 'application/json');
+    }
+    
     /**
      * Returns a JSON array for history of a given file ID. Returns a list of all the history.
      *
@@ -1019,7 +1092,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $id = (int) $data['ID'];
         /** @var File $record */
-        $record = $this->getList()->filter('ID', $id)->first();
+        $record = DataObject::get_by_id(File::class, $id);
 
         if (!$record) {
             return (new HTTPResponse(json_encode(['status' => 'error']), 404))
@@ -1052,7 +1125,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $id = (int) $data['ID'];
         /** @var File $record */
-        $record = $this->getList()->filter('ID', $id)->first();
+        $record = DataObject::get_by_id(File::class, $id);
 
         if (!$record) {
             return (new HTTPResponse(json_encode(['status' => 'error']), 404))

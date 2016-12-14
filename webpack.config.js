@@ -39,6 +39,7 @@ module.exports = {
     'components/Breadcrumb/Breadcrumb': 'Breadcrumb',
     'state/schema/SchemaActions': 'SchemaActions',
     'components/FieldHolder/FieldHolder': 'FieldHolder',
+    'components/LiteralField/LiteralField': 'LiteralField',
     'lib/DataFormat': 'DataFormat',
     'lib/schemaFieldValues': 'schemaFieldValues',
     'components/FormBuilderModal/FormBuilderModal': 'FormBuilderModal',

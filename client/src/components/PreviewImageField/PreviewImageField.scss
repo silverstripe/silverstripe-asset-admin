@@ -1,0 +1,52 @@
+.preview__container {
+  position: relative;
+}
+
+.preview__toolbar {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  height: auto;
+  max-height: 100%;
+  background: $black;
+  opacity: 0.55;
+  color: $white;
+  border-bottom-left-radius: $border-radius;
+  border-top-left-radius: $border-radius;
+}
+
+.preview__toolbar-button--link:before {
+  content: "\3d";
+}
+
+.preview__toolbar-button--replace:before {
+  content: "\62";
+}
+
+.preview__toolbar-button {
+  padding: $toolbar-button-padding;
+  height: $toolbar-button-height + (2 * $toolbar-button-padding);
+  width: $toolbar-button-width + (2 * $toolbar-button-padding);
+  overflow: hidden;
+  color: $white;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: darken($white, 30%);
+    text-decoration: none;
+  }
+
+  &:before {
+    margin-right: $toolbar-button-padding;
+    font-family: "silverstripe";
+    font-style: normal;
+    speak: none;
+    line-height: 1;
+    font-size: $toolbar-button-height;
+    height: $toolbar-button-height;
+    width: $toolbar-button-width;
+    vertical-align: middle;
+  }
+}

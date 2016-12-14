@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
-import { fileSize } from 'lib/DataFormat';
 import $ from 'jQuery';
 
 let idCounter = 0;
@@ -326,7 +325,7 @@ class AssetDropzone extends SilverStripeComponent {
         category: this.getFileCategory(file.type),
         filename: file.name,
         queuedId: file._queuedId,
-        size: fileSize(file.size),
+        size: file.size,
         title: this.getFileTitle(file.name),
         extension: this.getFileExtension(file.name),
         type: file.type,

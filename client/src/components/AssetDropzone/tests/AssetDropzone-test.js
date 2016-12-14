@@ -125,7 +125,7 @@ describe('AssetDropzone', () => {
         .then((details) => {
           expect(uploadProps.handleAddedFile).toBeCalled();
           expect(item.dropzone.processFile).toBeCalled();
-          expect(details.size).toBe('123 bytes');
+          expect(details.size).toBe(123);
           expect(details.title).toBe('Test file');
           expect(details.url).toBeUndefined();
         })
