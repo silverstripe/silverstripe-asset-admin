@@ -1,3 +1,4 @@
+import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -105,6 +106,7 @@ class InsertMediaModal extends Component {
     return {
       dialog: true,
       type: this.props.type,
+      toolbarChildren: this.renderToolbarChildren(),
       sectionConfig: this.props.sectionConfig,
       folderId: parseInt(this.state.folderId, 10),
       fileId: parseInt(this.state.fileId || this.props.fileId, 10),
@@ -124,7 +126,6 @@ class InsertMediaModal extends Component {
       {},
       this.props,
       {
-        handleHide: this.props.onHide,
         className: `insert-media-modal ${this.props.className}`,
         bsSize: 'lg',
         onHide: undefined,
@@ -168,6 +169,19 @@ class InsertMediaModal extends Component {
       fileId,
       query,
     });
+  }
+
+  renderToolbarChildren() {
+    return (
+      <button
+        type="button"
+        className="btn btn-secondary close insert-media-modal__close-button"
+        onClick={this.props.onHide}
+        aria-label={i18n._t('FormBuilderModal.CLOSE', 'Close')}
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    );
   }
 
   render() {

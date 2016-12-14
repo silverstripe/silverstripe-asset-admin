@@ -1566,6 +1566,18 @@
   height:calc(100vh - 106px);
 }
 
+.insert-media-modal__close-button{
+  float:right;
+  height:32px;
+  margin:10px -10px 10px 10px;
+}
+
+.insert-media-modal__close-button span{
+  overflow:hidden;
+  display:block;
+  margin-top:-7px;
+}
+
 .history-item{
   padding-top:1rem;
 }
