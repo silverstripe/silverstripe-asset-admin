@@ -30,6 +30,7 @@ class PreviewImageField extends Component {
       method: endpoint && endpoint.method,
       paramName: 'Upload',
       clickable: '#preview-replace-button',
+      maxFiles: 1,
     };
     const preview = {
       height: CONSTANTS.THUMBNAIL_HEIGHT,
@@ -93,6 +94,11 @@ class PreviewImageField extends Component {
     this.props.actions.previewField.removeFile(this.props.id);
   }
 
+  /**
+   * Handles when a file is added to this field.
+   *
+   * @param {object} data
+   */
   handleAddedFile(data) {
     this.props.actions.previewField.addFile(this.props.id, data);
   }

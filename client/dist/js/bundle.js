@@ -185,7 +185,7 @@ var d=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=argum
 for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},c=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
 r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),f=n(18),h=o(f),m=n(9),g=o(m),y=n(3),v=o(y),b=n(19),C=o(b),E=n(20),_=o(E),S=n(21),w=o(S),P=n(5),x=n(4),F=n(22),I=o(F),T=n(25),A=o(T),O=n(26),D=o(O),k=n(270),R=o(k),N=n(14),L=o(N),U=n(10),j=r(U),M=n(272),H=r(M),B=[{
 field:"title",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_ASC","title a-z")},{field:"title",direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_TITLE_DESC","title z-a")},{field:"created",
-direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_DATE_DESC","newest")},{field:"created",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_DATE_ASC","oldest")}],G=function(e){function t(e){
+direction:"desc",label:g["default"]._t("AssetAdmin.FILTER_DATE_DESC","newest")},{field:"created",direction:"asc",label:g["default"]._t("AssetAdmin.FILTER_DATE_ASC","oldest")}],z=function(e){function t(e){
 s(this,t)
 var n=a(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleOpenFolder=n.handleOpenFolder.bind(n),n.handleOpenFile=n.handleOpenFile.bind(n),n.handleSelect=n.handleSelect.bind(n),n.handleSelectSort=n.handleSelectSort.bind(n),n.handleAddedFile=n.handleAddedFile.bind(n),
@@ -213,7 +213,7 @@ var n=t.pop()
 this.props.onOpenFile(n.id)}}},{key:"handleFailedUpload",value:function N(e,t){this.props.actions.queuedFiles.failUpload(e._queuedId,t)}},{key:"promptFolderName",value:function U(){return prompt(g["default"]._t("AssetAdmin.PROMPTFOLDERNAME"))
 
 }},{key:"itemIsSelected",value:function j(e){return this.props.selectedFiles.indexOf(e)>-1}},{key:"itemIsHighlighted",value:function M(e){return this.props.fileId===e}},{key:"handleOpenFolder",value:function H(e,t){
-e.preventDefault(),this.props.onOpenFolder(t.id)}},{key:"handleOpenFile",value:function G(e,t){e.preventDefault(),null!==t.created&&this.props.onOpenFile(t.id,t)}},{key:"handleSelect",value:function z(e,t){
+e.preventDefault(),this.props.onOpenFolder(t.id)}},{key:"handleOpenFile",value:function z(e,t){e.preventDefault(),null!==t.created&&this.props.onOpenFile(t.id,t)}},{key:"handleSelect",value:function G(e,t){
 this.props.selectedFiles.indexOf(t.id)===-1?this.props.actions.gallery.selectFiles([t.id]):this.props.actions.gallery.deselectFiles([t.id])}},{key:"handleBackClick",value:function q(e){e.preventDefault(),
 this.props.onOpenFolder(this.props.folder.parentID)}},{key:"handleViewChange",value:function V(e){var t=e.currentTarget.value
 this.props.onViewChange(t)}},{key:"renderSort",value:function W(){var e=this
@@ -248,16 +248,16 @@ var e={height:L["default"].THUMBNAIL_HEIGHT,width:L["default"].THUMBNAIL_WIDTH},
 
 return"insert"===this.props.type&&o.push("insert-media-modal__main"),v["default"].createElement("div",{className:"flexbox-area-grow gallery__outer"},this.renderBulkActions(),v["default"].createElement(I["default"],{
 canUpload:r,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,
-preview:e,folderId:this.props.folderId,options:t,securityID:n,uploadButton:!1},v["default"].createElement("div",{className:o.join(" ")},this.renderToolbar(),this.renderGalleryView())))}}]),t}(y.Component),z={
+preview:e,folderId:this.props.folderId,options:t,securityID:n,uploadButton:!1},v["default"].createElement("div",{className:o.join(" ")},this.renderToolbar(),this.renderGalleryView())))}}]),t}(y.Component),G={
 page:0,limit:15,sort:B[0].field+","+B[0].direction},q={loading:y.PropTypes.bool,sort:y.PropTypes.string,files:y.PropTypes.arrayOf(y.PropTypes.shape({id:y.PropTypes.number,parent:y.PropTypes.shape({id:y.PropTypes.number
 })})).isRequired,count:y.PropTypes.number,page:y.PropTypes.number,limit:y.PropTypes.number,onOpenFile:y.PropTypes.func.isRequired,onOpenFolder:y.PropTypes.func.isRequired,onSort:y.PropTypes.func.isRequired,
-onSetPage:y.PropTypes.func.isRequired},V=d({},z,{selectableItems:!1}),W=d({},q,{selectableItems:y.PropTypes.bool,onSelect:y.PropTypes.func,onCancelUpload:y.PropTypes.func,onRemoveErroredUpload:y.PropTypes.func,
+onSetPage:y.PropTypes.func.isRequired},V=d({},G,{selectableItems:!1}),W=d({},q,{selectableItems:y.PropTypes.bool,onSelect:y.PropTypes.func,onCancelUpload:y.PropTypes.func,onRemoveErroredUpload:y.PropTypes.func,
 renderNoItemsNotice:y.PropTypes.func.isRequired})
-G.defaultProps=d({},z,{type:"admin",view:"tile"}),G.propTypes=d({},q,{type:y.PropTypes.oneOf(["insert","select","admin"]),view:y.PropTypes.oneOf(["tile","table"]),dialog:y.PropTypes.bool,fileId:y.PropTypes.number,
+z.defaultProps=d({},G,{type:"admin",view:"tile"}),z.propTypes=d({},q,{type:y.PropTypes.oneOf(["insert","select","admin"]),view:y.PropTypes.oneOf(["tile","table"]),dialog:y.PropTypes.bool,fileId:y.PropTypes.number,
 folderId:y.PropTypes.number.isRequired,folder:y.PropTypes.shape({id:y.PropTypes.number,parentID:y.PropTypes.number,canView:y.PropTypes.bool,canEdit:y.PropTypes.bool}),queuedFiles:y.PropTypes.shape({items:y.PropTypes.array.isRequired
 }),selectedFiles:y.PropTypes.arrayOf(y.PropTypes.number),errorMessage:y.PropTypes.string,actions:y.PropTypes.object.isRequired,securityId:y.PropTypes.string,onViewChange:y.PropTypes.func.isRequired,createFileApiUrl:y.PropTypes.string,
-createFileApiMethod:y.PropTypes.string,createFolderApi:y.PropTypes.func,readFolderApi:y.PropTypes.func,deleteApi:y.PropTypes.func}),t.Gallery=G,t.sorters=B,t.galleryViewPropTypes=W,t.galleryViewDefaultProps=V,
-t["default"]=(0,P.connect)(u,p)(G)},function(e,t){e.exports=jQuery},function(e,t){e.exports=ReactDom},function(e,t){e.exports=ReactAddonsTestUtils},function(e,t){e.exports=ReactAddonsCssTransitionGroup
+createFileApiMethod:y.PropTypes.string,createFolderApi:y.PropTypes.func,readFolderApi:y.PropTypes.func,deleteApi:y.PropTypes.func}),t.Gallery=z,t.sorters=B,t.galleryViewPropTypes=W,t.galleryViewDefaultProps=V,
+t["default"]=(0,P.connect)(u,p)(z)},function(e,t){e.exports=jQuery},function(e,t){e.exports=ReactDom},function(e,t){e.exports=ReactAddonsTestUtils},function(e,t){e.exports=ReactAddonsCssTransitionGroup
 
 },function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{"default":e}}function o(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
@@ -303,6 +303,9 @@ this.props.canUpload&&e.target===t&&(this.dragging=!1,this.forceUpdate(),"functi
 }},{key:"handleSending",value:function S(e,t,n){n.append("SecurityID",this.props.securityID),n.append("ParentID",this.props.folderId),"function"==typeof this.props.handleSending&&this.props.handleSending(e,t,n)
 
 }},{key:"generateQueuedId",value:function w(){return++_}},{key:"handleAddedFile",value:function P(e){var t=this
+if(this.props.options.maxFiles&&this.dropzone.files.length>this.props.options.maxFiles)return this.dropzone.removeFile(this.dropzone.files[0]),void("function"==typeof this.props.handleMaxFilesExceeded&&this.props.handleMaxFilesExceeded(e))
+
+
 if(!this.props.canUpload)return Promise.reject(new Error(y["default"]._t("AssetAdmin.DROPZONE_CANNOT_UPLOAD")))
 e._queuedId=this.generateQueuedId()
 var n=new Promise(function(n){var r=new FileReader
@@ -318,12 +321,11 @@ var l=t.toDataURL("image/png")
 r({width:e.naturalWidth,height:e.naturalHeight,thumbnailURL:l})},e.src=t})}},{key:"handleError",value:function T(e,t){"function"==typeof this.props.handleError&&this.props.handleError(e,t)}},{key:"handleSuccess",
 value:function A(e){this.props.handleSuccess(e)}},{key:"setPromptOnRemove",value:function O(e){this.dropzone.options.dictRemoveFileConfirmation=e}}]),t}(m["default"])
 S.propTypes={folderId:d["default"].PropTypes.number.isRequired,handleAddedFile:d["default"].PropTypes.func.isRequired,handleDragEnter:d["default"].PropTypes.func,handleDragLeave:d["default"].PropTypes.func,
-handleDrop:d["default"].PropTypes.func,handleError:d["default"].PropTypes.func.isRequired,handleSending:d["default"].PropTypes.func,handleSuccess:d["default"].PropTypes.func.isRequired,options:d["default"].PropTypes.shape({
-url:d["default"].PropTypes.string.isRequired}),promptOnRemove:d["default"].PropTypes.string,securityID:d["default"].PropTypes.string.isRequired,uploadButton:d["default"].PropTypes.bool,uploadSelector:d["default"].PropTypes.string,
-canUpload:d["default"].PropTypes.bool.isRequired,preview:d["default"].PropTypes.shape({width:d["default"].PropTypes.number,height:d["default"].PropTypes.number}),className:d["default"].PropTypes.string
-},S.defaultProps={uploadButton:!0},t["default"]=S},function(e,t,n){(function(e,t){(function(){var n,r,o,i,s,a,l,u,p=[].slice,d={}.hasOwnProperty,c=function(e,t){function n(){this.constructor=e}for(var r in t)d.call(t,r)&&(e[r]=t[r])
-
-
+handleDrop:d["default"].PropTypes.func,handleError:d["default"].PropTypes.func.isRequired,handleSending:d["default"].PropTypes.func,handleSuccess:d["default"].PropTypes.func.isRequired,handleMaxFilesExceeded:d["default"].PropTypes.func,
+options:d["default"].PropTypes.shape({url:d["default"].PropTypes.string.isRequired}),promptOnRemove:d["default"].PropTypes.string,securityID:d["default"].PropTypes.string.isRequired,uploadButton:d["default"].PropTypes.bool,
+uploadSelector:d["default"].PropTypes.string,canUpload:d["default"].PropTypes.bool.isRequired,preview:d["default"].PropTypes.shape({width:d["default"].PropTypes.number,height:d["default"].PropTypes.number
+}),className:d["default"].PropTypes.string},S.defaultProps={uploadButton:!0},t["default"]=S},function(e,t,n){(function(e,t){(function(){var n,r,o,i,s,a,l,u,p=[].slice,d={}.hasOwnProperty,c=function(e,t){
+function n(){this.constructor=e}for(var r in t)d.call(t,r)&&(e[r]=t[r])
 return n.prototype=t.prototype,e.prototype=new n,e.__super__=t.prototype,e}
 l=function(){},r=function(){function e(){}return e.prototype.addEventListener=e.prototype.on,e.prototype.on=function(e,t){return this._callbacks=this._callbacks||{},this._callbacks[e]||(this._callbacks[e]=[]),
 this._callbacks[e].push(t),this},e.prototype.emit=function(){var e,t,n,r,o,i
@@ -678,8 +680,8 @@ else{var r={}
 r[t]=e,n=O({},n,r)}this.filterByColumnFilters(n)},setFilter:function B(e){if(this.props.useExternal)return void this.props.externalSetFilter(e)
 var t=this,n={page:0,filter:e}
 n.filteredResults=this.props.useCustomFilterer?this.props.customFilterer(this.props.results,e):this.defaultFilter(this.props.results,e),n.maxPage=t.getMaxPage(n.filteredResults),(I(e)||F(e)||x(e))&&(n.filter=e,
-n.filteredResults=null),t.setState(n),this._resetSelectedRows()},setPageSize:function G(e){return this.props.useExternal?(this.setState({resultsPerPage:e}),void this.props.externalSetPageSize(e)):(this.state.resultsPerPage=e,
-void this.setMaxPage())},toggleColumnChooser:function z(){this.setState({showColumnChooser:!this.state.showColumnChooser})},isNullOrUndefined:function q(e){return void 0===e||null===e},shouldUseCustomRowComponent:function V(){
+n.filteredResults=null),t.setState(n),this._resetSelectedRows()},setPageSize:function z(e){return this.props.useExternal?(this.setState({resultsPerPage:e}),void this.props.externalSetPageSize(e)):(this.state.resultsPerPage=e,
+void this.setMaxPage())},toggleColumnChooser:function G(){this.setState({showColumnChooser:!this.state.showColumnChooser})},isNullOrUndefined:function q(e){return void 0===e||null===e},shouldUseCustomRowComponent:function V(){
 return this.isNullOrUndefined(this.state.useCustomRowComponent)?this.props.useCustomRowComponent:this.state.useCustomRowComponent},shouldUseCustomGridComponent:function W(){return this.isNullOrUndefined(this.state.useCustomGridComponent)?this.props.useCustomGridComponent:this.state.useCustomGridComponent
 
 },toggleCustomComponent:function Q(){"grid"===this.state.customComponentType?this.setState({useCustomGridComponent:!this.shouldUseCustomGridComponent()}):"row"===this.state.customComponentType&&this.setState({
@@ -1430,11 +1432,11 @@ A=y(e,j,r,k)}}T||(T=new o)
 var H=T.get(e)
 if(H)return H
 T.set(e,A)
-var B=L?R?h:f:R?keysIn:_,G=U?void 0:B(e)
-return i(G||e,function(o,i){G&&(i=o,o=e[i]),s(A,i,r(o,t,n,i,e,T))}),A}var o=n(38),i=n(209),s=n(184),a=n(239),l=n(240),u=n(241),p=n(242),d=n(243),c=n(246),f=n(249),h=n(251),m=n(115),g=n(252),y=n(253),v=n(264),b=n(101),C=n(102),E=n(62),_=n(95),S=1,w=2,P=4,x="[object Arguments]",F="[object Array]",I="[object Boolean]",T="[object Date]",A="[object Error]",O="[object Function]",D="[object GeneratorFunction]",k="[object Map]",R="[object Number]",N="[object Object]",L="[object RegExp]",U="[object Set]",j="[object String]",M="[object Symbol]",H="[object WeakMap]",B="[object ArrayBuffer]",G="[object DataView]",z="[object Float32Array]",q="[object Float64Array]",V="[object Int8Array]",W="[object Int16Array]",Q="[object Int32Array]",K="[object Uint8Array]",$="[object Uint8ClampedArray]",Z="[object Uint16Array]",Y="[object Uint32Array]",X={}
+var B=L?R?h:f:R?keysIn:_,z=U?void 0:B(e)
+return i(z||e,function(o,i){z&&(i=o,o=e[i]),s(A,i,r(o,t,n,i,e,T))}),A}var o=n(38),i=n(209),s=n(184),a=n(239),l=n(240),u=n(241),p=n(242),d=n(243),c=n(246),f=n(249),h=n(251),m=n(115),g=n(252),y=n(253),v=n(264),b=n(101),C=n(102),E=n(62),_=n(95),S=1,w=2,P=4,x="[object Arguments]",F="[object Array]",I="[object Boolean]",T="[object Date]",A="[object Error]",O="[object Function]",D="[object GeneratorFunction]",k="[object Map]",R="[object Number]",N="[object Object]",L="[object RegExp]",U="[object Set]",j="[object String]",M="[object Symbol]",H="[object WeakMap]",B="[object ArrayBuffer]",z="[object DataView]",G="[object Float32Array]",q="[object Float64Array]",V="[object Int8Array]",W="[object Int16Array]",Q="[object Int32Array]",K="[object Uint8Array]",$="[object Uint8ClampedArray]",Z="[object Uint16Array]",Y="[object Uint32Array]",X={}
 
 
-X[x]=X[F]=X[B]=X[G]=X[I]=X[T]=X[z]=X[q]=X[V]=X[W]=X[Q]=X[k]=X[R]=X[N]=X[L]=X[U]=X[j]=X[M]=X[K]=X[$]=X[Z]=X[Y]=!0,X[A]=X[O]=X[H]=!1,e.exports=r},function(e,t,n){function r(e,t){return e&&o(t,i(t),e)}var o=n(186),i=n(95)
+X[x]=X[F]=X[B]=X[z]=X[I]=X[T]=X[G]=X[q]=X[V]=X[W]=X[Q]=X[k]=X[R]=X[N]=X[L]=X[U]=X[j]=X[M]=X[K]=X[$]=X[Z]=X[Y]=!0,X[A]=X[O]=X[H]=!1,e.exports=r},function(e,t,n){function r(e,t){return e&&o(t,i(t),e)}var o=n(186),i=n(95)
 
 
 e.exports=r},function(e,t,n){function r(e,t){return e&&o(t,i(t),e)}var o=n(186),i=n(216)
@@ -1655,7 +1657,7 @@ function r(e){return e&&e.__esModule?e:{"default":e}}function o(e,t,n){return t 
 
 
 switch(t.type){case p["default"].PREVIEWFIELD_ADD_FILE:return(0,l["default"])(s({},e,o({},t.payload.id,t.payload.file)))
-case p["default"].PREVIEWFIELD_FAIL_UPLOAD:return(0,l["default"])(s({},e,o({},t.payload.id,s({},e[t.payload.id],{message:{type:"error",value:t.payload.message}}))))
+case p["default"].PREVIEWFIELD_FAIL_UPLOAD:return(0,l["default"])(s({},e,o({},t.payload.id,s({},e[t.payload.id],{message:t.payload.message}))))
 case p["default"].PREVIEWFIELD_REMOVE_FILE:return(0,l["default"])(s({},e,o({},t.payload.id,void 0)))
 case p["default"].PREVIEWFIELD_UPDATE_FILE:return(0,l["default"])(s({},e,o({},t.payload.id,s({},e[t.payload.id],t.payload.data))))
 default:return e}}Object.defineProperty(t,"__esModule",{value:!0})
@@ -1785,7 +1787,7 @@ var n=s(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleAddedFile=n.handleAddedFile.bind(n),n.handleFailedUpload=n.handleFailedUpload.bind(n),n.handleSuccessfulUpload=n.handleSuccessfulUpload.bind(n),n.handleSending=n.handleSending.bind(n),n.handleUploadProgress=n.handleUploadProgress.bind(n),
 n.handleCancelUpload=n.handleCancelUpload.bind(n),n.handleRemoveErroredUpload=n.handleRemoveErroredUpload.bind(n),n}return a(t,e),p(t,[{key:"componentWillUnmount",value:function n(){this.props.actions.previewField.removeFile(this.props.id)
 
-}},{key:"getDropzoneProps",value:function r(){var e=this.props.data.uploadFileEndpoint,t={url:e&&e.url,method:e&&e.method,paramName:"Upload",clickable:"#preview-replace-button"},n={height:v["default"].THUMBNAIL_HEIGHT,
+}},{key:"getDropzoneProps",value:function r(){var e=this.props.data.uploadFileEndpoint,t={url:e&&e.url,method:e&&e.method,paramName:"Upload",clickable:"#preview-replace-button",maxFiles:1},n={height:v["default"].THUMBNAIL_HEIGHT,
 width:v["default"].THUMBNAIL_WIDTH},r=this.props.securityID,o=["asset-dropzone--button","preview__container",this.props.className,this.props.extraClass]
 return{className:o.join(" "),canUpload:e&&this.canEdit(),preview:n,folderId:this.props.data.parentid,options:t,securityID:r,uploadButton:!1,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,
 handleSuccess:this.handleSuccessfulUpload,handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress}}},{key:"canEdit",value:function o(){return!this.props.readOnly&&!this.props.disabled&&"folder"!==this.props.data.category

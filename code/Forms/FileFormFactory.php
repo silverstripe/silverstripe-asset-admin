@@ -125,7 +125,7 @@ class FileFormFactory extends AssetFormFactory
 
         // Add status flag before extensions are triggered
         $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record) {
-            // @todo move specs to a component/class, so it can render similar to PreviewImageField
+            // @todo move specs to a component/class, so it can update specs when a File is replaced
             $fields->insertAfter(
                 'TitleHeader',
                 LiteralField::create('FileSpecs', $this->getSpecsMarkup($record))

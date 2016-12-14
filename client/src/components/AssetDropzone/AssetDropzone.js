@@ -285,6 +285,16 @@ class AssetDropzone extends SilverStripeComponent {
    * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleAddedFile(file) {
+    if (this.props.options.maxFiles && this.dropzone.files.length > this.props.options.maxFiles) {
+      this.dropzone.removeFile(this.dropzone.files[0]);
+      if (typeof this.props.handleMaxFilesExceeded === 'function') {
+        // can add a warning message here
+        this.props.handleMaxFilesExceeded(file);
+      }
+      // shouldn't return error, as there isn't a way to catch it...
+      return;
+    }
+
     if (!this.props.canUpload) {
       return Promise.reject(new Error(i18n._t('AssetAdmin.DROPZONE_CANNOT_UPLOAD')));
     }
@@ -446,6 +456,7 @@ AssetDropzone.propTypes = {
   handleError: React.PropTypes.func.isRequired,
   handleSending: React.PropTypes.func,
   handleSuccess: React.PropTypes.func.isRequired,
+  handleMaxFilesExceeded: React.PropTypes.func,
   options: React.PropTypes.shape({
     url: React.PropTypes.string.isRequired,
   }),
