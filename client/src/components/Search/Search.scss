@@ -12,22 +12,6 @@
     margin-right: -$spacer-xs;
     width: auto;
   }
-
-  // TODO Overrides to clean up with specific classes
-  .fieldgroup {
-    > .form__field-label {
-      margin-bottom: 0;
-    }
-
-    > .field--small {
-      margin-top: 0;
-    }
-  }
-
-  .field--small .form__fieldgroup-label {
-    font-size: $font-size-xs;
-    color: $text-muted;
-  }
 }
 
 .search__group {
@@ -68,6 +52,7 @@
   position: absolute;
   padding-right: 5px;
   padding-left: 5px;
+  background-color: transparent;
 
   &:hover {
     background-color: #e7e9ec;
@@ -128,7 +113,6 @@
 
 .search__filter-panel { // TODO convert to BEM class name
   position: absolute;
-  display: none;
   padding: $panel-padding-y $panel-padding-x;
   background: $white;
   margin-right: 1px;

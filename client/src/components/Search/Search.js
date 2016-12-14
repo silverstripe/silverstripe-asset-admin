@@ -1,94 +1,158 @@
+import i18n from 'i18n';
 import React, { PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
+import { Collapse } from 'react-bootstrap-ss';
+
+const view = {
+  NONE: 'NONE',
+  VISIBLE: 'VISIBLE',
+  EXPANDED: 'EXPANDED',
+};
 
 class Search extends SilverStripeComponent {
+
+  constructor(props) {
+    super(props);
+    this.expand = this.expand.bind(this);
+    this.focus = this.focus.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.hide = this.hide.bind(this);
+    this.show = this.show.bind(this);
+    this.toggle = this.toggle.bind(this);
+    this.state = { view: view.NONE };
+  }
+
+  componentWillMount() {
+    document.addEventListener('click', this.handleClick, false);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.handleClick, false);
+  }
+
+  handleClick(e) {
+    // If clicking outside this element, hide this node
+    const node = ReactDOM.findDOMNode(this);
+    if (node && !node.contains(e.target)) {
+      this.hide();
+    }
+    /*
+         $('.search').removeClass('search--active');
+         $('.search__filter-panel').removeClass('collapse in');
+         $('.search__filter-trigger').addClass('collapsed');
+     */
+  }
+
+  /**
+   * Hide this field.
+   * When clicking the "X" button
+   */
+  hide() {
+    this.setState({ view: view.NONE });
+  }
+
+  /**
+   * Show this field.
+   * When clicking the green activate "magnifying glass" button
+   */
+  show() {
+    this.setState({ view: view.VISIBLE });
+    this.focus();
+  }
+
+  /**
+   * Expand fully form
+   */
+  expand() {
+    this.setState({ view: view.EXPANDED });
+  }
+
+  /**
+   * When toggling the advanced button
+   */
+  toggle() {
+    switch (this.state.view) {
+      case view.VISIBLE:
+        this.expand();
+        this.focus();
+        break;
+      case view.EXPANDED:
+        this.show();
+        break;
+      default:
+        // noop
+    }
+  }
+
+  /**
+   * Focus input
+   */
+  focus() {
+    const node = ReactDOM.findDOMNode(this.refs.contentInput);
+    node.focus();
+    node.select();
+  }
+
   render() {
+    const formId = `${this.props.id}_ExtraFields`;
+
+    // Build classes
+    const searchClasses = ['search', 'pull-xs-right'];
+    const advancedButtonClasses = [
+      'btn', 'btn-secondary', 'btn--icon-md', 'btn--no-text', 'font-icon-down-open', 'search__filter-trigger'
+    ];
+    let expanded = false;
+    switch (this.state.view) {
+      case view.EXPANDED:
+        expanded = true;
+        searchClasses.push('search--active');
+        break;
+      case view.VISIBLE:
+        advancedButtonClasses.push('collapsed');
+        searchClasses.push('search--active');
+        break;
+      case view.NONE:
+        advancedButtonClasses.push('collapsed');
+        break;
+      default:
+        // noop
+    }
+
     return (
-      <div className="search pull-xs-right">
+      <div className={searchClasses.join(' ')}>
         <button
           className="btn btn--no-text btn-secondary font-icon-search btn--icon-large search__trigger"
           type="button"
           title="search"
-          aria-owns="SearchGroup"
-          aria-controls="SearchGroup"
+          aria-owns={this.props.id}
+          aria-controls={this.props.id}
           aria-expanded="false"
+          onClick={this.show}
         >
         </button>
-
-        <div id="SearchGroup" className="search__group">
-          <input type="text" placeholder="Search" className="form-control search__content-field" />
-          <a
-            data-toggle="collapse"
-            href="#collapseExample2"
-            aria-expanded="false"
-            aria-controls="collapseExample2"
-            className="btn btn-secondary btn--icon-md btn--no-text font-icon-down-open search__filter-trigger collapsed"
+        <div id={this.props.id} className="search__group">
+          <input type="text" ref="contentInput" placeholder="Search" className="form-control search__content-field" />
+          <button aria-expanded={expanded} aria-controls={formId} onClick={this.toggle}
+            className={advancedButtonClasses.join(' ')}
           >
-            <span className="search__filter-trigger-text">Advanced</span>
-          </a>
-          <button className="btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text" title="Search" />
-          <a href="" className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel">
+            <span className="search__filter-trigger-text">
+              {i18n._t('SilverStripe\\AssetAdmin\\AssetAdmin.ADVANCED', 'Advanced')}
+            </span>
+          </button>
+          <button
+            className="btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text" title="Search"
+          />
+          <button onClick={this.hide} className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel">
             <span className="sr-only">Close</span>
-          </a>
+          </button>
 
-          {/* TEMP Filter panel start */}
-          <div id="collapseExample2" className="collapse search__filter-panel">
-            <FormBuilderLoader schemaUrl={this.props.searchFormSchemaUrl} />
-
-            <form className="form--no-dividers">
-              <fieldset>
-                <div className="form-group field dropdown">
-                  <label className="form__field-label">File type</label>
-                  <div className="form__field-holder">
-                    <select>
-                      <option>Any
-                      </option>
-                      <option>Example
-                      </option>
-                    </select>
-                    <div className="chosen-container chosen-container-single chosen-container-single-nosearch">
-                      <a className="chosen-single">
-                        <span>Any</span>
-                        <div>
-                          <b></b>
-                        </div>
-                      </a>
-                      <div className="chosen-drop">
-                        <div className="chosen-search">
-                          <input type="text"></input>
-                        </div>
-                        <ul className="chosen-results">
-                          <li>Bla</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="form-group field field CompositeField fieldgroup">
-                  <label className="form__field-label">Last updated</label>
-                  <div className="form__fieldgroup form__field-holder field CompositeField fieldgroup">
-                    <div className="form__fieldgroup-item field field--small date text">
-                      <label className="form__fieldgroup-label">From</label>
-                      <input type="text" className="date text"></input>
-                    </div>
-                    <div className="form__fieldgroup-item field field--small date text">
-                      <label className="form__fieldgroup-label">To</label>
-                      <input type="text" className="date text"></input>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="checkbox">
-                  <label>
-                    <input type="checkbox"/>Limit search to current folder and its sub-folders
-                  </label>
-                </div>
-              </fieldset>
-            </form>
-          </div>
-          {/* TEMP Filter panel end */}
+          <Collapse in={expanded}>
+            <div id={formId} className="search__filter-panel">
+              <FormBuilderLoader schemaUrl={this.props.searchFormSchemaUrl} />
+            </div>
+          </Collapse>
         </div>
       </div>
     );
@@ -96,8 +160,8 @@ class Search extends SilverStripeComponent {
 }
 
 Search.propTypes = {
-  searchFormSchemaUrl: PropTypes.string,
-  id: PropTypes.string,
+  searchFormSchemaUrl: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 export default Search;

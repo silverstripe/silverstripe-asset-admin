@@ -800,19 +800,6 @@
   }
 }
 
-.search .fieldgroup>.form__field-label{
-  margin-bottom:0;
-}
-
-.search .fieldgroup>.field--small{
-  margin-top:0;
-}
-
-.search .field--small .form__fieldgroup-label{
-  font-size:.846rem;
-  color:#66727d;
-}
-
 .search__group{
   opacity:0;
 }
@@ -849,6 +836,7 @@
   right:4px;
   padding-right:5px;
   padding-left:5px;
+  background-color:transparent;
 }
 
 .search__cancel:hover{
@@ -906,7 +894,6 @@
 
 .search__filter-panel{
   position:absolute;
-  display:none;
   padding:1.5385rem;
   background:#fff;
   margin-right:1px;
