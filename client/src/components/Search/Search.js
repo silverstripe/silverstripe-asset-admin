@@ -157,10 +157,15 @@ class Search extends SilverStripeComponent {
           aria-controls={this.props.id}
           aria-expanded="false"
           onClick={this.show}
+          id="Search_Trigger"
         >
         </button>
         <div id={this.props.id} className="search__group">
-          <input type="text" name="Name" ref="contentInput" placeholder="Search"
+          <input
+            aria-labelledby="Search_Trigger"
+            type="text" name="Name"
+            ref="contentInput"
+            placeholder="Search"
             className="form-control search__content-field"
           />
           <button aria-expanded={expanded} aria-controls={formId} onClick={this.toggle}
