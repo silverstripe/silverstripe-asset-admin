@@ -173,8 +173,13 @@ class Search extends SilverStripeComponent {
             title={i18n._t('AssetAdmin.SEARCH', 'Search')}
             onClick={this.doSearch}
           />
-          <button onClick={this.hide} className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel">
-            <span className="sr-only">{i18n._t('AssetAdmin.CLOSE', 'Close')}</span>
+          <button
+            onClick={this.hide}
+            title="{i18n._t('AssetAdmin.CLOSE', 'Close')}"
+            className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel"
+            aria-controls={this.props.id}
+            aria-expanded="true"
+          >
           </button>
 
           <Collapse in={expanded}>
