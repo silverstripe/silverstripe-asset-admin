@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as schemaActions from 'state/schema/SchemaActions';
+import { urlQuery } from 'lib/DataFormat';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -83,17 +84,26 @@ class InsertMediaModal extends Component {
   /**
    * Generates the Url to AssetAdmin for a given folder and file ID.
    *
+   * Only used by AssetAdmin to build breadcrumbs for a particular folder / file
+   *
    * @param {number} folderId
    * @param {number} fileId
+   * @param {Object} newQuery
    * @returns {string}
    */
-  getUrl(folderId, fileId) {
+  getUrl(folderId, fileId, newQuery) {
     const base = this.props.sectionConfig.url;
     let url = `${base}/show/${folderId || 0}`;
 
     if (fileId) {
       url = `${url}/edit/${fileId}`;
     }
+
+    const search = urlQuery(this.state.query, newQuery);
+    if (search) {
+      url = `${url}${search}`;
+    }
+
     return url;
   }
 

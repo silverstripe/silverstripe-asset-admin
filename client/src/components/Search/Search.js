@@ -1,5 +1,6 @@
 import i18n from 'i18n';
 import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
@@ -18,6 +19,7 @@ class Search extends SilverStripeComponent {
     this.expand = this.expand.bind(this);
     this.focus = this.focus.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.doSearch = this.doSearch.bind(this);
     this.hide = this.hide.bind(this);
     this.show = this.show.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -38,11 +40,6 @@ class Search extends SilverStripeComponent {
     if (node && !node.contains(e.target)) {
       this.hide();
     }
-    /*
-         $('.search').removeClass('search--active');
-         $('.search__filter-panel').removeClass('collapse in');
-         $('.search__filter-trigger').addClass('collapsed');
-     */
   }
 
   /**
@@ -95,13 +92,43 @@ class Search extends SilverStripeComponent {
     node.select();
   }
 
+  doSearch() {
+    const data = {};
+
+    // Merge data from redux-forms with text field
+    const node = ReactDOM.findDOMNode(this.refs.contentInput);
+    if (node.value) {
+      data.Name = node.value;
+    }
+    Object.keys(this.props.data).forEach((key) => {
+      const value = this.props.data[key];
+      if (!value) {
+        return;
+      }
+      switch (key) {
+        case 'SecurityID':
+          break;
+        case 'CurrentFolderOnly':
+          data.ParentID = this.props.folderId;
+          break;
+        default:
+          // Store non-falsey values
+          data[key] = value;
+          break;
+      }
+    });
+
+    this.props.handleDoSearch(data);
+  }
+
   render() {
     const formId = `${this.props.id}_ExtraFields`;
 
     // Build classes
     const searchClasses = ['search', 'pull-xs-right'];
     const advancedButtonClasses = [
-      'btn', 'btn-secondary', 'btn--icon-md', 'btn--no-text', 'font-icon-down-open', 'search__filter-trigger'
+      'btn', 'btn-secondary', 'btn--icon-md', 'btn--no-text',
+      'font-icon-down-open', 'search__filter-trigger',
     ];
     let expanded = false;
     switch (this.state.view) {
@@ -133,19 +160,21 @@ class Search extends SilverStripeComponent {
         >
         </button>
         <div id={this.props.id} className="search__group">
-          <input type="text" ref="contentInput" placeholder="Search" className="form-control search__content-field" />
+          <input type="text" name="Name" ref="contentInput" placeholder="Search"
+            className="form-control search__content-field"
+          />
           <button aria-expanded={expanded} aria-controls={formId} onClick={this.toggle}
             className={advancedButtonClasses.join(' ')}
           >
-            <span className="search__filter-trigger-text">
-              {i18n._t('SilverStripe\\AssetAdmin\\AssetAdmin.ADVANCED', 'Advanced')}
-            </span>
+            <span className="search__filter-trigger-text">{i18n._t('AssetAdmin.ADVANCED', 'Advanced')}</span>
           </button>
           <button
-            className="btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text" title="Search"
+            className="btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text"
+            title={i18n._t('AssetAdmin.SEARCH', 'Search')}
+            onClick={this.doSearch}
           />
           <button onClick={this.hide} className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel">
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{i18n._t('AssetAdmin.CLOSE', 'Close')}</span>
           </button>
 
           <Collapse in={expanded}>
@@ -162,6 +191,18 @@ class Search extends SilverStripeComponent {
 Search.propTypes = {
   searchFormSchemaUrl: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
+  data: PropTypes.object,
+  folderId: PropTypes.number,
+  handleDoSearch: PropTypes.func.isRequired,
 };
 
-export default Search;
+function mapStateToProps(state, ownProps) {
+  let data = {};
+  const form = state.form[ownProps.searchFormSchemaUrl];
+  if (form && form.values) {
+    data = form.values;
+  }
+  return { data };
+}
+
+export default connect(mapStateToProps)(Search);

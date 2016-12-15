@@ -23,6 +23,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleDoSearch = this.handleDoSearch.bind(this);
     this.handleSubmitEditor = this.handleSubmitEditor.bind(this);
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.handleSort = this.handleSort.bind(this);
@@ -78,6 +79,30 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleBrowse(this.props.folderId, this.props.fileId, {
       page,
     });
+  }
+
+  /**
+   * Reset to new search results page
+   *
+   * @param {Object} data
+   */
+  handleDoSearch(data) {
+    // Reset current query
+    const query = Object.assign({}, this.getBlankQuery(), { q: data });
+    this.handleBrowse(0, 0, query);
+  }
+
+  /**
+   * Generate a blank query based on current query
+   *
+   * @return {Object}
+   */
+  getBlankQuery() {
+    const query = {};
+    Object.keys(this.props.query).forEach((key) => {
+      query[key] = undefined;
+    });
+    return query;
   }
 
   /**
@@ -415,7 +440,7 @@ class AssetAdmin extends SilverStripeComponent {
       <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           {this.props.toolbarChildren}
-          <Search id="AssetSearchForm" searchFormSchemaUrl={searchFormSchemaUrl} />
+          <Search handleDoSearch={this.handleDoSearch} id="AssetSearchForm" searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId} />
           <Breadcrumb multiline />
         </Toolbar>
         <div className="flexbox-area-grow fill-width fill-height gallery">
@@ -447,6 +472,7 @@ AssetAdmin.propTypes = {
     sort: PropTypes.string,
     limit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     page: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    q: PropTypes.object,
   }),
   onSubmitEditor: PropTypes.func,
   type: PropTypes.oneOf(['insert', 'select', 'admin']),
@@ -464,11 +490,6 @@ AssetAdmin.propTypes = {
     canEdit: PropTypes.bool,
   }),
   loading: PropTypes.bool,
-  // Enables custom components to inject additional header buttons (e.g. close modal)
-  toolbarChildren: PropTypes.oneOf([
-    PropTypes.array,
-    PropTypes.object,
-  ]),
 };
 
 AssetAdmin.defaultProps = {
