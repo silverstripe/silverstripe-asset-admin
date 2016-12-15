@@ -9,7 +9,7 @@ use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataObject;
 
 /**
- *
+ * For providing schema data to the client side to build a preview field with upload replacement feature
  */
 class PreviewImageField extends FormField
 {
@@ -36,9 +36,11 @@ class PreviewImageField extends FormField
     public function getSchemaStateDefaults()
     {
         $defaults = parent::getSchemaStateDefaults();
+        
         /** @var File $record */
         if ($record = $this->getRecord()) {
             $parent = $record->Parent();
+            
             $defaults['data'] = array_merge_recursive($defaults['data'], [
                 'parentid' => ($parent) ? $parent->ID : 0,
                 'url' => $record->Link(),

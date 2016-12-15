@@ -429,7 +429,7 @@ class AssetDropzone extends SilverStripeComponent {
    */
   handleError(file, message) {
     // remove files list, as they are no longer needed
-    this.dropzone.removeAllFiles();
+    this.dropzone.removeFile(file);
 
     if (typeof this.props.handleError === 'function') {
       this.props.handleError(file, message);
@@ -443,7 +443,7 @@ class AssetDropzone extends SilverStripeComponent {
    */
   handleSuccess(file) {
     // remove files list, as they are no longer needed
-    this.dropzone.removeAllFiles();
+    this.dropzone.removeFile(file);
 
     this.props.handleSuccess(file);
   }

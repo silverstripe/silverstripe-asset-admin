@@ -30,6 +30,30 @@ describe('GalleryItem', () => {
     };
   });
 
+  describe('hasError()', () => {
+    let item = null;
+
+    beforeEach(() => {
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
+      );
+    });
+
+    it('should give an error if message type is "error"', () => {
+      props.item.message = { type: 'error', value: '' };
+      const error = item.hasError();
+
+      expect(error).toBe(true);
+    });
+
+    it('should give no error if message type is "success"', () => {
+      props.item.message = { type: 'success', value: '' };
+      const error = item.hasError();
+
+      expect(error).toBe(false);
+    });
+  });
+
   describe('handleActivate()', () => {
     let item = null;
     let event = null;
