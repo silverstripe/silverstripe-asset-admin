@@ -16,10 +16,13 @@
 
 .search__group {
   opacity: 0;
+  overflow: hidden;
+  display: none;
 
   .search--active & {
     transition: opacity $transition-speed-fast;
     opacity: 1;
+    display: block;
   }
 }
 
@@ -162,5 +165,10 @@
     @include media-breakpoint-up(lg) {
       width: $search-width-lg;
     }
+  }
+
+  // hide clear action in IE as it overlaps with filters
+  &::-ms-clear {
+    display: none;
   }
 }

@@ -802,12 +802,15 @@
 
 .search__group{
   opacity:0;
+  overflow:hidden;
+  display:none;
 }
 
 .search--active .search__group{
   -webkit-transition:opacity .3s;
   transition:opacity .3s;
   opacity:1;
+  display:block;
 }
 
 .search__trigger{
@@ -952,6 +955,10 @@
   .search--active .search__content-field{
     width:500px;
   }
+}
+
+.search__content-field::-ms-clear{
+  display:none;
 }
 
 .gallery,.gallery__main,.gallery__outer{
