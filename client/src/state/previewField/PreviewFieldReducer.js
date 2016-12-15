@@ -13,9 +13,7 @@ function previewFieldReducer(state = initialState, action) {
 
     case ACTION_TYPES.PREVIEWFIELD_FAIL_UPLOAD: {
       return deepFreeze(Object.assign({}, state, {
-        [action.payload.id]: Object.assign({}, state[action.payload.id], {
-          message: action.payload.message,
-        }),
+        [action.payload.id]: Object.assign({}, state[action.payload.id], action.payload.message),
       }));
     }
 

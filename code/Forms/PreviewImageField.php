@@ -45,6 +45,11 @@ class PreviewImageField extends FormField
                 'exists' => $record->exists(),
                 'preview' => $record->PreviewLink(),
                 'category' => $record instanceof Folder ? 'folder' : $record->appCategory(),
+                'initialValues' => [
+                    'FileFilename' => $record->FileFilename,
+                    'FileHash' => $record->FileHash,
+                    'FileVariant' => $record->FileVariant,
+                ],
             ]);
         }
         return $defaults;

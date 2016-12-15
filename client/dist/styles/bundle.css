@@ -701,11 +701,9 @@
           transform:translateY(-50%);
   height:auto;
   max-height:100%;
-  background:#000;
-  opacity:.55;
-  color:#fff;
   border-bottom-left-radius:.25rem;
   border-top-left-radius:.25rem;
+  overflow:hidden;
 }
 
 .preview__toolbar-button--link:before{
@@ -716,12 +714,19 @@
   content:"b";
 }
 
+.preview__toolbar-button--remove:before{
+  content:"D";
+}
+
 .preview__toolbar-button{
   padding:11px;
   height:47px;
   width:47px;
   overflow:hidden;
+  background:#000;
+  opacity:.55;
   color:#fff;
+  border:0;
 }
 
 .preview__toolbar-button:active,.preview__toolbar-button:focus,.preview__toolbar-button:hover{
@@ -739,6 +744,43 @@
   height:25px;
   width:25px;
   vertical-align:middle;
+}
+
+.preview__progress{
+  height:18px;
+  width:75%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  -webkit-transform:translateX(-50%) translateY(-50%);
+          transform:translateX(-50%) translateY(-50%);
+  border-radius:10px;
+  overflow:hidden;
+  background:#e6e6e6;
+}
+
+.preview__progress-bar{
+  height:100%;
+  background:#29abe2;
+  width:0;
+}
+
+.preview__message{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  opacity:.8;
+}
+
+.preview__message--error{
+  color:#fff;
+  background:#d40404;
+}
+
+.preview__message--success{
+  color:#fff;
+  background:#3fa142;
 }
 
 .gallery,.gallery__main,.gallery__outer{

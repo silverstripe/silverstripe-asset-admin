@@ -265,8 +265,14 @@ class AssetDropzone extends SilverStripeComponent {
     formData.append('SecurityID', this.props.securityID);
     formData.append('ParentID', this.props.folderId);
 
+    const newXhr = Object.assign({}, xhr, {
+      abort: () => {
+        this.dropzone.cancelUpload(file);
+        xhr.abort();
+      },
+    });
     if (typeof this.props.handleSending === 'function') {
-      this.props.handleSending(file, xhr, formData);
+      this.props.handleSending(file, newXhr, formData);
     }
   }
 
@@ -292,7 +298,7 @@ class AssetDropzone extends SilverStripeComponent {
         this.props.handleMaxFilesExceeded(file);
       }
       // shouldn't return error, as there isn't a way to catch it...
-      return;
+      return Promise.resolve();
     }
 
     if (!this.props.canUpload) {
@@ -418,28 +424,34 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Event handler for failed uploads.
    *
-   * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
-   * @param errorMessage (string)
+   * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {string} message
    */
-  handleError(file, messages) {
+  handleError(file, message) {
+    // remove files list, as they are no longer needed
+    this.dropzone.removeAllFiles();
+
     if (typeof this.props.handleError === 'function') {
-      this.props.handleError(file, messages);
+      this.props.handleError(file, message);
     }
   }
 
   /**
    * Event handler for successfully upload files.
    *
-   * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleSuccess(file) {
+    // remove files list, as they are no longer needed
+    this.dropzone.removeAllFiles();
+
     this.props.handleSuccess(file);
   }
 
   /**
    * Set the text displayed when a user tries to remove a file.
    *
-   * @param string userPrompt - The message to display.
+   * @param {string} userPrompt - The message to display.
    */
   setPromptOnRemove(userPrompt) {
     this.dropzone.options.dictRemoveFileConfirmation = userPrompt;

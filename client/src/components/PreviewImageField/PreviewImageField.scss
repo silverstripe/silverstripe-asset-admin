@@ -9,11 +9,9 @@
   transform: translateY(-50%);
   height: auto;
   max-height: 100%;
-  background: $black;
-  opacity: 0.55;
-  color: $white;
   border-bottom-left-radius: $border-radius;
   border-top-left-radius: $border-radius;
+  overflow: hidden;
 }
 
 .preview__toolbar-button--link:before {
@@ -24,12 +22,20 @@
   content: "\62";
 }
 
+.preview__toolbar-button--remove:before {
+  content: "\44";
+}
+
 .preview__toolbar-button {
   padding: $toolbar-button-padding;
   height: $toolbar-button-height + (2 * $toolbar-button-padding);
   width: $toolbar-button-width + (2 * $toolbar-button-padding);
   overflow: hidden;
   color: $white;
+  background: $black;
+  opacity: 0.55;
+  color: $white;
+  border: 0;
 
   &:hover,
   &:active,
@@ -49,4 +55,41 @@
     width: $toolbar-button-width;
     vertical-align: middle;
   }
+}
+
+
+.preview__progress {
+  height: 18px;
+  width: 75%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  border-radius: 10px;
+  overflow: hidden;
+  background: darken($white, 10%);
+}
+
+.preview__progress-bar {
+  height: 100%;
+  background: $brand-primary;
+  width: 0;
+}
+
+.preview__message {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: .8;
+}
+
+.preview__message--error {
+  color: $white;
+  background: $brand-danger;
+}
+
+.preview__message--success {
+  color: $white;
+  background: $brand-success;
 }

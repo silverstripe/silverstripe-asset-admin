@@ -64,8 +64,8 @@ class GalleryItem extends SilverStripeComponent {
   hasError() {
     let hasError = false;
 
-    if (this.props.message) {
-      hasError = this.props.message.type === 'error';
+    if (this.props.item.message) {
+      hasError = this.props.item.message.type === 'error';
     }
 
     return hasError;
@@ -80,7 +80,7 @@ class GalleryItem extends SilverStripeComponent {
     let message = null;
 
     if (this.hasError()) {
-      message = this.props.message.value;
+      message = this.props.item.message.value;
     } else if (!this.exists() && !this.uploading()) {
       message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
     }
@@ -252,9 +252,9 @@ class GalleryItem extends SilverStripeComponent {
     event.stopPropagation();
 
     if (this.hasError()) {
-      this.props.handleRemoveErroredUpload(this.props.item);
+      this.props.onRemoveErroredUpload(this.props.item);
     } else {
-      this.props.handleCancelUpload(this.props.item);
+      this.props.onCancelUpload(this.props.item);
     }
   }
 

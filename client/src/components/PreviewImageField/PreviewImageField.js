@@ -91,6 +91,15 @@ class PreviewImageField extends Component {
    * Handles removing an upload that had errored during/after upload
    */
   handleRemoveErroredUpload() {
+    // revert to initial values so errored or replaced replacement doesn't get used
+    if (typeof this.props.onAutofill === 'function') {
+      const initial = this.props.data.initialValues;
+
+      this.props.onAutofill('FileFilename', initial.FileFilename);
+      this.props.onAutofill('FileHash', initial.FileHash);
+      this.props.onAutofill('FileVariant', initial.FileVariant);
+    }
+
     this.props.actions.previewField.removeFile(this.props.id);
   }
 
@@ -160,15 +169,31 @@ class PreviewImageField extends Component {
 
     const preview = this.props.upload.url || data.preview || data.url;
     const image = <img src={preview} className="editor__thumbnail" />;
+    const linkedImage = (data.url) ? (
+      <a className="editor__file-preview-link" href={data.url} target="_blank">
+        {image}
+      </a>
+    ) : null;
+    const progress = this.props.upload.progress;
+    const progressBar = (progress > 0 && progress < 100) ? (
+      <div className="preview__progress">
+        <div className="preview__progress-bar" style={{ width: `${progress}%` }} />
+      </div>
+    ) : null;
+    const message = this.props.upload.message;
+    const messageBox = (message) ? (
+      <div className={`preview__message preview__message--${message.type}`}>
+        {message.value}
+      </div>
+    ) : null;
 
-    if (data.url) {
-      return (
-        <a className="editor__file-preview-link" href={data.url} target="_blank">
-          {image}
-        </a>
-      );
-    }
-    return image;
+    return (
+      <div className="editor__thumbnail-container">
+        {linkedImage || image}
+        {progressBar}
+        {messageBox}
+      </div>
+    );
   }
 
   renderToolbar() {
@@ -178,8 +203,7 @@ class PreviewImageField extends Component {
     }
     return (
       <div className="preview__toolbar fill-height">
-        { (this.props.data.url)
-          ? (
+        { (this.props.data.url) ? (
             <a
               href={this.props.data.url}
               target="_blank"
@@ -187,16 +211,20 @@ class PreviewImageField extends Component {
             >Open</a>
           )
           : null }
-        { (canEdit)
-          ? (
-            <a
-              href="#"
+        { (canEdit) ? (
+            <button
               id="preview-replace-button"
               onClick={this.preventDefault}
               className="preview__toolbar-button--replace preview__toolbar-button"
-            >Replace</a>
+            >Replace</button>
           )
           : null }
+        { (this.props.upload.progress || this.props.upload.message) ? (
+            <button
+              onClick={this.handleCancelUpload}
+              className="preview__toolbar-button--remove preview__toolbar-button"
+            >Remove</button>
+          ) : null }
       </div>
     );
   }
@@ -204,12 +232,27 @@ class PreviewImageField extends Component {
   render() {
     const dropzoneProps = this.getDropzoneProps();
 
-    return (
-      <AssetDropzone {...dropzoneProps}>
-        {this.renderImage()}
-        {this.renderToolbar()}
-      </AssetDropzone>
-    );
+    if (this.canEdit()) {
+      return (
+        <AssetDropzone {...dropzoneProps}>
+          {this.renderImage()}
+          {this.renderToolbar()}
+        </AssetDropzone>
+      );
+    } else {
+      const classNames = [
+        'preview__container',
+        this.props.className,
+        this.props.extraClass,
+      ];
+
+      return (
+        <div className={classNames.join(' ')}>
+          {this.renderImage()}
+          {this.renderToolbar()}
+        </div>
+      );
+    }
   }
 }
 
@@ -232,11 +275,16 @@ PreviewImageField.propTypes = {
       method: PropTypes.string.isRequired,
       payloadFormat: PropTypes.string,
     }),
+    initialValues: PropTypes.object,
   }).isRequired,
   upload: PropTypes.shape({
     url: PropTypes.string,
     progress: PropTypes.number,
     xhr: PropTypes.object,
+    message: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+    }),
   }),
   actions: PropTypes.object,
   securityID: PropTypes.string,
