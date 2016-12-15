@@ -1572,7 +1572,7 @@ if(r){var o=function(){var n=s({},r,t.payload.file)
 return{v:(0,l["default"])(s({},e,{files:e.files.map(function(e){return e.id===n.id?n:e})}))}}()
 if("object"===("undefined"==typeof o?"undefined":i(o)))return o.v}else if(e.folder.id===t.payload.id)return(0,l["default"])(s({},e,{folder:s({},e.folder,t.payload.file)}))
 return e
-case p["default"].UNLOAD_FOLDER:return s({},e,{files:[]})
+case p["default"].UNLOAD_FOLDER:return s({},e,{files:[],count:0})
 case p["default"].SELECT_FILES:var a=null
 return a=null===t.payload.ids?e.files.map(function(e){return e.id}):e.selectedFiles.concat(t.payload.ids.filter(function(t){return e.selectedFiles.indexOf(t)===-1})),(0,l["default"])(s({},e,{selectedFiles:a
 }))

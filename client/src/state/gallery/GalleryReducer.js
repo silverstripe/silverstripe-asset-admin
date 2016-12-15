@@ -71,6 +71,7 @@ export default function galleryReducer(state = initialState, action) {
     case GALLERY.UNLOAD_FOLDER: {
       return Object.assign({}, state, {
         files: [],
+        count: 0,
       });
     }
 
