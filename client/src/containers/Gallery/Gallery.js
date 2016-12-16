@@ -511,6 +511,7 @@ class Gallery extends Component {
           key={index}
           className={classNames.join(' ')}
           type="button"
+          title="Change view gallery/list"
           onClick={this.handleViewChange}
           value={view}
         >
