@@ -140,7 +140,6 @@ class UploadField extends SilverStripeComponent {
    */
   handleSelect(event) {
     event.preventDefault();
-    return false;
   }
 
   /**
@@ -151,7 +150,6 @@ class UploadField extends SilverStripeComponent {
   handleAddShow(event) {
     event.preventDefault();
     this.setState({ selecting: true });
-    return false;
   }
 
   /**
@@ -332,4 +330,4 @@ const ConnectedUploadField = connect(mapStateToProps, mapDispatchToProps)(Upload
 
 export { UploadField, ConnectedUploadField };
 
-export default fieldHolder(connect(mapStateToProps, mapDispatchToProps)(UploadField));
+export default fieldHolder(ConnectedUploadField);

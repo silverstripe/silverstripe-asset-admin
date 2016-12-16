@@ -524,7 +524,8 @@
   position:absolute;
   top:20px;
   left:50%;
-  margin-left:-100px;
+  -webkit-transform:translateX(-50%);
+          transform:translateX(-50%);
   display:inline-block;
   text-align:center;
 }

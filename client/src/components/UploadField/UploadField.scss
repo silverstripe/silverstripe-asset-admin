@@ -59,7 +59,7 @@
   position: absolute;
   top: 20px;
   left: 50%;
-  margin-left: -100px; // Approx 1/2 width of floating text
+  transform: translateX(-50%);
   display: inline-block;
   text-align: center;
 

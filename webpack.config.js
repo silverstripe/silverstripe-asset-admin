@@ -40,6 +40,7 @@ module.exports = {
     'state/schema/SchemaActions': 'SchemaActions',
     'components/FieldHolder/FieldHolder': 'FieldHolder',
     'lib/DataFormat': 'DataFormat',
+    'lib/schemaFieldValues': 'schemaFieldValues',
     'components/FormBuilderModal/FormBuilderModal': 'FormBuilderModal',
     'components/FormBuilder/FormBuilder': 'FormBuilder',
     'components/Toolbar/Toolbar': 'Toolbar',
