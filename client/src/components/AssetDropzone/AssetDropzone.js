@@ -4,6 +4,7 @@ import SilverStripeComponent from 'lib/SilverStripeComponent';
 import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
 import $ from 'jQuery';
+import { getFileExtension } from 'lib/DataFormat';
 
 let idCounter = 0;
 
@@ -301,7 +302,14 @@ class AssetDropzone extends SilverStripeComponent {
       return Promise.resolve();
     }
 
+    // check with parent if there are other forms of validation to be done
+    if (typeof this.props.canFileUpload === 'function' && !this.props.canFileUpload(file)) {
+      this.dropzone.removeFile(file);
+      return Promise.resolve();
+    }
+
     if (!this.props.canUpload) {
+      this.dropzone.removeFile(file);
       return Promise.reject(new Error(i18n._t('AssetAdmin.DROPZONE_CANNOT_UPLOAD')));
     }
 
@@ -343,7 +351,7 @@ class AssetDropzone extends SilverStripeComponent {
         queuedId: file._queuedId,
         size: file.size,
         title: this.getFileTitle(file.name),
-        extension: this.getFileExtension(file.name),
+        extension: getFileExtension(file.name),
         type: file.type,
         url: preview.thumbnailURL,
       };
@@ -365,12 +373,6 @@ class AssetDropzone extends SilverStripeComponent {
     return filename
       .replace(/[.][^.]+$/, '')
       .replace(/-_/, ' ');
-  }
-
-  getFileExtension(filename) {
-    return /[.]/.exec(filename)
-      ? filename.replace(/^.+[.]/, '')
-      : '';
   }
 
   /**
@@ -469,6 +471,7 @@ AssetDropzone.propTypes = {
   handleSending: React.PropTypes.func,
   handleSuccess: React.PropTypes.func.isRequired,
   handleMaxFilesExceeded: React.PropTypes.func,
+  canFileUpload: React.PropTypes.func,
   options: React.PropTypes.shape({
     url: React.PropTypes.string.isRequired,
   }),

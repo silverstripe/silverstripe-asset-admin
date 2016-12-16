@@ -5,6 +5,7 @@ import CONSTANTS from 'constants';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as previewFieldActions from 'state/previewField/PreviewFieldActions';
+import { getFileExtension } from 'lib/DataFormat';
 
 class PreviewImageField extends Component {
   constructor(props) {
@@ -17,6 +18,7 @@ class PreviewImageField extends Component {
     this.handleUploadProgress = this.handleUploadProgress.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
     this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
+    this.canFileUpload = this.canFileUpload.bind(this);
   }
 
   componentWillUnmount() {
@@ -58,6 +60,7 @@ class PreviewImageField extends Component {
       handleSuccess: this.handleSuccessfulUpload,
       handleSending: this.handleSending,
       handleUploadProgress: this.handleUploadProgress,
+      canFileUpload: this.canFileUpload,
     };
   }
 
@@ -75,6 +78,28 @@ class PreviewImageField extends Component {
 
   preventDefault(e) {
     e.preventDefault();
+  }
+
+  /**
+   *
+   * @param {File} file
+   * @returns {boolean}
+   */
+  canFileUpload(file) {
+    const prevName = this.props.data.initialValues.FileFilename;
+    const prevExt = getFileExtension(prevName);
+    const nextExt = getFileExtension(file.name);
+
+    if (!prevExt || prevExt === nextExt) {
+      return true;
+    }
+
+    const message = i18n._t(
+      'AssetAdmin.CONFIRM_CHANGE_EXTENSION',
+      'Are you sure you want upload a file with a different extension?'
+    );
+
+    return this.props.confirm(message);
   }
 
   /**
@@ -167,7 +192,10 @@ class PreviewImageField extends Component {
       );
     }
 
-    const preview = this.props.upload.url || data.preview || data.url;
+    const category = this.props.upload.category;
+    const preview = (category && category !== 'image')
+      ? CONSTANTS.DEFAULT_PREVIEW
+      : this.props.upload.url || data.preview || data.url;
     const image = <img src={preview} className="editor__thumbnail" />;
     const linkedImage = (data.url) ? (
       <a className="editor__file-preview-link" href={data.url} target="_blank">
@@ -239,20 +267,19 @@ class PreviewImageField extends Component {
           {this.renderToolbar()}
         </AssetDropzone>
       );
-    } else {
-      const classNames = [
-        'preview__container',
-        this.props.className,
-        this.props.extraClass,
-      ];
-
-      return (
-        <div className={classNames.join(' ')}>
-          {this.renderImage()}
-          {this.renderToolbar()}
-        </div>
-      );
     }
+    const classNames = [
+      'preview__container',
+      this.props.className,
+      this.props.extraClass,
+    ];
+
+    return (
+      <div className={classNames.join(' ')}>
+        {this.renderImage()}
+        {this.renderToolbar()}
+      </div>
+    );
   }
 }
 
@@ -281,6 +308,7 @@ PreviewImageField.propTypes = {
     url: PropTypes.string,
     progress: PropTypes.number,
     xhr: PropTypes.object,
+    category: PropTypes.string,
     message: PropTypes.shape({
       type: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
@@ -288,12 +316,16 @@ PreviewImageField.propTypes = {
   }),
   actions: PropTypes.object,
   securityID: PropTypes.string,
+  confirm: PropTypes.func,
 };
 
 PreviewImageField.defaultProps = {
   // React considers "undefined" as an uncontrolled component.
   extraClass: '',
   className: '',
+  data: {},
+  upload: {},
+  confirm: window.confirm,
 };
 
 function mapStateToProps(state, ownprops) {

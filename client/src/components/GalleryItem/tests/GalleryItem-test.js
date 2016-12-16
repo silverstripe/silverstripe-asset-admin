@@ -30,6 +30,34 @@ describe('GalleryItem', () => {
     };
   });
 
+  describe('handleCancelUpload()', () => {
+    let item = null;
+    const event = new Event('test');
+
+    beforeEach(() => {
+      props.onRemoveErroredUpload = jest.genMockFunction();
+      props.onCancelUpload = jest.genMockFunction();
+
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
+      );
+    });
+
+    it('should call onRemoveErroredUpload when there was an error', () => {
+      item.hasError = () => true;
+      item.handleCancelUpload(event);
+
+      expect(props.onRemoveErroredUpload).toBeCalled();
+    });
+
+    it('should call onCancelUpload when there were no errors found', () => {
+      item.hasError = () => false;
+      item.handleCancelUpload(event);
+
+      expect(props.onCancelUpload).toBeCalled();
+    });
+  });
+
   describe('hasError()', () => {
     let item = null;
 
