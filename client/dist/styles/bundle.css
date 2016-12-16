@@ -847,10 +847,11 @@
 }
 
 .search__filter-trigger-text{
+  display:none;
   opacity:0;
   position:absolute;
-  -webkit-transform:translateX(-147%);
-          transform:translateX(-147%);
+  -webkit-transform:translateX(-106%);
+          transform:translateX(-106%);
   font-size:.846rem;
   top:7px;
   color:#0071c4;
@@ -875,6 +876,7 @@
 }
 
 .search__filter-trigger:hover .search__filter-trigger-text{
+  display:block;
   opacity:1;
 }
 

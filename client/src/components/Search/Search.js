@@ -174,8 +174,12 @@ class Search extends SilverStripeComponent {
             placeholder={i18n._t('AssetAdmin.SEARCH', 'Search')}
             className="form-control search__content-field"
           />
-          <button aria-expanded={expanded} aria-controls={formId} onClick={this.toggle}
+          <button
+            aria-expanded={expanded}
+            aria-controls={formId}
+            onClick={this.toggle}
             className={advancedButtonClasses.join(' ')}
+            title={i18n._t('AssetAdmin.ADVANCED', 'Advanced')}
           >
             <span className="search__filter-trigger-text">{i18n._t('AssetAdmin.ADVANCED', 'Advanced')}</span>
           </button>

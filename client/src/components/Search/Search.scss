@@ -65,9 +65,10 @@
 
 // Expand filters panel
 .search__filter-trigger-text {
+  display: none;
   opacity: 0;
   position: absolute;
-  transform: translateX(-147%);
+  transform: translateX(-106%);
   font-size: $font-size-xs;
   top: 7px;
   color: $link-color;
@@ -91,6 +92,7 @@
     }
 
     .search__filter-trigger-text {
+      display: block;
       opacity: 1;
     }
   }
