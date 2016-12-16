@@ -94,6 +94,7 @@ class UploadField extends FormField
     {
         $state = parent::getSchemaStateDefaults();
         $state['data']['files'] = $this->getEncodedItems();
+        $state['value'] = $this->Value() ?: [ 'Files' => []];
         return $state;
     }
 
