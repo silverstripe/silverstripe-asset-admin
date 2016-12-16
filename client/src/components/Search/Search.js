@@ -100,6 +100,7 @@ class Search extends SilverStripeComponent {
     if (node.value) {
       data.Name = node.value;
     }
+    // Filter empty values
     Object.keys(this.props.data).forEach((key) => {
       const value = this.props.data[key];
       if (!value) {
@@ -107,9 +108,7 @@ class Search extends SilverStripeComponent {
       }
       switch (key) {
         case 'SecurityID':
-          break;
         case 'CurrentFolderOnly':
-          data.ParentID = this.props.folderId;
           break;
         default:
           // Store non-falsey values
@@ -118,11 +117,17 @@ class Search extends SilverStripeComponent {
       }
     });
 
+    // Invert "CurrentFolderOnly" into "deep" flag
+    if (!this.props.data.CurrentFolderOnly) {
+      data.AllFolders = 1;
+    }
+
     this.props.handleDoSearch(data);
   }
 
   render() {
     const formId = `${this.props.id}_ExtraFields`;
+    const triggerId = `${this.props.id}_Trigger`;
 
     // Build classes
     const searchClasses = ['search', 'pull-xs-right'];
@@ -152,20 +157,21 @@ class Search extends SilverStripeComponent {
         <button
           className="btn btn--no-text btn-secondary font-icon-search btn--icon-large search__trigger"
           type="button"
-          title="search"
+          title={i18n._t('AssetAdmin.SEARCH', 'Search')}
           aria-owns={this.props.id}
           aria-controls={this.props.id}
           aria-expanded="false"
           onClick={this.show}
-          id="Search_Trigger"
+          id={triggerId}
         >
         </button>
         <div id={this.props.id} className="search__group">
           <input
-            aria-labelledby="Search_Trigger"
-            type="text" name="Name"
+            aria-labelledby={triggerId}
+            type="text"
+            name="Name"
             ref="contentInput"
-            placeholder="Search"
+            placeholder={i18n._t('AssetAdmin.SEARCH', 'Search')}
             className="form-control search__content-field"
           />
           <button aria-expanded={expanded} aria-controls={formId} onClick={this.toggle}

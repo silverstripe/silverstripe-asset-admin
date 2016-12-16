@@ -784,7 +784,6 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   actions: PropTypes.object,
   securityId: PropTypes.string,
   onViewChange: PropTypes.func.isRequired,
-
   createFileApiUrl: PropTypes.string,
   createFileApiMethod: PropTypes.string,
 });

@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
-import { urlQuery } from 'lib/DataFormat';
+import { urlQuery, decodeQuery } from 'lib/DataFormat';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -68,10 +68,13 @@ class AssetAdminRouter extends Component {
     };
   }
 
+  /**
+   * Get decoded query object
+   *
+   * @returns {Object}
+   */
   getQuery() {
-    // @TODO: De-serialise query as PHP would
-    // I.e. nested { q : {key: val }} not { q[key]: val }
-    return this.props.location.query;
+    return decodeQuery(this.props.location.search);
   }
 
   /**

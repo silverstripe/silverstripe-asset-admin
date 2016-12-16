@@ -23,18 +23,13 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DateField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormFactory;
-use SilverStripe\Forms\HeaderField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
-use SilverStripe\ORM\Search\SearchContext;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
@@ -444,66 +439,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'edit',
             $file->ID
         );
-    }
-
-    /**
-     * Get the search context from {@link File}, used to create the search form
-     * as well as power the /search API endpoint.
-     *
-     * @return SearchContext
-     */
-    public function getSearchContext()
-    {
-        $context = File::singleton()->getDefaultSearchContext();
-
-        // Customize fields
-        $dateHeader = HeaderField::create('Date', _t('CMSSearch.FILTERDATEHEADING', 'Date'), 4);
-        $dateFrom = DateField::create('CreatedFrom', _t('CMSSearch.FILTERDATEFROM', 'From'))
-        ->setConfig('showcalendar', true);
-        $dateTo = DateField::create('CreatedTo', _t('CMSSearch.FILTERDATETO', 'To'))
-        ->setConfig('showcalendar', true);
-        $dateGroup = FieldGroup::create(
-            $dateHeader,
-            $dateFrom,
-            $dateTo
-        );
-        $context->addField($dateGroup);
-        /** @skipUpgrade */
-        $appCategories = array(
-            'archive' => _t(
-                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryArchive',
-                'Archive'
-            ),
-            'audio' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryAudio', 'Audio'),
-            'document' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryDocument', 'Document'),
-            'flash' => _t(
-                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryFlash',
-                'Flash',
-                'The fileformat'
-            ),
-            'image' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryImage', 'Image'),
-            'video' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryVideo', 'Video'),
-        );
-        $context->addField(
-            $typeDropdown = new DropdownField(
-                'AppCategory',
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Filetype', 'File type'),
-                $appCategories
-            )
-        );
-
-        $typeDropdown->setEmptyString(' ');
-
-        $currentfolderLabel = _t(
-            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CurrentFolderOnly',
-            'Limit to current folder?'
-        );
-        $context->addField(
-            new CheckboxField('CurrentFolderOnly', $currentfolderLabel)
-        );
-        $context->getFields()->removeByName('Title');
-
-        return $context;
     }
 
     /**
@@ -1133,7 +1068,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     /**
      * Scaffold a search form.
-     * Note: This form does not submit to itself, but rather uses the apiSearch endpoint
+     * Note: This form does not submit to itself, but rather uses the apiReadFolder endpoint
      * (to be replaced with graphql)
      *
      * @return Form

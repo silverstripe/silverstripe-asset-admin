@@ -42,6 +42,7 @@ class FileSearchFormFactory implements FormFactory
         $fields = $this->getFormFields($controller, $name, $context);
         $actions = FieldList::create();
         $form = Form::create($controller, $name, $fields, $actions);
+        $form->disableSecurityToken(); // not posted back, so unnecessary
         $form->addExtraClass('form--no-dividers');
         $this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
         return $form;

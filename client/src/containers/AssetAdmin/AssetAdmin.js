@@ -89,7 +89,8 @@ class AssetAdmin extends SilverStripeComponent {
   handleDoSearch(data) {
     // Reset current query
     const query = Object.assign({}, this.getBlankQuery(), { q: data });
-    this.handleBrowse(0, 0, query);
+    const folderID = data.AllFolders ? 0 : this.props.folderId;
+    this.handleBrowse(folderID, 0, query);
   }
 
   /**
@@ -361,6 +362,7 @@ class AssetAdmin extends SilverStripeComponent {
 
     const sort = this.props.query && this.props.query.sort;
     const view = this.props.query && this.props.query.view;
+    const search = (this.props.query && this.props.query.q) || {};
 
     return (
       <Gallery
@@ -373,6 +375,7 @@ class AssetAdmin extends SilverStripeComponent {
         page={page}
         totalCount={this.props.filesTotalCount}
         view={view}
+        search={search}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         updateFolderApi={this.endpoints.updateFolderApi}
@@ -440,7 +443,9 @@ class AssetAdmin extends SilverStripeComponent {
       <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           {this.props.toolbarChildren}
-          <Search handleDoSearch={this.handleDoSearch} id="AssetSearchForm" searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId} />
+          <Search handleDoSearch={this.handleDoSearch} id="AssetSearchForm"
+            searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId}
+          />
           <Breadcrumb multiline />
         </Toolbar>
         <div className="flexbox-area-grow fill-width fill-height gallery">
