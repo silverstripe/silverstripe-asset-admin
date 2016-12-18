@@ -538,6 +538,7 @@ class Gallery extends Component {
       return (
         <button
           className={classes}
+          title="Navigate up a level"
           onClick={this.handleBackClick}
           ref="backButton"
         >
