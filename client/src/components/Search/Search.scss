@@ -21,6 +21,7 @@
 
   .search--active & {
     transition: opacity $transition-speed-fast;
+    overflow: visible;
     opacity: 1;
     display: block;
   }

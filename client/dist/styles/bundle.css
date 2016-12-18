@@ -809,6 +809,7 @@
 .search--active .search__group{
   -webkit-transition:opacity .3s;
   transition:opacity .3s;
+  overflow:visible;
   opacity:1;
   display:block;
 }
