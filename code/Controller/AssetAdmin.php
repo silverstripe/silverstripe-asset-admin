@@ -248,7 +248,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             }
         }
 
-        // Sort the files        
+        // Sort the files
         $column = 'title';
         $direction = 'asc';
         if (isset($params['sort'])) {
