@@ -439,12 +439,14 @@ class AssetAdmin extends SilverStripeComponent {
   render() {
     const showBackButton = !!(this.props.folder && this.props.folder.id);
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
+    const query = (this.props.query && this.props.query.q) || {};
     return (
       <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           {this.props.toolbarChildren}
           <Search handleDoSearch={this.handleDoSearch} id="AssetSearchForm"
             searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId}
+            query={query}
           />
           <Breadcrumb multiline />
         </Toolbar>

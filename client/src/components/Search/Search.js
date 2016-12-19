@@ -2,9 +2,11 @@ import i18n from 'i18n';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
+import { bindActionCreators } from 'redux';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import { Collapse } from 'react-bootstrap-ss';
+import * as schemaActions from 'state/schema/SchemaActions';
 
 const view = {
   NONE: 'NONE',
@@ -28,10 +30,59 @@ class Search extends SilverStripeComponent {
 
   componentWillMount() {
     document.addEventListener('click', this.handleClick, false);
+    this.setOverrides(this.props);
   }
 
   componentWillUnmount() {
     document.removeEventListener('click', this.handleClick, false);
+    this.setOverrides();
+  }
+
+  componentWillReceiveProps(props) {
+    if (JSON.stringify(props.query) !== JSON.stringify(this.props.query)) {
+      this.setOverrides(props);
+    }
+  }
+
+  /**
+   * Populate search form with search in case a pre-existing search has been queried
+   *
+   * @param {Object} props
+   */
+  setOverrides(props) {
+    const hasSearch = props && props.query && (JSON.stringify(props.query) !== JSON.stringify({}));
+    if (!hasSearch || this.props.schemaUrl !== props.schemaUrl) {
+      // clear any overrides that may be in place
+      const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
+      if (schemaUrl) {
+        this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
+      }
+    }
+    if (hasSearch && props.searchFormSchemaUrl) {
+      const query = props.query || {};
+
+      const overrides = {
+        fields: Object
+          .keys(query)
+          .filter((name) => (name !== 'AllFolders'))
+          .map((name) => {
+            const value = query[name];
+            return { name, value };
+          }),
+      };
+
+      // If search is performed and AllFolders is NOT set, flag the "limit to current folder" box
+      if (!query.AllFolders) {
+        overrides.fields.push({
+          name: 'CurrentFolderOnly',
+          value: '1',
+        });
+      }
+
+      // set overrides into redux store, so that it can be accessed by FormBuilder with the same
+      // schemaUrl.
+      this.props.actions.schema.setSchemaStateOverrides(props.searchFormSchemaUrl, overrides);
+    }
   }
 
   handleClick(e) {
@@ -128,6 +179,7 @@ class Search extends SilverStripeComponent {
   render() {
     const formId = `${this.props.id}_ExtraFields`;
     const triggerId = `${this.props.id}_Trigger`;
+    const searchText = (this.props.query && this.props.query.Name) || '';
 
     // Build classes
     const searchClasses = ['search', 'pull-xs-right'];
@@ -173,6 +225,7 @@ class Search extends SilverStripeComponent {
             ref="contentInput"
             placeholder={i18n._t('AssetAdmin.SEARCH', 'Search')}
             className="form-control search__content-field"
+            defaultValue={searchText}
           />
           <button
             aria-expanded={expanded}
@@ -190,7 +243,7 @@ class Search extends SilverStripeComponent {
           />
           <button
             onClick={this.hide}
-            title="{i18n._t('AssetAdmin.CLOSE', 'Close')}"
+            title={i18n._t('AssetAdmin.CLOSE', 'Close')}
             className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel"
             aria-controls={this.props.id}
             aria-expanded="true"
@@ -214,6 +267,7 @@ Search.propTypes = {
   data: PropTypes.object,
   folderId: PropTypes.number,
   handleDoSearch: PropTypes.func.isRequired,
+  query: PropTypes.object,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -225,4 +279,12 @@ function mapStateToProps(state, ownProps) {
   return { data };
 }
 
-export default connect(mapStateToProps)(Search);
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      schema: bindActionCreators(schemaActions, dispatch),
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Search);
