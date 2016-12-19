@@ -19,8 +19,8 @@ class Search extends SilverStripeComponent {
   constructor(props) {
     super(props);
     this.expand = this.expand.bind(this);
-    this.focus = this.focus.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
     this.doSearch = this.doSearch.bind(this);
     this.hide = this.hide.bind(this);
     this.show = this.show.bind(this);
@@ -41,6 +41,16 @@ class Search extends SilverStripeComponent {
   componentWillReceiveProps(props) {
     if (JSON.stringify(props.query) !== JSON.stringify(this.props.query)) {
       this.setOverrides(props);
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.state.view !== view.NONE) {
+      const node = ReactDOM.findDOMNode(this.refs.contentInput);
+      if (node) {
+        node.focus();
+        node.select();
+      }
     }
   }
 
@@ -85,11 +95,22 @@ class Search extends SilverStripeComponent {
     }
   }
 
-  handleClick(e) {
+  handleClick(event) {
     // If clicking outside this element, hide this node
     const node = ReactDOM.findDOMNode(this);
-    if (node && !node.contains(e.target)) {
+    if (node && !node.contains(event.target)) {
       this.hide();
+    }
+  }
+
+  /**
+   * Handle enter key submission in search box
+   *
+   * @param {Object} event
+   */
+  handleKeyUp(event) {
+    if (event.keyCode === 13) {
+      this.doSearch();
     }
   }
 
@@ -107,7 +128,6 @@ class Search extends SilverStripeComponent {
    */
   show() {
     this.setState({ view: view.VISIBLE });
-    this.focus();
   }
 
   /**
@@ -124,7 +144,6 @@ class Search extends SilverStripeComponent {
     switch (this.state.view) {
       case view.VISIBLE:
         this.expand();
-        this.focus();
         break;
       case view.EXPANDED:
         this.show();
@@ -132,15 +151,6 @@ class Search extends SilverStripeComponent {
       default:
         // noop
     }
-  }
-
-  /**
-   * Focus input
-   */
-  focus() {
-    const node = ReactDOM.findDOMNode(this.refs.contentInput);
-    node.focus();
-    node.select();
   }
 
   doSearch() {
@@ -226,6 +236,8 @@ class Search extends SilverStripeComponent {
             placeholder={i18n._t('AssetAdmin.SEARCH', 'Search')}
             className="form-control search__content-field"
             defaultValue={searchText}
+            onKeyUp={this.handleKeyUp}
+            autoFocus
           />
           <button
             aria-expanded={expanded}
