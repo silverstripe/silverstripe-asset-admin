@@ -40,10 +40,26 @@
   cursor: pointer;
 }
 
+.uploadfield__upload-button,
+.uploadfield__add-button {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: none;
+  text-decoration: $link-decoration;
+  color: $link-color;
+
+  &:hover {
+    color: $link-hover-color;
+    text-decoration: $link-hover-decoration;
+  }
+}
+
 .uploadfield__droptext {
   position: absolute;
   top: 20px;
-  left: 40%;
+  left: 50%;
+  transform: translateX(-50%);
   display: inline-block;
   text-align: center;
 

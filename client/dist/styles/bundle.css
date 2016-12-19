@@ -506,10 +506,26 @@
   cursor:pointer;
 }
 
+.uploadfield__add-button,.uploadfield__upload-button{
+  border:0;
+  margin:0;
+  padding:0;
+  background:none;
+  text-decoration:none;
+  color:#0071c4;
+}
+
+.uploadfield__add-button:hover,.uploadfield__upload-button:hover{
+  color:#0062ab;
+  text-decoration:underline;
+}
+
 .uploadfield__droptext{
   position:absolute;
   top:20px;
-  left:40%;
+  left:50%;
+  -webkit-transform:translateX(-50%);
+          transform:translateX(-50%);
   display:inline-block;
   text-align:center;
 }

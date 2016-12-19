@@ -1,6 +1,6 @@
 <?php
 
-namespace SilverStripe\AssetAdmin\Tests;
+namespace SilverStripe\AssetAdmin\Tests\Forms;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
@@ -32,6 +32,12 @@ class FileFormBuilderTest extends SapphireTest
         /** @var Image $testimage */
         $testimage = $this->objFromFixture(Image::class, 'image1');
         $testimage->setFromLocalFile(__DIR__.'/fixtures/testimage.png', 'files/testimage.png');
+    }
+
+    public function tearDown()
+    {
+        TestAssetStore::reset();
+        parent::tearDown();
     }
 
     public function testEditFileForm()
