@@ -52,9 +52,16 @@ class PreviewImageField extends FormField
                     'FileHash' => $record->FileHash,
                     'FileVariant' => $record->FileVariant,
                 ],
+                'nameField' => 'Name',
             ]);
         }
         return $defaults;
+    }
+    
+    public function performReadonlyTransformation() {
+        $this->setReadonly(true);
+        
+        return $this;
     }
     
     /**

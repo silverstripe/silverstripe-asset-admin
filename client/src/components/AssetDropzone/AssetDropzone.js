@@ -51,6 +51,12 @@ class AssetDropzone extends SilverStripeComponent {
         this.props.options
       ));
 
+    // attach the name as a class to the hidden input for easier identification
+    const name = this.props.name;
+    if (name) {
+      this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
+    }
+
     // Set the user warning displayed when a user attempts to remove a file.
     // If the props hasn't been passed there will be no warning when removing files.
     if (typeof this.props.promptOnRemove !== 'undefined') {

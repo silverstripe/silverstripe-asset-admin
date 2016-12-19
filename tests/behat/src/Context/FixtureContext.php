@@ -96,10 +96,10 @@ class FixtureContext extends BaseFixtureContext
     }
 
     /**
-     * @Given /^I attach the file "([^"]*)" to dropzone$/
+     * @Given /^I attach the file "([^"]*)" to dropzone "([^"]*)"$/
      * @see MinkContext::attachFileToField()
      */
-    public function iAttachTheFileToDropzone($path)
+    public function iAttachTheFileToDropzone($path, $name)
     {
         // Get path
         $filesPath = $this->getMainContext()->getMinkParameter('files_path');
@@ -110,9 +110,14 @@ class FixtureContext extends BaseFixtureContext
             }
         }
 
+        assertFileExists($path, "$path does not exist");
         // Find field
-        $input = $this->getSession()->getPage()->find('css', 'input[type="file"].dz-hidden-input');
-        assertNotNull($input, "Could not find dz-hidden-input");
+        $selector = "input[type=\"file\"].dz-hidden-input.dz-input-{$name}";
+    
+        /** @var DocumentElement $page */
+        $page = $this->getSession()->getPage();
+        $input = $page->find('css', $selector);
+        assertNotNull($input, "Could not find {$selector}");
 
         // Make visible temporarily while attaching
         $this->getSession()->executeScript(
@@ -124,18 +129,9 @@ window.jQuery('.dz-hidden-input')
 EOS
         );
 
+        assert($input->isVisible());
         // Attach via html5
         $input->attachFile($path);
-
-        // Restore hidden state
-        $this->getSession()->executeScript(
-            <<<EOS
-window.jQuery('.dz-hidden-input')
-    .css('visibility', 'hidden')
-    .width(0)
-    .height(0);
-EOS
-        );
     }
 
     /**

@@ -670,6 +670,7 @@ class Gallery extends Component {
         {this.renderBulkActions()}
 
         <AssetDropzone
+          name="gallery-container"
           canUpload={canEdit}
           handleAddedFile={this.handleAddedFile}
           handleError={this.handleFailedUpload}

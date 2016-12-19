@@ -25,8 +25,15 @@ class PreviewImageField extends Component {
     this.props.actions.previewField.removeFile(this.props.id);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.data.url && nextProps.data.url !== this.props.data.url) {
+      this.props.actions.previewField.removeFile(this.props.id);
+    }
+  }
+
   getDropzoneProps() {
     const endpoint = this.props.data.uploadFileEndpoint;
+    const name = this.props.name;
     const options = {
       url: endpoint && endpoint.url,
       method: endpoint && endpoint.method,
@@ -48,6 +55,7 @@ class PreviewImageField extends Component {
     ];
 
     return {
+      name,
       className: classNames.join(' '),
       canUpload: endpoint && this.canEdit(),
       preview,
@@ -153,6 +161,13 @@ class PreviewImageField extends Component {
       this.props.onAutofill('FileFilename', json.Filename);
       this.props.onAutofill('FileHash', json.Hash);
       this.props.onAutofill('FileVariant', json.Variant);
+
+      const oldExt = getFileExtension(this.props.data.url);
+      const newExt = getFileExtension(json.Filename);
+      if (oldExt !== newExt) {
+        // name field to autofill if extension has changed
+        this.props.onAutofill(this.props.data.nameField, json.Name);
+      }
     }
   }
 
@@ -209,11 +224,24 @@ class PreviewImageField extends Component {
       </div>
     ) : null;
     const message = this.props.upload.message;
-    const messageBox = (message) ? (
-      <div className={`preview__message preview__message--${message.type}`}>
-        {message.value}
-      </div>
-    ) : null;
+    let messageBox = null;
+
+    if (message) {
+      messageBox = (
+        <div className={`preview__message preview__message--${message.type}`}>
+          {message.value}
+        </div>
+      );
+    } else if (progress === 100) {
+      messageBox = (
+        <div className="preview__message preview__message--success">
+          {i18n._t(
+            "AssetAdmin.REPlACE_FILE_SUCCESS",
+            "Upload successful, the file will be replaced when you Save."
+          )}
+        </div>
+      )
+    }
 
     return (
       <div className="editor__thumbnail-container">
@@ -297,6 +325,7 @@ PreviewImageField.propTypes = {
     exists: PropTypes.bool,
     preview: PropTypes.string,
     category: PropTypes.string,
+    nameField: PropTypes.string,
     uploadFileEndpoint: PropTypes.shape({
       url: PropTypes.string.isRequired,
       method: PropTypes.string.isRequired,
@@ -325,7 +354,8 @@ PreviewImageField.defaultProps = {
   className: '',
   data: {},
   upload: {},
-  confirm: window.confirm,
+  // eslint-disable-next-line no-alert
+  confirm: (msg) => window.confirm(msg),
 };
 
 function mapStateToProps(state, ownprops) {

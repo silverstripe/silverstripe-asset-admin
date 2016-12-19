@@ -719,7 +719,7 @@
 }
 
 .preview__toolbar-button{
-  padding:11px;
+  padding:11px 0;
   height:47px;
   width:47px;
   overflow:hidden;
@@ -735,7 +735,7 @@
 }
 
 .preview__toolbar-button:before{
-  margin-right:11px;
+  padding:0 11px;
   font-family:silverstripe;
   font-style:normal;
   speak:none;
@@ -771,6 +771,7 @@
   left:0;
   right:0;
   opacity:.8;
+  padding:1.5385rem;
 }
 
 .preview__message--error{
@@ -1140,6 +1141,7 @@
 
 @media (min-width:992px){
   .editor{
+    box-sizing:content-box;
     width:300px;
     border-left:1px solid #d9dee2;
     position:relative;
@@ -1441,5 +1443,6 @@
   position:absolute;
   top:0;
   left:-.76925rem;
+  z-index:2;
 }
 

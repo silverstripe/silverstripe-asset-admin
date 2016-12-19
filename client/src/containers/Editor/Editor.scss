@@ -6,6 +6,7 @@
   left: 0;
 
   @include media-breakpoint-up(lg) {
+    box-sizing: content-box;
     width: $cms-panel-sm;
     border-left: 1px solid $border-color;
     position: relative;

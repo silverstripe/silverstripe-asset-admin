@@ -27,7 +27,7 @@
 }
 
 .preview__toolbar-button {
-  padding: $toolbar-button-padding;
+  padding: $toolbar-button-padding 0;
   height: $toolbar-button-height + (2 * $toolbar-button-padding);
   width: $toolbar-button-width + (2 * $toolbar-button-padding);
   overflow: hidden;
@@ -45,7 +45,7 @@
   }
 
   &:before {
-    margin-right: $toolbar-button-padding;
+    padding: 0 $toolbar-button-padding;
     font-family: "silverstripe";
     font-style: normal;
     speak: none;
@@ -82,6 +82,7 @@
   left: 0;
   right: 0;
   opacity: .8;
+  padding: $panel-padding-y $panel-padding-x;
 }
 
 .preview__message--error {

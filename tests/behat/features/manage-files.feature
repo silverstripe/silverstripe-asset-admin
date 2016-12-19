@@ -26,7 +26,7 @@ Feature: Manage files
 
   Scenario: I can upload a file to a folder
     When I click on the file named "folder1" in the gallery
-      And I attach the file "testfile.jpg" to dropzone
+      And I attach the file "testfile.jpg" to dropzone "gallery-container"
     Then I should see the file named "testfile" in the gallery
 
   Scenario: I can edit a file
