@@ -21,14 +21,14 @@ class PreviewImageField extends Component {
     this.canFileUpload = this.canFileUpload.bind(this);
   }
 
-  componentWillUnmount() {
-    this.props.actions.previewField.removeFile(this.props.id);
-  }
-
   componentWillReceiveProps(nextProps) {
     if (this.props.data.url && nextProps.data.url !== this.props.data.url) {
       this.props.actions.previewField.removeFile(this.props.id);
     }
+  }
+
+  componentWillUnmount() {
+    this.props.actions.previewField.removeFile(this.props.id);
   }
 
   getDropzoneProps() {
@@ -211,7 +211,7 @@ class PreviewImageField extends Component {
     const preview = (category && category !== 'image')
       ? CONSTANTS.DEFAULT_PREVIEW
       : this.props.upload.url || data.preview || data.url;
-    const image = <img src={preview} className="editor__thumbnail" />;
+    const image = <img alt="preview" src={preview} className="editor__thumbnail" />;
     const linkedImage = (data.url) ? (
       <a className="editor__file-preview-link" href={data.url} target="_blank">
         {image}
@@ -236,11 +236,11 @@ class PreviewImageField extends Component {
       messageBox = (
         <div className="preview__message preview__message--success">
           {i18n._t(
-            "AssetAdmin.REPlACE_FILE_SUCCESS",
-            "Upload successful, the file will be replaced when you Save."
+            'AssetAdmin.REPlACE_FILE_SUCCESS',
+            'Upload successful, the file will be replaced when you Save.'
           )}
         </div>
-      )
+      );
     }
 
     return (

@@ -1788,8 +1788,8 @@ r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Obj
 function t(e){i(this,t)
 var n=s(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleAddedFile=n.handleAddedFile.bind(n),n.handleFailedUpload=n.handleFailedUpload.bind(n),n.handleSuccessfulUpload=n.handleSuccessfulUpload.bind(n),n.handleSending=n.handleSending.bind(n),n.handleUploadProgress=n.handleUploadProgress.bind(n),
-n.handleCancelUpload=n.handleCancelUpload.bind(n),n.handleRemoveErroredUpload=n.handleRemoveErroredUpload.bind(n),n.canFileUpload=n.canFileUpload.bind(n),n}return a(t,e),p(t,[{key:"componentWillUnmount",
-value:function n(){this.props.actions.previewField.removeFile(this.props.id)}},{key:"componentWillReceiveProps",value:function r(e){this.props.data.url&&e.data.url!==this.props.data.url&&this.props.actions.previewField.removeFile(this.props.id)
+n.handleCancelUpload=n.handleCancelUpload.bind(n),n.handleRemoveErroredUpload=n.handleRemoveErroredUpload.bind(n),n.canFileUpload=n.canFileUpload.bind(n),n}return a(t,e),p(t,[{key:"componentWillReceiveProps",
+value:function n(e){this.props.data.url&&e.data.url!==this.props.data.url&&this.props.actions.previewField.removeFile(this.props.id)}},{key:"componentWillUnmount",value:function r(){this.props.actions.previewField.removeFile(this.props.id)
 
 }},{key:"getDropzoneProps",value:function o(){var e=this.props.data.uploadFileEndpoint,t=this.props.name,n={url:e&&e.url,method:e&&e.method,paramName:"Upload",clickable:"#preview-replace-button",maxFiles:1
 },r={height:v["default"].THUMBNAIL_HEIGHT,width:v["default"].THUMBNAIL_WIDTH},o=this.props.securityID,i=["asset-dropzone--button","preview__container",this.props.className,this.props.extraClass]
@@ -1813,9 +1813,9 @@ var n=(0,S.getFileExtension)(this.props.data.url),r=(0,S.getFileExtension)(t.Fil
 n!==r&&this.props.onAutofill(this.props.data.nameField,t.Name)}}},{key:"handleSending",value:function E(e,t){this.props.actions.previewField.updateFile(this.props.id,{xhr:t})}},{key:"handleUploadProgress",
 value:function _(e,t){this.props.actions.previewField.updateFile(this.props.id,{progress:t})}},{key:"renderImage",value:function w(){var e=this.props.data
 if(!e.exists&&!this.props.upload.url)return h["default"].createElement("div",{className:"editor__file-preview-message--file-missing"},c["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found"))
-var t=this.props.upload.category,n=t&&"image"!==t?v["default"].DEFAULT_PREVIEW:this.props.upload.url||e.preview||e.url,r=h["default"].createElement("img",{src:n,className:"editor__thumbnail"}),o=e.url?h["default"].createElement("a",{
-className:"editor__file-preview-link",href:e.url,target:"_blank"},r):null,i=this.props.upload.progress,s=i>0&&i<100?h["default"].createElement("div",{className:"preview__progress"},h["default"].createElement("div",{
-className:"preview__progress-bar",style:{width:i+"%"}})):null,a=this.props.upload.message,l=null
+var t=this.props.upload.category,n=t&&"image"!==t?v["default"].DEFAULT_PREVIEW:this.props.upload.url||e.preview||e.url,r=h["default"].createElement("img",{alt:"preview",src:n,className:"editor__thumbnail"
+}),o=e.url?h["default"].createElement("a",{className:"editor__file-preview-link",href:e.url,target:"_blank"},r):null,i=this.props.upload.progress,s=i>0&&i<100?h["default"].createElement("div",{className:"preview__progress"
+},h["default"].createElement("div",{className:"preview__progress-bar",style:{width:i+"%"}})):null,a=this.props.upload.message,l=null
 return a?l=h["default"].createElement("div",{className:"preview__message preview__message--"+a.type},a.value):100===i&&(l=h["default"].createElement("div",{className:"preview__message preview__message--success"
 },c["default"]._t("AssetAdmin.REPlACE_FILE_SUCCESS","Upload successful, the file will be replaced when you Save."))),h["default"].createElement("div",{className:"editor__thumbnail-container"},o||r,s,l)
 
