@@ -212,12 +212,12 @@ class PreviewImageField extends Component {
       ? CONSTANTS.DEFAULT_PREVIEW
       : this.props.upload.url || data.preview || data.url;
     const image = <img alt="preview" src={preview} className="editor__thumbnail" />;
-    const linkedImage = (data.url) ? (
+    const progress = this.props.upload.progress;
+    const linkedImage = (data.url && !progress) ? (
       <a className="editor__file-preview-link" href={data.url} target="_blank">
         {image}
       </a>
     ) : null;
-    const progress = this.props.upload.progress;
     const progressBar = (progress > 0 && progress < 100) ? (
       <div className="preview__progress">
         <div className="preview__progress-bar" style={{ width: `${progress}%` }} />

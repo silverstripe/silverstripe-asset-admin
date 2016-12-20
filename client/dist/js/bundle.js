@@ -1814,10 +1814,10 @@ n!==r&&this.props.onAutofill(this.props.data.nameField,t.Name)}}},{key:"handleSe
 value:function _(e,t){this.props.actions.previewField.updateFile(this.props.id,{progress:t})}},{key:"renderImage",value:function w(){var e=this.props.data
 if(!e.exists&&!this.props.upload.url)return h["default"].createElement("div",{className:"editor__file-preview-message--file-missing"},c["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found"))
 var t=this.props.upload.category,n=t&&"image"!==t?v["default"].DEFAULT_PREVIEW:this.props.upload.url||e.preview||e.url,r=h["default"].createElement("img",{alt:"preview",src:n,className:"editor__thumbnail"
-}),o=e.url?h["default"].createElement("a",{className:"editor__file-preview-link",href:e.url,target:"_blank"},r):null,i=this.props.upload.progress,s=i>0&&i<100?h["default"].createElement("div",{className:"preview__progress"
-},h["default"].createElement("div",{className:"preview__progress-bar",style:{width:i+"%"}})):null,a=this.props.upload.message,l=null
-return a?l=h["default"].createElement("div",{className:"preview__message preview__message--"+a.type},a.value):100===i&&(l=h["default"].createElement("div",{className:"preview__message preview__message--success"
-},c["default"]._t("AssetAdmin.REPlACE_FILE_SUCCESS","Upload successful, the file will be replaced when you Save."))),h["default"].createElement("div",{className:"editor__thumbnail-container"},o||r,s,l)
+}),o=this.props.upload.progress,i=e.url&&!o?h["default"].createElement("a",{className:"editor__file-preview-link",href:e.url,target:"_blank"},r):null,s=o>0&&o<100?h["default"].createElement("div",{className:"preview__progress"
+},h["default"].createElement("div",{className:"preview__progress-bar",style:{width:o+"%"}})):null,a=this.props.upload.message,l=null
+return a?l=h["default"].createElement("div",{className:"preview__message preview__message--"+a.type},a.value):100===o&&(l=h["default"].createElement("div",{className:"preview__message preview__message--success"
+},c["default"]._t("AssetAdmin.REPlACE_FILE_SUCCESS","Upload successful, the file will be replaced when you Save."))),h["default"].createElement("div",{className:"editor__thumbnail-container"},i||r,s,l)
 
 }},{key:"renderToolbar",value:function P(){var e=this.canEdit()
 return this.props.data.url||e?h["default"].createElement("div",{className:"preview__toolbar fill-height"},this.props.data.url?h["default"].createElement("a",{href:this.props.data.url,target:"_blank",className:"preview__toolbar-button--link preview__toolbar-button"
