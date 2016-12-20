@@ -27,8 +27,9 @@ export class HistoryList extends Component {
     this.refreshHistoryIfNeeded();
   }
 
-  componentDidUpdate(prevProps) {
-    this.refreshHistoryIfNeeded(prevProps);
+  componentWillReceiveProps(nextProps) {
+    // TODO race conditions happening, this should have history state shifted to redux
+    this.refreshHistoryIfNeeded(nextProps);
   }
 
   /**
@@ -43,18 +44,17 @@ export class HistoryList extends Component {
   /**
    * Determine if the history list requires a refresh
    *
-   * @param {object} prevProps
+   * @param {object} nextProps
    */
-  refreshHistoryIfNeeded(prevProps) {
-    if (!prevProps
-      || (prevProps.data.fileId !== this.props.data.fileId)
-      || !this.state.history
-      || (prevProps.data.latestVersionId !== this.props.data.latestVersionId)
+  refreshHistoryIfNeeded(nextProps) {
+    if (!nextProps
+      || (nextProps.data.fileId !== this.props.data.fileId)
+      || (nextProps.data.latestVersionId !== this.props.data.latestVersionId)
     ) {
-      this.api({ fileId: this.props.data.fileId }).then((json) => {
-        this.setState({
-          history: json,
-        });
+      this.api({
+        fileId: (nextProps) ? nextProps.data.fileId : this.props.data.fileId,
+      }).then((history) => {
+        this.setState({ history });
       });
     }
   }

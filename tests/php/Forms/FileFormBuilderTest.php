@@ -64,14 +64,13 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertEquals('files/', $filePath);
 
         /** @var LiteralField $iconFullField */
-        $iconFullField = $form->Fields()->fieldByName('IconFull');
-        $fileThumbnail = $iconFullField->getContent();
-        $this->assertEquals(
-            '<a class="editor__file-preview-link" href="/assets/files/6adf67caca/testfile.txt" target="_blank">'.
-                '<img src="framework/client/dist/images/app_icons/document_92.png" class="editor__thumbnail" />'.
-            '</a>',
-            $fileThumbnail
-        );
+        $iconFullField = $form->Fields()->fieldByName('PreviewImage');
+        $state = $iconFullField->getSchemaStateDefaults();
+        $this->assertEquals($file->Parent()->ID, $state['data']['parentid']);
+        $this->assertContains('testfile.txt', $state['data']['url']);
+        $this->assertTrue($state['data']['exists']);
+        $this->assertContains('document_92.png', $state['data']['preview']);
+        $this->assertEquals('document', $state['data']['category']);
 
         // Usage tab
         $uploaded = $form->Fields()->fieldByName('Editor.Usage.Created');
@@ -118,6 +117,8 @@ class FileFormBuilderTest extends SapphireTest
         $this->logInWithPermission('ADMIN');
 
         $image = $this->objFromFixture(Image::class, 'image1');
+        // write so that PreviewImageField could load this later on
+        $image->write();
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
         $form = $builder->getForm($controller, 'EditForm', ['Record' => $image]);
@@ -125,12 +126,13 @@ class FileFormBuilderTest extends SapphireTest
         // Check thumbnail
         // Note: force_resample is turned off for testing
         /** @var LiteralField $iconFullField */
-        $iconFullField = $form->Fields()->fieldByName('IconFull');
-        $fileThumbnail = $iconFullField->getContent();
-        $this->assertContains(
-            '/FileFormBuilderTest/files/906835357d/testimage.png',
-            $fileThumbnail
-        );
+        $iconFullField = $form->Fields()->fieldByName('PreviewImage');
+        $state = $iconFullField->getSchemaStateDefaults();
+        $this->assertEquals($image->Parent()->ID, $state['data']['parentid']);
+        $this->assertContains('testimage.png', $state['data']['url']);
+        $this->assertTrue($state['data']['exists']);
+        $this->assertContains('testimage.png', $state['data']['preview']);
+        $this->assertEquals('image', $state['data']['category']);
     }
 
     public function testInsertImageForm()
@@ -162,14 +164,13 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertNull($form->Fields()->fieldByName('Editor.Details.ClickableURL'));
         $this->assertNull($form->Fields()->fieldByName('Editor.Usage'));
 
-        /** @var LiteralField $iconField */
-        $iconField = $form->Fields()->fieldByName('IconFull');
-        $fileThumbnail = $iconField->getContent();
-        $this->assertEquals(
-            '<img src="framework/client/dist/images/app_icons/folder_icon_large.png" class="editor__thumbnail" />',
-            $fileThumbnail
-        );
-
+        /** @var LiteralField $iconFullField */
+        $iconFullField = $form->Fields()->fieldByName('PreviewImage');
+        $state = $iconFullField->getSchemaStateDefaults();
+        $this->assertEquals($folder->Parent()->ID, $state['data']['parentid']);
+        $this->assertTrue($state['data']['exists']);
+        $this->assertContains('folder_icon_large.png', $state['data']['preview']);
+        $this->assertEquals('folder', $state['data']['category']);
 
         // Check actions
         $this->assertNotNull($form->Actions()->fieldByName('action_save'));

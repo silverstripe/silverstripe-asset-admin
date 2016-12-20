@@ -82,21 +82,6 @@ abstract class AssetFormFactory implements FormFactory
     }
 
     /**
-     * Get raw HTML for image markup
-     *
-     * @param File $file
-     * @return string
-     */
-    protected function getIconMarkup($file)
-    {
-        if (!$file) {
-            return null;
-        }
-        $previewLink = Convert::raw2att($file->PreviewLink());
-        return "<img src=\"{$previewLink}\" class=\"editor__thumbnail\" />";
-    }
-
-    /**
      * Gets the main tabs for the file edit form
      *
      * @param File $record
@@ -161,7 +146,8 @@ abstract class AssetFormFactory implements FormFactory
         $fields = new FieldList(
             HeaderField::create('TitleHeader', $record ? $record->Title : null, 1)
                 ->addExtraClass('editor__heading'),
-            LiteralField::create("IconFull", $this->getIconMarkup($record))
+            PreviewImageField::create('PreviewImage')
+                ->setRecordID($record->ID)
                 ->addExtraClass('editor__file-preview'),
             $this->getFormFieldTabs($record, $context)
         );

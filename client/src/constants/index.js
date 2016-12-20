@@ -43,4 +43,5 @@ export default {
   BULK_ACTIONS_PLACEHOLDER: i18n._t('AssetAdmin.BULK_ACTIONS_PLACEHOLDER'),
   SPACE_KEY_CODE: 32,
   RETURN_KEY_CODE: 13,
+  DEFAULT_PREVIEW: 'framework/client/dist/images/app_icons/generic_92.png',
 };

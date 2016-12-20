@@ -193,6 +193,7 @@ class UploadField extends SilverStripeComponent {
       height: CONSTANTS.SMALL_THUMBNAIL_HEIGHT,
       width: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
     };
+    const name = this.props.name;
     const dropzoneOptions = {
       url: this.props.data.createFileEndpoint.url,
       method: this.props.data.createFileEndpoint.method,
@@ -215,6 +216,7 @@ class UploadField extends SilverStripeComponent {
     // @todo add ` or <a>add from files</a>` once we implement file dialog
     return (
       <AssetDropzone
+        name={name}
         canUpload
         uploadButton={false}
         uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"

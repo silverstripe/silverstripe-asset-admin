@@ -122,10 +122,14 @@ class FileFormFactory extends AssetFormFactory
 
         // Add status flag before extensions are triggered
         $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record) {
+            // @todo move specs to a component/class, so it can update specs when a File is replaced
             $fields->insertAfter(
                 'TitleHeader',
                 LiteralField::create('FileSpecs', $this->getSpecsMarkup($record))
             );
+            $fields->push(HiddenField::create('FileFilename'));
+            $fields->push(HiddenField::create('FileHash'));
+            $fields->push(HiddenField::create('FileVariant'));
         });
 
         return parent::getFormFields($controller, $name, $context);
@@ -170,35 +174,6 @@ class FileFormFactory extends AssetFormFactory
         // Update
         $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
         return $actions;
-    }
-
-    /**
-     * Get raw HTML for image markup
-     *
-     * @param File $file
-     * @return string
-     */
-    protected function getIconMarkup($file)
-    {
-        $markup = parent::getIconMarkup($file);
-        if (!$markup) {
-            return null;
-        }
-        if (!$file->exists()) {
-            return sprintf(
-                '<div class="%s">%s</div>',
-                'editor__file-preview-message--file-missing',
-                _t('AssetAdmin.FILE_MISSING', 'File cannot be found')
-            );
-        }
-        $link = $file->Link();
-        $linkedImage = sprintf(
-            '<a class="%s" href="%s" target="_blank">%s</a>',
-            'editor__file-preview-link',
-            $link,
-            $markup
-        );
-        return $linkedImage;
     }
 
     /**

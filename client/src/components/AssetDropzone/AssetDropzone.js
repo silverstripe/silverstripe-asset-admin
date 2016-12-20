@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
-import { fileSize } from 'lib/DataFormat';
 import $ from 'jQuery';
+import { getFileExtension } from 'lib/DataFormat';
 
 let idCounter = 0;
 
@@ -50,6 +50,12 @@ class AssetDropzone extends SilverStripeComponent {
         defaultOptions,
         this.props.options
       ));
+
+    // attach the name as a class to the hidden input for easier identification
+    const name = this.props.name;
+    if (name) {
+      this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
+    }
 
     // Set the user warning displayed when a user attempts to remove a file.
     // If the props hasn't been passed there will be no warning when removing files.
@@ -266,8 +272,14 @@ class AssetDropzone extends SilverStripeComponent {
     formData.append('SecurityID', this.props.securityID);
     formData.append('ParentID', this.props.folderId);
 
+    const newXhr = Object.assign({}, xhr, {
+      abort: () => {
+        this.dropzone.cancelUpload(file);
+        xhr.abort();
+      },
+    });
     if (typeof this.props.handleSending === 'function') {
-      this.props.handleSending(file, xhr, formData);
+      this.props.handleSending(file, newXhr, formData);
     }
   }
 
@@ -286,7 +298,24 @@ class AssetDropzone extends SilverStripeComponent {
    * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleAddedFile(file) {
+    if (this.props.options.maxFiles && this.dropzone.files.length > this.props.options.maxFiles) {
+      this.dropzone.removeFile(this.dropzone.files[0]);
+      if (typeof this.props.handleMaxFilesExceeded === 'function') {
+        // can add a warning message here
+        this.props.handleMaxFilesExceeded(file);
+      }
+      // shouldn't return error, as there isn't a way to catch it...
+      return Promise.resolve();
+    }
+
+    // check with parent if there are other forms of validation to be done
+    if (typeof this.props.canFileUpload === 'function' && !this.props.canFileUpload(file)) {
+      this.dropzone.removeFile(file);
+      return Promise.resolve();
+    }
+
     if (!this.props.canUpload) {
+      this.dropzone.removeFile(file);
       return Promise.reject(new Error(i18n._t('AssetAdmin.DROPZONE_CANNOT_UPLOAD')));
     }
 
@@ -326,9 +355,9 @@ class AssetDropzone extends SilverStripeComponent {
         category: this.getFileCategory(file.type),
         filename: file.name,
         queuedId: file._queuedId,
-        size: fileSize(file.size),
+        size: file.size,
         title: this.getFileTitle(file.name),
-        extension: this.getFileExtension(file.name),
+        extension: getFileExtension(file.name),
         type: file.type,
         url: preview.thumbnailURL,
       };
@@ -350,12 +379,6 @@ class AssetDropzone extends SilverStripeComponent {
     return filename
       .replace(/[.][^.]+$/, '')
       .replace(/-_/, ' ');
-  }
-
-  getFileExtension(filename) {
-    return /[.]/.exec(filename)
-      ? filename.replace(/^.+[.]/, '')
-      : '';
   }
 
   /**
@@ -409,28 +432,34 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Event handler for failed uploads.
    *
-   * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
-   * @param errorMessage (string)
+   * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {string} message
    */
-  handleError(file, messages) {
+  handleError(file, message) {
+    // remove files list, as they are no longer needed
+    this.dropzone.removeFile(file);
+
     if (typeof this.props.handleError === 'function') {
-      this.props.handleError(file, messages);
+      this.props.handleError(file, message);
     }
   }
 
   /**
    * Event handler for successfully upload files.
    *
-   * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleSuccess(file) {
+    // remove files list, as they are no longer needed
+    this.dropzone.removeFile(file);
+
     this.props.handleSuccess(file);
   }
 
   /**
    * Set the text displayed when a user tries to remove a file.
    *
-   * @param string userPrompt - The message to display.
+   * @param {string} userPrompt - The message to display.
    */
   setPromptOnRemove(userPrompt) {
     this.dropzone.options.dictRemoveFileConfirmation = userPrompt;
@@ -447,6 +476,8 @@ AssetDropzone.propTypes = {
   handleError: React.PropTypes.func.isRequired,
   handleSending: React.PropTypes.func,
   handleSuccess: React.PropTypes.func.isRequired,
+  handleMaxFilesExceeded: React.PropTypes.func,
+  canFileUpload: React.PropTypes.func,
   options: React.PropTypes.shape({
     url: React.PropTypes.string.isRequired,
   }),

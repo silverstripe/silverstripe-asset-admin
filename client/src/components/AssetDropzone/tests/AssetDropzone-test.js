@@ -17,9 +17,9 @@ describe('AssetDropzone', () => {
       options: {
         url: 'upload',
       },
-      handleAddedFile: () => null,
-      handleError: () => null,
-      handleSuccess: () => null,
+      handleAddedFile: jest.genMockFunction(),
+      handleError: jest.genMockFunction(),
+      handleSuccess: jest.genMockFunction(),
       folderId: 1,
       securityID: '123',
       canUpload: true,
@@ -40,6 +40,92 @@ describe('AssetDropzone', () => {
       item.constructor(props);
 
       expect(item.dropzone).toBe(null);
+    });
+  });
+
+  describe('handleError()', () => {
+    it('should remove the file in dropzone', () => {
+      const item = ReactTestUtils.renderIntoDocument(
+        <AssetDropzone {...props} />
+      );
+      item.dropzone = {
+        removeFile: jest.genMockFunction(),
+      };
+      const file = {};
+
+      item.handleError(file, '');
+      expect(item.dropzone.removeFile).toBeCalledWith(file);
+      expect(props.handleError).toBeCalledWith(file, '');
+    });
+  });
+
+  describe('handleSuccess()', () => {
+    it('should remove the file in dropzone', () => {
+      const item = ReactTestUtils.renderIntoDocument(
+        <AssetDropzone {...props} />
+      );
+      item.dropzone = {
+        removeFile: jest.genMockFunction(),
+      };
+      const file = {};
+
+      item.handleSuccess(file);
+      expect(item.dropzone.removeFile).toBeCalledWith(file);
+      expect(props.handleSuccess).toBeCalledWith(file);
+    });
+  });
+
+  describe('props.maxFiles', () => {
+    let item = null;
+
+    beforeEach(() => {
+      props.handleMaxFilesExceeded = jest.genMockFunction();
+      props.options.maxFiles = 2;
+      item = ReactTestUtils.renderIntoDocument(
+        <AssetDropzone {...props} />
+      );
+    });
+
+    it('should not remove anything if not exceeded', () => {
+      item.dropzone = {
+        files: ['a'],
+        removeFile: jest.genMockFunction(),
+      };
+
+      item.handleAddedFile({});
+
+      expect(item.dropzone.removeFile).not.toBeCalled();
+      expect(props.handleMaxFilesExceeded).not.toBeCalled();
+    });
+
+    it('should remove the first file if exceeded and trigger callback', () => {
+      item.dropzone = {
+        files: ['a', 'b', 'c'],
+        removeFile: jest.genMockFunction(),
+      };
+
+      item.handleAddedFile({});
+
+      expect(item.dropzone.removeFile).toBeCalled();
+      expect(props.handleMaxFilesExceeded).toBeCalled();
+    });
+  });
+
+  describe('xhr.abort()', () => {
+    it('should call dropzone.cancelUpload() when abort is called', () => {
+      props.handleSending = (file, xhr) => {
+        xhr.abort();
+      };
+      const item = ReactTestUtils.renderIntoDocument(
+        <AssetDropzone {...props} />
+      );
+      item.dropzone = {
+        cancelUpload: jest.genMockFunction(),
+      };
+
+      item.handleSending({}, { abort: () => null }, new FormData());
+
+      expect(item.dropzone.cancelUpload).toBeCalled();
     });
   });
 
@@ -125,7 +211,7 @@ describe('AssetDropzone', () => {
         .then((details) => {
           expect(uploadProps.handleAddedFile).toBeCalled();
           expect(item.dropzone.processFile).toBeCalled();
-          expect(details.size).toBe('123 bytes');
+          expect(details.size).toBe(123);
           expect(details.title).toBe('Test file');
           expect(details.url).toBeUndefined();
         })

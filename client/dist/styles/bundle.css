@@ -469,6 +469,10 @@
   content:"";
 }
 
+.asset-dropzone--button{
+  position:static;
+}
+
 .uploadfield__dropzone{
   position:relative;
   left:0;
@@ -683,6 +687,101 @@
   display:inline;
   font-family:silverstripe,sans-serif;
   content:"I";
+}
+
+.preview__container{
+  position:relative;
+}
+
+.preview__toolbar{
+  position:absolute;
+  top:50%;
+  right:0;
+  -webkit-transform:translateY(-50%);
+          transform:translateY(-50%);
+  height:auto;
+  max-height:100%;
+  border-bottom-left-radius:.25rem;
+  border-top-left-radius:.25rem;
+  overflow:hidden;
+}
+
+.preview__toolbar-button--link:before{
+  content:"=";
+}
+
+.preview__toolbar-button--replace:before{
+  content:"b";
+}
+
+.preview__toolbar-button--remove:before{
+  content:"D";
+}
+
+.preview__toolbar-button{
+  padding:11px 0;
+  height:47px;
+  width:47px;
+  overflow:hidden;
+  background:#000;
+  opacity:.55;
+  color:#fff;
+  border:0;
+}
+
+.preview__toolbar-button:active,.preview__toolbar-button:focus,.preview__toolbar-button:hover{
+  color:#b3b3b3;
+  text-decoration:none;
+}
+
+.preview__toolbar-button:before{
+  padding:0 11px;
+  font-family:silverstripe;
+  font-style:normal;
+  speak:none;
+  line-height:1;
+  font-size:25px;
+  height:25px;
+  width:25px;
+  vertical-align:middle;
+}
+
+.preview__progress{
+  height:18px;
+  width:75%;
+  position:absolute;
+  top:50%;
+  left:50%;
+  -webkit-transform:translateX(-50%) translateY(-50%);
+          transform:translateX(-50%) translateY(-50%);
+  border-radius:10px;
+  overflow:hidden;
+  background:#e6e6e6;
+}
+
+.preview__progress-bar{
+  height:100%;
+  background:#29abe2;
+  width:0;
+}
+
+.preview__message{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  opacity:.8;
+  padding:1.5385rem;
+}
+
+.preview__message--error{
+  color:#fff;
+  background:#d40404;
+}
+
+.preview__message--success{
+  color:#fff;
+  background:#3fa142;
 }
 
 .gallery,.gallery__main,.gallery__outer{
@@ -1042,6 +1141,7 @@
 
 @media (min-width:992px){
   .editor{
+    box-sizing:content-box;
     width:300px;
     border-left:1px solid #d9dee2;
     position:relative;
@@ -1343,5 +1443,6 @@
   position:absolute;
   top:0;
   left:-.76925rem;
+  z-index:2;
 }
 

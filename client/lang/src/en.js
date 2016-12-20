@@ -35,6 +35,7 @@
     "AssetAdmin.LOADMORE": "Load more",
     "AssetAdmin.NOITEMSFOUND": "No items found",
     "AssetAdmin.PROMPTFOLDERNAME": "Please enter a folder name (or blank to cancel)",
+    "AssetAdmin.REPlACE_FILE_SUCCESS": "Upload successful, the file will be replaced when you Save.",
     "AssetAdmin.SAVE": "Save",
     "AssetAdmin.SELECT": "Select",
     "AssetAdmin.SIZE": "Size",
