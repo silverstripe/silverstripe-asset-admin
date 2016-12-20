@@ -462,7 +462,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @param HTTPRequest $request
      * @return HTTPRequest|HTTPResponse
      */
-    public function apiUploadFile(HTTPRequest $request) {
+    public function apiUploadFile(HTTPRequest $request)
+    {
         $data = $request->postVars();
         $upload = $this->getUpload();
         
@@ -480,7 +481,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
     
         $tmpFile = $data['Upload'];
-        if(!$upload->validate($tmpFile)) {
+        if (!$upload->validate($tmpFile)) {
             $result = ['message' => null];
             $errors = $upload->getErrors();
             if ($message = array_shift($errors)) {

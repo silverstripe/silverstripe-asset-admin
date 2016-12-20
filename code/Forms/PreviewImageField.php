@@ -58,7 +58,8 @@ class PreviewImageField extends FormField
         return $defaults;
     }
     
-    public function performReadonlyTransformation() {
+    public function performReadonlyTransformation()
+    {
         $this->setReadonly(true);
         
         return $this;
