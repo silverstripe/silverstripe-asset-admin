@@ -183,6 +183,8 @@ class Search extends SilverStripeComponent {
       data.AllFolders = 1;
     }
 
+    this.setState({ view: view.NONE });
+
     this.props.handleDoSearch(data);
   }
 

@@ -70,6 +70,7 @@ class Gallery extends Component {
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
+    this.handleClearSearch = this.handleClearSearch.bind(this);
   }
 
   componentDidMount() {
@@ -345,6 +346,10 @@ class Gallery extends Component {
     return this.props.fileId === id;
   }
 
+  handleClearSearch(event) {
+    this.handleOpenFolder(event, this.props.folder);
+  }
+
   /**
    * Handles a user drilling down into a folder.
    *
@@ -493,10 +498,78 @@ class Gallery extends Component {
    */
   renderSearchAlert() {
     const search = this.props.search;
-    if (!search || JSON.stringify(search) === JSON.stringify({})) {
+    if (!search || Object.keys(search).length === 0) {
       return null;
     }
-    return <FormAlert value="Search results with keywords 'cat'" type="warning" />;
+
+    const messages = [];
+    if (search.Name) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEKEYWORDS',
+        'with keywords \'{Name}\''
+      ));
+    }
+
+    if (search.CreatedFrom && search.CreatedTo) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
+        'edited between \'{CreatedFrom}\' to \'{CreatedTo}\''
+      ));
+    } else if (search.CreatedFrom) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDFROM',
+        'edited from \'{CreatedFrom}\''
+      ));
+    } else if (search.CreatedTo) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDTO',
+        'edited before \'{CreatedTo}\''
+      ));
+    }
+
+    if (search.AppCategory) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGECATEGORY',
+        'categorised as \'{AppCategory}\''
+      ));
+    }
+
+    if (!search.AllFolders) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGELIMIT',
+        'limited to the folder \'{Folder}\''
+      ));
+    }
+
+    const parts = [
+      messages.slice(0, -1).join(`${i18n._t('LeftAndMain.JOIN', ',')} `),
+      messages.slice(-1)
+    ].join(` ${i18n._t('LeftAndMain.JOINLAST', 'and')} `);
+
+    const searchResults = {
+      parts: i18n.inject(parts, Object.assign(
+        { Folder: this.props.folder.title},
+        search,
+      )),
+    };
+
+    const fullMessage = i18n.inject(
+      i18n._t('LeftAndMain.SEARCHRESULTSMESSAGE', 'Search results {parts}'),
+      searchResults
+    );
+
+    const body = (
+      <div className="gallery__search-message fill-width">
+        <div>{fullMessage}</div>
+        <div>
+          <button onClick={this.handleClearSearch} className="btn btn-secondary-outline">
+            {i18n._t('LeftAndMain.SEARCHCLEARRESULTS', 'Clear search')}
+          </button>
+        </div>
+      </div>
+    );
+
+    return <FormAlert value={{ react: body }} type="warning" />;
   }
 
   /**
@@ -788,6 +861,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   folderId: PropTypes.number.isRequired,
   folder: PropTypes.shape({
     id: PropTypes.number,
+    title: PropTypes.string,
     parentId: PropTypes.number,
     canView: PropTypes.bool,
     canEdit: PropTypes.bool,

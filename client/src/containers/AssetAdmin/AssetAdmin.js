@@ -194,11 +194,24 @@ class AssetAdmin extends SilverStripeComponent {
       // Add current folder
       breadcrumbs.push({
         text: folder.title,
+        href: this.props.getUrl && this.props.getUrl(folder.id),
+        onClick: (event) => {
+          event.preventDefault();
+          this.handleBrowse(folder.id);
+        },
         icon: {
           className: 'icon font-icon-edit-list',
           action: this.handleFolderIcon,
         },
       });
+
+      // Search leaf if there was a search entered
+      if (Object.keys(this.props.query.q).length > 0) {
+        breadcrumbs.push({
+          text: i18n._t('LeftAndMain.SEARCHRESULTS', 'Search results'),
+          noCrumb: true,
+        });
+      }
     }
 
     this.props.actions.breadcrumbsActions.setBreadcrumbs(breadcrumbs);
