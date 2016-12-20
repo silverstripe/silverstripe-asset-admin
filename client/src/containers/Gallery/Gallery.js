@@ -12,6 +12,7 @@ import BulkActions from 'components/BulkActions/BulkActions';
 import ThumbnailView from 'containers/ThumbnailView/ThumbnailView';
 import TableView from 'containers/TableView/TableView';
 import CONSTANTS from 'constants/index';
+import FormAlert from 'components/FormAlert/FormAlert';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import { graphql, withApollo } from 'react-apollo';
@@ -486,6 +487,19 @@ class Gallery extends Component {
   }
 
   /**
+   * Render the form search notification
+   *
+   * @return {XML}
+   */
+  renderSearchAlert() {
+    const search = this.props.search;
+    if (!search || JSON.stringify(search) === JSON.stringify({})) {
+      return null;
+    }
+    return <FormAlert value="Search results with keywords 'cat'" type="warning" />;
+  }
+
+  /**
    * Renders the react component buttons for changing the view that is currently being used
    *
    * @returns {Array} buttons
@@ -711,7 +725,7 @@ class Gallery extends Component {
 
           <div className={galleryClasses.join(' ')}>
             {this.renderToolbar()}
-
+            {this.renderSearchAlert()}
             {this.renderGalleryView()}
           </div>
         </AssetDropzone>
