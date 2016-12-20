@@ -18,6 +18,7 @@ describe('PreviewImageField', () => {
       data: {
         category: 'file',
         exists: true,
+        nameField: 'Name',
       },
       onAutofill: jest.genMockFunction(),
       actions: {
@@ -34,6 +35,7 @@ describe('PreviewImageField', () => {
         xhr: {
           response: JSON.stringify({
             Filename: 'abc.jpg',
+            Name: 'abc.jpg',
             Hash: 'zxcvqwer',
             Variant: '123',
           }),
@@ -44,13 +46,15 @@ describe('PreviewImageField', () => {
       );
       item.handleSuccessfulUpload(fileXhr);
 
-      expect(props.onAutofill.mock.calls.length).toBe(3);
+      expect(props.onAutofill.mock.calls.length).toBe(4);
       expect(props.onAutofill.mock.calls[0][0]).toBe('FileFilename');
       expect(props.onAutofill.mock.calls[0][1]).toBe('abc.jpg');
       expect(props.onAutofill.mock.calls[1][0]).toBe('FileHash');
       expect(props.onAutofill.mock.calls[1][1]).toBe('zxcvqwer');
       expect(props.onAutofill.mock.calls[2][0]).toBe('FileVariant');
       expect(props.onAutofill.mock.calls[2][1]).toBe('123');
+      expect(props.onAutofill.mock.calls[3][0]).toBe('Name');
+      expect(props.onAutofill.mock.calls[3][1]).toBe('abc.jpg');
     });
   });
 
