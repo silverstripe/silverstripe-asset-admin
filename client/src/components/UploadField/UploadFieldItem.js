@@ -3,6 +3,7 @@ import React from 'react';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import CONSTANTS from 'constants';
 import fileShape from 'lib/fileShape';
+import { fileSize } from 'lib/DataFormat';
 
 class UploadFieldItem extends SilverStripeComponent {
   constructor(props) {
@@ -242,13 +243,17 @@ class UploadFieldItem extends SilverStripeComponent {
    * @returns {XML}
    */
   renderFileDetails() {
+    let size = '';
+    if (this.props.item.size) {
+      size = `, ${fileSize(this.props.item.size)}`;
+    }
     return (
       <div className="uploadfield-item__details fill-width flexbox-area-grow">
         <span className="uploadfield-item__title" ref="title">
           {this.props.item.title}
         </span>
         <span className="uploadfield-item__meta">
-          {this.props.item.extension}, {this.props.item.size}
+          {this.props.item.extension}{size}
         </span>
       </div>
     );

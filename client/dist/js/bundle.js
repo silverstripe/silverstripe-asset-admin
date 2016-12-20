@@ -1730,7 +1730,7 @@ return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("funct
 e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}Object.defineProperty(t,"__esModule",{
 value:!0})
 var a=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
-r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),l=n(9),u=r(l),p=n(3),d=r(p),c=n(7),f=r(c),h=n(14),m=r(h),g=n(29),y=r(g),v=function(e){
+r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),l=n(9),u=r(l),p=n(3),d=r(p),c=n(7),f=r(c),h=n(14),m=r(h),g=n(29),y=r(g),v=n(25),b=function(e){
 function t(e){o(this,t)
 var n=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleRemove=n.handleRemove.bind(n),n}return s(t,e),a(t,[{key:"getThumbnailStyles",value:function n(){if(this.isImage()&&(this.exists()||this.uploading())){var e=this.props.item.smallThumbnail||this.props.item.url
@@ -1747,22 +1747,22 @@ return this.exists()||this.uploading()||t.push("uploadfield-item--missing"),this
 
 }},{key:"exists",value:function h(){return this.props.item.exists}},{key:"uploading",value:function g(){return!!this.props.item.uploaded}},{key:"complete",value:function y(){return this.uploading()&&this.props.item.id>0
 
-}},{key:"isImageSmallerThanThumbnail",value:function v(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
+}},{key:"isImageSmallerThanThumbnail",value:function b(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
 var e=this.props.item.dimensions
-return e&&e.height<m["default"].SMALL_THUMBNAIL_HEIGHT&&e.width<m["default"].SMALL_THUMBNAIL_WIDTH}},{key:"preventFocus",value:function b(e){e.preventDefault()}},{key:"handleRemove",value:function C(e){
-e.preventDefault(),this.props.handleRemove&&this.props.handleRemove(e,this.props.item)}},{key:"renderProgressBar",value:function E(){var e={className:"uploadfield-item__progress-bar",style:{width:this.props.item.progress+"%"
+return e&&e.height<m["default"].SMALL_THUMBNAIL_HEIGHT&&e.width<m["default"].SMALL_THUMBNAIL_WIDTH}},{key:"preventFocus",value:function C(e){e.preventDefault()}},{key:"handleRemove",value:function E(e){
+e.preventDefault(),this.props.handleRemove&&this.props.handleRemove(e,this.props.item)}},{key:"renderProgressBar",value:function _(){var e={className:"uploadfield-item__progress-bar",style:{width:this.props.item.progress+"%"
 }}
 return!this.hasError()&&this.uploading()?this.complete()?d["default"].createElement("div",{className:"uploadfield-item__complete-icon"}):d["default"].createElement("div",{className:"uploadfield-item__upload-progress"
-},d["default"].createElement("div",e)):null}},{key:"renderRemoveButton",value:function _(){var e=["btn","uploadfield-item__remove-btn","btn-secondary","btn--no-text","font-icon-cancel","btn--icon-md"].join(" ")
+},d["default"].createElement("div",e)):null}},{key:"renderRemoveButton",value:function S(){var e=["btn","uploadfield-item__remove-btn","btn-secondary","btn--no-text","font-icon-cancel","btn--icon-md"].join(" ")
 
 
-return d["default"].createElement("button",{className:e,onClick:this.handleRemove,ref:"backButton"})}},{key:"renderFileDetails",value:function S(){return d["default"].createElement("div",{className:"uploadfield-item__details fill-width flexbox-area-grow"
-},d["default"].createElement("span",{className:"uploadfield-item__title",ref:"title"},this.props.item.title),d["default"].createElement("span",{className:"uploadfield-item__meta"},this.props.item.extension,", ",this.props.item.size))
-
-}},{key:"render",value:function w(){var e=this.props.name+"[Files][]"
+return d["default"].createElement("button",{className:e,onClick:this.handleRemove,ref:"backButton"})}},{key:"renderFileDetails",value:function w(){var e=""
+return this.props.item.size&&(e=", "+(0,v.fileSize)(this.props.item.size)),d["default"].createElement("div",{className:"uploadfield-item__details fill-width flexbox-area-grow"},d["default"].createElement("span",{
+className:"uploadfield-item__title",ref:"title"},this.props.item.title),d["default"].createElement("span",{className:"uploadfield-item__meta"},this.props.item.extension,e))}},{key:"render",value:function P(){
+var e=this.props.name+"[Files][]"
 return d["default"].createElement("div",{className:this.getItemClassNames()},d["default"].createElement("input",{type:"hidden",value:this.props.item.id,name:e}),d["default"].createElement("div",{ref:"thumbnail",
 className:this.getThumbnailClassNames(),style:this.getThumbnailStyles()}),this.renderFileDetails(),this.renderProgressBar(),this.renderErrorMessage(),this.renderRemoveButton())}}]),t}(f["default"])
-v.propTypes={name:d["default"].PropTypes.string.isRequired,item:y["default"],handleRemove:d["default"].PropTypes.func},t["default"]=v},function(e,t){e.exports=InsertMediaModal},function(e,t,n){"use strict"
+b.propTypes={name:d["default"].PropTypes.string.isRequired,item:y["default"],handleRemove:d["default"].PropTypes.func},t["default"]=b},function(e,t){e.exports=InsertMediaModal},function(e,t,n){"use strict"
 
 
 function r(e){return e&&e.__esModule?e:{"default":e}}function o(e,t){return function(n){return n({type:d["default"].UPLOADFIELD_ADD_FILE,payload:{fieldId:e,file:t}})}}function i(e,t){return function(n){
