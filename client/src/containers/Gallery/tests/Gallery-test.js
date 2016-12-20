@@ -1,14 +1,14 @@
 /* global jest, describe, it, expect, beforeEach */
 
+// mock GriddlePagination because it gives mutation warnings all over the place!
+jest.mock('griddle-react', () => null);
+jest.mock('components/FormAlert/FormAlert', () => null);
 jest.unmock('react');
 jest.unmock('react-dom');
 jest.unmock('react-redux');
 jest.unmock('react-addons-test-utils');
 jest.unmock('../../../components/BulkActions/BulkActions');
 jest.unmock('../Gallery');
-
-// mock GriddlePagination because it gives mutation warnings all over the place!
-jest.mock('griddle-react', () => null);
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

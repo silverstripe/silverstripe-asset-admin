@@ -36,6 +36,7 @@ module.exports = {
   },
   externals: {
     'apollo-client': 'ApolloClient',
+    'redux-form': 'ReduxForm',
     'containers/InsertMediaModal/InsertMediaModal': 'InsertMediaModal',
     'components/Breadcrumb/Breadcrumb': 'Breadcrumb',
     'state/schema/SchemaActions': 'SchemaActions',

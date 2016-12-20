@@ -206,7 +206,7 @@ class AssetAdmin extends SilverStripeComponent {
       });
 
       // Search leaf if there was a search entered
-      if (Object.keys(this.props.query.q).length > 0) {
+      if (this.props.query.q && Object.keys(this.props.query.q).length > 0) {
         breadcrumbs.push({
           text: i18n._t('LeftAndMain.SEARCHRESULTS', 'Search results'),
           noCrumb: true,
@@ -457,7 +457,7 @@ class AssetAdmin extends SilverStripeComponent {
       <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           {this.props.toolbarChildren}
-          <Search handleDoSearch={this.handleDoSearch} id="AssetSearchForm"
+          <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
             searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId}
             query={query}
           />

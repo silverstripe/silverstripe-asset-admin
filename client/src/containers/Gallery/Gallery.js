@@ -543,13 +543,13 @@ class Gallery extends Component {
 
     const parts = [
       messages.slice(0, -1).join(`${i18n._t('LeftAndMain.JOIN', ',')} `),
-      messages.slice(-1)
+      messages.slice(-1),
     ].join(` ${i18n._t('LeftAndMain.JOINLAST', 'and')} `);
 
     const searchResults = {
       parts: i18n.inject(parts, Object.assign(
-        { Folder: this.props.folder.title},
-        search,
+        { Folder: this.props.folder.title },
+        search
       )),
     };
 
@@ -560,9 +560,12 @@ class Gallery extends Component {
 
     const body = (
       <div className="gallery__search-message fill-width">
-        <div>{fullMessage}</div>
-        <div>
-          <button onClick={this.handleClearSearch} className="btn btn-secondary-outline">
+        <div className="flexbox-area-grow">{fullMessage}</div>
+        <div className="gallery__search-message-clear">
+          <button
+            onClick={this.handleClearSearch}
+            className="btn btn-secondary-outline"
+          >
             {i18n._t('LeftAndMain.SEARCHCLEARRESULTS', 'Clear search')}
           </button>
         </div>
