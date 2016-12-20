@@ -236,7 +236,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                     continue;
                 }
 
-                $items[] = $this->getObjectFromData($file);
+                $items[] = $this->getSortObjectFromData($file);
             }
         }
 
@@ -256,6 +256,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             }
         }
 
+        // Sort the files
         $column = 'title';
         $direction = 'asc';
         if (isset($params['sort'])) {
@@ -288,10 +289,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return 0;
         });
 
+        // Pageination
         $page = (isset($params['page'])) ? $params['page'] : 0;
         $limit = (isset($params['limit'])) ? $params['limit'] : $this->config()->page_length;
-        $filteredItems = array_slice($items, $page * $limit, $limit);
+        $toDisplay = array_slice($items, $page * $limit, $limit);
 
+        // Get the full details about the files to be displayed
+        $filteredItems = array_map(function ($item) {
+                return $this->getObjectFromData($item['file']);
+        }, $toDisplay);
+        
         // Build response
         $response = new HTTPResponse();
         $response->addHeader('Content-Type', 'application/json');
@@ -1155,6 +1162,21 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $this->getRecordUpdatedResponse($record, $form);
     }
 
+    /**
+     * @param File $file
+     *
+     * @return array
+     */
+    protected function getSortObjectFromData(File $file)
+    {
+        return [
+            'file' => $file,
+            'created' => $file->Created,
+            'title' => $file->Title,
+            'type' => $file instanceof Folder ? 'folder' : $file->FileType,
+        ];
+    }
+    
     /**
      * @param File $file
      *
