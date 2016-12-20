@@ -455,9 +455,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return (new HTTPResponse(json_encode($result)))
             ->addHeader('Content-Type', 'application/json');
     }
-    
+
     /**
-     * Creates a single file based on a form-urlencoded upload.
+     * Upload a new asset for a pre-existing record. Returns the asset tuple.
      *
      * @param HTTPRequest $request
      * @return HTTPRequest|HTTPResponse
@@ -466,20 +466,20 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $data = $request->postVars();
         $upload = $this->getUpload();
-        
+
         // CSRF check
         $token = SecurityToken::inst();
         if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
             return new HTTPResponse(null, 400);
         }
-    
+
         // Check parent record
         /** @var Folder $parentRecord */
         $parentRecord = null;
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
             $parentRecord = Folder::get()->byID($data['ParentID']);
         }
-    
+
         $tmpFile = $data['Upload'];
         if (!$upload->validate($tmpFile)) {
             $result = ['message' => null];
@@ -493,9 +493,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
-    
+
         $folder = $parentRecord ? $parentRecord->getFilename() : '/';
-    
+
         try {
             $tuple = $upload->load($tmpFile, $folder);
         } catch (Exception $e) {
@@ -508,7 +508,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
-        
+
         if ($upload->isError()) {
             $result['message'] = [
                 'type' => 'error',
@@ -517,12 +517,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
-        
+
         $tuple['Name'] = basename($tuple['Filename']);
         return (new HTTPResponse(json_encode($tuple)))
             ->addHeader('Content-Type', 'application/json');
     }
-    
+
     /**
      * Returns a JSON array for history of a given file ID. Returns a list of all the history.
      *
@@ -1105,19 +1105,19 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return (new HTTPResponse(json_encode(['status' => 'error']), 401))
                 ->addHeader('Content-Type', 'application/json');
         }
-        
+
         // check File extension
         $extension = File::get_file_extension($data['FileFilename']);
         $newClass = File::get_class_for_file_extension($extension);
         // if the class has changed, cast it to the proper class
         if ($record->getClassName() !== $newClass) {
             $record = $record->newClassInstance($newClass);
-            
+
             // update the allowed category for the new file extension
             $category = File::get_app_category($extension);
             $record->File->setAllowedCategories($category);
         }
-    
+
         $form->saveInto($record);
         $record->write();
 
