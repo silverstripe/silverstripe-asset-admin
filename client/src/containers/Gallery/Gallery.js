@@ -513,17 +513,17 @@ class Gallery extends Component {
     if (search.CreatedFrom && search.CreatedTo) {
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
-        'edited between \'{CreatedFrom}\' to \'{CreatedTo}\''
+        'created between \'{CreatedFrom}\' and \'{CreatedTo}\''
       ));
     } else if (search.CreatedFrom) {
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDFROM',
-        'edited from \'{CreatedFrom}\''
+        'created after \'{CreatedFrom}\''
       ));
     } else if (search.CreatedTo) {
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDTO',
-        'edited before \'{CreatedTo}\''
+        'created before \'{CreatedTo}\''
       ));
     }
 
@@ -544,7 +544,11 @@ class Gallery extends Component {
     const parts = [
       messages.slice(0, -1).join(`${i18n._t('LeftAndMain.JOIN', ',')} `),
       messages.slice(-1),
-    ].join(` ${i18n._t('LeftAndMain.JOINLAST', 'and')} `);
+    ].filter((part) => part).join(` ${i18n._t('LeftAndMain.JOINLAST', 'and')} `);
+
+    if (parts === '') {
+      return null;
+    }
 
     const searchResults = {
       parts: i18n.inject(parts, Object.assign(

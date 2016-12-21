@@ -15,6 +15,7 @@ import { graphql, withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
 import { NetworkStatus } from 'apollo-client/queries/store';
 import Search from 'components/Search/Search';
+import { hasSearch } from 'lib/search';
 
 class AssetAdmin extends SilverStripeComponent {
 
@@ -51,8 +52,8 @@ class AssetAdmin extends SilverStripeComponent {
 
   componentWillReceiveProps(props) {
     const viewChanged = this.compare(this.props.folder, props.folder);
-    if (viewChanged) {
-      this.setBreadcrumbs(props.folder);
+    if (viewChanged || hasSearch(props.query) !== hasSearch(this.props.query)) {
+      this.setBreadcrumbs(props);
     }
   }
 
@@ -165,7 +166,9 @@ class AssetAdmin extends SilverStripeComponent {
    *
    * @param {Object} folder
      */
-  setBreadcrumbs(folder) {
+  setBreadcrumbs(props) {
+    const folder = props.folder;
+    const query = props.query;
     // Set root breadcrumb
     const breadcrumbs = [{
       text: i18n._t('AssetAdmin.FILES', 'Files'),
@@ -204,14 +207,13 @@ class AssetAdmin extends SilverStripeComponent {
           action: this.handleFolderIcon,
         },
       });
-
-      // Search leaf if there was a search entered
-      if (this.props.query.q && Object.keys(this.props.query.q).length > 0) {
-        breadcrumbs.push({
-          text: i18n._t('LeftAndMain.SEARCHRESULTS', 'Search results'),
-          noCrumb: true,
-        });
-      }
+    }
+    // Search leaf if there was a search entered
+    if (hasSearch(query)) {
+      breadcrumbs.push({
+        text: i18n._t('LeftAndMain.SEARCHRESULTS', 'Search results'),
+        noCrumb: true,
+      });
     }
 
     this.props.actions.breadcrumbsActions.setBreadcrumbs(breadcrumbs);

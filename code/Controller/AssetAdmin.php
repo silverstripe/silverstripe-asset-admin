@@ -935,8 +935,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Categories
         $categories = File::config()->app_categories;
-        if (!empty($filters['AppCategory']) && !empty($categories[$filters['AppCategory']])) {
-            $extensions = $categories[$filters['AppCategory']];
+        if (!empty($params['AppCategory']) && !empty($categories[$params['AppCategory']])) {
+            $extensions = $categories[$params['AppCategory']];
             $list = $list->filter('Name:EndsWith', $extensions);
         }
 

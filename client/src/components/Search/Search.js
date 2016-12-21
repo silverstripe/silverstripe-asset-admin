@@ -8,6 +8,7 @@ import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import { Collapse } from 'react-bootstrap-ss';
 import * as schemaActions from 'state/schema/SchemaActions';
 import { reset, initialize } from 'redux-form';
+import { hasSearch } from 'lib/search';
 
 const view = {
   NONE: 'NONE',
@@ -24,9 +25,12 @@ class Search extends SilverStripeComponent {
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.doSearch = this.doSearch.bind(this);
+    this.focusInput = this.focusInput.bind(this);
+    this.focusFirstFormField = this.focusFirstFormField.bind(this);
     this.hide = this.hide.bind(this);
     this.show = this.show.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.open = this.open.bind(this);
     this.state = {
       view: view.NONE,
       searchText: this.props.query && this.props.query.Name || '',
@@ -44,22 +48,33 @@ class Search extends SilverStripeComponent {
   }
 
   componentWillReceiveProps(props) {
-    if ((!props.query || Object.keys(props.query).length === 0)
-      && (this.props.query && Object.keys(this.props.query).length > 0)
-    ) {
+    if (!hasSearch(props.query) && hasSearch(this.props.query)) {
       this.clearFormData(props);
     } else if (JSON.stringify(props.query) !== JSON.stringify(this.props.query)) {
       this.setOverrides(props);
     }
   }
 
-  componentDidUpdate() {
+  focusInput() {
     if (this.state.view !== view.NONE) {
       const node = ReactDOM.findDOMNode(this.refs.contentInput);
       // check that it doesn't already have focus
       if (node !== document.activeElement) {
         node.focus();
         node.select();
+      }
+    }
+  }
+
+  focusFirstFormField() {
+    if (this.state.view === view.EXPANDED) {
+      const form = ReactDOM.findDOMNode(this.refs.contentForm);
+      const node = form && form.querySelector('input, textarea, select');
+      if (node) {
+        node.focus();
+        if (node.select) {
+          node.select();
+        }
       }
     }
   }
@@ -82,15 +97,15 @@ class Search extends SilverStripeComponent {
    * @param {Object} props
    */
   setOverrides(props) {
-    const hasSearch = props && props.query && Object.keys(props.query).length > 0;
-    if (!hasSearch || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl) {
+    const search = hasSearch(props.query);
+    if (!search || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl) {
       // clear any overrides that may be in place
       const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
       if (schemaUrl) {
         this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
       }
     }
-    if (hasSearch && props.searchFormSchemaUrl) {
+    if (search && props.searchFormSchemaUrl) {
       const query = props.query || {};
 
       const overrides = {
@@ -140,6 +155,11 @@ class Search extends SilverStripeComponent {
     }
   }
 
+  open() {
+    this.show();
+    setTimeout(this.focusInput, 50);
+  }
+
   /**
    * Hide this field.
    * When clicking the "X" button
@@ -170,6 +190,7 @@ class Search extends SilverStripeComponent {
     switch (this.state.view) {
       case view.VISIBLE:
         this.expand();
+        setTimeout(this.focusFirstFormField, 50);
         break;
       case view.EXPANDED:
         this.show();
@@ -207,8 +228,6 @@ class Search extends SilverStripeComponent {
     if (!this.props.formData.CurrentFolderOnly) {
       data.AllFolders = 1;
     }
-
-    this.setState({ view: view.NONE });
 
     this.props.onSearch(data);
   }
@@ -250,7 +269,7 @@ class Search extends SilverStripeComponent {
           aria-owns={this.props.id}
           aria-controls={this.props.id}
           aria-expanded="false"
-          onClick={this.show}
+          onClick={this.open}
           id={triggerId}
         >
         </button>
@@ -291,7 +310,7 @@ class Search extends SilverStripeComponent {
           </button>
 
           <Collapse in={expanded}>
-            <div id={formId} className="search__filter-panel">
+            <div id={formId} className="search__filter-panel" ref="contentForm">
               <FormBuilderLoader schemaUrl={this.props.searchFormSchemaUrl} />
             </div>
           </Collapse>
