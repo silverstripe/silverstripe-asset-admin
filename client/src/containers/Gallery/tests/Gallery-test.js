@@ -3,6 +3,7 @@
 // mock GriddlePagination because it gives mutation warnings all over the place!
 jest.mock('griddle-react', () => null);
 jest.mock('components/FormAlert/FormAlert', () => null);
+jest.unmock('i18n');
 jest.unmock('react');
 jest.unmock('react-dom');
 jest.unmock('react-redux');
@@ -43,6 +44,7 @@ describe('Gallery', () => {
       fileId: null,
       folder: {
         id: 1,
+        title: 'container folder',
         parentId: null,
         canView: true,
         canEdit: true,
@@ -60,7 +62,59 @@ describe('Gallery', () => {
     };
   });
 
-  describe('compareFiles', () => {
+  describe('renderSearchAlert()', () => {
+    let gallery = null;
+
+    beforeEach(() => {
+      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+    });
+
+    it('should show a message for containing folder if search is empty', () => {
+      const search = {};
+
+      const message = gallery.getSearchMessage(search);
+
+      expect(message).toContain('container folder');
+      expect(message).toContain('limited to');
+    });
+
+    it('should not show a message if search is empty with all folders', () => {
+      const search = { AllFolders: 1 };
+
+      const message = gallery.getSearchMessage(search);
+
+      expect(message).toBe('');
+    });
+
+    it('should show a single message without conjoins with one item', () => {
+      const search = { Name: 'hi', AllFolders: 1 };
+
+      const message = gallery.getSearchMessage(search);
+
+      expect(message).not.toContain(',');
+      expect(message).not.toContain('and');
+    });
+
+    it('should show a message with "and" with two items', () => {
+      const search = { Name: 'hi', AppCategory: 'image', AllFolders: 1 };
+
+      const message = gallery.getSearchMessage(search);
+
+      expect(message).not.toContain(',');
+      expect(message).toContain('and');
+    });
+
+    it('should show a message with "," and "and" with more than two items', () => {
+      const search = { Name: 'hi', AppCategory: 'image', CreatedFrom: '2016-03-17' };
+
+      const message = gallery.getSearchMessage(search);
+
+      expect(message).toContain(',');
+      expect(message).toContain('and');
+    });
+  });
+
+  describe('compareFiles()', () => {
     let gallery = null;
 
     beforeEach(() => {

@@ -110,6 +110,74 @@ class Gallery extends Component {
   }
 
   /**
+   * Compose the search critia into a human readable message
+   *
+   * @param {object} search
+   * @returns {string}
+   */
+  getSearchMessage(search) {
+    const messages = [];
+    if (search.Name) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEKEYWORDS',
+        'with keywords \'{Name}\''
+      ));
+    }
+
+    if (search.CreatedFrom && search.CreatedTo) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
+        'created between \'{CreatedFrom}\' and \'{CreatedTo}\''
+      ));
+    } else if (search.CreatedFrom) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDFROM',
+        'created after \'{CreatedFrom}\''
+      ));
+    } else if (search.CreatedTo) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDTO',
+        'created before \'{CreatedTo}\''
+      ));
+    }
+
+    if (search.AppCategory) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGECATEGORY',
+        'categorised as \'{AppCategory}\''
+      ));
+    }
+
+    if (!search.AllFolders) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGELIMIT',
+        'limited to the folder \'{Folder}\''
+      ));
+    }
+
+    const parts = [
+      messages.slice(0, -1).join(`${i18n._t('LeftAndMain.JOIN', ',')} `),
+      messages.slice(-1),
+    ].filter((part) => part).join(` ${i18n._t('LeftAndMain.JOINLAST', 'and')} `);
+
+    if (parts === '') {
+      return '';
+    }
+
+    const searchResults = {
+      parts: i18n.inject(parts, Object.assign(
+        { Folder: this.props.folder.title },
+        search
+      )),
+    };
+
+    return i18n.inject(
+      i18n._t('LeftAndMain.SEARCHRESULTSMESSAGE', 'Search results {parts}'),
+      searchResults
+    );
+  }
+
+  /**
    * Required anti-pattern, because `.cms-content` is the container for the React component.
    *
    * Adds or removes the load class from `.cms-content` if it is for the AssetAdmin
@@ -502,69 +570,15 @@ class Gallery extends Component {
       return null;
     }
 
-    const messages = [];
-    if (search.Name) {
-      messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGEKEYWORDS',
-        'with keywords \'{Name}\''
-      ));
-    }
+    const message = this.getSearchMessage(search);
 
-    if (search.CreatedFrom && search.CreatedTo) {
-      messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
-        'created between \'{CreatedFrom}\' and \'{CreatedTo}\''
-      ));
-    } else if (search.CreatedFrom) {
-      messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDFROM',
-        'created after \'{CreatedFrom}\''
-      ));
-    } else if (search.CreatedTo) {
-      messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDTO',
-        'created before \'{CreatedTo}\''
-      ));
-    }
-
-    if (search.AppCategory) {
-      messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGECATEGORY',
-        'categorised as \'{AppCategory}\''
-      ));
-    }
-
-    if (!search.AllFolders) {
-      messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGELIMIT',
-        'limited to the folder \'{Folder}\''
-      ));
-    }
-
-    const parts = [
-      messages.slice(0, -1).join(`${i18n._t('LeftAndMain.JOIN', ',')} `),
-      messages.slice(-1),
-    ].filter((part) => part).join(` ${i18n._t('LeftAndMain.JOINLAST', 'and')} `);
-
-    if (parts === '') {
+    if (message === '') {
       return null;
     }
 
-    const searchResults = {
-      parts: i18n.inject(parts, Object.assign(
-        { Folder: this.props.folder.title },
-        search
-      )),
-    };
-
-    const fullMessage = i18n.inject(
-      i18n._t('LeftAndMain.SEARCHRESULTSMESSAGE', 'Search results {parts}'),
-      searchResults
-    );
-
     const body = (
       <div className="gallery__search-message fill-width">
-        <div className="flexbox-area-grow">{fullMessage}</div>
+        <div className="flexbox-area-grow">{message}</div>
         <div className="gallery__search-message-clear">
           <button
             onClick={this.handleClearSearch}
