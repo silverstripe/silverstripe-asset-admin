@@ -577,16 +577,14 @@ class Gallery extends Component {
     }
 
     const body = (
-      <div className="gallery__search-message fill-width">
-        <div className="flexbox-area-grow">{message}</div>
-        <div className="gallery__search-message-clear">
-          <button
-            onClick={this.handleClearSearch}
-            className="btn btn-secondary-outline"
-          >
-            {i18n._t('LeftAndMain.SEARCHCLEARRESULTS', 'Clear search')}
-          </button>
-        </div>
+      <div>
+        <button
+          onClick={this.handleClearSearch}
+          className="btn btn-info font-icon-cancel form-alert__btn--right"
+        >
+          {i18n._t('LeftAndMain.SEARCHCLEARRESULTS', 'Clear results')}
+        </button>
+        {message}
       </div>
     );
 
