@@ -348,10 +348,8 @@ class AssetDropzone extends SilverStripeComponent {
     // JS Synonym for AssetAdmin::getObjectFromData()
     return loadPreview.then((preview) => {
       const details = {
-        dimensions: {
-          height: preview.height,
-          width: preview.width,
-        },
+        height: preview.height,
+        width: preview.width,
         category: this.getFileCategory(file.type),
         filename: file.name,
         queuedId: file._queuedId,
@@ -360,6 +358,8 @@ class AssetDropzone extends SilverStripeComponent {
         extension: getFileExtension(file.name),
         type: file.type,
         url: preview.thumbnailURL,
+        thumbnail: preview.thumbnailURL,
+        smallThumbail: preview.thumbnailURL,
       };
 
       this.props.handleAddedFile(details);

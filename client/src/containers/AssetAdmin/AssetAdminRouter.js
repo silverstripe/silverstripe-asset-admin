@@ -82,6 +82,7 @@ class AssetAdminRouter extends Component {
 AssetAdminRouter.propTypes = {
   sectionConfig: PropTypes.shape({
     url: PropTypes.string,
+    limit: PropTypes.number,
     form: PropTypes.object,
   }),
   location: PropTypes.shape({

@@ -4,12 +4,6 @@ import deepFreeze from 'deep-freeze-strict';
  * Default empty structure for a file
  */
 const fileStructure = deepFreeze({
-  attributes: {
-    dimensions: {
-      height: null,
-      width: null,
-    },
-  },
   name: null,
   canDelete: false,
   canEdit: false,
@@ -18,7 +12,7 @@ const fileStructure = deepFreeze({
   extension: null,
   filename: null,
   id: 0,
-  lastUpdated: null,
+  lastEdited: null,
   messages: null,
   owner: {
     id: 0,
@@ -35,6 +29,10 @@ const fileStructure = deepFreeze({
   type: null,
   url: null,
   xhr: null,
+  thumbnail: null,
+  smallThumbnail: null,
+  height: null,
+  width: null,
 });
 
 export default fileStructure;

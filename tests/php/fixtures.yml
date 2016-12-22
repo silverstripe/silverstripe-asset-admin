@@ -10,6 +10,9 @@ SilverStripe\Assets\Folder:
     Title: folder1
   folder2:
     Title: folder2
+  folder1.1:
+    Title: folder1.1
+    Parent: =>SilverStripe\Assets\Folder.folder1
   disallowCanAddChildren:
     Title: disallowCanAddChildren
 SilverStripe\Assets\File:

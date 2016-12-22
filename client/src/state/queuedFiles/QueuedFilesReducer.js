@@ -30,18 +30,10 @@ function queuedFilesReducer(state = initialState, action) {
       }));
 
     case ACTION_TYPES.PURGE_UPLOAD_QUEUE:
-      // Failed uploads are removed.
       // Successful file uploads removed.
-      // Pending uploads are ignored.
+      // Pending and failed uploads are retained.
       return deepFreeze(Object.assign({}, state, {
-        items: state.items.filter((file) => {
-          if (file.message) {
-            // If any of the file's messages are of type 'error' or 'success' then return false.
-            return file.message.type !== 'error' && file.message.type !== 'success';
-          }
-
-          return true;
-        }),
+        items: state.items.filter((file) => !file.id),
       }));
 
     case ACTION_TYPES.REMOVE_QUEUED_FILE:
@@ -55,7 +47,7 @@ function queuedFilesReducer(state = initialState, action) {
       return deepFreeze(Object.assign({}, state, {
         items: state.items.map((file) => {
           if (file.queuedId === action.payload.queuedId) {
-            return Object.assign({}, file, {
+            return Object.assign({}, file, action.payload.json, {
               messages: [{
                 value: i18n._t('AssetAdmin.DROPZONE_SUCCESS_UPLOAD'),
                 type: 'success',

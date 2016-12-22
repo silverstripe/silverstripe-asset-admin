@@ -196,6 +196,17 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   /**
+   * Check if this item has been successfully uploaded.
+   * Excludes items not uploaded in this request.
+   *
+   * @returns {Boolean}
+   */
+  complete() {
+    // Uploading is complete if saved with a DB id
+    return this.uploading() && this.props.item.id > 0;
+  }
+
+  /**
    * Determine that this record is an image, and the thumbnail is smaller than the given thumbnail area
    *
    * @returns {boolean}
@@ -204,13 +215,15 @@ class GalleryItem extends SilverStripeComponent {
     if (!this.isImage() || (!this.exists() && !this.uploading())) {
       return false;
     }
-    const dimensions = this.props.item.dimensions;
+    const width = this.props.item.width;
+    const height = this.props.item.height;
 
     // Note: dimensions will be null if the back-end image is lost
     return (
-      dimensions
-      && dimensions.height < CONSTANTS.THUMBNAIL_HEIGHT
-      && dimensions.width < CONSTANTS.THUMBNAIL_WIDTH
+      height
+      && width
+      && height < CONSTANTS.THUMBNAIL_HEIGHT
+      && width < CONSTANTS.THUMBNAIL_WIDTH
     );
   }
 
@@ -253,7 +266,7 @@ class GalleryItem extends SilverStripeComponent {
 
     if (this.hasError()) {
       this.props.onRemoveErroredUpload(this.props.item);
-    } else {
+    } else if (this.props.onCancelUpload) {
       this.props.onCancelUpload(this.props.item);
     }
   }
@@ -273,7 +286,7 @@ class GalleryItem extends SilverStripeComponent {
       },
     };
 
-    if (!this.hasError() && this.uploading()) {
+    if (!this.hasError() && this.uploading() && !this.complete()) {
       progressBar = (
         <div className="gallery-item__upload-progress">
           <div {...progressBarProps}></div>

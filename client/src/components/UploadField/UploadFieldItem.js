@@ -153,13 +153,15 @@ class UploadFieldItem extends SilverStripeComponent {
     if (!this.isImage() || (!this.exists() && !this.uploading())) {
       return false;
     }
-    const dimensions = this.props.item.dimensions;
+    const width = this.props.item.width;
+    const height = this.props.item.height;
 
     // Note: dimensions will be null if the back-end image is lost
     return (
-      dimensions
-      && dimensions.height < CONSTANTS.SMALL_THUMBNAIL_HEIGHT
-      && dimensions.width < CONSTANTS.SMALL_THUMBNAIL_WIDTH
+      height
+      && width
+      && height < CONSTANTS.SMALL_THUMBNAIL_HEIGHT
+      && width < CONSTANTS.SMALL_THUMBNAIL_WIDTH
     );
   }
 

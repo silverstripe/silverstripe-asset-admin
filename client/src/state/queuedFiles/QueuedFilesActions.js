@@ -71,11 +71,11 @@ export function removeQueuedFile(queuedId) {
  *
  * @param {String} queuedId - Temporary id assigned when this file was queued
  */
-export function succeedUpload(queuedId) {
+export function succeedUpload(queuedId, json) {
   return (dispatch) =>
     dispatch({
       type: ACTION_TYPES.SUCCEED_UPLOAD,
-      payload: { queuedId },
+      payload: { queuedId, json },
     });
 }
 

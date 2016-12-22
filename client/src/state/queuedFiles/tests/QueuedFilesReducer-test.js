@@ -10,85 +10,71 @@ describe('queuedFilesReducer', () => {
   describe('PURGE_UPLOAD_QUEUE', () => {
     const action = { type: 'PURGE_UPLOAD_QUEUE', payload: null };
 
-    it('should remove failed uploads from the queue', () => {
+    const fileSuccess = {
+      id: 1,
+      message: {
+        value: 'File uploaded',
+        type: 'success',
+        extraClass: 'success',
+      },
+    };
+
+    const filePending = {
+      id: 0,
+      message: {
+        value: 'Uploading...',
+        type: 'pending',
+        extraClass: 'pending',
+      },
+    };
+
+    const fileFailed = {
+      id: 0,
+      message: {
+        value: 'Failed to upload file',
+        type: 'error',
+        extraClass: 'error',
+      },
+    };
+
+    it('should remove successful uploads from the queue', () => {
       const initialState = {
         items: [
-          {
-            id: 0,
-            message: {
-              value: 'Failed to upload file',
-              type: 'error',
-              extraClass: 'error',
-            },
-          },
-          {
-            id: 1,
-            message: {
-              value: 'Uploading...',
-              type: 'pending',
-              extraClass: 'pending',
-            },
-          },
+          fileSuccess,
+        ],
+      };
+
+      const nextState = queuedFilesReducer(initialState, action);
+
+      expect(nextState.items.length).toBe(0);
+    });
+
+    it('should not remove pending uploads from the queue', () => {
+      const initialState = {
+        items: [
+          fileSuccess,
+          filePending,
         ],
       };
 
       const nextState = queuedFilesReducer(initialState, action);
 
       expect(nextState.items.length).toBe(1);
+      expect(nextState.items[0]).toBe(filePending);
     });
 
-    it('should move successful uploads from the queue', () => {
+    it('should not remove failed uploads from the queue', () => {
       const initialState = {
         items: [
-          {
-            id: 0,
-            message: {
-              value: 'File uploaded',
-              type: 'success',
-              extraClass: 'success',
-            },
-          },
-          {
-            id: 1,
-            message: {
-              value: 'Uploading...',
-              type: 'pending',
-              extraClass: 'pending',
-            },
-          },
+          fileSuccess,
+          fileFailed,
         ],
       };
 
       const nextState = queuedFilesReducer(initialState, action);
 
       expect(nextState.items.length).toBe(1);
-    });
-
-    it('should ignore pending uploads', () => {
-      const initialState = {
-        items: [
-          {
-            id: 0,
-            message: {
-              value: 'Uploading...',
-              type: 'pending',
-              extraClass: 'pending',
-            },
-          },
-          {
-            id: 1,
-            message: {
-              value: 'Uploading...',
-              type: 'pending',
-              extraClass: 'pending',
-            },
-          },
-        ],
-      };
-
-      const nextState = queuedFilesReducer(initialState, action);
-
-      expect(nextState.items.length).toBe(2);
+      expect(nextState.items[0]).toBe(fileFailed);
     });
   });
 

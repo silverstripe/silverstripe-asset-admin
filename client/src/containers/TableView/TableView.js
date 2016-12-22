@@ -14,6 +14,7 @@ class TableView extends Component {
     this.handleRowClick = this.handleRowClick.bind(this);
     this.renderSelect = this.renderSelect.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
+    this.renderNoItemsNotice = this.renderNoItemsNotice.bind(this);
 
     this.state = {
       // TODO remove `enableSort` state when Griddle is version bumped up from 0.7.0
@@ -44,7 +45,7 @@ class TableView extends Component {
       'thumbnail',
       'title',
       'size',
-      'lastUpdated',
+      'lastEdited',
     ];
 
     if (this.props.selectableItems) {
@@ -82,12 +83,13 @@ class TableView extends Component {
         customComponent: this.renderTitle,
       },
       {
-        columnName: 'lastUpdated',
+        columnName: 'lastEdited',
         displayName: 'Modified',
         customComponent: this.renderDate,
       },
       {
         columnName: 'size',
+        sortable: false,
         displayName: 'Size',
         customComponent: this.renderSize,
       },
@@ -117,7 +119,7 @@ class TableView extends Component {
       externalSetFilter: () => null,
       externalSetPageSize: () => null,
       externalCurrentPage: this.props.page,
-      externalMaxPage: Math.ceil(this.props.count / this.props.limit),
+      externalMaxPage: Math.ceil(this.props.totalCount / this.props.limit),
       externalSortColumn: sortColumn,
       // TODO change to `sortDirection === 'asc'` when Griddle is version bumped up from 0.7.0
       // reference: https://github.com/GriddleGriddle/Griddle/pull/515
@@ -131,7 +133,7 @@ class TableView extends Component {
       onRowClick: this.handleRowClick,
       // TODO will need to request upstream to stop their internal sorting to show folders first
       results: this.props.files,
-      customNoDataComponent: this.props.renderNoItemsNotice,
+      customNoDataComponent: this.renderNoItemsNotice,
     };
   }
 
@@ -204,6 +206,19 @@ class TableView extends Component {
    */
   preventFocus(event) {
     event.preventDefault();
+  }
+
+  /**
+   * Show a "no items" warning, unless the data is still loading.
+   *
+   * @returns {XML}
+   */
+  renderNoItemsNotice() {
+    if (this.props.files.length === 0 && !this.props.loading) {
+      return <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>;
+    }
+
+    return null;
   }
 
   /**
@@ -312,9 +327,14 @@ class TableView extends Component {
   renderThumbnail(props) {
     const url = props.data || props.rowData.url;
 
+    if (props.rowData.type === 'folder') {
+      return (<div className="gallery__table-image--folder" />);
+    }
+
     if (!url) {
       return (<div className="gallery__table-image--error" />);
     }
+
     return (
       <img
         src={url}

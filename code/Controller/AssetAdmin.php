@@ -62,13 +62,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Pass all URLs to the index, for React to unpack
         'show/$FolderID/edit/$FileID' => 'index',
         // API access points with structured data
-        'POST api/createFolder' => 'apiCreateFolder',
         'POST api/createFile' => 'apiCreateFile',
         'POST api/uploadFile' => 'apiUploadFile',
-        'GET api/readFolder' => 'apiReadFolder',
-        'PUT api/updateFolder' => 'apiUpdateFolder',
-        'DELETE api/delete' => 'apiDelete',
-        'GET api/search' => 'apiSearch',
         'GET api/history' => 'apiHistory'
     ];
 
@@ -99,14 +94,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     private static $allowed_actions = array(
         'legacyRedirectForEditView',
-        'apiCreateFolder',
         'apiCreateFile',
         'apiUploadFile',
-        'apiReadFolder',
-        'apiUpdateFolder',
         'apiHistory',
-        'apiDelete',
-        'apiSearch',
         'fileEditForm',
         'fileHistoryForm',
         'addToCampaignForm',
@@ -145,31 +135,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'method' => 'post',
                 'payloadFormat' => 'urlencoded',
             ],
-            'createFolderEndpoint' => [
-                'url' => Controller::join_links($baseLink, 'api/createFolder'),
-                'method' => 'post',
-                'payloadFormat' => 'urlencoded',
-            ],
-            'readFolderEndpoint' => [
-                'url' => Controller::join_links($baseLink, 'api/readFolder'),
-                'method' => 'get',
-                'responseFormat' => 'json',
-            ],
-            'searchEndpoint' => [
-                'url' => Controller::join_links($baseLink, 'api/search'),
-                'method' => 'get',
-                'responseFormat' => 'json',
-            ],
-            'updateFolderEndpoint' => [
-                'url' => Controller::join_links($baseLink, 'api/updateFolder'),
-                'method' => 'put',
-                'payloadFormat' => 'urlencoded',
-            ],
-            'deleteEndpoint' => [
-                'url' => Controller::join_links($baseLink, 'api/delete'),
-                'method' => 'delete',
-                'payloadFormat' => 'urlencoded',
-            ],
             'uploadFileEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/uploadFile'),
                 'method' => 'post',
@@ -199,182 +164,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ]
             ],
         ]);
-    }
-
-    /**
-     * Fetches a collection of files by ParentID.
-     *
-     * @param HTTPRequest $request
-     * @return HTTPResponse
-     */
-    public function apiReadFolder(HTTPRequest $request)
-    {
-        $params = $request->requestVars();
-        $items = array();
-        $parentId = null;
-        $folderID = null;
-
-        if (!isset($params['id']) && !strlen($params['id'])) {
-            $this->httpError(400);
-        }
-
-        $folderID = (int)$params['id'];
-        /** @var Folder $folder */
-        $folder = $folderID ? Folder::get()->byID($folderID) : Folder::singleton();
-
-        if (!$folder) {
-            $this->httpError(400);
-        }
-
-        // TODO Limit results to avoid running out of memory (implement client-side pagination)
-        $files = $this->getList()->filter('ParentID', $folderID);
-
-        if ($files) {
-            /** @var File $file */
-            foreach ($files as $file) {
-                if (!$file->canView()) {
-                    continue;
-                }
-
-                $items[] = $this->getObjectFromData($file);
-            }
-        }
-
-        // Build parents (for breadcrumbs)
-        $parents = [];
-        $next = $folder->Parent();
-        while ($next && $next->exists()) {
-            array_unshift($parents, [
-                'id' => $next->ID,
-                'title' => $next->getTitle(),
-                'filename' => $next->getFilename(),
-            ]);
-            if ($next->ParentID) {
-                $next = $next->Parent();
-            } else {
-                break;
-            }
-        }
-
-        $column = 'title';
-        $direction = 'asc';
-        if (isset($params['sort'])) {
-            list($column, $direction) = explode(',', $params['sort']);
-        }
-        $multiplier = ($direction === 'asc') ? 1 : -1;
-
-        usort($items, function ($a, $b) use ($column, $multiplier) {
-            if (!isset($a[$column]) || !isset($b[$column])) {
-                return 0;
-            }
-            if ($a['type'] === 'folder' && $b['type'] !== 'folder') {
-                return -1;
-            }
-            if ($b['type'] === 'folder' && $a['type'] !== 'folder') {
-                return 1;
-            }
-            $numeric = (is_numeric($a[$column]) && is_numeric($b[$column]));
-            $fieldA = ($numeric) ? floatval($a[$column]) : strtolower($a[$column]);
-            $fieldB = ($numeric) ? floatval($b[$column]) : strtolower($b[$column]);
-
-            if ($fieldA < $fieldB) {
-                return $multiplier * -1;
-            }
-
-            if ($fieldA > $fieldB) {
-                return $multiplier;
-            }
-
-            return 0;
-        });
-
-        $page = (isset($params['page'])) ? $params['page'] : 0;
-        $limit = (isset($params['limit'])) ? $params['limit'] : $this->config()->page_length;
-        $filteredItems = array_slice($items, $page * $limit, $limit);
-
-        // Build response
-        $response = new HTTPResponse();
-        $response->addHeader('Content-Type', 'application/json');
-        $response->setBody(json_encode([
-            'files' => $filteredItems,
-            'title' => $folder->getTitle(),
-            'count' => count($items),
-            'parents' => $parents,
-            'parent' => $parents ? $parents[count($parents) - 1] : null,
-            'parentID' => $folder->exists() ? $folder->ParentID : null, // grandparent
-            'folderID' => $folderID,
-            'canEdit' => $folder->canEdit(),
-            'canDelete' => $folder->canArchive(),
-        ]));
-
-        return $response;
-    }
-
-    /**
-     * @param HTTPRequest $request
-     *
-     * @return HTTPResponse
-     */
-    public function apiSearch(HTTPRequest $request)
-    {
-        $params = $request->getVars();
-        $list = $this->getList($params);
-
-        $response = new HTTPResponse();
-        $response->addHeader('Content-Type', 'application/json');
-        $response->setBody(json_encode([
-            // Serialisation
-            "files" => array_map(function ($file) {
-                return $this->getObjectFromData($file);
-            }, $list->toArray()),
-            "count" => $list->count(),
-        ]));
-
-        return $response;
-    }
-
-    /**
-     * @param HTTPRequest $request
-     *
-     * @return HTTPResponse
-     */
-    public function apiDelete(HTTPRequest $request)
-    {
-        parse_str($request->getBody(), $vars);
-
-        // CSRF check
-        $token = SecurityToken::inst();
-        if (empty($vars[$token->getName()]) || !$token->check($vars[$token->getName()])) {
-            return new HTTPResponse(null, 400);
-        }
-
-        if (!isset($vars['ids']) || !$vars['ids']) {
-            return (new HTTPResponse(json_encode(['status' => 'error']), 400))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        $fileIds = $vars['ids'];
-        $files = $this->getList()->filter("ID", $fileIds)->toArray();
-
-        if (!count($files)) {
-            return (new HTTPResponse(json_encode(['status' => 'error']), 404))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        if (!min(array_map(function (File $file) {
-            return $file->canArchive();
-        }, $files))) {
-            return (new HTTPResponse(json_encode(['status' => 'error']), 401))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        /** @var File $file */
-        foreach ($files as $file) {
-            $file->doArchive();
-        }
-
-        return (new HTTPResponse(json_encode(['status' => 'file was deleted'])))
-            ->addHeader('Content-Type', 'application/json');
     }
 
     /**
@@ -616,72 +405,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         return
             (new HTTPResponse(json_encode($output)))->addHeader('Content-Type', 'application/json');
-    }
-
-
-    /**
-     * Creates a single folder, within an optional parent folder.
-     *
-     * @param HTTPRequest $request
-     * @return HTTPRequest|HTTPResponse
-     */
-    public function apiCreateFolder(HTTPRequest $request)
-    {
-        $data = $request->postVars();
-
-        $class = 'SilverStripe\\Assets\\Folder';
-
-        // CSRF check
-        $token = SecurityToken::inst();
-        if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
-            return new HTTPResponse(null, 400);
-        }
-
-        // check addchildren permissions
-        /** @var Folder $parentRecord */
-        $parentRecord = null;
-        if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
-            $parentRecord = DataObject::get_by_id($class, $data['ParentID']);
-        }
-        $data['Parent'] = $parentRecord;
-        $data['ParentID'] = $parentRecord ? (int)$parentRecord->ID : 0;
-
-        // Build filename
-        $baseFilename = isset($data['Name'])
-            ? basename($data['Name'])
-            : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.NEWFOLDER', "NewFolder");
-
-        if ($parentRecord && $parentRecord->ID) {
-            $baseFilename = $parentRecord->getFilename() . '/' . $baseFilename;
-        }
-
-        // Ensure name is unique
-        $nameGenerator = $this->getNameGenerator($baseFilename);
-        $filename = null;
-        foreach ($nameGenerator as $filename) {
-            if (! File::find($filename)) {
-                break;
-            }
-        }
-        $data['Name'] = basename($filename);
-
-        // Create record
-        /** @var Folder $record */
-        $record = Injector::inst()->create($class);
-
-        // check create permissions
-        if (!$record->canCreate(null, $data)) {
-            return (new HTTPResponse(null, 403))
-                ->addHeader('Content-Type', 'application/json');
-        }
-
-        $record->ParentID = $data['ParentID'];
-        $record->Name = $record->Title = basename($data['Name']);
-        $record->write();
-
-        $result = $this->getObjectFromData($record);
-
-        return (new HTTPResponse(json_encode($result)))->addHeader('Content-Type', 'application/json');
     }
 
     /**
@@ -1222,8 +945,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             if ($thumbnail && $thumbnail->exists()) {
                 $object['thumbnail'] = $thumbnail->getAbsoluteURL();
             }
-            $object['dimensions']['width'] = $file->Width;
-            $object['dimensions']['height'] = $file->Height;
+            $object['width'] = $file->Width;
+            $object['height'] = $file->Height;
         } else {
             $object['thumbnail'] = $file->PreviewLink();
         }

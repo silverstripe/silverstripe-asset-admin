@@ -18,10 +18,8 @@ describe('GalleryItem', () => {
       onActivate: jest.genMockFunction(),
       handleDelete: jest.genMockFunction(),
       item: {
-        dimensions: {
-          width: 10,
-          height: 10,
-        },
+        width: 10,
+        height: 10,
         exists: true,
         category: 'image',
         id: 1,
@@ -239,10 +237,8 @@ describe('GalleryItem', () => {
     });
 
     it('should return false if the dimensions are larger than the default thumbnail size', () => {
-      props.item.dimensions = {
-        width: 1000,
-        height: 1000,
-      };
+      props.item.width = 1000;
+      props.item.height = 1000;
 
       expect(item.isImageSmallerThanThumbnail()).toBe(false);
     });
