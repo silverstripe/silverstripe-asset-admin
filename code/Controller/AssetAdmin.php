@@ -830,15 +830,18 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // check File extension
-        $extension = File::get_file_extension($data['FileFilename']);
-        $newClass = File::get_class_for_file_extension($extension);
-        // if the class has changed, cast it to the proper class
-        if ($record->getClassName() !== $newClass) {
-            $record = $record->newClassInstance($newClass);
+        if (!empty($data['FileFilename'])) {
+            $extension = File::get_file_extension($data['FileFilename']);
+            $newClass = File::get_class_for_file_extension($extension);
 
-            // update the allowed category for the new file extension
-            $category = File::get_app_category($extension);
-            $record->File->setAllowedCategories($category);
+            // if the class has changed, cast it to the proper class
+            if ($record->getClassName() !== $newClass) {
+                $record = $record->newClassInstance($newClass);
+
+                // update the allowed category for the new file extension
+                $category = File::get_app_category($extension);
+                $record->File->setAllowedCategories($category);
+            }
         }
 
         $form->saveInto($record);
