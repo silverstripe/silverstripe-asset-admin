@@ -973,8 +973,9 @@
 }
 
 .gallery__no-item-notice{
-  width:100%;
   text-align:center;
+  font-size:1.23rem;
+  margin-top:1.2308rem;
 }
 
 .gallery__back.ss-ui-button:before{
