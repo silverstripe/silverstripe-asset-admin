@@ -260,4 +260,22 @@ class AssetAdminTest extends FunctionalTest
             'error' => UPLOAD_ERR_OK,
         );
     }
+
+    public function testSaveOrPublish()
+    {
+        // Test rename folder
+        $folder1ID = $this->idFromFixture(Folder::class, 'folder1');
+        $response = $this->post(
+            'admin/assets/fileEditForm',
+            [
+                'ID' => $folder1ID,
+                'action_save' => 1,
+                'Name' => 'folder1-renamed',
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ]
+        );
+        $this->assertFalse($response->isError());
+        $folder1 = Folder::get()->byID($folder1ID);
+        $this->assertEquals('folder1-renamed', $folder1->Name);
+    }
 }
