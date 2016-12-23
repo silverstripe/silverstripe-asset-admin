@@ -22,18 +22,26 @@ class AssetAdminRouter extends Component {
    * @param {object|null} [newQuery]
    * @returns {string}
    */
-  getUrl(folderId = 0, fileId, newQuery) {
+  getUrl(folderId = 0, fileId, newQuery = {}) {
     const base = this.props.sectionConfig.url;
     let url = `${base}/show/${folderId}`;
+
+    const hasFolderChanged = (parseInt(folderId, 10) !== parseInt(this.props.params.folderId, 10));
 
     if (fileId) {
       url = `${url}/edit/${fileId}`;
     }
 
-    const search = urlQuery(this.props.location, newQuery);
+    const search = urlQuery(
+      this.props.location,
+      // Reset pagination if folder has changed (new folder might not have that many pages)
+      Object.assign({}, newQuery, { page: hasFolderChanged ? 0 : newQuery.page })
+    );
+
     if (search) {
       url = `${url}${search}`;
     }
+
     return url;
   }
 
