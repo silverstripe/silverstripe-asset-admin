@@ -809,8 +809,10 @@ Gallery.fragments = {
     `,
   file: gql`
    fragment FileFields on File {
+    draft
     extension
     height
+    published
     size
     smallThumbnail
     thumbnail

@@ -110,6 +110,12 @@ class FileTypeCreator extends TypeCreator
             'canDelete' => [
                 'type' => Type::boolean(),
             ],
+            'draft' => [
+                'type' => Type::boolean(),
+            ],
+            'published' => [
+                'type' => Type::boolean(),
+            ],
         ];
     }
 
@@ -185,6 +191,30 @@ class FileTypeCreator extends TypeCreator
             return $thumbnail->getAbsoluteURL();
         }
         return null;
+    }
+
+    /**
+     * @param File $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return string|null
+     */
+    public function resolveDraftField($object, array $args, $context, $info)
+    {
+        return $object->isOnDraftOnly();
+    }
+
+    /**
+     * @param File $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return string|null
+     */
+    public function resolvePublishedField($object, array $args, $context, $info)
+    {
+        return $object->isPublished();
     }
 
     public function resolveField($object, array $args, $context, $info)
