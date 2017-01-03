@@ -15,6 +15,28 @@ const view = {
   EXPANDED: 'EXPANDED',
 };
 
+/**
+ * Determines if a query object contains
+ * fields which are considered to create a "search",
+ * in the "q" param.
+ *
+ * @param query
+ * @returns {boolean}
+ */
+export function hasSearch(query) {
+  let bool = false;
+
+  if (query && query.q) {
+    Object.keys(query.q).forEach((key) => {
+      if (query.q[key] !== '' && key !== 'AllFolders') {
+        bool = true;
+      }
+    });
+  }
+
+  return bool;
+}
+
 class Search extends SilverStripeComponent {
 
   constructor(props) {
@@ -104,9 +126,9 @@ class Search extends SilverStripeComponent {
         this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
       }
     }
+
     if (search && props.searchFormSchemaUrl) {
       const query = props.query || {};
-
       const overrides = {
         fields: Object
           .keys(query)
@@ -345,17 +367,6 @@ function mapDispatchToProps(dispatch) {
       reduxForm: bindActionCreators({ reset, initialize }, dispatch),
     },
   };
-}
-
-export function hasSearch(query) {
-  if (!query || !query.q) {
-    return false;
-  }
-  const search = Object.entries(query.q).filter((entry) => (
-    entry[1] !== '' && entry[0] !== 'AllFolders'
-  ));
-
-  return search.length > 0;
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

@@ -75,4 +75,18 @@ describe('Search', () => {
     });
   });
 
+  describe('hasSearch', () => {
+    it('returns false with missing "q" param', () => {
+      expect(hasSearch({})).toBeFalsy();
+    });
+    it('returns false when only AllFolders key is present', () => {
+      expect(hasSearch({ q: { AllFolders: true } })).toBeFalsy();
+    });
+    it('returns false when other empty keys is present', () => {
+      expect(hasSearch({ q: { foo: '', AllFolders: true } })).toBeFalsy();
+    });
+    it('returns true when other non-empty keys is present', () => {
+      expect(hasSearch({ q: { foo: 'bar', AllFolders: true } })).toBeTruthy();
+    });
+  });
 });
