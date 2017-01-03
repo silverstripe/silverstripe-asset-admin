@@ -8,7 +8,6 @@ import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import { Collapse } from 'react-bootstrap-ss';
 import * as schemaActions from 'state/schema/SchemaActions';
 import { reset, initialize } from 'redux-form';
-import { hasSearch } from 'lib/search';
 
 const view = {
   NONE: 'NONE',
@@ -346,6 +345,17 @@ function mapDispatchToProps(dispatch) {
       reduxForm: bindActionCreators({ reset, initialize }, dispatch),
     },
   };
+}
+
+export function hasSearch(query) {
+  if (!query || !query.q) {
+    return false;
+  }
+  const search = Object.entries(query.q).filter((entry) => (
+    entry[1] !== '' && entry[0] !== 'AllFolders'
+  ));
+
+  return search.length > 0;
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

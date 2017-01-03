@@ -14,8 +14,7 @@ import Toolbar from 'components/Toolbar/Toolbar';
 import { graphql, withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
 import { NetworkStatus } from 'apollo-client/queries/store';
-import Search from 'components/Search/Search';
-import { hasSearch } from 'lib/search';
+import Search, { hasSearch } from 'components/Search/Search';
 
 class AssetAdmin extends SilverStripeComponent {
 
