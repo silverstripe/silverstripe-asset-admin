@@ -115,43 +115,47 @@ class Gallery extends Component {
    * @param {object} search
    * @returns {string}
    */
-  getSearchMessage(search) {
+  getSearchMessage(filters) {
     const messages = [];
-    if (search.Name) {
+    if (filters.name) {
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGEKEYWORDS',
-        'with keywords \'{Name}\''
+        'with keywords \'{name}\''
       ));
     }
 
-    if (search.CreatedFrom && search.CreatedTo) {
+    if (filters.createdFrom && filters.createdTo) {
+      // TODO Date localisation
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
-        'created between \'{CreatedFrom}\' and \'{CreatedTo}\''
+        'created between \'{createdFrom}\' and \'{createdTo}\''
       ));
-    } else if (search.CreatedFrom) {
+    } else if (filters.createdFrom) {
+      // TODO Date localisation
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDFROM',
-        'created after \'{CreatedFrom}\''
+        'created after \'{createdFrom}\''
       ));
-    } else if (search.CreatedTo) {
+    } else if (filters.createdTo) {
+      // TODO Date localisation
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDTO',
-        'created before \'{CreatedTo}\''
+        'created before \'{createdTo}\''
       ));
     }
 
-    if (search.AppCategory) {
+    if (filters.appCategory) {
+      // TODO Category name localisation
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGECATEGORY',
-        'categorised as \'{AppCategory}\''
+        'categorised as \'{appCategory}\''
       ));
     }
 
-    if (!search.AllFolders) {
+    if (filters.currentFolderOnly) {
       messages.push(i18n._t(
         'LeftAndMain.SEARCHRESULTSMESSAGELIMIT',
-        'limited to the folder \'{Folder}\''
+        'limited to the folder \'{folder}\''
       ));
     }
 
@@ -166,8 +170,9 @@ class Gallery extends Component {
 
     const searchResults = {
       parts: i18n.inject(parts, Object.assign(
-        { Folder: this.props.folder.title },
-        search
+        { folder: this.props.folder.title },
+        filters,
+        { appCategory: filters.appCategory ? filters.appCategory.toLowerCase() : undefined }
       )),
     };
 
@@ -565,12 +570,12 @@ class Gallery extends Component {
    * @return {XML}
    */
   renderSearchAlert() {
-    const search = this.props.search;
-    if (!search || Object.keys(search).length === 0) {
+    const filters = this.props.filters;
+    if (!filters || Object.keys(filters).length === 0) {
       return null;
     }
 
-    const message = this.getSearchMessage(search);
+    const message = this.getSearchMessage(filters);
 
     if (message === '') {
       return null;
@@ -895,6 +900,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   onViewChange: PropTypes.func.isRequired,
   createFileApiUrl: PropTypes.string,
   createFileApiMethod: PropTypes.string,
+  search: PropTypes.object,
 });
 
 Gallery.fragments = {

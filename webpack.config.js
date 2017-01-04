@@ -73,6 +73,7 @@ module.exports = {
     react: 'React',
     'redux-thunk': 'ReduxThunk',
     redux: 'Redux',
+    qs: 'qs',
   },
   module: {
     loaders: [

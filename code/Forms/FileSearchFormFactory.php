@@ -62,31 +62,31 @@ class FileSearchFormFactory implements FormFactory
         /** @skipUpgrade */
         // File type field
         $appCategories = array(
-            'archive' => _t(
+            'ARCHIVE' => _t(
                 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryArchive',
                 'Archive'
             ),
-            'audio' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryAudio', 'Audio'),
-            'document' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryDocument', 'Document'),
-            'image' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryImage', 'Image'),
-            'video' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryVideo', 'Video'),
+            'AUDIO' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryAudio', 'Audio'),
+            'DOCUMENT' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryDocument', 'Document'),
+            'IMAGE' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryImage', 'Image'),
+            'VIDEO' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AppCategoryVideo', 'Video'),
         );
         $typeDropdown = DropdownField::create(
-            'AppCategory',
+            'appCategory',
             _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Filetype', 'File type'),
             $appCategories
         )->setEmptyString(_t('Enum.ANY', 'Any'));
 
         // Limit to current folder
-        $limitCheckbox = CheckboxField::create('CurrentFolderOnly', _t(
+        $limitCheckbox = CheckboxField::create('currentFolderOnly', _t(
             'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CurrentFolderOnly',
             'Limit to current folder and its sub-folders?'
         ));
 
         // Last updated range field
-        $dateFrom = DateField::create('CreatedFrom', _t('CMSSearch.FILTERDATEFROM', 'From'))
+        $dateFrom = DateField::create('createdFrom', _t('CMSSearch.FILTERDATEFROM', 'From'))
             ->setConfig('showcalendar', true);
-        $dateTo = DateField::create('CreatedTo', _t('CMSSearch.FILTERDATETO', 'To'))
+        $dateTo = DateField::create('createdTo', _t('CMSSearch.FILTERDATETO', 'To'))
             ->setConfig('showcalendar', true);
         $dateGroup = FieldGroup::create(
             _t('AssetTableField.LASTEDIT', 'Last changed'),

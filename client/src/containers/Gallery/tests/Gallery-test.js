@@ -69,25 +69,24 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
     });
 
-    it('should show a message for containing folder if search is empty', () => {
+    it('should not show a message without filters', () => {
       const search = {};
-
-      const message = gallery.getSearchMessage(search);
-
-      expect(message).toContain('container folder');
-      expect(message).toContain('limited to');
-    });
-
-    it('should not show a message if search is empty with all folders', () => {
-      const search = { AllFolders: 1 };
 
       const message = gallery.getSearchMessage(search);
 
       expect(message).toBe('');
     });
 
+    it('should show a message with filters', () => {
+      const search = { currentFolderOnly: 1 };
+
+      const message = gallery.getSearchMessage(search);
+
+      expect(message).toContain('limited to');
+    });
+
     it('should show a single message without conjoins with one item', () => {
-      const search = { Name: 'hi', AllFolders: 1 };
+      const search = { name: 'hi', };
 
       const message = gallery.getSearchMessage(search);
 
@@ -96,7 +95,7 @@ describe('Gallery', () => {
     });
 
     it('should show a message with "and" with two items', () => {
-      const search = { Name: 'hi', AppCategory: 'image', AllFolders: 1 };
+      const search = { name: 'hi', appCategory: 'IMAGE', };
 
       const message = gallery.getSearchMessage(search);
 
@@ -105,7 +104,7 @@ describe('Gallery', () => {
     });
 
     it('should show a message with "," and "and" with more than two items', () => {
-      const search = { Name: 'hi', AppCategory: 'image', CreatedFrom: '2016-03-17' };
+      const search = { name: 'hi', appCategory: 'IMAGE', createdFrom: '2016-03-17' };
 
       const message = gallery.getSearchMessage(search);
 

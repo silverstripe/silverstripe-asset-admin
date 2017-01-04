@@ -18,6 +18,7 @@ SilverStripe\GraphQL:
       FileInput: 'SilverStripe\AssetAdmin\GraphQL\FileInputTypeCreator'
       Folder: 'SilverStripe\AssetAdmin\GraphQL\FolderTypeCreator'
       FolderInput: 'SilverStripe\AssetAdmin\GraphQL\FolderInputTypeCreator'
+      FileFilterInput: 'SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator'
     queries:
       readFiles: 'SilverStripe\AssetAdmin\GraphQL\ReadFileQueryCreator'
     mutations:

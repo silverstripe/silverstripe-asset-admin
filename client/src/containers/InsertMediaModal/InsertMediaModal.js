@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as schemaActions from 'state/schema/SchemaActions';
-import { urlQuery } from 'lib/DataFormat';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -15,6 +14,7 @@ class InsertMediaModal extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleBrowse = this.handleBrowse.bind(this);
+    this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.getUrl = this.getUrl.bind(this);
 
     this.state = {
@@ -88,10 +88,10 @@ class InsertMediaModal extends Component {
    *
    * @param {number} folderId
    * @param {number} fileId
-   * @param {Object} newQuery
+   * @param {Object} query
    * @returns {string}
    */
-  getUrl(folderId, fileId, newQuery) {
+  getUrl(folderId, fileId, query) {
     const base = this.props.sectionConfig.url;
     let url = `${base}/show/${folderId || 0}`;
 
@@ -99,9 +99,9 @@ class InsertMediaModal extends Component {
       url = `${url}/edit/${fileId}`;
     }
 
-    const search = urlQuery(this.state.query, newQuery);
-    if (search) {
-      url = `${url}${search}`;
+    const hasQuery = (query && Object.keys(query).length > 0);
+    if (hasQuery) {
+      url = `${url}?${qs.stringify(query)}`;
     }
 
     return url;
@@ -123,6 +123,7 @@ class InsertMediaModal extends Component {
       query: this.state.query,
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
+      onOpenFolder: this.handleOpenFolder,
       onSubmitEditor: this.handleSubmit,
     };
   }
@@ -158,27 +159,27 @@ class InsertMediaModal extends Component {
 
   /**
    * Handle browsing through the asset admin section.
-   * To clear the query string, pass in `null` as the parameter, otherwise it will default to the
-   * existing query string.
+   *
    *
    * @param {number} folderId
    * @param {number} fileId
-   * @param {object|null} newQuery
+   * @param {object} query
    */
-  handleBrowse(folderId, fileId, newQuery) {
-    let query = {};
-    if (newQuery !== null) {
-      query = this.state.query;
-      if (newQuery) {
-        query = Object.assign({}, query, newQuery);
-      }
-    }
-
+  handleBrowse(folderId, fileId, query = {}) {
     this.setState({
       folderId,
       fileId,
       query,
     });
+  }
+
+  /**
+   * Handle for opening a folder
+   *
+   * @param {number} folderId
+   */
+  handleOpenFolder(folderId) {
+    this.handleBrowse(folderId);
   }
 
   renderToolbarChildren() {

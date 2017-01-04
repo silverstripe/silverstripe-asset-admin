@@ -28,18 +28,7 @@ class FolderTypeCreator extends FileTypeCreator
 
     public function fields()
     {
-        $childrenConnection = Connection::create('Children')
-            ->setConnectionType(function () {
-                return $this->manager->getType('FileInterface');
-            })
-            ->setSortableFields([
-                'id' => 'ID',
-                'title' => 'Title',
-                'created' => 'Created',
-                'lastEdited' => 'LastEdited',
-                // TODO Make memory-based size search efficient enough for 10k records
-                //size' => 'Size'
-            ]);
+        $childrenConnection = $this->getChildrenConnection();
 
         return [
             'id' => [
@@ -91,39 +80,7 @@ class FolderTypeCreator extends FileTypeCreator
                 'type' => $childrenConnection->toType(),
                 'args' => $childrenConnection->args(),
                 'resolve' => function ($object, array $args, $context, ResolveInfo $info) use ($childrenConnection) {
-                    // canView() checks on parent folder are implied by the query returning $object
-
-                    $list = Versioned::get_by_stage(File::class, 'Stage');
-                    $list = $list->filter('ParentID', $object->ID);
-
-                    // Sort folders first
-                    $list = $list->alterDataQuery(function (DataQuery $query, DataList $list) {
-                        $existingOrderBys = $query->query()->getOrderBy();
-                        $query->sort(
-                            '(CASE WHEN "ClassName"=\'SilverStripe\\\\Assets\\\\Folder\' THEN 1 ELSE 0 END)',
-                            'DESC',
-                            true
-                        );
-                        foreach ($existingOrderBys as $field => $dir) {
-                            $query->sort($field, $dir, false);
-                        }
-                    });
-
-                    // Apply pagination
-                    $return = $childrenConnection->resolveList(
-                        $list,
-                        $args
-                    );
-
-                    // Filter by permission. Converts from DataList to ArrayList
-                    // TODO Add more records if records are filtered out here
-                    /** @var Filterable $resolvedList */
-                    $resolvedList = $return['edges'];
-                    $return['edges'] = $resolvedList->filterByCallback(function (File $file) use ($context) {
-                        return $file->canView($context['currentUser']);
-                    });
-
-                    return $return;
+                    return $this->resolveChildrenConnection($object, $args, $context, $info, $childrenConnection);
                 }
             ],
             'parents' => [
@@ -133,6 +90,105 @@ class FolderTypeCreator extends FileTypeCreator
             ],
 
         ];
+    }
+
+    /**
+     * @return Connection
+     */
+    public function getChildrenConnection()
+    {
+        return Connection::create('Children')
+            ->setConnectionType(function () {
+                return $this->manager->getType('FileInterface');
+            })
+            ->setArgs(function () {
+                return [
+                    'filter' => [
+                        'type' => $this->manager->getType('FileFilterInput')
+                    ]
+                ];
+            })
+            ->setSortableFields([
+                'id' => 'ID',
+                'title' => 'Title',
+                'created' => 'Created',
+                'lastEdited' => 'LastEdited',
+                // TODO Make memory-based size search efficient enough for 10k records
+                //size' => 'Size'
+            ]);
+    }
+
+    /**
+     * @param $object
+     * @param array $args
+     * @param $context
+     * @param ResolveInfo $info
+     * @param Connection $childrenConnection
+     * @return mixed
+     */
+    public function resolveChildrenConnection(
+        $object,
+        array $args,
+        $context,
+        ResolveInfo $info,
+        Connection $childrenConnection
+    ) {
+        // canView() checks on parent folder are implied by the query returning $object
+
+        $filter = (!empty($args['filter'])) ? $args['filter'] : [];
+
+        if (isset($filter['parentId']) && (int)$filter['parentId'] !== (int)$object->ID) {
+            throw new \InvalidArgumentException(sprintf(
+                'The "parentId" value (#%d) needs to match the current object id (#%d)',
+                (int)$filter['parentId'],
+                (int)$object->ID
+            ));
+        }
+
+        // TODO Implement recursion for parentId !== 0
+        $isRecursive = (isset($filter['recursive']) && $filter['recursive']);
+        $isRootParentId = ($object->ID === 0);
+        if ($isRecursive && !$isRootParentId) {
+            throw new \InvalidArgumentException('The "recursive" flag is only supported with parentId=0');
+        }
+
+        $list = Versioned::get_by_stage(File::class, 'Stage');
+        $filterInputType = new FileFilterInputTypeCreator($this->manager);
+        $list = $filterInputType->filterList($list, $filter);
+
+        // Override ParentID filter to this object, regardless of the previously applied filter
+        if (!$isRecursive) {
+            $list = $list->filter('ParentID', $object->ID);
+        }
+
+        // Sort folders first
+        $list = $list->alterDataQuery(function (DataQuery $query, DataList $list) {
+            $existingOrderBys = $query->query()->getOrderBy();
+            $query->sort(
+                '(CASE WHEN "ClassName"=\'SilverStripe\\\\Assets\\\\Folder\' THEN 1 ELSE 0 END)',
+                'DESC',
+                true
+            );
+            foreach ($existingOrderBys as $field => $dir) {
+                $query->sort($field, $dir, false);
+            }
+        });
+
+        // Apply pagination
+        $return = $childrenConnection->resolveList(
+            $list,
+            $args
+        );
+
+        // Filter by permission. Converts from DataList to ArrayList
+        // TODO Add more records if records are filtered out here
+        /** @var Filterable $resolvedList */
+        $resolvedList = $return['edges'];
+        $return['edges'] = $resolvedList->filterByCallback(function (File $file) use ($context) {
+            return $file->canView($context['currentUser']);
+        });
+
+        return $return;
     }
 
     /**

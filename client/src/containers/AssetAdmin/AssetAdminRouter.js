@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
-import { urlQuery, decodeQuery } from 'lib/DataFormat';
+import { decodeQuery } from 'lib/DataFormat';
+import qs from 'qs';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -16,16 +17,13 @@ class AssetAdminRouter extends Component {
 
   /**
    * Generates the Url for a given folder and file ID.
-   * Note: Leaving newQuery empty will default to the current querystring.
-   * Setting it to an empty object will clear it.
-   * Setting it to a non-empty object will replace it
    *
    * @param {number} [folderId]
    * @param {number} [fileId]
-   * @param {object|null} [newQuery]
+   * @param {object} [query]
    * @returns {string}
    */
-  getUrl(folderId = 0, fileId = null, newQuery = null) {
+  getUrl(folderId = 0, fileId = null, query = {}) {
     let url = this.props.sectionConfig.url;
 
     if (fileId) {
@@ -36,10 +34,11 @@ class AssetAdminRouter extends Component {
       url = `${url}/`;
     }
 
-    const search = urlQuery(this.getQuery(), newQuery);
-    if (search) {
-      url = `${url}${search}`;
+    const hasQuery = (query && Object.keys(query).length > 0);
+    if (hasQuery) {
+      url = `${url}?${qs.stringify(query)}`;
     }
+
     return url;
   }
 
@@ -79,12 +78,10 @@ class AssetAdminRouter extends Component {
 
   /**
    * Handle browsing with the router.
-   * To clear the query string, pass in `null` as the parameter, otherwise it will default to the
-   * existing query string.
    *
    * @param {number} [folderId]
    * @param {number} [fileId]
-   * @param {object|null} [query]
+   * @param {object} [query]
    */
   handleBrowse(folderId, fileId, query) {
     const pathname = this.getUrl(folderId, fileId, query);

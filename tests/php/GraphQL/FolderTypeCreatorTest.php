@@ -9,6 +9,9 @@ use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\GraphQL\Manager;
 
+/**
+ * Most of the search functionality is covered in {@link FileFilterInputTypeCreatorTest}
+ */
 class FolderTypeCreatorTest extends SapphireTest
 {
 
@@ -24,14 +27,9 @@ class FolderTypeCreatorTest extends SapphireTest
         $folder = Folder::create(['Name' => 'bbb folder']);
         $folder->write();
 
-        $managerMock = $this->getManagerMock();
-        $creator = new FolderTypeCreator($managerMock->reveal());
-        $fields = $creator->fields();
-        $list = $fields['children']['resolve'](
+        $list = $this->resolveChildrenConnection(
             $rootFolder,
-            [],
-            $this->getContext(),
-            new ResolveInfo([])
+            []
         );
         $this->assertEquals(
             [
@@ -39,6 +37,55 @@ class FolderTypeCreatorTest extends SapphireTest
                 $file->Name,
             ],
             $list['edges']->column('Name')
+        );
+    }
+
+    public function testItDoesNotFilterByParentIdWithRecursiveFlag()
+    {
+        $rootFolder = Folder::singleton();
+
+        $folder = Folder::create(['Name' => 'folder']);
+        $folder->write();
+
+        $nestedFile = File::create([
+            'Name' => 'myNestedFile',
+            'ParentID' => $folder->ID,
+        ]);
+        $nestedFile->write();
+
+        $rootFile = File::create([
+            'Name' => 'myRootFile',
+            'ParentID' => 0,
+        ]);
+        $rootFile->write();
+
+        $listWithoutRecursive = $this->resolveChildrenConnection(
+            $rootFolder,
+            ['filter' => [
+                'recursive' => false
+            ]]
+        );
+        $this->assertEquals(
+            [
+                $folder->Name,
+                $rootFile->Name,
+            ],
+            $listWithoutRecursive['edges']->column('Name')
+        );
+
+        $listWithRecursive = $this->resolveChildrenConnection(
+            $rootFolder,
+            ['filter' => [
+                'recursive' => true
+            ]]
+        );
+        $this->assertEquals(
+            [
+                $folder->Name,
+                $nestedFile->Name,
+                $rootFile->Name,
+            ],
+            $listWithRecursive['edges']->column('Name')
         );
     }
 
@@ -86,5 +133,20 @@ class FolderTypeCreatorTest extends SapphireTest
         return [
             'currentUser' => null
         ];
+    }
+
+    protected function resolveChildrenConnection($object, $args, $context = null)
+    {
+        $context = $context ? $context : $this->getContext();
+
+        $managerMock = $this->getManagerMock();
+        $creator = new FolderTypeCreator($managerMock->reveal());
+        return $creator->resolveChildrenConnection(
+            $object,
+            $args,
+            $context,
+            new ResolveInfo([]),
+            $creator->getChildrenConnection()
+        );
     }
 }

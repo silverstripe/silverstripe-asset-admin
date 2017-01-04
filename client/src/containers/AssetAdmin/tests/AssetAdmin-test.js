@@ -6,6 +6,7 @@ jest.unmock('react-redux');
 jest.unmock('react-addons-test-utils');
 jest.unmock('../AssetAdmin');
 jest.mock('containers/Editor/Editor');
+jest.mock('components/Breadcrumb/Breadcrumb');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
@@ -39,6 +40,9 @@ describe('AssetAdmin', () => {
         },
         form: {
           fileEditForm: {
+            schemaUrl: '',
+          },
+          fileSearchForm: {
             schemaUrl: '',
           },
         },

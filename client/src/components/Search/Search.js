@@ -16,25 +16,11 @@ const view = {
 };
 
 /**
- * Determines if a query object contains
- * fields which are considered to create a "search",
- * in the "q" param.
- *
- * @param query
+ * @param {Object} filters
  * @returns {boolean}
  */
-export function hasSearch(query) {
-  let bool = false;
-
-  if (query && query.q) {
-    Object.keys(query.q).forEach((key) => {
-      if (query.q[key] !== '' && key !== 'AllFolders') {
-        bool = true;
-      }
-    });
-  }
-
-  return bool;
+export function hasFilters(filters) {
+  return (filters && Object.keys(filters).length > 0);
 }
 
 class Search extends SilverStripeComponent {
@@ -54,7 +40,7 @@ class Search extends SilverStripeComponent {
     this.open = this.open.bind(this);
     this.state = {
       view: view.NONE,
-      searchText: this.props.query && this.props.query.Name || '',
+      searchText: this.props.filters && this.props.filters.name || '',
     };
   }
 
@@ -69,9 +55,9 @@ class Search extends SilverStripeComponent {
   }
 
   componentWillReceiveProps(props) {
-    if (!hasSearch(props.query) && hasSearch(this.props.query)) {
+    if (props && (!hasFilters(props.filters) && hasFilters(this.props.filters))) {
       this.clearFormData(props);
-    } else if (JSON.stringify(props.query) !== JSON.stringify(this.props.query)) {
+    } else if (JSON.stringify(props.filters) !== JSON.stringify(this.props.filters)) {
       this.setOverrides(props);
     }
   }
@@ -118,8 +104,7 @@ class Search extends SilverStripeComponent {
    * @param {Object} props
    */
   setOverrides(props) {
-    const search = hasSearch(props.query);
-    if (!search || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl) {
+    if (props && (!hasFilters(props.filters) || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl)) {
       // clear any overrides that may be in place
       const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
       if (schemaUrl) {
@@ -127,25 +112,16 @@ class Search extends SilverStripeComponent {
       }
     }
 
-    if (search && props.searchFormSchemaUrl) {
-      const query = props.query || {};
+    if (props && (hasFilters(props.filters) && props.searchFormSchemaUrl)) {
+      const filters = props.filters || {};
       const overrides = {
         fields: Object
-          .keys(query)
-          .filter((name) => (name !== 'AllFolders'))
+          .keys(filters)
           .map((name) => {
-            const value = query[name];
+            const value = filters[name];
             return { name, value };
           }),
       };
-
-      // If search is performed and AllFolders is NOT set, flag the "limit to current folder" box
-      if (!query.AllFolders) {
-        overrides.fields.push({
-          name: 'CurrentFolderOnly',
-          value: '1',
-        });
-      }
 
       // set overrides into redux store, so that it can be accessed by FormBuilder with the same
       // schemaUrl.
@@ -226,29 +202,16 @@ class Search extends SilverStripeComponent {
 
     // Merge data from redux-forms with text field
     if (this.state.searchText) {
-      data.Name = this.state.searchText;
+      data.name = this.state.searchText;
     }
+
     // Filter empty values
     Object.keys(this.props.formData).forEach((key) => {
       const value = this.props.formData[key];
-      if (!value) {
-        return;
-      }
-      switch (key) {
-        case 'SecurityID':
-        case 'CurrentFolderOnly':
-          break;
-        default:
-          // Store non-falsey values
-          data[key] = value;
-          break;
+      if (value) {
+        data[key] = value;
       }
     });
-
-    // Invert "CurrentFolderOnly" into "deep" flag
-    if (!this.props.formData.CurrentFolderOnly) {
-      data.AllFolders = 1;
-    }
 
     this.props.onSearch(data);
   }
@@ -298,7 +261,7 @@ class Search extends SilverStripeComponent {
           <input
             aria-labelledby={triggerId}
             type="text"
-            name="Name"
+            name="name"
             ref="contentInput"
             placeholder={i18n._t('AssetAdmin.SEARCH', 'Search')}
             className="form-control search__content-field"
@@ -347,7 +310,7 @@ Search.propTypes = {
   data: PropTypes.object,
   folderId: PropTypes.number,
   onSearch: PropTypes.func.isRequired,
-  query: PropTypes.object,
+  filters: PropTypes.object,
   formData: PropTypes.object,
 };
 

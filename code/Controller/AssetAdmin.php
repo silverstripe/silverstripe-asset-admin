@@ -572,7 +572,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     protected function getAbstractFileForm($id, $name, $context = [])
     {
         /** @var File $file */
-        $file = $this->getList()->byID($id);
+        $file = File::get()->byID($id);
 
         if (!$file->canView()) {
             $this->httpError(403, _t(
@@ -898,70 +898,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-     * Returns the files and subfolders contained in the currently selected folder,
-     * defaulting to the root node. Doubles as search results, if any search parameters
-     * are set through {@link SearchForm()}.
-     *
-     * @param array $params Unsanitised request parameters
-     * @return DataList
-     */
-    protected function getList($params = array())
-    {
-        /** @var DataList $list */
-        $list = File::get();
-
-        // Re-add previously removed "Name" filter as combined filter
-        if (!empty($params['Name'])) {
-            $list = $list->filterAny(array(
-                'Name:PartialMatch' => $params['Name'],
-                'Title:PartialMatch' => $params['Name']
-            ));
-        }
-
-        // Optionally limit search to a folder (non-recursive)
-        if (isset($params['ParentID']) && is_numeric($params['ParentID'])) {
-            $list = $list->filter('ParentID', $params['ParentID']);
-        }
-
-        // Date filtering
-        if (!empty($params['CreatedFrom'])) {
-            $fromDate = new DateField(null, null, $params['CreatedFrom']);
-            $list = $list->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
-        }
-        if (!empty($params['CreatedTo'])) {
-            $toDate = new DateField(null, null, $params['CreatedTo']);
-            $list = $list->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
-        }
-
-        // Categories
-        $categories = File::config()->app_categories;
-        if (!empty($params['AppCategory']) && !empty($categories[$params['AppCategory']])) {
-            $extensions = $categories[$params['AppCategory']];
-            $list = $list->filter('Name:EndsWith', $extensions);
-        }
-
-        // Sort folders first
-        $list = $list->sort(
-            '(CASE WHEN "File"."ClassName" = \'Folder\' THEN 0 ELSE 1 END), "Name"'
-        );
-
-        // Pagination
-        if (isset($filters['page']) && isset($filters['limit'])) {
-            $page = $filters['page'];
-            $limit = $filters['limit'];
-            $offset = ($page - 1) * $limit;
-            $list = $list->limit($limit, $offset);
-        }
-
-        // Access checks
-        $list = $list->filterByCallback(function (File $file) {
-            return $file->canView();
-        });
-
-        return $list;
-    }
-
-    /**
      * Action handler for adding pages to a campaign
      *
      * @param array $data
@@ -971,7 +907,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function addtocampaign($data, $form)
     {
         $id = $data['ID'];
-        $record = $this->getList()->byID($id);
+        $record = File::get()->byID($id);
 
         $handler = AddToCampaignHandler::create($this, $record, 'addToCampaignForm');
         $results = $handler->addToCampaign($record, $data['Campaign']);
@@ -1005,7 +941,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getAddToCampaignForm($id)
     {
         // Get record-specific fields
-        $record = $this->getList()->byID($id);
+        $record = File::get()->byID($id);
 
         if (!$record) {
             $this->httpError(404, _t(
@@ -1084,7 +1020,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      *
      * @return Form
      */
-    public function getFileSearchform() {
+    public function getFileSearchform()
+    {
         return $this->fileSearchForm();
     }
 }

@@ -14,7 +14,7 @@ import Toolbar from 'components/Toolbar/Toolbar';
 import { graphql, withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
 import { NetworkStatus } from 'apollo-client/queries/store';
-import Search, { hasSearch } from 'components/Search/Search';
+import Search, { hasFilters } from 'components/Search/Search';
 
 class AssetAdmin extends SilverStripeComponent {
 
@@ -51,7 +51,7 @@ class AssetAdmin extends SilverStripeComponent {
 
   componentWillReceiveProps(props) {
     const viewChanged = this.compare(this.props.folder, props.folder);
-    if (viewChanged || hasSearch(props.query) !== hasSearch(this.props.query)) {
+    if (viewChanged || hasFilters(props.query.filter) !== hasFilters(this.props.query.filter)) {
       this.setBreadcrumbs(props);
     }
   }
@@ -76,9 +76,9 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {number} page
    */
   handleSetPage(page) {
-    this.handleBrowse(this.props.folderId, this.props.fileId, {
+    this.handleBrowse(this.props.folderId, this.props.fileId, Object.assign({}, this.props.query, {
       page,
-    });
+    }));
   }
 
   /**
@@ -87,10 +87,12 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {Object} data
    */
   handleDoSearch(data) {
-    // Reset current query
-    const query = Object.assign({}, this.getBlankQuery(), { q: data });
-    const folderID = data.AllFolders ? 0 : this.props.folderId;
-    this.handleBrowse(folderID, 0, query);
+    this.handleBrowse(
+      data.currentFolderOnly ? this.props.folderId : 0,
+      0,
+      // Reset current query
+      Object.assign({}, this.getBlankQuery(), { filter: data })
+    );
   }
 
   /**
@@ -112,12 +114,12 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {string} sort
    */
   handleSort(sort) {
-    this.handleBrowse(this.props.folderId, this.props.fileId, {
+    this.handleBrowse(this.props.folderId, this.props.fileId, Object.assign({}, this.props.query, {
       sort,
       // clear pagination
       limit: undefined,
       page: undefined,
-    });
+    }));
   }
 
   /**
@@ -126,9 +128,9 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {string} view
    */
   handleViewChange(view) {
-    this.handleBrowse(this.props.folderId, this.props.fileId, {
+    this.handleBrowse(this.props.folderId, this.props.fileId, Object.assign({}, this.props.query, {
       view,
-    });
+    }));
   }
 
   /**
@@ -208,7 +210,7 @@ class AssetAdmin extends SilverStripeComponent {
       });
     }
     // Search leaf if there was a search entered
-    if (hasSearch(query)) {
+    if (hasFilters(query.filter)) {
       breadcrumbs.push({
         text: i18n._t('LeftAndMain.SEARCHRESULTS', 'Search results'),
         noCrumb: true,
@@ -250,7 +252,8 @@ class AssetAdmin extends SilverStripeComponent {
    * @param fileId
    */
   handleOpenFile(fileId) {
-    this.handleBrowse(this.props.folderId, fileId);
+    // Retain existing query, e.g. to stay within search results when viewing a file
+    this.handleBrowse(this.props.folderId, fileId, this.props.query);
   }
 
   /**
@@ -297,7 +300,9 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {number} folderId
    */
   handleOpenFolder(folderId) {
-    this.handleBrowse(folderId);
+    // Reset any potential search filters and pagination, but keep other view options
+    const query = Object.assign({}, this.props.query, { page: 0, filter: {}, } );
+    this.handleBrowse(folderId, null, query);
   }
 
   /**
@@ -376,7 +381,7 @@ class AssetAdmin extends SilverStripeComponent {
 
     const sort = this.props.query && this.props.query.sort;
     const view = this.props.query && this.props.query.view;
-    const search = (this.props.query && this.props.query.q) || {};
+    const filters = (this.props.query && this.props.query.filter) || {};
 
     return (
       <Gallery
@@ -389,7 +394,7 @@ class AssetAdmin extends SilverStripeComponent {
         page={page}
         totalCount={this.props.filesTotalCount}
         view={view}
-        search={search}
+        filters={filters}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         updateFolderApi={this.endpoints.updateFolderApi}
@@ -453,14 +458,14 @@ class AssetAdmin extends SilverStripeComponent {
   render() {
     const showBackButton = !!(this.props.folder && this.props.folder.id);
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
-    const query = (this.props.query && this.props.query.q) || {};
+    const filters = this.props.query.filter || {};
     return (
       <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           {this.props.toolbarChildren}
           <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
             searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId}
-            query={query}
+            filters={filters}
           />
           <Breadcrumb multiline />
         </Toolbar>
@@ -493,7 +498,7 @@ AssetAdmin.propTypes = {
     sort: PropTypes.string,
     limit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     page: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    q: PropTypes.object,
+    filter: PropTypes.object,
   }),
   onSubmitEditor: PropTypes.func,
   type: PropTypes.oneOf(['insert', 'select', 'admin']),
@@ -519,6 +524,7 @@ AssetAdmin.defaultProps = {
     sort: '',
     limit: null, // set to config default in mapStateToProps
     page: 0,
+    filter: {},
   },
 };
 
@@ -551,10 +557,11 @@ function mapDispatchToProps(dispatch) {
 }
 
 // GraphQL Query
-// TODO Resolve fragment duplication with Gallery
 const readFilesQuery = gql`
-  query ReadFiles($id:ID!, $limit:Int!, $offset:Int!, $sortByChildren:[ChildrenSortInputType]) {
-    readFiles(id: $id) {
+  query ReadFiles($limit:Int!, $offset:Int!, $rootFilter: FileFilterInput, 
+    $childrenFilter: FileFilterInput, $sortBy:[ChildrenSortInputType]
+  ) {
+    readFiles(filter: $rootFilter) {
       pageInfo {
         totalCount
       }
@@ -563,7 +570,7 @@ const readFilesQuery = gql`
           ...FileInterfaceFields
           ...FileFields
           ...on Folder {
-	          children(limit:$limit, offset:$offset, sortBy:$sortByChildren) {
+	          children(limit:$limit, offset:$offset, filter: $childrenFilter, sortBy:$sortBy) {
               pageInfo {
                 totalCount
               }
@@ -600,14 +607,36 @@ export { AssetAdmin };
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   graphql(readFilesQuery, {
-    options({ sectionConfig, folderId, query: { limit, page, sort } }) {
-      const [sortField, sortDir] = sort.split(',');
+    options({ sectionConfig, folderId, query }) {
+      // Covers a few variations:
+      // - Display the root folder with its direct children
+      // - Display the root folder with its recursive children and filters (a full "search")
+      // - Display a folder with its direct children, without any filters
+      // - Display a folder with its direct children and filters (a "search" in the current folder)
+
+      const [sortField, sortDir] = query.sort ? query.sort.split(',') : ['', ''];
+      const filterWithDefault = query.filter || {};
       return {
         variables: {
-          id: folderId,
-          limit: limit || sectionConfig.limit,
-          offset: (page || 0) * (limit || sectionConfig.limit),
-          sortByChildren: (sortField && sortDir)
+          rootFilter: { id: folderId },
+          childrenFilter: Object.assign(
+            filterWithDefault,
+            {
+              // Unset key, taken from rootFilter
+              parentId: undefined,
+              // Recursion (showing all descendants) is only supported for the root folder at the moment
+              recursive: (hasFilters(filterWithDefault) && folderId === 0)
+                ? !filterWithDefault.currentFolderOnly
+                : false,
+            },
+            {
+              // Unset this key since it's not a valid GraphQL argument
+              currentFolderOnly: undefined,
+            }
+          ),
+          limit: query.limit || sectionConfig.limit,
+          offset: (query.page || 0) * (query.limit || sectionConfig.limit),
+          sortBy: (sortField && sortDir)
             ? [{ field: sortField, direction: sortDir.toUpperCase() }]
             : undefined,
         },
