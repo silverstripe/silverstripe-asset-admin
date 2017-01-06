@@ -650,9 +650,8 @@ function t(e){o(this,t)
 var n=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleSelect=n.handleSelect.bind(n),n.handleActivate=n.handleActivate.bind(n),n.handleKeyDown=n.handleKeyDown.bind(n),n.handleCancelUpload=n.handleCancelUpload.bind(n),n.preventFocus=n.preventFocus.bind(n),
 n}return s(t,e),a(t,[{key:"handleActivate",value:function n(e){e.stopPropagation(),"function"==typeof this.props.onActivate&&this.props.onActivate(e,this.props.item)}},{key:"handleSelect",value:function r(e){
-e.stopPropagation(),e.preventDefault(),"function"==typeof this.props.onSelect&&this.props.onSelect(e,this.props.item)}},{key:"getThumbnailStyles",value:function l(){if(this.isImage()&&(this.exists()||this.uploading())){
-var e=this.props.item.thumbnail||this.props.item.url
-return{backgroundImage:"url("+e+")"}}return{}}},{key:"hasError",value:function p(){var p=!1
+e.stopPropagation(),e.preventDefault(),"function"==typeof this.props.onSelect&&this.props.onSelect(e,this.props.item)}},{key:"getThumbnailStyles",value:function l(){var e=this.props.item.thumbnail
+return this.isImage()&&e&&(this.exists()||this.uploading())?{backgroundImage:"url("+e+")"}:{}}},{key:"hasError",value:function p(){var p=!1
 return this.props.item.message&&(p="error"===this.props.item.message.type),p}},{key:"getErrorMessage",value:function d(){var e=null
 return this.hasError()?e=this.props.item.message.value:this.exists()||this.uploading()||(e=u["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found")),null!==e?c["default"].createElement("span",{
 className:"gallery-item__error-message"},e):null}},{key:"getThumbnailClassNames",value:function h(){var e=["gallery-item__thumbnail"]

@@ -144,21 +144,30 @@ describe('GalleryItem', () => {
     let item = null;
 
     beforeEach(() => {
-      props.item.url = 'myurl';
-
       item = ReactTestUtils.renderIntoDocument(
         <GalleryItem {...props} />
       );
     });
 
-    it('should return backgroundImage with the correct url if the item is an image', () => {
+    it('should return backgroundImage with the correct url if the item is a thumbnail', () => {
       item.props.item.category = 'image';
+      item.props.item.url = 'myUrl';
+      item.props.item.thumbnail = 'myThumbnailUrl';
 
-      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{"backgroundImage":"url(myurl)"}');
+      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{"backgroundImage":"url(myThumbnailUrl)"}');
+    });
+
+    it('should not return backgroundImage with no thumbnail can be found', () => {
+      item.props.item.category = 'image';
+      item.props.item.url = 'myUrl';
+      item.props.item.thumbnail = '';
+
+      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{}');
     });
 
     it('should return an empty object if the item is not an image', () => {
       item.props.item.category = 'notAnImage';
+      item.props.item.url = 'myUrl';
 
       expect(JSON.stringify(item.getThumbnailStyles())).toBe('{}');
     });
