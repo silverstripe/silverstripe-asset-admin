@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as schemaActions from 'state/schema/SchemaActions';
+import qs from 'qs';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -91,7 +92,7 @@ class InsertMediaModal extends Component {
    * @param {Object} query
    * @returns {string}
    */
-  getUrl(folderId, fileId, query) {
+  getUrl(folderId, fileId, query = {}) {
     const base = this.props.sectionConfig.url;
     let url = `${base}/show/${folderId || 0}`;
 
@@ -99,9 +100,16 @@ class InsertMediaModal extends Component {
       url = `${url}/edit/${fileId}`;
     }
 
-    const hasQuery = (query && Object.keys(query).length > 0);
+    const hasFolderChanged = (parseInt(folderId, 10) !== parseInt(this.state.folderId, 10));
+    const newQuery = Object.assign({}, query);
+
+    if (hasFolderChanged) {
+      newQuery.page = 0;
+    }
+
+    const hasQuery = (newQuery && Object.keys(newQuery).length > 0);
     if (hasQuery) {
-      url = `${url}?${qs.stringify(query)}`;
+      url = `${url}?${qs.stringify(newQuery)}`;
     }
 
     return url;

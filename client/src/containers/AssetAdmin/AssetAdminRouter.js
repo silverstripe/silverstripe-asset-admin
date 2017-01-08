@@ -34,9 +34,16 @@ class AssetAdminRouter extends Component {
       url = `${url}/`;
     }
 
-    const hasQuery = (query && Object.keys(query).length > 0);
+    const hasFolderChanged = (parseInt(folderId, 10) !== parseInt(this.props.params.folderId, 10));
+    const newQuery = Object.assign({}, query);
+
+    if (hasFolderChanged) {
+      newQuery.page = 0;
+    }
+
+    const hasQuery = (newQuery && Object.keys(newQuery).length > 0);
     if (hasQuery) {
-      url = `${url}?${qs.stringify(query)}`;
+      url = `${url}?${qs.stringify(newQuery)}`;
     }
 
     return url;
