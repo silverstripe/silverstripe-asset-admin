@@ -24,6 +24,7 @@ describe('AssetAdminRouter', () => {
       location: {
         pathname: '',
         query: {},
+        search: '',
       },
       params: {
         fileId: '0',

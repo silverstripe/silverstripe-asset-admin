@@ -622,12 +622,8 @@ export default compose(
             {
               // Unset key, taken from rootFilter
               parentId: undefined,
-              // Recursion (showing all descendants) is only supported for the root folder at the moment
-              recursive: (hasFilters(filterWithDefault) && folderId === 0)
-                ? !filterWithDefault.currentFolderOnly
-                : false,
-            },
-            {
+              // Currently all searches are recursive, and only filtered by a ParentID
+              recursive: hasFilters(filterWithDefault),
               // Unset this key since it's not a valid GraphQL argument
               currentFolderOnly: undefined,
             }

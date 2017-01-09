@@ -87,6 +87,20 @@ class FolderTypeCreatorTest extends SapphireTest
             ],
             $listWithRecursive['edges']->column('Name')
         );
+
+        // Test with partial tree search
+        $listWithPartialTreeRecursive = $this->resolveChildrenConnection(
+            $folder,
+            ['filter' => [
+                'recursive' => true
+            ]]
+        );
+        $this->assertEquals(
+            [
+                $nestedFile->Name,
+            ],
+            $listWithPartialTreeRecursive['edges']->column('Name')
+        );
     }
 
     public function testItShowsParents()

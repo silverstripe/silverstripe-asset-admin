@@ -145,21 +145,11 @@ class FolderTypeCreator extends FileTypeCreator
             ));
         }
 
-        // TODO Implement recursion for parentId !== 0
-        $isRecursive = (isset($filter['recursive']) && $filter['recursive']);
-        $isRootParentId = ($object->ID === 0);
-        if ($isRecursive && !$isRootParentId) {
-            throw new \InvalidArgumentException('The "recursive" flag is only supported with parentId=0');
-        }
-
         $list = Versioned::get_by_stage(File::class, 'Stage');
         $filterInputType = new FileFilterInputTypeCreator($this->manager);
-        $list = $filterInputType->filterList($list, $filter);
 
-        // Override ParentID filter to this object, regardless of the previously applied filter
-        if (!$isRecursive) {
-            $list = $list->filter('ParentID', $object->ID);
-        }
+        $filter['parentId'] = $object->ID;
+        $list = $filterInputType->filterList($list, $filter);
 
         // Sort folders first
         $list = $list->alterDataQuery(function (DataQuery $query, DataList $list) {

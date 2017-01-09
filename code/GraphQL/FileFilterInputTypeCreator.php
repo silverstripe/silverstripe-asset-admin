@@ -75,7 +75,7 @@ class FileFilterInputTypeCreator extends TypeCreator
      * Caution: Does NOT enforce canView permissions
      *
      * @param Filterable $list
-     * @param array $filterArgs
+     * @param array $filter
      * @return Filterable
      */
     public function filterList(Filterable $list, $filter)
@@ -90,9 +90,17 @@ class FileFilterInputTypeCreator extends TypeCreator
             ])]);
         }
 
-        // Optionally limit search to a folder (non-recursive)
+        // Optionally limit search to a folder, supporting recursion
         if (isset($filter['parentId'])) {
-            $list = $list->filter('ParentID', $filter['parentId']);
+            $recursive = !empty($filter['recursive']);
+
+            if (!$recursive) {
+                $list = $list->filter('ParentID', $filter['parentId']);
+            } elseif ($filter['parentId']) {
+                // Note: Simplify parentID = 0 && recursive to no filter at all
+                $parents = $this->getNestedFolderIDs($filter['parentId']);
+                $list = $list->filter('ParentID', $parents);
+            }
         }
 
         if (!empty($filter['name'])) {
@@ -118,5 +126,25 @@ class FileFilterInputTypeCreator extends TypeCreator
         }
 
         return $list;
+    }
+
+    /**
+     * Get recursive parent IDs
+     *
+     * @param int $parentID Parent folder id
+     * @param int $maxDepth Hard limit of max depth
+     * @return array List of parent IDs, including $parentID
+     */
+    protected function getNestedFolderIDs($parentID, $maxDepth = 5)
+    {
+        $ids = [$parentID];
+        if ($maxDepth === 0) {
+            return $ids;
+        }
+        $childIDs = Folder::get()->filter('ParentID', $parentID)->column('ID');
+        foreach ($childIDs as $childID) {
+            $ids = array_merge($ids, $this->getNestedFolderIDs($childID, $maxDepth - 1));
+        }
+        return $ids;
     }
 }
