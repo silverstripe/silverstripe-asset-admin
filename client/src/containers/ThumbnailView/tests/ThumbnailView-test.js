@@ -1,12 +1,10 @@
 /* global jest, describe, it, expect, beforeEach */
 
-jest.unmock('react');
-jest.unmock('../ThumbnailView');
-jest.unmock('components/GalleryItem/GalleryItem');
-jest.unmock('components/AssetDropzone/AssetDropzone');
-
 // mock GriddlePagination because it gives mutation warnings all over the place!
 jest.mock('griddle-react', () => null);
+jest.mock('components/FormAlert/FormAlert', () => null);
+jest.unmock('react');
+jest.unmock('../ThumbnailView');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

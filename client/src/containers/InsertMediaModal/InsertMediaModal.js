@@ -1,6 +1,8 @@
+import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { buildUrl } from 'containers/AssetAdmin/AssetAdminRouter';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as schemaActions from 'state/schema/SchemaActions';
@@ -13,6 +15,7 @@ class InsertMediaModal extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleBrowse = this.handleBrowse.bind(this);
+    this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.getUrl = this.getUrl.bind(this);
 
     this.state = {
@@ -82,18 +85,39 @@ class InsertMediaModal extends Component {
   /**
    * Generates the Url to AssetAdmin for a given folder and file ID.
    *
-   * @param {number} folderId
-   * @param {number} fileId
-   * @returns {string}
+   * Only used by AssetAdmin to build breadcrumbs for a particular folder / file
+   *
+   * @param {Number} folderId
+   * @param {Number} fileId
+   * @param {Object} query
+   * @returns {String}
    */
-  getUrl(folderId, fileId) {
-    const base = this.props.sectionConfig.url;
-    let url = `${base}/show/${folderId || 0}`;
+  getUrl(folderId = 0, fileId = null, query = {}) {
+    const newFolderId = parseInt(folderId || 0, 10);
+    const newFileId = parseInt(fileId || 0, 10);
 
-    if (fileId) {
-      url = `${url}/edit/${fileId}`;
+    // Remove pagination selector if already on first page, or changing folder
+    const hasFolderChanged = newFolderId !== this.getFolderId();
+    const newQuery = Object.assign({}, query);
+    if (hasFolderChanged || newQuery.page <= 1) {
+      delete newQuery.page;
     }
-    return url;
+
+    return buildUrl(this.props.sectionConfig.url, newFolderId, newFileId, newQuery);
+  }
+
+  /**
+   * @return {Number} Folder ID being viewed
+   */
+  getFolderId() {
+    return parseInt(this.state.folderId || 0, 10);
+  }
+
+  /**
+   * @return {Number} File ID being viewed
+   */
+  getFileId() {
+    return parseInt(this.state.fileId || this.props.fileId, 10);
   }
 
   /**
@@ -105,12 +129,14 @@ class InsertMediaModal extends Component {
     return {
       dialog: true,
       type: this.props.type,
+      toolbarChildren: this.renderToolbarChildren(),
       sectionConfig: this.props.sectionConfig,
-      folderId: parseInt(this.state.folderId, 10),
-      fileId: parseInt(this.state.fileId || this.props.fileId, 10),
+      folderId: this.getFolderId(),
+      fileId: this.getFileId(),
       query: this.state.query,
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
+      onOpenFolder: this.handleOpenFolder,
       onSubmitEditor: this.handleSubmit,
     };
   }
@@ -124,7 +150,6 @@ class InsertMediaModal extends Component {
       {},
       this.props,
       {
-        handleHide: this.props.onHide,
         className: `insert-media-modal ${this.props.className}`,
         bsSize: 'lg',
         onHide: undefined,
@@ -147,27 +172,40 @@ class InsertMediaModal extends Component {
 
   /**
    * Handle browsing through the asset admin section.
-   * To clear the query string, pass in `null` as the parameter, otherwise it will default to the
-   * existing query string.
+   *
    *
    * @param {number} folderId
    * @param {number} fileId
-   * @param {object|null} newQuery
+   * @param {object} query
    */
-  handleBrowse(folderId, fileId, newQuery) {
-    let query = {};
-    if (newQuery !== null) {
-      query = this.state.query;
-      if (newQuery) {
-        query = Object.assign({}, query, newQuery);
-      }
-    }
-
+  handleBrowse(folderId, fileId, query = {}) {
     this.setState({
       folderId,
       fileId,
       query,
     });
+  }
+
+  /**
+   * Handle for opening a folder
+   *
+   * @param {number} folderId
+   */
+  handleOpenFolder(folderId) {
+    this.handleBrowse(folderId);
+  }
+
+  renderToolbarChildren() {
+    return (
+      <button
+        type="button"
+        className="btn btn-secondary close insert-media-modal__close-button"
+        onClick={this.props.onHide}
+        aria-label={i18n._t('FormBuilderModal.CLOSE', 'Close')}
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    );
   }
 
   render() {

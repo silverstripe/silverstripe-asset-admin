@@ -137,6 +137,14 @@ abstract class AssetFormFactory implements FormFactory
         return $actions;
     }
 
+    /**
+     * Get fields for this form
+     *
+     * @param Controller $controller
+     * @param string $name
+     * @param array $context
+     * @return FieldList
+     */
     protected function getFormFields(Controller $controller, $name, $context = [])
     {
         $record = $context['Record'];

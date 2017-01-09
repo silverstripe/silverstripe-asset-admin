@@ -4,8 +4,10 @@ jest.unmock('react');
 jest.unmock('react-dom');
 jest.unmock('react-redux');
 jest.unmock('react-addons-test-utils');
+jest.unmock('qs');
 jest.unmock('../AssetAdmin');
 jest.mock('containers/Editor/Editor');
+jest.mock('components/Breadcrumb/Breadcrumb');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
@@ -41,6 +43,9 @@ describe('AssetAdmin', () => {
           fileEditForm: {
             schemaUrl: '',
           },
+          fileSearchForm: {
+            schemaUrl: '',
+          },
         },
       },
       fileId: null,
@@ -49,7 +54,7 @@ describe('AssetAdmin', () => {
       query: {
         sort: '',
         limit: 10,
-        page: 0,
+        page: 1,
       },
       onSubmitEditor: jest.fn(),
       type: 'admin',
@@ -186,7 +191,7 @@ describe('AssetAdmin', () => {
         folderId: 1,
         query: {
           limit: 10,
-          page: 2,
+          page: 3,
           sort: 'title desc',
         },
       };
@@ -205,7 +210,7 @@ describe('AssetAdmin', () => {
         folderId: 1,
         query: {
           limit: null,
-          page: 2,
+          page: 3,
           sort: 'title desc',
         },
       };

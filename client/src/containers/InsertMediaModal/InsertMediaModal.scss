@@ -41,3 +41,16 @@
 .insert-media-modal__main  {
   height: calc(100vh - #{$toolbar-total-height * 2}); // Fix for Safari
 }
+
+// Based on .form-builder-modal__close-button, but floated
+.insert-media-modal__close-button {
+  float: right;
+  height: 32px;
+  margin: 10px -10px 10px 10px;
+
+  span {
+    overflow: hidden;
+    display: block;
+    margin-top: -7px;
+  }
+}

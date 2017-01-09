@@ -22,17 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   reactRouteRegister.add({
     path: sectionConfig.url,
     component: AssetAdminRouter,
-    indexRoute: {
-      // Show root folder by default
-      onEnter: (nextState, replace) => {
-        const redirectUrl = [
-          sectionConfig.url,
-          'show',
-          0,
-        ].join('/');
-        replace(redirectUrl);
-      },
-    },
+    indexRoute: { component: AssetAdminRouter },
     childRoutes: [
       {
         path: 'show/:folderId/edit/:fileId',

@@ -2,9 +2,37 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
-import { urlQuery } from 'lib/DataFormat';
+import { decodeQuery } from 'lib/DataFormat';
+import qs from 'qs';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
+
+/**
+ * Build URL from raw components
+ *
+ * @param {String} base
+ * @param {Number} folderId
+ * @param {Number} fileId
+ * @param {Object} query
+ * @return {String}
+ */
+export function buildUrl(base, folderId, fileId, query) {
+  let url = null;
+  if (fileId) {
+    url = `${base}/show/${folderId}/edit/${fileId}`;
+  } else if (folderId) {
+    url = `${base}/show/${folderId}`;
+  } else {
+    url = `${base}/`;
+  }
+
+  const hasQuery = query && Object.keys(query).length > 0;
+  if (hasQuery) {
+    url = `${url}?${qs.stringify(query)}`;
+  }
+
+  return url;
+}
 
 class AssetAdminRouter extends Component {
   constructor(props) {
@@ -17,24 +45,43 @@ class AssetAdminRouter extends Component {
   /**
    * Generates the Url for a given folder and file ID.
    *
-   * @param {number} [folderId]
-   * @param {number} [fileId]
-   * @param {object|null} [newQuery]
-   * @returns {string}
+   * @param {Number} folderId
+   * @param {Number} fileId
+   * @param {Object} query
+   * @returns {String}
    */
-  getUrl(folderId = 0, fileId, newQuery) {
-    const base = this.props.sectionConfig.url;
-    let url = `${base}/show/${folderId}`;
+  getUrl(folderId = 0, fileId = null, query = {}) {
+    const newFolderId = parseInt(folderId || 0, 10);
+    const newFileId = parseInt(fileId || 0, 10);
 
-    if (fileId) {
-      url = `${url}/edit/${fileId}`;
+    // Remove pagination selector if already on first page, or changing folder
+    const hasFolderChanged = newFolderId !== this.getFolderId();
+    const newQuery = Object.assign({}, query);
+    if (hasFolderChanged || newQuery.page <= 1) {
+      delete newQuery.page;
     }
 
-    const search = urlQuery(this.props.location, newQuery);
-    if (search) {
-      url = `${url}${search}`;
+    return buildUrl(this.props.sectionConfig.url, newFolderId, newFileId, newQuery);
+  }
+
+  /**
+   * @return {Number} Folder ID being viewed
+   */
+  getFolderId() {
+    if (this.props.params && this.props.params.folderId) {
+      return parseInt(this.props.params.folderId, 10);
     }
-    return url;
+    return 0;
+  }
+
+  /**
+   * @return {Number} File ID being viewed
+   */
+  getFileId() {
+    if (this.props.params && this.props.params.fileId) {
+      return parseInt(this.props.params.fileId, 10);
+    }
+    return 0;
   }
 
   /**
@@ -46,22 +93,29 @@ class AssetAdminRouter extends Component {
     return {
       sectionConfig: this.props.sectionConfig,
       type: 'admin',
-      folderId: parseInt(this.props.params.folderId, 10),
-      fileId: parseInt(this.props.params.fileId, 10),
-      query: this.props.location.query,
+      folderId: this.getFolderId(),
+      fileId: this.getFileId(),
+      query: this.getQuery(),
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
     };
   }
 
   /**
+   * Get decoded query object
+   *
+   * @returns {Object}
+   */
+  getQuery() {
+    return decodeQuery(this.props.location.search);
+  }
+
+  /**
    * Handle browsing with the router.
-   * To clear the query string, pass in `null` as the parameter, otherwise it will default to the
-   * existing query string.
    *
    * @param {number} [folderId]
    * @param {number} [fileId]
-   * @param {object|null} [query]
+   * @param {object} [query]
    */
   handleBrowse(folderId, fileId, query) {
     const pathname = this.getUrl(folderId, fileId, query);
@@ -88,11 +142,9 @@ AssetAdminRouter.propTypes = {
   location: PropTypes.shape({
     pathname: PropTypes.string,
     query: PropTypes.object,
+    search: PropTypes.string,
   }),
-  params: PropTypes.shape({
-    fileId: PropTypes.string,
-    folderId: PropTypes.string,
-  }),
+  params: PropTypes.object,
   router: PropTypes.object,
 };
 

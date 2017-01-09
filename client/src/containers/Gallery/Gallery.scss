@@ -13,8 +13,9 @@
 }
 
 .gallery__no-item-notice {
-  width: 100%;
   text-align: center;
+  font-size: $font-size-lg;
+  margin-top: $spacer-y;
 }
 
 .gallery__back {
@@ -205,3 +206,7 @@ $griddle-button-height: 30px;
   content: "&";
 }
 // Pagination end
+
+.gallery__search-message-clear {
+  padding-left: $spacer-x * .5;
+}

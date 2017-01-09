@@ -3,8 +3,6 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
-use SilverStripe\ORM\ArrayList;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
 use SilverStripe\GraphQL\Pagination\PaginatedQueryCreator;
 use SilverStripe\GraphQL\Pagination\Connection;
@@ -42,29 +40,30 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
                 ]);
                 return $unionType;
             })
-            ->setArgs([
-                'id' => [
-                    'type' => Type::id(),
-                ],
-                'parentId' => [
-                    'type' => Type::id(),
-                ],
-            ])
+            ->setArgs(function () {
+                return [
+                    'filter' => [
+                        'type' => $this->manager->getType('FileFilterInput')
+                    ]
+                ];
+            })
             ->setSortableFields(['ID', 'Title', 'Created', 'LastEdited'])
             ->setConnectionResolver(array($this, 'resolveConnection'));
     }
 
     public function resolveConnection($object, array $args, $context, $info)
     {
+        $filter = (!empty($args['filter'])) ? $args['filter'] : [];
+
         // Permission checks
         $parent = Folder::singleton();
-        if (isset($args['parentId'])) {
-            $parent = Folder::get()->byID($args['parentId']);
+        if (isset($filter['parentId']) && $filter['parentId'] !== 0) {
+            $parent = Folder::get()->byID($filter['parentId']);
             if (!$parent) {
                 throw new \InvalidArgumentException(sprintf(
                     '%s#%s not found',
                     Folder::class,
-                    $args['parentId']
+                    $filter['parentId']
                 ));
             }
         }
@@ -76,26 +75,21 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
             ));
         }
 
+        if (isset($filter['recursive']) && $filter['recursive']) {
+            throw new \InvalidArgumentException((
+               'The "recursive" flag can only be used for the "children" field'
+            ));
+        }
+
+        // Filter list
         $list = Versioned::get_by_stage(File::class, Versioned::DRAFT);
+        $filterInputType = new FileFilterInputTypeCreator($this->manager);
+        $list = $filterInputType->filterList($list, $filter);
 
-        if (isset($args['parentId'])) {
-            $list = $list->filter('ParentID', $args['parentId']);
-        }
-
-        if (isset($args['id']) && (int)$args['id'] > 0) {
-            $list = $list->filter('ID', $args['id']);
-        } elseif (isset($args['id']) && (int)$args['id'] === 0) {
-            // Special case for root folder
-            $list = new ArrayList([new Folder([
-                'ID' => 0,
-            ])]);
-        }
-
+        // Permission checks
         $list = $list->filterByCallback(function (File $file) use ($context) {
             return $file->canView($context['currentUser']);
         });
-
-        // TODO Sorting
 
         return $list;
     }

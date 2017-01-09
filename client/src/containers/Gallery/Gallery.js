@@ -12,6 +12,7 @@ import BulkActions from 'components/BulkActions/BulkActions';
 import ThumbnailView from 'containers/ThumbnailView/ThumbnailView';
 import TableView from 'containers/TableView/TableView';
 import CONSTANTS from 'constants/index';
+import FormAlert from 'components/FormAlert/FormAlert';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import { graphql, withApollo } from 'react-apollo';
@@ -69,6 +70,7 @@ class Gallery extends Component {
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
+    this.handleClearSearch = this.handleClearSearch.bind(this);
   }
 
   componentDidMount() {
@@ -91,7 +93,7 @@ class Gallery extends Component {
       nextProps.actions.queuedFiles.purgeUploadQueue();
     }
 
-    this.checkLoadingIndicator();
+    this.checkLoadingIndicator(nextProps);
   }
 
   componentDidUpdate() {
@@ -108,17 +110,92 @@ class Gallery extends Component {
   }
 
   /**
+   * Compose the search critia into a human readable message
+   *
+   * @param {object} search
+   * @returns {string}
+   */
+  getSearchMessage(filters) {
+    const messages = [];
+    if (filters.name) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEKEYWORDS',
+        'with keywords \'{name}\''
+      ));
+    }
+
+    if (filters.createdFrom && filters.createdTo) {
+      // TODO Date localisation
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
+        'created between \'{createdFrom}\' and \'{createdTo}\''
+      ));
+    } else if (filters.createdFrom) {
+      // TODO Date localisation
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDFROM',
+        'created after \'{createdFrom}\''
+      ));
+    } else if (filters.createdTo) {
+      // TODO Date localisation
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDTO',
+        'created before \'{createdTo}\''
+      ));
+    }
+
+    if (filters.appCategory) {
+      // TODO Category name localisation
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGECATEGORY',
+        'categorised as \'{appCategory}\''
+      ));
+    }
+
+    if (filters.currentFolderOnly) {
+      messages.push(i18n._t(
+        'LeftAndMain.SEARCHRESULTSMESSAGELIMIT',
+        'limited to the folder \'{folder}\''
+      ));
+    }
+
+    const parts = [
+      messages.slice(0, -1).join(`${i18n._t('LeftAndMain.JOIN', ',')} `),
+      messages.slice(-1),
+    ].filter((part) => part).join(` ${i18n._t('LeftAndMain.JOINLAST', 'and')} `);
+
+    if (parts === '') {
+      return '';
+    }
+
+    const searchResults = {
+      parts: i18n.inject(parts, Object.assign(
+        { folder: this.props.folder.title },
+        filters,
+        { appCategory: filters.appCategory ? filters.appCategory.toLowerCase() : undefined }
+      )),
+    };
+
+    return i18n.inject(
+      i18n._t('LeftAndMain.SEARCHRESULTSMESSAGE', 'Search results {parts}'),
+      searchResults
+    );
+  }
+
+  /**
    * Required anti-pattern, because `.cms-content` is the container for the React component.
    *
    * Adds or removes the load class from `.cms-content` if it is for the AssetAdmin
+   *
+   * @param {Object} props
    */
-  checkLoadingIndicator() {
+  checkLoadingIndicator(props) {
     const $sectionWrapper = $('.cms-content.AssetAdmin');
     if (!$sectionWrapper.length) {
       return;
     }
 
-    if (this.props.loading) {
+    if (props.loading) {
       $sectionWrapper.addClass('loading');
     } else {
       $sectionWrapper.removeClass('loading');
@@ -344,6 +421,10 @@ class Gallery extends Component {
     return this.props.fileId === id;
   }
 
+  handleClearSearch(event) {
+    this.handleOpenFolder(event, this.props.folder);
+  }
+
   /**
    * Handles a user drilling down into a folder.
    *
@@ -486,6 +567,38 @@ class Gallery extends Component {
   }
 
   /**
+   * Render the form search notification
+   *
+   * @return {XML}
+   */
+  renderSearchAlert() {
+    const filters = this.props.filters;
+    if (!filters || Object.keys(filters).length === 0) {
+      return null;
+    }
+
+    const message = this.getSearchMessage(filters);
+
+    if (message === '') {
+      return null;
+    }
+
+    const body = (
+      <div>
+        <button
+          onClick={this.handleClearSearch}
+          className="btn btn-info font-icon-cancel form-alert__btn--right"
+        >
+          {i18n._t('LeftAndMain.SEARCHCLEARRESULTS', 'Clear results')}
+        </button>
+        {message}
+      </div>
+    );
+
+    return <FormAlert value={{ react: body }} type="warning" />;
+  }
+
+  /**
    * Renders the react component buttons for changing the view that is currently being used
    *
    * @returns {Array} buttons
@@ -511,6 +624,7 @@ class Gallery extends Component {
           key={index}
           className={classNames.join(' ')}
           type="button"
+          title="Change view gallery/list"
           onClick={this.handleViewChange}
           value={view}
         >
@@ -537,6 +651,7 @@ class Gallery extends Component {
       return (
         <button
           className={classes}
+          title="Navigate up a level"
           onClick={this.handleBackClick}
           ref="backButton"
         >
@@ -709,7 +824,7 @@ class Gallery extends Component {
 
           <div className={galleryClasses.join(' ')}>
             {this.renderToolbar()}
-
+            {this.renderSearchAlert()}
             {this.renderGalleryView()}
           </div>
         </AssetDropzone>
@@ -719,7 +834,7 @@ class Gallery extends Component {
 }
 
 const sharedDefaultProps = {
-  page: 0,
+  page: 1,
   limit: 15,
   sort: `${sorters[0].field},${sorters[0].direction}`,
 };
@@ -772,6 +887,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   folderId: PropTypes.number.isRequired,
   folder: PropTypes.shape({
     id: PropTypes.number,
+    title: PropTypes.string,
     parentId: PropTypes.number,
     canView: PropTypes.bool,
     canEdit: PropTypes.bool,
@@ -784,9 +900,9 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   actions: PropTypes.object,
   securityId: PropTypes.string,
   onViewChange: PropTypes.func.isRequired,
-
   createFileApiUrl: PropTypes.string,
   createFileApiMethod: PropTypes.string,
+  search: PropTypes.object,
 });
 
 Gallery.fragments = {

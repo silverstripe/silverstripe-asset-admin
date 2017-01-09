@@ -31,9 +31,8 @@
     "testDirectoryName": "tests",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react",
-      "../framework/node_modules/react",
-      "../framework/node_modules/redux-form",
       "<rootDir>/node_modules/griddle-react",
+      "../framework",
       "../framework/node_modules/react",
       "../framework/node_modules/redux-form",
       "../framework/node_modules/react-bootstrap-ss"
@@ -69,6 +68,7 @@
     "node-sass": "^3.8.0",
     "npm-shrinkwrap": "^200.4.0",
     "postcss-loader": "^0.10.1",
+    "qs": "^6.2.1",
     "react": "^15.3.1",
     "react-addons-test-utils": "^15.3.1",
     "react-apollo": "^0.7.1",
