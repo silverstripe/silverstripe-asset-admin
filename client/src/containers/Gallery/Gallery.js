@@ -93,7 +93,7 @@ class Gallery extends Component {
       nextProps.actions.queuedFiles.purgeUploadQueue();
     }
 
-    this.checkLoadingIndicator();
+    this.checkLoadingIndicator(nextProps);
   }
 
   componentDidUpdate() {
@@ -186,14 +186,16 @@ class Gallery extends Component {
    * Required anti-pattern, because `.cms-content` is the container for the React component.
    *
    * Adds or removes the load class from `.cms-content` if it is for the AssetAdmin
+   *
+   * @param {Object} props
    */
-  checkLoadingIndicator() {
+  checkLoadingIndicator(props) {
     const $sectionWrapper = $('.cms-content.AssetAdmin');
     if (!$sectionWrapper.length) {
       return;
     }
 
-    if (this.props.loading) {
+    if (props.loading) {
       $sectionWrapper.addClass('loading');
     } else {
       $sectionWrapper.removeClass('loading');
@@ -832,7 +834,7 @@ class Gallery extends Component {
 }
 
 const sharedDefaultProps = {
-  page: 0,
+  page: 1,
   limit: 15,
   sort: `${sorters[0].field},${sorters[0].direction}`,
 };

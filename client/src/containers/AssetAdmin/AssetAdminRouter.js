@@ -34,11 +34,12 @@ class AssetAdminRouter extends Component {
       url = `${url}/`;
     }
 
-    const hasFolderChanged = (parseInt(folderId, 10) !== parseInt(this.props.params.folderId, 10));
     const newQuery = Object.assign({}, query);
 
-    if (hasFolderChanged) {
-      newQuery.page = 0;
+    // Remove pagination selector if already on first page, or changing folder
+    const hasFolderChanged = parseInt(folderId, 10) !== this.getFolderId();
+    if (hasFolderChanged || newQuery.page <= 1) {
+      delete newQuery.page;
     }
 
     const hasQuery = (newQuery && Object.keys(newQuery).length > 0);
@@ -50,24 +51,36 @@ class AssetAdminRouter extends Component {
   }
 
   /**
+   * @return {Integer} Folder ID being viewed
+   */
+  getFolderId() {
+    if (this.props.params && this.props.params.folderId) {
+      return parseInt(this.props.params.folderId, 10);
+    }
+    return 0;
+  }
+
+  /**
+   * @return {Integer} File ID being viewed
+   */
+  getFileId() {
+    if (this.props.params && this.props.params.fileId) {
+      return parseInt(this.props.params.fileId, 10);
+    }
+    return 0;
+  }
+
+  /**
    * Generates the properties for this section
    *
    * @returns {object}
    */
   getSectionProps() {
-    let folderId = 0;
-    if (this.props.params && this.props.params.folderId) {
-      folderId = parseInt(this.props.params.folderId, 10);
-    }
-    let fileId = 0;
-    if (this.props.params && this.props.params.fileId) {
-      fileId = parseInt(this.props.params.fileId, 10);
-    }
     return {
       sectionConfig: this.props.sectionConfig,
       type: 'admin',
-      folderId,
-      fileId,
+      folderId: this.getFolderId(),
+      fileId: this.getFileId(),
       query: this.getQuery(),
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,

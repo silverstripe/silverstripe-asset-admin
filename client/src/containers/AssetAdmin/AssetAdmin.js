@@ -76,9 +76,13 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {number} page
    */
   handleSetPage(page) {
-    this.handleBrowse(this.props.folderId, this.props.fileId, Object.assign({}, this.props.query, {
-      page,
-    }));
+    this.handleBrowse(
+      this.props.folderId,
+      this.props.fileId,
+      Object.assign({}, this.props.query, {
+        page,
+      })
+    );
   }
 
   /**
@@ -301,7 +305,9 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleOpenFolder(folderId) {
     // Reset any potential search filters and pagination, but keep other view options
-    const query = Object.assign({}, this.props.query, { page: 0, filter: {}, } );
+    const query = Object.assign({}, this.props.query);
+    delete query.page;
+    delete query.filter;
     this.handleBrowse(folderId, null, query);
   }
 
@@ -377,7 +383,7 @@ class AssetAdmin extends SilverStripeComponent {
     const createFileApiMethod = config.createFileEndpoint.method;
 
     const limit = this.props.query && parseInt(this.props.query.limit || config.limit, 10);
-    const page = this.props.query && parseInt(this.props.query.page || 0, 10);
+    const page = this.props.query && parseInt(this.props.query.page || 1, 10);
 
     const sort = this.props.query && this.props.query.sort;
     const view = this.props.query && this.props.query.view;
@@ -533,15 +539,6 @@ function mapStateToProps(state, ownProps) {
     securityId: state.config.SecurityID,
     // TODO Refactor "queued files" into separate visual area and remove coupling here
     queuedFiles: state.assetAdmin.queuedFiles,
-    query: Object.assign(
-      {},
-      {
-        limit: ownProps.sectionConfig.limit,
-        sort: '',
-        page: 0,
-      },
-      ownProps.query
-    ),
   };
 }
 
@@ -616,6 +613,7 @@ export default compose(
 
       const [sortField, sortDir] = query.sort ? query.sort.split(',') : ['', ''];
       const filterWithDefault = query.filter || {};
+      const limit = query.limit || sectionConfig.limit;
       return {
         variables: {
           rootFilter: { id: folderId },
@@ -634,8 +632,8 @@ export default compose(
               currentFolderOnly: undefined,
             }
           ),
-          limit: query.limit || sectionConfig.limit,
-          offset: (query.page || 0) * (query.limit || sectionConfig.limit),
+          limit,
+          offset: ((query.page || 1) - 1) * limit,
           sortBy: (sortField && sortDir)
             ? [{ field: sortField, direction: sortDir.toUpperCase() }]
             : undefined,

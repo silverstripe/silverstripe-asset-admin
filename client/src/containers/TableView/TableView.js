@@ -118,7 +118,7 @@ class TableView extends Component {
       // noops for now as they aren't needed yet
       externalSetFilter: () => null,
       externalSetPageSize: () => null,
-      externalCurrentPage: this.props.page,
+      externalCurrentPage: this.props.page - 1,
       externalMaxPage: Math.ceil(this.props.totalCount / this.props.limit),
       externalSortColumn: sortColumn,
       // TODO change to `sortDirection === 'asc'` when Griddle is version bumped up from 0.7.0
@@ -196,7 +196,8 @@ class TableView extends Component {
    * @param {number} page
    */
   handleSetPage(page) {
-    this.props.onSetPage(page);
+    // Convert 0-based to 1-based
+    this.props.onSetPage(page + 1);
   }
 
   /**

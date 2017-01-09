@@ -74,7 +74,7 @@ class ThumbnailView extends Component {
       nextText: i18n._t('Pagination.NEXT', 'Next'),
       previous: this.handlePrevPage,
       previousText: i18n._t('Pagination.PREVIOUS', 'Previous'),
-      currentPage: this.props.page,
+      currentPage: this.props.page - 1,
       useGriddleStyles: false,
     };
     return (
