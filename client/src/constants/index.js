@@ -13,6 +13,11 @@ export default {
       className: 'font-icon-trash',
       destructive: true,
       callback: null, // defined in <Gallery> for now
+      canApply: (items) => {
+          return items.reduce(function(current, item) {
+              return (item.canDelete && current);
+          }, true);
+      },
       confirm: () => {
         let promise = null;
         const msg = i18n.sprintf(
