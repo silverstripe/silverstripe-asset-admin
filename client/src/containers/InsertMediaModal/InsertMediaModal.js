@@ -156,12 +156,18 @@ class InsertMediaModal extends Component {
    */
   handleBrowse(folderId, fileId, newQuery) {
     let query = {};
+    const hasFolderChanged = (parseInt(folderId, 10) !== parseInt(this.state.folderId, 10));
+
     if (newQuery !== null) {
       query = this.state.query;
       if (newQuery) {
+        // Merge in new query params
         query = Object.assign({}, query, newQuery);
       }
     }
+
+    // Reset pagination if folder has changed (new folder might not have that many pages)
+    query = Object.assign({}, query, { page: hasFolderChanged ? 0 : query.page });
 
     this.setState({
       folderId,
