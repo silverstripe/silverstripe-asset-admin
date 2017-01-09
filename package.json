@@ -22,7 +22,7 @@
     "test": "NODE_PATH=\"./client/src:../framework/client/src:../framework/admin/client/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
-    "lint": "eslint client/src & sass-lint -v",
+    "lint": "eslint client/src && sass-lint -v",
     "lint-js": "eslint client/src",
     "lint-sass": "sass-lint -v"
   },
