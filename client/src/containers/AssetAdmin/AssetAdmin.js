@@ -217,7 +217,6 @@ class AssetAdmin extends SilverStripeComponent {
     if (hasFilters(query.filter)) {
       breadcrumbs.push({
         text: i18n._t('LeftAndMain.SEARCHRESULTS', 'Search results'),
-        noCrumb: true,
       });
     }
 
@@ -462,7 +461,7 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   render() {
-    const showBackButton = !!(this.props.folder && this.props.folder.id);
+    const showBackButton = (this.props.folder && this.props.folder.id) || hasFilters(this.props.query.filter);
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
     const filters = this.props.query.filter || {};
     return (
