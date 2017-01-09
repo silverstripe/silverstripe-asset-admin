@@ -2,10 +2,10 @@ import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { buildUrl } from 'containers/AssetAdmin/AssetAdminRouter';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as schemaActions from 'state/schema/SchemaActions';
-import qs from 'qs';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -87,32 +87,37 @@ class InsertMediaModal extends Component {
    *
    * Only used by AssetAdmin to build breadcrumbs for a particular folder / file
    *
-   * @param {number} folderId
-   * @param {number} fileId
+   * @param {Number} folderId
+   * @param {Number} fileId
    * @param {Object} query
-   * @returns {string}
+   * @returns {String}
    */
-  getUrl(folderId, fileId, query = {}) {
-    const base = this.props.sectionConfig.url;
-    let url = `${base}/show/${folderId || 0}`;
+  getUrl(folderId = 0, fileId = null, query = {}) {
+    const newFolderId = parseInt(folderId || 0, 10);
+    const newFileId = parseInt(fileId || 0, 10);
 
-    if (fileId) {
-      url = `${url}/edit/${fileId}`;
-    }
-
-    const hasFolderChanged = (parseInt(folderId, 10) !== parseInt(this.state.folderId, 10));
+    // Remove pagination selector if already on first page, or changing folder
+    const hasFolderChanged = newFolderId !== this.getFolderId();
     const newQuery = Object.assign({}, query);
-
-    if (hasFolderChanged) {
-      newQuery.page = 0;
+    if (hasFolderChanged || newQuery.page <= 1) {
+      delete newQuery.page;
     }
 
-    const hasQuery = (newQuery && Object.keys(newQuery).length > 0);
-    if (hasQuery) {
-      url = `${url}?${qs.stringify(newQuery)}`;
-    }
+    return buildUrl(this.props.sectionConfig.url, newFolderId, newFileId, newQuery);
+  }
 
-    return url;
+  /**
+   * @return {Number} Folder ID being viewed
+   */
+  getFolderId() {
+    return parseInt(this.state.folderId || 0, 10);
+  }
+
+  /**
+   * @return {Number} File ID being viewed
+   */
+  getFileId() {
+    return parseInt(this.state.fileId || this.props.fileId, 10);
   }
 
   /**
@@ -126,8 +131,8 @@ class InsertMediaModal extends Component {
       type: this.props.type,
       toolbarChildren: this.renderToolbarChildren(),
       sectionConfig: this.props.sectionConfig,
-      folderId: parseInt(this.state.folderId, 10),
-      fileId: parseInt(this.state.fileId || this.props.fileId, 10),
+      folderId: this.getFolderId(),
+      fileId: this.getFileId(),
       query: this.state.query,
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,

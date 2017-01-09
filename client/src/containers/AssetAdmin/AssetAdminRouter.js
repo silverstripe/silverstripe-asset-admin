@@ -7,6 +7,33 @@ import qs from 'qs';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
+/**
+ * Build URL from raw components
+ *
+ * @param {String} base
+ * @param {Number} folderId
+ * @param {Number} fileId
+ * @param {Object} query
+ * @return {String}
+ */
+export function buildUrl(base, folderId, fileId, query) {
+  let url = null;
+  if (fileId) {
+    url = `${base}/show/${folderId}/edit/${fileId}`;
+  } else if (folderId) {
+    url = `${base}/show/${folderId}`;
+  } else {
+    url = `${base}/`;
+  }
+
+  const hasQuery = query && Object.keys(query).length > 0;
+  if (hasQuery) {
+    url = `${url}?${qs.stringify(query)}`;
+  }
+
+  return url;
+}
+
 class AssetAdminRouter extends Component {
   constructor(props) {
     super(props);
@@ -18,40 +45,27 @@ class AssetAdminRouter extends Component {
   /**
    * Generates the Url for a given folder and file ID.
    *
-   * @param {number} [folderId]
-   * @param {number} [fileId]
-   * @param {object} [query]
-   * @returns {string}
+   * @param {Number} folderId
+   * @param {Number} fileId
+   * @param {Object} query
+   * @returns {String}
    */
   getUrl(folderId = 0, fileId = null, query = {}) {
-    let url = this.props.sectionConfig.url;
-
-    if (fileId) {
-      url = `${url}/show/${folderId}/edit/${fileId}`;
-    } else if (folderId) {
-      url = `${url}/show/${folderId}`;
-    } else {
-      url = `${url}/`;
-    }
-
-    const newQuery = Object.assign({}, query);
+    const newFolderId = parseInt(folderId || 0, 10);
+    const newFileId = parseInt(fileId || 0, 10);
 
     // Remove pagination selector if already on first page, or changing folder
-    const hasFolderChanged = parseInt(folderId, 10) !== this.getFolderId();
+    const hasFolderChanged = newFolderId !== this.getFolderId();
+    const newQuery = Object.assign({}, query);
     if (hasFolderChanged || newQuery.page <= 1) {
       delete newQuery.page;
     }
 
-    const hasQuery = (newQuery && Object.keys(newQuery).length > 0);
-    if (hasQuery) {
-      url = `${url}?${qs.stringify(newQuery)}`;
-    }
-
-    return url;
+    return buildUrl(this.props.sectionConfig.url, newFolderId, newFileId, newQuery);
   }
 
   /**
-   * @return {Integer} Folder ID being viewed
+   * @return {Number} Folder ID being viewed
    */
   getFolderId() {
     if (this.props.params && this.props.params.folderId) {
@@ -61,7 +75,7 @@ class AssetAdminRouter extends Component {
   }
 
   /**
-   * @return {Integer} File ID being viewed
+   * @return {Number} File ID being viewed
    */
   getFileId() {
     if (this.props.params && this.props.params.fileId) {

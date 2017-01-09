@@ -8879,6 +8879,10 @@
         }
       }
     },
+    "qs": {
+      "version": "6.2.1",
+      "resolved": "https://registry.npmjs.org/qs/-/qs-6.2.1.tgz"
+    },
     "react": {
       "version": "15.3.1",
       "resolved": "https://registry.npmjs.org/react/-/react-15.3.1.tgz",
