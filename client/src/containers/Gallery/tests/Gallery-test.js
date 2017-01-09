@@ -86,7 +86,7 @@ describe('Gallery', () => {
     });
 
     it('should show a single message without conjoins with one item', () => {
-      const search = { name: 'hi', };
+      const search = { name: 'hi' };
 
       const message = gallery.getSearchMessage(search);
 
@@ -95,7 +95,7 @@ describe('Gallery', () => {
     });
 
     it('should show a message with "and" with two items', () => {
-      const search = { name: 'hi', appCategory: 'IMAGE', };
+      const search = { name: 'hi', appCategory: 'IMAGE' };
 
       const message = gallery.getSearchMessage(search);
 

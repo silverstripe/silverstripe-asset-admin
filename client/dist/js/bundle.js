@@ -86,7 +86,7 @@ return n}return Array.from(e)}function a(e,t){if(!(e instanceof t))throw new Typ
 
 
 return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function u(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t)
-e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function p(e,t){return{securityId:e.config.SecurityID,
+e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function p(e){return{securityId:e.config.SecurityID,
 queuedFiles:e.assetAdmin.queuedFiles}}function c(e){return{actions:{gallery:(0,_.bindActionCreators)(O,e),breadcrumbsActions:(0,_.bindActionCreators)(A,e),queuedFiles:(0,_.bindActionCreators)(D,e)}}}Object.defineProperty(t,"__esModule",{
 value:!0}),t.AssetAdmin=void 0
 var d=function(){function e(e,t){var n=[],r=!0,o=!1,i=void 0
@@ -219,7 +219,7 @@ onDelete:c["default"].PropTypes.func.isRequired,editFileSchemaUrl:c["default"].P
 function r(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(t,"__esModule",{value:!0})
 var o=n(3),i=r(o)
 t["default"]={CSS_TRANSITION_TIME:300,SMALL_THUMBNAIL_HEIGHT:60,SMALL_THUMBNAIL_WIDTH:60,THUMBNAIL_HEIGHT:150,THUMBNAIL_WIDTH:200,BULK_ACTIONS:[{value:"delete",label:i["default"]._t("AssetAdmin.BULK_ACTIONS_DELETE","Delete"),
-className:"font-icon-trash",destructive:!0,callback:null,canApply:function s(e){return e.reduce(function(e,t){return t.canDelete&&e},!0)},confirm:function(e){function t(){return e.apply(this,arguments)
+className:"font-icon-trash",destructive:!0,callback:null,canApply:function s(e){return e.reduce(function(e,t){return t&&t.canDelete&&e},!0)},confirm:function(e){function t(){return e.apply(this,arguments)
 
 }return t.toString=function(){return e.toString()},t}(function(){var e=null,t=i["default"].sprintf(i["default"]._t("AssetAdmin.BULK_ACTIONS_CONFIRM"),i["default"]._t("AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM","delete"))
 

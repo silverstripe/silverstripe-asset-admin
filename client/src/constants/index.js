@@ -13,11 +13,14 @@ export default {
       className: 'font-icon-trash',
       destructive: true,
       callback: null, // defined in <Gallery> for now
-      canApply: (items) => {
-          return items.reduce(function(current, item) {
-              return (item.canDelete && current);
-          }, true);
-      },
+      canApply: (items) => (
+        items.reduce(
+          // TODO Fix 'delete' resultBehaviour to delete the "edge" object containing
+          // the actual item, see AssetAdmin.js
+          (current, item) => (item && item.canDelete && current),
+          true
+        )
+      ),
       confirm: () => {
         let promise = null;
         const msg = i18n.sprintf(

@@ -533,7 +533,7 @@ AssetAdmin.defaultProps = {
   },
 };
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return {
     securityId: state.config.SecurityID,
     // TODO Refactor "queued files" into separate visual area and remove coupling here

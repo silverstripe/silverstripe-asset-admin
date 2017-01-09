@@ -51,7 +51,7 @@ describe('Search', () => {
 
   describe('setOverrides()', () => {
     it('converts values into name/value notation', () => {
-      props.filters = { foo: true, bar: null, };
+      props.filters = { foo: true, bar: null };
       const component = ReactTestUtils.renderIntoDocument(
         <Search {...props} />
       );
