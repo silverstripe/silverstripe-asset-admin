@@ -16,7 +16,7 @@ const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
  * @param {Object} query
  * @return {String}
  */
-export function buildUrl(base, folderId, fileId, query) {
+function buildUrl(base, folderId, fileId, query) {
   let url = null;
   if (fileId) {
     url = `${base}/show/${folderId}/edit/${fileId}`;
@@ -156,6 +156,6 @@ function mapStateToProps(state) {
   };
 }
 
-export { AssetAdminRouter };
+export { AssetAdminRouter, buildUrl };
 
 export default withRouter(connect(mapStateToProps)(AssetAdminRouter));

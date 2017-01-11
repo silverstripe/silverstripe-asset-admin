@@ -10,6 +10,50 @@ import galleryReducer from '../GalleryReducer.js';
 import GALLERY from '../GalleryActionTypes.js';
 
 describe('galleryReducer', () => {
+  describe('SET_NOTICE_MESSAGE', () => {
+    const type = GALLERY.SET_NOTICE_MESSAGE;
+
+    it('should set a given string as a message', () => {
+      const payload = { message: 'My notice' };
+      const initialState = {};
+
+      const nextState = galleryReducer(initialState, { type, payload });
+
+      expect(nextState.noticeMessage).toBe('My notice');
+    });
+
+    it('should clear the message when given a null value', () => {
+      const payload = { message: null };
+      const initialState = {};
+
+      const nextState = galleryReducer(initialState, { type, payload });
+
+      expect(nextState.noticeMessage).toBe(null);
+    });
+  });
+
+  describe('SET_ERROR_MESSAGE', () => {
+    const type = GALLERY.SET_ERROR_MESSAGE;
+
+    it('should set a given string as a message', () => {
+      const payload = { message: 'My error' };
+      const initialState = {};
+
+      const nextState = galleryReducer(initialState, { type, payload });
+
+      expect(nextState.errorMessage).toBe('My error');
+    });
+
+    it('should clear the message when given a null value', () => {
+      const payload = { message: null };
+      const initialState = {};
+
+      const nextState = galleryReducer(initialState, { type, payload });
+
+      expect(nextState.errorMessage).toBe(null);
+    });
+  });
+
   describe('LOAD_FILE', () => {
     const type = GALLERY.LOAD_FILE_SUCCESS;
 

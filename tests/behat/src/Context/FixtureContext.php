@@ -113,7 +113,7 @@ class FixtureContext extends BaseFixtureContext
         assertFileExists($path, "$path does not exist");
         // Find field
         $selector = "input[type=\"file\"].dz-hidden-input.dz-input-{$name}";
-    
+
         /** @var DocumentElement $page */
         $page = $this->getSession()->getPage();
         $input = $page->find('css', $selector);
@@ -132,6 +132,16 @@ EOS
         assert($input->isVisible());
         // Attach via html5
         $input->attachFile($path);
+    }
+
+    /**
+     * Checks that the message box contains specified text.
+     *
+     * @Then /^I should see "(?P<text>(?:[^"]|\\")*)" in the message box$/
+     */
+    public function assertMessageBoxContainsText($text)
+    {
+        $this->assertSession()->elementTextContains('css', '.message-box', $this->fixStepArgument($text));
     }
 
     /**

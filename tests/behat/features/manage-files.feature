@@ -64,4 +64,5 @@ Feature: Manage files
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
+      And I should see "successfully archived" in the message box
 

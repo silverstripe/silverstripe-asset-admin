@@ -27,6 +27,8 @@ describe('Gallery', () => {
           selectFiles: () => {},
           deselectFiles: () => {},
           setPath: () => {},
+          setErrorMessage: () => {},
+          setNoticeMessage: () => {},
         },
         queuedFiles: {
           addQueuedFile: () => null,
@@ -439,6 +441,8 @@ describe('Gallery', () => {
     beforeEach(() => {
       props.onOpenFolder = jest.genMockFunction();
       props.onOpenFile = jest.genMockFunction();
+      props.actions.gallery.setErrorMessage = jest.genMockFunction();
+      props.actions.gallery.setNoticeMessage = jest.genMockFunction();
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
@@ -451,6 +455,8 @@ describe('Gallery', () => {
       gallery.handleOpenFolder(event, folder);
 
       expect(props.onOpenFolder).toBeCalledWith(1);
+      expect(props.actions.gallery.setErrorMessage).toBeCalled();
+      expect(props.actions.gallery.setNoticeMessage).toBeCalled();
     });
 
     it('should call onOpenFile', () => {
