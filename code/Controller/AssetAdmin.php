@@ -50,6 +50,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     private static $menu_title = 'Files';
 
+    private static $menu_icon_class = 'font-icon-image';
+
     private static $tree_class = 'SilverStripe\\Assets\\Folder';
 
     private static $url_handlers = [
