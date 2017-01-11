@@ -23,6 +23,18 @@ const initialState = {
 export default function galleryReducer(state = initialState, action) {
   switch (action.type) {
 
+    case GALLERY.SET_NOTICE_MESSAGE: {
+      return Object.assign({}, state, {
+        noticeMessage: action.payload.message,
+      });
+    }
+
+    case GALLERY.SET_ERROR_MESSAGE: {
+      return Object.assign({}, state, {
+        errorMessage: action.payload.message,
+      });
+    }
+
     case GALLERY.LOAD_FILE_SUCCESS: {
       const oldFile = state.files.find(file => file.id === action.payload.id);
       if (oldFile) {

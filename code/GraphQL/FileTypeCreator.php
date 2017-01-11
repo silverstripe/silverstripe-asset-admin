@@ -116,6 +116,9 @@ class FileTypeCreator extends TypeCreator
             'published' => [
                 'type' => Type::boolean(),
             ],
+            'inUseCount' => [
+                'type' => Type::int(),
+            ],
         ];
     }
 
@@ -220,5 +223,12 @@ class FileTypeCreator extends TypeCreator
     public function resolveField($object, array $args, $context, $info)
     {
         return $this->accessor->getValue($object, $info->fieldName);
+    }
+
+    public function resolveInUseCountField($object, array $args, $context, $info) {
+        if ($object->hasMethod('BackLinkTrackingCount')) {
+            return $object->BackLinkTrackingCount();
+        }
+        return 0;
     }
 }

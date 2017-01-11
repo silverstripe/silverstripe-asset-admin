@@ -21,22 +21,42 @@ export default {
           true
         )
       ),
-      confirm: () => {
-        let promise = null;
-        const msg = i18n.sprintf(
-          i18n._t('AssetAdmin.BULK_ACTIONS_CONFIRM'),
-          i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM', 'delete')
+      confirm: (items) => new Promise((resolve, reject) => {
+        const foldersInUse = items.filter((item) =>
+          item.type === 'folder' && item.filesInUse && item.filesInUse.length
         );
+
+        if (foldersInUse.length) {
+          // eslint-disable-next-line no-alert
+          alert(i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_FOLDER'));
+
+          reject();
+          return;
+        }
+        const filesInUse = items.filter((item) =>
+          item.type !== 'folder' && item.inUseCount > 0
+        );
+
+        let msg = i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM');
+        if (items.length === 1 && filesInUse.length === 1) {
+          msg = i18n.sprintf(
+            i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM'),
+            items[0].inUseCount
+          );
+        }
+        if (filesInUse.length > 1) {
+          i18n.sprintf(
+            i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_MULTI_CONFIRM'),
+            filesInUse.length
+          );
+        }
 
         // eslint-disable-next-line no-alert
         if (confirm(msg)) {
-          promise = Promise.resolve();
-        } else {
-          promise = Promise.reject();
+          resolve();
         }
-
-        return promise;
-      },
+        reject();
+      }),
     },
     {
       value: 'edit',

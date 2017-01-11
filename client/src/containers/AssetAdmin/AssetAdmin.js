@@ -68,6 +68,9 @@ class AssetAdmin extends SilverStripeComponent {
       // for Higher-order component with a router handler
       this.props.onBrowse(folderId, fileId, query);
     }
+    if (folderId !== this.props.folderId) {
+      this.props.actions.gallery.deselectFiles();
+    }
   }
 
   /**
@@ -463,7 +466,10 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   render() {
-    const showBackButton = (this.props.folder && this.props.folder.id) || hasFilters(this.props.query.filter);
+    const showBackButton = !!(
+      (this.props.folder && this.props.folder.id)
+      || hasFilters(this.props.query.filter)
+    );
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
     const filters = this.props.query.filter || {};
     return (
@@ -576,6 +582,7 @@ const readFilesQuery = gql`
                 node {
                   ...FileInterfaceFields
                   ...FileFields
+                  ...FolderFields
                 }
               }
             }
@@ -590,6 +597,7 @@ const readFilesQuery = gql`
   }
   ${Gallery.fragments.fileInterface}
   ${Gallery.fragments.file}
+  ${Gallery.fragments.folder}
 `;
 const updateFileMutation = gql`mutation UpdateFile($id:ID!, $file:FileInput!) {
   updateFile(id: $id, file: $file) {
@@ -619,6 +627,7 @@ export default compose(
         variables: {
           rootFilter: { id: folderId },
           childrenFilter: Object.assign(
+            {},
             filterWithDefault,
             {
               // Unset key, taken from rootFilter
