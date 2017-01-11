@@ -8,6 +8,7 @@ Feature: Manage files
     Given a "image" "assets/folder1/file1.jpg" was created "2012-01-01 12:00:00"
       And a "image" "assets/folder1/folder1-1/file2.jpg" was created "2010-01-01 12:00:00"
       And a "folder" "assets/folder2"
+      And a page "Gallery" containing "assets/folder3/file1.jpg"
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/assets"
 

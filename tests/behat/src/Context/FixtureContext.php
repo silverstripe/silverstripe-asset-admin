@@ -4,6 +4,8 @@ namespace SilverStripe\AssetAdmin\Tests\Behat\Context;
 
 use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
+use Page;
+use SilverStripe\Assets\Image;
 use SilverStripe\BehatExtension\Context\FixtureContext as BaseFixtureContext;
 
 /**
@@ -141,7 +143,11 @@ EOS
      */
     public function assertMessageBoxContainsText($text)
     {
-        $this->assertSession()->elementTextContains('css', '.message-box', $this->fixStepArgument($text));
+        /** @var FeatureContext $mainContext */
+        $mainContext = $this->getMainContext();
+        $mainContext
+            ->assertSession()
+            ->elementTextContains('css', '.message-box', str_replace('\\"', '"', $text));
     }
 
     /**
@@ -193,5 +199,29 @@ EOS
             sleep(1);
         } while (--$timeout >= 0);
         return null;
+    }
+
+    /**
+     * @Given /^a page "([^"]*)" containing "([^"]*)"$/
+     */
+    public function aPageContaining($page, $image)
+    {
+        // Find or create named image
+        $fields = $this->prepareFixture(Image::class, $image);
+        /** @var Image $image */
+        $image = $this->fixtureFactory->createObject(Image::class, $image, $fields);
+
+        // Create page
+        $fields = $this->prepareFixture(Page::class, $page);
+        $fields = array_merge($fields, [
+            'Title' => $page,
+            'Content' => sprintf(
+                '<p>[image id="%d" width="%d" height="%d"]</p>',
+                $image->ID,
+                $image->getWidth(),
+                $image->getHeight()
+            ),
+        ]);
+        $this->fixtureFactory->createObject(Page::class, $page, $fields);
     }
 }
