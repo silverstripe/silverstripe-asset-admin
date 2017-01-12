@@ -23,30 +23,43 @@ export default {
       ),
       confirm: (items) => new Promise((resolve, reject) => {
         const foldersInUse = items.filter((item) =>
-          item.type === 'folder' && item.filesInUse && item.filesInUse.length
+          item.type === 'folder' && item.filesInUseCount > 0
         );
 
-        if (foldersInUse.length) {
+        if (foldersInUse.length || true) {
           // eslint-disable-next-line no-alert
-          alert(i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_FOLDER'));
+          alert(i18n._t(
+            'AssetAdmin.BULK_ACTIONS_DELETE_FOLDER',
+            'These folders contain files which are currently in use, you must move or '
+              + 'delete their contents before you can delete the folder.'
+          ));
 
-          reject();
+          reject('cancelled');
           return;
         }
         const filesInUse = items.filter((item) =>
           item.type !== 'folder' && item.inUseCount > 0
         );
 
-        let msg = i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM');
+        let msg = i18n._t(
+          'AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM',
+          'Are you sure you want to delete these files?'
+        );
         if (items.length === 1 && filesInUse.length === 1) {
           msg = i18n.sprintf(
-            i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM'),
+            i18n._t(
+              'AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM',
+              'This file is currently in use in %s places, are you sure you want to delete it?'
+            ),
             items[0].inUseCount
           );
         }
         if (filesInUse.length > 1) {
           i18n.sprintf(
-            i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_MULTI_CONFIRM'),
+            i18n._t(
+              'AssetAdmin.BULK_ACTIONS_DELETE_MULTI_CONFIRM',
+              'There are %s files currently in use, are you sure you want to delete these files?'
+            ),
             filesInUse.length
           );
         }
@@ -54,8 +67,9 @@ export default {
         // eslint-disable-next-line no-alert
         if (confirm(msg)) {
           resolve();
+        } else {
+          reject('cancelled');
         }
-        reject();
       }),
     },
     {

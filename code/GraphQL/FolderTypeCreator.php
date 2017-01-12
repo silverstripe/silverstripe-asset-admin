@@ -4,6 +4,8 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
+use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
+use SilverStripe\AssetAdmin\Controller\AssetAdminFolder;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\ORM\Filterable;
@@ -11,7 +13,6 @@ use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DataList;
-use SilverStripe\ORM\DataObject;
 
 class FolderTypeCreator extends FileTypeCreator
 {
@@ -89,10 +90,8 @@ class FolderTypeCreator extends FileTypeCreator
                     return Type::listOf($this->manager->getType('FileInterface'));
                 }
             ],
-            'filesInUse' => [
-                'type' => function () {
-                    return Type::listOf($this->manager->getType('FileInterface'));
-                }
+            'filesInUseCount' => [
+                'type' => Type::int(),
             ],
         ];
     }
@@ -186,31 +185,16 @@ class FolderTypeCreator extends FileTypeCreator
         return $return;
     }
 
-
-
     /**
-     * @param Folder $object
+     * @param Folder|AssetAdminFile $object
      * @param array $args
      * @param array $context
      * @param ResolveInfo $info
-     * @return DataObject[]
+     * @return int
      */
-    public function resolveFilesInUseField($object, array $args, $context, ResolveInfo $info)
+    public function resolveFilesInUseCountField($object, array $args, $context, ResolveInfo $info)
     {
-        $parents = $this->getNestedFolderIDs($object->ID);
-        $tracking = [];
-
-        if ($object->hasMethod('BackLinkTracking')) {
-            // @todo optimise this to be better performant...
-            $files = File::get()->filter('ParentID', $parents);
-
-            foreach ($files as $file) {
-                if ($file->BackLinkTrackingCount() > 0) {
-                    $tracking[] = $file;
-                }
-            }
-        }
-        return $tracking;
+        return $object->getFilesInUse()->count();
     }
 
     /**
@@ -234,25 +218,5 @@ class FolderTypeCreator extends FileTypeCreator
         }
 
         return $parents;
-    }
-
-    /**
-     * Get recursive parent IDs
-     *
-     * @param int $parentID Parent folder id
-     * @param int $maxDepth Hard limit of max depth
-     * @return array List of parent IDs, including $parentID
-     */
-    protected function getNestedFolderIDs($parentID, $maxDepth = 5)
-    {
-        $ids = [$parentID];
-        if ($maxDepth === 0) {
-            return $ids;
-        }
-        $childIDs = Folder::get()->filter('ParentID', $parentID)->column('ID');
-        foreach ($childIDs as $childID) {
-            $ids = array_merge($ids, $this->getNestedFolderIDs($childID, $maxDepth - 1));
-        }
-        return $ids;
     }
 }

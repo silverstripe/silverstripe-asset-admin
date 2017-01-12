@@ -90,7 +90,13 @@ export class BulkActions extends SilverStripeComponent {
     // (instead of just waiting for user feedback in a dialog etc.)
     if (typeof option.confirm === 'function') {
       promise = option.confirm(this.props.items)
-        .then(() => option.callback(this.props.items));
+        .then(() => option.callback(this.props.items))
+        .catch((reason) => {
+          // Suppress and catch errors for user-cancelled actions
+          if (reason !== 'cancelled') {
+            throw reason;
+          }
+        });
     } else {
       promise = option.callback(this.props.items) || Promise.resolve();
     }

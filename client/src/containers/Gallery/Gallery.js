@@ -976,11 +976,7 @@ Gallery.fragments = {
     `,
   folder: gql`
    fragment FolderFields on Folder {
-    filesInUse {
-      id
-      title
-      filename
-    }
+    filesInUseCount
    }
     `,
 };

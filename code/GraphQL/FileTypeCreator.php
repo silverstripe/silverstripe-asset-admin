@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\CMS\Model\SiteTreeFileExtension;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\GraphQL\TypeCreator;
@@ -225,8 +226,16 @@ class FileTypeCreator extends TypeCreator
         return $this->accessor->getValue($object, $info->fieldName);
     }
 
-    public function resolveInUseCountField($object, array $args, $context, $info) {
-        if ($object->hasMethod('BackLinkTrackingCount')) {
+    /**
+     * @param File|SiteTreeFileExtension $object
+     * @param array $args
+     * @param $context
+     * @param $info
+     * @return int
+     */
+    public function resolveInUseCountField($object, array $args, $context, $info)
+    {
+        if (File::has_extension(SiteTreeFileExtension::class)) {
             return $object->BackLinkTrackingCount();
         }
         return 0;
