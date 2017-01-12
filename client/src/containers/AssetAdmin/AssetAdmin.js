@@ -599,6 +599,65 @@ const readFilesQuery = gql`
   ${Gallery.fragments.file}
   ${Gallery.fragments.folder}
 `;
+const readFilesConfig = {
+  options({ sectionConfig, folderId, query }) {
+    // Covers a few variations:
+    // - Display the root folder with its direct children
+    // - Display the root folder with its recursive children and filters (a full "search")
+    // - Display a folder with its direct children, without any filters
+    // - Display a folder with its direct children and filters (a "search" in the current folder)
+
+    const [sortField, sortDir] = query.sort ? query.sort.split(',') : ['', ''];
+    const filterWithDefault = query.filter || {};
+    const limit = query.limit || sectionConfig.limit;
+    return {
+      variables: {
+        rootFilter: { id: folderId },
+        childrenFilter: Object.assign(
+          filterWithDefault,
+          {
+            // Unset key, taken from rootFilter
+            parentId: undefined,
+            // Currently all searches are recursive, and only filtered by a ParentID
+            recursive: hasFilters(filterWithDefault),
+            // Unset this key since it's not a valid GraphQL argument
+            currentFolderOnly: undefined,
+          }
+        ),
+        limit,
+        offset: ((query.page || 1) - 1) * limit,
+        sortBy: (sortField && sortDir)
+          ? [{ field: sortField, direction: sortDir.toUpperCase() }]
+          : undefined,
+      },
+    };
+  },
+  props({ data: { networkStatus: currentNetworkStatus, refetch, readFiles } }) {
+    // Uses same query as search and file list to return a single result (the containing folder)
+    const folder = (readFiles && readFiles.edges[0]) ? readFiles.edges[0].node : null;
+    const files = (folder && folder.children)
+      // Filter nodes because the DELETE resultBehaviour doesn't delete the edge, only the node
+      ? folder.children.edges.map((edge) => edge.node).filter((file) => file)
+      : [];
+    const filesTotalCount = (folder && folder.children) ? folder.children.pageInfo.totalCount : 0;
+
+    // Only set to loading if a network request is in progress.
+    // TODO Use built-in 'loading' indicator once it's set to true on setVariables() calls.
+    // TODO Respect optimistic loading results. We can't check for presence of readFiles object,
+    // since Apollo sends through the previous result before optimistically setting the new result.
+    const loading =
+      currentNetworkStatus !== NetworkStatus.ready
+      && currentNetworkStatus !== NetworkStatus.error;
+
+    return {
+      loading,
+      refetch,
+      folder,
+      files,
+      filesTotalCount,
+    };
+  },
+};
 const updateFileMutation = gql`mutation UpdateFile($id:ID!, $file:FileInput!) {
   updateFile(id: $id, file: $file) {
    id
@@ -612,66 +671,7 @@ export { AssetAdmin };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  graphql(readFilesQuery, {
-    options({ sectionConfig, folderId, query }) {
-      // Covers a few variations:
-      // - Display the root folder with its direct children
-      // - Display the root folder with its recursive children and filters (a full "search")
-      // - Display a folder with its direct children, without any filters
-      // - Display a folder with its direct children and filters (a "search" in the current folder)
-
-      const [sortField, sortDir] = query.sort ? query.sort.split(',') : ['', ''];
-      const filterWithDefault = query.filter || {};
-      const limit = query.limit || sectionConfig.limit;
-      return {
-        variables: {
-          rootFilter: { id: folderId },
-          childrenFilter: Object.assign(
-            {},
-            filterWithDefault,
-            {
-              // Unset key, taken from rootFilter
-              parentId: undefined,
-              // Currently all searches are recursive, and only filtered by a ParentID
-              recursive: hasFilters(filterWithDefault),
-              // Unset this key since it's not a valid GraphQL argument
-              currentFolderOnly: undefined,
-            }
-          ),
-          limit,
-          offset: ((query.page || 1) - 1) * limit,
-          sortBy: (sortField && sortDir)
-            ? [{ field: sortField, direction: sortDir.toUpperCase() }]
-            : undefined,
-        },
-      };
-    },
-    props({ data: { networkStatus: currentNetworkStatus, refetch, readFiles } }) {
-      // Uses same query as search and file list to return a single result (the containing folder)
-      const folder = (readFiles && readFiles.edges[0]) ? readFiles.edges[0].node : null;
-      const files = (folder && folder.children)
-        // Filter nodes because the DELETE resultBehaviour doesn't delete the edge, only the node
-        ? folder.children.edges.map((edge) => edge.node).filter((file) => file)
-        : [];
-      const filesTotalCount = (folder && folder.children) ? folder.children.pageInfo.totalCount : 0;
-
-      // Only set to loading if a network request is in progress.
-      // TODO Use built-in 'loading' indicator once it's set to true on setVariables() calls.
-      // TODO Respect optimistic loading results. We can't check for presence of readFiles object,
-      // since Apollo sends through the previous result before optimistically setting the new result.
-      const loading =
-        currentNetworkStatus !== NetworkStatus.ready
-        && currentNetworkStatus !== NetworkStatus.error;
-
-      return {
-        loading,
-        refetch,
-        folder,
-        files,
-        filesTotalCount,
-      };
-    },
-  }),
+  graphql(readFilesQuery, readFilesConfig),
   graphql(updateFileMutation),
   graphql(deleteFileMutation),
   (component) => withApollo(component)

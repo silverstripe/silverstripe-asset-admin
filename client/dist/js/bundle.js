@@ -10,10 +10,10 @@ return t["default"]=e,t}function o(e){return e&&e.__esModule?e:{"default":e}}fun
 
 
 return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function a(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t)
-e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function l(e,t){var n=e.config.sections[P],r=t.fileAttributes?t.fileAttributes.ID:null,o=e.config.sections[P],i=r&&o.form.fileInsertForm.schemaUrl+"/"+r
+e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function l(e,t){var n=e.config.sections[P],r=t.fileAttributes?t.fileAttributes.ID:null,o=r&&n.form.fileInsertForm.schemaUrl+"/"+r
 
 
-return{sectionConfig:n,schemaUrl:i}}function u(e){return{actions:{schema:(0,v.bindActionCreators)(x,e)}}}Object.defineProperty(t,"__esModule",{value:!0}),t.InsertMediaModal=void 0
+return{sectionConfig:n,schemaUrl:o}}function u(e){return{actions:{schema:(0,v.bindActionCreators)(x,e)}}}Object.defineProperty(t,"__esModule",{value:!0}),t.InsertMediaModal=void 0
 var p=function(){function e(e,t){var n=[],r=!0,o=!1,i=void 0
 try{for(var s=e[Symbol.iterator](),a;!(r=(a=s.next()).done)&&(n.push(a.value),!t||n.length!==t);r=!0);}catch(l){o=!0,i=l}finally{try{!r&&s["return"]&&s["return"]()}finally{if(o)throw i}}return n}return function(t,n){
 if(Array.isArray(t))return t
@@ -37,8 +37,9 @@ this.props.actions.schema.setSchemaStateOverrides(e.schemaUrl,r)}}},{key:"getUrl
 return(i||s.page<=1)&&delete s.page,(0,b.buildUrl)(this.props.sectionConfig.url,r,o,s)}},{key:"getFolderId",value:function f(){return parseInt(this.state.folderId||0,10)}},{key:"getFileId",value:function m(){
 return parseInt(this.state.fileId||this.props.fileId,10)}},{key:"getSectionProps",value:function v(){return{dialog:!0,type:this.props.type,toolbarChildren:this.renderToolbarChildren(),sectionConfig:this.props.sectionConfig,
 folderId:this.getFolderId(),fileId:this.getFileId(),query:this.state.query,getUrl:this.getUrl,onBrowse:this.handleBrowse,onOpenFolder:this.handleOpenFolder,onSubmitEditor:this.handleSubmit}}},{key:"getModalProps",
-value:function y(){return c({},this.props,{className:"insert-media-modal "+this.props.className,bsSize:"lg",onHide:void 0,onInsert:void 0,sectionConfig:void 0,schemaUrl:void 0})}},{key:"handleSubmit",value:function _(e,t,n,r){
-return this.props.onInsert(e,r)}},{key:"handleBrowse",value:function E(e,t){var n=arguments.length<=2||void 0===arguments[2]?{}:arguments[2]
+value:function y(){var e=c({},this.props,{className:"insert-media-modal "+this.props.className,bsSize:"lg"})
+return delete e.onHide,delete e.onInsert,delete e.sectionConfig,delete e.schemaUrl,e}},{key:"handleSubmit",value:function _(e,t,n,r){return this.props.onInsert(e,r)}},{key:"handleBrowse",value:function E(e,t){
+var n=arguments.length<=2||void 0===arguments[2]?{}:arguments[2]
 this.setState({folderId:e,fileId:t,query:n})}},{key:"handleOpenFolder",value:function w(e){this.handleBrowse(e)}},{key:"renderToolbarChildren",value:function x(){return g["default"].createElement("button",{
 type:"button",className:"btn btn-secondary close insert-media-modal__close-button",onClick:this.props.onHide,"aria-label":h["default"]._t("FormBuilderModal.CLOSE","Close")},g["default"].createElement("span",{
 "aria-hidden":"true"},"×"))}},{key:"render",value:function P(){var e=this.getModalProps(),t=this.getSectionProps(),n=this.props.show?g["default"].createElement(C["default"],t):null
@@ -57,12 +58,11 @@ e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,wri
 o=n?e+"/show/"+t+"/edit/"+n:t?e+"/show/"+t:e+"/"
 var i=r&&Object.keys(r).length>0
 return i&&(o=o+"?"+b["default"].stringify(r)),o}function l(e){var t=e.config.sections[_]
-return{sectionConfig:t}}Object.defineProperty(t,"__esModule",{value:!0}),t.AssetAdminRouter=void 0
+return{sectionConfig:t}}Object.defineProperty(t,"__esModule",{value:!0}),t.buildUrl=t.AssetAdminRouter=void 0
 var u=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},p=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
-r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}()
-t.buildUrl=a
-var c=n(4),d=r(c),f=n(6),h=n(8),m=n(9),g=r(m),v=n(29),y=n(386),b=r(y),_="SilverStripe\\AssetAdmin\\Controller\\AssetAdmin",C=function(e){function t(e){o(this,t)
+r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),c=n(4),d=r(c),f=n(6),h=n(8),m=n(9),g=r(m),v=n(29),y=n(386),b=r(y),_="SilverStripe\\AssetAdmin\\Controller\\AssetAdmin",C=function(e){
+function t(e){o(this,t)
 var n=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleBrowse=n.handleBrowse.bind(n),n.getUrl=n.getUrl.bind(n),n}return s(t,e),p(t,[{key:"getUrl",value:function n(){var e=arguments.length<=0||void 0===arguments[0]?0:arguments[0],t=arguments.length<=1||void 0===arguments[1]?null:arguments[1],n=arguments.length<=2||void 0===arguments[2]?{}:arguments[2],r=parseInt(e||0,10),o=parseInt(t||0,10),i=r!==this.getFolderId(),s=u({},n)
 
@@ -75,8 +75,9 @@ type:"admin",folderId:this.getFolderId(),fileId:this.getFileId(),query:this.getQ
 }},{key:"handleBrowse",value:function h(e,t,n){var r=this.getUrl(e,t,n)
 this.props.router.push(r)}},{key:"render",value:function m(){return this.props.sectionConfig?d["default"].createElement(g["default"],this.getSectionProps()):null}}]),t}(c.Component)
 C.propTypes={sectionConfig:c.PropTypes.shape({url:c.PropTypes.string,limit:c.PropTypes.number,form:c.PropTypes.object}),location:c.PropTypes.shape({pathname:c.PropTypes.string,query:c.PropTypes.object,
-search:c.PropTypes.string}),params:c.PropTypes.object,router:c.PropTypes.object},t.AssetAdminRouter=C,t["default"]=(0,h.withRouter)((0,f.connect)(l)(C))},function(e,t){e.exports=ReactRouter},function(e,t,n){
-"use strict"
+search:c.PropTypes.string}),params:c.PropTypes.object,router:c.PropTypes.object},t.AssetAdminRouter=C,t.buildUrl=a,t["default"]=(0,h.withRouter)((0,f.connect)(l)(C))},function(e,t){e.exports=ReactRouter
+
+},function(e,t,n){"use strict"
 function r(e){if(e&&e.__esModule)return e
 var t={}
 if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n])
@@ -158,15 +159,16 @@ folderId:y.PropTypes.number,onBrowse:y.PropTypes.func,getUrl:y.PropTypes.func,qu
 filter:y.PropTypes.object}),onSubmitEditor:y.PropTypes.func,type:y.PropTypes.oneOf(["insert","select","admin"]),files:y.PropTypes.array,queuedFiles:y.PropTypes.shape({items:y.PropTypes.array.isRequired
 }),filesTotalCount:y.PropTypes.number,folder:y.PropTypes.shape({id:y.PropTypes.number,title:y.PropTypes.string,parents:y.PropTypes.array,parentId:y.PropTypes.number,canView:y.PropTypes.bool,canEdit:y.PropTypes.bool
 }),loading:y.PropTypes.bool},$.defaultProps={type:"admin",query:{sort:"",limit:null,page:0,filter:{}}}
-var K=(0,G["default"])(m,j["default"].fragments.fileInterface,j["default"].fragments.file,j["default"].fragments.folder),Y=(0,G["default"])(g),X=(0,G["default"])(v)
-t.AssetAdmin=$,t["default"]=(0,C.compose)((0,_.connect)(p,c),(0,B.graphql)(K,{options:function Z(e){var t=e.sectionConfig,n=e.folderId,r=e.query,o=r.sort?r.sort.split(","):["",""],i=d(o,2),s=i[0],a=i[1],l=r.filter||{},u=r.limit||t.limit
+var K=(0,G["default"])(m,j["default"].fragments.fileInterface,j["default"].fragments.file,j["default"].fragments.folder),Y={options:function J(e){var t=e.sectionConfig,n=e.folderId,r=e.query,o=r.sort?r.sort.split(","):["",""],i=d(o,2),s=i[0],a=i[1],l=r.filter||{},u=r.limit||t.limit
 
 
-return{variables:{rootFilter:{id:n},childrenFilter:f({},l,{parentId:void 0,recursive:(0,Q.hasFilters)(l),currentFolderOnly:void 0}),limit:u,offset:((r.page||1)-1)*u,sortBy:s&&a?[{field:s,direction:a.toUpperCase()
-}]:void 0}}},props:function J(e){var t=e.data,n=t.networkStatus,r=t.refetch,o=t.readFiles,i=o&&o.edges[0]?o.edges[0].node:null,s=i&&i.children?i.children.edges.map(function(e){return e.node}).filter(function(e){
+return{variables:{rootFilter:{id:n},childrenFilter:f(l,{parentId:void 0,recursive:(0,Q.hasFilters)(l),currentFolderOnly:void 0}),limit:u,offset:((r.page||1)-1)*u,sortBy:s&&a?[{field:s,direction:a.toUpperCase()
+}]:void 0}}},props:function ee(e){var t=e.data,n=t.networkStatus,r=t.refetch,o=t.readFiles,i=o&&o.edges[0]?o.edges[0].node:null,s=i&&i.children?i.children.edges.map(function(e){return e.node}).filter(function(e){
 return e}):[],a=i&&i.children?i.children.pageInfo.totalCount:0,l=n!==V.NetworkStatus.ready&&n!==V.NetworkStatus.error
-return{loading:l,refetch:r,folder:i,files:s,filesTotalCount:a}}}),(0,B.graphql)(Y),(0,B.graphql)(X),function(e){return(0,B.withApollo)(e)})($)},function(e,t){e.exports=SilverStripeComponent},function(e,t){
-e.exports=Backend},function(e,t,n){"use strict"
+return{loading:l,refetch:r,folder:i,files:s,filesTotalCount:a}}},X=(0,G["default"])(g),Z=(0,G["default"])(v)
+t.AssetAdmin=$,t["default"]=(0,C.compose)((0,_.connect)(p,c),(0,B.graphql)(K,Y),(0,B.graphql)(X),(0,B.graphql)(Z),function(e){return(0,B.withApollo)(e)})($)},function(e,t){e.exports=SilverStripeComponent
+
+},function(e,t){e.exports=Backend},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{"default":e}}function o(e,t){return function(n){n({type:p["default"].LOAD_FILE_SUCCESS,payload:{id:e,file:t}})}}function i(){var e=arguments.length<=0||void 0===arguments[0]?null:arguments[0]
 
 

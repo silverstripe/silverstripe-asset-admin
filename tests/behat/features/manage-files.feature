@@ -8,7 +8,7 @@ Feature: Manage files
     Given a "image" "assets/folder1/file1.jpg" was created "2012-01-01 12:00:00"
       And a "image" "assets/folder1/folder1-1/file2.jpg" was created "2010-01-01 12:00:00"
       And a "folder" "assets/folder2"
-      And a page "Gallery" containing "assets/folder3/file1.jpg"
+      And a page "Gallery" containing an image "assets/folder3/file1.jpg"
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/assets"
 
@@ -67,3 +67,21 @@ Feature: Manage files
       And I should not see the file named "testfile" in the gallery
       And I should see "successfully archived" in the message box
 
+  @modal
+  Scenario: I cannot delete a folder containing a file that is in use
+    When I check the file named "folder3" in the gallery
+    Then I press the "Delete" button
+      And I see the text "currently in use" in the alert
+      And I see the text "before you can delete the folder" in the alert
+      And I confirm the dialog
+    Then I should not see the file named "folder3" in the gallery
+
+  @modal
+  Scenario: I can delete a file that is in use with a warning
+    When I click on the file named "folder3" in the gallery
+      And I check the file named "file1" in the gallery
+    Then I press the "Delete" button
+      And I see the text "file is currently in use" in the alert
+      And I confirm the dialog
+    Then I should see "successfully archived" in the message box
+      And I should not see the file named "file1" in the gallery

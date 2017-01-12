@@ -202,7 +202,7 @@ EOS
     }
 
     /**
-     * @Given /^a page "([^"]*)" containing "([^"]*)"$/
+     * @Given /^a page "([^"]*)" containing an image "([^"]*)"$/
      */
     public function aPageContaining($page, $image)
     {
