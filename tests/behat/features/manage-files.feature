@@ -74,7 +74,7 @@ Feature: Manage files
       And I see the text "currently in use" in the alert
       And I see the text "before you can delete the folder" in the alert
       And I confirm the dialog
-    Then I should not see the file named "folder3" in the gallery
+    Then I should see the file named "folder3" in the gallery
 
   @modal
   Scenario: I can delete a file that is in use with a warning
