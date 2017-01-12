@@ -228,7 +228,7 @@ t["default"]={CSS_TRANSITION_TIME:300,SMALL_THUMBNAIL_HEIGHT:60,SMALL_THUMBNAIL_
 className:"font-icon-trash",destructive:!0,callback:null,canApply:function s(e){return e.reduce(function(e,t){return t&&t.canDelete&&e},!0)},confirm:function(e){function t(t){return e.apply(this,arguments)
 
 }return t.toString=function(){return e.toString()},t}(function(e){return new Promise(function(t,n){var r=e.filter(function(e){return"folder"===e.type&&e.filesInUseCount>0})
-if(r.length,!0)return alert(i["default"]._t("AssetAdmin.BULK_ACTIONS_DELETE_FOLDER","These folders contain files which are currently in use, you must move or delete their contents before you can delete the folder.")),
+if(r.length)return alert(i["default"]._t("AssetAdmin.BULK_ACTIONS_DELETE_FOLDER","These folders contain files which are currently in use, you must move or delete their contents before you can delete the folder.")),
 void n("cancelled")
 var o=e.filter(function(e){return"folder"!==e.type&&e.inUseCount>0}),s=i["default"]._t("AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM","Are you sure you want to delete these files?")
 1===e.length&&1===o.length&&(s=i["default"].sprintf(i["default"]._t("AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM","This file is currently in use in %s places, are you sure you want to delete it?"),e[0].inUseCount)),

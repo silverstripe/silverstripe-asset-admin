@@ -26,7 +26,7 @@ export default {
           item.type === 'folder' && item.filesInUseCount > 0
         );
 
-        if (foldersInUse.length || true) {
+        if (foldersInUse.length) {
           // eslint-disable-next-line no-alert
           alert(i18n._t(
             'AssetAdmin.BULK_ACTIONS_DELETE_FOLDER',
