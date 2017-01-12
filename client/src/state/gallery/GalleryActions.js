@@ -43,3 +43,19 @@ export function deselectFiles(ids = null) {
       payload: { ids },
     });
 }
+
+export function setNoticeMessage(message) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.SET_NOTICE_MESSAGE,
+      payload: { message },
+    });
+}
+
+export function setErrorMessage(message) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.SET_ERROR_MESSAGE,
+      payload: { message },
+    });
+}

@@ -8,4 +8,6 @@ export default [
   'LOAD_FILE_SUCCESS',
   'HIGHLIGHT_FILES',
   'UPDATE_BATCH_ACTIONS',
+  'SET_NOTICE_MESSAGE',
+  'SET_ERROR_MESSAGE',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});

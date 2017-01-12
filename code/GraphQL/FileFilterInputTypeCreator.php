@@ -4,6 +4,7 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\EnumType;
+use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\Assets\File;
 use SilverStripe\ORM\Filterable;
@@ -98,7 +99,7 @@ class FileFilterInputTypeCreator extends TypeCreator
                 $list = $list->filter('ParentID', $filter['parentId']);
             } elseif ($filter['parentId']) {
                 // Note: Simplify parentID = 0 && recursive to no filter at all
-                $parents = $this->getNestedFolderIDs($filter['parentId']);
+                $parents = AssetAdminFile::nestedFolderIDs($filter['parentId']);
                 $list = $list->filter('ParentID', $parents);
             }
         }
@@ -126,25 +127,5 @@ class FileFilterInputTypeCreator extends TypeCreator
         }
 
         return $list;
-    }
-
-    /**
-     * Get recursive parent IDs
-     *
-     * @param int $parentID Parent folder id
-     * @param int $maxDepth Hard limit of max depth
-     * @return array List of parent IDs, including $parentID
-     */
-    protected function getNestedFolderIDs($parentID, $maxDepth = 5)
-    {
-        $ids = [$parentID];
-        if ($maxDepth === 0) {
-            return $ids;
-        }
-        $childIDs = Folder::get()->filter('ParentID', $parentID)->column('ID');
-        foreach ($childIDs as $childID) {
-            $ids = array_merge($ids, $this->getNestedFolderIDs($childID, $maxDepth - 1));
-        }
-        return $ids;
     }
 }

@@ -3,8 +3,13 @@
 namespace SilverStripe\AssetAdmin\Controller;
 
 use SilverStripe\Assets\File;
+use SilverStripe\Assets\Folder;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\CMS\Model\SiteTreeFileExtension;
 use SilverStripe\Control\Director;
+use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\SS_List;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\ORM\Versioning\DataDifferencer;
 
@@ -165,5 +170,56 @@ class AssetAdminFile extends DataExtension
         }
 
         return implode(", ", $output);
+    }
+
+    /**
+     * Get the list of all nested files in use
+     *
+     * @return SS_List
+     */
+    public function getFilesInUse()
+    {
+        $list = ArrayList::create();
+
+        // Check SiteTreeFileExtension
+        if (File::has_extension(SiteTreeFileExtension::class)
+            && class_exists(SiteTree::class)
+            && $this->owner instanceof Folder
+        ) {
+            // Join on tracking table
+            $parents = static::nestedFolderIDs($this->owner->ID);
+            $list = File::get()->filter('ParentID', $parents)
+                ->innerJoin(
+                    'SiteTree_ImageTracking',
+                    '"File"."ID" = "SiteTree_ImageTracking"."FileID"'
+                )->innerJoin(
+                    'SiteTree',
+                    '"SiteTree"."ID" = "SiteTree_ImageTracking"."SiteTreeID"'
+                );
+        }
+
+        // Allow extension
+        $this->owner->extend('updateFilesInUse', $list);
+        return $list;
+    }
+
+    /**
+     * Get recursive parent IDs
+     *
+     * @param int $parentID
+     * @param int $maxDepth Hard limit of max depth
+     * @return array List of parent IDs, including $parentID
+     */
+    public static function nestedFolderIDs($parentID, $maxDepth = 5)
+    {
+        $ids = [$parentID];
+        if ($maxDepth === 0) {
+            return $ids;
+        }
+        $childIDs = Folder::get()->filter('ParentID', $parentID)->column('ID');
+        foreach ($childIDs as $childID) {
+            $ids = array_merge($ids, static::nestedFolderIDs($childID, $maxDepth - 1));
+        }
+        return $ids;
     }
 }

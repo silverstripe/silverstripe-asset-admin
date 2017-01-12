@@ -146,18 +146,20 @@ class InsertMediaModal extends Component {
    * @returns {object}
    */
   getModalProps() {
-    return Object.assign(
+    const props = Object.assign(
       {},
       this.props,
       {
         className: `insert-media-modal ${this.props.className}`,
         bsSize: 'lg',
-        onHide: undefined,
-        onInsert: undefined,
-        sectionConfig: undefined,
-        schemaUrl: undefined,
       }
     );
+    delete props.onHide;
+    delete props.onInsert;
+    delete props.sectionConfig;
+    delete props.schemaUrl;
+
+    return props;
   }
 
   /**
@@ -255,8 +257,7 @@ function mapStateToProps(state, ownProps) {
 
   // get the schemaUrl to use as a key for overrides
   const fileId = ownProps.fileAttributes ? ownProps.fileAttributes.ID : null;
-  const section = state.config.sections[sectionConfigKey];
-  const schemaUrl = fileId && `${section.form.fileInsertForm.schemaUrl}/${fileId}`;
+  const schemaUrl = fileId && `${sectionConfig.form.fileInsertForm.schemaUrl}/${fileId}`;
 
   return {
     sectionConfig,

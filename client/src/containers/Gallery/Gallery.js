@@ -433,6 +433,8 @@ class Gallery extends Component {
    */
   handleOpenFolder(event, folder) {
     event.preventDefault();
+    this.props.actions.gallery.setErrorMessage(null);
+    this.props.actions.gallery.setNoticeMessage(null);
     this.props.onOpenFolder(folder.id);
   }
 
@@ -669,7 +671,31 @@ class Gallery extends Component {
    */
   renderBulkActions() {
     const deleteAction = (items) => {
-      items.forEach(item => this.props.onDelete(item.id));
+      Promise.all(items.map(item =>
+        this.props.onDelete(item.id).then(() => true).catch(() => false)
+      ))
+        .then((deletes) => {
+          const successes = deletes.filter((result) => result).length;
+
+          if (successes !== deletes.length) {
+            this.props.actions.gallery.setErrorMessage(
+              i18n.sprintf(
+                i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_FAIL'),
+                successes,
+                deletes.length - successes
+              )
+            );
+            this.props.actions.gallery.setNoticeMessage(null);
+          } else {
+            this.props.actions.gallery.setNoticeMessage(
+              i18n.sprintf(
+                i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS'),
+                successes
+              )
+            );
+            this.props.actions.gallery.setErrorMessage(null);
+          }
+        });
     };
     const editAction = (items) => {
       this.props.onOpenFile(items[0].id);
@@ -771,9 +797,9 @@ class Gallery extends Component {
         return (
           <div className="gallery__error">
             <div className="gallery__error-message">
-              <h3>{ this.props.errorMessage &&
-                i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.')
-              }</h3>
+              <h3>
+                { i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.') }
+              </h3>
               <p>{ this.props.errorMessage }</p>
             </div>
           </div>
@@ -781,6 +807,16 @@ class Gallery extends Component {
       }
       return null;
     }
+
+    const errorMessage = (this.props.errorMessage) ? (
+      <FormAlert value={this.props.errorMessage} type="danger" />
+    )
+      : null;
+
+    const noticeMessage = (this.props.noticeMessage) ? (
+      <FormAlert value={this.props.noticeMessage} type="success" />
+    )
+      : null;
 
     const dimensions = {
       height: CONSTANTS.THUMBNAIL_HEIGHT,
@@ -824,6 +860,8 @@ class Gallery extends Component {
 
           <div className={galleryClasses.join(' ')}>
             {this.renderToolbar()}
+            {errorMessage}
+            {noticeMessage}
             {this.renderSearchAlert()}
             {this.renderGalleryView()}
           </div>
@@ -933,6 +971,12 @@ Gallery.fragments = {
     smallThumbnail
     thumbnail
     width
+    inUseCount
+   }
+    `,
+  folder: gql`
+   fragment FolderFields on Folder {
+    filesInUseCount
    }
     `,
 };
@@ -941,11 +985,13 @@ function mapStateToProps(state) {
   const {
     selectedFiles,
     errorMessage,
+    noticeMessage,
   } = state.assetAdmin.gallery;
 
   return {
     selectedFiles,
     errorMessage,
+    noticeMessage,
     queuedFiles: state.assetAdmin.queuedFiles,
     securityId: state.config.SecurityID,
   };

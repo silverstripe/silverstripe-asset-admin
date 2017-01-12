@@ -4,7 +4,6 @@ jest.unmock('react');
 jest.unmock('react-dom');
 jest.unmock('react-redux');
 jest.unmock('react-addons-test-utils');
-jest.unmock('qs');
 jest.unmock('../AssetAdmin');
 jest.mock('containers/Editor/Editor');
 jest.mock('components/Breadcrumb/Breadcrumb');
@@ -83,6 +82,28 @@ describe('AssetAdmin', () => {
         },
       },
     };
+  });
+
+  describe('handleBrowse', () => {
+    let component = null;
+
+    beforeEach(() => {
+      props.folderId = 2;
+      props.actions.gallery.deselectFiles = jest.genMockFunction();
+      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
+    });
+
+    it('should clear selected files when folder changes', () => {
+      component.handleBrowse(3);
+
+      expect(props.actions.gallery.deselectFiles).toBeCalled();
+    });
+
+    it('should not clear selected files', () => {
+      component.handleBrowse(2);
+
+      expect(props.actions.gallery.deselectFiles).not.toBeCalled();
+    });
   });
 
   describe('handleDelete', () => {

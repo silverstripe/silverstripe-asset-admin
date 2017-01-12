@@ -4,6 +4,8 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
+use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
+use SilverStripe\AssetAdmin\Controller\AssetAdminFolder;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\ORM\Filterable;
@@ -88,7 +90,9 @@ class FolderTypeCreator extends FileTypeCreator
                     return Type::listOf($this->manager->getType('FileInterface'));
                 }
             ],
-
+            'filesInUseCount' => [
+                'type' => Type::int(),
+            ],
         ];
     }
 
@@ -179,6 +183,18 @@ class FolderTypeCreator extends FileTypeCreator
         });
 
         return $return;
+    }
+
+    /**
+     * @param Folder|AssetAdminFile $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return int
+     */
+    public function resolveFilesInUseCountField($object, array $args, $context, ResolveInfo $info)
+    {
+        return $object->getFilesInUse()->count();
     }
 
     /**
