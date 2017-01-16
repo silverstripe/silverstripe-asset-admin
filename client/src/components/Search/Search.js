@@ -222,7 +222,7 @@ class Search extends SilverStripeComponent {
     const searchText = this.state.searchText;
 
     // Build classes
-    const searchClasses = ['search', 'pull-xs-right'];
+    const searchClasses = ['search', 'flexbox-area-grow'];
     const advancedButtonClasses = [
       'btn', 'btn-secondary', 'btn--icon-md', 'btn--no-text',
       'font-icon-down-open', 'search__filter-trigger',

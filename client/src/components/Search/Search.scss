@@ -1,8 +1,7 @@
 // AssetAdmin search
 
 .search {
-  position: absolute;
-  right: $spacer-xs;
+  position: relative;
   width: calc(100% - #{$panel-padding-x});
 
   @include media-breakpoint-up(md) {
@@ -18,6 +17,7 @@
   opacity: 0;
   overflow: hidden;
   display: none;
+  float: right;
 
   .search--active & {
     transition: opacity $transition-speed-fast;

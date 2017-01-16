@@ -150,10 +150,10 @@ break
 case"admin":default:t=e.form.fileEditForm.schemaUrl}return this.props.fileId?b["default"].createElement(R["default"],{className:"insert"===this.props.type?"editor--dialog":"",fileId:this.props.fileId,onClose:this.handleCloseFile,
 editFileSchemaUrl:t,onSubmit:this.handleSubmitEditor,onDelete:this.handleDelete,addToCampaignSchemaUrl:e.form.addToCampaignForm.schemaUrl}):null}},{key:"render",value:function D(){var e=!!(this.props.folder&&this.props.folder.id||(0,
 Q.hasFilters)(this.props.query.filter)),t=this.props.sectionConfig.form.fileSearchForm.schemaUrl,n=this.props.query.filter||{}
-return b["default"].createElement("div",{className:"fill-height"},b["default"].createElement(z["default"],{showBackButton:e,handleBackButtonClick:this.handleBackButtonClick},this.props.toolbarChildren,b["default"].createElement(W["default"],{
-onSearch:this.handleDoSearch,id:"AssetSearchForm",searchFormSchemaUrl:t,folderId:this.props.folderId,filters:n}),b["default"].createElement(M["default"],{multiline:!0})),b["default"].createElement("div",{
-className:"flexbox-area-grow fill-width fill-height gallery"},this.renderGallery(),this.renderEditor()),"admin"!==this.props.type&&this.props.loading&&[b["default"].createElement("div",{key:"overlay",className:"cms-content-loading-overlay ui-widget-overlay-light"
-}),b["default"].createElement("div",{key:"spinner",className:"cms-content-loading-spinner"})])}}]),t}(S["default"])
+return b["default"].createElement("div",{className:"fill-height"},b["default"].createElement(z["default"],{showBackButton:e,handleBackButtonClick:this.handleBackButtonClick},b["default"].createElement("div",{
+className:"asset-admin__toolbar-extra pull-xs-right fill-width"},b["default"].createElement(W["default"],{onSearch:this.handleDoSearch,id:"AssetSearchForm",searchFormSchemaUrl:t,folderId:this.props.folderId,
+filters:n}),this.props.toolbarChildren),b["default"].createElement(M["default"],{multiline:!0})),b["default"].createElement("div",{className:"flexbox-area-grow fill-width fill-height gallery"},this.renderGallery(),this.renderEditor()),"admin"!==this.props.type&&this.props.loading&&[b["default"].createElement("div",{
+key:"overlay",className:"cms-content-loading-overlay ui-widget-overlay-light"}),b["default"].createElement("div",{key:"spinner",className:"cms-content-loading-spinner"})])}}]),t}(S["default"])
 $.propTypes={mutate:b["default"].PropTypes.func.isRequired,dialog:y.PropTypes.bool,sectionConfig:y.PropTypes.shape({url:y.PropTypes.string,limit:y.PropTypes.number,form:y.PropTypes.object}),fileId:y.PropTypes.number,
 folderId:y.PropTypes.number,onBrowse:y.PropTypes.func,getUrl:y.PropTypes.func,query:y.PropTypes.shape({sort:y.PropTypes.string,limit:y.PropTypes.oneOfType([y.PropTypes.number,y.PropTypes.string]),page:y.PropTypes.oneOfType([y.PropTypes.number,y.PropTypes.string]),
 filter:y.PropTypes.object}),onSubmitEditor:y.PropTypes.func,type:y.PropTypes.oneOf(["insert","select","admin"]),files:y.PropTypes.array,queuedFiles:y.PropTypes.shape({items:y.PropTypes.array.isRequired
@@ -1954,7 +1954,7 @@ value:function x(){this.setState({view:I.EXPANDED})}},{key:"toggle",value:functi
 break
 case I.EXPANDED:this.show()}}},{key:"doSearch",value:function F(){var e=this,t={}
 this.state.searchText&&(t.name=this.state.searchText),Object.keys(this.props.formData).forEach(function(n){var r=e.props.formData[n]
-r&&(t[n]=r)}),this.props.onSearch(t)}},{key:"render",value:function T(){var e=this.props.id+"_ExtraFields",t=this.props.id+"_Trigger",n=this.state.searchText,r=["search","pull-xs-right"],o=["btn","btn-secondary","btn--icon-md","btn--no-text","font-icon-down-open","search__filter-trigger"],i=!1
+r&&(t[n]=r)}),this.props.onSearch(t)}},{key:"render",value:function T(){var e=this.props.id+"_ExtraFields",t=this.props.id+"_Trigger",n=this.state.searchText,r=["search","flexbox-area-grow"],o=["btn","btn-secondary","btn--icon-md","btn--no-text","font-icon-down-open","search__filter-trigger"],i=!1
 
 
 switch(this.state.view){case I.EXPANDED:i=!0,r.push("search--active")
