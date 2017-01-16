@@ -785,8 +785,7 @@
 }
 
 .search{
-  position:absolute;
-  right:.76925rem;
+  position:relative;
   width:calc(100% - 1.5385rem);
 }
 
@@ -804,6 +803,7 @@
   opacity:0;
   overflow:hidden;
   display:none;
+  float:right;
 }
 
 .search--active .search__group{
