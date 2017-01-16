@@ -7,7 +7,7 @@
     "php": ">=5.5.0",
     "silverstripe/cms": "^4",
     "silverstripe/framework": "^4",
-    "silverstripe/graphql": "^0.1@dev"
+    "silverstripe/graphql": "^0.2@dev"
   },
   "require-dev": {
     "phpunit/PHPUnit": "~4.8",
