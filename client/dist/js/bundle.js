@@ -2275,10 +2275,10 @@ u["default"].createElement("li",{className:"list-group-item history-item",onClic
 },"v.",this.props.versionid),u["default"].createElement("span",{className:"history-item__date"},this.props.date_ago," ",this.props.author),this.props.summary),e)}}]),t}(c["default"])
 d.propTypes={versionid:l.PropTypes.number.isRequired,summary:l.PropTypes.oneOfType([l.PropTypes.bool,l.PropTypes.string]).isRequired,status:l.PropTypes.string,author:l.PropTypes.string,date:l.PropTypes.string,
 onClick:l.PropTypes.func},t["default"]=d},function(e,t,n){"use strict"
-function r(e){return e&&e.__esModule?e:{"default":e}}var o=n(22),i=r(o),s=n(4),a=r(s),l=n(23),u=r(l),p=n(6),c=n(410),d=n(400)
+function r(e){return e&&e.__esModule?e:{"default":e}}var o=n(22),i=r(o),s=n(4),a=r(s),l=n(23),u=r(l),p=n(277),c=n(410),d=n(400)
 i["default"].entwine("ss",function(e){e(".js-react-boot input.entwine-uploadfield").entwine({onunmatch:function t(){this._super(),u["default"].unmountComponentAtNode(this[0])},onmatch:function n(){this._super(),
-this.refresh()},refresh:function r(){var e=window.ss.store,t=this.getAttributes()
-u["default"].render(a["default"].createElement(p.Provider,{store:e},a["default"].createElement(d.ConnectedUploadField,t)),this.parent()[0])},getAttributes:function o(){var t=e(this).data("state"),n=e(this).data("schema")
+this.refresh()},refresh:function r(){var e=window.ss.store,t=window.ss.apolloClient,n=this.getAttributes()
+u["default"].render(a["default"].createElement(p.ApolloProvider,{store:e,client:t},a["default"].createElement(d.ConnectedUploadField,n)),this.parent()[0])},getAttributes:function o(){var t=e(this).data("state"),n=e(this).data("schema")
 
 
 return(0,c.schemaMerge)(n,t)}})})},function(e,t){e.exports=schemaFieldValues},function(e,t){}])

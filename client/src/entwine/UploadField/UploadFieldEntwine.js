@@ -1,7 +1,7 @@
 import jQuery from 'jQuery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { ApolloProvider } from 'react-apollo';
 import { schemaMerge } from 'lib/schemaFieldValues';
 import { ConnectedUploadField } from 'components/UploadField/UploadField';
 
@@ -27,11 +27,12 @@ jQuery.entwine('ss', ($) => {
 
     refresh() {
       const store = window.ss.store;
+      const client = window.ss.apolloClient;
       const props = this.getAttributes();
       ReactDOM.render(
-        <Provider store={store}>
+        <ApolloProvider store={store} client={client}>
           <ConnectedUploadField {...props} />
-        </Provider>,
+        </ApolloProvider>,
         this.parent()[0]
       );
     },
