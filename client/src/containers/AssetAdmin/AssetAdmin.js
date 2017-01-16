@@ -475,6 +475,7 @@ class AssetAdmin extends SilverStripeComponent {
     return (
       <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
+          <Breadcrumb multiline />
           <div className="asset-admin__toolbar-extra pull-xs-right fill-width">
             <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
               searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId}
@@ -482,7 +483,6 @@ class AssetAdmin extends SilverStripeComponent {
             />
             {this.props.toolbarChildren}
           </div>
-          <Breadcrumb multiline />
         </Toolbar>
         <div className="flexbox-area-grow fill-width fill-height gallery">
           {this.renderGallery()}
