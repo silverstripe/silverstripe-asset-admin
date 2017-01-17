@@ -5,6 +5,7 @@ Feature: Replace a file with a new file
 
   Background:
     Given a "image" "folder1/file1.jpg"
+    And a "file" "folder1/document.pdf"
     And a "image" "folder1/file2.jpg"
     And I am logged in with "ADMIN" permissions
     And I go to "/admin/assets"
@@ -14,14 +15,28 @@ Feature: Replace a file with a new file
     Then I should see an "#Form_fileEditForm" element
 
   @javascript
-  Scenario: I upload a file into the file I have open
+  Scenario: I upload a new file into the file I have open
     When I attach the file "testfile.jpg" to dropzone "PreviewImage"
       And I wait for 1 second
     Then I should see a ".preview__toolbar-button--remove" element
       And I should see a ".preview__message--success" element
-      And I press the "Save" button
-      And I wait for 1 second
+      And the "Name" field should contain "file1.jpg"
+    When I press the "Save" button
+      And I wait for 2 seconds
     Then I should not see a ".preview__message--success" element
+      And I should not see a ".preview__toolbar-button--remove" element
+
+  @javascript
+  Scenario: Replacing a file with the same file detects and avoids duplication
+    When I attach the file "file1.jpg" to dropzone "PreviewImage"
+      And I wait for 1 second
+    Then I should see a ".preview__toolbar-button--remove" element
+      And I should see a ".preview__message--success" element
+      And the "Name" field should contain "file1.jpg"
+    When I press the "Save" button
+      And I wait for 2 second
+    Then the "Name" field should contain "file1.jpg"
+      And I should not see a ".preview__message--success" element
       And I should not see a ".preview__toolbar-button--remove" element
 
   @javascript @modal
@@ -30,8 +45,8 @@ Feature: Replace a file with a new file
       And I confirm the dialog
       And I wait for 1 second
     Then I should see a ".preview__message--success" element
-      And the "Name" field should contain "document.pdf"
-      And I press the "Save" button
-      And I wait for 1 second
-    Then the "Name" field should contain "document.pdf"
+      And the "Name" field should contain "document-v2.pdf"
+    When I press the "Save" button
+      And I wait for 2 second
+    Then the "Name" field should contain "document-v2.pdf"
       And I should not see a ".preview__message--success" element

@@ -399,7 +399,7 @@ this.props.canUpload&&e.target===t&&(this.dragging=!1,this.forceUpdate(),"functi
 "function"==typeof this.props.handleUploadProgress&&this.props.handleUploadProgress(e,t,n)}},{key:"handleDrop",value:function _(e){this.dragging=!1,this.forceUpdate(),"function"==typeof this.props.handleDrop&&this.props.handleDrop(e)
 
 }},{key:"handleSending",value:function w(e,t,n){var r=this
-n.append("SecurityID",this.props.securityID),n.append("ParentID",this.props.folderId)
+"function"==typeof this.props.updateFormData&&this.props.updateFormData(n),n.append("SecurityID",this.props.securityID),n.append("ParentID",this.props.folderId)
 var o=a({},t,{abort:function i(){r.dropzone.cancelUpload(e),t.abort()}})
 "function"==typeof this.props.handleSending&&this.props.handleSending(e,o,n)}},{key:"generateQueuedId",value:function x(){return++S}},{key:"handleAddedFile",value:function P(e){var t=this
 if(this.props.options.maxFiles&&this.dropzone.files.length>this.props.options.maxFiles)return this.dropzone.removeFile(this.dropzone.files[0]),"function"==typeof this.props.handleMaxFilesExceeded&&this.props.handleMaxFilesExceeded(e),
@@ -423,11 +423,11 @@ r({width:e.naturalWidth,height:e.naturalHeight,thumbnailURL:l})},e.src=t})}},{ke
 }},{key:"handleSuccess",value:function A(e){this.dropzone.removeFile(e),this.props.handleSuccess(e)}},{key:"setPromptOnRemove",value:function O(e){this.dropzone.options.dictRemoveFileConfirmation=e}}]),
 t}(m["default"])
 w.propTypes={folderId:c["default"].PropTypes.number.isRequired,handleAddedFile:c["default"].PropTypes.func.isRequired,handleDragEnter:c["default"].PropTypes.func,handleDragLeave:c["default"].PropTypes.func,
-handleDrop:c["default"].PropTypes.func,handleError:c["default"].PropTypes.func.isRequired,handleSending:c["default"].PropTypes.func,handleSuccess:c["default"].PropTypes.func.isRequired,handleMaxFilesExceeded:c["default"].PropTypes.func,
-canFileUpload:c["default"].PropTypes.func,options:c["default"].PropTypes.shape({url:c["default"].PropTypes.string.isRequired}),promptOnRemove:c["default"].PropTypes.string,securityID:c["default"].PropTypes.string.isRequired,
-uploadButton:c["default"].PropTypes.bool,uploadSelector:c["default"].PropTypes.string,canUpload:c["default"].PropTypes.bool.isRequired,preview:c["default"].PropTypes.shape({width:c["default"].PropTypes.number,
-height:c["default"].PropTypes.number}),className:c["default"].PropTypes.string},w.defaultProps={uploadButton:!0},t["default"]=w},function(e,t,n){(function(e,t){(function(){var n,r,o,i,s,a,l,u,p=[].slice,c={}.hasOwnProperty,d=function(e,t){
-function n(){this.constructor=e}for(var r in t)c.call(t,r)&&(e[r]=t[r])
+handleDrop:c["default"].PropTypes.func,handleError:c["default"].PropTypes.func.isRequired,handleSending:c["default"].PropTypes.func,updateFormData:c["default"].PropTypes.func,handleSuccess:c["default"].PropTypes.func.isRequired,
+handleMaxFilesExceeded:c["default"].PropTypes.func,canFileUpload:c["default"].PropTypes.func,options:c["default"].PropTypes.shape({url:c["default"].PropTypes.string.isRequired}),promptOnRemove:c["default"].PropTypes.string,
+securityID:c["default"].PropTypes.string.isRequired,uploadButton:c["default"].PropTypes.bool,uploadSelector:c["default"].PropTypes.string,canUpload:c["default"].PropTypes.bool.isRequired,preview:c["default"].PropTypes.shape({
+width:c["default"].PropTypes.number,height:c["default"].PropTypes.number}),className:c["default"].PropTypes.string},w.defaultProps={uploadButton:!0},t["default"]=w},function(e,t,n){(function(e,t){(function(){
+var n,r,o,i,s,a,l,u,p=[].slice,c={}.hasOwnProperty,d=function(e,t){function n(){this.constructor=e}for(var r in t)c.call(t,r)&&(e[r]=t[r])
 return n.prototype=t.prototype,e.prototype=new n,e.__super__=t.prototype,e}
 l=function(){},r=function(){function e(){}return e.prototype.addEventListener=e.prototype.on,e.prototype.on=function(e,t){return this._callbacks=this._callbacks||{},this._callbacks[e]||(this._callbacks[e]=[]),
 this._callbacks[e].push(t),this},e.prototype.emit=function(){var e,t,n,r,o,i
@@ -2166,28 +2166,25 @@ return t["default"]=e,t}function o(e){return e&&e.__esModule?e:{"default":e}}fun
 
 
 return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function a(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t)
-e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function l(e,t){var n=e.config.SecurityID,r=t.id,o=e.assetAdmin.previewField[r]||{}
-
-
-return{securityID:n,upload:o}}function u(e){return{actions:{previewField:(0,_.bindActionCreators)(E,e)}}}Object.defineProperty(t,"__esModule",{value:!0})
+e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function l(e,t){var n=e.config.SecurityID,r=t.id,o=e.assetAdmin.previewField[r]||{},i=(0,
+C.formValueSelector)(t.form)
+return{securityID:n,upload:o,nameValue:i(e,"Name")}}function u(e){return{actions:{previewField:(0,_.bindActionCreators)(S,e)}}}Object.defineProperty(t,"__esModule",{value:!0})
 var p=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
-r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),c=n(3),d=o(c),f=n(4),h=o(f),m=n(26),g=o(m),v=n(18),y=o(v),b=n(6),_=n(5),C=n(406),E=r(C),S=n(29),w=function(e){
+r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),c=n(3),d=o(c),f=n(4),h=o(f),m=n(26),g=o(m),v=n(18),y=o(v),b=n(6),_=n(5),C=n(385),E=n(406),S=r(E),w=n(29),x=function(e){
 function t(e){i(this,t)
 var n=s(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
 return n.handleAddedFile=n.handleAddedFile.bind(n),n.handleFailedUpload=n.handleFailedUpload.bind(n),n.handleSuccessfulUpload=n.handleSuccessfulUpload.bind(n),n.handleSending=n.handleSending.bind(n),n.handleUploadProgress=n.handleUploadProgress.bind(n),
-n.handleCancelUpload=n.handleCancelUpload.bind(n),n.handleRemoveErroredUpload=n.handleRemoveErroredUpload.bind(n),n.canFileUpload=n.canFileUpload.bind(n),n}return a(t,e),p(t,[{key:"componentWillReceiveProps",
-value:function n(e){(this.props.data.url&&e.data.url!==this.props.data.url||this.props.data.version&&e.data.version!==this.props.data.version)&&this.props.actions.previewField.removeFile(this.props.id)
+n.handleCancelUpload=n.handleCancelUpload.bind(n),n.handleRemoveErroredUpload=n.handleRemoveErroredUpload.bind(n),n.canFileUpload=n.canFileUpload.bind(n),n.updateFormData=n.updateFormData.bind(n),n}return a(t,e),
+p(t,[{key:"componentWillReceiveProps",value:function n(e){(this.props.data.url&&e.data.url!==this.props.data.url||this.props.data.version&&e.data.version!==this.props.data.version)&&this.props.actions.previewField.removeFile(this.props.id)
 
 }},{key:"componentWillUnmount",value:function r(){this.props.actions.previewField.removeFile(this.props.id)}},{key:"getDropzoneProps",value:function o(){var e=this.props.data.uploadFileEndpoint,t=this.props.name,n={
 url:e&&e.url,method:e&&e.method,paramName:"Upload",clickable:"#preview-replace-button",maxFiles:1},r={height:y["default"].THUMBNAIL_HEIGHT,width:y["default"].THUMBNAIL_WIDTH},o=this.props.securityID,i=["asset-dropzone--button","preview__container",this.props.className,this.props.extraClass]
 
 
 return{name:t,className:i.join(" "),canUpload:e&&this.canEdit(),preview:r,folderId:this.props.data.parentid,options:n,securityID:o,uploadButton:!1,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,
-handleSuccess:this.handleSuccessfulUpload,handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,canFileUpload:this.canFileUpload}}},{key:"canEdit",value:function l(){return!this.props.readOnly&&!this.props.disabled&&"folder"!==this.props.data.category
-
-}},{key:"preventDefault",value:function u(e){e.preventDefault()}},{key:"canFileUpload",value:function c(e){var t=this.props.data.initialValues.FileFilename,n=(0,S.getFileExtension)(t),r=(0,S.getFileExtension)(e.name)
-
-
+handleSuccess:this.handleSuccessfulUpload,handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,canFileUpload:this.canFileUpload,updateFormData:this.updateFormData}}},{key:"canEdit",
+value:function l(){return!this.props.readOnly&&!this.props.disabled&&"folder"!==this.props.data.category}},{key:"preventDefault",value:function u(e){e.preventDefault()}},{key:"canFileUpload",value:function c(e){
+var t=this.props.data.initialValues.FileFilename,n=(0,w.getFileExtension)(t),r=(0,w.getFileExtension)(e.name)
 if(!n||n===r)return!0
 var o=d["default"]._t("AssetAdmin.CONFIRM_CHANGE_EXTENSION","Are you sure you want upload a file with a different extension?")
 return this.props.confirm(o)}},{key:"handleCancelUpload",value:function f(){this.props.upload.xhr&&this.props.upload.xhr.abort(),this.handleRemoveErroredUpload()}},{key:"handleRemoveErroredUpload",value:function m(){
@@ -2197,10 +2194,11 @@ this.props.onAutofill("FileFilename",e.FileFilename),this.props.onAutofill("File
 }},{key:"handleAddedFile",value:function v(e){this.props.actions.previewField.addFile(this.props.id,e)}},{key:"handleFailedUpload",value:function b(e,t){this.props.actions.previewField.failUpload(this.props.id,t)
 
 }},{key:"handleSuccessfulUpload",value:function _(e){var t=JSON.parse(e.xhr.response)
-if("function"==typeof this.props.onAutofill){this.props.onAutofill("FileFilename",t.Filename),this.props.onAutofill("FileHash",t.Hash),this.props.onAutofill("FileVariant",t.Variant)
-var n=(0,S.getFileExtension)(this.props.data.url),r=(0,S.getFileExtension)(t.Filename)
-n!==r&&this.props.onAutofill(this.props.data.nameField,t.Name)}}},{key:"handleSending",value:function C(e,t){this.props.actions.previewField.updateFile(this.props.id,{xhr:t})}},{key:"handleUploadProgress",
-value:function E(e,t){this.props.actions.previewField.updateFile(this.props.id,{progress:t})}},{key:"renderImage",value:function w(){var e=this.props.data
+"function"==typeof this.props.onAutofill&&(this.props.onAutofill("FileFilename",t.Filename),this.props.onAutofill("FileHash",t.Hash),this.props.onAutofill("FileVariant",t.Variant),t.Name&&this.props.onAutofill(this.props.data.nameField,t.Name))
+
+}},{key:"handleSending",value:function C(e,t){this.props.actions.previewField.updateFile(this.props.id,{xhr:t})}},{key:"updateFormData",value:function E(e){e.append("ID",this.props.data.id),e.append("Name",this.props.nameValue)
+
+}},{key:"handleUploadProgress",value:function S(e,t){this.props.actions.previewField.updateFile(this.props.id,{progress:t})}},{key:"renderImage",value:function x(){var e=this.props.data
 if(!e.exists&&!this.props.upload.url)return h["default"].createElement("div",{className:"editor__file-preview-message--file-missing"},d["default"]._t("AssetAdmin.FILE_MISSING","File cannot be found"))
 var t=this.props.upload.category,n=t&&"image"!==t?y["default"].DEFAULT_PREVIEW:this.props.upload.url||e.preview||e.url,r=h["default"].createElement("img",{alt:"preview",src:n,className:"editor__thumbnail"
 }),o=this.props.upload.progress,i=e.url&&!o?h["default"].createElement("a",{className:"editor__file-preview-link",href:e.url,target:"_blank"},r):null,s=o>0&&o<100?h["default"].createElement("div",{className:"preview__progress"
@@ -2208,19 +2206,19 @@ var t=this.props.upload.category,n=t&&"image"!==t?y["default"].DEFAULT_PREVIEW:t
 return a?l=h["default"].createElement("div",{className:"preview__message preview__message--"+a.type},a.value):100===o&&(l=h["default"].createElement("div",{className:"preview__message preview__message--success"
 },d["default"]._t("AssetAdmin.REPlACE_FILE_SUCCESS","Upload successful, the file will be replaced when you Save."))),h["default"].createElement("div",{className:"editor__thumbnail-container"},i||r,s,l)
 
-}},{key:"renderToolbar",value:function x(){var e=this.canEdit()
+}},{key:"renderToolbar",value:function P(){var e=this.canEdit()
 return this.props.data.url||e?h["default"].createElement("div",{className:"preview__toolbar fill-height"},this.props.data.url?h["default"].createElement("a",{href:this.props.data.url,target:"_blank",className:"preview__toolbar-button--link preview__toolbar-button"
 },"Open"):null,e?h["default"].createElement("button",{id:"preview-replace-button",onClick:this.preventDefault,className:"preview__toolbar-button--replace preview__toolbar-button"},"Replace"):null,this.props.upload.progress||this.props.upload.message?h["default"].createElement("button",{
-onClick:this.handleCancelUpload,className:"preview__toolbar-button--remove preview__toolbar-button"},"Remove"):null):null}},{key:"render",value:function P(){var e=this.getDropzoneProps()
+onClick:this.handleCancelUpload,className:"preview__toolbar-button--remove preview__toolbar-button"},"Remove"):null):null}},{key:"render",value:function F(){var e=this.getDropzoneProps()
 if(this.canEdit())return h["default"].createElement(g["default"],e,this.renderImage(),this.renderToolbar())
 var t=["preview__container",this.props.className,this.props.extraClass]
 return h["default"].createElement("div",{className:t.join(" ")},this.renderImage(),this.renderToolbar())}}]),t}(f.Component)
-w.propTypes={id:f.PropTypes.string.isRequired,name:f.PropTypes.string,className:f.PropTypes.string,extraClass:f.PropTypes.string,readOnly:f.PropTypes.bool,disabled:f.PropTypes.bool,onAutofill:f.PropTypes.func,
-data:f.PropTypes.shape({parentid:f.PropTypes.number,version:f.PropTypes.number,url:f.PropTypes.string,exists:f.PropTypes.bool,preview:f.PropTypes.string,category:f.PropTypes.string,nameField:f.PropTypes.string,
-uploadFileEndpoint:f.PropTypes.shape({url:f.PropTypes.string.isRequired,method:f.PropTypes.string.isRequired,payloadFormat:f.PropTypes.string}),initialValues:f.PropTypes.object}).isRequired,upload:f.PropTypes.shape({
-url:f.PropTypes.string,progress:f.PropTypes.number,xhr:f.PropTypes.object,category:f.PropTypes.string,message:f.PropTypes.shape({type:f.PropTypes.string.isRequired,value:f.PropTypes.string.isRequired})
-}),actions:f.PropTypes.object,securityID:f.PropTypes.string,confirm:f.PropTypes.func},w.defaultProps={extraClass:"",className:"",data:{},upload:{},confirm:function x(e){return window.confirm(e)}},t["default"]=(0,
-b.connect)(l,u)(w)},function(e,t,n){"use strict"
+x.propTypes={id:f.PropTypes.string.isRequired,name:f.PropTypes.string,className:f.PropTypes.string,extraClass:f.PropTypes.string,readOnly:f.PropTypes.bool,disabled:f.PropTypes.bool,onAutofill:f.PropTypes.func,
+form:f.PropTypes.string,nameValue:f.PropTypes.string,data:f.PropTypes.shape({id:f.PropTypes.number,parentid:f.PropTypes.number,version:f.PropTypes.number,url:f.PropTypes.string,exists:f.PropTypes.bool,
+preview:f.PropTypes.string,category:f.PropTypes.string,nameField:f.PropTypes.string,uploadFileEndpoint:f.PropTypes.shape({url:f.PropTypes.string.isRequired,method:f.PropTypes.string.isRequired,payloadFormat:f.PropTypes.string
+}),initialValues:f.PropTypes.object}).isRequired,upload:f.PropTypes.shape({url:f.PropTypes.string,progress:f.PropTypes.number,xhr:f.PropTypes.object,category:f.PropTypes.string,message:f.PropTypes.shape({
+type:f.PropTypes.string.isRequired,value:f.PropTypes.string.isRequired})}),actions:f.PropTypes.object,securityID:f.PropTypes.string,confirm:f.PropTypes.func},x.defaultProps={extraClass:"",className:"",
+data:{},upload:{},confirm:function P(e){return window.confirm(e)}},t["default"]=(0,b.connect)(l,u)(x)},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{"default":e}}function o(e){return{type:u["default"].PREVIEWFIELD_REMOVE_FILE,payload:{id:e}}}function i(e,t){return{type:u["default"].PREVIEWFIELD_ADD_FILE,payload:{
 id:e,file:t}}}function s(e,t){return{type:u["default"].PREVIEWFIELD_FAIL_UPLOAD,payload:{id:e,message:t}}}function a(e,t){return{type:u["default"].PREVIEWFIELD_UPDATE_FILE,payload:{id:e,data:t}}}Object.defineProperty(t,"__esModule",{
 value:!0}),t.removeFile=o,t.addFile=i,t.failUpload=s,t.updateFile=a

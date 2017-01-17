@@ -177,7 +177,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function apiCreateFile(HTTPRequest $request)
     {
         $data = $request->postVars();
+
+        // When creating new files, rename on conflict
         $upload = $this->getUpload();
+        $upload->setReplaceFile(false);
 
         // CSRF check
         $token = SecurityToken::inst();
@@ -250,28 +253,58 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Upload a new asset for a pre-existing record. Returns the asset tuple.
      *
-     * @param HTTPRequest $request
+     * Note that conflict resolution is as follows:
+     *  - If uploading a file with the same extension, we simply keep the same filename,
+     *    and overwrite any existing files (same name + sha = don't duplicate).
+     *  - If uploading a new file with a different extension, then the filename will
+     *    be replaced, and will be checked for uniqueness against other File dataobjects.
+     *
+     * @param HTTPRequest $request Request containing vars 'ID' of parent record ID,
+     * and 'Name' as form filename value
      * @return HTTPRequest|HTTPResponse
      */
     public function apiUploadFile(HTTPRequest $request)
     {
         $data = $request->postVars();
+
+        // When updating files, replace on conflict
         $upload = $this->getUpload();
+        $upload->setReplaceFile(true);
 
         // CSRF check
         $token = SecurityToken::inst();
         if (empty($data[$token->getName()]) || !$token->check($data[$token->getName()])) {
             return new HTTPResponse(null, 400);
         }
-
-        // Check parent record
-        /** @var Folder $parentRecord */
-        $parentRecord = null;
-        if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
-            $parentRecord = Folder::get()->byID($data['ParentID']);
+        $tmpFile = $data['Upload'];
+        if (empty($data['ID']) || empty($tmpFile['name']) || !array_key_exists('Name', $data)) {
+            return new HTTPResponse('Invalid request', 400);
         }
 
-        $tmpFile = $data['Upload'];
+        // Check parent record
+        /** @var File $file */
+        $file = File::get()->byID($data['ID']);
+        if (!$file) {
+            return new HTTPResponse('File not found', 404);
+        }
+        $folder = $file->ParentID ? $file->Parent()->getFilename() : '/';
+
+        // If extension is the same, attempt to re-use existing name
+        if (File::get_file_extension($tmpFile['name']) === File::get_file_extension($data['Name'])) {
+            $tmpFile['name'] = $data['Name'];
+        } else {
+            // If we are allowing this upload to rename the underlying record,
+            // do a uniqueness check.
+            $renamer = $this->getNameGenerator($tmpFile['name']);
+            foreach ($renamer as $name) {
+                $filename = File::join_paths($folder, $name);
+                if (!File::find($filename)) {
+                    $tmpFile['name'] = $name;
+                    break;
+                }
+            }
+        }
+
         if (!$upload->validate($tmpFile)) {
             $result = ['message' => null];
             $errors = $upload->getErrors();
@@ -284,8 +317,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
-
-        $folder = $parentRecord ? $parentRecord->getFilename() : '/';
 
         try {
             $tuple = $upload->load($tmpFile, $folder);

@@ -42,6 +42,7 @@ class PreviewImageField extends FormField
             $parent = $record->Parent();
 
             $defaults['data'] = array_merge_recursive($defaults['data'], [
+                'id' => $record->ID,
                 'parentid' => ($parent) ? $parent->ID : 0,
                 'url' => $record->Link(),
                 'version' => $record->Version,

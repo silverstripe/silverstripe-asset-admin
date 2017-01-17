@@ -269,6 +269,10 @@ class AssetDropzone extends SilverStripeComponent {
    * @param object formData - FormData interface. See https://developer.mozilla.org/en-US/docs/Web/API/FormData
    */
   handleSending(file, xhr, formData) {
+    // Allow submitted data to be decorated
+    if (typeof this.props.updateFormData === 'function') {
+      this.props.updateFormData(formData);
+    }
     formData.append('SecurityID', this.props.securityID);
     formData.append('ParentID', this.props.folderId);
 
@@ -475,6 +479,7 @@ AssetDropzone.propTypes = {
   handleDrop: React.PropTypes.func,
   handleError: React.PropTypes.func.isRequired,
   handleSending: React.PropTypes.func,
+  updateFormData: React.PropTypes.func,
   handleSuccess: React.PropTypes.func.isRequired,
   handleMaxFilesExceeded: React.PropTypes.func,
   canFileUpload: React.PropTypes.func,

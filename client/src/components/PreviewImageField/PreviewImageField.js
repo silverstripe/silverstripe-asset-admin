@@ -4,6 +4,7 @@ import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
 import CONSTANTS from 'constants';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { formValueSelector } from 'redux-form';
 import * as previewFieldActions from 'state/previewField/PreviewFieldActions';
 import { getFileExtension } from 'lib/DataFormat';
 
@@ -19,6 +20,7 @@ class PreviewImageField extends Component {
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
     this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
     this.canFileUpload = this.canFileUpload.bind(this);
+    this.updateFormData = this.updateFormData.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -73,6 +75,7 @@ class PreviewImageField extends Component {
       handleSending: this.handleSending,
       handleUploadProgress: this.handleUploadProgress,
       canFileUpload: this.canFileUpload,
+      updateFormData: this.updateFormData,
     };
   }
 
@@ -166,10 +169,9 @@ class PreviewImageField extends Component {
       this.props.onAutofill('FileHash', json.Hash);
       this.props.onAutofill('FileVariant', json.Variant);
 
-      const oldExt = getFileExtension(this.props.data.url);
-      const newExt = getFileExtension(json.Filename);
-      if (oldExt !== newExt) {
-        // name field to autofill if extension has changed
+      // Note: This Name was posted back from the current form field value,
+      // and may have been modified on the server. If so, update the form value
+      if (json.Name) {
         this.props.onAutofill(this.props.data.nameField, json.Name);
       }
     }
@@ -183,6 +185,17 @@ class PreviewImageField extends Component {
    */
   handleSending(file, xhr) {
     this.props.actions.previewField.updateFile(this.props.id, { xhr });
+  }
+
+  /**
+   * Invoked by AssetDropZone to decorate additional form data fields
+   * posted to the AssetAdmin::apiUploadFile endpoint.
+   *
+   * @param {FormData} formData
+   */
+  updateFormData(formData) {
+    formData.append('ID', this.props.data.id);
+    formData.append('Name', this.props.nameValue);
   }
 
   /**
@@ -323,7 +336,10 @@ PreviewImageField.propTypes = {
   readOnly: PropTypes.bool,
   disabled: PropTypes.bool,
   onAutofill: PropTypes.func,
+  form: PropTypes.string,
+  nameValue: PropTypes.string,
   data: PropTypes.shape({
+    id: PropTypes.number,
     parentid: PropTypes.number,
     version: PropTypes.number,
     url: PropTypes.string,
@@ -367,10 +383,12 @@ function mapStateToProps(state, ownprops) {
   const securityID = state.config.SecurityID;
   const id = ownprops.id;
   const upload = state.assetAdmin.previewField[id] || {};
+  const selector = formValueSelector(ownprops.form);
 
   return {
     securityID,
     upload,
+    nameValue: selector(state, 'Name'),
   };
 }
 
