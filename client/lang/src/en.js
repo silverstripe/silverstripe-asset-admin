@@ -87,5 +87,5 @@
     "Folder.Name": "Folder name",
     "HTMLEditorField_Toolbar.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
     "Pagination.NEXT": "Next",
-    "Pagination.PREVIOUS": "Previous",
+    "Pagination.PREVIOUS": "Previous"
 }
