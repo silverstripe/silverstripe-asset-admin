@@ -5,7 +5,7 @@ import Config from 'lib/Config';
 import HistoryItem from 'containers/HistoryList/HistoryItem';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 
-export class HistoryList extends Component {
+class HistoryList extends Component {
 
   constructor(props) {
     super(props);
