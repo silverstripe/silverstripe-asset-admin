@@ -1447,7 +1447,7 @@ th.sort--disabled>span:after{
   background-color:#f6f7f8;
   z-index:2;
   position:absolute;
-  height:100%;
+  height:calc(100vh - 53px * 2);
   left:0;
 }
 
@@ -1470,6 +1470,29 @@ th.sort--disabled>span:after{
 .editor .nav-tabs{
   z-index:1;
   position:relative;
+}
+
+.panel--padded{
+  padding-bottom:0;
+}
+
+.panel--padded:after{
+  height:1.5385rem;
+  display:block;
+  content:"";
+}
+
+.panel--padded .editor__details form{
+  padding-bottom:0;
+}
+
+.panel--padded .editor__details .btn-toolbar{
+  margin-bottom:0;
+}
+
+.panel--padded .editor__details .fill-width{
+  -ms-flex-wrap:wrap;
+      flex-wrap:wrap;
 }
 
 .editor__heading{
