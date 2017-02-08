@@ -18,7 +18,7 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
         ];
     }
 
-    public function connection()
+    public function createConnection()
     {
         return Connection::create('readFiles')
             ->setConnectionType(function () {
