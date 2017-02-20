@@ -10,6 +10,8 @@ const initialState = {
   selectedFiles: [],
   page: 0,
   errorMessage: null,
+  enableDropzone: true,
+  badges: [],
 };
 
 /**
@@ -22,6 +24,27 @@ const initialState = {
  */
 export default function galleryReducer(state = initialState, action) {
   switch (action.type) {
+
+    case GALLERY.SET_FILE_BADGE: {
+      return Object.assign({}, state, {
+        badges: state.badges
+          .filter((badge) => badge.id !== action.payload.id)
+          .concat([action.payload]),
+      });
+    }
+
+    case GALLERY.CLEAR_FILE_BADGE: {
+      return Object.assign({}, state, {
+        badges: state.badges
+          .filter((badge) => badge.id !== action.payload.id),
+      });
+    }
+
+    case GALLERY.SET_ENABLE_DROPZONE: {
+      return Object.assign({}, state, {
+        enableDropzone: action.payload.enableDropzone,
+      });
+    }
 
     case GALLERY.SET_NOTICE_MESSAGE: {
       return Object.assign({}, state, {

@@ -12,7 +12,9 @@ function queuedFilesReducer(state = initialState, action) {
 
     case ACTION_TYPES.ADD_QUEUED_FILE:
       return deepFreeze(Object.assign({}, state, {
-        items: state.items.concat([Object.assign({}, fileStructure, action.payload.file)]),
+        items: state.items.concat([
+          Object.assign({}, fileStructure, action.payload.file),
+        ]),
       }));
 
     case ACTION_TYPES.FAIL_UPLOAD:

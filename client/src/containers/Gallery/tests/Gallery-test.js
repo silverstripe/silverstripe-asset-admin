@@ -21,7 +21,6 @@ describe('Gallery', () => {
   beforeEach(() => {
     props = {
       client: jest.genMockFromModule('apollo-client'),
-      mutate: () => {},
       actions: {
         gallery: {
           selectFiles: () => {},
@@ -36,6 +35,10 @@ describe('Gallery', () => {
           purgeUploadQueue: () => null,
           removeQueuedFile: () => null,
           succeedUpload: () => null,
+        },
+        mutate: {
+          moveFiles: () => ({}),
+          createFolder: () => ({}),
         },
       },
       selectedFiles: [],
@@ -61,6 +64,7 @@ describe('Gallery', () => {
       onSort: () => {},
       onSetPage: () => {},
       onViewChange: () => {},
+      badges: [],
     };
   });
 
@@ -385,8 +389,6 @@ describe('Gallery', () => {
       const button = gallery.renderBackButton();
 
       expect(button).not.toBe(null);
-      expect(button.type).toBe('button');
-      expect(button.ref).toBe('backButton');
     });
   });
 

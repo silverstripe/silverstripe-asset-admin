@@ -13,10 +13,12 @@ import ThumbnailView from 'containers/ThumbnailView/ThumbnailView';
 import TableView from 'containers/TableView/TableView';
 import CONSTANTS from 'constants/index';
 import FormAlert from 'components/FormAlert/FormAlert';
+import BackButton from 'components/BackButton/BackButton';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import { graphql, withApollo } from 'react-apollo';
 import gql from 'graphql-tag';
+import GalleryDND from './GalleryDND';
 
 /**
  * List of sorters for tile view, required here because it's rendered outside the tile view
@@ -71,6 +73,10 @@ class Gallery extends Component {
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
     this.handleClearSearch = this.handleClearSearch.bind(this);
+    this.handleEnableDropzone = this.handleEnableDropzone.bind(this);
+    this.handleMoveFiles = this.handleMoveFiles.bind(this);
+    this.handleBulkDelete = this.handleBulkDelete.bind(this);
+    this.handleBulkEdit = this.handleBulkEdit.bind(this);
   }
 
   componentDidMount() {
@@ -323,15 +329,7 @@ class Gallery extends Component {
     const name = this.promptFolderName();
     const parentId = parseInt(this.props.folder.id, 10);
     if (name) {
-      this.props.mutate({
-        mutation: 'CreateFolder',
-        variables: {
-          folder: {
-            parentId,
-            name,
-          },
-        },
-      }).then((data) => {
+      this.props.actions.mutate.createFolder(parentId, name).then((data) => {
         if (this.props.onCreateFolderSuccess) {
           this.props.onCreateFolderSuccess(data);
         }
@@ -490,6 +488,64 @@ class Gallery extends Component {
     this.props.onViewChange(view);
   }
 
+  handleEnableDropzone(enabled) {
+    this.props.actions.gallery.setEnableDropzone(enabled);
+  }
+
+  handleMoveFiles(folderId, fileIds) {
+    this.props.actions.mutate.moveFiles(folderId, fileIds)
+      .then(() => {
+        const duration = CONSTANTS.MOVE_SUCCESS_DURATION;
+        const message = `+${fileIds.length}`;
+
+        this.props.actions.gallery.setFileBadge(folderId, message, 'success', duration);
+
+        if (typeof this.props.onMoveFilesSuccess === 'function') {
+          this.props.onMoveFilesSuccess(folderId, fileIds);
+        }
+      });
+  }
+
+  handleBulkDelete(items) {
+    return Promise.all(items.map(item => {
+      // If the file was just uploaded, it doesn't exist in the files list,
+      // and has to be removed from the queue instead.
+      if (item.queuedId) {
+        this.props.actions.queuedFiles.removeQueuedFile(item.queuedId);
+        return Promise.resolve(true);
+      }
+
+// parent handle the files list
+      return this.props.onDelete(item.id).then(() => true).catch(() => false);
+    }))
+      .then((deletes) => {
+        const successes = deletes.filter((result) => result).length;
+
+        if (successes !== deletes.length) {
+          this.props.actions.gallery.setErrorMessage(
+            i18n.sprintf(
+              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_FAIL'),
+              successes,
+              deletes.length - successes
+            )
+          );
+          this.props.actions.gallery.setNoticeMessage(null);
+        } else {
+          this.props.actions.gallery.setNoticeMessage(
+            i18n.sprintf(
+              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS'),
+              successes
+            )
+          );
+          this.props.actions.gallery.setErrorMessage(null);
+        }
+      });
+  }
+
+  handleBulkEdit(items) {
+    this.props.onOpenFile(items[0].id);
+  }
+
   /**
    * Generates the react components needed for the Sorter part of this component
    *
@@ -641,26 +697,20 @@ class Gallery extends Component {
    * @returns {XML|null} button
    */
   renderBackButton() {
-    const classes = [
-      'btn',
-      'btn-secondary',
-      'btn--no-text',
-      'font-icon-level-up',
-      'btn--icon-large',
-      'gallery__back',
-    ].join(' ');
-    if (this.props.folder.parentId !== null) {
+    const itemId = this.props.folder.parentId;
+    if (itemId !== null) {
+      const badge = this.props.badges.find((item) => item.id === itemId);
       return (
-        <button
-          className={classes}
-          title="Navigate up a level"
-          onClick={this.handleBackClick}
-          ref="backButton"
-        >
-        </button>
+        <div className="gallery__back-container">
+          <BackButton
+            item={{ id: itemId }}
+            onClick={this.handleBackClick}
+            onDropFiles={this.handleMoveFiles}
+            badge={badge}
+          />
+        </div>
       );
     }
-
     return null;
   }
 
@@ -670,42 +720,19 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderBulkActions() {
-    const deleteAction = (items) => {
-      Promise.all(items.map(item =>
-        this.props.onDelete(item.id).then(() => true).catch(() => false)
-      ))
-        .then((deletes) => {
-          const successes = deletes.filter((result) => result).length;
-
-          if (successes !== deletes.length) {
-            this.props.actions.gallery.setErrorMessage(
-              i18n.sprintf(
-                i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_FAIL'),
-                successes,
-                deletes.length - successes
-              )
-            );
-            this.props.actions.gallery.setNoticeMessage(null);
-          } else {
-            this.props.actions.gallery.setNoticeMessage(
-              i18n.sprintf(
-                i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS'),
-                successes
-              )
-            );
-            this.props.actions.gallery.setErrorMessage(null);
-          }
-        });
-    };
-    const editAction = (items) => {
-      this.props.onOpenFile(items[0].id);
-    };
     const actions = CONSTANTS.BULK_ACTIONS.map((action) => {
-      if (action.value === 'delete' && !action.callback) {
-        return Object.assign({}, action, { callback: deleteAction });
-      }
-      if (action.value === 'edit' && !action.callback) {
-        return Object.assign({}, action, { callback: editAction });
+      if (!action.callback) {
+        switch (action.value) {
+          case 'delete': {
+            return Object.assign({}, action, { callback: this.handleBulkDelete });
+          }
+          case 'edit': {
+            return Object.assign({}, action, { callback: this.handleBulkEdit });
+          }
+          default: {
+            return action;
+          }
+        }
       }
       return action;
     });
@@ -769,6 +796,8 @@ class Gallery extends Component {
       totalCount,
       limit,
       sort,
+      selectedFiles,
+      badges,
     } = this.props;
 
     const props = {
@@ -779,13 +808,17 @@ class Gallery extends Component {
       totalCount,
       limit,
       sort,
+      selectedFiles,
+      badges,
       onSort: this.handleSort,
       onSetPage: this.handleSetPage,
       onOpenFile: this.handleOpenFile,
       onOpenFolder: this.handleOpenFolder,
       onSelect: this.handleSelect,
       onCancelUpload: this.handleCancelUpload,
+      onDropFiles: this.handleMoveFiles,
       onRemoveErroredUpload: this.handleRemoveErroredUpload,
+      onEnableDropzone: this.handleEnableDropzone,
     };
 
     return <GalleryView {...props} />;
@@ -795,7 +828,7 @@ class Gallery extends Component {
     if (!this.props.folder) {
       if (this.props.errorMessage) {
         return (
-          <div className="gallery__error">
+          <div className="flexbox-area-grow gallery__error">
             <div className="gallery__error-message">
               <h3>
                 { i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.') }
@@ -805,18 +838,20 @@ class Gallery extends Component {
           </div>
         );
       }
-      return null;
+      return <div className="flexbox-area-grow" />;
     }
 
-    const errorMessage = (this.props.errorMessage) ? (
-      <FormAlert value={this.props.errorMessage} type="danger" />
-    )
-      : null;
-
-    const noticeMessage = (this.props.noticeMessage) ? (
-      <FormAlert value={this.props.noticeMessage} type="success" />
-    )
-      : null;
+    const messages = (
+      <div className="gallery_messages">
+        { this.props.errorMessage &&
+          <FormAlert value={this.props.errorMessage} type="danger" />
+        }
+        { this.props.noticeMessage &&
+          <FormAlert value={this.props.noticeMessage} type="success" />
+        }
+        {this.renderSearchAlert()}
+      </div>
+    );
 
     const dimensions = {
       height: CONSTANTS.THUMBNAIL_HEIGHT,
@@ -830,7 +865,7 @@ class Gallery extends Component {
     };
 
     const securityID = this.props.securityId;
-    const canEdit = this.props.folder.canEdit;
+    const canEdit = this.props.folder.canEdit && this.props.enableDropzone;
 
     const galleryClasses = [
       'panel', 'panel--padded', 'panel--scrollable', 'gallery__main',
@@ -842,7 +877,6 @@ class Gallery extends Component {
     return (
       <div className="flexbox-area-grow gallery__outer">
         {this.renderBulkActions()}
-
         <AssetDropzone
           name="gallery-container"
           canUpload={canEdit}
@@ -857,14 +891,11 @@ class Gallery extends Component {
           securityID={securityID}
           uploadButton={false}
         >
-
-          <div className={galleryClasses.join(' ')}>
+          <GalleryDND className={galleryClasses.join(' ')}>
             {this.renderToolbar()}
-            {errorMessage}
-            {noticeMessage}
-            {this.renderSearchAlert()}
+            {messages}
             {this.renderGalleryView()}
-          </div>
+          </GalleryDND>
         </AssetDropzone>
       </div>
     );
@@ -886,9 +917,15 @@ const sharedPropTypes = {
       id: PropTypes.number,
     }),
   })).isRequired,
+  selectedFiles: PropTypes.arrayOf(PropTypes.number),
   totalCount: PropTypes.number,
   page: PropTypes.number,
   limit: PropTypes.number,
+  badges: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    message: PropTypes.node,
+    status: PropTypes.string,
+  })),
   onOpenFile: PropTypes.func.isRequired,
   onOpenFolder: PropTypes.func.isRequired,
   onSort: PropTypes.func.isRequired,
@@ -905,18 +942,20 @@ const galleryViewPropTypes = Object.assign({}, sharedPropTypes, {
   onCancelUpload: PropTypes.func,
   onDelete: React.PropTypes.func,
   onRemoveErroredUpload: PropTypes.func,
+  onEnableDropzone: PropTypes.func,
 });
 
 Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
   type: 'admin',
   view: 'tile',
+  enableDropzone: true,
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   client: React.PropTypes.object,
-  mutate: React.PropTypes.func,
   onUploadSuccess: React.PropTypes.func,
   onCreateFolderSuccess: React.PropTypes.func,
+  onMoveFilesSuccess: React.PropTypes.func,
   onDelete: React.PropTypes.func,
   type: PropTypes.oneOf(['insert', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
@@ -933,7 +972,6 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   queuedFiles: PropTypes.shape({
     items: PropTypes.array.isRequired,
   }),
-  selectedFiles: PropTypes.arrayOf(PropTypes.number),
   errorMessage: PropTypes.string,
   actions: PropTypes.object,
   securityId: PropTypes.string,
@@ -941,6 +979,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   createFileApiUrl: PropTypes.string,
   createFileApiMethod: PropTypes.string,
   search: PropTypes.object,
+  enableDropzone: PropTypes.bool,
 });
 
 Gallery.fragments = {
@@ -986,12 +1025,16 @@ function mapStateToProps(state) {
     selectedFiles,
     errorMessage,
     noticeMessage,
+    enableDropzone,
+    badges,
   } = state.assetAdmin.gallery;
 
   return {
     selectedFiles,
     errorMessage,
     noticeMessage,
+    enableDropzone,
+    badges,
     queuedFiles: state.assetAdmin.queuedFiles,
     securityId: state.config.SecurityID,
   };
@@ -1009,18 +1052,59 @@ function mapDispatchToProps(dispatch) {
 const createFolderMutation = gql`
   mutation CreateFolder($folder:FolderInput!) {
     createFolder(folder: $folder) {
-   ...FileInterfaceFields
-   ...FileFields
+      ...FileInterfaceFields
+      ...FileFields
+    }
   }
-}
-${Gallery.fragments.fileInterface}
-${Gallery.fragments.file}
+  ${Gallery.fragments.fileInterface}
+  ${Gallery.fragments.file}
+`;
+
+const moveFilesMutation = gql`
+  mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {
+    moveFiles(folderId: $folderId, fileIds: $fileIds) {
+      ...FileInterfaceFields
+      ...FileFields
+    }
+  }
+  ${Gallery.fragments.fileInterface}
+  ${Gallery.fragments.file}
 `;
 
 export { Gallery, sorters, galleryViewPropTypes, galleryViewDefaultProps };
 
 export default compose(
-  graphql(createFolderMutation),
-  (component) => withApollo(component),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  graphql(moveFilesMutation, {
+    props: ({ mutate, ownProps: { actions } }) => ({
+      actions: Object.assign({}, actions, {
+        mutate: Object.assign({}, actions.mutate, {
+          moveFiles: (folderId, fileIds) => mutate({
+            variables: {
+              folderId,
+              fileIds,
+            },
+          }),
+        }),
+      }),
+    }),
+  }),
+  graphql(createFolderMutation, {
+    props: ({ mutate, ownProps: { errors, actions } }) => ({
+      errorMessage: errors && errors[0].message,
+      actions: Object.assign({}, actions, {
+        mutate: Object.assign({}, actions.mutate, {
+          createFolder: (parentId, name) => mutate({
+            variables: {
+              folder: {
+                parentId,
+                name,
+              },
+            },
+          }),
+        }),
+      }),
+    }),
+  }),
+  (component) => withApollo(component)
 )(Gallery);

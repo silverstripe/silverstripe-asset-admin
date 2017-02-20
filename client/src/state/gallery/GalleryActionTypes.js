@@ -10,4 +10,7 @@ export default [
   'UPDATE_BATCH_ACTIONS',
   'SET_NOTICE_MESSAGE',
   'SET_ERROR_MESSAGE',
+  'SET_ENABLE_DROPZONE',
+  'SET_FILE_BADGE',
+  'CLEAR_FILE_BADGE',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});

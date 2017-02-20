@@ -2,7 +2,6 @@ $gallery-item-label-height: 40px;
 
 .gallery-item {
   position: relative;
-  margin: 0 $spacer-x $spacer-y 0;
   background-color: $white;
   border: 1px solid;
   border-color: $border-color-light $border-color $border-color-dark;
@@ -20,6 +19,20 @@ $gallery-item-label-height: 40px;
     opacity: 1;
     display: block;
   }
+}
+
+.gallery-item--enlarged {
+  transform: scale(1.1);
+};
+
+.gallery-item__draggable,
+.gallery-item__droppable {
+  margin: 0 $spacer-x $spacer-y 0;
+}
+
+.gallery-item__draggable > .gallery-item__droppable,
+.gallery-item__droppable > .gallery-item__draggable {
+  margin: 0;
 }
 
 .gallery-item--folder {
@@ -178,7 +191,8 @@ $gallery-item-label-height: 40px;
   }
 }
 
-.gallery-item--highlighted {
+.gallery-item--highlighted,
+.gallery-item__drag-shadow {
   border-color: $component-active-border-color;
   background-color: $component-active-bg-light;
 }
@@ -288,5 +302,53 @@ $gallery-item-label-height: 40px;
 
   &:hover::after {
     content: "MODIFIED";
+  }
+}
+
+.gallery-item__drag-layer {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.gallery-item__drag-layer-item {
+  display: inline-block;
+  position: relative;
+  opacity: 0.5;
+
+  .gallery-item {
+    z-index: 104;
+  }
+}
+
+.gallery-item__drag-layer-count,
+.gallery-item__badge {
+  display: inline-block;
+  position: absolute;
+  font-size: 1rem;
+  top: -0.5rem;
+  right: -0.5rem;
+  z-index: 105;
+}
+
+.gallery-item__drag-shadow {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transform: translate(-0.5rem, -0.5rem);
+  z-index: 103;
+  border-width: 1px;
+  border-style: solid;
+
+  &.gallery-item__drag-shadow--second {
+    transform: translate(-1rem, -1rem);
+    z-index: 102;
   }
 }

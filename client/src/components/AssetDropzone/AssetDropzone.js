@@ -71,6 +71,18 @@ class AssetDropzone extends SilverStripeComponent {
     this.dropzone.disable();
   }
 
+  componentWillReceiveProps(nextProps) {
+    // add listeners when necessary
+    if (nextProps.canUpload) {
+      if (this.dropzone) {
+        this.dropzone.enable();
+      }
+    } else {
+      // remove dropzone listeners (so it potentially doesn't interrupt other listeners)
+      this.dropzone.disable();
+    }
+  }
+
   render() {
     const className = ['asset-dropzone'];
 

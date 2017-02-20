@@ -30,6 +30,7 @@ describe('ThumbnailView', () => {
       onSort: jest.genMockFunction(),
       onSetPage: jest.genMockFunction(),
       renderNoItemsNotice: jest.genMockFunction(),
+      badges: [],
     };
   });
 
