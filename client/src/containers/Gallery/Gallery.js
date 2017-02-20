@@ -828,7 +828,7 @@ class Gallery extends Component {
     if (!this.props.folder) {
       if (this.props.errorMessage) {
         return (
-          <div className="flexbox-area-grow gallery__error">
+          <div className="gallery__error flexbox-area-grow">
             <div className="gallery__error-message">
               <h3>
                 { i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.') }
