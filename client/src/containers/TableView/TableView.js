@@ -91,6 +91,7 @@ class TableView extends Component {
         columnName: 'size',
         sortable: false,
         displayName: 'Size',
+        cssClassName: 'sort--disabled',
         customComponent: this.renderSize,
       },
     ];
