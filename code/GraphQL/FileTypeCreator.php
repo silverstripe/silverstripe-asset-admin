@@ -164,8 +164,8 @@ class FileTypeCreator extends TypeCreator
         }
 
         // Small thumbnail
-        $smallWidth = UploadField::config()->get('thumbnail_width');
-        $smallHeight = UploadField::config()->get('thumbnail_height');
+        $smallWidth = UploadField::config()->uninherited('thumbnail_width');
+        $smallHeight = UploadField::config()->uninherited('thumbnail_height');
         $smallThumbnail = $object->FitMax($smallWidth, $smallHeight);
         if ($smallThumbnail && $smallThumbnail->exists()) {
             return $smallThumbnail->getAbsoluteURL();
@@ -188,8 +188,8 @@ class FileTypeCreator extends TypeCreator
         }
 
         // Large thumbnail
-        $width = AssetAdmin::config()->get('thumbnail_width');
-        $height = AssetAdmin::config()->get('thumbnail_height');
+        $width = AssetAdmin::config()->uninherited('thumbnail_width');
+        $height = AssetAdmin::config()->uninherited('thumbnail_height');
         $thumbnail = $object->FitMax($width, $height);
         if ($thumbnail && $thumbnail->exists()) {
             return $thumbnail->getAbsoluteURL();

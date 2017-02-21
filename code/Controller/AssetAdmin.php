@@ -907,8 +907,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         if ($file->getIsImage()) {
             // Small thumbnail
-            $smallWidth = UploadField::config()->get('thumbnail_width');
-            $smallHeight = UploadField::config()->get('thumbnail_height');
+            $smallWidth = UploadField::config()->uninherited('thumbnail_width');
+            $smallHeight = UploadField::config()->uninherited('thumbnail_height');
             $smallThumbnail = $file->FitMax($smallWidth, $smallHeight);
             if ($smallThumbnail && $smallThumbnail->exists()) {
                 $object['smallThumbnail'] = $smallThumbnail->getAbsoluteURL();
@@ -1014,7 +1014,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $upload = Upload::create();
         $upload->getValidator()->setAllowedExtensions(
             // filter out '' since this would be a regex problem on JS end
-            array_filter(File::config()->get('allowed_extensions'))
+            array_filter(File::config()->uninherited('allowed_extensions'))
         );
 
         return $upload;
