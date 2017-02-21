@@ -1417,16 +1417,17 @@
   background-color:#f6f7f8;
   z-index:2;
   position:absolute;
-  height:calc(100% - 53px);
+  height:100%;
   left:0;
 }
 
 @media (min-width:992px){
   .editor{
-    box-sizing:content-box;
     width:300px;
     border-left:1px solid #d9dee2;
     position:relative;
+    height:100%;
+    padding-bottom:0;
   }
 }
 
@@ -1439,14 +1440,6 @@
 .editor .nav-tabs{
   z-index:1;
   position:relative;
-}
-
-.editor__details{
-  margin-bottom:2.4616rem;
-}
-
-.editor__details .form-group:after{
-  margin-bottom:1.2308rem;
 }
 
 .editor__heading{
@@ -1563,13 +1556,6 @@
 .relative-time[title]{
   cursor:pointer;
   text-decoration:underline;
-}
-
-@media (max-width:1199px){
-  .editor{
-    height:100%;
-    padding-bottom:0;
-  }
 }
 
 .insert-media-modal .modal-lg{
