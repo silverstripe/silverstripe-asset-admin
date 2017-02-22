@@ -59,3 +59,40 @@ export function setErrorMessage(message) {
       payload: { message },
     });
 }
+
+export function setEnableDropzone(enableDropzone) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.SET_ENABLE_DROPZONE,
+      payload: { enableDropzone },
+    });
+}
+
+export function clearFileBadge(id) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.CLEAR_FILE_BADGE,
+      payload: { id },
+    });
+  };
+}
+
+export function setFileBadge(id, message, status, duration) {
+  return (dispatch, getState) => {
+    const { assetAdmin } = getState();
+    const badge = assetAdmin.gallery.badges.find((item) => item.id === id);
+
+    // restart the timer if a new message
+    if (badge && badge.timer) {
+      clearTimeout(badge.timer);
+    }
+    const timer = (duration > 0)
+      ? setTimeout(() => clearFileBadge(id)(dispatch), duration)
+      : null;
+
+    dispatch({
+      type: GALLERY.SET_FILE_BADGE,
+      payload: { id, message, status, timer },
+    });
+  };
+}

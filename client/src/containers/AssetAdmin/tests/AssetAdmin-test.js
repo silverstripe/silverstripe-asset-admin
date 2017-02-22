@@ -29,8 +29,6 @@ describe('AssetAdmin', () => {
       client: {
         dataId: jest.fn(),
       },
-      mutate: jest.genMockFunction()
-        .mockReturnValue(Promise.resolve()),
       dialog: true,
       sectionConfig: {
         url: '',
@@ -80,6 +78,10 @@ describe('AssetAdmin', () => {
           removeQueuedFile: () => null,
           succeedUpload: () => null,
         },
+        mutate: {
+          deleteFile: jest.genMockFunction()
+            .mockReturnValue(Promise.resolve()),
+        },
       },
     };
   });
@@ -125,27 +127,16 @@ describe('AssetAdmin', () => {
       const id = props.files[0].id;
       component.handleDelete(id);
 
-      expect(props.mutate.mock.calls.length).toBe(1);
-      const callArgs = props.mutate.mock.calls[0];
-      expect(callArgs[0].mutation).toBe('DeleteFile');
-      expect(callArgs[0].variables).toEqual({ id });
-    });
-
-    it('should delete a queued file', () => {
-      const id = props.queuedFiles.items[0].id;
-      component.handleDelete(id);
-
-      expect(props.mutate.mock.calls.length).toBe(1);
-      const callArgs = props.mutate.mock.calls[0];
-      expect(callArgs[0].mutation).toBe('DeleteFile');
-      expect(callArgs[0].variables).toEqual({ id });
+      expect(props.actions.mutate.deleteFile.mock.calls.length).toBe(1);
+      const callArgs = props.actions.mutate.deleteFile.mock.calls[0];
+      expect(callArgs[0]).toEqual(id);
     });
 
     // TODO Fix promise returns in jest
     // pit('should deselect files after a delete', () => {
     //   const id = props.files[0].id;
     //   props.actions.gallery.deselectFiles = jest.genMockFunction();
-    //   props.mutate.mockReturnValue(Promise.resolve());
+    //   props.actions.mutate.deleteFile.mockReturnValue(Promise.resolve());
     //   return component.handleDelete(id).then(() => {
     //     expect(props.actions.gallery.deselectFiles.mock.calls.length)
     //       .toBe(1);

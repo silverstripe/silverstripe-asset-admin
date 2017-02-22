@@ -3,6 +3,9 @@ import React, { PropTypes } from 'react';
 import CONSTANTS from 'constants/index';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import fileShape from 'lib/fileShape';
+import draggable from 'components/GalleryItem/draggable';
+import droppable from 'components/GalleryItem/droppable';
+import Badge from 'components/Badge/Badge';
 
 class GalleryItem extends SilverStripeComponent {
   constructor(props) {
@@ -131,6 +134,10 @@ class GalleryItem extends SilverStripeComponent {
       if (this.props.item.selected) {
         itemClassNames.push('gallery-item--selected');
       }
+    }
+
+    if (this.props.enlarged) {
+      itemClassNames.push('gallery-item--enlarged');
     }
 
     if (this.props.item.highlighted) {
@@ -315,6 +322,8 @@ class GalleryItem extends SilverStripeComponent {
       overlay = <div className="gallery-item--overlay font-icon-edit">View</div>;
     }
 
+    const badge = this.props.badge;
+
     return (
       <div
         className={this.getItemClassNames()}
@@ -323,6 +332,13 @@ class GalleryItem extends SilverStripeComponent {
         onKeyDown={this.handleKeyDown}
         onClick={this.handleActivate}
       >
+        {!!badge &&
+        <Badge
+          className="gallery-item__badge"
+          status={badge.status}
+          message={badge.message}
+        />
+        }
         <div
           ref="thumbnail"
           className={this.getThumbnailClassNames()}
@@ -359,6 +375,8 @@ GalleryItem.propTypes = {
   highlighted: PropTypes.bool,
   // Styles according to the checkbox selection state
   selected: PropTypes.bool,
+  // Whether the item should be enlarged for more prominence than "highlighted"
+  enlarged: PropTypes.bool,
   message: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,
@@ -370,4 +388,12 @@ GalleryItem.propTypes = {
   onRemoveErroredUpload: PropTypes.func,
 };
 
+const type = 'GalleryItem';
+
+const File = draggable(type)(GalleryItem);
+const Folder = droppable(type)(File);
+export {
+  Folder,
+  File,
+};
 export default GalleryItem;

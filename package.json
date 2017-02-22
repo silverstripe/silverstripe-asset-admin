@@ -17,8 +17,8 @@
     "node": "4.x"
   },
   "scripts": {
-    "build": "webpack --bail",
-    "watch": "webpack --config ./webpack-dev.config.js --watch",
+    "build": "webpack --bail --progress",
+    "watch": "webpack --progress --config ./webpack-dev.config.js --watch",
     "test": "NODE_PATH=\"./client/src:../framework/client/src:../framework/admin/client/src\" jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
@@ -31,12 +31,16 @@
     "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
     "testDirectoryName": "tests",
     "unmockedModulePathPatterns": [
+      "lodash",
+      "components/GalleryItem/draggable",
+      "components/GalleryItem/droppable",
       "<rootDir>/node_modules/react",
       "<rootDir>/node_modules/griddle-react",
       "../framework",
       "../framework/node_modules/react",
       "../framework/node_modules/redux-form",
-      "../framework/node_modules/react-bootstrap-ss"
+      "../framework/node_modules/react-bootstrap-ss",
+      "../framework/node_modules/react-dnd"
     ],
     "mocksPattern": "mocks",
     "testPathDirs": [
@@ -73,6 +77,8 @@
     "react": "^15.3.1",
     "react-addons-test-utils": "^15.3.1",
     "react-apollo": "^0.7.1",
+    "react-dnd": "^2.2.3",
+    "react-dnd-html5-backend": "^2.2.3",
     "react-dom": "^15.3.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.5.2",

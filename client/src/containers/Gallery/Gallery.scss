@@ -19,8 +19,32 @@
 }
 
 .gallery__back {
+  position: relative;
+
   &.ss-ui-button::before {
     font-size: 23px;
+  }
+
+  .gallery__back-badge {
+    display: inline-block;
+    position: absolute;
+    font-size: 1rem;
+    top: -0.5rem;
+    right: -1rem;
+  }
+}
+
+.gallery__back--droppable-hover {
+  background-color: $btn-secondary-bg;
+  border-color: transparent;
+  transform: scale(1.1);
+}
+
+.gallery__back-container {
+  display: inline-block;
+
+  .gallery-item__droppable {
+    margin: 0;
   }
 }
 

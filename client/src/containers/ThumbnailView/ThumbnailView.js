@@ -1,6 +1,6 @@
 import i18n from 'i18n';
 import React, { Component } from 'react';
-import GalleryItem from 'components/GalleryItem/GalleryItem';
+import { Folder, File } from 'components/GalleryItem/GalleryItem';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import Griddle from 'griddle-react';
 
@@ -12,6 +12,11 @@ class ThumbnailView extends Component {
     this.handleSetPage = this.handleSetPage.bind(this);
     this.handlePrevPage = this.handlePrevPage.bind(this);
     this.handleNextPage = this.handleNextPage.bind(this);
+    this.handleDrag = this.handleDrag.bind(this);
+  }
+
+  handleDrag(dragging) {
+    this.props.onEnableDropzone(!dragging);
   }
 
   /**
@@ -92,9 +97,13 @@ class ThumbnailView extends Component {
    * @returns {XML}
    */
   renderItem(item, index) {
+    const badge = this.props.badges.find((badgeItem) => badgeItem.id === item.id);
     const props = {
       key: index,
       item,
+      selectedFiles: this.props.selectedFiles,
+      onDrag: this.handleDrag,
+      badge,
     };
 
     if (item.uploading) {
@@ -117,9 +126,13 @@ class ThumbnailView extends Component {
       });
     }
 
-    return (
-      <GalleryItem {...props} />
-    );
+    if (item.type === 'folder') {
+      Object.assign(props, {
+        onDropFiles: this.props.onDropFiles,
+      });
+      return <Folder {...props} />;
+    }
+    return <File {...props} />;
   }
 
   render() {

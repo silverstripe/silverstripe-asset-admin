@@ -1,6 +1,5 @@
 .gallery-item{
   position:relative;
-  margin:0 1.2308rem 1.2308rem 0;
   background-color:#fff;
   border:1px solid;
   border-color:#e5e8eb #d9dee2 #ced3d9;
@@ -19,6 +18,19 @@
 .gallery-item:not(.gallery-item--error):not(.gallery-item--folder):hover .gallery-item--overlay{
   opacity:1;
   display:block;
+}
+
+.gallery-item--enlarged{
+  -webkit-transform:scale(1.1);
+          transform:scale(1.1);
+}
+
+.gallery-item__draggable,.gallery-item__droppable{
+  margin:0 1.2308rem 1.2308rem 0;
+}
+
+.gallery-item__draggable>.gallery-item__droppable,.gallery-item__droppable>.gallery-item__draggable{
+  margin:0;
 }
 
 .gallery-item--folder{
@@ -172,7 +184,7 @@
   color:#fff;
 }
 
-.gallery-item--highlighted{
+.gallery-item--highlighted,.gallery-item__drag-shadow{
   border-color:#29abe2;
   background-color:#e6f5fc;
 }
@@ -279,6 +291,55 @@
 
 .gallery-item--modified:hover:after{
   content:"MODIFIED";
+}
+
+.gallery-item__drag-layer{
+  position:fixed;
+  left:0;
+  top:0;
+  right:0;
+  bottom:0;
+  pointer-events:none;
+  z-index:100;
+}
+
+.gallery-item__drag-layer-item{
+  display:inline-block;
+  position:relative;
+  opacity:.5;
+}
+
+.gallery-item__drag-layer-item .gallery-item{
+  z-index:104;
+}
+
+.gallery-item__badge,.gallery-item__drag-layer-count{
+  display:inline-block;
+  position:absolute;
+  font-size:1rem;
+  top:-.5rem;
+  right:-.5rem;
+  z-index:105;
+}
+
+.gallery-item__drag-shadow{
+  display:inline-block;
+  position:absolute;
+  left:0;
+  top:0;
+  right:0;
+  bottom:0;
+  -webkit-transform:translate(-.5rem,-.5rem);
+          transform:translate(-.5rem,-.5rem);
+  z-index:103;
+  border-width:1px;
+  border-style:solid;
+}
+
+.gallery-item__drag-shadow.gallery-item__drag-shadow--second{
+  -webkit-transform:translate(-1rem,-1rem);
+          transform:translate(-1rem,-1rem);
+  z-index:102;
 }
 
 .bulk-actions{
@@ -978,8 +1039,35 @@
   margin-top:1.2308rem;
 }
 
+.gallery__back{
+  position:relative;
+}
+
 .gallery__back.ss-ui-button:before{
   font-size:23px;
+}
+
+.gallery__back .gallery__back-badge{
+  display:inline-block;
+  position:absolute;
+  font-size:1rem;
+  top:-.5rem;
+  right:-1rem;
+}
+
+.gallery__back--droppable-hover{
+  background-color:#dee3e8;
+  border-color:transparent;
+  -webkit-transform:scale(1.1);
+          transform:scale(1.1);
+}
+
+.gallery__back-container{
+  display:inline-block;
+}
+
+.gallery__back-container .gallery-item__droppable{
+  margin:0;
 }
 
 .gallery__files,.gallery__folders{

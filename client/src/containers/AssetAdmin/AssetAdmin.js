@@ -35,6 +35,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleViewChange = this.handleViewChange.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
     this.handleCreateFolderSuccess = this.handleCreateFolderSuccess.bind(this);
+    this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
     this.compare = this.compare.bind(this);
   }
 
@@ -44,7 +45,6 @@ class AssetAdmin extends SilverStripeComponent {
     // Build API callers from the URLs provided in configuration.
     // In time, something like a GraphQL endpoint might be a better way to run.
     this.endpoints = {
-      updateFolderApi: this.createEndpoint(config.updateFolderEndpoint),
       historyApi: this.createEndpoint(config.historyEndpoint),
     };
   }
@@ -335,18 +335,7 @@ class AssetAdmin extends SilverStripeComponent {
       id: file.id,
     });
 
-    return this.props.mutate({
-      mutation: 'DeleteFile',
-      variables: {
-        id: file.id,
-      },
-      resultBehaviors: [
-        {
-          type: 'DELETE',
-          dataId,
-        },
-      ],
-    }).then(() => {
+    return this.props.actions.mutate.deleteFile(file.id, dataId).then(() => {
       this.props.actions.gallery.deselectFiles([file.id]);
 
       // If the file was just uploaded, it doesn't exist in the Apollo store,
@@ -371,6 +360,24 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   handleCreateFolderSuccess() {
+    // TODO Update GraphQL store with new model,
+    // see https://github.com/silverstripe/silverstripe-graphql/issues/14
+    this.props.refetch();
+  }
+
+  handleMoveFilesSuccess(folderId, fileIds) {
+    // TODO Refactor "queued files" into separate visual area and remove coupling here
+    const files = this.props.queuedFiles.items.filter((file) => (
+      fileIds.includes(file.id)
+    ));
+
+    files.forEach((file) => {
+      if (file.queuedId) {
+        this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
+      }
+    });
+
+    this.props.actions.gallery.deselectFiles();
     // TODO Update GraphQL store with new model,
     // see https://github.com/silverstripe/silverstripe-graphql/issues/14
     this.props.refetch();
@@ -407,12 +414,12 @@ class AssetAdmin extends SilverStripeComponent {
         filters={filters}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
-        updateFolderApi={this.endpoints.updateFolderApi}
         onDelete={this.handleDelete}
         onOpenFile={this.handleOpenFile}
         onOpenFolder={this.handleOpenFolder}
         onSuccessfulUpload={this.handleUpload}
         onCreateFolderSuccess={this.handleCreateFolderSuccess}
+        onMoveFilesSuccess={this.handleMoveFilesSuccess}
         onSort={this.handleSort}
         onSetPage={this.handleSetPage}
         onViewChange={this.handleViewChange}
@@ -476,7 +483,7 @@ class AssetAdmin extends SilverStripeComponent {
       <div className="fill-height">
         <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
           <Breadcrumb multiline />
-          <div className="asset-admin__toolbar-extra pull-xs-right fill-width">
+          <div className="asset-admin__toolbar-extra pull-xs-right">
             <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
               searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId}
               filters={filters}
@@ -498,7 +505,6 @@ class AssetAdmin extends SilverStripeComponent {
 }
 
 AssetAdmin.propTypes = {
-  mutate: React.PropTypes.func.isRequired,
   dialog: PropTypes.bool,
   sectionConfig: PropTypes.shape({
     url: PropTypes.string,
@@ -531,6 +537,7 @@ AssetAdmin.propTypes = {
     canEdit: PropTypes.bool,
   }),
   loading: PropTypes.bool,
+  actions: PropTypes.object,
 };
 
 AssetAdmin.defaultProps = {
@@ -660,11 +667,11 @@ const readFilesConfig = {
     };
   },
 };
-const updateFileMutation = gql`mutation UpdateFile($id:ID!, $file:FileInput!) {
-  updateFile(id: $id, file: $file) {
-   id
-  }
-}`;
+// const updateFileMutation = gql`mutation UpdateFile($id:ID!, $file:FileInput!) {
+//   updateFile(id: $id, file: $file) {
+//    id
+//   }
+// }`;
 const deleteFileMutation = gql`mutation DeleteFile($id:ID!) {
   deleteFile(id: $id)
 }`;
@@ -674,7 +681,25 @@ export { AssetAdmin };
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   graphql(readFilesQuery, readFilesConfig),
-  graphql(updateFileMutation),
-  graphql(deleteFileMutation),
+  // graphql(updateFileMutation, { name: 'mutateUpdateFile' }),
+  graphql(deleteFileMutation, {
+    props: ({ mutate, ownProps: { actions } }) => ({
+      actions: Object.assign({}, actions, {
+        mutate: Object.assign({}, actions.mutate, {
+          deleteFile: (id, dataId) => mutate({
+            variables: {
+              id,
+            },
+            resultBehaviors: [
+              {
+                type: 'DELETE',
+                dataId,
+              },
+            ],
+          }),
+        }),
+      }),
+    }),
+  }),
   (component) => withApollo(component)
 )(AssetAdmin);

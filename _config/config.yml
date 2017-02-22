@@ -24,3 +24,4 @@ SilverStripe\GraphQL:
       updateFile: 'SilverStripe\AssetAdmin\GraphQL\UpdateFileMutationCreator'
       deleteFile: 'SilverStripe\AssetAdmin\GraphQL\DeleteFileMutationCreator'
       createFolder: 'SilverStripe\AssetAdmin\GraphQL\CreateFolderMutationCreator'
+      moveFiles: 'SilverStripe\AssetAdmin\GraphQL\MoveFilesMutationCreator'
