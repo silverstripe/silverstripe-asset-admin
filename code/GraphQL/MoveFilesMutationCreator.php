@@ -54,7 +54,7 @@ class MoveFilesMutationCreator extends MutationCreator implements OperationResol
     public function resolve($object, array $args, $context, ResolveInfo $info)
     {
         $folderId = (isset($args['folderId'])) ? $args['folderId'] : 0;
-        
+
         if ($folderId) {
             /** @var Folder $folder */
             $folder = Versioned::get_by_stage(Folder::class, Versioned::DRAFT)
@@ -66,7 +66,7 @@ class MoveFilesMutationCreator extends MutationCreator implements OperationResol
                     $folderId
                 ));
             }
-    
+
             // Check permission
             if (!$folder->canEdit($context['currentUser'])) {
                 throw new \InvalidArgumentException(sprintf(
@@ -78,8 +78,9 @@ class MoveFilesMutationCreator extends MutationCreator implements OperationResol
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)
             ->byIDs($args['fileIds']);
         $errorFiles = [];
-        
-        foreach($files as $file) {
+
+        /** @var File $file */
+        foreach ($files as $file) {
             if ($file->canEdit($context['currentUser'])) {
                 $this->accessor->setValue($file, 'ParentID', $folderId);
                 $file->writeToStage(Versioned::DRAFT);
@@ -87,7 +88,7 @@ class MoveFilesMutationCreator extends MutationCreator implements OperationResol
                 $errorFiles[] = $file->ID;
             }
         }
-        
+
         if ($errorFiles) {
             throw new \InvalidArgumentException(sprintf(
                 '%s (%s) edit not allowed',
