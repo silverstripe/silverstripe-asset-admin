@@ -346,7 +346,7 @@ return!t.id||!e.props.files.find(function(e){return e.id===t.id})}).map(function
 highlighted:e.itemIsHighlighted(t.id)})}),o=this.props,i=o.type,a=o.loading,l=o.page,u=o.totalCount,p=o.limit,c=o.sort,f=o.selectedFiles,h=o.badges,m={selectableItems:"admin"===i,files:r,loading:a,page:l,
 totalCount:u,limit:p,sort:c,selectedFiles:f,badges:h,onSort:this.handleSort,onSetPage:this.handleSetPage,onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,onSelect:this.handleSelect,onCancelUpload:this.handleCancelUpload,
 onDropFiles:this.handleMoveFiles,onRemoveErroredUpload:this.handleRemoveErroredUpload,onEnableDropzone:this.handleEnableDropzone}
-return w["default"].createElement(t,m)}},{key:"render",value:function le(){if(!this.props.folder)return this.props.errorMessage?w["default"].createElement("div",{className:"flexbox-area-grow gallery__error"
+return w["default"].createElement(t,m)}},{key:"render",value:function le(){if(!this.props.folder)return this.props.errorMessage?w["default"].createElement("div",{className:"gallery__error flexbox-area-grow"
 },w["default"].createElement("div",{className:"gallery__error-message"},w["default"].createElement("h3",null,C["default"]._t("AssetAdmin.DROPZONE_RESPONSE_ERROR","Server responded with an error.")),w["default"].createElement("p",null,this.props.errorMessage))):w["default"].createElement("div",{
 className:"flexbox-area-grow"})
 var e=w["default"].createElement("div",{className:"gallery_messages"},this.props.errorMessage&&w["default"].createElement(G["default"],{value:this.props.errorMessage,type:"danger"}),this.props.noticeMessage&&w["default"].createElement(G["default"],{

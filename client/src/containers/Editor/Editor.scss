@@ -2,14 +2,15 @@
   background-color: $body-bg;
   z-index: 2;
   position: absolute;
-  height: calc(100vh - #{$toolbar-total-height}); // Safari fix for scroll, should be better fix
+  height: 100%; // Safari fix for scroll, should be better fix
   left: 0;
 
   @include media-breakpoint-up(lg) {
-    box-sizing: content-box;
     width: $cms-panel-sm;
     border-left: 1px solid $border-color;
     position: relative;
+    height: 100%;
+    padding-bottom: 0;
   }
 
   @include media-breakpoint-up(xl) {
@@ -20,14 +21,6 @@
   .nav-tabs {
     z-index: 1;
     position: relative;
-  }
-}
-
-.editor__details {
-  margin-bottom: $spacer-y * 2;
-
-  .form-group::after {
-    margin-bottom: $spacer-y;
   }
 }
 
@@ -145,11 +138,4 @@
 .relative-time[title] {
   cursor: pointer;
   text-decoration: underline;
-}
-
-@include media-breakpoint-down(lg) {
-  .editor {
-    height: 100%;
-    padding-bottom: 0;
-  }
 }
