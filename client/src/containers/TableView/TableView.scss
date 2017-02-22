@@ -172,3 +172,6 @@ $gallery-list-thumb-height: 68px;
   content: "I";
 }
 
+th.sort--disabled>span:after {
+  content: "";
+}
