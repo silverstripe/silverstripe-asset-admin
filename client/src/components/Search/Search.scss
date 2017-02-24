@@ -1,15 +1,22 @@
 // AssetAdmin search
 
 .search {
-  position: relative;
-  width: calc(100% - #{$panel-padding-x});
+  position: absolute;
+  top: 0;
+  right: $panel-padding-x;
 
   @include media-breakpoint-up(md) {
     position: relative;
-    left: auto;
     right: auto;
-    margin-right: -$spacer-xs;
-    width: auto;
+
+    &.search--active {
+      position: relative;
+      right: 0;
+    }
+  }
+
+  &.search--active {
+    width: calc(100% - #{$panel-padding-x});
   }
 }
 
@@ -17,22 +24,20 @@
   opacity: 0;
   overflow: hidden;
   display: none;
-  float: right;
 
   .search--active & {
     transition: opacity $transition-speed-fast;
     overflow: visible;
     opacity: 1;
     display: block;
+    width: 100%;
   }
 }
 
 // Search open icon
 .search__trigger {
-  right: 0;
-  top: 9px;
-  position: absolute;
-  margin: 0;
+  margin-right: 0;
+  margin-top: 10px;
   z-index: 1;
 
   .search--active & {
