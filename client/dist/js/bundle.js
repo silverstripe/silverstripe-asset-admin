@@ -123,34 +123,33 @@ text:F["default"]._t("LeftAndMain.SEARCHRESULTS","Search results")}),this.props.
 }},{key:"handleFolderIcon",value:function E(e){e.preventDefault(),this.handleOpenFile(this.props.folderId)}},{key:"handleOpenFile",value:function C(e){this.handleBrowse(this.props.folderId,e,this.props.query)
 
 }},{key:"handleSubmitEditor",value:function S(e,t,n){var r=this,o=null
-if("function"==typeof this.props.onSubmitEditor){var i=this.props.files.find(function(e){return e.id===parseInt(r.props.fileId,10)})
+if("function"==typeof this.props.onSubmitEditor){var i=this.findFile(this.props.fileId)
 o=this.props.onSubmitEditor(e,t,n,i)}else o=n()
 if(!o)throw new Error("Promise was not returned for submitting")
 return o.then(function(e){return r.props.refetch(),e})}},{key:"handleCloseFile",value:function P(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",value:function x(e){var t=f({},this.props.query)
 
 
-delete t.page,delete t.filter,this.handleBrowse(e,null,t)}},{key:"handleDelete",value:function T(e){var t=this,n=[].concat(s(this.props.files),s(this.props.queuedFiles.items)),r=n.find(function(t){return t.id===e
+delete t.page,delete t.filter,this.handleBrowse(e,null,t)}},{key:"handleDelete",value:function T(e){var t=this,n=this.findFile(e)
+if(!n&&this.props.folder&&this.props.folder.id===e&&(n=this.props.folder),!n)throw new Error("File selected for deletion cannot be found: "+e)
+var r=this.props.client.dataId({__typename:n.__typename,id:n.id})
+return this.props.actions.mutate.deleteFile(n.id,r).then(function(){t.props.actions.gallery.deselectFiles([n.id]),n.queuedId&&t.props.actions.queuedFiles.removeQueuedFile(n.queuedId),n&&t.handleBrowse(n.parent?n.parent.id:0)
 
-})
-if(!r&&this.props.folder&&this.props.folder.id===e&&(r=this.props.folder),!r)throw new Error("File selected for deletion cannot be found: "+e)
-var o=this.props.client.dataId({__typename:r.__typename,id:r.id})
-return this.props.actions.mutate.deleteFile(r.id,o).then(function(){t.props.actions.gallery.deselectFiles([r.id]),r.queuedId&&t.props.actions.queuedFiles.removeQueuedFile(r.queuedId),r&&t.handleBrowse(r.parent?r.parent.id:0)
-
-})}},{key:"handleUpload",value:function O(){}},{key:"handleCreateFolderSuccess",value:function I(){this.props.refetch()}},{key:"handleMoveFilesSuccess",value:function A(e,t){var n=this,r=this.props.queuedFiles.items.filter(function(e){
-return t.includes(e.id)})
-r.forEach(function(e){e.queuedId&&n.props.actions.queuedFiles.removeQueuedFile(e.queuedId)}),this.props.actions.gallery.deselectFiles(),this.props.refetch()}},{key:"renderGallery",value:function D(){var e=this.props.sectionConfig,t=e.createFileEndpoint.url,n=e.createFileEndpoint.method,r=this.props.query&&parseInt(this.props.query.limit||e.limit,10),o=this.props.query&&parseInt(this.props.query.page||1,10),i=this.props.query&&this.props.query.sort,s=this.props.query&&this.props.query.view,a=this.props.query&&this.props.query.filter||{}
+})}},{key:"findFile",value:function O(e){var t=[].concat(s(this.props.files),s(this.props.queuedFiles.items))
+return t.find(function(t){return t.id===parseInt(e,10)})}},{key:"handleUpload",value:function I(){}},{key:"handleCreateFolderSuccess",value:function A(){this.props.refetch()}},{key:"handleMoveFilesSuccess",
+value:function D(e,t){var n=this,r=this.props.queuedFiles.items.filter(function(e){return t.includes(e.id)})
+r.forEach(function(e){e.queuedId&&n.props.actions.queuedFiles.removeQueuedFile(e.queuedId)}),this.props.actions.gallery.deselectFiles(),this.props.refetch()}},{key:"renderGallery",value:function k(){var e=this.props.sectionConfig,t=e.createFileEndpoint.url,n=e.createFileEndpoint.method,r=this.props.query&&parseInt(this.props.query.limit||e.limit,10),o=this.props.query&&parseInt(this.props.query.page||1,10),i=this.props.query&&this.props.query.sort,s=this.props.query&&this.props.query.view,a=this.props.query&&this.props.query.filter||{}
 
 
 return v["default"].createElement(j["default"],{files:this.props.files,fileId:this.props.fileId,folderId:this.props.folderId,folder:this.props.folder,type:this.props.type,limit:r,page:o,totalCount:this.props.filesTotalCount,
 view:s,filters:a,createFileApiUrl:t,createFileApiMethod:n,onDelete:this.handleDelete,onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,onSuccessfulUpload:this.handleUpload,onCreateFolderSuccess:this.handleCreateFolderSuccess,
 onMoveFilesSuccess:this.handleMoveFilesSuccess,onSort:this.handleSort,onSetPage:this.handleSetPage,onViewChange:this.handleViewChange,sort:i,sectionConfig:e,loading:this.props.loading})}},{key:"renderEditor",
-value:function k(){var e=this.props.sectionConfig,t=null
+value:function R(){var e=this.props.sectionConfig,t=null
 switch(this.props.type){case"insert":t=e.form.fileInsertForm.schemaUrl
 break
 case"select":t=e.form.fileSelectForm.schemaUrl
 break
 case"admin":default:t=e.form.fileEditForm.schemaUrl}return this.props.fileId?v["default"].createElement(N["default"],{className:"insert"===this.props.type?"editor--dialog":"",fileId:this.props.fileId,onClose:this.handleCloseFile,
-editFileSchemaUrl:t,onSubmit:this.handleSubmitEditor,onDelete:this.handleDelete,addToCampaignSchemaUrl:e.form.addToCampaignForm.schemaUrl}):null}},{key:"render",value:function R(){var e=!!(this.props.folder&&this.props.folder.id||(0,
+editFileSchemaUrl:t,onSubmit:this.handleSubmitEditor,onDelete:this.handleDelete,addToCampaignSchemaUrl:e.form.addToCampaignForm.schemaUrl}):null}},{key:"render",value:function U(){var e=!!(this.props.folder&&this.props.folder.id||(0,
 V.hasFilters)(this.props.query.filter)),t=this.props.sectionConfig.form.fileSearchForm.schemaUrl,n=this.props.query.filter||{}
 return v["default"].createElement("div",{className:"fill-height"},v["default"].createElement(z["default"],{showBackButton:e,handleBackButtonClick:this.handleBackButtonClick},v["default"].createElement(L["default"],{
 multiline:!0}),v["default"].createElement("div",{className:"asset-admin__toolbar-extra pull-xs-right fill-width"},v["default"].createElement(Q["default"],{onSearch:this.handleDoSearch,id:"AssetSearchForm",
