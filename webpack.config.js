@@ -25,7 +25,8 @@ const SUPPORTED_BROWSERS = [
 
 module.exports = {
   entry: {
-    'bundle': `${PATHS.MODULE_JS_SRC}/bundles/bundle.js`,
+    bundle: `${PATHS.MODULE_JS_SRC}/bundles/bundle.js`,
+    TinyMCE_ssmedia: `${PATHS.MODULE_JS_SRC}/entwine/TinyMCE_ssmedia.js`,
   },
   resolve: {
     modulesDirectories: [PATHS.MODULE_JS_SRC, PATHS.MODULES],

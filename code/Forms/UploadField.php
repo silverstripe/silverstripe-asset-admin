@@ -4,6 +4,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Forms\FileHandleField;
 use SilverStripe\Forms\FileUploadReceiver;
 use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataObject;
@@ -20,7 +21,7 @@ use SilverStripe\ORM\SS_List;
  * Additionally supports writing directly to the File table not attached
  * to any parent record.
  */
-class UploadField extends FormField
+class UploadField extends FormField implements FileHandleField
 {
     use FileUploadReceiver;
 

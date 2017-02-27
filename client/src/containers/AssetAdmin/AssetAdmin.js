@@ -274,7 +274,8 @@ class AssetAdmin extends SilverStripeComponent {
     let promise = null;
 
     if (typeof this.props.onSubmitEditor === 'function') {
-      const file = this.props.files.find((next) => next.id === parseInt(this.props.fileId, 10));
+      // Look for file first in `files`, then `queuedFiles` property
+      const file = this.findFile(this.props.fileId);
       promise = this.props.onSubmitEditor(data, action, submitFn, file);
     } else {
       promise = submitFn();
@@ -319,9 +320,7 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {number} fileId
    */
   handleDelete(fileId) {
-    // TODO Refactor "queued files" into separate visual area and remove coupling here
-    const allFiles = [...this.props.files, ...this.props.queuedFiles.items];
-    let file = allFiles.find((item) => item.id === fileId);
+    let file = this.findFile(fileId);
     if (!file && this.props.folder && this.props.folder.id === fileId) {
       file = this.props.folder;
     }
@@ -349,6 +348,17 @@ class AssetAdmin extends SilverStripeComponent {
         this.handleBrowse((file.parent) ? file.parent.id : 0);
       }
     });
+  }
+
+  /**
+   * Find a file by id in all files (files + queued)
+   *
+   * @param {Number|String} fileId
+   * @return {object}
+   */
+  findFile(fileId) {
+    const allFiles = [...this.props.files, ...this.props.queuedFiles.items];
+    return allFiles.find((item) => item.id === parseInt(fileId, 10));
   }
 
   handleUpload() {

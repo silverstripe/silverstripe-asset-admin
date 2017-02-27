@@ -12,7 +12,7 @@ jQuery.entwine('ss', ($) => {
   /**
    * See boot/index.js for `.react-boot` bootstrap
    */
-  $('.js-react-boot input.entwine-uploadfield').entwine({
+  $('.js-react-boot input.entwine-uploadfield:visible').entwine({
 
     onunmatch() {
       this._super();

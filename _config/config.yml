@@ -25,3 +25,11 @@ SilverStripe\GraphQL:
       deleteFile: 'SilverStripe\AssetAdmin\GraphQL\DeleteFileMutationCreator'
       createFolder: 'SilverStripe\AssetAdmin\GraphQL\CreateFolderMutationCreator'
       moveFiles: 'SilverStripe\AssetAdmin\GraphQL\MoveFilesMutationCreator'
+---
+Name: assetadminfield
+After:
+  - '#coreassetfield'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\Forms\FileHandleField:
+    class: SilverStripe\AssetAdmin\Forms\UploadField
