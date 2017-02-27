@@ -1,0 +1,31 @@
+---
+engines:
+  eslint:
+    enabled: true
+  duplication:
+    enabled: true
+  config:
+    languages:
+    - php
+  phpcodesniffer:
+    enabled: true
+    config:
+      standard: PSR1,PSR2
+  phpmd:
+    enabled: true
+    config:
+      file_extensions:
+      - php
+      - inc
+  phan:
+    enabled: true
+    config:
+      file_extensions: php
+  csslint:
+    enabled: true
+ratings:
+  paths:
+  - "**.js"
+  - "**.php"
+  - "**.css"
+exclude_paths: 
