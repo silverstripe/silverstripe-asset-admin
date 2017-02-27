@@ -57,7 +57,7 @@ class ImageFormFactory extends FileFormFactory
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow')
-            )->addExtraClass('fill-width')
+            )->addExtraClass('fieldgroup--fill-width')
         );
 
         $tab->insertBefore(
