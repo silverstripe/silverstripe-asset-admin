@@ -181,6 +181,15 @@ class UploadField extends SilverStripeComponent {
   }
 
   /**
+   * Check if this field can be modified
+   *
+   * @return {Boolean}
+   */
+  canEdit() {
+    return !this.props.disabled && !this.props.readOnly;
+  }
+
+  /**
    * Render "drop file here" area
    *
    * @returns {XML}
@@ -203,6 +212,16 @@ class UploadField extends SilverStripeComponent {
     };
     if (!this.props.data.multi) {
       dropzoneOptions.maxFiles = 1;
+    }
+
+    // Handle readonly field
+    if (!this.canEdit()) {
+      if (this.props.files.length) {
+        return null;
+      }
+      return (
+        <p>{i18n._t('AssetAdminUploadField.EMPTY', 'No files')}</p>
+      );
     }
 
     // If single upload and there is a file, don't render dropzone
@@ -273,6 +292,7 @@ class UploadField extends SilverStripeComponent {
       item,
       name: this.props.name,
       handleRemove: this.handleItemRemove,
+      canEdit: this.canEdit(),
     };
     return <UploadFieldItem {...itemProps} />;
   }
@@ -287,8 +307,8 @@ UploadField.propTypes = {
     Files: React.PropTypes.arrayOf(React.PropTypes.number),
   }),
   files: React.PropTypes.arrayOf(fileShape), // Authoritative redux state
-  readOnly: React.PropTypes.bool, // Not yet supported
-  disabled: React.PropTypes.bool, // Not yet supported
+  readOnly: React.PropTypes.bool,
+  disabled: React.PropTypes.bool,
   data: React.PropTypes.shape({
     createFileEndpoint: React.PropTypes.shape({
       url: React.PropTypes.string.isRequired,
