@@ -7,7 +7,7 @@ SilverStripe\Assets\File:
 SilverStripe\Admin\LeftAndMain:
   extensions:
     - SilverStripe\AssetAdmin\Controller\AssetAdminFieldsExtension
-SilverStripe\GraphQL:
+SilverStripe\GraphQL\Controller:
   schema:
     types:
       DataObjectInterface: 'SilverStripe\GraphQL\DataObjectInterfaceTypeCreator'
