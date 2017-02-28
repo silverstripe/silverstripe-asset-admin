@@ -2205,10 +2205,11 @@ this.props.actions.uploadField.failUpload(this.props.id,e._queuedId,t)}},{key:"h
 if("function"==typeof e.onChange){var t=e.files.filter(function(e){return e.id}).map(function(e){return e.id}),n={Files:t}
 e.onChange(n)}}},{key:"handleSelect",value:function _(e){e.preventDefault()}},{key:"handleAddShow",value:function E(e){e.preventDefault(),this.setState({selecting:!0})}},{key:"handleAddHide",value:function C(){
 this.setState({selecting:!1})}},{key:"handleAddInsert",value:function S(e,t){this.props.actions.uploadField.addFile(this.props.id,t),this.handleAddHide()}},{key:"render",value:function w(){return m["default"].createElement("div",{
-className:"uploadfield"},this.renderDropzone(),this.props.files.map(this.renderChild),this.renderDialog())}},{key:"renderDropzone",value:function F(){if(!this.props.data.createFileEndpoint)return null
+className:"uploadfield"},this.renderDropzone(),this.props.files.map(this.renderChild),this.renderDialog())}},{key:"canEdit",value:function F(){return!this.props.disabled&&!this.props.readOnly}},{key:"renderDropzone",
+value:function T(){if(!this.props.data.createFileEndpoint)return null
 var e={height:b["default"].SMALL_THUMBNAIL_HEIGHT,width:b["default"].SMALL_THUMBNAIL_WIDTH},t=this.props.name,n={url:this.props.data.createFileEndpoint.url,method:this.props.data.createFileEndpoint.method,
 paramName:"Upload",thumbnailWidth:b["default"].SMALL_THUMBNAIL_WIDTH,thumbnailHeight:b["default"].SMALL_THUMBNAIL_HEIGHT}
-this.props.data.multi||(n.maxFiles=1)
+if(this.props.data.multi||(n.maxFiles=1),!this.canEdit())return this.props.files.length?null:m["default"].createElement("p",null,f["default"]._t("AssetAdminUploadField.EMPTY","No files"))
 var r=["uploadfield__dropzone"]
 this.props.files.length&&!this.props.data.multi&&r.push("uploadfield__dropzone--hidden")
 var o=this.props.securityId
@@ -2216,9 +2217,9 @@ return m["default"].createElement(x["default"],{name:t,canUpload:!0,uploadButton
 handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,preview:e,options:n,securityID:o,className:r.join(" ")
 },m["default"].createElement("div",{className:"uploadfield__backdrop"}),m["default"].createElement("span",{className:"uploadfield__droptext"},m["default"].createElement("button",{onClick:this.handleSelect,
 className:"uploadfield__upload-button"},f["default"]._t("AssetAdminUploadField.BROWSE","Browse"))," ",f["default"]._t("AssetAdminUploadField.OR","or")," ",m["default"].createElement("button",{onClick:this.handleAddShow,
-className:"uploadfield__add-button"},f["default"]._t("AssetAdminUploadField.ADD_FILES","Add from files"))))}},{key:"renderDialog",value:function T(){return m["default"].createElement(O["default"],{title:!1,
-show:this.state.selecting,onInsert:this.handleAddInsert,onHide:this.handleAddHide,bodyClassName:"modal__dialog",className:"insert-media-react__dialog-wrapper",type:"select"})}},{key:"renderChild",value:function I(e,t){
-var n={key:t,item:e,name:this.props.name,handleRemove:this.handleItemRemove}
+className:"uploadfield__add-button"},f["default"]._t("AssetAdminUploadField.ADD_FILES","Add from files"))))}},{key:"renderDialog",value:function I(){return m["default"].createElement(O["default"],{title:!1,
+show:this.state.selecting,onInsert:this.handleAddInsert,onHide:this.handleAddHide,bodyClassName:"modal__dialog",className:"insert-media-react__dialog-wrapper",type:"select"})}},{key:"renderChild",value:function A(e,t){
+var n={key:t,item:e,name:this.props.name,handleRemove:this.handleItemRemove,canEdit:this.canEdit()}
 return m["default"].createElement(P["default"],n)}}]),t}(E["default"])
 N.propTypes={extraClass:m["default"].PropTypes.string,id:m["default"].PropTypes.string.isRequired,name:m["default"].PropTypes.string.isRequired,onChange:m["default"].PropTypes.func,value:m["default"].PropTypes.shape({
 Files:m["default"].PropTypes.arrayOf(m["default"].PropTypes.number)}),files:m["default"].PropTypes.arrayOf(A["default"]),readOnly:m["default"].PropTypes.bool,disabled:m["default"].PropTypes.bool,data:m["default"].PropTypes.shape({
@@ -2256,18 +2257,17 @@ return t&&e&&t<m["default"].SMALL_THUMBNAIL_HEIGHT&&e<m["default"].SMALL_THUMBNA
 this.props.handleRemove&&this.props.handleRemove(e,this.props.item)}},{key:"renderProgressBar",value:function C(){var e={className:"uploadfield-item__progress-bar",style:{width:this.props.item.progress+"%"
 }}
 return!this.hasError()&&this.uploading()?this.complete()?c["default"].createElement("div",{className:"uploadfield-item__complete-icon"}):c["default"].createElement("div",{className:"uploadfield-item__upload-progress"
-},c["default"].createElement("div",e)):null}},{key:"renderRemoveButton",value:function S(){var e=["btn","uploadfield-item__remove-btn","btn-secondary","btn--no-text","font-icon-cancel","btn--icon-md"].join(" ")
-
-
+},c["default"].createElement("div",e)):null}},{key:"renderRemoveButton",value:function S(){if(!this.props.canEdit)return null
+var e=["btn","uploadfield-item__remove-btn","btn-secondary","btn--no-text","font-icon-cancel","btn--icon-md"].join(" ")
 return c["default"].createElement("button",{className:e,onClick:this.handleRemove,ref:"backButton"})}},{key:"renderFileDetails",value:function w(){var e=""
 return this.props.item.size&&(e=", "+(0,v.fileSize)(this.props.item.size)),c["default"].createElement("div",{className:"uploadfield-item__details fill-width flexbox-area-grow"},c["default"].createElement("span",{
 className:"uploadfield-item__title",ref:"title"},this.props.item.title),c["default"].createElement("span",{className:"uploadfield-item__meta"},this.props.item.extension,e))}},{key:"render",value:function P(){
 var e=this.props.name+"[Files][]"
 return c["default"].createElement("div",{className:this.getItemClassNames()},c["default"].createElement("input",{type:"hidden",value:this.props.item.id,name:e}),c["default"].createElement("div",{ref:"thumbnail",
 className:this.getThumbnailClassNames(),style:this.getThumbnailStyles()}),this.renderFileDetails(),this.renderProgressBar(),this.renderErrorMessage(),this.renderRemoveButton())}}]),t}(f["default"])
-b.propTypes={name:c["default"].PropTypes.string.isRequired,item:y["default"],handleRemove:c["default"].PropTypes.func},t["default"]=b},function(e,t){e.exports=InsertMediaModal},function(e,t,n){"use strict"
+b.propTypes={canEdit:c["default"].PropTypes.bool,name:c["default"].PropTypes.string.isRequired,item:y["default"],handleRemove:c["default"].PropTypes.func},t["default"]=b},function(e,t){e.exports=InsertMediaModal
 
-
+},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{"default":e}}function o(e,t){return function(n){return n({type:c["default"].UPLOADFIELD_ADD_FILE,payload:{fieldId:e,file:t}})}}function i(e,t){return function(n){
 return n({type:c["default"].UPLOADFIELD_SET_FILES,payload:{fieldId:e,files:t}})}}function s(e,t,n){return function(r){var o=n.message
 return"string"==typeof n&&(o={value:n,type:"error"}),r({type:c["default"].UPLOADFIELD_UPLOAD_FAILURE,payload:{fieldId:e,queuedId:t,message:o}})}}function a(e,t){return function(n){return n({type:c["default"].UPLOADFIELD_REMOVE_FILE,

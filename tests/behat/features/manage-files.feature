@@ -17,6 +17,7 @@ Feature: Manage files
     When I press the "Add folder" button
       And I type "newfolder" into the dialog
       And I confirm the dialog
+      And I wait for 1 second
     Then I should see the file named "newfolder" in the gallery
 
   Scenario: I can list files in a folder
@@ -45,6 +46,7 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
     When I press the "Other actions" button
       And I press the "Delete" button, confirming the dialog
+      And I wait for 1 second
     Then I should not see the file named "file1" in the gallery
 
   Scenario: I can delete multiple files
@@ -74,6 +76,7 @@ Feature: Manage files
       And I see the text "currently in use" in the alert
       And I see the text "before you can delete the folder" in the alert
       And I confirm the dialog
+      And I wait for 1 second
     Then I should see the file named "folder3" in the gallery
 
   @modal
@@ -83,5 +86,6 @@ Feature: Manage files
     Then I press the "Delete" button
       And I see the text "file is currently in use" in the alert
       And I confirm the dialog
+      And I wait for 1 second
     Then I should see "successfully archived" in the message box
       And I should not see the file named "file1" in the gallery

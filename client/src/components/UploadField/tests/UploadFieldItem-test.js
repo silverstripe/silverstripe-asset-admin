@@ -13,6 +13,7 @@ describe('UploadFieldItem', () => {
   beforeEach(() => {
     props = {
       name: 'MyFileItem',
+      canEdit: true,
       item: {
         category: 'image',
         exists: true,
@@ -170,6 +171,25 @@ describe('UploadFieldItem', () => {
       );
       const error = file.renderErrorMessage();
       expect(error).toBe(null);
+    });
+  });
+
+  describe('renderRemoveButton()', () => {
+    it('displays remove button', () => {
+      props.canEdit = true;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadFieldItem {...props} />
+      );
+      const button = file.renderRemoveButton();
+      expect(button.type).toBe('button');
+    });
+    it('hides remove button when disabled', () => {
+      props.canEdit = false;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadFieldItem {...props} />
+      );
+      const button = file.renderRemoveButton();
+      expect(button).toBe(null);
     });
   });
 });

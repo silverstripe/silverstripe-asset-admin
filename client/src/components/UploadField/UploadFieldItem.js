@@ -221,6 +221,9 @@ class UploadFieldItem extends SilverStripeComponent {
    * @returns {XML}
    */
   renderRemoveButton() {
+    if (!this.props.canEdit) {
+      return null;
+    }
     const classes = [
       'btn',
       'uploadfield-item__remove-btn',
@@ -285,6 +288,7 @@ class UploadFieldItem extends SilverStripeComponent {
 }
 
 UploadFieldItem.propTypes = {
+  canEdit: React.PropTypes.bool,
   name: React.PropTypes.string.isRequired,
   item: fileShape,
   handleRemove: React.PropTypes.func,
