@@ -5,10 +5,15 @@ engines:
   phpcodesniffer:
     enabled: true
     config:
-      standard: PSR1,PSR2
+      standard: "ruleset.xml"
   csslint:
     enabled: true
-    
+
+prepare:
+    fetch:
+        - url: "https://raw.githubusercontent.com/silverstripe/silverstripe-asset-admin/master/tests/phpcs/ruleset.xml"
+          path: "ruleset.xml"
+          
 ratings:
   paths:
   - "**.js"
