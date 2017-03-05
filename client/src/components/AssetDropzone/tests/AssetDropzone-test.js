@@ -1,10 +1,5 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('react');
-jest.unmock('dropzone');
-jest.unmock('../AssetDropzone');
-jest.unmock('lib/DataFormat');
-
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
 import AssetDropzone from '../AssetDropzone';
@@ -193,7 +188,7 @@ describe('AssetDropzone', () => {
         .then(() => done());
     });
 
-    it('loads non-images', (done) => {
+    it('loads non-images', () => {
       const file = {
         size: 123,
         name: 'Test file',
@@ -206,6 +201,7 @@ describe('AssetDropzone', () => {
       item.dropzone = {
         processFile: jest.genMockFunction(),
       };
+      item.getLoadPreview = () => Promise.resolve({});
 
       return item.handleAddedFile(file)
         .then((details) => {
@@ -214,11 +210,7 @@ describe('AssetDropzone', () => {
           expect(details.size).toBe(123);
           expect(details.title).toBe('Test file');
           expect(details.url).toBeUndefined();
-        })
-        .catch(() => {
-          expect("This shouldn't be called").toBeFalsey();
-        })
-        .then(() => done());
+        });
     });
   });
 

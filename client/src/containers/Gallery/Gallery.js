@@ -1,5 +1,5 @@
 // TODO pull out jQuery library to separate HOC
-import $ from 'jQuery';
+import $ from 'jquery';
 import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
@@ -16,8 +16,9 @@ import FormAlert from 'components/FormAlert/FormAlert';
 import BackButton from 'components/BackButton/BackButton';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
-import { graphql, withApollo } from 'react-apollo';
-import gql from 'graphql-tag';
+import createFolderMutation from 'state/files/createFolderMutation';
+import moveFilesMutation from 'state/files/moveFilesMutation';
+import { withApollo } from 'react-apollo';
 import GalleryDND from './GalleryDND';
 
 /**
@@ -329,7 +330,7 @@ class Gallery extends Component {
     const name = this.promptFolderName();
     const parentId = parseInt(this.props.folder.id, 10);
     if (name) {
-      this.props.actions.mutate.createFolder(parentId, name).then((data) => {
+      this.props.actions.files.createFolder(parentId, name).then((data) => {
         if (this.props.onCreateFolderSuccess) {
           this.props.onCreateFolderSuccess(data);
         }
@@ -493,7 +494,7 @@ class Gallery extends Component {
   }
 
   handleMoveFiles(folderId, fileIds) {
-    this.props.actions.mutate.moveFiles(folderId, fileIds)
+    this.props.actions.files.moveFiles(folderId, fileIds)
       .then(() => {
         const duration = CONSTANTS.MOVE_SUCCESS_DURATION;
         const message = `+${fileIds.length}`;
@@ -982,44 +983,6 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   enableDropzone: PropTypes.bool,
 });
 
-Gallery.fragments = {
-  fileInterface: gql`
-   fragment FileInterfaceFields on FileInterface {
-    canDelete
-    canEdit
-    canView
-    category
-    exists
-    filename
-    id
-    lastEdited
-    name
-    parentId
-    title
-    type
-    url
-   }
-    `,
-  file: gql`
-   fragment FileFields on File {
-    draft
-    extension
-    height
-    published
-    size
-    smallThumbnail
-    thumbnail
-    width
-    inUseCount
-   }
-    `,
-  folder: gql`
-   fragment FolderFields on Folder {
-    filesInUseCount
-   }
-    `,
-};
-
 function mapStateToProps(state) {
   const {
     selectedFiles,
@@ -1049,62 +1012,11 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const createFolderMutation = gql`
-  mutation CreateFolder($folder:FolderInput!) {
-    createFolder(folder: $folder) {
-      ...FileInterfaceFields
-      ...FileFields
-    }
-  }
-  ${Gallery.fragments.fileInterface}
-  ${Gallery.fragments.file}
-`;
-
-const moveFilesMutation = gql`
-  mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {
-    moveFiles(folderId: $folderId, fileIds: $fileIds) {
-      ...FileInterfaceFields
-      ...FileFields
-    }
-  }
-  ${Gallery.fragments.fileInterface}
-  ${Gallery.fragments.file}
-`;
-
 export { Gallery, sorters, galleryViewPropTypes, galleryViewDefaultProps };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  graphql(moveFilesMutation, {
-    props: ({ mutate, ownProps: { actions } }) => ({
-      actions: Object.assign({}, actions, {
-        mutate: Object.assign({}, actions.mutate, {
-          moveFiles: (folderId, fileIds) => mutate({
-            variables: {
-              folderId,
-              fileIds,
-            },
-          }),
-        }),
-      }),
-    }),
-  }),
-  graphql(createFolderMutation, {
-    props: ({ mutate, ownProps: { errors, actions } }) => ({
-      errorMessage: errors && errors[0].message,
-      actions: Object.assign({}, actions, {
-        mutate: Object.assign({}, actions.mutate, {
-          createFolder: (parentId, name) => mutate({
-            variables: {
-              folder: {
-                parentId,
-                name,
-              },
-            },
-          }),
-        }),
-      }),
-    }),
-  }),
+  moveFilesMutation,
+  createFolderMutation,
   (component) => withApollo(component)
 )(Gallery);

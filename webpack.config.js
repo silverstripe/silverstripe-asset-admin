@@ -55,7 +55,7 @@ module.exports = {
     'deep-freeze-strict': 'DeepFreezeStrict',
     'graphql-tag': 'GraphQLTag',
     i18n: 'i18n',
-    jQuery: 'jQuery',
+    jquery: 'jQuery',
     'lib/Backend': 'Backend',
     'lib/Config': 'Config',
     'lib/Injector': 'Injector',
@@ -117,8 +117,8 @@ module.exports = {
   ],
   plugins: [
     new webpack.ProvidePlugin({
-      $: 'jQuery',
-      jQuery: 'jQuery',
+      $: 'jquery',
+      jQuery: 'jquery',
       'ss.i18n': 'i18n',
     }),
     new webpack.optimize.UglifyJsPlugin({

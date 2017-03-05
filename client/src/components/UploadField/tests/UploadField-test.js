@@ -1,7 +1,6 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('react-addons-test-utils');
-jest.unmock('../UploadField.js');
+jest.mock('containers/InsertMediaModal/InsertMediaModal');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

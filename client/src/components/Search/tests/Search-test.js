@@ -1,12 +1,12 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.mock('containers/FormBuilderLoader/FormBuilderLoader', () => null);
-jest.unmock('react');
-jest.unmock('../Search.js');
+// FormBuilderLoader mock was not mocking properly
+// manually override with a stateless null component
+jest.mock('containers/FormBuilderLoader/FormBuilderLoader', () => () => null);
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import Search, { hasFilters } from '../Search.js';
+import { Search, hasFilters } from '../Search.js';
 
 describe('Search', () => {
   let props = null;

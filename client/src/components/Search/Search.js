@@ -19,7 +19,7 @@ const view = {
  * @param {Object} filters
  * @returns {boolean}
  */
-export function hasFilters(filters) {
+function hasFilters(filters) {
   return (filters && Object.keys(filters).length > 0);
 }
 
@@ -331,5 +331,7 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
+
+export { Search, hasFilters };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

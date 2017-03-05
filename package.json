@@ -14,12 +14,12 @@
   },
   "author": "SilverStripe Ltd",
   "engines": {
-    "node": "4.x"
+    "node": "^6.x"
   },
   "scripts": {
     "build": "webpack --bail --progress",
     "watch": "webpack --progress --config ./webpack-dev.config.js --watch",
-    "test": "NODE_PATH=\"./client/src:../framework/client/src:../framework/admin/client/src\" jest",
+    "test": "jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
     "lint": "eslint client/src && sass-lint -v",
@@ -28,32 +28,26 @@
     "lint-sass": "sass-lint -v"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "testDirectoryName": "tests",
-    "unmockedModulePathPatterns": [
-      "lodash",
-      "components/GalleryItem/draggable",
-      "components/GalleryItem/droppable",
-      "<rootDir>/node_modules/react",
-      "<rootDir>/node_modules/griddle-react",
-      "../framework",
-      "../framework/node_modules/react",
-      "../framework/node_modules/redux-form",
-      "../framework/node_modules/react-bootstrap-ss",
-      "../framework/node_modules/react-dnd"
-    ],
-    "mocksPattern": "mocks",
-    "testPathDirs": [
+    "roots": [
       "client/src"
     ],
-    "bail": true,
-    "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js"
+    "modulePaths": [
+      "client/src",
+      "../framework/admin/client/src",
+      "../framework/client/src",
+      "../framework"
+    ],
+    "testMatch": [
+      "**/tests/**/*-test.js?(x)"
+    ],
+    "transform": {
+      ".*": "babel-jest"
+    }
   },
   "devDependencies": {
-    "apollo-client": "^0.5.22",
     "autoprefixer": "^6.4.0",
     "babel-core": "^6.7.7",
-    "babel-jest": "^11.0.2",
+    "babel-jest": "^19.0.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-es2015-modules-umd": "^6.6.5",
     "babel-plugin-transform-object-assign": "^6.5.0",
@@ -67,16 +61,30 @@
     "expose-loader": "^0.7.1",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "jest-cli": "^19.0.2",
+    "node-sass": "^3.8.0",
+    "postcss-loader": "^0.10.1",
+    "redux-mock-store": "0.0.6",
+    "resolve-url-loader": "^1.6.0",
+    "sass-lint": "^1.9.1",
+    "sass-loader": "^4.0.0",
+    "script-loader": "^0.7.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2"
+  },
+  "dependencies": {
+    "apollo-client": "^0.5.22",
+    "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
     "graphql-fragments": "^0.1.0",
     "graphql-tag": "^0.1.17",
-    "jest-cli": "^0.9.2",
-    "node-sass": "^3.8.0",
-    "npm-shrinkwrap": "^200.4.0",
-    "postcss-loader": "^0.10.1",
+    "griddle-react": "^0.7.0",
+    "jquery": "^3.1.1",
     "qs": "^6.2.1",
     "react": "^15.3.1",
+    "react-addons-css-transition-group": "^15.3.1",
     "react-addons-test-utils": "^15.3.1",
     "react-apollo": "^0.7.1",
+    "react-bootstrap-ss": "^0.30.6",
     "react-dnd": "^2.2.3",
     "react-dnd-html5-backend": "^2.2.3",
     "react-dom": "^15.3.1",
@@ -84,21 +92,9 @@
     "react-router": "^2.5.2",
     "react-router-redux": "^4.0.5",
     "redux": "^3.3.1",
+    "redux-form": "^6.0.2",
     "redux-logger": "^2.4.0",
-    "redux-mock-store": "0.0.6",
-    "redux-thunk": "^1.0.3",
-    "resolve-url-loader": "^1.6.0",
-    "sass-lint": "^1.9.1",
-    "sass-loader": "^4.0.0",
-    "script-loader": "^0.7.0",
-    "semver": "^5.0.3",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.13.2"
-  },
-  "dependencies": {
-    "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
-    "griddle-react": "^0.7.0",
-    "react-addons-css-transition-group": "^15.3.1"
+    "redux-thunk": "^1.0.3"
   },
   "babel": {
     "presets": [
