@@ -40,11 +40,11 @@ before_script:
 
 script:
   - "if [ \"$PHPUNIT_TEST\" = \"1\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
-  - "if [ \"$NPM_TEST\" = \"1\" ]; then (nvm install 4); fi"
-  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd framework && nvm use 4 && npm install --silent); fi"
-  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm install --silent); fi"
-  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run test); fi"
-  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 4 && npm run lint); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (nvm install 6 && npm install -g yarn); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd framework && nvm use 6 && yarn); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 6 && yarn); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 6 && yarn run test); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 6 && yarn run lint); fi"
   - "if [ \"$BEHAT_TEST\" = \"1\" ]; then vendor/bin/behat @asset-admin --config=./asset-admin/behat.yml; fi"
   - "if [ \"$PHPCS_TEST\" = \"1\" ]; then phpcs --standard=asset-admin/tests/phpcs/ruleset.xml asset-admin/code/ asset-admin/tests/; fi"
 
