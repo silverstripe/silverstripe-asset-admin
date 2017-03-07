@@ -9,6 +9,7 @@ use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\AssetAdmin\BatchAction\DeleteAssets;
 use SilverStripe\AssetAdmin\Forms\AssetFormFactory;
 use SilverStripe\AssetAdmin\Forms\FileSearchFormFactory;
+use SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
@@ -99,6 +100,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'fileHistoryForm',
         'addToCampaignForm',
         'fileInsertForm',
+        'remoteEditForm',
+        'remoteCreateForm',
         'schema',
         'fileSelectForm',
         'fileSearchForm',
@@ -151,6 +154,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ],
                 'fileInsertForm' => [
                     'schemaUrl' => $this->Link('schema/fileInsertForm')
+                ],
+                'remoteEditForm' => [
+                    'schemaUrl' => $this->Link('schema/remoteEditForm')
+                ],
+                'remoteCreateForm' => [
+                    'schemaUrl' => $this->Link('schema/remoteCreateForm')
                 ],
                 'fileSelectForm' => [
                     'schemaUrl' => $this->Link('schema/fileSelectForm')
@@ -1056,5 +1065,27 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getFileSearchform()
     {
         return $this->fileSearchForm();
+    }
+    
+    public function getRemoteCreateForm($id = null) {
+        $name = RemoteFileFormFactory::DEFAULT_NAME;
+        
+        return Injector::inst()->get(RemoteFileFormFactory::class)
+            ->getForm($this, $name, ['type' => 'create']);
+    }
+    
+    public function remoteCreateForm() {
+        return $this->getRemoteCreateForm();
+    }
+    
+    public function getRemoteEditForm($id = null) {
+        $name = RemoteFileFormFactory::DEFAULT_NAME;
+    
+        return Injector::inst()->get(RemoteFileFormFactory::class)
+            ->getForm($this, $name, ['type' => 'edit']);
+    }
+    
+    public function remoteEditForm() {
+        return $this->getRemoteEditForm();
     }
 }
