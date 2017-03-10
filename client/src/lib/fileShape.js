@@ -7,10 +7,10 @@ const fileShape = React.PropTypes.shape({
   thumbnail: React.PropTypes.string,
   width: React.PropTypes.number,
   height: React.PropTypes.number,
-  category: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]).isRequired,
-  id: React.PropTypes.number.isRequired,
+  category: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]),
+  id: React.PropTypes.number,
   url: React.PropTypes.string,
-  title: React.PropTypes.string.isRequired,
+  title: React.PropTypes.string,
   progress: React.PropTypes.number,
 });
 

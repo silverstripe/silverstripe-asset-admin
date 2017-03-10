@@ -1,10 +1,8 @@
 /* global jest, describe, it, expect, beforeEach */
 
-// mock GriddlePagination because it gives mutation warnings all over the place!
-jest.mock('griddle-react', () => null);
-jest.mock('components/FormAlert/FormAlert', () => null);
-jest.unmock('react');
-jest.unmock('../ThumbnailView');
+// mock sub-components, as they could rely on a Redux store context and not necessary for unit test
+jest.mock('components/FormAlert/FormAlert');
+jest.mock('components/GalleryItem/GalleryItem');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

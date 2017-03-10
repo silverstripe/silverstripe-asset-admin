@@ -1,11 +1,7 @@
 /* global jest, describe, it, pit, expect, beforeEach, jasmine */
 
-jest.unmock('react');
-jest.unmock('react-dom');
-jest.unmock('react-redux');
-jest.unmock('react-addons-test-utils');
-jest.unmock('../AssetAdminRouter');
-jest.unmock('lib/DataFormat');
+// mock sub-components, as they could rely on a Redux store context and not necessary for unit test
+jest.mock('containers/AssetAdmin/AssetAdmin');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
-import $ from 'jQuery';
+import $ from 'jquery';
 import { getFileExtension } from 'lib/DataFormat';
 
 let idCounter = 0;
@@ -339,27 +339,7 @@ class AssetDropzone extends SilverStripeComponent {
     // eslint-disable-next-line no-param-reassign
     file._queuedId = this.generateQueuedId();
 
-    const loadPreview = new Promise((resolve) => {
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        // If the user uploads multiple large images, we could run into memory issues
-        // by simply using the `event.target.result` data URI as the thumbnail image.
-        //
-        // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
-        // and using the canvas data URI as the thumbnail image instead.
-
-        if (this.getFileCategory(file.type) === 'image') {
-          const img = document.createElement('img');
-
-          resolve(this.loadImage(img, event.target.result));
-        } else {
-          resolve({});
-        }
-      };
-
-      reader.readAsDataURL(file);
-    });
+    const loadPreview = this.getLoadPreview(file);
 
     // JS Synonym for AssetAdmin::getObjectFromData()
     return loadPreview.then((preview) => {
@@ -382,6 +362,30 @@ class AssetDropzone extends SilverStripeComponent {
       this.dropzone.processFile(file);
 
       return details;
+    });
+  }
+
+  getLoadPreview(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        // If the user uploads multiple large images, we could run into memory issues
+        // by simply using the `event.target.result` data URI as the thumbnail image.
+        //
+        // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
+        // and using the canvas data URI as the thumbnail image instead.
+
+        if (this.getFileCategory(file.type) === 'image') {
+          const img = document.createElement('img');
+
+          resolve(this.loadImage(img, event.target.result));
+        } else {
+          resolve({});
+        }
+      };
+
+      reader.readAsDataURL(file);
     });
   }
 

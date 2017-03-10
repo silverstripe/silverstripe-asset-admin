@@ -1,13 +1,10 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('react');
-jest.unmock('../PreviewImageField');
-jest.mock('components/AssetDropzone/AssetDropzone', () => null);
-jest.unmock('lib/DataFormat');
+jest.mock('components/AssetDropzone/AssetDropzone');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import PreviewImageField from '../PreviewImageField';
+import { PreviewImageField } from '../PreviewImageField';
 
 describe('PreviewImageField', () => {
   let props = null;

@@ -11,10 +11,10 @@ import Editor from 'containers/Editor/Editor';
 import Gallery from 'containers/Gallery/Gallery';
 import Breadcrumb from 'components/Breadcrumb/Breadcrumb';
 import Toolbar from 'components/Toolbar/Toolbar';
-import { graphql, withApollo } from 'react-apollo';
-import gql from 'graphql-tag';
-import { NetworkStatus } from 'apollo-client/queries/store';
+import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
+import readFilesQuery from 'state/files/readFilesQuery';
+import deleteFileMutation from 'state/files/deleteFileMutation';
 
 class AssetAdmin extends SilverStripeComponent {
 
@@ -82,9 +82,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleBrowse(
       this.props.folderId,
       this.props.fileId,
-      Object.assign({}, this.props.query, {
-        page,
-      })
+      Object.assign({}, this.props.query, { page })
     );
   }
 
@@ -121,12 +119,20 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {string} sort
    */
   handleSort(sort) {
-    this.handleBrowse(this.props.folderId, this.props.fileId, Object.assign({}, this.props.query, {
-      sort,
-      // clear pagination
-      limit: undefined,
-      page: undefined,
-    }));
+    this.handleBrowse(
+      this.props.folderId,
+      this.props.fileId,
+      Object.assign(
+        {},
+        this.props.query,
+        {
+          sort,
+          // clear pagination
+          limit: undefined,
+          page: undefined,
+        }
+      )
+    );
   }
 
   /**
@@ -135,9 +141,11 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {string} view
    */
   handleViewChange(view) {
-    this.handleBrowse(this.props.folderId, this.props.fileId, Object.assign({}, this.props.query, {
-      view,
-    }));
+    this.handleBrowse(
+      this.props.folderId,
+      this.props.fileId,
+      Object.assign({}, this.props.query, { view })
+    );
   }
 
   /**
@@ -288,7 +296,7 @@ class AssetAdmin extends SilverStripeComponent {
       .then((response) => {
         // TODO Update GraphQL store with new model,
         // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-        this.props.refetch();
+        this.props.actions.files.readFiles();
 
         return response;
       });
@@ -334,7 +342,7 @@ class AssetAdmin extends SilverStripeComponent {
       id: file.id,
     });
 
-    return this.props.actions.mutate.deleteFile(file.id, dataId).then(() => {
+    return this.props.actions.files.deleteFile(file.id, dataId).then(() => {
       this.props.actions.gallery.deselectFiles([file.id]);
 
       // If the file was just uploaded, it doesn't exist in the Apollo store,
@@ -345,7 +353,7 @@ class AssetAdmin extends SilverStripeComponent {
 
       // redirect to open parent folder if the file/folder is open and on screen to close it
       if (file) {
-        this.handleBrowse((file.parent) ? file.parent.id : 0);
+        this.handleBrowse((file.parentId) ? file.parentId : 0);
       }
     });
   }
@@ -364,15 +372,12 @@ class AssetAdmin extends SilverStripeComponent {
   handleUpload() {
     // TODO Update GraphQL store with new model,
     // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-
-    // TODO Maybe we dont need to immediately refetch? (Damian 19-12-2016)
-    // this.props.refetch();
   }
 
   handleCreateFolderSuccess() {
     // TODO Update GraphQL store with new model,
     // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-    this.props.refetch();
+    this.props.actions.files.readFiles();
   }
 
   handleMoveFilesSuccess(folderId, fileIds) {
@@ -390,7 +395,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.props.actions.gallery.deselectFiles();
     // TODO Update GraphQL store with new model,
     // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-    this.props.refetch();
+    this.props.actions.files.readFiles();
   }
 
   /**
@@ -491,7 +496,10 @@ class AssetAdmin extends SilverStripeComponent {
     const filters = this.props.query.filter || {};
     return (
       <div className="fill-height">
-        <Toolbar showBackButton={showBackButton} handleBackButtonClick={this.handleBackButtonClick}>
+        <Toolbar
+          showBackButton={showBackButton}
+          handleBackButtonClick={this.handleBackButtonClick}
+        >
           <Breadcrumb multiline />
           <div className="asset-admin__toolbar-extra pull-xs-right fill-width">
             <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
@@ -579,137 +587,11 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-// GraphQL Query
-const readFilesQuery = gql`
-  query ReadFiles($limit:Int!, $offset:Int!, $rootFilter: FileFilterInput, 
-    $childrenFilter: FileFilterInput, $sortBy:[ChildrenSortInputType]
-  ) {
-    readFiles(filter: $rootFilter) {
-      pageInfo {
-        totalCount
-      }
-      edges {
-        node {
-          ...FileInterfaceFields
-          ...FileFields
-          ...on Folder {
-            children(limit:$limit, offset:$offset, filter: $childrenFilter, sortBy:$sortBy) {
-              pageInfo {
-                totalCount
-              }
-              edges {
-                node {
-                  ...FileInterfaceFields
-                  ...FileFields
-                  ...FolderFields
-                }
-              }
-            }
-            parents {
-              id
-              title
-            }
-          }
-        }
-      }
-    }
-  }
-  ${Gallery.fragments.fileInterface}
-  ${Gallery.fragments.file}
-  ${Gallery.fragments.folder}
-`;
-const readFilesConfig = {
-  options({ sectionConfig, folderId, query }) {
-    // Covers a few variations:
-    // - Display the root folder with its direct children
-    // - Display the root folder with its recursive children and filters (a full "search")
-    // - Display a folder with its direct children, without any filters
-    // - Display a folder with its direct children and filters (a "search" in the current folder)
-
-    const [sortField, sortDir] = query.sort ? query.sort.split(',') : ['', ''];
-    const filterWithDefault = query.filter || {};
-    const limit = query.limit || sectionConfig.limit;
-    return {
-      variables: {
-        rootFilter: { id: folderId },
-        childrenFilter: Object.assign(
-          filterWithDefault,
-          {
-            // Unset key, taken from rootFilter
-            parentId: undefined,
-            // Currently all searches are recursive, and only filtered by a ParentID
-            recursive: hasFilters(filterWithDefault),
-            // Unset this key since it's not a valid GraphQL argument
-            currentFolderOnly: undefined,
-          }
-        ),
-        limit,
-        offset: ((query.page || 1) - 1) * limit,
-        sortBy: (sortField && sortDir)
-          ? [{ field: sortField, direction: sortDir.toUpperCase() }]
-          : undefined,
-      },
-    };
-  },
-  props({ data: { networkStatus: currentNetworkStatus, refetch, readFiles } }) {
-    // Uses same query as search and file list to return a single result (the containing folder)
-    const folder = (readFiles && readFiles.edges[0]) ? readFiles.edges[0].node : null;
-    const files = (folder && folder.children)
-      // Filter nodes because the DELETE resultBehaviour doesn't delete the edge, only the node
-      ? folder.children.edges.map((edge) => edge.node).filter((file) => file)
-      : [];
-    const filesTotalCount = (folder && folder.children) ? folder.children.pageInfo.totalCount : 0;
-
-    // Only set to loading if a network request is in progress.
-    // TODO Use built-in 'loading' indicator once it's set to true on setVariables() calls.
-    // TODO Respect optimistic loading results. We can't check for presence of readFiles object,
-    // since Apollo sends through the previous result before optimistically setting the new result.
-    const loading =
-      currentNetworkStatus !== NetworkStatus.ready
-      && currentNetworkStatus !== NetworkStatus.error;
-
-    return {
-      loading,
-      refetch,
-      folder,
-      files,
-      filesTotalCount,
-    };
-  },
-};
-// const updateFileMutation = gql`mutation UpdateFile($id:ID!, $file:FileInput!) {
-//   updateFile(id: $id, file: $file) {
-//    id
-//   }
-// }`;
-const deleteFileMutation = gql`mutation DeleteFile($id:ID!) {
-  deleteFile(id: $id)
-}`;
-
 export { AssetAdmin };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  graphql(readFilesQuery, readFilesConfig),
-  // graphql(updateFileMutation, { name: 'mutateUpdateFile' }),
-  graphql(deleteFileMutation, {
-    props: ({ mutate, ownProps: { actions } }) => ({
-      actions: Object.assign({}, actions, {
-        mutate: Object.assign({}, actions.mutate, {
-          deleteFile: (id, dataId) => mutate({
-            variables: {
-              id,
-            },
-            resultBehaviors: [
-              {
-                type: 'DELETE',
-                dataId,
-              },
-            ],
-          }),
-        }),
-      }),
-    }),
-  }),
+  readFilesQuery,
+  deleteFileMutation,
   (component) => withApollo(component)
 )(AssetAdmin);

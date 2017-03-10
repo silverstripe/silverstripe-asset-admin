@@ -355,4 +355,6 @@ TableView.defaultProps = galleryViewDefaultProps;
 
 TableView.propTypes = galleryViewPropTypes;
 
+export { TableView };
+
 export default TableView;

@@ -1,7 +1,17 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('react');
-jest.unmock('../BulkActions.js');
+jest.mock('jquery', () => {
+  const jqueryMock = {
+    find: () => jqueryMock,
+    change: () => jqueryMock,
+    val: () => jqueryMock,
+    trigger: () => null,
+    chosen: () => null,
+    on: () => null,
+    off: () => null,
+  };
+  return () => jqueryMock;
+});
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

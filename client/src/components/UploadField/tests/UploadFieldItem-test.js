@@ -1,7 +1,5 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('../UploadFieldItem');
-
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
 import UploadFieldItem from '../UploadFieldItem';

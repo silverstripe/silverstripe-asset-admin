@@ -1,4 +1,4 @@
-import $ from 'jQuery';
+import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
