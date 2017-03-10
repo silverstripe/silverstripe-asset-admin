@@ -41,8 +41,8 @@ before_script:
 script:
   - "if [ \"$PHPUNIT_TEST\" = \"1\" ]; then vendor/bin/phpunit asset-admin/tests/php; fi"
   - "if [ \"$NPM_TEST\" = \"1\" ]; then (nvm install 6 && npm install -g yarn); fi"
-  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd framework && nvm use 6 && yarn); fi"
-  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 6 && yarn); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd framework && nvm use 6 && yarn install --network-concurrency 1 ); fi"
+  - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 6 && yarn install --network-concurrency 1 ); fi"
   - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 6 && yarn run test); fi"
   - "if [ \"$NPM_TEST\" = \"1\" ]; then (cd asset-admin && nvm use 6 && yarn run lint); fi"
   - "if [ \"$BEHAT_TEST\" = \"1\" ]; then vendor/bin/behat @asset-admin --config=./asset-admin/behat.yml; fi"
