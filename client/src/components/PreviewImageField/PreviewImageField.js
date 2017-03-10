@@ -336,9 +336,7 @@ PreviewImageField.propTypes = {
   readOnly: PropTypes.bool,
   disabled: PropTypes.bool,
   onAutofill: PropTypes.func,
-  meta: PropTypes.shape({
-    form: PropTypes.string,
-  }),
+  formid: PropTypes.string,
   nameValue: PropTypes.string,
   data: PropTypes.shape({
     id: PropTypes.number,
@@ -385,7 +383,7 @@ function mapStateToProps(state, ownProps) {
   const securityID = state.config.SecurityID;
   const id = ownProps.id;
   const upload = state.assetAdmin.previewField[id] || {};
-  const selector = formValueSelector(ownProps.meta.form);
+  const selector = formValueSelector(ownProps.formid);
 
   return {
     securityID,
