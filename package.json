@@ -33,9 +33,7 @@
     ],
     "modulePaths": [
       "client/src",
-      "../framework/admin/client/src",
-      "../framework/client/src",
-      "../framework"
+      "../silverstripe-admin/client/src"
     ],
     "testMatch": [
       "**/tests/**/*-test.js?(x)"
