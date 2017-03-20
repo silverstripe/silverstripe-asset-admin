@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
 use SilverStripe\CampaignAdmin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
@@ -24,11 +25,10 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Forms\DateField;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\ValidationResult;
@@ -63,7 +63,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // API access points with structured data
         'POST api/createFile' => 'apiCreateFile',
         'POST api/uploadFile' => 'apiUploadFile',
-        'GET api/history' => 'apiHistory'
+        'GET api/history' => 'apiHistory',
+        // for validating before generating the schema
+        'schemaWithValidate/$FormName' => 'schemaWithValidate'
     ];
 
     /**
@@ -105,6 +107,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'schema',
         'fileSelectForm',
         'fileSearchForm',
+        'schemaWithValidate',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -156,7 +159,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                     'schemaUrl' => $this->Link('schema/fileInsertForm')
                 ],
                 'remoteEditForm' => [
-                    'schemaUrl' => $this->Link('schema/remoteEditForm')
+                    'schemaUrl' => $this->Link('schemaWithValidate/remoteEditForm')
                 ],
                 'remoteCreateForm' => [
                     'schemaUrl' => $this->Link('schema/remoteCreateForm')
@@ -1067,25 +1070,69 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $this->fileSearchForm();
     }
     
-    public function getRemoteCreateForm($id = null) {
-        $name = RemoteFileFormFactory::DEFAULT_NAME;
-        
+    public function getRemoteCreateForm($id = null)
+    {
         return Injector::inst()->get(RemoteFileFormFactory::class)
-            ->getForm($this, $name, ['type' => 'create']);
+            ->getForm($this, 'remoteCreateForm', ['type' => 'create']);
     }
     
-    public function remoteCreateForm() {
+    public function remoteCreateForm()
+    {
         return $this->getRemoteCreateForm();
     }
     
-    public function getRemoteEditForm($id = null) {
-        $name = RemoteFileFormFactory::DEFAULT_NAME;
-    
-        return Injector::inst()->get(RemoteFileFormFactory::class)
-            ->getForm($this, $name, ['type' => 'edit']);
+    public function getRemoteEditForm()
+    {
+        $url = $this->request->requestVar('embedurl');
+        $form = null;
+        $form = Injector::inst()->get(RemoteFileFormFactory::class)
+            ->getForm($this, 'remoteEditForm', ['type' => 'edit', 'url' => $url]);
+        return $form;
+    }
+    public function remoteEditForm()
+    {
+        return $this->getRemoteEditForm();
     }
     
-    public function remoteEditForm() {
-        return $this->getRemoteEditForm();
+    public function schemaWithValidate($request)
+    {
+        $formName = $request->param('FormName');
+        $itemID = $request->param('ItemID');
+    
+        if (!$formName) {
+            return (new HTTPResponse('Missing request params', 400));
+        }
+    
+        $formMethod = "get{$formName}";
+        if (!$this->hasMethod($formMethod)) {
+            var_dump($formMethod);
+            return (new HTTPResponse('Form not found', 404));
+        }
+    
+        if (!$this->hasAction($formName)) {
+            return (new HTTPResponse('Form not accessible', 401));
+        }
+    
+        $schemaID = $request->getURL();
+        try {
+            if ($itemID) {
+                $form = $this->{$formMethod}($itemID);
+            } else {
+                $form = $this->{$formMethod}();
+            }
+            return $this->getSchemaResponse($schemaID, $form);
+        } catch (InvalidUrlException $exception) {
+            $errors = ValidationResult::create()
+                ->addError($exception->getMessage());
+            $form = Form::create(null, 'Form', FieldList::create(), FieldList::create());
+            $code = $exception->getCode();
+            
+            if ($code < 300) {
+                $code = 500;
+            }
+            
+            return $this->getSchemaResponse($schemaID, $form, $errors)
+                ->setStatusCode($code);
+        }
     }
 }

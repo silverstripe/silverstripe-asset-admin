@@ -59,17 +59,18 @@ class InsertEmbedModal extends Component {
     }
   }
 
-  handleSubmit() {
-
-  }
-
   /**
    * Generates the properties for the modal
    * @returns {object}
    */
   getModalProps() {
     const props = Object.assign(
-      {},
+      {
+        handleSubmit: this.handleSubmit,
+        onLoadingError: this.handleLoadingError,
+        showErrorMessage: true,
+        responseClassBad: 'alert alert-danger',
+      },
       this.props,
       {
         bodyClassName: 'fill-height',
@@ -77,16 +78,39 @@ class InsertEmbedModal extends Component {
         bsSize: 'lg',
         handleHide: this.props.onHide,
         title: this.props.targetUrl
-          ? `Edit details for ${this.props.targetUrl}`
-          : 'Insert new Embedded content',
+          ? i18n.sprintf(
+            i18n._t('InsertEmbedModal.EditTitle', 'Edit details for %s'),
+            this.props.targetUrl
+          )
+          : i18n._t('InsertEmbedModal.CreateTitle', 'Insert new Embedded content'),
       }
     );
     delete props.onHide;
     delete props.sectionConfig;
     delete props.onInsert;
-    delete props.attributes;
+    delete props.fileAttributes;
 
     return props;
+  }
+
+  handleLoadingError(error) {
+    if (typeof this.props.onLoadingError === 'function') {
+      this.props.onLoadingError(error);
+    }
+  }
+
+  handleSubmit(data, action) {
+    if (action === 'action_addmedia') {
+      this.props.onCreate(data);
+    }
+    if (action === 'action_insertmedia') {
+      this.props.onInsert(data);
+    }
+    if (action === 'action_cancel' && typeof this.props.onHide === 'function') {
+      this.props.onHide();
+    }
+
+    return Promise.resolve();
   }
 
   render() {
@@ -101,32 +125,35 @@ InsertEmbedModal.propTypes = {
   }),
   show: PropTypes.bool,
   onInsert: PropTypes.func.isRequired,
-  attributes: PropTypes.shape({
-    ID: PropTypes.number,
+  onCreate: PropTypes.func.isRequired,
+  fileAttributes: PropTypes.shape({
+    Url: PropTypes.string,
     AltText: PropTypes.string,
     Width: PropTypes.number,
     Height: PropTypes.number,
-    TitleTooltip: PropTypes.string,
     Alignment: PropTypes.string,
   }),
   onHide: PropTypes.func,
   className: PropTypes.string,
   actions: PropTypes.object,
+  schemaUrl: PropTypes.string,
+  targetUrl: PropTypes.string,
+  onLoadingError: PropTypes.func,
 };
 
 InsertEmbedModal.defaultProps = {
   className: '',
-  attributes: {},
+  fileAttributes: {},
 };
 
 function mapStateToProps(state, ownProps) {
   const sectionConfig = state.config.sections[sectionConfigKey];
 
   // get the schemaUrl to use as a key for overrides
-  const targetUrl = ownProps.attributes ? ownProps.attributes.url : '';
+  const targetUrl = ownProps.fileAttributes ? ownProps.fileAttributes.Url : '';
   const baseEditUrl = sectionConfig.form.remoteEditForm.schemaUrl;
 
-  const editUrl = targetUrl && `${baseEditUrl}/?url=${encodeURIComponent(targetUrl)}`;
+  const editUrl = targetUrl && `${baseEditUrl}/?embedurl=${encodeURIComponent(targetUrl)}`;
   const createUrl = sectionConfig.form.remoteCreateForm.schemaUrl;
 
   const schemaUrl = editUrl || createUrl;

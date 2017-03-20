@@ -1,0 +1,119 @@
+$placement-image-width: 40px;
+$placement-image-height: 36px;
+
+.insert-embed-modal .modal-content {
+  height: auto;
+  max-height: 100%;
+}
+
+.insert-embed-modal--edit {
+  .btn-toolbar {
+    @include media-breakpoint-up(md) {
+      margin-left: 30%;
+    }
+  }
+}
+
+.insert-embed-modal__fields--fill-width {
+  @include media-breakpoint-up(md) {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.insert-embed-modal__preview-container {
+  padding-bottom: $spacer-y;
+
+  @include media-breakpoint-up(md) {
+    padding-right: $spacer-x;
+    width: 30%;
+  }
+}
+
+.insert-embed-modal__preview {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto;
+  max-height: $gallery-thumb-height * 1.5;
+}
+
+.insert-embed-modal__placement .radio {
+  display: inline-block;
+  margin: 0 0.5rem 0 0;
+
+  label {
+    background: url("placement.png");
+    border: 1px solid $border-color-light;
+    display: inline-block;
+    width: $placement-image-width;
+    height: $placement-image-height;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  span,
+  input {
+    display: none;
+  }
+
+  &.checked label {
+    border: 1px solid $component-active-border-color;
+    background-color: $component-active-bg-light;
+  }
+
+  &.option-val--leftAlone { // sass-lint:disable-line class-name-format
+
+    label {
+      background-position-y: -$placement-image-height;
+    }
+
+    &.checked label {
+      background-position-y: 0;
+    }
+  }
+
+  &.option-val--center {
+
+    label {
+      background-position-y: 3 * -$placement-image-height;
+    }
+
+    &.checked label {
+      background-position-y: 2 * -$placement-image-height;
+    }
+  }
+
+  &.option-val--rightAlone { // sass-lint:disable-line class-name-format
+
+    label {
+      background-position-y: 5 * -$placement-image-height;
+    }
+
+    &.checked label {
+      background-position-y: 4 * -$placement-image-height;
+    }
+  }
+
+  &.option-val--left {
+
+    label {
+      background-position-y: 7 * -$placement-image-height;
+    }
+
+    &.checked label {
+      background-position-y: 6 * -$placement-image-height;
+    }
+  }
+
+  &.option-val--right {
+
+    label {
+      background-position-y: 9 * -$placement-image-height;
+    }
+
+    &.checked label {
+      background-position-y: 8 * -$placement-image-height;
+    }
+  }
+}

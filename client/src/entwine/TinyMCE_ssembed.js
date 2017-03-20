@@ -38,36 +38,50 @@ import { ApolloProvider } from 'react-apollo';
       editor.on('SaveContent', (o) => {
         const content = jQuery(o.content);
         const attrsFn = (attrs) => (
-          Object.keys(attrs)
-            .map((name) => (attrs[name] ? `${name}="${attrs[name]}"` : null))
-            .filter((el) => el !== null)
+          Object.entries(attrs)
+            .map(([name, value]) => ((value)
+              ? `${name}="${value}"`
+              : null
+            ))
+            .filter((attr) => attr !== null)
             .join(' ')
         );
 
         // Transform [embed] shortcodes
-        content.find('.ss-htmleditorfield-file.embed').each(function () {
-          const el = jQuery(this);
-          const attrs = {
-            width: el.attr('width'),
-            class: el.attr('cssclass'),
-            thumbnail: el.data('thumbnail'),
-          };
-          const shortCode = `[embed ${attrsFn(attrs)}]${el.data('url')}[/embed]`;
-          el.replaceWith(shortCode);
-        });
+        content.find('.ss-htmleditorfield-file.embed')
+          .add(content.filter('.ss-htmleditorfield-file.embed'))
+          .each(function replaceWithShortCode() {
+            const image = jQuery(this);
+            const width = parseInt(image.attr('width'), 10);
+            const height = parseInt(image.attr('height'), 10);
+            const attrs = {
+              Url: image.data('url'),
+              AltText: image.attr('alt'),
+              Title: image.attr('title'),
+              PreviewUrl: image.attr('src'),
+              Width: isNaN(width) ? 0 : width,
+              Height: isNaN(height) ? 0 : height,
+              Placement: image.data('cssclass'),
+              thumbnail: image.attr('src'),
+              class: image.attr('class'),
+            };
+            const shortCode = `[embed ${attrsFn(attrs)}]${image.data('url')}[/embed]`;
+            image.replaceWith(shortCode);
+          });
 
         // Insert outerHTML in order to retain all nodes incl. <script>
         // tags which would've been filtered out with jQuery.html().
         // Note that <script> tags might be sanitized separately based on editor config.
+        // eslint-disable-next-line no-param-reassign
         o.content = '';
-        content.each(function () {
+        content.each(function appendToContent() {
           if (this.outerHTML !== undefined) {
+            // eslint-disable-next-line no-param-reassign
             o.content += this.outerHTML;
           }
         });
       });
       editor.on('BeforeSetContent', (o) => {
-        let matches = null;
         let content = o.content;
         const attrFromStrFn = (str) => (
           str
@@ -84,21 +98,27 @@ import { ApolloProvider } from 'react-apollo';
 
         // Transform [embed] tag
         const shortTagEmbegRegex = /\[embed(.*?)](.+?)\[\/\s*embed\s*]/gi;
-        while (matches = shortTagEmbegRegex.exec(content)) {
-          const attrs = attrFromStrFn(matches[1]);
-          const el = jQuery('<img/>').attr({
-            src: attrs.thumbnail,
-            width: attrs.width,
-            height: attrs.height,
-            class: attrs.class,
-            'data-url': matches[2],
-          }).addClass('ss-htmleditorfield-file embed');
-          attrs.cssclass = attrs.class;
+        let matches = shortTagEmbegRegex.exec(content);
+        while (matches) {
+          const data = attrFromStrFn(matches[1]);
+          const attrs = {
+            src: data.PreviewUrl || data.thumbnail,
+            width: data.Width || data.width,
+            height: data.Height || data.height,
+            class: data.class,
+            alt: data.AltText,
+            title: data.Title,
+            'data-url': data.Url || matches[2],
+            'data-cssclass': data.Placement || data.class,
+          };
+          const el = jQuery('<img/>').attr(attrs).addClass('ss-htmleditorfield-file embed');
+          el.addClass(data.Placement);
 
-          Object.keys(attrs).forEach((key) => el.attr(`data-${key}`, attrs[key]));
           content = content.replace(matches[0], (jQuery('<div/>').append(el).html()));
+          matches = shortTagEmbegRegex.exec(content);
         }
 
+        // eslint-disable-next-line no-param-reassign
         o.content = content;
       });
     },
@@ -107,7 +127,7 @@ import { ApolloProvider } from 'react-apollo';
   tinymce.PluginManager.add('ssembed', (editor) => ssembed.init(editor));
 })();
 
-jQuery.entwine('ss', function($) {
+jQuery.entwine('ss', ($) => {
   $('#insert-embed-react__dialog-wrapper').entwine({
     Element: null,
 
@@ -128,6 +148,7 @@ jQuery.entwine('ss', function($) {
     },
 
     close() {
+      this.setData({});
       this._renderModal(false);
     },
 
@@ -140,6 +161,8 @@ jQuery.entwine('ss', function($) {
     _renderModal(show) {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this._handleInsert(...args);
+      const handleCreate = (...args) => this._handleCreate(...args);
+      const handleLoadingError = (...args) => this._handleLoadingError(...args);
       const store = window.ss.store;
       const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
@@ -155,19 +178,22 @@ jQuery.entwine('ss', function($) {
           <InsertEmbedModal
             title={false}
             show={show}
+            onCreate={handleCreate}
             onInsert={handleInsert}
             onHide={handleHide}
+            onLoadingError={handleLoadingError}
             bodyClassName="modal__dialog"
             className="insert-embed-react__dialog-wrapper"
-            attributes={attrs}
+            fileAttributes={attrs}
           />
         </ApolloProvider>,
         this[0]
       );
     },
 
-    setUrl(url) {
-      this.setData(Object.assign({}, this.getData(), { url }));
+    _handleLoadingError() {
+      this.setData({});
+      this.open();
     },
 
     /**
@@ -179,7 +205,16 @@ jQuery.entwine('ss', function($) {
      * @private
      */
     _handleInsert(data) {
-      this.setData(Object.assign({}, data));
+      const oldData = this.getData();
+      this.setData(Object.assign({ Url: oldData.Url }, data));
+
+      this.insertRemote();
+      this.close();
+    },
+
+    _handleCreate(data) {
+      this.setData(Object.assign({}, this.getData(), data));
+      this.open();
     },
 
     /**
@@ -193,77 +228,128 @@ jQuery.entwine('ss', function($) {
         return {};
       }
 
-      const node = $field.getEditor().getSelectedNode();
-      if (!node) {
+      const node = $($field.getEditor().getSelectedNode());
+      if (!node.length) {
         return {};
       }
-      const $node = $(node);
       const data = this.getData();
 
-      return {
-        url: $node.data('url') || data.url,
+      const nodeParent = node.parent('.captionImage');
+      let element = $(null);
+      let image = $(null);
+
+      if (node.hasClass('captionImage')) {
+        if (node.children('img').length
+          && node.children('.caption').length) {
+          element = node;
+          image = element.children('img');
+        }
+      } else if (nodeParent.length) {
+        if (nodeParent.children('img').length
+          && nodeParent.children('.caption').length) {
+          element = nodeParent;
+          image = element.children('img');
+        }
+      } else if (node.is('img')) {
+        image = node;
+      }
+
+      const caption = element.children('.caption').text();
+      const width = parseInt(image.width(), 10);
+      const height = parseInt(image.height(), 10);
+
+      const attrs = {
+        Url: image.data('url') || data.Url,
+        CaptionText: caption,
+        AltText: image.attr('alt'),
+        Title: image.attr('title'),
+        PreviewUrl: image.attr('src'),
+        Width: isNaN(width) ? 0 : width,
+        Height: isNaN(height) ? 0 : height,
+        Placement: image.data('cssclass'),
       };
+
+      return attrs;
+    },
+
+    insertRemote() {
+      const $field = this.getElement();
+      if (!$field) {
+        return false;
+      }
+      const editor = $field.getEditor();
+      if (!editor) {
+        return false;
+      }
+      const node = $(editor.getSelectedNode());
+
+      const data = this.getData();
+      const attrs = {
+        src: data.PreviewUrl,
+        width: data.Width,
+        height: data.Height,
+        alt: data.AltText,
+        title: data.Title,
+        'data-url': data.Url,
+        'data-cssclass': data.Placement,
+      };
+
+      const nodeParent = node.parent('.captionImage');
+      let element = $('<div class="captionImage"><p class="caption"></p></div>');
+      let image = $(null);
+      let replacee = $(null);
+
+      if (node.hasClass('captionImage')) {
+        if (node.children('img').length
+          && node.children('.caption').length) {
+          element = node;
+          image = element.children('img');
+        }
+        replacee = node;
+      } else if (nodeParent.length) {
+        if (nodeParent.children('img').length
+          && nodeParent.children('.caption').length) {
+          element = nodeParent;
+          image = element.children('img');
+        }
+        replacee = nodeParent;
+      } else if (node.is('img')) {
+        image = replacee = node;
+      }
+
+      if (!image.length) {
+        image = $('<img />');
+      }
+
+      image
+        .attr(attrs)
+        // cleans up class, removes previously set Placement value
+        .attr('class', `${data.Placement} ss-htmleditorfield-file embed`);
+
+      if (data.CaptionText) {
+        element
+          .prepend(image)
+          .attr('class', `${data.Placement} captionImage`)
+          .attr('width', data.Width)
+          .children('.caption').text(data.CaptionText);
+      } else {
+        element = image;
+      }
+
+      if (replacee.length) {
+        if (replacee.not(element).length) {
+          replacee.replaceWith(element);
+        }
+      } else {
+        // Otherwise insert the whole HTML content
+        editor.repaint();
+        editor.insertContent($('<div/>').append(element.clone()).html(), { skip_undo: 1 });
+      }
+
+      editor.addUndo();
+      editor.repaint();
+
+      return true;
     },
   });
 });
-
-/*
- * Insert an Embed object tag into the content.
- * Requires the 'media' plugin for serialization of tags into <img> placeholders.
- *
-$('form.htmleditorfield-mediaform .ss-htmleditorfield-file.embed').entwine({
-  getAttributes: function() {
-    var width = this.find(':input[name=Width]').val(),
-      height = this.find(':input[name=Height]').val();
-    return {
-      'src' : this.find('.thumbnail-preview').attr('src'),
-      'width' : width ? parseInt(width, 10) : null,
-      'height' : height ? parseInt(height, 10) : null,
-      'class' : this.find(':input[name=CSSClass]').val(),
-      'alt' : this.find(':input[name=AltText]').val(),
-      'title' : this.find(':input[name=Title]').val(),
-      'data-fileid' : this.find(':input[name=FileID]').val()
-    };
-  },
-  getExtraData: function() {
-    var width = this.find(':input[name=Width]').val(),
-      height = this.find(':input[name=Height]').val();
-    return {
-      'CaptionText': this.find(':input[name=CaptionText]').val(),
-      'Url': this.find(':input[name=URL]').val(),
-      'thumbnail': this.find('.thumbnail-preview').attr('src'),
-      'width' : width ? parseInt(width, 10) : null,
-      'height' : height ? parseInt(height, 10) : null,
-      'cssclass': this.find(':input[name=CSSClass]').val()
-    };
-  },
-  getHTML: function() {
-    var el,
-      attrs = this.getAttributes(),
-      extraData = this.getExtraData(),
-      // imgEl = $('<img id="_ss_tmp_img" />');
-      imgEl = $('<img />').attr(attrs).addClass('ss-htmleditorfield-file embed');
-
-    $.each(extraData, function (key, value) {
-      imgEl.attr('data-' + key, value);
-    });
-
-    if(extraData.CaptionText) {
-      el = $('<div style="width: ' + attrs['width'] + 'px;" class="captionImage ' + attrs['class'] + '"><p class="caption">' + extraData.CaptionText + '</p></div>').prepend(imgEl);
-    } else {
-      el = imgEl;
-    }
-    return $('<div />').append(el).html(); // Little hack to get outerHTML string
-  },
-  updateFromNode: function(node) {
-    this.find(':input[name=AltText]').val(node.attr('alt'));
-    this.find(':input[name=Title]').val(node.attr('title'));
-    this.find(':input[name=Width]').val(node.width());
-    this.find(':input[name=Height]').val(node.height());
-    this.find(':input[name=Title]').val(node.attr('title'));
-    this.find(':input[name=CSSClass]').val(node.data('cssclass'));
-    this.find(':input[name=FileID]').val(node.data('fileid'));
-  }
-});
-
- */

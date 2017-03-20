@@ -4,6 +4,7 @@ en:
     AlignmentCenter: 'Centered, on its own.'
     AlignmentLeft: 'On the left, with text wrapping around.'
     AlignmentLeftAlone: 'On the left, on its own.'
+    AlignmentRightAlone: 'On the right, on its own.'
     AlignmentRight: 'On the right, with text wrapping around.'
     AltText: 'Alternative text (alt)'
     AltTextDescription: 'Shown to screen readers or if image can''t be displayed'
@@ -25,6 +26,7 @@ en:
     ImageWidth: Width
     NEWFOLDER: NewFolder
     TitleTooltip: 'Title text (tooltip)'
+    Placement: 'Placement'
     TitleTooltipDescription: 'For additional information about the image'
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Delete folders'
@@ -32,6 +34,11 @@ en:
     INSERT: 'Insert file'
   CMSSearch:
     FILTERDATEHEADING: Date
+  RemoteFileForm:
+    UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
+    AddMedia: 'Add media'
+    InsertMedia: 'Insert media'
+    Cancel: Cancel
   File:
     PUBLISHED: Published
   SilverStripe\AssetAdmin\Controller\AssetAdmin:

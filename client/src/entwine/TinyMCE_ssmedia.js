@@ -56,22 +56,24 @@ import { ApolloProvider } from 'react-apollo';
         );
 
         // Transform [image] shortcodes
-        content.find('img').each(function () {
-          const el = jQuery(this);
-          const attrs = {
-            // Requires server-side preprocessing of HTML+shortcodes in HTMLValue
-            src: el.attr('src'),
-            id: el.data('id'),
-            width: el.attr('width'),
-            height: el.attr('height'),
-            class: el.attr('class'),
-            // don't save caption, since that's in the containing element
-            title: el.attr('title'),
-            alt: el.attr('alt'),
-          };
-          const shortCode = `[image ${attrsFn(attrs)}]`;
-          el.replaceWith(shortCode);
-        });
+        content.find('.ss-htmleditorfield-file.image')
+          .add(content.filter('.ss-htmleditorfield-file.image'))
+          .each(function () {
+            const el = jQuery(this);
+            const attrs = {
+              // Requires server-side preprocessing of HTML+shortcodes in HTMLValue
+              src: el.attr('src'),
+              id: el.data('id'),
+              width: el.attr('width'),
+              height: el.attr('height'),
+              class: el.attr('class'),
+              // don't save caption, since that's in the containing element
+              title: el.attr('title'),
+              alt: el.attr('alt'),
+            };
+            const shortCode = `[image ${attrsFn(attrs)}]`;
+            el.replaceWith(shortCode);
+          });
 
         // Insert outerHTML in order to retain all nodes incl. <script>
         // tags which would've been filtered out with jQuery.html().
@@ -124,7 +126,7 @@ import { ApolloProvider } from 'react-apollo';
   tinymce.PluginManager.add('ssmedia', (editor) => ssmedia.init(editor));
 })();
 
-jQuery.entwine('ss', function($) {
+jQuery.entwine('ss', ($) => {
 // this is required because the React version of e.preventDefault() doesn't work
 // this is to stop React Tabs from navigating the page
   $('.insert-media-react__dialog-wrapper .nav-link').entwine({
@@ -330,7 +332,8 @@ jQuery.entwine('ss', function($) {
 
       // Find the img node - either the existing img or a new one, and update it
       const img = (node && node.is('img')) ? node : $('<img />');
-      img.attr(attrs);
+      img.attr(attrs)
+        .addClass('ss-htmleditorfield-file image');
 
       // Any existing figure or caption node
       let container = img.parent('.captionImage');

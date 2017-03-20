@@ -1030,6 +1030,112 @@
   display:none;
 }
 
+.insert-embed-modal .modal-content{
+  height:auto;
+  max-height:100%;
+}
+
+@media (min-width:768px){
+  .insert-embed-modal--edit .btn-toolbar{
+    margin-left:30%;
+  }
+}
+
+@media (min-width:768px){
+  .insert-embed-modal__fields--fill-width{
+    width:100%;
+    display:-webkit-box;
+    display:-ms-flexbox;
+    display:flex;
+    -webkit-box-orient:horizontal;
+    -webkit-box-direction:normal;
+        -ms-flex-direction:row;
+            flex-direction:row;
+  }
+}
+
+.insert-embed-modal__preview-container{
+  padding-bottom:1.2308rem;
+}
+
+@media (min-width:768px){
+  .insert-embed-modal__preview-container{
+    padding-right:1.2308rem;
+    width:30%;
+  }
+}
+
+.insert-embed-modal__preview{
+  display:block;
+  max-width:100%;
+  margin:0 auto;
+  max-height:198px;
+}
+
+.insert-embed-modal__placement .radio{
+  display:inline-block;
+  margin:0 .5rem 0 0;
+}
+
+.insert-embed-modal__placement .radio label{
+  background:url(../images/placement.png);
+  border:1px solid #e5e8eb;
+  display:inline-block;
+  width:40px;
+  height:36px;
+  overflow:hidden;
+  padding:0;
+}
+
+.insert-embed-modal__placement .radio input,.insert-embed-modal__placement .radio span{
+  display:none;
+}
+
+.insert-embed-modal__placement .radio.checked label{
+  border:1px solid #29abe2;
+  background-color:#e6f5fc;
+}
+
+.insert-embed-modal__placement .radio.option-val--leftAlone label{
+  background-position-y:-36px;
+}
+
+.insert-embed-modal__placement .radio.option-val--leftAlone.checked label{
+  background-position-y:0;
+}
+
+.insert-embed-modal__placement .radio.option-val--center label{
+  background-position-y:-108px;
+}
+
+.insert-embed-modal__placement .radio.option-val--center.checked label{
+  background-position-y:-72px;
+}
+
+.insert-embed-modal__placement .radio.option-val--rightAlone label{
+  background-position-y:-180px;
+}
+
+.insert-embed-modal__placement .radio.option-val--rightAlone.checked label{
+  background-position-y:-144px;
+}
+
+.insert-embed-modal__placement .radio.option-val--left label{
+  background-position-y:-252px;
+}
+
+.insert-embed-modal__placement .radio.option-val--left.checked label{
+  background-position-y:-216px;
+}
+
+.insert-embed-modal__placement .radio.option-val--right label{
+  background-position-y:-324px;
+}
+
+.insert-embed-modal__placement .radio.option-val--right.checked label{
+  background-position-y:-288px;
+}
+
 .gallery,.gallery__main,.gallery__outer{
   position:relative;
 }
