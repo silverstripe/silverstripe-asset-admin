@@ -1357,6 +1357,11 @@
   height:14px;
 }
 
+.gallery__table-row--highlighted{
+  border-color:#29abe2;
+  background-color:#e6f5fc;
+}
+
 .gallery__table-column--image{
   width:60px;
   max-width:60px;
