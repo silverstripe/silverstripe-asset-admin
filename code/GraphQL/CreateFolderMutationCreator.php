@@ -5,7 +5,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\Assets\Folder;
 use SilverStripe\GraphQL\MutationCreator;
 use SilverStripe\GraphQL\OperationResolver;
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 use SilverStripe\GraphQL\Manager;
 

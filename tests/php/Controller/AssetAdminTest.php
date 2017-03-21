@@ -10,7 +10,7 @@ use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Session;
 use SilverStripe\Dev\FunctionalTest;
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\SecurityToken;
 
 /**

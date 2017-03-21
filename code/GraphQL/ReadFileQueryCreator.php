@@ -6,7 +6,7 @@ use SilverStripe\Assets\Folder;
 use GraphQL\Type\Definition\UnionType;
 use SilverStripe\GraphQL\Pagination\PaginatedQueryCreator;
 use SilverStripe\GraphQL\Pagination\Connection;
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Versioned\Versioned;
 
 class ReadFileQueryCreator extends PaginatedQueryCreator
 {
