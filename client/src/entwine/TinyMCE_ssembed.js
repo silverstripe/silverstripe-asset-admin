@@ -56,8 +56,6 @@ import { ApolloProvider } from 'react-apollo';
             const height = parseInt(image.attr('height'), 10);
             const attrs = {
               Url: image.data('url'),
-              AltText: image.attr('alt'),
-              Title: image.attr('title'),
               PreviewUrl: image.attr('src'),
               Width: isNaN(width) ? 0 : width,
               Height: isNaN(height) ? 0 : height,
@@ -106,8 +104,6 @@ import { ApolloProvider } from 'react-apollo';
             width: data.Width || data.width,
             height: data.Height || data.height,
             class: data.class,
-            alt: data.AltText,
-            title: data.Title,
             'data-url': data.Url || matches[2],
             'data-cssclass': data.Placement || data.class,
           };
@@ -176,7 +172,6 @@ jQuery.entwine('ss', ($) => {
       ReactDOM.render(
         <ApolloProvider store={store} client={client}>
           <InsertEmbedModal
-            title={false}
             show={show}
             onCreate={handleCreate}
             onInsert={handleInsert}
@@ -261,8 +256,6 @@ jQuery.entwine('ss', ($) => {
       const attrs = {
         Url: image.data('url') || data.Url,
         CaptionText: caption,
-        AltText: image.attr('alt'),
-        Title: image.attr('title'),
         PreviewUrl: image.attr('src'),
         Width: isNaN(width) ? 0 : width,
         Height: isNaN(height) ? 0 : height,
@@ -288,8 +281,6 @@ jQuery.entwine('ss', ($) => {
         src: data.PreviewUrl,
         width: data.Width,
         height: data.Height,
-        alt: data.AltText,
-        title: data.Title,
         'data-url': data.Url,
         'data-cssclass': data.Placement,
       };

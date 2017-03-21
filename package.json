@@ -33,7 +33,8 @@
     ],
     "modulePaths": [
       "client/src",
-      "../silverstripe-admin/client/src"
+      "../silverstripe-admin/client/src",
+      "../silverstripe-admin"
     ],
     "testMatch": [
       "**/tests/**/*-test.js?(x)"
@@ -72,6 +73,7 @@
   },
   "dependencies": {
     "apollo-client": "^0.5.22",
+    "babel-polyfill": "6.7.4",
     "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
     "graphql-fragments": "^0.1.0",
     "graphql-tag": "^0.1.17",

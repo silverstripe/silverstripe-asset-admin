@@ -25,7 +25,7 @@ class InsertEmbedModal extends Component {
   }
 
   componentWillUnmount() {
-    this.setOverrides();
+    this.clearOverrides();
   }
 
   /**
@@ -35,16 +35,11 @@ class InsertEmbedModal extends Component {
    * @param {object} props
    */
   setOverrides(props) {
-    if (!props || this.props.schemaUrl !== props.schemaUrl) {
-      // clear any overrides that may be in place
-      const schemaUrl = props && props.schemaUrl || this.props.schemaUrl;
-      if (schemaUrl) {
-        this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
-      }
+    if (this.props.schemaUrl !== props.schemaUrl) {
+      this.clearOverrides();
     }
-    if (props && props.schemaUrl) {
+    if (props.schemaUrl) {
       const attrs = Object.assign({}, props.fileAttributes);
-
       delete attrs.ID;
 
       const overrides = {
@@ -93,6 +88,13 @@ class InsertEmbedModal extends Component {
     return props;
   }
 
+  /**
+   * Clear any overrides that may be in place
+   */
+  clearOverrides() {
+    this.props.actions.schema.setSchemaStateOverrides(this.props.schemaUrl, null);
+  }
+
   handleLoadingError(error) {
     if (typeof this.props.onLoadingError === 'function') {
       this.props.onLoadingError(error);
@@ -106,7 +108,7 @@ class InsertEmbedModal extends Component {
     if (action === 'action_insertmedia') {
       this.props.onInsert(data);
     }
-    if (action === 'action_cancel' && typeof this.props.onHide === 'function') {
+    if (action === 'action_cancel') {
       this.props.onHide();
     }
 
@@ -128,15 +130,16 @@ InsertEmbedModal.propTypes = {
   onCreate: PropTypes.func.isRequired,
   fileAttributes: PropTypes.shape({
     Url: PropTypes.string,
-    AltText: PropTypes.string,
+    CaptionText: PropTypes.string,
+    PreviewUrl: PropTypes.string,
+    Placement: PropTypes.string,
     Width: PropTypes.number,
     Height: PropTypes.number,
-    Alignment: PropTypes.string,
   }),
-  onHide: PropTypes.func,
+  onHide: PropTypes.func.isRequired,
   className: PropTypes.string,
   actions: PropTypes.object,
-  schemaUrl: PropTypes.string,
+  schemaUrl: PropTypes.string.isRequired,
   targetUrl: PropTypes.string,
   onLoadingError: PropTypes.func,
 };

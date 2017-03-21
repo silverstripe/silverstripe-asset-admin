@@ -77,10 +77,7 @@ class RemoteFileFormFactory implements FormFactory
                     'RemoteFileForm.UrlDescription',
                     'Embed Youtube and Vimeo videos, images and other media directly from the web.'
                 )),
-                TextField::create('Url', '')
-                    ->setSchemaData([
-                        'data' => ['prefix' => 'http://'],
-                    ]),
+                TextField::create('Url', ''),
             ];
         }
         
