@@ -4,6 +4,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
@@ -165,8 +166,12 @@ class FileFormFactory extends AssetFormFactory
         } else {
             // Build top level bar
             $actions = new FieldList(array_filter([
-                $this->getSaveAction($record),
-                $this->getPublishAction($record),
+                FieldGroup::create(array_filter([
+                    $this->getSaveAction($record),
+                    $this->getPublishAction($record)
+                ]))
+                    ->setName('Actions')
+                    ->addExtraClass('btn-group'),
                 $this->getPopoverMenu($record),
             ]));
         }

@@ -80,8 +80,8 @@ class FileFormBuilderTest extends SapphireTest
         );
 
         // Test actions exist
-        $this->assertNotNull($form->Actions()->fieldByName('action_save'));
-        $this->assertNotNull($form->Actions()->fieldByName('action_publish'));
+        $this->assertNotNull($form->Actions()->fieldByName('Actions.action_save'));
+        $this->assertNotNull($form->Actions()->fieldByName('Actions.action_publish'));
         $this->assertNotNull($form->Actions()->fieldByName('actionaddtocampaignactiondelete.action_addtocampaign'));
         $this->assertNotNull($form->Actions()->fieldByName('actionaddtocampaignactiondelete.action_delete'));
         $this->assertNull($form->Actions()->fieldByName('actionaddtocampaignactiondelete.action_unpublish'));
@@ -109,7 +109,7 @@ class FileFormBuilderTest extends SapphireTest
         );
 
         // Test actions
-        $this->assertNotNull($form->Actions()->fieldByName('action_save'));
+        $this->assertNotNull($form->Actions()->fieldByName('Actions.action_save'));
     }
 
     public function testEditImageForm()
