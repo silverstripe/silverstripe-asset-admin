@@ -9,7 +9,7 @@ use SilverStripe\AssetAdmin\Controller\AssetAdminFolder;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\ORM\Filterable;
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DataList;

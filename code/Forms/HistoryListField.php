@@ -5,7 +5,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Versioned\Versioned;
 
 /**
  * History view for file editor form

@@ -10,8 +10,8 @@ use SilverStripe\Control\Director;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\SS_List;
-use SilverStripe\ORM\Versioning\Versioned;
-use SilverStripe\ORM\Versioning\DataDifferencer;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\Versioned\DataDifferencer;
 
 /**
  * Update File dataobjects to be editable in this asset admin

@@ -35,7 +35,7 @@ use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\View\Requirements;
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Versioned\Versioned;
 use Exception;
 
 /**
