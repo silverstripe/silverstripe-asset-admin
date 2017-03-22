@@ -1375,17 +1375,31 @@
 }
 
 .gallery__table-image{
-  max-height:68px;
-  max-width:60px;
-}
-
-.gallery__table-image--folder{
-  background-image:url(../images/folder_icon_large.png);
   background-repeat:no-repeat;
   background-size:60px auto;
   background-position:50%;
   height:68px;
   width:60px;
+}
+
+.gallery__table-image--folder{
+  background-image:url(../images/folder_icon_large.png);
+}
+
+.gallery__table-image--archive{
+  background-image:url(../images/icon_archive.png);
+}
+
+.gallery__table-image--audio{
+  background-image:url(../images/icon_audio.png);
+}
+
+.gallery__table-image--video{
+  background-image:url(../images/icon_video.png);
+}
+
+.gallery__table-image--document{
+  background-image:url(../images/icon_document.png);
 }
 
 .gallery__table-image--error{
