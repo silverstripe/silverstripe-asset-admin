@@ -38,8 +38,8 @@ Feature: Insert an image into a page
 
   @assets
   Scenario: I can insert an image from a URL
-    Given I press the "Insert Embedded content" button
-
+    Given I press the "Insert Embedded content" HTML field button
+    Then I wait for 2 seconds until I see the ".insert-embed-modal--create" element
     When I fill in "Url" with "http://www.silverstripe.org/themes/ssv3/img/ss_logo.png"
     And I press the "Add media" button
     Then I wait for 2 seconds until I see the ".insert-embed-modal--edit" element

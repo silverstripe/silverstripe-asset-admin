@@ -56,6 +56,7 @@ class InsertEmbedModal extends Component {
 
   /**
    * Generates the properties for the modal
+   *
    * @returns {object}
    */
   getModalProps() {
@@ -72,12 +73,9 @@ class InsertEmbedModal extends Component {
         className: `insert-embed-modal ${this.props.className}`,
         bsSize: 'lg',
         handleHide: this.props.onHide,
-        title: this.props.targetUrl
-          ? i18n.sprintf(
-            i18n._t('InsertEmbedModal.EditTitle', 'Edit details for %s'),
-            this.props.targetUrl
-          )
-          : i18n._t('InsertEmbedModal.CreateTitle', 'Insert new Embedded content'),
+        title: ((this.props.targetUrl)
+          ? i18n._t('InsertEmbedModal.EditTitle', 'Edit details from the web')
+          : i18n._t('InsertEmbedModal.CreateTitle', 'Insert new Embedded content')),
       }
     );
     delete props.onHide;
@@ -95,12 +93,24 @@ class InsertEmbedModal extends Component {
     this.props.actions.schema.setSchemaStateOverrides(this.props.schemaUrl, null);
   }
 
+  /**
+   * Handler for when loading the form returns an error
+   *
+   * @param error
+   */
   handleLoadingError(error) {
     if (typeof this.props.onLoadingError === 'function') {
       this.props.onLoadingError(error);
     }
   }
 
+  /**
+   * Capture submission in the form and stop the default submit behaviour
+   *
+   * @param data
+   * @param action
+   * @returns {Promise}
+   */
   handleSubmit(data, action) {
     if (action === 'action_addmedia') {
       this.props.onCreate(data);

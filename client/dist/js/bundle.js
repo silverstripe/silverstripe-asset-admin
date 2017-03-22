@@ -1930,7 +1930,7 @@ delete n.ID
 var r={fields:Object.entries(n).map(function(e){var t=p(e,2),n=t[0],r=t[1]
 return{name:n,value:r}})}
 this.props.actions.schema.setSchemaStateOverrides(t.schemaUrl,r)}}},{key:"getModalProps",value:function e(){var t=c({handleSubmit:this.handleSubmit,onLoadingError:this.handleLoadingError,showErrorMessage:!0,
-responseClassBad:"alert alert-danger"},this.props,{bodyClassName:"fill-height",className:"insert-embed-modal "+this.props.className,bsSize:"lg",handleHide:this.props.onHide,title:this.props.targetUrl?h.default.sprintf(h.default._t("InsertEmbedModal.EditTitle","Edit details for %s"),this.props.targetUrl):h.default._t("InsertEmbedModal.CreateTitle","Insert new Embedded content")
+responseClassBad:"alert alert-danger"},this.props,{bodyClassName:"fill-height",className:"insert-embed-modal "+this.props.className,bsSize:"lg",handleHide:this.props.onHide,title:this.props.targetUrl?h.default._t("InsertEmbedModal.EditTitle","Edit details from the web"):h.default._t("InsertEmbedModal.CreateTitle","Insert new Embedded content")
 })
 return delete t.onHide,delete t.sectionConfig,delete t.onInsert,delete t.fileAttributes,t}},{key:"clearOverrides",value:function e(){this.props.actions.schema.setSchemaStateOverrides(this.props.schemaUrl,null)
 

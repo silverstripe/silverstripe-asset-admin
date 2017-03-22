@@ -24,6 +24,7 @@ use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -1070,17 +1071,33 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $this->fileSearchForm();
     }
     
+    /**
+     * Form for creating a new OEmbed object in the WYSIWYG, used by the InsertEmbedModal component
+     *
+     * @param null $id
+     * @return mixed
+     */
     public function getRemoteCreateForm($id = null)
     {
         return Injector::inst()->get(RemoteFileFormFactory::class)
             ->getForm($this, 'remoteCreateForm', ['type' => 'create']);
     }
     
+    /**
+     * Allow form to be accessible for schema
+     *
+     * @return mixed
+     */
     public function remoteCreateForm()
     {
         return $this->getRemoteCreateForm();
     }
     
+    /**
+     * Form for editing a OEmbed object in the WYSIWYG, used by the InsertEmbedModal component
+     *
+     * @return mixed
+     */
     public function getRemoteEditForm()
     {
         $url = $this->request->requestVar('embedurl');
@@ -1089,12 +1106,24 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             ->getForm($this, 'remoteEditForm', ['type' => 'edit', 'url' => $url]);
         return $form;
     }
+    
+    /**
+     * Allow form to be accessible for schema
+     *
+     * @return mixed
+     */
     public function remoteEditForm()
     {
         return $this->getRemoteEditForm();
     }
     
-    public function schemaWithValidate($request)
+    /**
+     * Capture the schema handling process, as there is validation done to the URL provided before form is generated
+     *
+     * @param $request
+     * @return HTTPResponse
+     */
+    public function schemaWithValidate(HTTPRequest $request)
     {
         $formName = $request->param('FormName');
         $itemID = $request->param('ItemID');

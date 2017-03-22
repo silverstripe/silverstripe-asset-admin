@@ -100,6 +100,8 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetGalleryField.URL": "URL",
     "Folder.Name": "Folder name",
     "HTMLEditorField_Toolbar.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
+    "InsertEmbedModal.CreateTitle": "Insert new Embedded content",
+    "InsertEmbedModal.EditTitle": "Edit details from the web",
     "Pagination.NEXT": "Next",
     "Pagination.PREVIOUS": "Previous"
 });

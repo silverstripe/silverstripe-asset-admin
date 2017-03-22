@@ -53,6 +53,7 @@ class RemoteFileFormFactory implements FormFactory
         $validator = new RequiredFields();
         $form = Form::create($controller, $name, $fields, $actions, $validator);
         $form->addExtraClass('form--fill-height');
+        $form->addExtraClass('form--no-dividers');
         $form->addExtraClass('insert-embed-modal--'. strtolower($context['type']));
     
         // Extend form
@@ -84,18 +85,22 @@ class RemoteFileFormFactory implements FormFactory
         if ($context['type'] === 'edit' && $url && $this->validateUrl($url)) {
             $embed = $this->getEmbed($url);
             $alignments = array(
-                'leftAlone' => _t('AssetAdmin.AlignmentLeftAlone', 'On the left, on its own.'),
-                'center' => _t('AssetAdmin.AlignmentCenter', 'Centered, on its own.'),
-                'rightAlone' => _t('AssetAdmin.AlignmentRightAlone', 'On the right, on its own.'),
-                'left' => _t('AssetAdmin.AlignmentLeft', 'On the left, with text wrapping around.'),
-                'right' => _t('AssetAdmin.AlignmentRight', 'On the right, with text wrapping around.'),
+                'leftAlone' => _t('AssetAdmin.AlignmentLeftAlone', 'Left'),
+                'center' => _t('AssetAdmin.AlignmentCenter', 'Center'),
+                'rightAlone' => _t('AssetAdmin.AlignmentRightAlone', 'Right'),
+                'left' => _t('AssetAdmin.AlignmentLeft', 'Left wrap'),
+                'right' => _t('AssetAdmin.AlignmentRight', 'Right wrap'),
             );
             
             $fields = CompositeField::create([
-                LiteralField::create('Preview', sprintf('<img src="%s" class="%s" />',
-                    $embed->getPreviewURL(),
-                    'insert-embed-modal__preview'
-                ))->addExtraClass('insert-embed-modal__preview-container'),
+                LiteralField::create(
+                    'Preview',
+                    sprintf(
+                        '<img src="%s" class="%s" />',
+                        $embed->getPreviewURL(),
+                        'insert-embed-modal__preview'
+                    )
+                )->addExtraClass('insert-embed-modal__preview-container'),
                 HiddenField::create('PreviewUrl', 'PreviewUrl', $embed->getPreviewURL()),
                 CompositeField::create([
                     ReadonlyField::create('Url', $embed->getName(), $url),

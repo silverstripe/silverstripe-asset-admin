@@ -1074,20 +1074,41 @@
 
 .insert-embed-modal__placement .radio{
   display:inline-block;
-  margin:0 .5rem 0 0;
+  margin:0;
 }
 
 .insert-embed-modal__placement .radio label{
-  background:url(../images/placement.png);
   border:1px solid #e5e8eb;
-  display:inline-block;
-  width:40px;
-  height:36px;
-  overflow:hidden;
+  display:block;
   padding:0;
+  position:relative;
+  width:85px;
+  margin-bottom:1.539em;
 }
 
-.insert-embed-modal__placement .radio input,.insert-embed-modal__placement .radio span{
+.insert-embed-modal__placement .radio label:before{
+  background:url(../images/placement.png);
+  content:" ";
+  display:block;
+  width:40px;
+  height:36px;
+  margin:5px auto;
+}
+
+.insert-embed-modal__placement .radio span{
+  display:none;
+  position:absolute;
+  top:100%;
+  text-transform:uppercase;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  width:100%;
+  text-overflow:ellipsis;
+  font-size:.9rem;
+}
+
+.insert-embed-modal__placement .radio input{
   display:none;
 }
 
@@ -1096,43 +1117,48 @@
   background-color:#e6f5fc;
 }
 
-.insert-embed-modal__placement .radio.option-val--leftAlone label{
+.insert-embed-modal__placement .radio.checked span{
+  display:block;
+  color:#29abe2;
+}
+
+.insert-embed-modal__placement .radio.option-val--leftAlone label:before{
   background-position-y:-36px;
 }
 
-.insert-embed-modal__placement .radio.option-val--leftAlone.checked label{
+.insert-embed-modal__placement .radio.option-val--leftAlone.checked label:before{
   background-position-y:0;
 }
 
-.insert-embed-modal__placement .radio.option-val--center label{
+.insert-embed-modal__placement .radio.option-val--center label:before{
   background-position-y:-108px;
 }
 
-.insert-embed-modal__placement .radio.option-val--center.checked label{
+.insert-embed-modal__placement .radio.option-val--center.checked label:before{
   background-position-y:-72px;
 }
 
-.insert-embed-modal__placement .radio.option-val--rightAlone label{
+.insert-embed-modal__placement .radio.option-val--rightAlone label:before{
   background-position-y:-180px;
 }
 
-.insert-embed-modal__placement .radio.option-val--rightAlone.checked label{
+.insert-embed-modal__placement .radio.option-val--rightAlone.checked label:before{
   background-position-y:-144px;
 }
 
-.insert-embed-modal__placement .radio.option-val--left label{
+.insert-embed-modal__placement .radio.option-val--left label:before{
   background-position-y:-252px;
 }
 
-.insert-embed-modal__placement .radio.option-val--left.checked label{
+.insert-embed-modal__placement .radio.option-val--left.checked label:before{
   background-position-y:-216px;
 }
 
-.insert-embed-modal__placement .radio.option-val--right label{
+.insert-embed-modal__placement .radio.option-val--right label:before{
   background-position-y:-324px;
 }
 
-.insert-embed-modal__placement .radio.option-val--right.checked label{
+.insert-embed-modal__placement .radio.option-val--right.checked label:before{
   background-position-y:-288px;
 }
 

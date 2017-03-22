@@ -1,11 +1,11 @@
 en:
   AssetAdmin:
     Alignment: Alignment
-    AlignmentCenter: 'Centered, on its own.'
-    AlignmentLeft: 'On the left, with text wrapping around.'
-    AlignmentLeftAlone: 'On the left, on its own.'
-    AlignmentRightAlone: 'On the right, on its own.'
-    AlignmentRight: 'On the right, with text wrapping around.'
+    AlignmentCenter: 'Center'
+    AlignmentLeft: 'Left wrap'
+    AlignmentLeftAlone: 'Left'
+    AlignmentRightAlone: 'Right'
+    AlignmentRight: 'Right wrap'
     AltText: 'Alternative text (alt)'
     AltTextDescription: 'Shown to screen readers or if image can''t be displayed'
     AppCategoryArchive: Archive

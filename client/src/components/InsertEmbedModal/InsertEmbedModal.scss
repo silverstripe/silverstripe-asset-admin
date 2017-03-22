@@ -40,79 +40,107 @@ $placement-image-height: 36px;
 
 .insert-embed-modal__placement .radio {
   display: inline-block;
-  margin: 0 0.5rem 0 0;
+  margin: 0;
 
   label {
-    background: url("placement.png");
     border: 1px solid $border-color-light;
-    display: inline-block;
-    width: $placement-image-width;
-    height: $placement-image-height;
-    overflow: hidden;
+    display: block;
     padding: 0;
+    position: relative;
+    width: 85px;
+    margin-bottom: #{$line-height}em;
+
+    &:before {
+      background: url("placement.png");
+      content: " ";
+      display: block;
+      width: $placement-image-width;
+      height: $placement-image-height;
+      margin: 5px auto;
+    }
   }
 
-  span,
+  span {
+    display: none;
+    position: absolute;
+    top: 100%;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+    font-size: 0.9rem;
+  }
+
   input {
     display: none;
   }
 
-  &.checked label {
-    border: 1px solid $component-active-border-color;
-    background-color: $component-active-bg-light;
+  &.checked {
+
+    label {
+      border: 1px solid $component-active-border-color;
+      background-color: $component-active-bg-light;
+    }
+
+    span {
+      display: block;
+      color: $component-active-border-color;
+    }
   }
 
   &.option-val--leftAlone { // sass-lint:disable-line class-name-format
 
-    label {
+    label:before {
       background-position-y: -$placement-image-height;
     }
 
-    &.checked label {
+    &.checked label:before {
       background-position-y: 0;
     }
   }
 
   &.option-val--center {
 
-    label {
+    label:before {
       background-position-y: 3 * -$placement-image-height;
     }
 
-    &.checked label {
+    &.checked label:before {
       background-position-y: 2 * -$placement-image-height;
     }
   }
 
   &.option-val--rightAlone { // sass-lint:disable-line class-name-format
 
-    label {
+    label:before {
       background-position-y: 5 * -$placement-image-height;
     }
 
-    &.checked label {
+    &.checked label:before {
       background-position-y: 4 * -$placement-image-height;
     }
   }
 
   &.option-val--left {
 
-    label {
+    label:before {
       background-position-y: 7 * -$placement-image-height;
     }
 
-    &.checked label {
+    &.checked label:before {
       background-position-y: 6 * -$placement-image-height;
     }
   }
 
   &.option-val--right {
 
-    label {
+    label:before {
       background-position-y: 9 * -$placement-image-height;
     }
 
-    &.checked label {
+    &.checked label:before {
       background-position-y: 8 * -$placement-image-height;
     }
   }
