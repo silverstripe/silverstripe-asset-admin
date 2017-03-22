@@ -104,6 +104,11 @@
   }
 }
 
+.gallery__table-row--highlighted {
+  border-color: $component-active-border-color;
+  background-color: $component-active-bg-light;
+}
+
 $gallery-list-thumb-width: 60px;
 $gallery-list-thumb-height: 68px;
 

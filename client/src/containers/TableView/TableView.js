@@ -97,6 +97,10 @@ class TableView extends Component {
     ];
   }
 
+  getRowMetadata(rowData) {
+    return `gallery__table-row ${rowData.highlighted ? 'gallery__table-row--highlighted' : ''}`;
+  }
+
   /**
    * Returns the properties for the table view
    *
@@ -109,7 +113,7 @@ class TableView extends Component {
       tableClassName: 'gallery__table table table-hover',
       gridClassName: 'gallery__main-view--table',
       rowMetadata: {
-        bodyCssClassName: 'gallery__table-row',
+        bodyCssClassName: this.getRowMetadata,
       },
       sortAscendingComponent: '',
       sortDescendingComponent: '',

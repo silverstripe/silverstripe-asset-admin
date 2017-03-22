@@ -1666,8 +1666,9 @@ value:function e(){this.setState({enableSort:!1})}},{key:"getColumns",value:func
 return this.props.selectableItems&&t.unshift("selected"),t}},{key:"getColumnConfig",value:function e(){return[{columnName:"selected",sortable:!1,displayName:"",cssClassName:"gallery__table-column--select",
 customComponent:this.renderSelect},{columnName:"thumbnail",sortable:!1,displayName:"",cssClassName:"gallery__table-column--image",customComponent:this.renderThumbnail},{columnName:"title",customCompareFn:function e(){
 return 0},cssClassName:"gallery__table-column--title",customComponent:this.renderTitle},{columnName:"lastEdited",displayName:"Modified",customComponent:this.renderDate},{columnName:"size",sortable:!1,displayName:"Size",
-cssClassName:"sort--disabled",customComponent:this.renderSize}]}},{key:"getTableProps",value:function e(){var t=this.props.sort.split(","),n=a(t,2),r=n[0],o=n[1]
-return{tableClassName:"gallery__table table table-hover",gridClassName:"gallery__main-view--table",rowMetadata:{bodyCssClassName:"gallery__table-row"},sortAscendingComponent:"",sortDescendingComponent:"",
+cssClassName:"sort--disabled",customComponent:this.renderSize}]}},{key:"getRowMetadata",value:function e(t){return"gallery__table-row "+(t.highlighted?"gallery__table-row--highlighted":"")}},{key:"getTableProps",
+value:function e(){var t=this.props.sort.split(","),n=a(t,2),r=n[0],o=n[1]
+return{tableClassName:"gallery__table table table-hover",gridClassName:"gallery__main-view--table",rowMetadata:{bodyCssClassName:this.getRowMetadata},sortAscendingComponent:"",sortDescendingComponent:"",
 useExternal:!0,externalSetPage:this.handleSetPage,externalChangeSort:this.handleSort,externalSetFilter:function e(){return null},externalSetPageSize:function e(){return null},externalCurrentPage:this.props.page-1,
 externalMaxPage:Math.ceil(this.props.totalCount/this.props.limit),externalSortColumn:r,externalSortAscending:this.state.enableSort?"asc"===o:"asc"!==o,initialSort:r,columns:this.getColumns(),columnMetadata:this.getColumnConfig(),
 useGriddleStyles:!1,onRowClick:this.handleRowClick,results:this.props.files,customNoDataComponent:this.renderNoItemsNotice}}},{key:"handleActivate",value:function e(t,n){"folder"===n.type?this.props.onOpenFolder(t,n):this.props.onOpenFile(t,n)
