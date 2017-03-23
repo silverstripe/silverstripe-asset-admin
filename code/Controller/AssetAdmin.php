@@ -3,7 +3,7 @@
 namespace SilverStripe\AssetAdmin\Controller;
 
 use InvalidArgumentException;
-use SilverStripe\Admin\AddToCampaignHandler;
+use SilverStripe\CampaignAdmin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\AssetAdmin\BatchAction\DeleteAssets;
