@@ -332,21 +332,25 @@ class TableView extends Component {
    */
   renderThumbnail(props) {
     const url = props.data || props.rowData.url;
+    const category = props.rowData.category || 'false';
+    const baseClass = 'gallery__table-image';
+    const classNames = [baseClass];
+    const styles = {};
 
-    if (props.rowData.type === 'folder') {
-      return (<div className="gallery__table-image--folder" />);
+    classNames.push(`${baseClass}--${category}`);
+
+    if (category === 'image' && url) {
+      styles.backgroundImage = `url("${url}")`;
     }
 
-    if (!url) {
-      return (<div className="gallery__table-image--error" />);
+    // If the url is falsey then show error on the thumbnail. The exception is
+    // folder since it doesn't have to physically exist on the file system
+    if (!url && category !== 'folder') {
+      classNames.push(`${baseClass}--error`);
     }
 
     return (
-      <img
-        src={url}
-        alt={props.rowData.title}
-        className="gallery__table-image"
-      />
+        <div className={classNames.join(' ')} style={styles} />
     );
   }
 

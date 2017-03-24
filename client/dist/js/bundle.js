@@ -1688,9 +1688,9 @@ return p.default.createElement("div",{className:"gallery__progress-bar"},p.defau
 return p.default.createElement("div",{className:"fill-width"},p.default.createElement("div",{className:"flexbox-area-grow"},t.data),n)}},{key:"renderSelect",value:function e(t){return p.default.createElement("input",{
 type:"checkbox",title:h.default._t("AssetAdmin.SELECT"),checked:t.data,tabIndex:"-1",onMouseDown:this.preventFocus})}},{key:"renderDate",value:function e(t){return"folder"===t.rowData.type?null:p.default.createElement("span",null,t.data)
 
-}},{key:"renderThumbnail",value:function e(t){var n=t.data||t.rowData.url
-return"folder"===t.rowData.type?p.default.createElement("div",{className:"gallery__table-image--folder"}):n?p.default.createElement("img",{src:n,alt:t.rowData.title,className:"gallery__table-image"}):p.default.createElement("div",{
-className:"gallery__table-image--error"})}},{key:"render",value:function e(){return p.default.createElement(c.default,this.getTableProps())}}]),t}(u.Component)
+}},{key:"renderThumbnail",value:function e(t){var n=t.data||t.rowData.url,r=t.rowData.category,o="gallery__table-image",i=[o],s={}
+return i.push(o+"--"+r),"image"===r&&n&&(s.backgroundImage='url("'+n+'")'),n||"folder"===r||i.push(o+"--error"),p.default.createElement("div",{className:i.join(" "),style:s})}},{key:"render",value:function e(){
+return p.default.createElement(c.default,this.getTableProps())}}]),t}(u.Component)
 y.defaultProps=m.galleryViewDefaultProps,y.propTypes=m.galleryViewPropTypes,t.TableView=y,t.default=y},function(e,t){e.exports=FormAlert},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
 
