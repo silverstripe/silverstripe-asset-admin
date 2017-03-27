@@ -1,9 +1,16 @@
 $placement-image-width: 40px;
 $placement-image-height: 36px;
 
-.insert-embed-modal .modal-content {
-  height: auto;
-  max-height: 100%;
+.insert-embed-modal {
+  .modal-content {
+    height: auto;
+    max-height: 100%;
+  }
+
+  .modal-body {
+    min-height: 300px;
+    align-items: center;
+  }
 }
 
 .insert-embed-modal--edit {
@@ -11,6 +18,33 @@ $placement-image-height: 36px;
     @include media-breakpoint-up(md) {
       margin-left: 30%;
     }
+  }
+}
+
+.insert-embed-modal--create {
+  width: 100%;
+  @include media-breakpoint-up(md) {
+    margin-top: 4rem;
+  }
+
+  .alert + & {
+    margin-top: 0;
+  }
+}
+
+.insert-embed-modal__url-create {
+
+  .form__field-label {
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+  }
+
+  .form-control.text {
+    padding: $input-padding-y-lg $input-padding-x-lg;
+    font-size: $font-size-lg;
+    line-height: $line-height-lg;
+    border-radius: $input-border-radius-lg;
   }
 }
 
@@ -47,7 +81,7 @@ $placement-image-height: 36px;
     display: block;
     padding: 0;
     position: relative;
-    width: 85px;
+    width: 80px;
     margin-bottom: #{$line-height}em;
 
     &:before {

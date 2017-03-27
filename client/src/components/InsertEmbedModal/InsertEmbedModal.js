@@ -74,8 +74,8 @@ class InsertEmbedModal extends Component {
         bsSize: 'lg',
         handleHide: this.props.onHide,
         title: ((this.props.targetUrl)
-          ? i18n._t('InsertEmbedModal.EditTitle', 'Edit details from the web')
-          : i18n._t('InsertEmbedModal.CreateTitle', 'Insert new Embedded content')),
+          ? i18n._t('InsertEmbedModal.EditTitle', 'Media from the web')
+          : i18n._t('InsertEmbedModal.CreateTitle', 'Insert new media from the web')),
       }
     );
     delete props.onHide;

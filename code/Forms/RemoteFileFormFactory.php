@@ -14,6 +14,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\FormFactory;
+use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\HTMLEditor\HTMLEditorField_Embed;
 use SilverStripe\Forms\LabelField;
@@ -74,11 +75,13 @@ class RemoteFileFormFactory implements FormFactory
         
         if ($context['type'] === 'create') {
             $fields = [
-                LabelField::create('UrlDescription', _t(
-                    'RemoteFileForm.UrlDescription',
-                    'Embed Youtube and Vimeo videos, images and other media directly from the web.'
-                )),
-                TextField::create('Url', ''),
+                TextField::create('Url',
+                    _t(
+                        'RemoteFileForm.UrlDescription',
+                        'Embed Youtube and Vimeo videos, images and other media directly from the web.'
+                    )
+                )
+                ->addExtraClass('insert-embed-modal__url-create'),
             ];
         }
         
@@ -113,18 +116,12 @@ class RemoteFileFormFactory implements FormFactory
                         ->addExtraClass('insert-embed-modal__placement'),
                     FieldGroup::create(
                         _t('AssetAdmin.ImageSpecs', 'Dimensions'),
-                        TextField::create(
-                            'Width',
-                            _t('AssetAdmin.ImageWidth', 'Width'),
-                            $embed->getWidth()
-                        )
+                        TextField::create('Width', '', $embed->getWidth())
+                            ->setRightTitle(_t('AssetAdmin.ImageWidth', 'Width'))
                             ->setMaxLength(5)
                             ->addExtraClass('flexbox-area-grow'),
-                        TextField::create(
-                            'Height',
-                            _t('AssetAdmin.ImageHeight', 'Height'),
-                            $embed->getHeight()
-                        )
+                        TextField::create('Height', '', $embed->getHeight())
+                            ->setRightTitle(_t('AssetAdmin.ImageHeight', 'Height'))
                             ->setMaxLength(5)
                             ->addExtraClass('flexbox-area-grow')
                     )->addExtraClass('fieldgroup--fill-width')
