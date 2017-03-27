@@ -16,7 +16,7 @@ const mutation = gql`
 const config = {
   props: ({ mutate, ownProps: { actions } }) => ({
     actions: Object.assign({}, actions, {
-      mutate: Object.assign({}, actions.mutate, {
+      files: Object.assign({}, actions.files, {
         moveFiles: (folderId, fileIds) => mutate({
           variables: {
             folderId,
