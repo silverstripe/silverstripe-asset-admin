@@ -1688,7 +1688,7 @@ return p.default.createElement("div",{className:"gallery__progress-bar"},p.defau
 return p.default.createElement("div",{className:"fill-width"},p.default.createElement("div",{className:"flexbox-area-grow"},t.data),n)}},{key:"renderSelect",value:function e(t){return p.default.createElement("input",{
 type:"checkbox",title:h.default._t("AssetAdmin.SELECT"),checked:t.data,tabIndex:"-1",onMouseDown:this.preventFocus})}},{key:"renderDate",value:function e(t){return"folder"===t.rowData.type?null:p.default.createElement("span",null,t.data)
 
-}},{key:"renderThumbnail",value:function e(t){var n=t.data||t.rowData.url,r=t.rowData.category,o="gallery__table-image",i=[o],s={}
+}},{key:"renderThumbnail",value:function e(t){var n=t.data||t.rowData.url,r=t.rowData.category||"false",o="gallery__table-image",i=[o],s={}
 return i.push(o+"--"+r),"image"===r&&n&&(s.backgroundImage='url("'+n+'")'),n||"folder"===r||i.push(o+"--error"),p.default.createElement("div",{className:i.join(" "),style:s})}},{key:"render",value:function e(){
 return p.default.createElement(c.default,this.getTableProps())}}]),t}(u.Component)
 y.defaultProps=m.galleryViewDefaultProps,y.propTypes=m.galleryViewPropTypes,t.TableView=y,t.default=y},function(e,t){e.exports=FormAlert},function(e,t,n){"use strict"
@@ -1728,7 +1728,7 @@ function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){return Object
 var i=Object.assign||function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t]
 for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},s=o(["\n  mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {\n    moveFiles(folderId: $folderId, fileIds: $fileIds) {\n      ...FileInterfaceFields\n      ...FileFields\n    }\n  }\n  ","\n  ","\n"],["\n  mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {\n    moveFiles(folderId: $folderId, fileIds: $fileIds) {\n      ...FileInterfaceFields\n      ...FileFields\n    }\n  }\n  ","\n  ","\n"]),a=n(287),l=n(288),u=r(l),p=n(289),d=(0,
 u.default)(s,p.fileInterface,p.file),c={props:function e(t){var n=t.mutate,r=t.ownProps.actions
-return{actions:i({},r,{mutate:i({},r.mutate,{moveFiles:function e(t,r){return n({variables:{folderId:t,fileIds:r}})}})})}}}
+return{actions:i({},r,{files:i({},r.files,{moveFiles:function e(t,r){return n({variables:{folderId:t,fileIds:r}})}})})}}}
 t.mutation=d,t.config=c,t.default=(0,a.graphql)(d,c)},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
 
