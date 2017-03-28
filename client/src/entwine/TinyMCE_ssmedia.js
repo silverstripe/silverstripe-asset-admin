@@ -9,6 +9,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 
+const filter = 'img[data-shortcode="image"]';
+
 (() => {
   const ssmedia = {
 
@@ -56,7 +58,6 @@ import { ApolloProvider } from 'react-apollo';
         );
 
         // Transform [image] shortcodes
-        const filter = 'img[data-shortcode=\'image\']';
         content.find(filter)
           .add(content.filter(filter))
           .each(function () {
@@ -106,16 +107,11 @@ import { ApolloProvider } from 'react-apollo';
         const shortTagImageRegex = /\[image(.*?)]/gi;
         while ((matches = shortTagImageRegex.exec(content))) {
           const attrs = attrFromStrFn(matches[1]);
-          const el = jQuery('<img/>').attr({
-            src: attrs.src,
-            width: attrs.width,
-            height: attrs.height,
-            class: attrs.class,
-            alt: attrs.alt,
-            title: attrs.title,
+          const el = jQuery('<img/>').attr(Object.assign({}, attrs, {
+            id: undefined,
             'data-id': attrs.id,
-            'data-shortcode': 'image'
-          }).addClass('ss-htmleditorfield-file image');
+            'data-shortcode': 'image',
+          })).addClass('ss-htmleditorfield-file image');
           content = content.replace(matches[0], (jQuery('<div/>').append(el).html()));
         }
 
@@ -216,7 +212,7 @@ jQuery.entwine('ss', ($) => {
         if (file) {
           category = file.category;
         } else {
-          category = 'image'
+          category = 'image';
         }
         switch (category) {
           case 'image':
@@ -281,7 +277,7 @@ jQuery.entwine('ss', ($) => {
         'center',
         'rightAlone',
         'left',
-        'right'
+        'right',
       ];
       return alignments.find((alignment) => {
         const expr = new RegExp(`\\b${alignment}\\b`);

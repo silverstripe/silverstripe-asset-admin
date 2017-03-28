@@ -4,17 +4,18 @@ return t[i].call(a.exports,a,a.exports,e),a.loaded=!0,a.exports}var n={}
 return e.m=t,e.c=n,e.p="",e(0)}([function(t,e,n){"use strict"
 function i(t){return t&&t.__esModule?t:{default:t}}function a(t,e,n){return e in t?Object.defineProperty(t,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):t[e]=n,t}var r=Object.assign||function(t){
 for(var e=1;e<arguments.length;e++){var n=arguments[e]
-for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},o=n(1),s=i(o),l=n(5),d=i(l),c=n(2),u=i(c),f=n(3),m=i(f),h=n(4)
+for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},o=n(1),s=i(o),l=n(5),d=i(l),c=n(2),u=i(c),f=n(3),m=i(f),h=n(4),p='img[data-shortcode="image"]'
 !function(){var t={init:function t(e){e.addButton("ssmedia",{icon:"image",title:"Insert Media",cmd:"ssmedia"}),e.addMenuItem("ssmedia",{icon:"image",text:"Insert Media",cmd:"ssmedia"}),e.addCommand("ssmedia",function(){
 (0,s.default)("#"+e.id).entwine("ss").openMediaDialog()}),e.on("BeforeExecCommand",function(t){var n=t.command,i=t.ui,a=t.value
 "mceAdvImage"!==n&&"mceImage"!==n||(t.preventDefault(),e.execCommand("ssmedia",i,a))}),e.on("SaveContent",function(t){var e=(0,s.default)(t.content),n=function t(e){return Object.keys(e).map(function(t){
-return e[t]?t+'="'+e[t]+'"':null}).filter(function(t){return null!==t}).join(" ")},i="img[data-shortcode='image']"
-e.find(i).add(e.filter(i)).each(function(){var t=(0,s.default)(this),e={src:t.attr("src"),id:t.data("id"),width:t.attr("width"),height:t.attr("height"),class:t.attr("class"),title:t.attr("title"),alt:t.attr("alt")
+return e[t]?t+'="'+e[t]+'"':null}).filter(function(t){return null!==t}).join(" ")}
+e.find(p).add(e.filter(p)).each(function(){var t=(0,s.default)(this),e={src:t.attr("src"),id:t.data("id"),width:t.attr("width"),height:t.attr("height"),class:t.attr("class"),title:t.attr("title"),alt:t.attr("alt")
 },i="[image "+n(e)+"]"
 t.replaceWith(i)}),t.content="",e.each(function(){void 0!==this.outerHTML&&(t.content+=this.outerHTML)})}),e.on("BeforeSetContent",function(t){for(var e=null,n=t.content,i=function t(e){return e.match(/([^\s\/'"=,]+)\s*=\s*(('([^']+)')|("([^"]+)")|([^\s,\]]+))/g).reduce(function(t,e){
 var n=e.match(/^([^\s\/'"=,]+)\s*=\s*(?:(?:'([^']+)')|(?:"([^"]+)")|(?:[^\s,\]]+))$/),i=n[1],o=n[2]||n[3]||n[4]
-return r({},t,a({},i,o))},{})},o=/\[image(.*?)]/gi;e=o.exec(n);){var l=i(e[1]),d=(0,s.default)("<img/>").attr({src:l.src,width:l.width,height:l.height,class:l.class,alt:l.alt,title:l.title,"data-id":l.id,
-"data-shortcode":"image"}).addClass("ss-htmleditorfield-file image")
+return r({},t,a({},i,o))},{})},o=/\[image(.*?)]/gi;e=o.exec(n);){var l=i(e[1]),d=(0,s.default)("<img/>").attr(r({},l,{id:void 0,"data-id":l.id,"data-shortcode":"image"})).addClass("ss-htmleditorfield-file image")
+
+
 n=n.replace(e[0],(0,s.default)("<div/>").append(d).html())}t.content=n})}}
 tinymce.PluginManager.add("ssmedia",function(e){return t.init(e)})}(),s.default.entwine("ss",function(t){t(".insert-media-react__dialog-wrapper .nav-link").entwine({onclick:function t(e){return e.preventDefault()
 

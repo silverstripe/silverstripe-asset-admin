@@ -5,6 +5,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 
+const filter = 'div[data-shortcode="embed"]';
+
 /**
  * Embed shortcodes are split into an outer <div> element and an inner <img>
  * placeholder based on the thumbnail url provided by the oembed shortcode provider.
@@ -52,13 +54,12 @@ import { ApolloProvider } from 'react-apollo';
         );
 
         // Transform [embed] shortcodes
-        const filter = 'div[data-shortcode=\'embed\']';
         content.find(filter)
           .add(content.filter(filter))
           .each(function replaceWithShortCode() {
             // Note: embed <div> contains placeholder <img>, and potentially caption <p>
             const embed = jQuery(this);
-            const placeholder = embed.find('.placeholder');
+            const placeholder = embed.find('img.placeholder');
             const caption = embed.find('.caption').text();
             const width = parseInt(placeholder.attr('width'), 10);
             const height = parseInt(placeholder.attr('height'), 10);
@@ -69,7 +70,7 @@ import { ApolloProvider } from 'react-apollo';
               class: embed.prop('class'),
               width: isNaN(width) ? null : width,
               height: isNaN(height) ? null : height,
-              caption
+              caption,
             };
             const shortCode = `[embed ${attrsFn(attrs)}]${url}[/embed]`;
             embed.replaceWith(shortCode);
@@ -121,10 +122,12 @@ import { ApolloProvider } from 'react-apollo';
             .addClass('placeholder');
 
           // Set dimensions
-          if (data.width && data.height) {
+          if (data.width) {
             base.width(data.width);
-            base.height(data.height);
             placeholder.attr('width', data.width);
+          }
+          if (data.height) {
+            // base.height(data.height);
             placeholder.attr('height', data.height);
           }
 
@@ -260,11 +263,11 @@ jQuery.entwine('ss', ($) => {
       }
 
       // Find root embed shortcode
-      const element = node.closest('[data-shortcode=\'embed\']');
+      const element = node.closest(filter).add(node.filter(filter));
       if (!element.length) {
         return data;
       }
-      const image = element.children('.placeholder');
+      const image = element.children('img.placeholder');
       const caption = element.children('.caption').text();
       const width = parseInt(image.width(), 10);
       const height = parseInt(image.height(), 10);
@@ -288,12 +291,15 @@ jQuery.entwine('ss', ($) => {
         'center',
         'rightAlone',
         'left',
-        'right'
+        'right',
       ];
-      return alignments.find((alignment) => {
-        const expr = new RegExp(`\\b${alignment}\\b`);
-        return expr.test(cssClass);
-      });
+      if (typeof cssClass !== 'string') {
+        return '';
+      }
+      const classes = cssClass.split(' ');
+      return alignments.find((alignment) => (
+        classes.indexOf(alignment) > -1
+      ));
     },
 
     insertRemote() {
@@ -321,10 +327,12 @@ jQuery.entwine('ss', ($) => {
         .addClass('placeholder');
 
       // Set dimensions
-      if (data.Width && data.Height) {
+      if (data.Width) {
         base.width(data.Width);
-        base.height(data.Height);
         placeholder.attr('width', data.Width);
+      }
+      if (data.Height) {
+        // base.height(data.Height);
         placeholder.attr('height', data.Height);
       }
 
@@ -343,17 +351,16 @@ jQuery.entwine('ss', ($) => {
       const node = $(editor.getSelectedNode());
       let replacee = $(null);
       if (node.length) {
-        // Find find closest existing embed
-        replacee = node.closest('[data-shortcode=\'embed\']');
+        replacee = node.filter(filter);
 
-        // Fail over to closest image
+        // Find find closest existing embed
         if (replacee.length === 0) {
-          replacee = node.closest('img');
+          replacee = node.closest(filter);
         }
 
-        // Replace existing node
+        // Fail over to check if the node is an image
         if (replacee.length === 0) {
-          replacee = node;
+          replacee = node.filter('img.placeholder');
         }
       }
 

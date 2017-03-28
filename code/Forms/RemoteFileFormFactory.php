@@ -75,7 +75,8 @@ class RemoteFileFormFactory implements FormFactory
 
         if ($context['type'] === 'create') {
             $fields = [
-                TextField::create('Url',
+                TextField::create(
+                    'Url',
                     _t(
                         'RemoteFileForm.UrlDescription',
                         'Embed Youtube and Vimeo videos, images and other media directly from the web.'
