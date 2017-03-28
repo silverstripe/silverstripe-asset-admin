@@ -6,6 +6,7 @@
   "require": {
     "silverstripe/cms": "^4@dev",
     "silverstripe/framework": "^4@dev",
+    "silverstripe/campaign-admin": "^1@dev",
     "silverstripe/graphql": "^0.2@dev"
   },
   "require-dev": {
