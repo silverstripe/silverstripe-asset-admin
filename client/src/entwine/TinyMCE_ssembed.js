@@ -110,8 +110,8 @@ import { ApolloProvider } from 'react-apollo';
 
           // Add base div
           const base = jQuery('<div/>')
-            .data('url', data.url || matches[2])
-            .data('shortcode', 'embed')
+            .attr('data-url', data.url || matches[2])
+            .attr('data-shortcode', 'embed')
             .addClass(data.class)
             .addClass('ss-htmleditorfield-file embed');
 
@@ -128,14 +128,14 @@ import { ApolloProvider } from 'react-apollo';
             placeholder.attr('height', data.height);
           }
 
-          base.appendChild(placeholder);
+          base.append(placeholder);
 
           // Add caption p tag
           if (data.caption) {
             const caption = jQuery('<p />')
               .addClass('caption')
               .text(data.caption);
-            base.appendChild(caption);
+            base.append(caption);
           }
 
           // Inject into code
@@ -195,11 +195,6 @@ jQuery.entwine('ss', ($) => {
       const attrs = this.getOriginalAttributes();
       const InsertEmbedModal = window.InsertEmbedModal.default;
 
-      // @todo attrs doesn't seem to populate Url when creating a new oembed
-      // something to look at?
-      throw new Error('see above');
-      
-
       if (!InsertEmbedModal) {
         throw new Error('Invalid Insert embed modal component found');
       }
@@ -238,7 +233,6 @@ jQuery.entwine('ss', ($) => {
     _handleInsert(data) {
       const oldData = this.getData();
       this.setData(Object.assign({ Url: oldData.Url }, data));
-
       this.insertRemote();
       this.close();
     },
@@ -254,21 +248,21 @@ jQuery.entwine('ss', ($) => {
      * @returns {object}
      */
     getOriginalAttributes() {
+      const data = this.getData();
       const $field = this.getElement();
       if (!$field) {
-        return {};
+        return data;
       }
 
       const node = $($field.getEditor().getSelectedNode());
       if (!node.length) {
-        return {};
+        return data;
       }
-      const data = this.getData();
 
       // Find root embed shortcode
       const element = node.closest('[data-shortcode=\'embed\']');
       if (!element.length) {
-        return {};
+        return data;
       }
       const image = element.children('.placeholder');
       const caption = element.children('.caption').text();
@@ -316,8 +310,8 @@ jQuery.entwine('ss', ($) => {
 
       // Add base div
       const base = jQuery('<div/>')
-        .data('url', data.Url)
-        .data('shortcode', 'embed')
+        .attr('data-url', data.Url)
+        .attr('data-shortcode', 'embed')
         .addClass(data.Placement)
         .addClass('ss-htmleditorfield-file embed');
 
@@ -335,14 +329,14 @@ jQuery.entwine('ss', ($) => {
       }
 
       // Add to base
-      base.appendChild(placeholder);
+      base.append(placeholder);
 
       // Add caption p tag
       if (data.CaptionText) {
         const caption = jQuery('<p />')
           .addClass('caption')
           .text(data.CaptionText);
-        base.appendChild(caption);
+        base.append(caption);
       }
 
       // Find best place to put this embed
@@ -369,7 +363,7 @@ jQuery.entwine('ss', ($) => {
       } else {
         // Otherwise insert the whole HTML content
         editor.repaint();
-        editor.insertContent($('<div />').append(base).html(), { skip_undo: 1 });
+        editor.insertContent($('<div />').append(base.clone()).html(), { skip_undo: 1 });
       }
 
       editor.addUndo();

@@ -28,11 +28,11 @@ class RemoteFileFormFactory implements FormFactory
 {
     use Extensible;
     use Configurable;
-    
+
     private static $fileurl_scheme_whitelist = ['http', 'https'];
-    
+
     private static $fileurl_domain_whitelist = [];
-    
+
     /**
      * @param Controller $controller
      * @param string $name
@@ -47,32 +47,32 @@ class RemoteFileFormFactory implements FormFactory
                 throw new InvalidArgumentException("Missing required context $required");
             }
         }
-    
+
         $fields = $this->getFormFields($controller, $name, $context);
         $actions = $this->getFormActions($controller, $name, $context);
-        
+
         $validator = new RequiredFields();
         $form = Form::create($controller, $name, $fields, $actions, $validator);
         $form->addExtraClass('form--fill-height');
         $form->addExtraClass('form--no-dividers');
         $form->addExtraClass('insert-embed-modal--'. strtolower($context['type']));
-    
+
         // Extend form
         $this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
-    
+
         return $form;
     }
-    
+
     public function getRequiredContext()
     {
         return ['type'];
     }
-    
+
     protected function getFormFields($controller, $name, $context)
     {
         $fields = [];
         $url = (isset($context['url'])) ? $context['url'] : null;
-        
+
         if ($context['type'] === 'create') {
             $fields = [
                 TextField::create('Url',
@@ -84,7 +84,7 @@ class RemoteFileFormFactory implements FormFactory
                 ->addExtraClass('insert-embed-modal__url-create'),
             ];
         }
-        
+
         if ($context['type'] === 'edit' && $url && $this->validateUrl($url)) {
             $embed = $this->getEmbed($url);
             $alignments = array(
@@ -94,7 +94,7 @@ class RemoteFileFormFactory implements FormFactory
                 'left' => _t('AssetAdmin.AlignmentLeft', 'Left wrap'),
                 'right' => _t('AssetAdmin.AlignmentRight', 'Right wrap'),
             );
-            
+
             $fields = CompositeField::create([
                 LiteralField::create(
                     'Preview',
@@ -106,7 +106,9 @@ class RemoteFileFormFactory implements FormFactory
                 )->addExtraClass('insert-embed-modal__preview-container'),
                 HiddenField::create('PreviewUrl', 'PreviewUrl', $embed->getPreviewURL()),
                 CompositeField::create([
-                    ReadonlyField::create('Url', $embed->getName(), $url),
+                    TextField::create('UrlPreview', $embed->getName(), $url)
+                        ->setReadonly(true),
+                    HiddenField::create('Url', false, $url),
                     TextField::create('CaptionText', _t('AssetAdmin.Caption', 'Caption')),
                     OptionsetField::create(
                         'Placement',
@@ -128,21 +130,21 @@ class RemoteFileFormFactory implements FormFactory
                 ])->addExtraClass('flexbox-area-grow'),
             ])->addExtraClass('insert-embed-modal__fields--fill-width');
         }
-        
+
         return FieldList::create($fields);
     }
-    
+
     protected function getFormActions($controller, $name, $context)
     {
         $actions = [];
-        
+
         if ($context['type'] === 'create') {
             $actions = [
                 FormAction::create('addmedia', _t('RemoteFileForm.AddMedia', 'Add media'))
                     ->setSchemaData(['data' => ['buttonStyle' => 'primary']]),
             ];
         }
-        
+
         if ($context['type'] === 'edit') {
             $actions = [
                 FormAction::create('insertmedia', _t('RemoteFileForm.InsertMedia', 'Insert media'))
@@ -150,10 +152,10 @@ class RemoteFileFormFactory implements FormFactory
                 FormAction::create('cancel', _t('RemoteFileForm.Cancel', 'Cancel')),
             ];
         }
-    
+
         return FieldList::create($actions);
     }
-    
+
     /**
      * @param $url
      * @return bool
@@ -185,11 +187,11 @@ class RemoteFileFormFactory implements FormFactory
         }
         return true;
     }
-    
+
     protected function getEmbed($url)
     {
         $embed = new HTMLEditorField_Embed($url);
-        
+
         return $embed;
     }
 }
