@@ -5,6 +5,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 
+/**
+ * Embed shortcodes are split into an outer <div> element and an inner <img>
+ * placeholder based on the thumbnail url provided by the oembed shortcode provider.
+ */
 (() => {
   const ssembed = {
     init: (editor) => {
@@ -48,23 +52,27 @@ import { ApolloProvider } from 'react-apollo';
         );
 
         // Transform [embed] shortcodes
-        content.find('.ss-htmleditorfield-file.embed')
-          .add(content.filter('.ss-htmleditorfield-file.embed'))
+        const filter = 'div[data-shortcode=\'embed\']';
+        content.find(filter)
+          .add(content.filter(filter))
           .each(function replaceWithShortCode() {
-            const image = jQuery(this);
-            const width = parseInt(image.attr('width'), 10);
-            const height = parseInt(image.attr('height'), 10);
+            // Note: embed <div> contains placeholder <img>, and potentially caption <p>
+            const embed = jQuery(this);
+            const placeholder = embed.find('.placeholder');
+            const caption = embed.find('.caption').text();
+            const width = parseInt(placeholder.attr('width'), 10);
+            const height = parseInt(placeholder.attr('height'), 10);
+            const url = embed.data('url');
             const attrs = {
-              Url: image.data('url'),
-              PreviewUrl: image.attr('src'),
-              Width: isNaN(width) ? 0 : width,
-              Height: isNaN(height) ? 0 : height,
-              Placement: image.data('cssclass'),
-              thumbnail: image.attr('src'),
-              class: image.attr('class'),
+              url,
+              thumbnail: placeholder.prop('src'),
+              class: embed.prop('class'),
+              width: isNaN(width) ? null : width,
+              height: isNaN(height) ? null : height,
+              caption
             };
-            const shortCode = `[embed ${attrsFn(attrs)}]${image.data('url')}[/embed]`;
-            image.replaceWith(shortCode);
+            const shortCode = `[embed ${attrsFn(attrs)}]${url}[/embed]`;
+            embed.replaceWith(shortCode);
           });
 
         // Insert outerHTML in order to retain all nodes incl. <script>
@@ -99,18 +107,41 @@ import { ApolloProvider } from 'react-apollo';
         let matches = shortTagEmbegRegex.exec(content);
         while (matches) {
           const data = attrFromStrFn(matches[1]);
-          const attrs = {
-            src: data.PreviewUrl || data.thumbnail,
-            width: data.Width || data.width,
-            height: data.Height || data.height,
-            class: data.class,
-            'data-url': data.Url || matches[2],
-            'data-cssclass': data.Placement || data.class,
-          };
-          const el = jQuery('<img/>').attr(attrs).addClass('ss-htmleditorfield-file embed');
-          el.addClass(data.Placement);
 
-          content = content.replace(matches[0], (jQuery('<div/>').append(el).html()));
+          // Add base div
+          const base = jQuery('<div/>')
+            .data('url', data.url || matches[2])
+            .data('shortcode', 'embed')
+            .addClass(data.class)
+            .addClass('ss-htmleditorfield-file embed');
+
+          // Add placeholder
+          const placeholder = jQuery('<img />')
+            .attr('src', data.thumbnail)
+            .addClass('placeholder');
+
+          // Set dimensions
+          if (data.width && data.height) {
+            base.width(data.width);
+            base.height(data.height);
+            placeholder.attr('width', data.width);
+            placeholder.attr('height', data.height);
+          }
+
+          base.appendChild(placeholder);
+
+          // Add caption p tag
+          if (data.caption) {
+            const caption = jQuery('<p />')
+              .addClass('caption')
+              .text(data.caption);
+            base.appendChild(caption);
+          }
+
+          // Inject into code
+          content = content.replace(matches[0], base.html());
+
+          // Search for next match
           matches = shortTagEmbegRegex.exec(content);
         }
 
@@ -163,6 +194,11 @@ jQuery.entwine('ss', ($) => {
       const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
       const InsertEmbedModal = window.InsertEmbedModal.default;
+
+      // @todo attrs doesn't seem to populate Url when creating a new oembed
+      // something to look at?
+      throw new Error('see above');
+      
 
       if (!InsertEmbedModal) {
         throw new Error('Invalid Insert embed modal component found');
@@ -229,40 +265,41 @@ jQuery.entwine('ss', ($) => {
       }
       const data = this.getData();
 
-      const nodeParent = node.parent('.captionImage');
-      let element = $(null);
-      let image = $(null);
-
-      if (node.hasClass('captionImage')) {
-        if (node.children('img').length
-          && node.children('.caption').length) {
-          element = node;
-          image = element.children('img');
-        }
-      } else if (nodeParent.length) {
-        if (nodeParent.children('img').length
-          && nodeParent.children('.caption').length) {
-          element = nodeParent;
-          image = element.children('img');
-        }
-      } else if (node.is('img')) {
-        image = node;
+      // Find root embed shortcode
+      const element = node.closest('[data-shortcode=\'embed\']');
+      if (!element.length) {
+        return {};
       }
-
+      const image = element.children('.placeholder');
       const caption = element.children('.caption').text();
       const width = parseInt(image.width(), 10);
       const height = parseInt(image.height(), 10);
 
-      const attrs = {
-        Url: image.data('url') || data.Url,
+      return {
+        Url: element.data('url') || data.Url,
         CaptionText: caption,
         PreviewUrl: image.attr('src'),
-        Width: isNaN(width) ? 0 : width,
-        Height: isNaN(height) ? 0 : height,
-        Placement: image.data('cssclass'),
+        Width: isNaN(width) ? null : width,
+        Height: isNaN(height) ? null : height,
+        Placement: this.findPosition(element.prop('class')),
       };
+    },
 
-      return attrs;
+    /**
+     * Calculate placement from css class
+     */
+    findPosition(cssClass) {
+      const alignments = [
+        'leftAlone',
+        'center',
+        'rightAlone',
+        'left',
+        'right'
+      ];
+      return alignments.find((alignment) => {
+        const expr = new RegExp(`\\b${alignment}\\b`);
+        return expr.test(cssClass);
+      });
     },
 
     insertRemote() {
@@ -274,67 +311,65 @@ jQuery.entwine('ss', ($) => {
       if (!editor) {
         return false;
       }
-      const node = $(editor.getSelectedNode());
 
       const data = this.getData();
-      const attrs = {
-        src: data.PreviewUrl,
-        width: data.Width,
-        height: data.Height,
-        'data-url': data.Url,
-        'data-cssclass': data.Placement,
-      };
 
-      const nodeParent = node.parent('.captionImage');
-      let element = $('<div class="captionImage"><p class="caption"></p></div>');
-      let image = $(null);
-      let replacee = $(null);
+      // Add base div
+      const base = jQuery('<div/>')
+        .data('url', data.Url)
+        .data('shortcode', 'embed')
+        .addClass(data.Placement)
+        .addClass('ss-htmleditorfield-file embed');
 
-      if (node.hasClass('captionImage')) {
-        if (node.children('img').length
-          && node.children('.caption').length) {
-          element = node;
-          image = element.children('img');
-        }
-        replacee = node;
-      } else if (nodeParent.length) {
-        if (nodeParent.children('img').length
-          && nodeParent.children('.caption').length) {
-          element = nodeParent;
-          image = element.children('img');
-        }
-        replacee = nodeParent;
-      } else if (node.is('img')) {
-        image = replacee = node;
+      // Add placeholder image
+      const placeholder = jQuery('<img />')
+        .attr('src', data.PreviewUrl)
+        .addClass('placeholder');
+
+      // Set dimensions
+      if (data.Width && data.Height) {
+        base.width(data.Width);
+        base.height(data.Height);
+        placeholder.attr('width', data.Width);
+        placeholder.attr('height', data.Height);
       }
 
-      if (!image.length) {
-        image = $('<img />');
-      }
+      // Add to base
+      base.appendChild(placeholder);
 
-      image
-        .attr(attrs)
-        // cleans up class, removes previously set Placement value
-        .attr('class', `${data.Placement} ss-htmleditorfield-file embed`);
-
+      // Add caption p tag
       if (data.CaptionText) {
-        element
-          .prepend(image)
-          .attr('class', `${data.Placement} captionImage`)
-          .attr('width', data.Width)
-          .children('.caption').text(data.CaptionText);
-      } else {
-        element = image;
+        const caption = jQuery('<p />')
+          .addClass('caption')
+          .text(data.CaptionText);
+        base.appendChild(caption);
       }
 
-      if (replacee.length) {
-        if (replacee.not(element).length) {
-          replacee.replaceWith(element);
+      // Find best place to put this embed
+      const node = $(editor.getSelectedNode());
+      let replacee = $(null);
+      if (node.length) {
+        // Find find closest existing embed
+        replacee = node.closest('[data-shortcode=\'embed\']');
+
+        // Fail over to closest image
+        if (replacee.length === 0) {
+          replacee = node.closest('img');
         }
+
+        // Replace existing node
+        if (replacee.length === 0) {
+          replacee = node;
+        }
+      }
+
+      // Inject
+      if (replacee.length) {
+        replacee.replaceWith(base);
       } else {
         // Otherwise insert the whole HTML content
         editor.repaint();
-        editor.insertContent($('<div/>').append(element.clone()).html(), { skip_undo: 1 });
+        editor.insertContent($('<div />').append(base).html(), { skip_undo: 1 });
       }
 
       editor.addUndo();

@@ -8,13 +8,13 @@ for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},
 !function(){var t={init:function t(e){e.addButton("ssmedia",{icon:"image",title:"Insert Media",cmd:"ssmedia"}),e.addMenuItem("ssmedia",{icon:"image",text:"Insert Media",cmd:"ssmedia"}),e.addCommand("ssmedia",function(){
 (0,s.default)("#"+e.id).entwine("ss").openMediaDialog()}),e.on("BeforeExecCommand",function(t){var n=t.command,i=t.ui,a=t.value
 "mceAdvImage"!==n&&"mceImage"!==n||(t.preventDefault(),e.execCommand("ssmedia",i,a))}),e.on("SaveContent",function(t){var e=(0,s.default)(t.content),n=function t(e){return Object.keys(e).map(function(t){
-return e[t]?t+'="'+e[t]+'"':null}).filter(function(t){return null!==t}).join(" ")}
-e.find(".ss-htmleditorfield-file.image").add(e.filter(".ss-htmleditorfield-file.image")).each(function(){var t=(0,s.default)(this),e={src:t.attr("src"),id:t.data("id"),width:t.attr("width"),height:t.attr("height"),
-class:t.attr("class"),title:t.attr("title"),alt:t.attr("alt")},i="[image "+n(e)+"]"
+return e[t]?t+'="'+e[t]+'"':null}).filter(function(t){return null!==t}).join(" ")},i="img[data-shortcode='image']"
+e.find(i).add(e.filter(i)).each(function(){var t=(0,s.default)(this),e={src:t.attr("src"),id:t.data("id"),width:t.attr("width"),height:t.attr("height"),class:t.attr("class"),title:t.attr("title"),alt:t.attr("alt")
+},i="[image "+n(e)+"]"
 t.replaceWith(i)}),t.content="",e.each(function(){void 0!==this.outerHTML&&(t.content+=this.outerHTML)})}),e.on("BeforeSetContent",function(t){for(var e=null,n=t.content,i=function t(e){return e.match(/([^\s\/'"=,]+)\s*=\s*(('([^']+)')|("([^"]+)")|([^\s,\]]+))/g).reduce(function(t,e){
 var n=e.match(/^([^\s\/'"=,]+)\s*=\s*(?:(?:'([^']+)')|(?:"([^"]+)")|(?:[^\s,\]]+))$/),i=n[1],o=n[2]||n[3]||n[4]
-return r({},t,a({},i,o))},{})},o=/\[image(.*?)]/gi;e=o.exec(n);){var l=i(e[1]),d=(0,s.default)("<img/>").attr({src:l.src,width:l.width,height:l.height,class:l.class,alt:l.alt,title:l.title,"data-id":l.id
-})
+return r({},t,a({},i,o))},{})},o=/\[image(.*?)]/gi;e=o.exec(n);){var l=i(e[1]),d=(0,s.default)("<img/>").attr({src:l.src,width:l.width,height:l.height,class:l.class,alt:l.alt,title:l.title,"data-id":l.id,
+"data-shortcode":"image"}).addClass("ss-htmleditorfield-file image")
 n=n.replace(e[0],(0,s.default)("<div/>").append(d).html())}t.content=n})}}
 tinymce.PluginManager.add("ssmedia",function(e){return t.init(e)})}(),s.default.entwine("ss",function(t){t(".insert-media-react__dialog-wrapper .nav-link").entwine({onclick:function t(e){return e.preventDefault()
 
@@ -26,16 +26,19 @@ if(!l)throw new Error("Invalid Insert media modal component found")
 delete s.url,m.default.render(u.default.createElement(h.ApolloProvider,{store:r,client:o},u.default.createElement(l,{title:!1,show:e,onInsert:a,onHide:i,bodyClassName:"modal__dialog",className:"insert-media-react__dialog-wrapper",
 fileAttributes:s})),this[0])},_handleInsert:function t(e,n){var i=!1
 this.setData(r({},e,n))
-try{switch(n.category){case"image":i=this.insertImage()
+try{var a=null
+switch(a=n?n.category:"image"){case"image":i=this.insertImage()
 break
 default:i=this.insertFile()}}catch(t){this.statusMessage(t,"bad")}return i&&this.close(),Promise.resolve()},getOriginalAttributes:function e(){var n=this.getElement()
 if(!n)return{}
 var i=n.getEditor().getSelectedNode()
 if(!i)return{}
-var a=t(i),r=a.parent(".captionImage").find(".caption"),o={url:a.attr("src"),AltText:a.attr("alt"),InsertWidth:a.attr("width"),InsertHeight:a.attr("height"),TitleTooltip:a.attr("title"),Alignment:a.attr("class"),
+var a=t(i),r=a.parent(".captionImage").find(".caption"),o={url:a.attr("src"),AltText:a.attr("alt"),InsertWidth:a.attr("width"),InsertHeight:a.attr("height"),TitleTooltip:a.attr("title"),Alignment:this.findPosition(a.attr("class")),
 Caption:r.text(),ID:a.attr("data-id")}
-return["InsertWidth","InsertHeight","ID"].forEach(function(t){o[t]="string"==typeof o[t]?parseInt(o[t],10):null}),o},getAttributes:function t(){var e=this.getData()
-return{src:e.url,alt:e.AltText,width:e.InsertWidth,height:e.InsertHeight,title:e.TitleTooltip,class:e.Alignment,"data-id":e.ID}},getExtraData:function t(){var e=this.getData()
+return["InsertWidth","InsertHeight","ID"].forEach(function(t){o[t]="string"==typeof o[t]?parseInt(o[t],10):null}),o},findPosition:function t(e){var n=["leftAlone","center","rightAlone","left","right"]
+return n.find(function(t){var n=new RegExp("\\b"+t+"\\b")
+return n.test(e)})},getAttributes:function t(){var e=this.getData()
+return{src:e.url,alt:e.AltText,width:e.InsertWidth,height:e.InsertHeight,title:e.TitleTooltip,class:e.Alignment,"data-id":e.ID,"data-shortcode":"image"}},getExtraData:function t(){var e=this.getData()
 return{CaptionText:e&&e.Caption}},insertFile:function t(){return this.statusMessage(d.default._t("HTMLEditorField_Toolbar.ERROR_OEMBED_REMOTE","Embed is only compatible with remote files"),"bad"),!1},insertImage:function e(){
 var n=this.getElement()
 if(!n)return!1
@@ -46,7 +49,7 @@ s&&s.parent().is(".captionImage")&&(s=s.parent())
 var l=a&&a.is("img")?a:t("<img />")
 l.attr(r).addClass("ss-htmleditorfield-file image")
 var d=l.parent(".captionImage"),c=d.find(".caption")
-o.CaptionText?(d.length||(d=t("<div></div>")),d.attr("class","captionImage "+r.class).css("width",r.width),c.length||(c=t('<p class="caption"></p>').appendTo(d)),c.attr("class","caption "+r.class).text(o.CaptionText)):d=c=null
+o.CaptionText?(d.length||(d=t("<div></div>")),d.attr("class","captionImage "+r.class).removeAttr("data-mce-style").width(r.width),c.length||(c=t('<p class="caption"></p>').appendTo(d)),c.attr("class","caption "+r.class).text(o.CaptionText)):d=c=null
 
 
 var u=d||l

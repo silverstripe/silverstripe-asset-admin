@@ -56,8 +56,9 @@ import { ApolloProvider } from 'react-apollo';
         );
 
         // Transform [image] shortcodes
-        content.find('.ss-htmleditorfield-file.image')
-          .add(content.filter('.ss-htmleditorfield-file.image'))
+        const filter = 'img[data-shortcode=\'image\']';
+        content.find(filter)
+          .add(content.filter(filter))
           .each(function () {
             const el = jQuery(this);
             const attrs = {
@@ -113,7 +114,8 @@ import { ApolloProvider } from 'react-apollo';
             alt: attrs.alt,
             title: attrs.title,
             'data-id': attrs.id,
-          });
+            'data-shortcode': 'image'
+          }).addClass('ss-htmleditorfield-file image');
           content = content.replace(matches[0], (jQuery('<div/>').append(el).html()));
         }
 
@@ -205,9 +207,18 @@ jQuery.entwine('ss', ($) => {
       let result = false;
       this.setData(Object.assign({}, data, file));
 
+      // Sometimes AssetAdmin.js handleSubmitEditor() can't find the file
+      // @todo Ensure that we always return a file for any valid ID
+
       // in case of any errors, better to catch them than let them go silent
       try {
-        switch (file.category) {
+        let category = null;
+        if (file) {
+          category = file.category;
+        } else {
+          category = 'image'
+        }
+        switch (category) {
           case 'image':
             result = this.insertImage();
             break;
@@ -248,7 +259,7 @@ jQuery.entwine('ss', ($) => {
         InsertWidth: $node.attr('width'),
         InsertHeight: $node.attr('height'),
         TitleTooltip: $node.attr('title'),
-        Alignment: $node.attr('class'),
+        Alignment: this.findPosition($node.attr('class')),
         Caption: $caption.text(),
         ID: $node.attr('data-id'),
       };
@@ -259,6 +270,23 @@ jQuery.entwine('ss', ($) => {
       });
 
       return attr;
+    },
+
+    /**
+     * Calculate placement from css class
+     */
+    findPosition(cssClass) {
+      const alignments = [
+        'leftAlone',
+        'center',
+        'rightAlone',
+        'left',
+        'right'
+      ];
+      return alignments.find((alignment) => {
+        const expr = new RegExp(`\\b${alignment}\\b`);
+        return expr.test(cssClass);
+      });
     },
 
     /**
@@ -277,6 +305,7 @@ jQuery.entwine('ss', ($) => {
         title: data.TitleTooltip,
         class: data.Alignment,
         'data-id': data.ID,
+        'data-shortcode': 'image',
       };
     },
 
@@ -345,7 +374,10 @@ jQuery.entwine('ss', ($) => {
           container = $('<div></div>');
         }
 
-        container.attr('class', `captionImage ${attrs.class}`).css('width', attrs.width);
+        container
+          .attr('class', `captionImage ${attrs.class}`)
+          .removeAttr('data-mce-style')
+          .width(attrs.width);
 
         if (!caption.length) {
           caption = $('<p class="caption"></p>').appendTo(container);
