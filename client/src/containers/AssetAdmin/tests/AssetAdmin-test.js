@@ -50,7 +50,6 @@ describe('AssetAdmin', () => {
         limit: 10,
         page: 1,
       },
-      onSubmitEditor: jest.fn(),
       type: 'admin',
       files: [],
       queuedFiles: {
@@ -78,11 +77,85 @@ describe('AssetAdmin', () => {
           succeedUpload: () => null,
         },
         files: {
-          deleteFile: jest.genMockFunction()
-            .mockReturnValue(Promise.resolve()),
+          deleteFile: jest.fn(() => Promise.resolve()),
+          readFiles: jest.fn(() => Promise.resolve()),
         },
       },
     };
+  });
+
+  describe('handleSubmitEditor', () => {
+    let component = null;
+    let response = null;
+    let propSubmit = null;
+    let paramSubmit = null;
+
+    beforeEach(() => {
+      response = { record: {} };
+      propSubmit = jest.fn(() => Promise.resolve(response));
+      paramSubmit = jest.fn(() => Promise.resolve(response));
+    });
+
+    it('should call the onSubmitEditor property when that is supplied', () => {
+      component = ReactTestUtils.renderIntoDocument(
+        <AssetAdmin
+          {...props}
+          onSubmitEditor={propSubmit}
+        />);
+      component.handleSubmitEditor({}, 'action_test', paramSubmit);
+
+      expect(propSubmit).toBeCalledWith({}, 'action_test', paramSubmit, undefined);
+      expect(paramSubmit).not.toBeCalled();
+    });
+
+    it('should call the paramSubmit given when no onSubmitEditor is supplied', () => {
+      component = ReactTestUtils.renderIntoDocument(
+        <AssetAdmin
+          {...props}
+        />);
+      component.handleSubmitEditor({}, 'action_test', paramSubmit);
+
+      expect(paramSubmit).toBeCalled();
+    });
+
+    it('should call handleOpenFile if action is creating a folder in admin', () => {
+      component = ReactTestUtils.renderIntoDocument(
+        <AssetAdmin
+          {...props}
+        />);
+      component.handleOpenFile = jest.fn();
+      component.handleOpenFolder = jest.fn();
+
+      return component.handleSubmitEditor({}, 'action_createfolder', paramSubmit)
+        .then((response) => {
+          expect(component.handleOpenFile).toBeCalled();
+
+          return response.readFiles;
+        })
+        .then(() => {
+          expect(component.handleOpenFolder).not.toBeCalled();
+        });
+    });
+
+    it('should call handleOpenFolder if action is creating a folder not in admin', () => {
+      props.type = 'insert';
+      component = ReactTestUtils.renderIntoDocument(
+        <AssetAdmin
+          {...props}
+        />);
+      component.handleOpenFile = jest.fn();
+      component.handleOpenFolder = jest.fn();
+
+      return component.handleSubmitEditor({}, 'action_createfolder', paramSubmit)
+        .then((response) => {
+          expect(component.handleOpenFile).not.toBeCalled();
+
+          return response.readFiles;
+        })
+        .then(() => {
+          expect(component.handleOpenFolder).toBeCalled();
+        });
+    });
   });
 
   describe('handleBrowse', () => {

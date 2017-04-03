@@ -15,7 +15,7 @@ import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
 import readFilesQuery from 'state/files/readFilesQuery';
 import deleteFileMutation from 'state/files/deleteFileMutation';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 class AssetAdmin extends SilverStripeComponent {
 
@@ -301,7 +301,7 @@ class AssetAdmin extends SilverStripeComponent {
         }
         // TODO Update GraphQL store with new model,
         // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-        this.props.actions.files.readFiles()
+        const readFiles = this.props.actions.files.readFiles()
           .then(() => {
             // open the containing folder, since folder edit mode isn't desired
             if (action !== 'action_createfolder' || ['admin'].indexOf(this.props.type) === -1) {
@@ -309,7 +309,7 @@ class AssetAdmin extends SilverStripeComponent {
             }
           });
 
-        return response;
+        return Object.assign({}, response, { readFiles });
       });
   }
 

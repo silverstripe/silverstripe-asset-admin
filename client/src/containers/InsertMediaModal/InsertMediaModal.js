@@ -6,7 +6,7 @@ import { buildUrl } from 'containers/AssetAdmin/AssetAdminRouter';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as schemaActions from 'state/schema/SchemaActions';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 

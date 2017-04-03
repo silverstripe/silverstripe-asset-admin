@@ -511,18 +511,16 @@ describe('Gallery', () => {
 
   describe('handleCreateFolder()', () => {
     let gallery = null;
-    const mockFile = { name: 'newFolder' };
-    const promise = Promise.resolve(mockFile);
 
     beforeEach(() => {
-      props.actions.gallery.createFolder = jest.genMockFunction();
-      props.actions.gallery.createFolder.mockReturnValue(promise);
-      props.actions.gallery.addFiles = jest.genMockFunction();
+      props.onCreateFolder = jest.genMockFunction();
 
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      gallery.promptFolderName = () => 'newFolder';
+      gallery.handleCreateFolder();
+
+      expect(props.onCreateFolder).toBeCalled();
     });
   });
 });

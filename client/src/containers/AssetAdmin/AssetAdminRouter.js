@@ -4,9 +4,11 @@ import { withRouter } from 'react-router';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import { decodeQuery } from 'lib/DataFormat';
 import qs from 'qs';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
+
+const actions = Object.keys(CONSTANTS.ACTIONS).map((key) => CONSTANTS.ACTIONS[key]);
 
 /**
  * Build URL from raw components
@@ -19,7 +21,7 @@ const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
  * @return {String}
  */
 function buildUrl({ base, folderId, fileId, query, action }) {
-  if (action && Object.values(CONSTANTS.ACTIONS).indexOf(action) === -1) {
+  if (action && actions.indexOf(action) === -1) {
     throw new Error(`Invalid action provided: ${action}`);
   }
 
