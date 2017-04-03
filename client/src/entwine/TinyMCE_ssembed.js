@@ -42,7 +42,7 @@ const filter = 'div[data-shortcode="embed"]';
       });
 
       editor.on('SaveContent', (o) => {
-        const content = jQuery(o.content);
+        const content = jQuery(`<div>${o.content}</div>`);
         const attrsFn = (attrs) => (
           Object.entries(attrs)
             .map(([name, value]) => ((value)
@@ -54,12 +54,21 @@ const filter = 'div[data-shortcode="embed"]';
         );
 
         // Transform [embed] shortcodes
-        content.find(filter)
-          .add(content.filter(filter))
+        content
+          .find(filter)
           .each(function replaceWithShortCode() {
             // Note: embed <div> contains placeholder <img>, and potentially caption <p>
             const embed = jQuery(this);
+            // If placeholder has been removed, remove data-* properties and
+            // convert to non-shortcode dive
             const placeholder = embed.find('img.placeholder');
+            if (placeholder.length === 0) {
+              embed.removeAttr('data-url');
+              embed.removeAttr('data-shortcode');
+              return;
+            }
+
+            // Find nested element data
             const caption = embed.find('.caption').text();
             const width = parseInt(placeholder.attr('width'), 10);
             const height = parseInt(placeholder.attr('height'), 10);
@@ -76,17 +85,8 @@ const filter = 'div[data-shortcode="embed"]';
             embed.replaceWith(shortCode);
           });
 
-        // Insert outerHTML in order to retain all nodes incl. <script>
-        // tags which would've been filtered out with jQuery.html().
-        // Note that <script> tags might be sanitized separately based on editor config.
         // eslint-disable-next-line no-param-reassign
-        o.content = '';
-        content.each(function appendToContent() {
-          if (this.outerHTML !== undefined) {
-            // eslint-disable-next-line no-param-reassign
-            o.content += this.outerHTML;
-          }
-        });
+        o.content = content.html();
       });
       editor.on('BeforeSetContent', (o) => {
         let content = o.content;
@@ -142,7 +142,7 @@ const filter = 'div[data-shortcode="embed"]';
           }
 
           // Inject into code
-          content = content.replace(matches[0], base.html());
+          content = content.replace(matches[0], (jQuery('<div/>').append(base).html()));
 
           // Search for next match
           matches = shortTagEmbegRegex.exec(content);
@@ -190,7 +190,9 @@ jQuery.entwine('ss', ($) => {
      */
     _renderModal(show) {
       const handleHide = () => this.close();
+      // Inserts embed into page
       const handleInsert = (...args) => this._handleInsert(...args);
+      // Create edit form from url
       const handleCreate = (...args) => this._handleCreate(...args);
       const handleLoadingError = (...args) => this._handleLoadingError(...args);
       const store = window.ss.store;
@@ -229,7 +231,6 @@ jQuery.entwine('ss', ($) => {
      * Handles inserting the selected file in the modal
      *
      * @param {object} data
-     * @param {object} file
      * @returns {Promise}
      * @private
      */
@@ -267,8 +268,13 @@ jQuery.entwine('ss', ($) => {
       if (!element.length) {
         return data;
       }
-      const image = element.children('img.placeholder');
-      const caption = element.children('.caption').text();
+      const image = element.find('img.placeholder');
+      // If image has been removed then this shortcode is invalid
+      if (image.length === 0) {
+        return data;
+      }
+
+      const caption = element.find('.caption').text();
       const width = parseInt(image.width(), 10);
       const height = parseInt(image.height(), 10);
 
@@ -332,7 +338,7 @@ jQuery.entwine('ss', ($) => {
         placeholder.attr('width', data.Width);
       }
       if (data.Height) {
-        // base.height(data.Height);
+        // Note: Leave height auto sizing on parent, but set height on inner placeholder
         placeholder.attr('height', data.Height);
       }
 
