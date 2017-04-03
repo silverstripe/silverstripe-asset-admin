@@ -121,8 +121,8 @@ class Editor extends Component {
   }
 
   render() {
-    const formSchemaUrl = `${this.props.editFileSchemaUrl}/${this.props.fileId}`;
-    const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
+    const formSchemaUrl = `${this.props.schemaUrl}/${this.props.targetId}`;
+    const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.targetId}`;
     const editorClasses = [
       'panel', 'panel--padded', 'panel--scrollable', 'form--no-dividers', 'editor',
     ];
@@ -156,11 +156,11 @@ class Editor extends Component {
 Editor.propTypes = {
   dialog: React.PropTypes.bool,
   className: React.PropTypes.string,
-  fileId: React.PropTypes.number.isRequired,
+  targetId: React.PropTypes.number.isRequired,
   onClose: React.PropTypes.func.isRequired,
   onSubmit: React.PropTypes.func.isRequired,
   onDelete: React.PropTypes.func.isRequired,
-  editFileSchemaUrl: React.PropTypes.string.isRequired,
+  schemaUrl: React.PropTypes.string.isRequired,
   addToCampaignSchemaUrl: React.PropTypes.string,
   openAddCampaignModal: React.PropTypes.bool,
 };

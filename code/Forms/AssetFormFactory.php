@@ -14,6 +14,7 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\PopoverField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
@@ -56,16 +57,32 @@ abstract class AssetFormFactory implements FormFactory
 
         $fields = $this->getFormFields($controller, $name, $context);
         $actions = $this->getFormActions($controller, $name, $context);
-        $validator = new RequiredFields('Name');
+        $validator = $this->getValidator($controller, $name, $context);
         $form = Form::create($controller, $name, $fields, $actions, $validator);
 
         // Extend form
         $this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
 
         // Populate form from record
-        $form->loadDataFrom($context['Record']);
+        if (isset($context['Record'])) {
+            $form->loadDataFrom($context['Record']);
+        }
 
         return $form;
+    }
+    
+    /**
+     * Get the validator for the form to be built
+     *
+     * @param $controller
+     * @param $name
+     * @param $context
+     * @return RequiredFields
+     */
+    protected function getValidator(Controller $controller, $name, $context = []) {
+        $validator = new RequiredFields('Name');
+        
+        return $validator;
     }
 
     /**
@@ -124,11 +141,15 @@ abstract class AssetFormFactory implements FormFactory
 
     protected function getFormActions(Controller $controller, $name, $context = [])
     {
-        $record = $context['Record'];
+        $record = isset($context['Record']) ? $context['Record'] : null;
 
         $actions = new FieldList();
         if ($saveAction = $this->getSaveAction($record)) {
             $actions->push($saveAction);
+        }
+        $menu = $this->getPopoverMenu($record);
+        if ($menu && $menu->FieldList()->count()) {
+            $actions->push($menu);
         }
 
         $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
@@ -145,26 +166,63 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function getFormFields(Controller $controller, $name, $context = [])
     {
-        $record = $context['Record'];
+        $record = isset($context['Record']) ? $context['Record'] : null;
 
         // Build standard fields for all folders / files
         /** @var File $record */
         $fields = new FieldList(
             HeaderField::create('TitleHeader', $record ? $record->Title : null, 1)
                 ->addExtraClass('editor__heading'),
-            PreviewImageField::create('PreviewImage')
-                ->setRecordID($record->ID)
-                ->addExtraClass('editor__file-preview'),
             $this->getFormFieldTabs($record, $context)
         );
         if ($record) {
             $fields->push(HiddenField::create('ID', $record->ID));
+            $fields->insertAfter(
+                'TitleHeader',
+                PreviewImageField::create('PreviewImage')
+                    ->setRecordID($record->ID)
+                    ->addExtraClass('editor__file-preview')
+            );
         }
 
         $this->invokeWithExtensions('updateFormFields', $fields, $controller, $name, $context);
         return $fields;
     }
-
+    
+    /**
+     * Build popup menu
+     *
+     * @param File $record
+     * @return PopoverField
+     */
+    protected function getPopoverMenu($record)
+    {
+        // Build popover actions
+        $popoverActions = $this->getPopoverActions($record);
+        if ($popoverActions) {
+            return PopoverField::create($popoverActions)
+                ->setPlacement('top')
+                ->setButtonTooltip(_t(
+                    'SilverStripe\\AssetAdmin\\Forms\\FileFormFactory.OTHER_ACTIONS',
+                    'Other actions'
+                ));
+        }
+        return null;
+    }
+    
+    /**
+     * Get actions that go into the Popover menu
+     *
+     * @param $record
+     * @return array
+     */
+    protected function getPopoverActions($record)
+    {
+        return array_filter([
+            $this->getDeleteAction($record)
+        ]);
+    }
+    
     /**
      * Build "details" formfield tab
      *

@@ -15,6 +15,7 @@ import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
 import readFilesQuery from 'state/files/readFilesQuery';
 import deleteFileMutation from 'state/files/deleteFileMutation';
+import CONSTANTS from 'constants';
 
 class AssetAdmin extends SilverStripeComponent {
 
@@ -34,7 +35,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleBrowse = this.handleBrowse.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
-    this.handleCreateFolderSuccess = this.handleCreateFolderSuccess.bind(this);
+    this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
     this.compare = this.compare.bind(this);
   }
@@ -294,9 +295,19 @@ class AssetAdmin extends SilverStripeComponent {
     }
     return promise
       .then((response) => {
+        if (action === 'action_createfolder' && ['admin'].indexOf(this.props.type) > -1) {
+          // open the new folder in edit mode after save completes
+          this.handleOpenFile(response.record.id);
+        }
         // TODO Update GraphQL store with new model,
         // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-        this.props.actions.files.readFiles();
+        this.props.actions.files.readFiles()
+          .then(() => {
+            // open the containing folder, since folder edit mode isn't desired
+            if (action !== 'action_createfolder' || ['admin'].indexOf(this.props.type) === -1) {
+              this.handleOpenFolder(this.props.folderId);
+            }
+          });
 
         return response;
       });
@@ -374,10 +385,13 @@ class AssetAdmin extends SilverStripeComponent {
     // see https://github.com/silverstripe/silverstripe-graphql/issues/14
   }
 
-  handleCreateFolderSuccess() {
-    // TODO Update GraphQL store with new model,
-    // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-    this.props.actions.files.readFiles();
+  handleCreateFolder() {
+    this.props.onBrowse(
+      this.props.folderId,
+      null,
+      this.props.query,
+      CONSTANTS.ACTIONS.CREATE_FOLDER
+    );
   }
 
   handleMoveFilesSuccess(folderId, fileIds) {
@@ -433,7 +447,7 @@ class AssetAdmin extends SilverStripeComponent {
         onOpenFile={this.handleOpenFile}
         onOpenFolder={this.handleOpenFolder}
         onSuccessfulUpload={this.handleUpload}
-        onCreateFolderSuccess={this.handleCreateFolderSuccess}
+        onCreateFolder={this.handleCreateFolder}
         onMoveFilesSuccess={this.handleMoveFilesSuccess}
         onSort={this.handleSort}
         onSetPage={this.handleSetPage}
@@ -457,29 +471,40 @@ class AssetAdmin extends SilverStripeComponent {
     // 'select' -> Select a file with no editable fields
     // 'edit' (default) -> edit files
     let schemaUrl = null;
-    switch (this.props.type) {
-      case 'insert':
-        schemaUrl = config.form.fileInsertForm.schemaUrl;
-        break;
-      case 'select':
-        schemaUrl = config.form.fileSelectForm.schemaUrl;
-        break;
-      case 'admin':
-      default:
-        schemaUrl = config.form.fileEditForm.schemaUrl;
-        break;
-    }
+    let targetId = null;
 
-    if (!this.props.fileId) {
+    if (this.props.viewAction === CONSTANTS.ACTIONS.CREATE_FOLDER) {
+      schemaUrl = config.form.folderCreateForm.schemaUrl;
+      targetId = this.props.folderId;
+    }
+    else if (this.props.viewAction === 'edit') {
+      switch (this.props.type) {
+        case 'insert':
+          schemaUrl = config.form.fileInsertForm.schemaUrl;
+          break;
+        case 'select':
+          schemaUrl = config.form.fileSelectForm.schemaUrl;
+          break;
+        case 'admin':
+        default:
+          schemaUrl = config.form.fileEditForm.schemaUrl;
+          break;
+      }
+
+      if (!this.props.fileId) {
+        return null;
+      }
+      targetId = this.props.fileId;
+    } else {
       return null;
     }
 
     return (
       <Editor
         className={(this.props.type === 'insert') ? 'editor--dialog' : ''}
-        fileId={this.props.fileId}
+        targetId={targetId}
         onClose={this.handleCloseFile}
-        editFileSchemaUrl={schemaUrl}
+        schemaUrl={schemaUrl}
         onSubmit={this.handleSubmitEditor}
         onDelete={this.handleDelete}
         addToCampaignSchemaUrl={config.form.addToCampaignForm.schemaUrl}

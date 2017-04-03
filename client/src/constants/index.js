@@ -1,6 +1,10 @@
 import i18n from 'i18n';
 
 export default {
+  ACTIONS: {
+    CREATE_FOLDER: 'create-folder',
+    EDIT_FILE: 'edit',
+  },
   MOVE_SUCCESS_DURATION: 3000,
   CSS_TRANSITION_TIME: 300,
   SMALL_THUMBNAIL_HEIGHT: 60,

@@ -9,6 +9,12 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 use SilverStripe\GraphQL\Manager;
 
+/**
+ * API available but currently not used, as create folder uses FormBuilder
+ *
+ * Class CreateFolderMutationCreator
+ * @package SilverStripe\AssetAdmin\GraphQL
+ */
 class CreateFolderMutationCreator extends MutationCreator implements OperationResolver
 {
     /**

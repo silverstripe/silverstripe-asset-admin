@@ -25,7 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
     indexRoute: { component: AssetAdminRouter },
     childRoutes: [
       {
-        path: 'show/:folderId/edit/:fileId',
+        path: 'show/:folderId/:viewAction/:fileId',
+        component: AssetAdminRouter,
+      },
+      {
+        path: 'show/:folderId/:viewAction',
         component: AssetAdminRouter,
       },
       {

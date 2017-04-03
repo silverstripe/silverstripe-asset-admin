@@ -4,6 +4,8 @@ namespace SilverStripe\AssetAdmin\Controller;
 
 use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
+use SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory;
+use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\CampaignAdmin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
@@ -13,7 +15,6 @@ use SilverStripe\AssetAdmin\Forms\FileSearchFormFactory;
 use SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
-use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
 use SilverStripe\Assets\File;
@@ -24,7 +25,6 @@ use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -99,6 +99,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'apiCreateFile',
         'apiUploadFile',
         'apiHistory',
+        'folderCreateForm',
         'fileEditForm',
         'fileHistoryForm',
         'addToCampaignForm',
@@ -176,6 +177,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ],
                 'fileSearchForm' => [
                     'schemaUrl' => $this->Link('schema/fileSearchForm')
+                ],
+                'folderCreateForm' => [
+                    'schemaUrl' => $this->Link('schema/folderCreateForm')
                 ],
             ],
         ]);
@@ -765,7 +769,44 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         ]);
         return $form;
     }
-
+    
+    /**
+     * @param array $data
+     * @param Form $form
+     * @return HTTPResponse
+     */
+    public function createfolder($data, $form)
+    {
+        $parentID = isset($data['ParentID']) ? intval($data['ParentID']) : 0;
+        if ($parentID) {
+            $parent = Folder::get()->byID($parentID);
+            if (!$parent) {
+                throw new \InvalidArgumentException(sprintf(
+                    '%s#%s not found',
+                    Folder::class,
+                    $parentID
+                ));
+            }
+        }
+    
+        // Check permission
+        if (!Folder::singleton()->canCreate(Member::currentUser(), $data)) {
+            throw new \InvalidArgumentException(sprintf(
+                '%s create not allowed',
+                Folder::class
+            ));
+        }
+    
+        $folder = Folder::create();
+        $form->saveInto($folder);
+        $folder->write();
+    
+        // Return the record data in the same response as the schema to save a postback
+        $schemaData = ['record' => $this->getObjectFromData($folder)];
+        $schemaId = Controller::join_links($this->Link('schema/folderCreateForm'), $folder->ID);
+        return $this->getSchemaResponse($schemaId, $form, null, $schemaData);
+    }
+    
     /**
      * @param array $data
      * @param Form $form
@@ -1047,7 +1088,31 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $record->ID);
         return $this->getSchemaResponse($schemaId, $form, null, $schemaData);
     }
-
+    
+    /**
+     * @return Form
+     */
+    public function folderCreateForm()
+    {
+        // Get ID either from posted back value, or url parameter
+        $request = $this->getRequest();
+        $id = $request->param('ID') ?: 0;
+        return $this->getFolderCreateForm($id);
+    }
+    
+    /**
+     * Returns the form to be used for creating a new folder
+     * @param $parentId
+     * @return Form
+     */
+    public function getFolderCreateForm($parentId = 0)
+    {
+        $factory = Injector::inst()->get(FolderCreateFormFactory::class);
+        $form = $factory->getForm($this, 'folderCreateForm', [ 'ParentID' => $parentId ]);
+        
+        return $form;
+    }
+    
     /**
      * Scaffold a search form.
      * Note: This form does not submit to itself, but rather uses the apiReadFolder endpoint

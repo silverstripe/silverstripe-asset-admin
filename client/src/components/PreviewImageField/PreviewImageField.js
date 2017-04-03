@@ -216,7 +216,8 @@ class PreviewImageField extends Component {
   renderImage() {
     const data = this.props.data;
 
-    if (!data.exists && !this.props.upload.url) {
+    // if not mocking the preview image (with icon), doesn't exist and no upload url...
+    if (!data.mock && !data.exists && !this.props.upload.url) {
       return (
         <div className="editor__file-preview-message--file-missing">
           {i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found')}
@@ -343,6 +344,7 @@ PreviewImageField.propTypes = {
     parentid: PropTypes.number,
     version: PropTypes.number,
     url: PropTypes.string,
+    mock: PropTypes.bool,
     exists: PropTypes.bool,
     preview: PropTypes.string,
     category: PropTypes.string,

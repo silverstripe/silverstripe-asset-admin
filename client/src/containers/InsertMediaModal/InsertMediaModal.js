@@ -6,8 +6,16 @@ import { buildUrl } from 'containers/AssetAdmin/AssetAdminRouter';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as schemaActions from 'state/schema/SchemaActions';
+import CONSTANTS from 'constants';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
+
+const initialState = {
+  folderId: 0,
+  fileId: null,
+  query: {},
+  action: CONSTANTS.ACTIONS.EDIT_FILE,
+};
 
 class InsertMediaModal extends Component {
   constructor(props) {
@@ -17,11 +25,7 @@ class InsertMediaModal extends Component {
     this.handleBrowse = this.handleBrowse.bind(this);
     this.getUrl = this.getUrl.bind(this);
 
-    this.state = {
-      folderId: 0,
-      fileId: props.fileAttributes.ID,
-      query: {},
-    };
+    this.state = Object.assign({}, initialState, { fileId: props.fileAttributes.ID });
   }
 
   componentWillMount() {
@@ -30,11 +34,7 @@ class InsertMediaModal extends Component {
 
   componentWillReceiveProps(props) {
     if (!props.show && this.props.show) {
-      this.setState({
-        folderId: 0,
-        fileId: null,
-        query: {},
-      });
+      this.setState(initialState);
     }
     if (props.show && !this.props.show && props.fileAttributes.ID) {
       this.setOverrides(props);
@@ -42,6 +42,7 @@ class InsertMediaModal extends Component {
       this.setState({
         folderId: 0,
         fileId: props.fileAttributes.ID,
+        action: CONSTANTS.ACTIONS.EDIT_FILE,
       });
     }
   }
@@ -89,9 +90,10 @@ class InsertMediaModal extends Component {
    * @param {Number} folderId
    * @param {Number} fileId
    * @param {Object} query
+   * @param {String} action
    * @returns {String}
    */
-  getUrl(folderId = 0, fileId = null, query = {}) {
+  getUrl(folderId = 0, fileId = null, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE) {
     const newFolderId = parseInt(folderId || 0, 10);
     const newFileId = parseInt(fileId || 0, 10);
 
@@ -102,7 +104,13 @@ class InsertMediaModal extends Component {
       delete newQuery.page;
     }
 
-    return buildUrl(this.props.sectionConfig.url, newFolderId, newFileId, newQuery);
+    return buildUrl({
+      base: this.props.sectionConfig.url,
+      folderId: newFolderId,
+      fileId: newFileId,
+      query: newQuery,
+      action,
+    });
   }
 
   /**
@@ -116,7 +124,11 @@ class InsertMediaModal extends Component {
    * @return {Number} File ID being viewed
    */
   getFileId() {
-    return parseInt(this.state.fileId || this.props.fileId, 10);
+    return parseInt(this.state.fileId || this.props.fileId || 0, 10);
+  }
+
+  getViewAction() {
+    return this.state.action || CONSTANTS.ACTIONS.EDIT_FILE;
   }
 
   /**
@@ -132,6 +144,7 @@ class InsertMediaModal extends Component {
       sectionConfig: this.props.sectionConfig,
       folderId: this.getFolderId(),
       fileId: this.getFileId(),
+      viewAction: this.getViewAction(),
       query: this.state.query,
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
@@ -165,24 +178,35 @@ class InsertMediaModal extends Component {
    * asset admin section.
    *
    * @param {object} data
+   * @param {string} action
+   * @param {function} submitFn
+   * @param {object} file
    */
   handleSubmit(data, action, submitFn, file) {
+    if (action === 'action_createfolder') {
+      return submitFn();
+    }
     return this.props.onInsert(data, file);
   }
 
   /**
    * Handle browsing through the asset admin section.
    *
-   *
    * @param {number} folderId
    * @param {number} fileId
    * @param {object} query
+   * @param {string} action
    */
-  handleBrowse(folderId, fileId, query = {}) {
+  handleBrowse(folderId, fileId, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE) {
+    if (action && Object.values(CONSTANTS.ACTIONS).indexOf(action) === -1) {
+      throw new Error(`Invalid action provided: ${action}`);
+    }
+
     this.setState({
       folderId,
       fileId,
       query,
+      action,
     });
   }
 
