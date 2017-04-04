@@ -15,7 +15,6 @@ class InsertMediaModal extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleBrowse = this.handleBrowse.bind(this);
-    this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.getUrl = this.getUrl.bind(this);
 
     this.state = {
@@ -136,7 +135,6 @@ class InsertMediaModal extends Component {
       query: this.state.query,
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
-      onOpenFolder: this.handleOpenFolder,
       onSubmitEditor: this.handleSubmit,
     };
   }
@@ -186,15 +184,6 @@ class InsertMediaModal extends Component {
       fileId,
       query,
     });
-  }
-
-  /**
-   * Handle for opening a folder
-   *
-   * @param {number} folderId
-   */
-  handleOpenFolder(folderId) {
-    this.handleBrowse(folderId);
   }
 
   renderToolbarChildren() {

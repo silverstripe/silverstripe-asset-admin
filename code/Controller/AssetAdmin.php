@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
 use SilverStripe\CampaignAdmin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
@@ -9,6 +10,7 @@ use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\AssetAdmin\BatchAction\DeleteAssets;
 use SilverStripe\AssetAdmin\Forms\AssetFormFactory;
 use SilverStripe\AssetAdmin\Forms\FileSearchFormFactory;
+use SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
@@ -22,12 +24,12 @@ use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Forms\DateField;
+use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\ValidationResult;
@@ -62,7 +64,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // API access points with structured data
         'POST api/createFile' => 'apiCreateFile',
         'POST api/uploadFile' => 'apiUploadFile',
-        'GET api/history' => 'apiHistory'
+        'GET api/history' => 'apiHistory',
+        // for validating before generating the schema
+        'schemaWithValidate/$FormName' => 'schemaWithValidate'
     ];
 
     /**
@@ -99,9 +103,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'fileHistoryForm',
         'addToCampaignForm',
         'fileInsertForm',
+        'remoteEditForm',
+        'remoteCreateForm',
         'schema',
         'fileSelectForm',
         'fileSearchForm',
+        'schemaWithValidate',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -151,6 +158,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ],
                 'fileInsertForm' => [
                     'schemaUrl' => $this->Link('schema/fileInsertForm')
+                ],
+                'remoteEditForm' => [
+                    'schemaUrl' => $this->Link('schemaWithValidate/remoteEditForm')
+                ],
+                'remoteCreateForm' => [
+                    'schemaUrl' => $this->Link('schema/remoteCreateForm')
                 ],
                 'fileSelectForm' => [
                     'schemaUrl' => $this->Link('schema/fileSelectForm')
@@ -1056,5 +1069,99 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getFileSearchform()
     {
         return $this->fileSearchForm();
+    }
+    
+    /**
+     * Form for creating a new OEmbed object in the WYSIWYG, used by the InsertEmbedModal component
+     *
+     * @param null $id
+     * @return mixed
+     */
+    public function getRemoteCreateForm($id = null)
+    {
+        return Injector::inst()->get(RemoteFileFormFactory::class)
+            ->getForm($this, 'remoteCreateForm', ['type' => 'create']);
+    }
+    
+    /**
+     * Allow form to be accessible for schema
+     *
+     * @return mixed
+     */
+    public function remoteCreateForm()
+    {
+        return $this->getRemoteCreateForm();
+    }
+    
+    /**
+     * Form for editing a OEmbed object in the WYSIWYG, used by the InsertEmbedModal component
+     *
+     * @return mixed
+     */
+    public function getRemoteEditForm()
+    {
+        $url = $this->request->requestVar('embedurl');
+        $form = null;
+        $form = Injector::inst()->get(RemoteFileFormFactory::class)
+            ->getForm($this, 'remoteEditForm', ['type' => 'edit', 'url' => $url]);
+        return $form;
+    }
+    
+    /**
+     * Allow form to be accessible for schema
+     *
+     * @return mixed
+     */
+    public function remoteEditForm()
+    {
+        return $this->getRemoteEditForm();
+    }
+    
+    /**
+     * Capture the schema handling process, as there is validation done to the URL provided before form is generated
+     *
+     * @param $request
+     * @return HTTPResponse
+     */
+    public function schemaWithValidate(HTTPRequest $request)
+    {
+        $formName = $request->param('FormName');
+        $itemID = $request->param('ItemID');
+    
+        if (!$formName) {
+            return (new HTTPResponse('Missing request params', 400));
+        }
+    
+        $formMethod = "get{$formName}";
+        if (!$this->hasMethod($formMethod)) {
+            var_dump($formMethod);
+            return (new HTTPResponse('Form not found', 404));
+        }
+    
+        if (!$this->hasAction($formName)) {
+            return (new HTTPResponse('Form not accessible', 401));
+        }
+    
+        $schemaID = $request->getURL();
+        try {
+            if ($itemID) {
+                $form = $this->{$formMethod}($itemID);
+            } else {
+                $form = $this->{$formMethod}();
+            }
+            return $this->getSchemaResponse($schemaID, $form);
+        } catch (InvalidUrlException $exception) {
+            $errors = ValidationResult::create()
+                ->addError($exception->getMessage());
+            $form = Form::create(null, 'Form', FieldList::create(), FieldList::create());
+            $code = $exception->getCode();
+            
+            if ($code < 300) {
+                $code = 500;
+            }
+            
+            return $this->getSchemaResponse($schemaID, $form, $errors)
+                ->setStatusCode($code);
+        }
     }
 }

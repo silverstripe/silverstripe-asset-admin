@@ -34,4 +34,19 @@ Feature: Insert an image into a page
     Then the "Content" HTML field should contain "file1__Resampled.jpg"
     And the "Content" HTML field should contain "My alt"
     # Required to avoid "unsaved changed" browser dialog
-      And I press the "Save draft" button
+    And I press the "Save draft" button
+
+  @assets
+  Scenario: I can insert an image from a URL
+    Given I press the "Insert Embedded content" HTML field button
+    Then I wait for 2 seconds until I see the ".insert-embed-modal--create" element
+    When I fill in "Url" with "http://www.silverstripe.org/themes/ssv3/img/ss_logo.png"
+    And I press the "Add media" button
+    Then I wait for 2 seconds until I see the ".insert-embed-modal--edit" element
+    # Note: this is in a 'p[name=UrlPreview]' tag and may change in the future
+    Then I should see "ss_logo.png" in the "[name='UrlPreview']" element
+
+    When I press the "Insert media" button
+    Then the "Content" HTML field should contain "ss_logo.png"
+    # Required to avoid "unsaved changed" browser dialog
+    Then I press the "Save draft" button

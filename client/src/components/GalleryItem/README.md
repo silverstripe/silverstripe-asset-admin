@@ -20,7 +20,7 @@ Displays a file/folder as a thumbnail with relevant actions.
 * `onActivate` (function): Callback for when the item is activated (normally by Click)
 * `onSelect` (function): Callback for when the item is selected.
 * `onCancelUpload` (function): Callback for when the item is cancelled from uploading.
-* `onRemoveErroredUpload` (funciton): Callback for when the item should be removed, can be called after it errors during upload.
+* `onRemoveErroredUpload` (function): Callback for when the item should be removed, can be called after it errors during upload.
 
 # draggable HOC
 
