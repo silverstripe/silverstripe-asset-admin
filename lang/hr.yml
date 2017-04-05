@@ -1,3 +1,69 @@
 hr:
+  AssetAdmin:
+    Alignment: Poravnavanje
+    AlignmentCenter: 'Centirano, sam za sebe.'
+    AlignmentLeft: 'Na lijevu stranu, s tekstom oko.'
+    AlignmentLeftAlone: 'Na lijevo, sam za sebe.'
+    AlignmentRight: 'Na desnu stranu, s tekstom oko.'
+    AltText: 'Alternativni tekst (alt)'
+    AltTextDescription: 'Prikaži čitačima ekrana ili ako je sliku nemoguće prikazati'
+    AppCategoryArchive: Arhiviraj
+    AppCategoryAudio: Zvuk
+    AppCategoryDocument: Dokument
+    AppCategoryFlash: Flash
+    AppCategoryImage: Slika
+    AppCategoryVideo: Video
+    AttributesDescription: 'Ove promjene će utjecati samo na specifičan smještan ove datoteke.'
+    Caption: Natpis
+    CurrentFolderOnly: 'Ograniči na trenutni direktorij?'
+    EditLink: 'Uredi originalnu datoteku'
+    ErrorItemPermissionDenied: 'Čini se da nemate potrebna prava za dodati {ObjectTitle} na kampanju'
+    ErrorNotFound: 'Taj {Type} je nemoguće pronaći'
+    Filetype: 'Vrsta datoteke'
+    ImageHeight: Visina
+    ImageSpecs: Dimenzije
+    ImageWidth: 'Širina'
+    NEWFOLDER: 'Novi direktorij'
+    TitleTooltip: 'Naslov (tooltip)'
+    TitleTooltipDescription: 'Za dodatne informacije o slici'
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Obriši direktorije'
+  CMSMain:
+    INSERT: 'Ubaci datoteku'
+  CMSSearch:
+    FILTERDATEHEADING: Datum
+  File:
+    PUBLISHED: Objavljeno
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Datoteke
+  SilverStripe\\AssetAdmin\\Controller\\AssetAdmin:
+    ADDTOCAMPAIGN: 'Dodaj na kampanju'
+    AppCategoryArchive: Arhiviraj
+    AppCategoryAudio: Zvuk
+    AppCategoryDocument: Dokument
+    AppCategoryFlash: Flash
+    AppCategoryImage: Slika
+    AppCategoryVideo: Video
+    CreatePermissionDenied: 'Nemate prava za dodavanje datoteka'
+    CurrentFolderOnly: 'Ograniči na trenutni direktorij i njegove pod-direktorije?'
+    DELETE_BUTTON: Obriši
+    ErrorItemPermissionDenied: 'Nemate potrebna prava za izmjenu {ObjectTitle}'
+    ErrorNotFound: 'Taj {Type} nemoguće pronaći'
+    Filetype: 'Vrsta datoteke'
+    LoadIntoFileFailed: 'Greška pri učitavanju datoteke'
+    NEWFOLDER: 'Novi direktorij'
+    NOSUMMARY: 'Sažetak nije dostupan'
+    PUBLISH_BUTTON: Objavi
+    SAVEDFILE: 'Spremljena datoteke'
+    UNKNOWN: Nepoznatno
+    UNPUBLISH_BUTTON: Odjavi
+    UPLOADEDFILE: 'Prenesena datoteka'
+  SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile:
+    MOVEDFOLDER: 'Premještena datoteka'
+    RENAMEDFILE: 'Zamjenjena datoteka'
+    RENAMEDTITLE: 'Promjeni naslov u'
+  SilverStripe\\AssetAdmin\\Forms\\FileFormFactory:
+    OTHER_ACTIONS: 'Druge akcije'
+  SilverStripe\\AssetAdmin\\Forms\\FileHistoryFormFactory:
+    PUBLISHED: Objavljeno
+    SAVED: Spremljeno

@@ -1,46 +1,42 @@
 en:
   AssetAdmin:
     Alignment: Alignment
-    AlignmentCenter: 'Center'
+    AlignmentCenter: Center
     AlignmentLeft: 'Left wrap'
-    AlignmentLeftAlone: 'Left'
-    AlignmentRightAlone: 'Right'
+    AlignmentLeftAlone: Left
     AlignmentRight: 'Right wrap'
+    AlignmentRightAlone: Right
     AltText: 'Alternative text (alt)'
     AltTextDescription: 'Shown to screen readers or if image can''t be displayed'
-    AppCategoryArchive: Archive
-    AppCategoryAudio: Audio
-    AppCategoryDocument: Document
-    AppCategoryFlash: Flash
-    AppCategoryImage: Image
-    AppCategoryVideo: Video
     AttributesDescription: 'These changes will only affect this particular placement of the file.'
     Caption: Caption
-    CurrentFolderOnly: 'Limit to current folder?'
     EditLink: 'Edit original file'
-    ErrorItemPermissionDenied: 'It seems you don''t have the necessary permissions to add {ObjectTitle} to a campaign'
-    ErrorNotFound: 'That {Type} couldn''t be found'
-    Filetype: 'File type'
     ImageHeight: Height
     ImageSpecs: Dimensions
     ImageWidth: Width
-    NEWFOLDER: NewFolder
+    Placement: Placement
     TitleTooltip: 'Title text (tooltip)'
-    Placement: 'Placement'
     TitleTooltipDescription: 'For additional information about the image'
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Delete folders'
+  AssetTableField:
+    CREATED: 'First uploaded'
+    LASTEDIT: 'Last changed'
+    PATH: Path
   CMSMain:
     INSERT: 'Insert file'
   CMSSearch:
-    FILTERDATEHEADING: Date
-  RemoteFileForm:
-    UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
-    AddMedia: 'Add media'
-    InsertMedia: 'Insert media'
-    Cancel: Cancel
+    FILTERDATEFROM: From
+    FILTERDATETO: To
+  Enum:
+    ANY: Any
   File:
     PUBLISHED: Published
+  RemoteFileForm:
+    AddMedia: 'Add media'
+    Cancel: Cancel
+    InsertMedia: 'Insert media'
+    UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Files
   SilverStripe\\AssetAdmin\\Controller\\AssetAdmin:
@@ -48,7 +44,6 @@ en:
     AppCategoryArchive: Archive
     AppCategoryAudio: Audio
     AppCategoryDocument: Document
-    AppCategoryFlash: Flash
     AppCategoryImage: Image
     AppCategoryVideo: Video
     CreatePermissionDenied: 'You do not have permission to add files'
@@ -58,7 +53,6 @@ en:
     ErrorNotFound: 'That {Type} couldn''t be found'
     Filetype: 'File type'
     LoadIntoFileFailed: 'Failed to load file'
-    NEWFOLDER: NewFolder
     NOSUMMARY: 'No summary available'
     PUBLISH_BUTTON: Publish
     SAVEDFILE: 'Saved file'
