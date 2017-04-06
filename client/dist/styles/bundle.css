@@ -139,21 +139,39 @@
 }
 
 .gallery-item__error-message{
+  position:absolute;
   top:calc(50% - 20px);
   left:50%;
   -webkit-transform:translateX(-50%) translateY(-50%);
           transform:translateX(-50%) translateY(-50%);
   width:75%;
+  color:#fff;
+  background-color:#dd3636;
+  text-align:center;
 }
 
-.gallery-item--overlay,.gallery-item__error-message{
+.gallery-item--error .gallery-item__thumbnail,.gallery-item--missing .gallery-item__thumbnail{
+  position:relative;
+}
+
+.gallery-item--error .gallery-item__thumbnail:after,.gallery-item--missing .gallery-item__thumbnail:after{
+  content:"";
   position:absolute;
-  color:#fff;
-  text-align:center;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:#dd3636;
+  border-radius:2px 2px 0 0;
+}
+
+.gallery-item--error:hover .gallery-item__error-message,.gallery-item--error:hover .gallery-item__thumbnail:after,.gallery-item--missing:hover .gallery-item__error-message,.gallery-item--missing:hover .gallery-item__thumbnail:after{
+  background:#d81d1d;
 }
 
 .gallery-item--overlay{
   background:rgba(56,63,69,.5);
+  position:absolute;
   top:0;
   right:0;
   left:0;
@@ -163,11 +181,13 @@
   transition-property:opacity,background;
   -webkit-transition-duration:.5s;
           transition-duration:.5s;
+  color:#fff;
   border-radius:.2rem .2rem 0 0;
   height:132px;
   width:100%;
   font-size:14px;
   padding-top:56px;
+  text-align:center;
 }
 
 .gallery-item--overlay:before{
@@ -212,25 +232,6 @@
 
 .gallery-item--false .gallery-item__thumbnail{
   background:#fff url(../images/icon_file.png) 50% no-repeat;
-}
-
-.gallery-item--error .gallery-item__thumbnail,.gallery-item--missing .gallery-item__thumbnail{
-  position:relative;
-}
-
-.gallery-item--error .gallery-item__thumbnail:after,.gallery-item--missing .gallery-item__thumbnail:after{
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background:#d40404;
-  opacity:.8;
-}
-
-.gallery-item--error:hover .gallery-item__thumbnail:after,.gallery-item--missing:hover .gallery-item__thumbnail:after{
-  background:#b40303;
 }
 
 .gallery-item__upload-progress{
@@ -348,7 +349,7 @@
   margin:0 auto;
   position:fixed;
   height:53px;
-  z-index:1;
+  z-index:2;
   bottom:0;
   box-shadow:0 -1px 2px rgba(0,0,0,.2);
   background-color:#f0f2f4;
@@ -1070,7 +1071,7 @@
 
 .insert-embed-modal__url-create .form-control.text{
   padding:.75rem 1.25rem;
-  font-size:1.23rem;
+  font-size:1.231rem;
   line-height:1.33333;
   border-radius:.3rem;
 }
@@ -1206,7 +1207,7 @@
 
 .gallery__no-item-notice{
   text-align:center;
-  font-size:1.23rem;
+  font-size:1.231rem;
   margin-top:1.2308rem;
 }
 
@@ -1412,7 +1413,7 @@
   padding:.3846rem;
   -webkit-transition:all .2s ease-in-out;
   transition:all .2s ease-in-out;
-  font-size:1.23rem;
+  font-size:1.231rem;
   -webkit-font-smoothing:antialiased;
   line-height:20px;
 }
@@ -1723,7 +1724,7 @@ th.sort--disabled>span:after{
 
 .editor__file-preview-message--file-missing{
   margin:2.4616rem 0 1.2308rem;
-  font-size:1.23rem;
+  font-size:1.231rem;
   color:#d40404;
 }
 
