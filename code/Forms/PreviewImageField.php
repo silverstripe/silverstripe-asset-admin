@@ -14,7 +14,7 @@ use SilverStripe\ORM\DataObject;
 class PreviewImageField extends FormField
 {
     /**
-     * @var Integer
+     * @var int
      */
     protected $recordID = null;
 

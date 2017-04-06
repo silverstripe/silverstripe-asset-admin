@@ -2,8 +2,6 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
-use SilverStripe\Assets\File;
-use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\Tab;
@@ -11,7 +9,6 @@ use SilverStripe\Forms\TextField;
 
 class ImageFormFactory extends FileFormFactory
 {
-
     protected function getSpecsMarkup($record)
     {
         if (!$record || !$record->exists()) {

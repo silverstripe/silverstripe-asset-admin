@@ -6,6 +6,7 @@ use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
 use SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
+use SilverStripe\Admin\LeftAndMainFormRequestHandler;
 use SilverStripe\CampaignAdmin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
@@ -54,7 +55,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     private static $menu_icon_class = 'font-icon-image';
 
-    private static $tree_class = 'SilverStripe\\Assets\\Folder';
+    private static $tree_class = Folder::class;
 
     private static $url_handlers = [
         // Legacy redirect for SS3-style detail view
@@ -66,7 +67,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'POST api/uploadFile' => 'apiUploadFile',
         'GET api/history' => 'apiHistory',
         // for validating before generating the schema
-        'schemaWithValidate/$FormName' => 'schemaWithValidate'
+        'schemaWithValidate/$FormName' => 'schemaWithValidate',
+        'fileEditForm/$ID' => 'fileEditForm',
+        'fileHistoryForm/$ID/$VersionID' => 'fileHistoryForm',
+        'folderCreateForm/$ParentID' => 'folderCreateForm',
     ];
 
     /**
@@ -574,13 +578,21 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Get file edit form
      *
+     * @param HTTPRequest $request
      * @return Form
      */
-    public function fileEditForm()
+    public function fileEditForm($request = null)
     {
         // Get ID either from posted back value, or url parameter
-        $request = $this->getRequest();
-        $id = $request->param('ID') ?: $request->postVar('ID');
+        if (!$request) {
+            $this->httpError(400);
+            return null;
+        }
+        $id = $request->param('ID');
+        if (!$id) {
+            $this->httpError(400);
+            return null;
+        }
         return $this->getFileEditForm($id);
     }
 
@@ -624,6 +636,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         $file = File::get()->byID($id);
 
+        if (!$file) {
+            $this->httpError(404);
+            return null;
+        }
+
         if (!$file->canView()) {
             $this->httpError(403, _t(
                 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ErrorItemPermissionDenied',
@@ -638,6 +655,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $augmentedContext = array_merge($context, ['Record' => $file]);
         $scaffolder = $this->getFormFactory($file);
         $form = $scaffolder->getForm($this, $name, $augmentedContext);
+
+        // Set form action handler with ID included
+        $form->setRequestHandler(
+            LeftAndMainFormRequestHandler::create($form, [ $id ])
+        );
 
         // Configure form to respond to validation errors with form schema
         // if requested via react.
@@ -711,6 +733,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $scaffolder = Injector::inst()->get(FileHistoryFormFactory::class);
         $form = $scaffolder->getForm($this, 'fileHistoryForm', $effectiveContext);
 
+        // Set form handler with ID / VersionID
+        $form->setRequestHandler(
+            LeftAndMainFormRequestHandler::create($form, [ $id, $versionId ])
+        );
+
         // Configure form to respond to validation errors with form schema
         // if requested via react.
         $form->setValidationResponseCallback(function (ValidationResult $errors) use ($form, $id, $versionId) {
@@ -756,20 +783,33 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Get file history form
      *
+     * @param HTTPRequest $request
      * @return Form
      */
-    public function fileHistoryForm()
+    public function fileHistoryForm($request = null)
     {
-        $request = $this->getRequest();
-        $id = $request->param('ID') ?: $request->postVar('ID');
-        $version = $request->param('OtherID') ?: $request->postVar('Version');
+        // Get ID either from posted back value, or url parameter
+        if (!$request) {
+            $this->httpError(400);
+            return null;
+        }
+        $id = $request->param('ID');
+        if (!$id) {
+            $this->httpError(400);
+            return null;
+        }
+        $versionID = $request->param('VersionID');
+        if (!$versionID) {
+            $this->httpError(400);
+            return null;
+        }
         $form = $this->getFileHistoryForm([
             'RecordID' => $id,
-            'RecordVersion' => $version,
+            'RecordVersion' => $versionID,
         ]);
         return $form;
     }
-    
+
     /**
      * @param array $data
      * @param Form $form
@@ -790,7 +830,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             }
             $data['Parent'] = $parent;
         }
-    
+
         // Check permission
         if (!Folder::singleton()->canCreate(Member::currentUser(), $data)) {
             throw new \InvalidArgumentException(sprintf(
@@ -798,17 +838,17 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 Folder::class
             ));
         }
-    
+
         $folder = Folder::create();
         $form->saveInto($folder);
         $folder->write();
-    
+
         // Return the record data in the same response as the schema to save a postback
         $schemaData = ['record' => $this->getObjectFromData($folder)];
         $schemaId = Controller::join_links($this->Link('schema/folderCreateForm'), $folder->ID);
         return $this->getSchemaResponse($schemaId, $form, null, $schemaData);
     }
-    
+
     /**
      * @param array $data
      * @param Form $form
@@ -1090,18 +1130,27 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $schemaId = Controller::join_links($this->Link('schema/fileEditForm'), $record->ID);
         return $this->getSchemaResponse($schemaId, $form, null, $schemaData);
     }
-    
+
     /**
+     * @param HTTPRequest $request
      * @return Form
      */
-    public function folderCreateForm()
+    public function folderCreateForm($request = null)
     {
         // Get ID either from posted back value, or url parameter
-        $request = $this->getRequest();
-        $id = $request->param('ID') ?: 0;
+        if (!$request) {
+            $this->httpError(400);
+            return null;
+        }
+        $id = $request->param('ParentID');
+        // Fail on null ID (but not parent)
+        if (!isset($id)) {
+            $this->httpError(400);
+            return null;
+        }
         return $this->getFolderCreateForm($id);
     }
-    
+
     /**
      * Returns the form to be used for creating a new folder
      * @param $parentId
@@ -1109,12 +1158,18 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFolderCreateForm($parentId = 0)
     {
+        /** @var FolderCreateFormFactory $factory */
         $factory = Injector::inst()->get(FolderCreateFormFactory::class);
         $form = $factory->getForm($this, 'folderCreateForm', [ 'ParentID' => $parentId ]);
-        
+
+        // Set form action handler with ParentID included
+        $form->setRequestHandler(
+            LeftAndMainFormRequestHandler::create($form, [ $parentId ])
+        );
+
         return $form;
     }
-    
+
     /**
      * Scaffold a search form.
      * Note: This form does not submit to itself, but rather uses the apiReadFolder endpoint
@@ -1137,7 +1192,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         return $this->fileSearchForm();
     }
-    
+
     /**
      * Form for creating a new OEmbed object in the WYSIWYG, used by the InsertEmbedModal component
      *
@@ -1149,7 +1204,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return Injector::inst()->get(RemoteFileFormFactory::class)
             ->getForm($this, 'remoteCreateForm', ['type' => 'create']);
     }
-    
+
     /**
      * Allow form to be accessible for schema
      *
@@ -1159,7 +1214,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         return $this->getRemoteCreateForm();
     }
-    
+
     /**
      * Form for editing a OEmbed object in the WYSIWYG, used by the InsertEmbedModal component
      *
@@ -1173,7 +1228,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             ->getForm($this, 'remoteEditForm', ['type' => 'edit', 'url' => $url]);
         return $form;
     }
-    
+
     /**
      * Allow form to be accessible for schema
      *
@@ -1183,7 +1238,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         return $this->getRemoteEditForm();
     }
-    
+
     /**
      * Capture the schema handling process, as there is validation done to the URL provided before form is generated
      *
@@ -1194,21 +1249,20 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $formName = $request->param('FormName');
         $itemID = $request->param('ItemID');
-    
+
         if (!$formName) {
             return (new HTTPResponse('Missing request params', 400));
         }
-    
+
         $formMethod = "get{$formName}";
         if (!$this->hasMethod($formMethod)) {
-            var_dump($formMethod);
             return (new HTTPResponse('Form not found', 404));
         }
-    
+
         if (!$this->hasAction($formName)) {
             return (new HTTPResponse('Form not accessible', 401));
         }
-    
+
         $schemaID = $request->getURL();
         try {
             if ($itemID) {
@@ -1222,11 +1276,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ->addError($exception->getMessage());
             $form = Form::create(null, 'Form', FieldList::create(), FieldList::create());
             $code = $exception->getCode();
-            
+
             if ($code < 300) {
                 $code = 500;
             }
-            
+
             return $this->getSchemaResponse($schemaID, $form, $errors)
                 ->setStatusCode($code);
         }
