@@ -126,7 +126,7 @@ class Gallery extends Component {
     const messages = [];
     if (filters.name) {
       messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGEKEYWORDS',
+        'AssetAdmin.SEARCHRESULTSMESSAGEKEYWORDS',
         'with keywords \'{name}\''
       ));
     }
@@ -134,19 +134,19 @@ class Gallery extends Component {
     if (filters.createdFrom && filters.createdTo) {
       // TODO Date localisation
       messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
+        'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
         'created between \'{createdFrom}\' and \'{createdTo}\''
       ));
     } else if (filters.createdFrom) {
       // TODO Date localisation
       messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDFROM',
+        'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDFROM',
         'created after \'{createdFrom}\''
       ));
     } else if (filters.createdTo) {
       // TODO Date localisation
       messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGEEDITEDTO',
+        'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDTO',
         'created before \'{createdTo}\''
       ));
     }
@@ -154,22 +154,22 @@ class Gallery extends Component {
     if (filters.appCategory) {
       // TODO Category name localisation
       messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGECATEGORY',
+        'AssetAdmin.SEARCHRESULTSMESSAGECATEGORY',
         'categorised as \'{appCategory}\''
       ));
     }
 
     if (filters.currentFolderOnly) {
       messages.push(i18n._t(
-        'LeftAndMain.SEARCHRESULTSMESSAGELIMIT',
+        'AssetAdmin.SEARCHRESULTSMESSAGELIMIT',
         'limited to the folder \'{folder}\''
       ));
     }
 
     const parts = [
-      messages.slice(0, -1).join(`${i18n._t('LeftAndMain.JOIN', ',')} `),
+      messages.slice(0, -1).join(`${i18n._t('AssetAdmin.JOIN', ',')} `),
       messages.slice(-1),
-    ].filter((part) => part).join(` ${i18n._t('LeftAndMain.JOINLAST', 'and')} `);
+    ].filter((part) => part).join(` ${i18n._t('AssetAdmin.JOINLAST', 'and')} `);
 
     if (parts === '') {
       return '';
@@ -184,7 +184,7 @@ class Gallery extends Component {
     };
 
     return i18n.inject(
-      i18n._t('LeftAndMain.SEARCHRESULTSMESSAGE', 'Search results {parts}'),
+      i18n._t('AssetAdmin.SEARCHRESULTSMESSAGE', 'Search results {parts}'),
       searchResults
     );
   }
@@ -648,7 +648,7 @@ class Gallery extends Component {
           onClick={this.handleClearSearch}
           className="btn btn-info font-icon-cancel form-alert__btn--right"
         >
-          {i18n._t('LeftAndMain.SEARCHCLEARRESULTS', 'Clear results')}
+          {i18n._t('AssetAdmin.SEARCHCLEARRESULTS', 'Clear results')}
         </button>
         {message}
       </div>

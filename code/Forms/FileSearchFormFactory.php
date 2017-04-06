@@ -1,6 +1,5 @@
 <?php
 
-
 namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Control\Controller;
@@ -84,10 +83,8 @@ class FileSearchFormFactory implements FormFactory
         ));
 
         // Last updated range field
-        $dateFrom = DateField::create('createdFrom', _t('CMSSearch.FILTERDATEFROM', 'From'))
-            ->setShowCalendar(true);
-        $dateTo = DateField::create('createdTo', _t('CMSSearch.FILTERDATETO', 'To'))
-            ->setShowCalendar(true);
+        $dateFrom = DateField::create('createdFrom', _t('CMSSearch.FILTERDATEFROM', 'From'));
+        $dateTo = DateField::create('createdTo', _t('CMSSearch.FILTERDATETO', 'To'));
         $dateGroup = FieldGroup::create(
             _t('AssetTableField.LASTEDIT', 'Last changed'),
             [$dateFrom, $dateTo]
