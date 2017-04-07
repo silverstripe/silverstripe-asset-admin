@@ -75,11 +75,12 @@ abstract class AssetFormFactory implements FormFactory
      * Get the validator for the form to be built
      *
      * @param $controller
-     * @param $name
+     * @param $formName
      * @param $context
      * @return RequiredFields
      */
-    protected function getValidator(Controller $controller, $name, $context = []) {
+    protected function getValidator(Controller $controller, $formName, $context = [])
+    {
         $validator = new RequiredFields('Name');
         
         return $validator;
@@ -138,8 +139,14 @@ abstract class AssetFormFactory implements FormFactory
         }
         return null;
     }
-
-    protected function getFormActions(Controller $controller, $name, $context = [])
+    
+    /**
+     * @param Controller $controller
+     * @param $formName
+     * @param array $context
+     * @return FieldList
+     */
+    protected function getFormActions(Controller $controller, $formName, $context = [])
     {
         $record = isset($context['Record']) ? $context['Record'] : null;
 
@@ -152,7 +159,7 @@ abstract class AssetFormFactory implements FormFactory
             $actions->push($menu);
         }
 
-        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
+        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $formName, $context);
         return $actions;
     }
 
@@ -160,11 +167,11 @@ abstract class AssetFormFactory implements FormFactory
      * Get fields for this form
      *
      * @param Controller $controller
-     * @param string $name
+     * @param string $formName
      * @param array $context
      * @return FieldList
      */
-    protected function getFormFields(Controller $controller, $name, $context = [])
+    protected function getFormFields(Controller $controller, $formName, $context = [])
     {
         $record = isset($context['Record']) ? $context['Record'] : null;
 
@@ -185,7 +192,7 @@ abstract class AssetFormFactory implements FormFactory
             );
         }
 
-        $this->invokeWithExtensions('updateFormFields', $fields, $controller, $name, $context);
+        $this->invokeWithExtensions('updateFormFields', $fields, $controller, $formName, $context);
         return $fields;
     }
     

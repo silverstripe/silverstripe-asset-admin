@@ -15,10 +15,13 @@ Feature: Manage files
   @modal
   Scenario: I can add a new folder
     When I press the "Add folder" button
-      And I type "newfolder" into the dialog
-      And I confirm the dialog
+      And I wait for 1 second
+    Then I should see the "Form_folderCreateForm" form
+      And I fill in "Name" with "newfolder"
+      And I press the "Create" button
       And I wait for 1 second
     Then I should see the file named "newfolder" in the gallery
+      And I should see the "Form_fileEditForm" form
 
   Scenario: I can list files in a folder
     When I click on the file named "folder1" in the gallery

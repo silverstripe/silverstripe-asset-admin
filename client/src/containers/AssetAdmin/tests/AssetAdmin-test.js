@@ -127,10 +127,10 @@ describe('AssetAdmin', () => {
       component.handleOpenFolder = jest.fn();
 
       return component.handleSubmitEditor({}, 'action_createfolder', paramSubmit)
-        .then((response) => {
+        .then((data) => {
           expect(component.handleOpenFile).toBeCalled();
 
-          return response.readFiles;
+          return data.readFiles;
         })
         .then(() => {
           expect(component.handleOpenFolder).not.toBeCalled();
@@ -147,10 +147,10 @@ describe('AssetAdmin', () => {
       component.handleOpenFolder = jest.fn();
 
       return component.handleSubmitEditor({}, 'action_createfolder', paramSubmit)
-        .then((response) => {
+        .then((data) => {
           expect(component.handleOpenFile).not.toBeCalled();
 
-          return response.readFiles;
+          return data.readFiles;
         })
         .then(() => {
           expect(component.handleOpenFolder).toBeCalled();

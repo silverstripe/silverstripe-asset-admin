@@ -69,11 +69,11 @@ class FileHistoryFormFactory extends FileFormFactory
     }
 
 
-    protected function getFormActions(Controller $controller, $name, $context = [])
+    protected function getFormActions(Controller $controller, $formName, $context = [])
     {
         $actions = new FieldList();
         // Update
-        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
+        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $formName, $context);
 
         return $actions;
     }

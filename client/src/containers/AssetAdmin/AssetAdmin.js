@@ -295,7 +295,7 @@ class AssetAdmin extends SilverStripeComponent {
     }
     return promise
       .then((response) => {
-        if (action === 'action_createfolder' && ['admin'].indexOf(this.props.type) > -1) {
+        if (action === 'action_createfolder' && this.props.type === 'admin') {
           // open the new folder in edit mode after save completes
           this.handleOpenFile(response.record.id);
         }
@@ -304,7 +304,7 @@ class AssetAdmin extends SilverStripeComponent {
         const readFiles = this.props.actions.files.readFiles()
           .then(() => {
             // open the containing folder, since folder edit mode isn't desired
-            if (action !== 'action_createfolder' || ['admin'].indexOf(this.props.type) === -1) {
+            if (action === 'action_createfolder' && this.props.type !== 'admin') {
               this.handleOpenFolder(this.props.folderId);
             }
           });
@@ -476,8 +476,7 @@ class AssetAdmin extends SilverStripeComponent {
     if (this.props.viewAction === CONSTANTS.ACTIONS.CREATE_FOLDER) {
       schemaUrl = config.form.folderCreateForm.schemaUrl;
       targetId = this.props.folderId;
-    }
-    else if (this.props.viewAction === 'edit') {
+    } else if (this.props.viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
       switch (this.props.type) {
         case 'insert':
           schemaUrl = config.form.fileInsertForm.schemaUrl;
@@ -508,6 +507,7 @@ class AssetAdmin extends SilverStripeComponent {
         onSubmit={this.handleSubmitEditor}
         onDelete={this.handleDelete}
         addToCampaignSchemaUrl={config.form.addToCampaignForm.schemaUrl}
+        autoFocus
       />
     );
   }

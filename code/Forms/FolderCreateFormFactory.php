@@ -9,7 +9,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
 
-class FolderCreateFormFactory extends AssetFormFactory
+class FolderCreateFormFactory extends FolderFormFactory
 {
     public function getRequiredContext()
     {
@@ -32,6 +32,7 @@ class FolderCreateFormFactory extends AssetFormFactory
                         ]
                     ])
                     ->addExtraClass('editor__file-preview')
+                    ->addExtraClass('editor__file-preview--folder')
             );
             $fields->push(HiddenField::create('ParentID', null, $context['ParentID']));
             
@@ -50,7 +51,7 @@ class FolderCreateFormFactory extends AssetFormFactory
     protected function getSaveAction($record)
     {
         return FormAction::create('createfolder', _t('CMSMain.CREATE', 'Create'))
-            ->setIcon('save')
+            ->setIcon('plus-circled')
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
     }
     

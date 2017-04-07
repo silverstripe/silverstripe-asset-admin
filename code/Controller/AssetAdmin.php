@@ -778,6 +778,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function createfolder($data, $form)
     {
         $parentID = isset($data['ParentID']) ? intval($data['ParentID']) : 0;
+        $data['Parent'] = null;
         if ($parentID) {
             $parent = Folder::get()->byID($parentID);
             if (!$parent) {
@@ -787,6 +788,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                     $parentID
                 ));
             }
+            $data['Parent'] = $parent;
         }
     
         // Check permission

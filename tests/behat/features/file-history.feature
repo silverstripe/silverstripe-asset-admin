@@ -23,6 +23,7 @@ Feature: View File History
     When I click "Details" in the "#Editor .nav-tabs" element
       And I fill in "Test 1" for "Form_fileEditForm_Title"
       And I press the "Save" button
+      And I wait for 1 second
       And I click "History" in the "#Editor .nav-tabs" element
-      And I wait for 3 seconds
+      And I wait for 2 seconds
     Then I should see "Updated title to Test 1" in the ".file-history__list" element

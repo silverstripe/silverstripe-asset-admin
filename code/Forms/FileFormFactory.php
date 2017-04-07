@@ -155,7 +155,7 @@ class FileFormFactory extends AssetFormFactory
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
     }
 
-    protected function getFormActions(Controller $controller, $name, $context = [])
+    protected function getFormActions(Controller $controller, $formName, $context = [])
     {
         $record = $context['Record'];
 
@@ -177,7 +177,7 @@ class FileFormFactory extends AssetFormFactory
         }
 
         // Update
-        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
+        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $formName, $context);
         return $actions;
     }
 
