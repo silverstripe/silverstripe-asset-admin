@@ -109,7 +109,7 @@
   background-color: $component-active-bg-light;
 }
 
-$gallery-list-thumb-width: 60px;
+$gallery-list-thumb-width: 68px;
 $gallery-list-thumb-height: 68px;
 
 .gallery__table-column--image {
@@ -124,7 +124,7 @@ $gallery-list-thumb-height: 68px;
 
     &:first-child {
       max-width: none;
-      padding-left: 20px;
+      padding-left: $panel-padding-x;
     }
   }
 }
@@ -135,6 +135,14 @@ $gallery-list-thumb-height: 68px;
   background-position: center center;
   height: $gallery-list-thumb-height;
   width: $gallery-list-thumb-width;
+}
+
+.gallery__table-image--folder,
+.gallery__table-image--archive,
+.gallery__table-image--audio,
+.gallery__table-image--video,
+.gallery__table-image--document {
+  background-size: calc(#{$gallery-list-thumb-width} - #{$panel-padding-x}) auto; // Allow for space either side of folder
 }
 
 .gallery__table-image--folder {

@@ -45,6 +45,17 @@
   background-color: $btn-secondary-bg;
   border-color: transparent;
   transform: scale(1.1);
+
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: " ";
+    border: 1px dashed $brand-primary;
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+  }
 }
 
 .gallery__back-container {
@@ -158,7 +169,11 @@
 }
 
 .gallery__state-buttons {
-  margin-right: -$spacer-sm;
+  margin-right: -$panel-padding-x + $btn-padding-x;
+
+  .btn-group:last-child {
+    margin-right: 0;
+  }
 }
 
 .gallery__view-change-button {

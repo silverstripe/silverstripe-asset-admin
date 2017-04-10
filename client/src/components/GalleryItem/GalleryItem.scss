@@ -23,6 +23,7 @@ $gallery-item-label-height: 40px;
 
 .gallery-item--enlarged {
   transform: scale(1.1);
+  border: 1px dashed $brand-primary;
 };
 
 .gallery-item__draggable,

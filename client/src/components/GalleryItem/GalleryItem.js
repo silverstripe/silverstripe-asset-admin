@@ -332,7 +332,7 @@ class GalleryItem extends SilverStripeComponent {
       action = this.handleCancelUpload;
       actionIcon = 'font-icon-cancel';
     } else if (this.exists()) {
-      overlay = <div className="gallery-item--overlay font-icon-edit">View</div>;
+      overlay = <div className="gallery-item--overlay font-icon-edit">Details</div>;
     }
 
     const badge = this.props.badge;
