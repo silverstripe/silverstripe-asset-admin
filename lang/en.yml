@@ -15,8 +15,12 @@ en:
     ImageSpecs: Dimensions
     ImageWidth: Width
     Placement: Placement
+    NEWFOLDER: NewFolder
+    NewFile: 'New {file}'
     TitleTooltip: 'Title text (tooltip)'
     TitleTooltipDescription: 'For additional information about the image'
+  SilverStripe\Assets\Folder:
+    Filename: 'Folder name'
   AssetAdmin_DeleteBatchAction:
     TITLE: 'Delete folders'
   AssetTableField:

@@ -174,7 +174,7 @@ class FileFormBuilderTest extends SapphireTest
 
         // Check actions
         $this->assertNotNull($form->Actions()->fieldByName('action_save'));
-        $this->assertNotNull($form->Actions()->fieldByName('action_delete')); // At top level, not in popup
+        $this->assertNotNull($form->Actions()->dataFieldByName('action_delete'));
         $this->assertNull($form->Actions()->fieldByName('action_publish'));
         $this->assertNull($form->Actions()->dataFieldByName('action_publish'));
         $this->assertNull($form->Actions()->dataFieldByName('action_unpublish'));

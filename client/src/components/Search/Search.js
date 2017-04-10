@@ -63,25 +63,45 @@ class Search extends SilverStripeComponent {
   }
 
   focusInput() {
-    if (this.state.view !== view.NONE) {
-      const node = ReactDOM.findDOMNode(this.refs.contentInput);
-      // check that it doesn't already have focus
-      if (node !== document.activeElement) {
-        node.focus();
-        node.select();
+    if (this.state.view === view.NONE) {
+      return;
+    }
+
+    const node = ReactDOM.findDOMNode(this);
+    if (!node) {
+      return;
+    }
+
+    const input = node.querySelector('.search__content-field');
+    // check that it doesn't already have focus
+    if (input !== document.activeElement) {
+      input.focus();
+      if (input.select) {
+        input.select();
       }
     }
   }
 
   focusFirstFormField() {
-    if (this.state.view === view.EXPANDED) {
-      const form = ReactDOM.findDOMNode(this.refs.contentForm);
-      const node = form && form.querySelector('input, textarea, select');
-      if (node) {
-        node.focus();
-        if (node.select) {
-          node.select();
-        }
+    if (this.state.view !== view.EXPANDED) {
+      return;
+    }
+
+    const node = ReactDOM.findDOMNode(this);
+    if (!node) {
+      return;
+    }
+
+    const form = node.querySelector('.search__filter-panel form');
+    if (!form) {
+      return;
+    }
+
+    const input = form.querySelector('input, textarea, select');
+    if (input) {
+      input.focus();
+      if (input.select) {
+        input.select();
       }
     }
   }
@@ -262,7 +282,6 @@ class Search extends SilverStripeComponent {
             aria-labelledby={triggerId}
             type="text"
             name="name"
-            ref="contentInput"
             placeholder={i18n._t('AssetAdmin.SEARCH', 'Search')}
             className="form-control search__content-field"
             onKeyUp={this.handleKeyUp}
@@ -294,7 +313,7 @@ class Search extends SilverStripeComponent {
           </button>
 
           <Collapse in={expanded}>
-            <div id={formId} className="search__filter-panel" ref="contentForm">
+            <div id={formId} className="search__filter-panel">
               <FormBuilderLoader schemaUrl={this.props.searchFormSchemaUrl} />
             </div>
           </Collapse>

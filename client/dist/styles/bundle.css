@@ -1679,7 +1679,7 @@ th.sort--disabled>span:after{
   text-decoration:none;
 }
 
-.editor__file-preview:hover .editor__thumbnail{
+.editor__file-preview:not(.editor__file-preview--folder):hover .editor__thumbnail{
   -webkit-transform:scale(1.04);
           transform:scale(1.04);
 }

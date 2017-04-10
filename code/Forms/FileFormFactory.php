@@ -10,7 +10,6 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\PopoverField;
 use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
@@ -119,6 +118,7 @@ class FileFormFactory extends AssetFormFactory
 
     protected function getFormFields(Controller $controller, $name, $context = [])
     {
+        /** @var File $record */
         $record = $context['Record'];
 
         // Add status flag before extensions are triggered
@@ -155,7 +155,7 @@ class FileFormFactory extends AssetFormFactory
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
     }
 
-    protected function getFormActions(Controller $controller, $name, $context = [])
+    protected function getFormActions(Controller $controller, $formName, $context = [])
     {
         $record = $context['Record'];
 
@@ -177,7 +177,7 @@ class FileFormFactory extends AssetFormFactory
         }
 
         // Update
-        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $name, $context);
+        $this->invokeWithExtensions('updateFormActions', $actions, $controller, $formName, $context);
         return $actions;
     }
 
@@ -269,30 +269,20 @@ class FileFormFactory extends AssetFormFactory
         return FormAction::create('unpublish', $unpublishText)
             ->setIcon('cancel-circled');
     }
-
+    
     /**
-     * Build popup menu
+     * Get actions that go into the Popover menu
      *
-     * @param File $record
-     * @return PopoverField
+     * @param $record
+     * @return array
      */
-    protected function getPopoverMenu($record)
+    protected function getPopoverActions($record)
     {
-        // Build popover actions
-        $popoverActions = array_filter([
+        return array_filter([
             $this->getAddToCampaignAction($record),
             $this->getUnpublishAction($record),
             $this->getDeleteAction($record)
         ]);
-        if ($popoverActions) {
-            return PopoverField::create($popoverActions)
-                ->setPlacement('top')
-                ->setButtonTooltip(_t(
-                    'SilverStripe\\AssetAdmin\\Forms\\FileFormFactory.OTHER_ACTIONS',
-                    'Other actions'
-                ));
-        }
-        return null;
     }
 
     /**

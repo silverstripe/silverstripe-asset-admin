@@ -4,8 +4,11 @@ import { withRouter } from 'react-router';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import { decodeQuery } from 'lib/DataFormat';
 import qs from 'qs';
+import CONSTANTS from 'constants/index';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
+
+const actions = Object.keys(CONSTANTS.ACTIONS).map((key) => CONSTANTS.ACTIONS[key]);
 
 /**
  * Build URL from raw components
@@ -14,16 +17,25 @@ const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
  * @param {Number} folderId
  * @param {Number} fileId
  * @param {Object} query
+ * @param {String} action
  * @return {String}
  */
-function buildUrl(base, folderId, fileId, query) {
+function buildUrl({ base, folderId, fileId, query, action }) {
+  if (action && actions.indexOf(action) === -1) {
+    throw new Error(`Invalid action provided: ${action}`);
+  }
+
   let url = null;
   if (fileId) {
-    url = `${base}/show/${folderId}/edit/${fileId}`;
+    url = `${base}/show/${folderId}/${CONSTANTS.ACTIONS.EDIT_FILE}/${fileId}`;
   } else if (folderId) {
     url = `${base}/show/${folderId}`;
   } else {
     url = `${base}/`;
+  }
+
+  if (action === CONSTANTS.ACTIONS.CREATE_FOLDER) {
+    url = `${base}/show/${folderId || 0}/${action}`;
   }
 
   const hasQuery = query && Object.keys(query).length > 0;
@@ -48,9 +60,10 @@ class AssetAdminRouter extends Component {
    * @param {Number} folderId
    * @param {Number} fileId
    * @param {Object} query
+   * @param {String} action
    * @returns {String}
    */
-  getUrl(folderId = 0, fileId = null, query = {}) {
+  getUrl(folderId = 0, fileId = null, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE) {
     const newFolderId = parseInt(folderId || 0, 10);
     const newFileId = parseInt(fileId || 0, 10);
 
@@ -61,7 +74,13 @@ class AssetAdminRouter extends Component {
       delete newQuery.page;
     }
 
-    return buildUrl(this.props.sectionConfig.url, newFolderId, newFileId, newQuery);
+    return buildUrl({
+      base: this.props.sectionConfig.url,
+      folderId: newFolderId,
+      fileId: newFileId,
+      query: newQuery,
+      action,
+    });
   }
 
   /**
@@ -84,6 +103,13 @@ class AssetAdminRouter extends Component {
     return 0;
   }
 
+  getViewAction() {
+    if (this.props.params && this.props.params.viewAction) {
+      return this.props.params.viewAction;
+    }
+    return CONSTANTS.ACTIONS.EDIT_FILE;
+  }
+
   /**
    * Generates the properties for this section
    *
@@ -94,6 +120,7 @@ class AssetAdminRouter extends Component {
       sectionConfig: this.props.sectionConfig,
       type: 'admin',
       folderId: this.getFolderId(),
+      viewAction: this.getViewAction(),
       fileId: this.getFileId(),
       query: this.getQuery(),
       getUrl: this.getUrl,
@@ -116,9 +143,10 @@ class AssetAdminRouter extends Component {
    * @param {number} [folderId]
    * @param {number} [fileId]
    * @param {object} [query]
+   * @param {string} [action]
    */
-  handleBrowse(folderId, fileId, query) {
-    const pathname = this.getUrl(folderId, fileId, query);
+  handleBrowse(folderId, fileId, query, action) {
+    const pathname = this.getUrl(folderId, fileId, query, action);
 
     this.props.router.push(pathname);
   }

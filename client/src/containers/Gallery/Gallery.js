@@ -327,28 +327,10 @@ class Gallery extends Component {
    * @param {Event} event
    */
   handleCreateFolder(event) {
-    const name = this.promptFolderName();
-    const parentId = parseInt(this.props.folder.id, 10);
-    if (name) {
-      this.props.actions.files.createFolder(parentId, name).then((data) => {
-        if (this.props.onCreateFolderSuccess) {
-          this.props.onCreateFolderSuccess(data);
-        }
-      });
-      // TODO Figure out how to use fields with arguments in store path
-      // const dataId = this.props.client.dataId({
-      //   __typename: 'Folder',
-      //   id: parentId,
-      // });
-      // resultBehaviors: [
-      //   {
-      //     type: 'ARRAY_INSERT',
-      //     resultPath: ['createFolder'],
-      //     storePath: [dataId, 'children({"limit:15,"offset":0})'],
-      //     where: 'PREPEND',
-      //   },
-      // ],
+    if (typeof this.props.onCreateFolder === 'function') {
+      this.props.onCreateFolder();
     }
+
     event.preventDefault();
   }
 
@@ -387,16 +369,6 @@ class Gallery extends Component {
 
   handleFailedUpload(fileXhr, response) {
     this.props.actions.queuedFiles.failUpload(fileXhr._queuedId, response);
-  }
-
-  /**
-   * Prompts for a folder name from the user
-   *
-   * @return {string|null}
-   */
-  promptFolderName() {
-    // eslint-disable-next-line no-alert
-    return prompt(i18n._t('AssetAdmin.PROMPTFOLDERNAME'));
   }
 
   /**
@@ -955,7 +927,7 @@ Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   client: React.PropTypes.object,
   onUploadSuccess: React.PropTypes.func,
-  onCreateFolderSuccess: React.PropTypes.func,
+  onCreateFolder: React.PropTypes.func,
   onMoveFilesSuccess: React.PropTypes.func,
   onDelete: React.PropTypes.func,
   type: PropTypes.oneOf(['insert', 'select', 'admin']),
