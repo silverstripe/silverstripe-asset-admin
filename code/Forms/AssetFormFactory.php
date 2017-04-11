@@ -46,6 +46,12 @@ abstract class AssetFormFactory implements FormFactory
         $this->constructExtensions();
     }
 
+    /**
+     * @param Controller $controller
+     * @param string $name
+     * @param array $context
+     * @return Form
+     */
     public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
         // Validate context
@@ -70,7 +76,7 @@ abstract class AssetFormFactory implements FormFactory
 
         return $form;
     }
-    
+
     /**
      * Get the validator for the form to be built
      *
@@ -82,7 +88,7 @@ abstract class AssetFormFactory implements FormFactory
     protected function getValidator(Controller $controller, $formName, $context = [])
     {
         $validator = new RequiredFields('Name');
-        
+
         return $validator;
     }
 
@@ -101,6 +107,7 @@ abstract class AssetFormFactory implements FormFactory
      * Gets the main tabs for the file edit form
      *
      * @param File $record
+     * @param array $context
      * @return TabSet
      */
     protected function getFormFieldTabs($record, $context = [])
@@ -139,7 +146,7 @@ abstract class AssetFormFactory implements FormFactory
         }
         return null;
     }
-    
+
     /**
      * @param Controller $controller
      * @param $formName
@@ -195,7 +202,7 @@ abstract class AssetFormFactory implements FormFactory
         $this->invokeWithExtensions('updateFormFields', $fields, $controller, $formName, $context);
         return $fields;
     }
-    
+
     /**
      * Build popup menu
      *
@@ -216,11 +223,11 @@ abstract class AssetFormFactory implements FormFactory
         }
         return null;
     }
-    
+
     /**
      * Get actions that go into the Popover menu
      *
-     * @param $record
+     * @param File $record
      * @return array
      */
     protected function getPopoverActions($record)
@@ -229,7 +236,7 @@ abstract class AssetFormFactory implements FormFactory
             $this->getDeleteAction($record)
         ]);
     }
-    
+
     /**
      * Build "details" formfield tab
      *

@@ -15,7 +15,7 @@ class FolderCreateFormFactory extends FolderFormFactory
     {
         return ['ParentID'];
     }
-    
+
     public function getFormFields(Controller $controller, $name, $context = [])
     {
         // Add status flag before extensions are triggered
@@ -35,15 +35,17 @@ class FolderCreateFormFactory extends FolderFormFactory
                     ->addExtraClass('editor__file-preview--folder')
             );
             $fields->push(HiddenField::create('ParentID', null, $context['ParentID']));
-            
+
             $title = $fields->fieldByName('TitleHeader');
-            $titleNew = _t('AssetAdmin.NewFile', 'New {file}', [ 'file' => Folder::config()->singular_name ]);
+            $titleNew = _t('AssetAdmin.NewFile', 'New {file}', [
+                'file' => Folder::singleton()->i18n_singular_name()
+            ]);
             $title->setTitle($titleNew);
         });
-    
+
         return parent::getFormFields($controller, $name, $context);
     }
-    
+
     /**
      * @param File $record
      * @return FormAction
@@ -54,7 +56,7 @@ class FolderCreateFormFactory extends FolderFormFactory
             ->setIcon('plus-circled')
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
     }
-    
+
     /**
      * @param File $record
      * @return null
