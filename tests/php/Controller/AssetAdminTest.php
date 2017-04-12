@@ -212,7 +212,7 @@ class AssetAdminTest extends FunctionalTest
         $disallowedFile = $this->objFromFixture(File::class, 'disallowCanEdit');
 
         $response = Director::test(
-            'admin/assets/FileEditForm',
+            'admin/assets/fileEditForm/' . $allowedFile->ID,
             [
                 'action_save' => 1,
                 'ID' => $allowedFile->ID,
@@ -225,7 +225,7 @@ class AssetAdminTest extends FunctionalTest
         $this->assertFalse($response->isError());
 
         $response = Director::test(
-            'admin/assets/FileEditForm',
+            'admin/assets/fileEditForm/' . $disallowedFile->ID,
             [
                 'action_save' => 1,
                 'ID' => $disallowedFile->ID,
@@ -266,7 +266,7 @@ class AssetAdminTest extends FunctionalTest
         // Test rename folder
         $folder1ID = $this->idFromFixture(Folder::class, 'folder1');
         $response = $this->post(
-            'admin/assets/fileEditForm',
+            'admin/assets/fileEditForm/' . $folder1ID,
             [
                 'ID' => $folder1ID,
                 'action_save' => 1,
