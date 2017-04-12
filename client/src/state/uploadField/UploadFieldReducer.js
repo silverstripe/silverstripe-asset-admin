@@ -1,6 +1,6 @@
-import deepFreeze from 'deep-freeze-strict';
 import ACTION_TYPES from './UploadFieldActionTypes';
 import fileStructure from 'lib/fileStructure';
+import getFieldReducer from 'lib/reduxFieldReducer';
 
 /**
  * Initial base state
@@ -17,30 +17,8 @@ const initialState = {
 const initialFieldState = { files: [] };
 
 function uploadFieldReducer(state = initialState, action) {
-  /**
-   * Helper to assist with manipulating the current field.
-   *
-   * @param {function} fieldReducer - Callback which will take
-   * the current field information, and must return back an object
-   * which reflects any properties on that field that should be changed.
-   * @return {Object} - Updated state (frozen)
-   */
-  const reduceField = (fieldReducer) => {
-    if (!action.payload.fieldId) {
-      throw new Error('Invalid fieldId');
-    }
-    // Extract field field record, or prototype
-    const field = state.fields[action.payload.fieldId]
-      ? state.fields[action.payload.fieldId]
-      : initialFieldState;
-
-    // Merge result back into state
-    return deepFreeze(Object.assign({}, state, {
-      fields: Object.assign({}, state.fields, {
-        [action.payload.fieldId]: Object.assign({}, field, fieldReducer(field)),
-      }),
-    }));
-  };
+  // Get field reducer
+  const reduceField = getFieldReducer(state, action, initialFieldState);
 
   // Update state for this field
   switch (action.type) {
