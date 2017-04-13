@@ -847,9 +847,7 @@
 }
 
 .search{
-  position:absolute;
-  top:0;
-  right:1.5385rem;
+  margin-right:1.5385rem;
 }
 
 @media (min-width:768px){
@@ -859,12 +857,12 @@
   }
 
   .search.search--active{
-    position:relative;
     right:0;
   }
 }
 
 .search.search--active{
+  position:relative;
   width:calc(100% - 1.5385rem);
 }
 
