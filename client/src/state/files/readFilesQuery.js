@@ -45,19 +45,23 @@ const query = gql`
 `;
 
 const config = {
-  options({ sectionConfig, folderId, query: params }) {
+  options({ sectionConfig, folderId, fileId, query: params }) {
+    const rootFilter = {
+      id: folderId, // can be 0 (root)
+      anyChildId: fileId || null, // treat 0 as null
+    };
+
     // Covers a few variations:
     // - Display the root folder with its direct children
     // - Display the root folder with its recursive children and filters (a full "search")
     // - Display a folder with its direct children, without any filters
     // - Display a folder with its direct children and filters (a "search" in the current folder)
-
     const [sortField, sortDir] = params.sort ? params.sort.split(',') : ['', ''];
     const filterWithDefault = params.filter || {};
     const limit = params.limit || sectionConfig.limit;
     return {
       variables: {
-        rootFilter: { id: folderId },
+        rootFilter,
         childrenFilter: Object.assign(
           filterWithDefault,
           {

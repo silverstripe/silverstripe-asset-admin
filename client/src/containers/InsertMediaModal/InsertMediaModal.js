@@ -11,7 +11,7 @@ import CONSTANTS from 'constants/index';
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
 const initialState = {
-  folderId: 0,
+  folderId: null,
   fileId: null,
   query: {},
   action: CONSTANTS.ACTIONS.EDIT_FILE,
@@ -40,7 +40,7 @@ class InsertMediaModal extends Component {
       this.setOverrides(props);
 
       this.setState({
-        folderId: 0,
+        folderId: null,
         fileId: props.fileAttributes.ID,
         action: CONSTANTS.ACTIONS.EDIT_FILE,
       });
@@ -97,8 +97,8 @@ class InsertMediaModal extends Component {
     const newFolderId = parseInt(folderId || 0, 10);
     const newFileId = parseInt(fileId || 0, 10);
 
-    // Remove pagination selector if already on first page, or changing folder
-    const hasFolderChanged = newFolderId !== this.getFolderId();
+    // Remove pagination selector if already on first page, or changing folder (if folder is known)
+    const hasFolderChanged = newFolderId !== this.getFolderId() && this.getFolderId() !== null;
     const newQuery = Object.assign({}, query);
     if (hasFolderChanged || newQuery.page <= 1) {
       delete newQuery.page;
@@ -114,9 +114,12 @@ class InsertMediaModal extends Component {
   }
 
   /**
-   * @return {Number} Folder ID being viewed
+   * @return {*} Folder ID being viewed, or null if not known
    */
   getFolderId() {
+    if (this.state.folderId === null) {
+      return null;
+    }
     return parseInt(this.state.folderId || 0, 10);
   }
 

@@ -42,6 +42,10 @@ class FileFilterInputTypeCreator extends TypeCreator
             'id' => [
                 'type' => Type::id(),
             ],
+            'anyChildId' => [
+                'type' => Type::id(),
+                'description' => 'Identiies this file by the id of any immediate child'
+            ],
             'parentId' => [
                 'type' => Type::id(),
             ],
@@ -102,6 +106,14 @@ class FileFilterInputTypeCreator extends TypeCreator
                 $parents = AssetAdminFile::nestedFolderIDs($filter['parentId']);
                 $list = $list->filter('ParentID', $parents);
             }
+        }
+
+        // Filter unknown id by known child
+        if (isset($filter['anyChildId'])) {
+            /** @var File $child */
+            $child = File::get()->byID($filter['anyChildId']);
+            $id = $child ? ($child->ParentID ?: 0) : 0;
+            $list = $list->filter('ID', $id);
         }
 
         if (!empty($filter['name'])) {

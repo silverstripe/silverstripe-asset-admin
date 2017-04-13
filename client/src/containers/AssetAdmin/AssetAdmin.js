@@ -58,6 +58,19 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   /**
+   * Get logical folder ID to display
+   */
+  getFolderId() {
+    if (this.props.folderId !== null) {
+      return this.props.folderId;
+    }
+    if (this.props.folder) {
+      return this.props.folder.id;
+    }
+    return 0;
+  }
+
+  /**
    * Handles browsing within this section.
    *
    * @param {number} [folderId]
@@ -69,7 +82,7 @@ class AssetAdmin extends SilverStripeComponent {
       // for Higher-order component with a router handler
       this.props.onBrowse(folderId, fileId, query);
     }
-    if (folderId !== this.props.folderId) {
+    if (folderId !== this.getFolderId()) {
       this.props.actions.gallery.deselectFiles();
     }
   }
@@ -81,7 +94,7 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleSetPage(page) {
     this.handleBrowse(
-      this.props.folderId,
+      this.getFolderId(),
       this.props.fileId,
       Object.assign({}, this.props.query, { page })
     );
@@ -94,7 +107,7 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleDoSearch(data) {
     this.handleBrowse(
-      data.currentFolderOnly ? this.props.folderId : 0,
+      data.currentFolderOnly ? this.getFolderId() : 0,
       0,
       // Reset current query
       Object.assign({}, this.getBlankQuery(), { filter: data })
@@ -121,7 +134,7 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleSort(sort) {
     this.handleBrowse(
-      this.props.folderId,
+      this.getFolderId(),
       this.props.fileId,
       Object.assign(
         {},
@@ -143,7 +156,7 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleViewChange(view) {
     this.handleBrowse(
-      this.props.folderId,
+      this.getFolderId(),
       this.props.fileId,
       Object.assign({}, this.props.query, { view })
     );
@@ -258,7 +271,7 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleFolderIcon(event) {
     event.preventDefault();
-    this.handleOpenFile(this.props.folderId);
+    this.handleOpenFile(this.getFolderId());
   }
 
   /**
@@ -268,7 +281,7 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleOpenFile(fileId) {
     // Retain existing query, e.g. to stay within search results when viewing a file
-    this.handleBrowse(this.props.folderId, fileId, this.props.query);
+    this.handleBrowse(this.getFolderId(), fileId, this.props.query);
   }
 
   /**
@@ -305,7 +318,7 @@ class AssetAdmin extends SilverStripeComponent {
           .then(() => {
             // open the containing folder, since folder edit mode isn't desired
             if (action === 'action_createfolder' && this.props.type !== 'admin') {
-              this.handleOpenFolder(this.props.folderId);
+              this.handleOpenFolder(this.getFolderId());
             }
             return response;
           });
@@ -316,7 +329,7 @@ class AssetAdmin extends SilverStripeComponent {
    * Handle for closing the editor
    */
   handleCloseFile() {
-    this.handleOpenFolder(this.props.folderId);
+    this.handleOpenFolder(this.getFolderId());
   }
 
   /**
@@ -386,7 +399,7 @@ class AssetAdmin extends SilverStripeComponent {
 
   handleCreateFolder() {
     this.props.onBrowse(
-      this.props.folderId,
+      this.getFolderId(),
       null,
       this.props.query,
       CONSTANTS.ACTIONS.CREATE_FOLDER
@@ -432,7 +445,7 @@ class AssetAdmin extends SilverStripeComponent {
       <Gallery
         files={this.props.files}
         fileId={this.props.fileId}
-        folderId={this.props.folderId}
+        folderId={this.getFolderId()}
         folder={this.props.folder}
         type={this.props.type}
         limit={limit}
@@ -474,7 +487,7 @@ class AssetAdmin extends SilverStripeComponent {
 
     if (this.props.viewAction === CONSTANTS.ACTIONS.CREATE_FOLDER) {
       schemaUrl = config.form.folderCreateForm.schemaUrl;
-      targetId = this.props.folderId;
+      targetId = this.getFolderId();
     } else if (this.props.viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
       switch (this.props.type) {
         case 'insert':
@@ -527,7 +540,7 @@ class AssetAdmin extends SilverStripeComponent {
           <Breadcrumb multiline />
           <div className="asset-admin__toolbar-extra pull-xs-right fill-width">
             <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
-              searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.props.folderId}
+              searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.getFolderId()}
               filters={filters}
             />
             {this.props.toolbarChildren}
