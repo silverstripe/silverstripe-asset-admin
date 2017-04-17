@@ -46,11 +46,17 @@
 .insert-media-modal__close-button {
   float: right;
   height: 32px;
+  font-size: 28px;
+  opacity: 0.5;
   margin: 10px -10px 10px 10px;
+
+  &:hover {
+    opacity: 0.7;
+  }
 
   span {
     overflow: hidden;
     display: block;
-    margin-top: -7px;
+    margin-top: -6px;
   }
 }

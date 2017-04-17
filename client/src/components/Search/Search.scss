@@ -154,6 +154,7 @@
   height: 52px;
   width: 0;
   opacity: 0;
+  float: right;
 
   &:focus {
     box-shadow: 0 1px 1px $input-border-focus, 0 0 8px $input-box-shadow-focus;

@@ -214,7 +214,7 @@ class InsertMediaModal extends Component {
     return (
       <button
         type="button"
-        className="btn btn-secondary close insert-media-modal__close-button"
+        className="close insert-media-modal__close-button"
         onClick={this.props.onHide}
         aria-label={i18n._t('FormBuilderModal.CLOSE', 'Close')}
       >

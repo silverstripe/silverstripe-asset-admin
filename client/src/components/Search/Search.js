@@ -242,7 +242,7 @@ class Search extends SilverStripeComponent {
     const searchText = this.state.searchText;
 
     // Build classes
-    const searchClasses = ['search', 'flexbox-area-grow'];
+    const searchClasses = ['search'];
     const advancedButtonClasses = [
       'btn', 'btn-secondary', 'btn--icon-md', 'btn--no-text',
       'font-icon-down-open', 'search__filter-trigger',
@@ -267,7 +267,7 @@ class Search extends SilverStripeComponent {
     return (
       <div className={searchClasses.join(' ')}>
         <button
-          className="btn btn--no-text btn-secondary font-icon-search btn--icon-large search__trigger"
+          className="btn btn--no-text btn-secondary search__trigger"
           type="button"
           title={i18n._t('AssetAdmin.SEARCH', 'Search')}
           aria-owns={this.props.id}
@@ -276,6 +276,7 @@ class Search extends SilverStripeComponent {
           onClick={this.open}
           id={triggerId}
         >
+          <span className="font-icon-search btn--icon-large"></span>
         </button>
         <div id={this.props.id} className="search__group">
           <input

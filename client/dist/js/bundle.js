@@ -44,7 +44,7 @@ bsSize:"lg"})
 return delete t.onHide,delete t.onInsert,delete t.sectionConfig,delete t.schemaUrl,t}},{key:"handleSubmit",value:function e(t,n,r,o){return"action_createfolder"===n?r():this.props.onInsert(t,o)}},{key:"handleBrowse",
 value:function e(t,n){var r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},o=arguments.length>3&&void 0!==arguments[3]?arguments[3]:x.default.ACTIONS.EDIT_FILE
 if(o&&Object.values(x.default.ACTIONS).indexOf(o)===-1)throw new Error("Invalid action provided: "+o)
-this.setState({folderId:t,fileId:n,query:r,action:o})}},{key:"renderToolbarChildren",value:function e(){return g.default.createElement("button",{type:"button",className:"btn btn-secondary close insert-media-modal__close-button",
+this.setState({folderId:t,fileId:n,query:r,action:o})}},{key:"renderToolbarChildren",value:function e(){return g.default.createElement("button",{type:"button",className:"close insert-media-modal__close-button",
 onClick:this.props.onHide,"aria-label":h.default._t("FormBuilderModal.CLOSE","Close")},g.default.createElement("span",{"aria-hidden":"true"},"×"))}},{key:"render",value:function e(){var t=this.getModalProps(),n=this.getSectionProps(),r=this.props.show?g.default.createElement(C.default,n):null
 
 
@@ -1814,16 +1814,16 @@ value:function e(){this.setState({view:T.EXPANDED})}},{key:"toggle",value:functi
 break
 case T.EXPANDED:this.show()}}},{key:"doSearch",value:function e(){var t=this,n={}
 this.state.searchText&&(n.name=this.state.searchText),Object.keys(this.props.formData).forEach(function(e){var r=t.props.formData[e]
-r&&(n[e]=r)}),this.props.onSearch(n)}},{key:"render",value:function e(){var t=this.props.id+"_ExtraFields",n=this.props.id+"_Trigger",r=this.state.searchText,o=["search","flexbox-area-grow"],i=["btn","btn-secondary","btn--icon-md","btn--no-text","font-icon-down-open","search__filter-trigger"],s=!1
+r&&(n[e]=r)}),this.props.onSearch(n)}},{key:"render",value:function e(){var t=this.props.id+"_ExtraFields",n=this.props.id+"_Trigger",r=this.state.searchText,o=["search"],i=["btn","btn-secondary","btn--icon-md","btn--no-text","font-icon-down-open","search__filter-trigger"],s=!1
 
 
 switch(this.state.view){case T.EXPANDED:s=!0,o.push("search--active")
 break
 case T.VISIBLE:i.push("collapsed"),o.push("search--active")
 break
-case T.NONE:i.push("collapsed")}return m.default.createElement("div",{className:o.join(" ")},m.default.createElement("button",{className:"btn btn--no-text btn-secondary font-icon-search btn--icon-large search__trigger",
-type:"button",title:f.default._t("AssetAdmin.SEARCH","Search"),"aria-owns":this.props.id,"aria-controls":this.props.id,"aria-expanded":"false",onClick:this.open,id:n}),m.default.createElement("div",{id:this.props.id,
-className:"search__group"},m.default.createElement("input",{"aria-labelledby":n,type:"text",name:"name",placeholder:f.default._t("AssetAdmin.SEARCH","Search"),className:"form-control search__content-field",
+case T.NONE:i.push("collapsed")}return m.default.createElement("div",{className:o.join(" ")},m.default.createElement("button",{className:"btn btn--no-text btn-secondary search__trigger",type:"button",title:f.default._t("AssetAdmin.SEARCH","Search"),
+"aria-owns":this.props.id,"aria-controls":this.props.id,"aria-expanded":"false",onClick:this.open,id:n},m.default.createElement("span",{className:"font-icon-search btn--icon-large"})),m.default.createElement("div",{
+id:this.props.id,className:"search__group"},m.default.createElement("input",{"aria-labelledby":n,type:"text",name:"name",placeholder:f.default._t("AssetAdmin.SEARCH","Search"),className:"form-control search__content-field",
 onKeyUp:this.handleKeyUp,onChange:this.handleChange,value:r,autoFocus:!0}),m.default.createElement("button",{"aria-expanded":s,"aria-controls":t,onClick:this.toggle,className:i.join(" "),title:f.default._t("AssetAdmin.ADVANCED","Advanced")
 },m.default.createElement("span",{className:"search__filter-trigger-text"},f.default._t("AssetAdmin.ADVANCED","Advanced"))),m.default.createElement("button",{className:"btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text",
 title:f.default._t("AssetAdmin.SEARCH","Search"),onClick:this.doSearch}),m.default.createElement("button",{onClick:this.hide,title:f.default._t("AssetAdmin.CLOSE","Close"),className:"btn font-icon-cancel btn--no-text btn--icon-md search__cancel",
