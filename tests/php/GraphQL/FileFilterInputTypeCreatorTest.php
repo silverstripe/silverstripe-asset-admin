@@ -166,6 +166,46 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         );
     }
 
+    public function testItFiltersByChildId()
+    {
+        $folder1 = new Folder([
+            'name' => 'folder1'
+        ]);
+        $folder1->write();
+
+        $folder2 = new Folder([
+            'name' => 'folder2'
+        ]);
+        $folder2->write();
+
+        $file1 = new File([
+            'ParentID' => $folder1->ID,
+        ]);
+        $file1->write();
+
+        $file2 = new File([
+            'ParentID' => $folder2->ID,
+        ]);
+        $file2->write();
+
+        $baseList = File::get();
+
+        $creator = new FileFilterInputTypeCreator();
+        $list = $creator->filterList($baseList, [
+            'anyChildId' => $file2->ID
+        ]);
+        $this->assertContains(
+            $folder2->ID,
+            $list->column('ID'),
+            'Finds parent folder'
+        );
+        $this->assertNotContains(
+            $folder1->ID,
+            $list->column('ID'),
+            'Does not find non-parent folder'
+        );
+    }
+
     public function testItFiltersByName()
     {
         $folder = new Folder([
