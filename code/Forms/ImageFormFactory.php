@@ -6,6 +6,7 @@ use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Control\Controller;
 
 class ImageFormFactory extends FileFormFactory
 {
@@ -56,7 +57,7 @@ class ImageFormFactory extends FileFormFactory
                     ->addExtraClass('flexbox-area-grow')
             )
             ->addExtraClass('fieldgroup--fill-width')
-            ->setSchemaComponent('ProportionConstraintField')
+            ->setName('Dimensions')
         );
 
         $tab->insertBefore(
@@ -76,4 +77,29 @@ class ImageFormFactory extends FileFormFactory
 
         return $tab;
     }
+
+    /**
+     * @param Controller $controller
+     * @param string $name
+     * @param array $context
+     * @return Form
+     */
+    public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
+    {
+    	$form = parent::getForm($controller, $name, $context);
+    	$dimensions = $form->Fields()->fieldByName('Editor.Placement.Dimensions');
+		$widthField = $form->Fields()->dataFieldByName('InsertWidth');
+		$heightField = $form->Fields()->dataFieldByName('InsertHeight');
+    	if($dimensions && $widthField && $heightField) {
+    		$dimensions->setSchemaComponent('ProportionConstraintField');
+    		$dimensions->setSchemaState([
+    			'data' => [
+    				'ratio' => $widthField->dataValue() / $heightField->dataValue()
+    			]
+    		]);
+    	}
+
+    	return $form;
+    }
+
 }

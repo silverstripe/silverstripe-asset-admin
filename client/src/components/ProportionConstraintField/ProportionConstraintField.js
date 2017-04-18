@@ -6,45 +6,24 @@ import { autofill } from 'redux-form';
 class ProportionConstraintField extends Component {
   
   componentDidMount() {
-  	this.parseChildren();
-  }
-
-  parseChildren() { 
   	const childrenArray = Children.toArray(this.props.children);
 
   	if(childrenArray.length !== 2) {
   		console.error('ProportionConstraintField must be passed two children -- one field for each value');
   	}
-
-  	this.ratio = this.props.ratio;
-
-  	// If a ratio wasn't given, calculate it from the intial values
-  	if(!this.ratio) {
-  		const [field1, field2] = childrenArray;
-  		const dim1 = parseInt(field1.props.value);
-  		const dim2 = parseInt(field2.props.value);
-
-  		if(!dim1 || !dim2) {
-  			console.error(`Unable to calculate constrained ratio. Got values ${field1.props.value} ${field2.props.value}`);
-  		} else {
-  			this.ratio = dim1/dim2;
-  		}
-  	}
   }
 
   handleChange(childIndex = 0, e) {
-  	const {formid, children} = this.props;
+  	const {formid, children, data: {ratio}} = this.props;
   	const val = e.target.value;  	
   	const peerIndex = Number(childIndex === 0);
   	const currentName = children[childIndex].props.name;
   	const peerName = children[peerIndex].props.name;
-  	const multiplier = childIndex === 0 ? 1/this.ratio : this.ratio;
+  	const multiplier = childIndex === 0 ? 1/ratio : ratio;
   	const { round } = Math;
 
   	this.props.onAutofill(currentName, val);
-  	
-  	this.props.dispatch(autofill(formid, currentName, val));
-  	this.props.dispatch(autofill(formid, peerName, round(val * multiplier)));
+  	this.props.onAutofill(peerName, round(val * multiplier));
   }
 
   render() {
@@ -64,7 +43,7 @@ class ProportionConstraintField extends Component {
 }
 
 ProportionConstraintField.propTypes = {
-	ratio: PropTypes.number
+	ratio: PropTypes.number.isRequired
 };
 
-export default connect()(ProportionConstraintField);
+export default ProportionConstraintField;
