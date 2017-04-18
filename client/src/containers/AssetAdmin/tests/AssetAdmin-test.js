@@ -127,12 +127,8 @@ describe('AssetAdmin', () => {
       component.handleOpenFolder = jest.fn();
 
       return component.handleSubmitEditor({}, 'action_createfolder', paramSubmit)
-        .then((data) => {
-          expect(component.handleOpenFile).toBeCalled();
-
-          return data.readFiles;
-        })
         .then(() => {
+          expect(component.handleOpenFile).toBeCalled();
           expect(component.handleOpenFolder).not.toBeCalled();
         });
     });
@@ -147,12 +143,8 @@ describe('AssetAdmin', () => {
       component.handleOpenFolder = jest.fn();
 
       return component.handleSubmitEditor({}, 'action_createfolder', paramSubmit)
-        .then((data) => {
-          expect(component.handleOpenFile).not.toBeCalled();
-
-          return data.readFiles;
-        })
         .then(() => {
+          expect(component.handleOpenFile).not.toBeCalled();
           expect(component.handleOpenFolder).toBeCalled();
         });
     });
