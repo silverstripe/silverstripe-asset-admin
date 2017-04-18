@@ -301,15 +301,14 @@ class AssetAdmin extends SilverStripeComponent {
         }
         // TODO Update GraphQL store with new model,
         // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-        const readFiles = this.props.actions.files.readFiles()
+        return this.props.actions.files.readFiles()
           .then(() => {
             // open the containing folder, since folder edit mode isn't desired
             if (action === 'action_createfolder' && this.props.type !== 'admin') {
               this.handleOpenFolder(this.props.folderId);
             }
+            return response;
           });
-
-        return Object.assign({}, response, { readFiles });
       });
   }
 

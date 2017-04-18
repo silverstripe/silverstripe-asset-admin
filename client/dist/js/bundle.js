@@ -129,9 +129,8 @@ text:_.default._t("LeftAndMain.SEARCHRESULTS","Search results")}),this.props.act
 if("function"==typeof this.props.onSubmitEditor){var s=this.findFile(this.props.fileId)
 i=this.props.onSubmitEditor(t,n,r,s)}else i=r()
 if(!i)throw new Error("Promise was not returned for submitting")
-return i.then(function(e){"action_createfolder"===n&&"admin"===o.props.type&&o.handleOpenFile(e.record.id)
-var t=o.props.actions.files.readFiles().then(function(){"action_createfolder"===n&&"admin"!==o.props.type&&o.handleOpenFolder(o.props.folderId)})
-return c({},e,{readFiles:t})})}},{key:"handleCloseFile",value:function e(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",value:function e(t){var n=c({},this.props.query)
+return i.then(function(e){return"action_createfolder"===n&&"admin"===o.props.type&&o.handleOpenFile(e.record.id),o.props.actions.files.readFiles().then(function(){return"action_createfolder"===n&&"admin"!==o.props.type&&o.handleOpenFolder(o.props.folderId),
+e})})}},{key:"handleCloseFile",value:function e(){this.handleOpenFolder(this.props.folderId)}},{key:"handleOpenFolder",value:function e(t){var n=c({},this.props.query)
 delete n.page,delete n.filter,this.handleBrowse(t,null,n)}},{key:"handleDelete",value:function e(t){var n=this,r=this.findFile(t)
 if(!r&&this.props.folder&&this.props.folder.id===t&&(r=this.props.folder),!r)throw new Error("File selected for deletion cannot be found: "+t)
 var o=this.props.client.dataId({__typename:r.__typename,id:r.id})
