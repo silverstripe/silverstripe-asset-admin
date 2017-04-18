@@ -94,7 +94,10 @@ class FileFilterInputTypeCreator extends TypeCreator
                 'ID' => 0,
             ])]);
         }
-
+    
+        // track if search is being applied
+        $search = false;
+    
         // Optionally limit search to a folder, supporting recursion
         if (isset($filter['parentId'])) {
             $recursive = !empty($filter['recursive']);
@@ -106,14 +109,7 @@ class FileFilterInputTypeCreator extends TypeCreator
                 $parents = AssetAdminFile::nestedFolderIDs($filter['parentId']);
                 $list = $list->filter('ParentID', $parents);
             }
-        }
-
-        // Filter unknown id by known child
-        if (isset($filter['anyChildId'])) {
-            /** @var File $child */
-            $child = File::get()->byID($filter['anyChildId']);
-            $id = $child ? ($child->ParentID ?: 0) : 0;
-            $list = $list->filter('ID', $id);
+            $search = true;
         }
 
         if (!empty($filter['name'])) {
@@ -121,23 +117,42 @@ class FileFilterInputTypeCreator extends TypeCreator
                 'Name:PartialMatch' => $filter['name'],
                 'Title:PartialMatch' => $filter['name']
             ));
+            $search = true;
         }
 
         // Date filtering
         if (!empty($filter['createdFrom'])) {
             $fromDate = new DateField(null, null, $filter['createdFrom']);
             $list = $list->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
+            $search = true;
         }
         if (!empty($filter['createdTo'])) {
             $toDate = new DateField(null, null, $filter['createdTo']);
             $list = $list->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
+            $search = true;
         }
 
         // Categories (mapped to extensions through the enum type automatically)
         if (!empty($filter['appCategory'])) {
             $list = $list->filter('Name:EndsWith', $filter['appCategory']);
+            $search = true;
         }
-
+        
+        // Filter unknown id by known child if search is not applied
+        if (!$search && isset($filter['anyChildId'])) {
+            /** @var File $child */
+            $child = File::get()->byID($filter['anyChildId']);
+            $id = $child ? ($child->ParentID ?: 0) : 0;
+            if ($id) {
+                $list = $list->filter('ID', $id);
+            } else {
+                // Special case for root folder, since filter by ID = 0 will return an empty list
+                $list = new ArrayList([new Folder([
+                    'ID' => 0,
+                ])]);
+            }
+        }
+    
         return $list;
     }
 }

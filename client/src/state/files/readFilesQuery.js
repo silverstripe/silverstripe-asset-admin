@@ -46,9 +46,29 @@ const query = gql`
 
 const config = {
   options({ sectionConfig, folderId, fileId, query: params }) {
+    const filter = Object.assign({}, params.filter);
+    const childrenFilter = Object.assign(
+      {},
+      filter,
+      {
+        // Unset key, taken from rootFilter
+        parentId: undefined,
+        // Currently all searches are recursive, and only filtered by a ParentID
+        recursive: hasFilters(filter),
+        // Unset this key since it's not a valid GraphQL argument
+        currentFolderOnly: undefined,
+      }
+    );
+
+    // only populate anyChildId param if no search is applied
+    const anyChildId = (hasFilters(filter)) ? null : (fileId || null);
+    const id = (anyChildId) ? null : (folderId || 0);
+
     const rootFilter = {
-      id: folderId, // can be 0 (root)
-      anyChildId: fileId || null, // treat 0 as null
+      // can be 0 (root)
+      id,
+      // treat 0 as null
+      anyChildId,
     };
 
     // Covers a few variations:
@@ -57,22 +77,11 @@ const config = {
     // - Display a folder with its direct children, without any filters
     // - Display a folder with its direct children and filters (a "search" in the current folder)
     const [sortField, sortDir] = params.sort ? params.sort.split(',') : ['', ''];
-    const filterWithDefault = params.filter || {};
     const limit = params.limit || sectionConfig.limit;
     return {
       variables: {
         rootFilter,
-        childrenFilter: Object.assign(
-          filterWithDefault,
-          {
-            // Unset key, taken from rootFilter
-            parentId: undefined,
-            // Currently all searches are recursive, and only filtered by a ParentID
-            recursive: hasFilters(filterWithDefault),
-            // Unset this key since it's not a valid GraphQL argument
-            currentFolderOnly: undefined,
-          }
-        ),
+        childrenFilter,
         limit,
         offset: ((params.page || 1) - 1) * limit,
         sortBy: (sortField && sortDir)
