@@ -10,12 +10,14 @@ import previewFieldReducer from 'state/previewField/PreviewFieldReducer';
 import Injector from 'lib/Injector';
 import UploadField from 'components/UploadField/UploadField';
 import PreviewImageField from 'components/PreviewImageField/PreviewImageField';
+import ProportionConstraintField from 'components/ProportionConstraintField/ProportionConstraintField';
 import HistoryList from 'containers/HistoryList/HistoryList';
 
 document.addEventListener('DOMContentLoaded', () => {
   Injector.register('UploadField', UploadField);
   Injector.register('PreviewImageField', PreviewImageField);
   Injector.register('HistoryList', HistoryList);
+  Injector.register('ProportionConstraintField', ProportionConstraintField);
 
   const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
 

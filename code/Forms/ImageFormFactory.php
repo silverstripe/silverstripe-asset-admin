@@ -54,7 +54,9 @@ class ImageFormFactory extends FileFormFactory
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow')
-            )->addExtraClass('fieldgroup--fill-width')
+            )
+            ->addExtraClass('fieldgroup--fill-width')
+            ->setSchemaComponent('ProportionConstraintField')
         );
 
         $tab->insertBefore(
