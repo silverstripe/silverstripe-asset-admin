@@ -2212,7 +2212,8 @@ return n}return s(t,e),a(t,[{key:"handleChange",value:function e(){var t=argumen
 
 s(p,l),i&&s(c,f(l*d))}},{key:"render",value:function e(){var t=this,n=c.default.getComponentByName("FieldGroup")
 return u.default.createElement(n,this.props,this.props.children.map(function(e,n){return(0,l.cloneElement)(e,{onChange:t.handleChange.bind(t,n),key:n},e.props.children)}))}}]),t}(l.Component)
-d.propTypes={active:l.PropTypes.bool,data:l.PropTypes.shape({ratio:l.PropTypes.number.isRequired})},d.defaultProps={active:!0},t.default=d},function(e,t,n){"use strict"
+d.propTypes={children:l.PropTypes.array,onAutofill:l.PropTypes.func,active:l.PropTypes.bool,data:l.PropTypes.shape({ratio:l.PropTypes.number.isRequired})},d.defaultProps={active:!0},t.default=d},function(e,t,n){
+"use strict"
 function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
 
 
