@@ -86,20 +86,19 @@ class ImageFormFactory extends FileFormFactory
      */
     public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
-    	$form = parent::getForm($controller, $name, $context);
-    	$dimensions = $form->Fields()->fieldByName('Editor.Placement.Dimensions');
-		$widthField = $form->Fields()->dataFieldByName('InsertWidth');
-		$heightField = $form->Fields()->dataFieldByName('InsertHeight');
+        $form = parent::getForm($controller, $name, $context);
+        $dimensions = $form->Fields()->fieldByName('Editor.Placement.Dimensions');
+        $widthField = $form->Fields()->dataFieldByName('InsertWidth');
+        $heightField = $form->Fields()->dataFieldByName('InsertHeight');
         if ($dimensions && $widthField && $heightField) {
-    		$dimensions->setSchemaComponent('ProportionConstraintField');
-    		$dimensions->setSchemaState([
-    			'data' => [
-    				'ratio' => $widthField->dataValue() / $heightField->dataValue()
-    			]
-    		]);
-    	}
+            $dimensions->setSchemaComponent('ProportionConstraintField');
+            $dimensions->setSchemaState([
+                'data' => [
+                    'ratio' => $widthField->dataValue() / $heightField->dataValue()
+                ]
+            ]);
+        }
 
-    	return $form;
+        return $form;
     }
-
 }
