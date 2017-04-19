@@ -90,7 +90,7 @@ class ImageFormFactory extends FileFormFactory
     	$dimensions = $form->Fields()->fieldByName('Editor.Placement.Dimensions');
 		$widthField = $form->Fields()->dataFieldByName('InsertWidth');
 		$heightField = $form->Fields()->dataFieldByName('InsertHeight');
-    	if($dimensions && $widthField && $heightField) {
+        if ($dimensions && $widthField && $heightField) {
     		$dimensions->setSchemaComponent('ProportionConstraintField');
     		$dimensions->setSchemaState([
     			'data' => [

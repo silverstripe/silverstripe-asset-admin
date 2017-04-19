@@ -1,49 +1,56 @@
-import React, { PropTypes, Component, Children, cloneElement } from 'react';
-import { connect } from 'react-redux';
+import React, {PropTypes, Component, Children, cloneElement} from 'react';
 import Injector from 'lib/Injector';
-import { autofill } from 'redux-form';
 
 class ProportionConstraintField extends Component {
-  
-  componentDidMount() {
-  	const childrenArray = Children.toArray(this.props.children);
 
-  	if(childrenArray.length !== 2) {
-  		console.error('ProportionConstraintField must be passed two children -- one field for each value');
-  	}
-  }
+    constructor(props) {
+        super(props);
+        const childrenArray = Children.toArray(props.children);
 
-  handleChange(childIndex = 0, e) {
-  	const {formid, children, data: {ratio}} = this.props;
-  	const val = e.target.value;  	
-  	const peerIndex = Number(childIndex === 0);
-  	const currentName = children[childIndex].props.name;
-  	const peerName = children[peerIndex].props.name;
-  	const multiplier = childIndex === 0 ? 1/ratio : ratio;
-  	const { round } = Math;
+        if (childrenArray.length !== 2) {
+            throw new Error('ProportionConstraintField must be passed two children -- one field for each value');
+        }
+    }
 
-  	this.props.onAutofill(currentName, val);
-  	this.props.onAutofill(peerName, round(val * multiplier));
-  }
+    handleChange(childIndex = 0, e) {
+        const {children, active, onAutofill, data: {ratio}} = this.props;
+        const val = e.target.value;
+        const peerIndex = Number(childIndex === 0);
+        const currentName = children[childIndex].props.name;
+        const peerName = children[peerIndex].props.name;
+        const multiplier = childIndex === 0 ? 1 / ratio : ratio;
+        const {round} = Math;
 
-  render() {
-  	const FieldGroup = Injector.getComponentByName('FieldGroup');
-  	const [child1, child2] = Children.toArray(this.props.children);
+        onAutofill(currentName, val);
+        if(active) {
+            onAutofill(peerName, round(val * multiplier));
+        }
+    }
 
-  	return (
-  		<FieldGroup {...this.props}>
-  			{this.props.children.map((c, i) => (
-  				cloneElement(c, {
-  					onChange: this.handleChange.bind(this, i)
-  				}, c.props.children)
-  			))}
-  		</FieldGroup>
-  	);
-  }
+    render() {
+        const FieldGroup = Injector.getComponentByName('FieldGroup');
+        return (
+            <FieldGroup {...this.props}>
+                {this.props.children.map((c, i) => (
+                    cloneElement(c, {
+                        onChange: this.handleChange.bind(this, i),
+                        key: i
+                    }, c.props.children)
+                ))}
+            </FieldGroup>
+        );
+    }
 }
 
 ProportionConstraintField.propTypes = {
-	ratio: PropTypes.number.isRequired
+    active: PropTypes.bool,
+    data: PropTypes.shape({
+        ratio: PropTypes.number.isRequired
+    })
+};
+
+ProportionConstraintField.defaultProps = {
+    active: true
 };
 
 export default ProportionConstraintField;
