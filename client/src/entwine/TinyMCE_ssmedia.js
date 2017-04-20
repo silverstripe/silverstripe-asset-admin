@@ -325,7 +325,7 @@ jQuery.entwine('ss', ($) => {
      */
     insertFile() {
       this.statusMessage(i18n._t(
-        'HTMLEditorField_Toolbar.ERROR_OEMBED_REMOTE',
+        'AssetAdmin.ERROR_OEMBED_REMOTE',
         'Embed is only compatible with remote files'),
         'bad');
 

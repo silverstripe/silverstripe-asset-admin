@@ -446,7 +446,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                     'versionid' => $version->Version,
                     'date_ago' => $version->dbObject('LastEdited')->Ago(),
                     'date_formatted' => $version->dbObject('LastEdited')->Nice(),
-                    'status' => ($version->WasPublished) ? _t('File.PUBLISHED', 'Published') : '',
+                    'status' => ($version->WasPublished) ? _t('SilverStripe\\Assets\\File.PUBLISHED', 'Published') : '',
                     'author' => ($author)
                         ? $author->Name
                         : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UNKNOWN', "Unknown"),
@@ -531,10 +531,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         return array(
             "CMS_ACCESS_AssetAdmin" => array(
-                'name' => _t('CMSMain.ACCESS', "Access to '{title}' section", array(
+                'name' => _t('SilverStripe\\CMS\\Controllers\\CMSMain.ACCESS', "Access to '{title}' section", array(
                     'title' => static::menu_title()
                 )),
-                'category' => _t('Permission.CMS_ACCESS_CATEGORY', 'CMS Access')
+                'category' => _t('SilverStripe\\Security\\Permission.CMS_ACCESS_CATEGORY', 'CMS Access')
             )
         );
     }

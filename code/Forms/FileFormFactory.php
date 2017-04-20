@@ -53,9 +53,9 @@ class FileFormFactory extends AssetFormFactory
         // Add new tab for usage
         return Tab::create(
             'Usage',
-            DatetimeField::create("Created", _t('AssetTableField.CREATED', 'First uploaded'))
+            DatetimeField::create("Created", _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CREATED', 'First uploaded'))
                 ->setReadonly(true),
-            DatetimeField::create("LastEdited", _t('AssetTableField.LASTEDIT', 'Last changed'))
+            DatetimeField::create("LastEdited", _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LASTEDIT', 'Last changed'))
                 ->setReadonly(true)
         );
     }
@@ -67,7 +67,7 @@ class FileFormFactory extends AssetFormFactory
             'Details',
             TextField::create("Title", File::singleton()->fieldLabel('Title')),
             TextField::create('Name', File::singleton()->fieldLabel('Filename')),
-            ReadonlyField::create("Path", _t('AssetTableField.PATH', 'Path'), $this->getPath($record))
+            ReadonlyField::create("Path", _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'), $this->getPath($record))
         );
 
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
@@ -78,7 +78,7 @@ class FileFormFactory extends AssetFormFactory
                     $record->CMSEditLink(),
                     'btn btn-secondary-outline font-icon-edit editor__edit-link',
                     '',
-                    _t('AssetAdmin.EditLink', 'Edit original file')
+                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.EditLink', 'Edit original file')
                 )
             ));
         }
@@ -99,11 +99,11 @@ class FileFormFactory extends AssetFormFactory
             LiteralField::create(
                 'AttributesDescription',
                 '<p>'. _t(
-                    'AssetAdmin.AttributesDescription',
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AttributesDescription',
                     'These changes will only affect this particular placement of the file.'
                 ) .'</p>'
             ),
-            TextField::create('Caption', _t('AssetAdmin.Caption', 'Caption'))
+            TextField::create('Caption', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Caption', 'Caption'))
         );
     }
 
@@ -292,7 +292,7 @@ class FileFormFactory extends AssetFormFactory
     protected function getInsertAction($record)
     {
         if ($record && $record->isInDB() && $record->canEdit()) {
-            return FormAction::create('insert', _t('CMSMain.INSERT', 'Insert file'))
+            return FormAction::create('insert', _t('SilverStripe\\CMS\\Controllers\\CMSMain.INSERT', 'Insert file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return null;

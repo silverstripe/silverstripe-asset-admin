@@ -34,27 +34,27 @@ class ImageFormFactory extends FileFormFactory
         $tab = parent::getFormFieldAttributesTab($record, $context);
 
         $alignments = array(
-            'leftAlone' => _t('AssetAdmin.AlignmentLeftAlone', 'On the left, on its own.'),
-            'center' => _t('AssetAdmin.AlignmentCenter', 'Centered, on its own.'),
-            'left' => _t('AssetAdmin.AlignmentLeft', 'On the left, with text wrapping around.'),
-            'right' => _t('AssetAdmin.AlignmentRight', 'On the right, with text wrapping around.'),
+            'leftAlone' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeftAlone', 'On the left, on its own.'),
+            'center' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentCenter', 'Centered, on its own.'),
+            'left' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeft', 'On the left, with text wrapping around.'),
+            'right' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRight', 'On the right, with text wrapping around.'),
         );
 
         $tab->push(
-            DropdownField::create('Alignment', _t('AssetAdmin.Alignment', 'Alignment'), $alignments)
+            DropdownField::create('Alignment', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Alignment', 'Alignment'), $alignments)
         );
         $tab->push(
             FieldGroup::create(
-                _t('AssetAdmin.ImageSpecs', 'Dimensions'),
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
                 TextField::create(
                     'InsertWidth',
-                    _t('AssetAdmin.ImageWidth', 'Width')
+                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width')
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow'),
                 TextField::create(
                     'InsertHeight',
-                    _t('AssetAdmin.ImageHeight', 'Height')
+                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight', 'Height')
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow')
@@ -65,16 +65,16 @@ class ImageFormFactory extends FileFormFactory
 
         $tab->insertBefore(
             'Caption',
-            TextField::create('AltText', _t('AssetAdmin.AltText', 'Alternative text (alt)'))
+            TextField::create('AltText', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltText', 'Alternative text (alt)'))
                 ->setDescription(_t(
-                    'AssetAdmin.AltTextDescription',
+                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltTextDescription',
                     'Shown to screen readers or if image can\'t be displayed'
                 ))
         );
         $tab->insertAfter(
             'AltText',
-            TextField::create('TitleTooltip', _t('AssetAdmin.TitleTooltip', 'Title text (tooltip)'))
-                ->setDescription(_t('AssetAdmin.TitleTooltipDescription', 'For additional information about the image'))
+            TextField::create('TitleTooltip', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltip', 'Title text (tooltip)'))
+                ->setDescription(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltipDescription', 'For additional information about the image'))
                 ->setValue($record->Title)
         );
 

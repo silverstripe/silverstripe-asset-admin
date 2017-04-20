@@ -40,7 +40,7 @@ return["InsertWidth","InsertHeight","ID"].forEach(function(t){o[t]="string"==typ
 return n.find(function(t){var n=new RegExp("\\b"+t+"\\b")
 return n.test(e)})},getAttributes:function t(){var e=this.getData()
 return{src:e.url,alt:e.AltText,width:e.InsertWidth,height:e.InsertHeight,title:e.TitleTooltip,class:e.Alignment,"data-id":e.ID,"data-shortcode":"image"}},getExtraData:function t(){var e=this.getData()
-return{CaptionText:e&&e.Caption}},insertFile:function t(){return this.statusMessage(d.default._t("HTMLEditorField_Toolbar.ERROR_OEMBED_REMOTE","Embed is only compatible with remote files"),"bad"),!1},insertImage:function e(){
+return{CaptionText:e&&e.Caption}},insertFile:function t(){return this.statusMessage(d.default._t("AssetAdmin.ERROR_OEMBED_REMOTE","Embed is only compatible with remote files"),"bad"),!1},insertImage:function e(){
 var n=this.getElement()
 if(!n)return!1
 var i=n.getEditor()

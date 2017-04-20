@@ -709,7 +709,7 @@ return s(t,e),l(t,[{key:"handleDrag",value:function e(t){this.props.onEnableDrop
 }},{key:"handlePrevPage",value:function e(){this.handleSetPage(this.props.page-1)}},{key:"folderFilter",value:function e(t){return"folder"===t.type}},{key:"fileFilter",value:function e(t){return"folder"!==t.type
 
 }},{key:"renderPagination",value:function e(){if(this.props.totalCount<=this.props.limit)return null
-var t={setPage:this.handleSetPage,maxPage:Math.ceil(this.props.totalCount/this.props.limit),next:this.handleNextPage,nextText:p.default._t("Pagination.NEXT","Next"),previous:this.handlePrevPage,previousText:p.default._t("Pagination.PREVIOUS","Previous"),
+var t={setPage:this.handleSetPage,maxPage:Math.ceil(this.props.totalCount/this.props.limit),next:this.handleNextPage,nextText:p.default._t("AssetAdmin.NEXT","Next"),previous:this.handlePrevPage,previousText:p.default._t("AssetAdmin.PREVIOUS","Previous"),
 currentPage:this.props.page-1,useGriddleStyles:!1}
 return c.default.createElement("div",{className:"griddle-footer"},c.default.createElement(g.default.GridPagination,t))}},{key:"renderItem",value:function e(t,n){var r=this.props.badges.find(function(e){
 return e.id===t.id}),o={key:n,item:t,selectedFiles:this.props.selectedFiles,onDrag:this.handleDrag,badge:r}
@@ -1941,7 +1941,7 @@ delete n.ID
 var r={fields:Object.entries(n).map(function(e){var t=p(e,2),n=t[0],r=t[1]
 return{name:n,value:r}})}
 this.props.actions.schema.setSchemaStateOverrides(t.schemaUrl,r)}}},{key:"getModalProps",value:function e(){var t=d({handleSubmit:this.handleSubmit,onLoadingError:this.handleLoadingError,showErrorMessage:!0,
-responseClassBad:"alert alert-danger"},this.props,{bodyClassName:"fill-height",className:"insert-embed-modal "+this.props.className,bsSize:"lg",handleHide:this.props.onHide,title:this.props.targetUrl?h.default._t("InsertEmbedModal.EditTitle","Media from the web"):h.default._t("InsertEmbedModal.CreateTitle","Insert new media from the web")
+responseClassBad:"alert alert-danger"},this.props,{bodyClassName:"fill-height",className:"insert-embed-modal "+this.props.className,bsSize:"lg",handleHide:this.props.onHide,title:this.props.targetUrl?h.default._t("AssetAdmin.EditTitle","Media from the web"):h.default._t("AssetAdmin.CreateTitle","Insert new media from the web")
 })
 return delete t.onHide,delete t.sectionConfig,delete t.onInsert,delete t.fileAttributes,t}},{key:"clearOverrides",value:function e(){this.props.actions.schema.setSchemaStateOverrides(this.props.schemaUrl,null)
 
@@ -2066,17 +2066,18 @@ className:"uploadfield"},this.renderDropzone(),this.props.files.map(this.renderC
 value:function e(){if(!this.props.data.createFileEndpoint)return null
 var t={height:b.default.SMALL_THUMBNAIL_HEIGHT,width:b.default.SMALL_THUMBNAIL_WIDTH},n=this.props.name,r={url:this.props.data.createFileEndpoint.url,method:this.props.data.createFileEndpoint.method,paramName:"Upload",
 thumbnailWidth:b.default.SMALL_THUMBNAIL_WIDTH,thumbnailHeight:b.default.SMALL_THUMBNAIL_HEIGHT}
-if(this.props.data.multi||(r.maxFiles=1),!this.canEdit())return this.props.files.length?null:m.default.createElement("p",null,f.default._t("AssetAdminUploadField.EMPTY","No files"))
+if(this.props.data.multi||(r.maxFiles=1),!this.canEdit())return this.props.files.length?null:m.default.createElement("p",null,f.default._t("AssetAdmin.EMPTY","No files"))
 var o=["uploadfield__dropzone"]
 this.props.files.length&&!this.props.data.multi&&o.push("uploadfield__dropzone--hidden")
 var i=this.props.securityId
 return m.default.createElement(x.default,{name:n,canUpload:!0,uploadButton:!1,uploadSelector:".uploadfield__upload-button, .uploadfield__backdrop",folderId:this.props.data.parentid,handleAddedFile:this.handleAddedFile,
 handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,preview:t,options:r,securityID:i,className:o.join(" ")
 },m.default.createElement("div",{className:"uploadfield__backdrop"}),m.default.createElement("span",{className:"uploadfield__droptext"},m.default.createElement("button",{onClick:this.handleSelect,className:"uploadfield__upload-button"
-},f.default._t("AssetAdminUploadField.BROWSE","Browse"))," ",f.default._t("AssetAdminUploadField.OR","or")," ",m.default.createElement("button",{onClick:this.handleAddShow,className:"uploadfield__add-button"
-},f.default._t("AssetAdminUploadField.ADD_FILES","Add from files"))))}},{key:"renderDialog",value:function e(){return m.default.createElement(I.default,{title:!1,show:this.state.selecting,onInsert:this.handleAddInsert,
-onHide:this.handleAddHide,bodyClassName:"modal__dialog",className:"insert-media-react__dialog-wrapper",type:"select"})}},{key:"renderChild",value:function e(t,n){var r={key:n,item:t,name:this.props.name,
-handleRemove:this.handleItemRemove,canEdit:this.canEdit()}
+},f.default._t("AssetAdmin.BROWSE","Browse"))," ",f.default._t("AssetAdmin.OR","or")," ",m.default.createElement("button",{onClick:this.handleAddShow,className:"uploadfield__add-button"},f.default._t("AssetAdmin.ADD_FILES","Add from files"))))
+
+}},{key:"renderDialog",value:function e(){return m.default.createElement(I.default,{title:!1,show:this.state.selecting,onInsert:this.handleAddInsert,onHide:this.handleAddHide,bodyClassName:"modal__dialog",
+className:"insert-media-react__dialog-wrapper",type:"select"})}},{key:"renderChild",value:function e(t,n){var r={key:n,item:t,name:this.props.name,handleRemove:this.handleItemRemove,canEdit:this.canEdit()
+}
 return m.default.createElement(P.default,r)}}]),t}(C.default)
 N.propTypes={extraClass:m.default.PropTypes.string,id:m.default.PropTypes.string.isRequired,name:m.default.PropTypes.string.isRequired,onChange:m.default.PropTypes.func,value:m.default.PropTypes.shape({
 Files:m.default.PropTypes.arrayOf(m.default.PropTypes.number)}),files:m.default.PropTypes.arrayOf(A.default),readOnly:m.default.PropTypes.bool,disabled:m.default.PropTypes.bool,data:m.default.PropTypes.shape({

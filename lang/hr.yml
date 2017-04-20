@@ -1,47 +1,17 @@
 hr:
-  AssetAdmin:
-    Alignment: Poravnavanje
-    AlignmentCenter: 'Centirano, sam za sebe.'
-    AlignmentLeft: 'Na lijevu stranu, s tekstom oko.'
-    AlignmentLeftAlone: 'Na lijevo, sam za sebe.'
-    AlignmentRight: 'Na desnu stranu, s tekstom oko.'
-    AltText: 'Alternativni tekst (alt)'
-    AltTextDescription: 'Prikaži čitačima ekrana ili ako je sliku nemoguće prikazati'
-    AppCategoryArchive: Arhiviraj
-    AppCategoryAudio: Zvuk
-    AppCategoryDocument: Dokument
-    AppCategoryFlash: Flash
-    AppCategoryImage: Slika
-    AppCategoryVideo: Video
-    AttributesDescription: 'Ove promjene će utjecati samo na specifičan smještan ove datoteke.'
-    Caption: Natpis
-    CurrentFolderOnly: 'Ograniči na trenutni direktorij?'
-    EditLink: 'Uredi originalnu datoteku'
-    ErrorItemPermissionDenied: 'Čini se da nemate potrebna prava za dodati {ObjectTitle} na kampanju'
-    ErrorNotFound: 'Taj {Type} je nemoguće pronaći'
-    Filetype: 'Vrsta datoteke'
-    ImageHeight: Visina
-    ImageSpecs: Dimenzije
-    ImageWidth: 'Širina'
-    NEWFOLDER: 'Novi direktorij'
-    TitleTooltip: 'Naslov (tooltip)'
-    TitleTooltipDescription: 'Za dodatne informacije o slici'
-  AssetAdmin_DeleteBatchAction:
-    TITLE: 'Obriši direktorije'
-  CMSMain:
-    INSERT: 'Ubaci datoteku'
-  CMSSearch:
-    FILTERDATEHEADING: Datum
-  File:
-    PUBLISHED: Objavljeno
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Datoteke
+  AssetAdmin_DeleteBatchAction:
+    TITLE: 'Obriši direktorije'
+  SilverStripe\CMS\Controllers\CMSMain:
+    INSERT: 'Ubaci datoteku'
+  SilverStripe\Assets\File:
+    PUBLISHED: Objavljeno
   SilverStripe\\AssetAdmin\\Controller\\AssetAdmin:
     ADDTOCAMPAIGN: 'Dodaj na kampanju'
     AppCategoryArchive: Arhiviraj
     AppCategoryAudio: Zvuk
     AppCategoryDocument: Dokument
-    AppCategoryFlash: Flash
     AppCategoryImage: Slika
     AppCategoryVideo: Video
     CreatePermissionDenied: 'Nemate prava za dodavanje datoteka'
@@ -51,7 +21,6 @@ hr:
     ErrorNotFound: 'Taj {Type} nemoguće pronaći'
     Filetype: 'Vrsta datoteke'
     LoadIntoFileFailed: 'Greška pri učitavanju datoteke'
-    NEWFOLDER: 'Novi direktorij'
     NOSUMMARY: 'Sažetak nije dostupan'
     PUBLISH_BUTTON: Objavi
     SAVEDFILE: 'Spremljena datoteke'

@@ -75,7 +75,7 @@ class RemoteFileFormFactory implements FormFactory
                 TextField::create(
                     'Url',
                     _t(
-                        'RemoteFileForm.UrlDescription',
+                        'SilverStripe\\AssetAdmin\\Forms\\RemoteFileFormFactory.UrlDescription',
                         'Embed Youtube and Vimeo videos, images and other media directly from the web.'
                     )
                 )
@@ -86,11 +86,11 @@ class RemoteFileFormFactory implements FormFactory
         if ($context['type'] === 'edit' && $url && $this->validateUrl($url)) {
             $embed = $this->getEmbed($url);
             $alignments = array(
-                'leftAlone' => _t('AssetAdmin.AlignmentLeftAlone', 'Left'),
-                'center' => _t('AssetAdmin.AlignmentCenter', 'Center'),
-                'rightAlone' => _t('AssetAdmin.AlignmentRightAlone', 'Right'),
-                'left' => _t('AssetAdmin.AlignmentLeft', 'Left wrap'),
-                'right' => _t('AssetAdmin.AlignmentRight', 'Right wrap'),
+                'leftAlone' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeftAlone', 'Left'),
+                'center' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentCenter', 'Center'),
+                'rightAlone' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRightAlone', 'Right'),
+                'left' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeft', 'Left wrap'),
+                'right' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRight', 'Right wrap'),
             );
 
             $fields = CompositeField::create([
@@ -107,21 +107,21 @@ class RemoteFileFormFactory implements FormFactory
                     TextField::create('UrlPreview', $embed->getName(), $url)
                         ->setReadonly(true),
                     HiddenField::create('Url', false, $url),
-                    TextField::create('CaptionText', _t('AssetAdmin.Caption', 'Caption')),
+                    TextField::create('CaptionText', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Caption', 'Caption')),
                     OptionsetField::create(
                         'Placement',
-                        _t('AssetAdmin.Placement', 'Placement'),
+                        _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Placement', 'Placement'),
                         $alignments
                     )
                         ->addExtraClass('insert-embed-modal__placement'),
                     FieldGroup::create(
-                        _t('AssetAdmin.ImageSpecs', 'Dimensions'),
+                        _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
                         TextField::create('Width', '', $embed->getWidth())
-                            ->setRightTitle(_t('AssetAdmin.ImageWidth', 'Width'))
+                            ->setRightTitle(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width'))
                             ->setMaxLength(5)
                             ->addExtraClass('flexbox-area-grow'),
                         TextField::create('Height', '', $embed->getHeight())
-                            ->setRightTitle(_t('AssetAdmin.ImageHeight', 'Height'))
+                            ->setRightTitle(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight', 'Height'))
                             ->setMaxLength(5)
                             ->addExtraClass('flexbox-area-grow')
                     )->addExtraClass('fieldgroup--fill-width')
@@ -138,16 +138,16 @@ class RemoteFileFormFactory implements FormFactory
 
         if ($context['type'] === 'create') {
             $actions = [
-                FormAction::create('addmedia', _t('RemoteFileForm.AddMedia', 'Add media'))
+                FormAction::create('addmedia', _t('SilverStripe\\AssetAdmin\\Forms\\RemoteFileFormFactory.AddMedia', 'Add media'))
                     ->setSchemaData(['data' => ['buttonStyle' => 'primary']]),
             ];
         }
 
         if ($context['type'] === 'edit') {
             $actions = [
-                FormAction::create('insertmedia', _t('RemoteFileForm.InsertMedia', 'Insert media'))
+                FormAction::create('insertmedia', _t('SilverStripe\\AssetAdmin\\Forms\\RemoteFileFormFactory.InsertMedia', 'Insert media'))
                     ->setSchemaData(['data' => ['buttonStyle' => 'primary']]),
-                FormAction::create('cancel', _t('RemoteFileForm.Cancel', 'Cancel')),
+                FormAction::create('cancel', _t('SilverStripe\\AssetAdmin\\Forms\\RemoteFileFormFactory.Cancel', 'Cancel')),
             ];
         }
 
@@ -163,7 +163,7 @@ class RemoteFileFormFactory implements FormFactory
     {
         if (!Director::is_absolute_url($url)) {
             throw new InvalidUrlException(_t(
-                "HTMLEditorField_Toolbar.ERROR_ABSOLUTE",
+                "SilverStripe\\Forms\\HTMLEditor\\HTMLEditorField_Toolbar.ERROR_ABSOLUTE",
                 "Only absolute urls can be embedded"
             ));
         }
@@ -171,7 +171,7 @@ class RemoteFileFormFactory implements FormFactory
         $allowed_schemes = self::config()->get('fileurl_scheme_whitelist');
         if (!$scheme || ($allowed_schemes && !in_array($scheme, $allowed_schemes))) {
             throw new InvalidUrlException(_t(
-                "HTMLEditorField_Toolbar.ERROR_SCHEME",
+                "SilverStripe\\Forms\\HTMLEditor\\HTMLEditorField_Toolbar.ERROR_SCHEME",
                 "This file scheme is not included in the whitelist"
             ));
         }
@@ -179,7 +179,7 @@ class RemoteFileFormFactory implements FormFactory
         $allowed_domains = self::config()->get('fileurl_domain_whitelist');
         if (!$domain || ($allowed_domains && !in_array($domain, $allowed_domains))) {
             throw new InvalidUrlException(_t(
-                "HTMLEditorField_Toolbar.ERROR_HOSTNAME",
+                "SilverStripe\\Forms\\HTMLEditor\\HTMLEditorField_Toolbar.ERROR_HOSTNAME",
                 "This file hostname is not included in the whitelist"
             ));
         }
