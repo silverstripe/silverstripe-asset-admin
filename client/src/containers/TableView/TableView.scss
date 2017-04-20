@@ -121,6 +121,11 @@ $gallery-list-thumb-height: 68px;
   .gallery__table .gallery__table-row > & {
     padding: 0;
     vertical-align: middle;
+
+    &:first-child {
+      max-width: none;
+      padding-left: 20px;
+    }
   }
 }
 
