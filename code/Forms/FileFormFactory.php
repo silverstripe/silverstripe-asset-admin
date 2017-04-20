@@ -150,9 +150,12 @@ class FileFormFactory extends AssetFormFactory
 
         // Build action
         $publishText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PUBLISH_BUTTON', 'Publish');
-        return FormAction::create('publish', $publishText)
+        /** @var FormAction $action */
+        $action = FormAction::create('publish', $publishText)
             ->setIcon('rocket')
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
+
+        return $action;
     }
 
     protected function getFormActions(Controller $controller, $formName, $context = [])
@@ -275,10 +278,12 @@ class FileFormFactory extends AssetFormFactory
      */
     protected function getInsertAction($record)
     {
+        $action = null;
         if ($record && $record->isInDB() && $record->canEdit()) {
-            return FormAction::create('insert', _t(__CLASS__.'.INSERT_FILE', 'Insert file'))
+            /** @var FormAction $action */
+            $action = FormAction::create('insert', _t(__CLASS__.'.INSERT_FILE', 'Insert file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
-        return null;
+        return $action;
     }
 }

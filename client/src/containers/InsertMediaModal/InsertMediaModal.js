@@ -269,7 +269,7 @@ InsertMediaModal.defaultProps = {
 };
 
 function mapStateToProps(state, ownProps) {
-  const sectionConfig = state.config.sections[sectionConfigKey];
+  const sectionConfig = state.config.sections.find((section) => section.name === sectionConfigKey);
 
   // get the schemaUrl to use as a key for overrides
   const fileId = ownProps.fileAttributes ? ownProps.fileAttributes.ID : null;
