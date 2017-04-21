@@ -39,8 +39,8 @@ class HistoryList extends Component {
    */
   getContainerClassName() {
     return (this.state.viewDetails && !this.state.loadedDetails)
-      ? 'file-history history-container--loading'
-      : 'file-history';
+      ? 'history-list history-container--loading'
+      : 'history-list';
   }
 
   /**
@@ -119,7 +119,7 @@ class HistoryList extends Component {
         'btn btn-secondary',
         'btn--icon-xl btn--no-text',
         'font-icon-left-open-big',
-        'file-history__back',
+        'history-list__back',
       ].join(' ');
 
       return (
@@ -132,7 +132,7 @@ class HistoryList extends Component {
 
     return (
       <div className={containerClassName}>
-        <ul className="list-group list-group-flush file-history__list">
+        <ul className="list-group list-group-flush history-list__list">
           {this.state.history.map((history) => (
             <HistoryItem
               key={history.versionid}

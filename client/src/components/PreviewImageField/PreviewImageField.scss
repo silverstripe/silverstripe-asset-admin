@@ -1,8 +1,8 @@
-.preview__container {
+.preview-image-field__container {
   position: relative;
 }
 
-.preview__toolbar {
+.preview-image-field__toolbar {
   position: absolute;
   top: 50%;
   right: 0;
@@ -14,19 +14,19 @@
   overflow: hidden;
 }
 
-.preview__toolbar-button--link:before {
+.preview-image-field__toolbar-button--link:before {
   content: "\3d";
 }
 
-.preview__toolbar-button--replace:before {
+.preview-image-field__toolbar-button--replace:before {
   content: "\62";
 }
 
-.preview__toolbar-button--remove:before {
+.preview-image-field__toolbar-button--remove:before {
   content: "\44";
 }
 
-.preview__toolbar-button {
+.preview-image-field__toolbar-button {
   padding: $toolbar-button-padding 0;
   height: $toolbar-button-height + (2 * $toolbar-button-padding);
   width: $toolbar-button-width + (2 * $toolbar-button-padding);
@@ -58,7 +58,7 @@
 }
 
 
-.preview__progress {
+.preview-image-field__progress {
   height: 18px;
   width: 75%;
   position: absolute;
@@ -70,13 +70,13 @@
   background: darken($white, 10%);
 }
 
-.preview__progress-bar {
+.preview-image-field__progress-bar {
   height: 100%;
   background: $brand-primary;
   width: 0;
 }
 
-.preview__message {
+.preview-image-field__message {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -85,12 +85,12 @@
   padding: $panel-padding-y $panel-padding-x;
 }
 
-.preview__message--error {
+.preview-image-field__message--error {
   color: $white;
   background: $brand-danger;
 }
 
-.preview__message--success {
+.preview-image-field__message--success {
   color: $white;
   background: $brand-success;
 }

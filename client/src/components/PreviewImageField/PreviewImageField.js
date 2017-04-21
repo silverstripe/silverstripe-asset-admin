@@ -55,7 +55,7 @@ class PreviewImageField extends Component {
 
     const classNames = [
       'asset-dropzone--button',
-      'preview__container',
+      'preview-image-field__container',
       this.props.className,
       this.props.extraClass,
     ];
@@ -237,8 +237,8 @@ class PreviewImageField extends Component {
       </a>
     ) : null;
     const progressBar = (progress > 0 && progress < 100) ? (
-      <div className="preview__progress">
-        <div className="preview__progress-bar" style={{ width: `${progress}%` }} />
+      <div className="preview-image-field__progress">
+        <div className="preview-image-field__progress-bar" style={{ width: `${progress}%` }} />
       </div>
     ) : null;
     const message = this.props.upload.message;
@@ -246,13 +246,13 @@ class PreviewImageField extends Component {
 
     if (message) {
       messageBox = (
-        <div className={`preview__message preview__message--${message.type}`}>
+        <div className={`preview-image-field__message preview-image-field__message--${message.type}`}>
           {message.value}
         </div>
       );
     } else if (progress === 100) {
       messageBox = (
-        <div className="preview__message preview__message--success">
+        <div className="preview-image-field__message preview-image-field__message--success">
           {i18n._t(
             'AssetAdmin.REPlACE_FILE_SUCCESS',
             'Upload successful, the file will be replaced when you Save.'
@@ -276,12 +276,12 @@ class PreviewImageField extends Component {
       return null;
     }
     return (
-      <div className="preview__toolbar fill-height">
+      <div className="preview-image-field__toolbar fill-height">
         { (this.props.data.url) ? (
             <a
               href={this.props.data.url}
               target="_blank"
-              className="preview__toolbar-button--link preview__toolbar-button"
+              className="preview-image-field__toolbar-button--link preview-image-field__toolbar-button"
             >Open</a>
           )
           : null }
@@ -289,14 +289,14 @@ class PreviewImageField extends Component {
             <button
               id="preview-replace-button"
               onClick={this.preventDefault}
-              className="preview__toolbar-button--replace preview__toolbar-button"
+              className="preview-image-field__toolbar-button--replace preview-image-field__toolbar-button"
             >Replace</button>
           )
           : null }
         { (this.props.upload.progress || this.props.upload.message) ? (
             <button
               onClick={this.handleCancelUpload}
-              className="preview__toolbar-button--remove preview__toolbar-button"
+              className="preview-image-field__toolbar-button--remove preview-image-field__toolbar-button"
             >Remove</button>
           ) : null }
       </div>
@@ -315,7 +315,7 @@ class PreviewImageField extends Component {
       );
     }
     const classNames = [
-      'preview__container',
+      'preview-image-field__container',
       this.props.className,
       this.props.extraClass,
     ];

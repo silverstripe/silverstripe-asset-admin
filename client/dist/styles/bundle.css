@@ -751,11 +751,11 @@
   content:"I";
 }
 
-.preview__container{
+.preview-image-field__container{
   position:relative;
 }
 
-.preview__toolbar{
+.preview-image-field__toolbar{
   position:absolute;
   top:50%;
   right:0;
@@ -768,19 +768,19 @@
   overflow:hidden;
 }
 
-.preview__toolbar-button--link:before{
+.preview-image-field__toolbar-button--link:before{
   content:"=";
 }
 
-.preview__toolbar-button--replace:before{
+.preview-image-field__toolbar-button--replace:before{
   content:"b";
 }
 
-.preview__toolbar-button--remove:before{
+.preview-image-field__toolbar-button--remove:before{
   content:"D";
 }
 
-.preview__toolbar-button{
+.preview-image-field__toolbar-button{
   padding:11px 0;
   height:47px;
   width:47px;
@@ -791,12 +791,12 @@
   border:0;
 }
 
-.preview__toolbar-button:active,.preview__toolbar-button:focus,.preview__toolbar-button:hover{
+.preview-image-field__toolbar-button:active,.preview-image-field__toolbar-button:focus,.preview-image-field__toolbar-button:hover{
   color:#b3b3b3;
   text-decoration:none;
 }
 
-.preview__toolbar-button:before{
+.preview-image-field__toolbar-button:before{
   padding:0 11px;
   font-family:silverstripe;
   font-style:normal;
@@ -808,7 +808,7 @@
   vertical-align:middle;
 }
 
-.preview__progress{
+.preview-image-field__progress{
   height:18px;
   width:75%;
   position:absolute;
@@ -821,13 +821,13 @@
   background:#e6e6e6;
 }
 
-.preview__progress-bar{
+.preview-image-field__progress-bar{
   height:100%;
   background:#29abe2;
   width:0;
 }
 
-.preview__message{
+.preview-image-field__message{
   position:absolute;
   bottom:0;
   left:0;
@@ -836,12 +836,12 @@
   padding:1.5385rem;
 }
 
-.preview__message--error{
+.preview-image-field__message--error{
   color:#fff;
   background:#d40404;
 }
 
-.preview__message--success{
+.preview-image-field__message--success{
   color:#fff;
   background:#3fa142;
 }
@@ -1867,15 +1867,15 @@ th.sort--disabled>span:after{
   font-size:.923rem;
 }
 
-.file-history{
+.history-list{
   position:relative;
 }
 
-.file-history>.list-group{
+.history-list>.list-group{
   margin-top:calc(-1.5385rem - 1px);
 }
 
-.file-history .editor__file-preview-link,.file-history .editor__file-preview-message--file-missing{
+.history-list .editor__file-preview-link,.history-list .editor__file-preview-message--file-missing{
   max-width:50%;
   position:relative;
   display:block;
@@ -1887,11 +1887,11 @@ th.sort--disabled>span:after{
   margin:0 auto 10px;
 }
 
-.file-history .editor__specs{
+.history-list .editor__specs{
   text-align:center;
 }
 
-.file-history__back{
+.history-list__back{
   padding:5px;
   position:absolute;
   top:0;
