@@ -57,6 +57,7 @@ module.exports = {
     'graphql-tag': 'GraphQLTag',
     i18n: 'i18n',
     jquery: 'jQuery',
+    jQuery: 'jQuery',
     'lib/Backend': 'Backend',
     'lib/Config': 'Config',
     'lib/Injector': 'Injector',
