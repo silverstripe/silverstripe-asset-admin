@@ -1542,6 +1542,11 @@
   vertical-align:middle;
 }
 
+.gallery__table .gallery__table-row>.gallery__table-column--image:first-child{
+  max-width:none;
+  padding-left:20px;
+}
+
 .gallery__table-image{
   background-repeat:no-repeat;
   background-size:60px auto;
