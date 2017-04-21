@@ -16,30 +16,30 @@ Feature: Replace a file with a new file
   @javascript
   Scenario: I upload a new file into the file I have open
     When I attach the file "testfile.jpg" to dropzone "PreviewImage"
-    Then I should see a ".preview__toolbar-button--remove" element
-      And I should see a ".preview__message--success" element
+    Then I should see a ".preview-image-field__toolbar-button--remove" element
+      And I should see a ".preview-image-field__message--success" element
       And the "Name" field should contain "file1.jpg"
     When I press the "Save" button
-    Then I should not see a ".preview__message--success" element
-      And I should not see a ".preview__toolbar-button--remove" element
+    Then I should not see a ".preview-image-field__message--success" element
+      And I should not see a ".preview-image-field__toolbar-button--remove" element
 
   @javascript
   Scenario: Replacing a file with the same file detects and avoids duplication
     When I attach the file "file1.jpg" to dropzone "PreviewImage"
-    Then I should see a ".preview__toolbar-button--remove" element
-      And I should see a ".preview__message--success" element
+    Then I should see a ".preview-image-field__toolbar-button--remove" element
+      And I should see a ".preview-image-field__message--success" element
       And the "Name" field should contain "file1.jpg"
     When I press the "Save" button
     Then the "Name" field should contain "file1.jpg"
-      And I should not see a ".preview__message--success" element
-      And I should not see a ".preview__toolbar-button--remove" element
+      And I should not see a ".preview-image-field__message--success" element
+      And I should not see a ".preview-image-field__toolbar-button--remove" element
 
   @javascript @modal
   Scenario: I upload a pdf file to replace an image file
     When I attach the file "document.pdf" to dropzone "PreviewImage"
       And I confirm the dialog
-    Then I should see a ".preview__message--success" element
+    Then I should see a ".preview-image-field__message--success" element
       And the "Name" field should contain "document-v2.pdf"
     When I press the "Save" button
     Then the "Name" field should contain "document-v2.pdf"
-      And I should not see a ".preview__message--success" element
+      And I should not see a ".preview-image-field__message--success" element

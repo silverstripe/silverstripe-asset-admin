@@ -104,12 +104,12 @@ class FixtureContext extends BaseFixtureContext
     {
         $this->getMainContext()->getSession()->wait(
             5000,
-            "window.jQuery && window.jQuery('.file-history__list li').size() > 0"
+            "window.jQuery && window.jQuery('.history-list__list li').size() > 0"
         );
 
         $page = $this->getMainContext()->getSession()->getPage();
 
-        $elements = $page->find('css', '.file-history__list li');
+        $elements = $page->find('css', '.history-list__list li');
 
         if (null === $elements) {
             throw new \InvalidArgumentException(sprintf('Could not find list item'));
