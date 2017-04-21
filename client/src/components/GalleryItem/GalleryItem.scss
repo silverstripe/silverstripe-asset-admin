@@ -65,7 +65,7 @@ $gallery-item-label-height: 40px;
   margin: 0 auto;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: cover;
+  background-size: contain;
   border-radius: $border-radius-sm $border-radius-sm 0 0;
 }
 
