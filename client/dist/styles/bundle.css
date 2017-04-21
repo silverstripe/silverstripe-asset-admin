@@ -1582,7 +1582,7 @@
 }
 
 .gallery__table-image--error:after{
-  content:"Q";
+  content:"<";
   line-height:68px;
   font-size:30px;
   display:inline;

@@ -163,7 +163,7 @@ $gallery-list-thumb-height: 68px;
   width: $gallery-list-thumb-width;
 
   &::after {
-    content: "Q";
+    content: "<";
     line-height: $gallery-list-thumb-height;
     font-size: 30px;
     display: inline;
