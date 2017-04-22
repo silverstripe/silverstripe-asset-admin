@@ -1,4 +1,4 @@
-@javascript @assets
+@javascript @assets @retry
 Feature: Manage files
   As a cms author
   I want to upload and manage files within the CMS
@@ -15,11 +15,9 @@ Feature: Manage files
   @modal
   Scenario: I can add a new folder
     When I press the "Add folder" button
-      And I wait for 1 second
     Then I should see the "Form_folderCreateForm" form
       And I fill in "Name" with "newfolder"
       And I press the "Create" button
-      And I wait for 1 second
     Then I should see the file named "newfolder" in the gallery
       And I should see the "Form_fileEditForm" form
 
@@ -63,7 +61,6 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
     When I press the "Other actions" button
       And I press the "Delete" button, confirming the dialog
-      And I wait for 1 second
     Then I should not see the file named "file1" in the gallery
 
   Scenario: I can delete multiple files
@@ -80,7 +77,6 @@ Feature: Manage files
       And I check the file named "testfile" in the gallery
     Then the ".bulk-actions-counter" element should contain "3"
       And I press the "Delete" button, confirming the dialog
-      And I wait for 1 second
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
@@ -93,7 +89,6 @@ Feature: Manage files
       And I see the text "currently in use" in the alert
       And I see the text "before you can delete the folder" in the alert
       And I confirm the dialog
-      And I wait for 1 second
     Then I should see the file named "folder3" in the gallery
 
   @modal
@@ -103,6 +98,5 @@ Feature: Manage files
     Then I press the "Delete" button
       And I see the text "file is currently in use" in the alert
       And I confirm the dialog
-      And I wait for 1 second
     Then I should see "successfully archived" in the message box
       And I should not see the file named "file1" in the gallery

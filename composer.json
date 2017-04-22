@@ -9,10 +9,9 @@
     "silverstripe/graphql": "^0.2@dev"
   },
   "require-dev": {
-    "phpunit/PHPUnit": "~4.8",
-    "silverstripe/behat-extension": "^2.1.0",
+    "phpunit/PHPUnit": "^5.7",
+    "silverstripe/behat-extension": "^3@dev",
     "silverstripe/serve": "dev-master",
-    "silverstripe/testsession": "^2.0.0-alpha3",
     "silverstripe/cms": "^4@dev",
     "silverstripe/campaign-admin": "^1@dev",
     "se/selenium-server-standalone": "2.41.0"
@@ -26,7 +25,7 @@
     "psr-4": {
       "SilverStripe\\AssetAdmin\\": "code/",
       "SilverStripe\\AssetAdmin\\Tests\\": "tests/php/",
-      "SilverStripe\\AssetAdmin\\Tests\\Behat\\": "tests/behat/src/"
+      "SilverStripe\\AssetAdmin\\Tests\\Behat\\Context\\": "tests/behat/src/"
     }
   },
   "config": {

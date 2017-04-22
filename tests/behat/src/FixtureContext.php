@@ -7,12 +7,14 @@ use Behat\Mink\Element\NodeElement;
 use Page;
 use SilverStripe\Assets\Image;
 use SilverStripe\BehatExtension\Context\FixtureContext as BaseFixtureContext;
+use SilverStripe\BehatExtension\Utility\StepHelper;
 
 /**
  * Context used to create fixtures in the SilverStripe ORM.
  */
 class FixtureContext extends BaseFixtureContext
 {
+    use StepHelper;
 
     /**
      * Select a gallery item by type and name
@@ -68,10 +70,8 @@ class FixtureContext extends BaseFixtureContext
     public function iShouldSeeTheForm($id)
     {
         /** @var DocumentElement $page */
-        $page = $this->getSession()->getPage();
-        $form = $this->retry(function () use ($page, $id) {
-            return $page->find('css', "form#{$id}");
-        });
+        $page = $this->getMainContext()->getSession()->getPage();
+        $form = $page->find('css', "form#{$id}");
         assertNotNull($form, "form with id $id could not be found");
         assertTrue($form->isVisible(), "form with id $id is not visible");
     }
@@ -102,12 +102,12 @@ class FixtureContext extends BaseFixtureContext
      */
     public function iClickOnTheLatestHistoryItem()
     {
-        $this->getSession()->wait(
+        $this->getMainContext()->getSession()->wait(
             5000,
             "window.jQuery && window.jQuery('.file-history__list li').size() > 0"
         );
 
-        $page = $this->getSession()->getPage();
+        $page = $this->getMainContext()->getSession()->getPage();
 
         $elements = $page->find('css', '.file-history__list li');
 
@@ -121,11 +121,13 @@ class FixtureContext extends BaseFixtureContext
     /**
      * @Given /^I attach the file "([^"]*)" to dropzone "([^"]*)"$/
      * @see MinkContext::attachFileToField()
+     * @param string $path
+     * @param string $name
      */
     public function iAttachTheFileToDropzone($path, $name)
     {
         // Get path
-        $filesPath = $this->getMainContext()->getMinkParameter('files_path');
+        $filesPath = $this->getFilesPath();
         if ($filesPath) {
             $fullPath = rtrim(realpath($filesPath), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$path;
             if (is_file($fullPath)) {
@@ -138,12 +140,12 @@ class FixtureContext extends BaseFixtureContext
         $selector = "input[type=\"file\"].dz-hidden-input.dz-input-{$name}";
 
         /** @var DocumentElement $page */
-        $page = $this->getSession()->getPage();
+        $page = $this->getMainContext()->getSession()->getPage();
         $input = $page->find('css', $selector);
         assertNotNull($input, "Could not find {$selector}");
 
         // Make visible temporarily while attaching
-        $this->getSession()->executeScript(
+        $this->getMainContext()->getSession()->executeScript(
             <<<EOS
 window.jQuery('.dz-hidden-input')
     .css('visibility', 'visible')
@@ -161,6 +163,7 @@ EOS
      * Checks that the message box contains specified text.
      *
      * @Then /^I should see "(?P<text>(?:[^"]|\\")*)" in the message box$/
+     * @param string $text
      */
     public function assertMessageBoxContainsText($text)
     {
@@ -181,49 +184,30 @@ EOS
     protected function getGalleryItem($name, $timeout = 3)
     {
         /** @var DocumentElement $page */
-        $page = $this->getSession()->getPage();
-        return $this->retry(function () use ($page, $name) {
-            // Find by cell
-            $cell = $page->find(
-                'xpath',
-                "//div[contains(@class, 'gallery-item')]//div[contains(text(), '{$name}')]"
-            );
-            if ($cell) {
-                return $cell;
-            }
-            // Find by row
-            $row = $page->find(
-                'xpath',
-                "//tr[contains(@class, 'gallery__table-row')]//div[contains(text(), '{$name}')]"
-            );
-            if ($row) {
-                return $row;
-            }
-            return null;
-        }, $timeout);
-    }
-
-    /**
-     * Invoke $try callback for a non-empty result with a given timeout
-     *
-     * @param callable $try
-     * @param int $timeout Number of seconds to retry for
-     * @return mixed Result of invoking $try, or null if timed out
-     */
-    protected function retry($try, $timeout = 3)
-    {
-        do {
-            $result = $try();
-            if ($result) {
-                return $result;
-            }
-            sleep(1);
-        } while (--$timeout >= 0);
+        $page = $this->getMainContext()->getSession()->getPage();
+        // Find by cell
+        $cell = $page->find(
+            'xpath',
+            "//div[contains(@class, 'gallery-item')]//div[contains(text(), '{$name}')]"
+        );
+        if ($cell) {
+            return $cell;
+        }
+        // Find by row
+        $row = $page->find(
+            'xpath',
+            "//tr[contains(@class, 'gallery__table-row')]//div[contains(text(), '{$name}')]"
+        );
+        if ($row) {
+            return $row;
+        }
         return null;
     }
 
     /**
      * @Given /^a page "([^"]*)" containing an image "([^"]*)"$/
+     * @param string $page
+     * @param string $image
      */
     public function aPageContaining($page, $image)
     {

@@ -3,20 +3,28 @@
 # ========================================================================= #
 # vendor/bin/selenium-server-standalone -Dwebdriver.firefox.bin="/Applications/Firefox31.app/Contents/MacOS/firefox-bin"
 # vendor/bin/serve --bootstrap-file cms/tests/behat/serve-bootstrap.php
-# vendor/bin/behat @asset-admin --config=./asset-admin/behat.yml
+# vendor/bin/behat @asset-admin
 # ========================================================================= #
 default:
-  context:
-    class: SilverStripe\AssetAdmin\Tests\Behat\Context\FeatureContext
+  suites:
+    asset-admin:
+      paths:
+        - %paths.modules.asset-admin%/tests/behat/features
+      contexts:
+        - SilverStripe\AssetAdmin\Tests\Behat\Context\FeatureContext
+        - SilverStripe\Framework\Tests\Behaviour\CmsFormsContext
+        - SilverStripe\Framework\Tests\Behaviour\CmsUiContext
+        - SilverStripe\BehatExtension\Context\BasicContext
+        - SilverStripe\BehatExtension\Context\EmailContext
+        - SilverStripe\BehatExtension\Context\LoginContext
+        -
+          SilverStripe\AssetAdmin\Tests\Behat\Context\FixtureContext:
+            - %paths.modules.asset-admin%/tests/behat/files/
   extensions:
     SilverStripe\BehatExtension\Extension:
-      framework_path: ../framework
-      bootstrap_file: "cms/tests/behat/serve-bootstrap.php"
+      bootstrap_file: %paths.modules.cms%/tests/behat/serve-bootstrap.php
       screenshot_path: %behat.paths.base%/artifacts/screenshots
-    Behat\MinkExtension\Extension:
-      # Adjust this to your local environment
-      base_url:  http://localhost:8080/
-      files_path: %behat.paths.base%/tests/behat/files/
+    SilverStripe\BehatExtension\MinkExtension:
       default_session: selenium2
       javascript_session: selenium2
       selenium2:
