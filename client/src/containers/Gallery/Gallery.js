@@ -131,23 +131,23 @@ class Gallery extends Component {
       ));
     }
 
-    if (filters.createdFrom && filters.createdTo) {
+    if (filters.lastEditedFrom && filters.lastEditedTo) {
       // TODO Date localisation
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
-        'created between \'{createdFrom}\' and \'{createdTo}\''
+        'last edited between \'{lastEditedFrom}\' and \'{lastEditedTo}\''
       ));
-    } else if (filters.createdFrom) {
+    } else if (filters.lastEditedFrom) {
       // TODO Date localisation
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDFROM',
-        'created after \'{createdFrom}\''
+        'last edited after \'{lastEditedFrom}\''
       ));
-    } else if (filters.createdTo) {
+    } else if (filters.lastEditedTo) {
       // TODO Date localisation
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDTO',
-        'created before \'{createdTo}\''
+        'last edited before \'{lastEditedTo}\''
       ));
     }
 

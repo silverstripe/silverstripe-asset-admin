@@ -83,8 +83,8 @@ class FileSearchFormFactory implements FormFactory
         ));
 
         // Last updated range field
-        $dateFrom = DateField::create('createdFrom', _t('CMSSearch.FILTERDATEFROM', 'From'));
-        $dateTo = DateField::create('createdTo', _t('CMSSearch.FILTERDATETO', 'To'));
+        $dateFrom = DateField::create('lastEditedFrom', _t('CMSSearch.FILTERDATEFROM', 'From'));
+        $dateTo = DateField::create('lastEditedTo', _t('CMSSearch.FILTERDATETO', 'To'));
         $dateGroup = FieldGroup::create(
             _t('AssetTableField.LASTEDIT', 'Last changed'),
             [$dateFrom, $dateTo]

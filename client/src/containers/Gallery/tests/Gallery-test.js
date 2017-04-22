@@ -117,7 +117,7 @@ describe('Gallery', () => {
     });
 
     it('should show a message with "," and "and" with more than two items', () => {
-      const search = { name: 'hi', appCategory: 'IMAGE', createdFrom: '2016-03-17' };
+      const search = { name: 'hi', appCategory: 'IMAGE', lastEditedFrom: '2016-03-17' };
 
       const message = gallery.getSearchMessage(search);
 
