@@ -24,6 +24,32 @@
   }
 }
 
+.panel--padded {
+  padding-bottom: 0;
+
+  // Hack because firefox ignores bottom padding on scrolling containers
+  &:after {
+    height: 1.5385rem;
+    display: block;
+    content: "";
+  }
+
+  .editor__details {
+
+    form {
+      padding-bottom: 0;
+    }
+
+    .btn-toolbar {
+      margin-bottom: 0;
+    }
+
+    .fill-width {
+      flex-wrap: wrap;
+    }
+  }
+}
+
 .editor__heading {
   margin-right: $spacer-x * 2;
   white-space: nowrap;
