@@ -2207,7 +2207,7 @@ r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Obj
 function t(e){o(this,t)
 var n=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e)),r=l.Children.toArray(e.children)
 if(2!==r.length)throw new Error("ProportionConstraintField must be passed two children -- one field for each value")
-return n}return s(t,e),a(t,[{key:"handleChange",value:function e(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,n=arguments[1],r=this.props,o=r.children,i=r.active,s=r.onAutofill,a=r.data.ratio,l=n.target.value,u=Number(0===t),p=o[t].props.name,c=o[u].props.name,d=0===t?1/a:a,f=Math.round
+return n}return s(t,e),a(t,[{key:"handleChange",value:function e(t,n){var r=this.props,o=r.children,i=r.active,s=r.onAutofill,a=r.data.ratio,l=n.target.value,u=Number(0===t),p=o[t].props.name,c=o[u].props.name,d=0===t?1/a:a,f=Math.round
 
 
 s(p,l),i&&s(c,f(l*d))}},{key:"render",value:function e(){var t=this,n=c.default.getComponentByName("FieldGroup")

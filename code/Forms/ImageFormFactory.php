@@ -4,6 +4,9 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Control\Controller;
@@ -86,19 +89,39 @@ class ImageFormFactory extends FileFormFactory
      */
     public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
-        $form = parent::getForm($controller, $name, $context);
-        $dimensions = $form->Fields()->fieldByName('Editor.Placement.Dimensions');
-        $widthField = $form->Fields()->dataFieldByName('InsertWidth');
-        $heightField = $form->Fields()->dataFieldByName('InsertHeight');
-        if ($dimensions && $widthField && $heightField) {
-            $dimensions->setSchemaComponent('ProportionConstraintField');
-            $dimensions->setSchemaState([
-                'data' => [
-                    'ratio' => $widthField->dataValue() / $heightField->dataValue()
-                ]
-            ]);
-        }
+        $this->beforeExtending('updateForm', function ($form) use ($context) {
+            $record = null;
+            if (isset($context['Record'])) {
+                $record = $context['Record'];
+            }
+            
+            if (!$record) {
+                return;
+            }
+            /** @var FieldList $fields */
+            $fields = $form->Fields();
+            
+            $dimensions = $fields->fieldByName('Editor.Placement.Dimensions');
+            $width = null;
+            $height = null;
+            
+            if ($dimensions) {
+                $width = $record->getWidth();
+                $height = $record->getHeight();
+            }
+    
+            if ($width && $height) {
+                $ratio = $width / $height;
+        
+                $dimensions->setSchemaComponent('ProportionConstraintField');
+                $dimensions->setSchemaState([
+                    'data' => [
+                        'ratio' => $ratio
+                    ]
+                ]);
+            }
+        });
 
-        return $form;
+        return parent::getForm($controller, $name, $context);
     }
 }

@@ -12,33 +12,41 @@ class ProportionConstraintField extends Component {
     }
   }
 
-  handleChange(childIndex = 0, e) {
+  /**
+   * The overloading function for change handlers provided to the children
+   *
+   * @param {Number} childIndex
+   * @param {Event} e
+   */
+  handleChange(childIndex, e) {
     const { children, active, onAutofill, data: { ratio } } = this.props;
-    const val = e.target.value;
+    const value = e.target.value;
     const peerIndex = Number(childIndex === 0);
     const currentName = children[childIndex].props.name;
     const peerName = children[peerIndex].props.name;
     const multiplier = childIndex === 0 ? 1 / ratio : ratio;
     const { round } = Math;
 
-    onAutofill(currentName, val);
+    onAutofill(currentName, value);
+    // retain aspect ratio only when this field is active
     if (active) {
-      onAutofill(peerName, round(val * multiplier));
+      onAutofill(peerName, round(value * multiplier));
     }
   }
 
   render() {
     const FieldGroup = Injector.getComponentByName('FieldGroup');
     return (
-            <FieldGroup {...this.props}>
-                {this.props.children.map((c, i) => (
-                    cloneElement(c, {
-                      onChange: this.handleChange.bind(this, i),
-                      key: i,
-                    }, c.props.children)
-                ))}
-            </FieldGroup>
-        );
+      <FieldGroup {...this.props}>
+        {this.props.children.map((child, key) => (
+          cloneElement(child, {
+            // overload the children change handler
+            onChange: this.handleChange.bind(this, key),
+            key,
+          }, child.props.children)
+        ))}
+      </FieldGroup>
+    );
   }
 }
 
