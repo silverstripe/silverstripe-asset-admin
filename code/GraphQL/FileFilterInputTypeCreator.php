@@ -53,11 +53,11 @@ class FileFilterInputTypeCreator extends TypeCreator
                 'type' => Type::string(),
                 'description' => 'Searches both name and title fields with a partial match'
             ],
-            'createdFrom' => [
+            'lastEditedFrom' => [
                 'type' => Type::string(),
                 'description' => 'Date in ISO format (YYYY-mm-dd)'
             ],
-            'createdTo' => [
+            'lastEditedTo' => [
                 'type' => Type::string(),
                 'description' => 'Date in ISO format (YYYY-mm-dd)'
             ],
@@ -94,10 +94,10 @@ class FileFilterInputTypeCreator extends TypeCreator
                 'ID' => 0,
             ])]);
         }
-    
+
         // track if search is being applied
         $search = false;
-    
+
         // Optionally limit search to a folder, supporting recursion
         if (isset($filter['parentId'])) {
             $recursive = !empty($filter['recursive']);
@@ -120,7 +120,19 @@ class FileFilterInputTypeCreator extends TypeCreator
             $search = true;
         }
 
-        // Date filtering
+        // Date filtering last edited
+        if (!empty($filter['lastEditedFrom'])) {
+            $fromDate = new DateField(null, null, $filter['lastEditedFrom']);
+            $list = $list->filter("LastEdited:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
+            $search = true;
+        }
+        if (!empty($filter['lastEditedTo'])) {
+            $toDate = new DateField(null, null, $filter['lastEditedTo']);
+            $list = $list->filter("LastEdited:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
+            $search = true;
+        }
+
+        // Date filtering created
         if (!empty($filter['createdFrom'])) {
             $fromDate = new DateField(null, null, $filter['createdFrom']);
             $list = $list->filter("Created:GreaterThanOrEqual", $fromDate->dataValue().' 00:00:00');
@@ -137,7 +149,7 @@ class FileFilterInputTypeCreator extends TypeCreator
             $list = $list->filter('Name:EndsWith', $filter['appCategory']);
             $search = true;
         }
-        
+
         // Filter unknown id by known child if search is not applied
         if (!$search && isset($filter['anyChildId'])) {
             /** @var File $child */
@@ -152,7 +164,7 @@ class FileFilterInputTypeCreator extends TypeCreator
                 ])]);
             }
         }
-    
+
         return $list;
     }
 }

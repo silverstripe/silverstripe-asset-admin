@@ -269,7 +269,7 @@ value:function e(t){if("tile"!==t.view){var n=this.getSortElement()
 n.off("change")}this.compareFiles(this.props.files,t.files)||t.actions.queuedFiles.purgeUploadQueue(),this.checkLoadingIndicator(t)}},{key:"componentDidUpdate",value:function e(){this.initSortDropdown()
 
 }},{key:"getSortElement",value:function e(){return(0,h.default)(E.default.findDOMNode(this)).find(".gallery__sort .dropdown")}},{key:"getSearchMessage",value:function e(t){var n=[]
-t.name&&n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGEKEYWORDS","with keywords '{name}'")),t.createdFrom&&t.createdTo?n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGEEDITEDBETWEEN","created between '{createdFrom}' and '{createdTo}'")):t.createdFrom?n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGEEDITEDFROM","created after '{createdFrom}'")):t.createdTo&&n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGEEDITEDTO","created before '{createdTo}'")),
+t.name&&n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGEKEYWORDS","with keywords '{name}'")),t.lastEditedFrom&&t.lastEditedTo?n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGEEDITEDBETWEEN","last edited between '{lastEditedFrom}' and '{lastEditedTo}'")):t.lastEditedFrom?n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGEEDITEDFROM","last edited after '{lastEditedFrom}'")):t.lastEditedTo&&n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGEEDITEDTO","last edited before '{lastEditedTo}'")),
 t.appCategory&&n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGECATEGORY","categorised as '{appCategory}'")),t.currentFolderOnly&&n.push(g.default._t("AssetAdmin.SEARCHRESULTSMESSAGELIMIT","limited to the folder '{folder}'"))
 
 

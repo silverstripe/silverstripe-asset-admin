@@ -59,17 +59,17 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
 
         // Mock searches for 4th Jan
         $list = $creator->filterList($baseList, [
-            'createdFrom' => '2014-01-04',
-            'createdTo' => '2014-01-04',
+            'lastEditedFrom' => '2014-01-04',
+            'lastEditedTo' => '2014-01-04',
         ]);
         $this->assertEquals(0, $list->Count());
 
         // Mock searches for 5th Jan
         $list = $creator->filterList($baseList, [
-            'createdFrom' => '2014-01-05',
-            'createdTo' => '2014-01-05',
+            'lastEditedFrom' => date('Y-m-d'),
+            'lastEditedTo' => date('Y-m-d'),
         ]);
-        $this->assertEquals(1, $list->Count());
+        $this->assertEquals(2, $list->Count());
         $this->assertContains($file1->ID, $list->column('ID'));
 
 
@@ -92,8 +92,8 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
 
         // Mock searches for 7th Jan
         $list = $creator->filterList($baseList, [
-            'createdFrom' => '2014-01-07',
-            'createdTo' => '2014-01-07',
+            'lastEditedFrom' => '2014-01-07',
+            'lastEditedTo' => '2014-01-07',
         ]);
         $this->assertEquals(0, $list->Count());
     }
