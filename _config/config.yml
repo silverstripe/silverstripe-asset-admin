@@ -25,6 +25,7 @@ SilverStripe\GraphQL\Controller:
       deleteFile: 'SilverStripe\AssetAdmin\GraphQL\DeleteFileMutationCreator'
       createFolder: 'SilverStripe\AssetAdmin\GraphQL\CreateFolderMutationCreator'
       moveFiles: 'SilverStripe\AssetAdmin\GraphQL\MoveFilesMutationCreator'
+      unpublishFile: 'SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator'
 ---
 Name: assetadminfield
 After:

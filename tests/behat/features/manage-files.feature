@@ -43,6 +43,20 @@ Feature: Manage files
     Then I should see the file named "renamedfile" in the gallery
       And I should not see the file named "file1" in the gallery
 
+  Scenario: I can publish a file and unpublish a file
+    When I click on the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
+    Then I should see the "Form_fileEditForm" form
+      And I should see the file status flag
+    When I press the "Publish" button
+      And I wait for 1 second
+    Then I should see the "Form_fileEditForm" form
+      And I should not see the file status flag
+    When I press the "Other actions" button
+      And I press the "Unpublish" button, confirming the dialog
+    Then I should see the "Form_fileEditForm" form
+      And I should see the file status flag
+
   Scenario: I can delete a file
     When I click on the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery

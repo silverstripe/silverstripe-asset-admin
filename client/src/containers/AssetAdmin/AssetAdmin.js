@@ -15,6 +15,7 @@ import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
 import readFilesQuery from 'state/files/readFilesQuery';
 import deleteFileMutation from 'state/files/deleteFileMutation';
+import unpublishFileMutation from 'state/files/unpublishFileMutation';
 import CONSTANTS from 'constants/index';
 
 class AssetAdmin extends SilverStripeComponent {
@@ -24,6 +25,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleUnpublish = this.handleUnpublish.bind(this);
     this.handleDoSearch = this.handleDoSearch.bind(this);
     this.handleSubmitEditor = this.handleSubmitEditor.bind(this);
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
@@ -312,6 +314,7 @@ class AssetAdmin extends SilverStripeComponent {
           // open the new folder in edit mode after save completes
           this.handleOpenFile(response.record.id);
         }
+
         // TODO Update GraphQL store with new model,
         // see https://github.com/silverstripe/silverstripe-graphql/issues/14
         return this.props.actions.files.readFiles()
@@ -319,6 +322,9 @@ class AssetAdmin extends SilverStripeComponent {
             // open the containing folder, since folder edit mode isn't desired
             if (action === 'action_createfolder' && this.props.type !== 'admin') {
               this.handleOpenFolder(this.getFolderId());
+            } else if (action === 'action_publish') {
+              this.handleCloseFile();
+              this.handleOpenFile(response.record.id);
             }
             return response;
           });
@@ -378,6 +384,38 @@ class AssetAdmin extends SilverStripeComponent {
       if (file) {
         this.handleBrowse((file.parentId) ? file.parentId : 0);
       }
+    });
+  }
+
+  /**
+   * Unpublish a file or folder
+   *
+   * @param {number} fileId
+   */
+  handleUnpublish(fileId) {
+    let file = this.findFile(fileId);
+    if (!file && this.props.folder && this.props.folder.id === fileId) {
+      file = this.props.folder;
+    }
+
+    if (!file) {
+      throw new Error(`File selected for unpublish cannot be found: ${fileId}`);
+    }
+
+    const dataId = this.props.client.dataId({
+      __typename: file.__typename,
+      id: file.id,
+    });
+
+    this.props.actions.files.unpublishFile(file.id, dataId).then((response) => {
+      // TODO Update GraphQL store with new model or update apollo and use new API
+      // see https://github.com/silverstripe/silverstripe-graphql/issues/14
+      // see https://dev-blog.apollodata.com/apollo-clients-new-imperative-store-api-6cb69318a1e3
+      this.props.actions.files.readFiles()
+        .then(() => {
+          this.handleCloseFile();
+          this.handleOpenFile(response.data.unpublishFile.id);
+        });
     });
   }
 
@@ -518,6 +556,7 @@ class AssetAdmin extends SilverStripeComponent {
         schemaUrl={schemaUrl}
         onSubmit={this.handleSubmitEditor}
         onDelete={this.handleDelete}
+        onUnpublish={this.handleUnpublish}
         addToCampaignSchemaUrl={config.form.addToCampaignForm.schemaUrl}
         autoFocus
       />
@@ -630,5 +669,6 @@ export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   readFilesQuery,
   deleteFileMutation,
+  unpublishFileMutation,
   (component) => withApollo(component)
 )(AssetAdmin);

@@ -32,6 +32,15 @@ class Editor extends Component {
       return;
     }
 
+    if (name === 'action_unpublish') {
+      // eslint-disable-next-line no-alert
+      if (confirm(i18n._t('AssetAdmin.CONFIRMUNPUBLISH'))) {
+        this.props.onUnpublish(data.ID);
+      }
+      event.preventDefault();
+      return;
+    }
+
     if (name === 'action_delete') {
       // eslint-disable-next-line no-alert
       if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
@@ -182,6 +191,7 @@ Editor.propTypes = {
   onClose: React.PropTypes.func.isRequired,
   onSubmit: React.PropTypes.func.isRequired,
   onDelete: React.PropTypes.func.isRequired,
+  onUnpublish: React.PropTypes.func.isRequired,
   schemaUrl: React.PropTypes.string.isRequired,
   addToCampaignSchemaUrl: React.PropTypes.string,
   openAddCampaignModal: React.PropTypes.bool,
