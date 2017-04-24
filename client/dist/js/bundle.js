@@ -215,10 +215,10 @@ this.setState({openModal:!1})}},{key:"renderCancelButton",value:function e(){ret
 onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")})}},{key:"renderCancelButton",value:function e(){return d.default.createElement("a",{
 tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")
 })}},{key:"renderCancelButton",value:function e(){return d.default.createElement("a",{tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,
-type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")})}},{key:"render",value:function e(){var t=this.props.schemaUrl+"/"+this.props.targetId,n=this.props.addToCampaignSchemaUrl+"/"+this.props.targetId,r=["panel","panel--padded","panel--scrollable","form--no-dividers","editor"]
+type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")})}},{key:"render",value:function e(){var t=this.props.schemaUrl+"/"+this.props.targetId,n=this.props.addToCampaignSchemaUrl+"/"+this.props.targetId,r=["panel","form--no-dividers","editor"]
 
 
-return this.props.className&&r.push(this.props.className),d.default.createElement("div",{className:r.join(" ")},d.default.createElement("div",{className:"editor__details"},d.default.createElement(m.default,{
+return this.props.className&&r.push(this.props.className),d.default.createElement("div",{className:r.join(" ")},d.default.createElement("div",{className:"editor__details fill-height"},d.default.createElement(m.default,{
 schemaUrl:t,afterMessages:this.renderCancelButton(),handleSubmit:this.handleSubmit,handleAction:this.handleAction}),d.default.createElement(y.default,{show:this.state.openModal,handleHide:this.closeModal,
 schemaUrl:n,bodyClassName:"modal__dialog",responseClassBad:"modal__response modal__response--error",responseClassGood:"modal__response modal__response--good"})))}}]),t}(p.Component)
 v.propTypes={dialog:d.default.PropTypes.bool,className:d.default.PropTypes.string,targetId:d.default.PropTypes.number.isRequired,onClose:d.default.PropTypes.func.isRequired,onSubmit:d.default.PropTypes.func.isRequired,
