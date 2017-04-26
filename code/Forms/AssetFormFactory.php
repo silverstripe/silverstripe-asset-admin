@@ -74,6 +74,8 @@ abstract class AssetFormFactory implements FormFactory
             $form->loadDataFrom($context['Record']);
         }
 
+        $form->addExtraClass('form--fill-height form--padded');
+
         return $form;
     }
 

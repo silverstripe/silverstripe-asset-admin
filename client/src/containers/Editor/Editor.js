@@ -124,14 +124,14 @@ class Editor extends Component {
     const formSchemaUrl = `${this.props.schemaUrl}/${this.props.targetId}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.targetId}`;
     const editorClasses = [
-      'panel', 'panel--padded', 'panel--scrollable', 'form--no-dividers', 'editor',
+      'panel', 'form--no-dividers', 'editor',
     ];
     if (this.props.className) {
       editorClasses.push(this.props.className);
     }
 
     return (<div className={editorClasses.join(' ')}>
-      <div className="editor__details">
+      <div className="editor__details fill-height">
         <FormBuilderLoader
           schemaUrl={formSchemaUrl}
           afterMessages={this.renderCancelButton()}
