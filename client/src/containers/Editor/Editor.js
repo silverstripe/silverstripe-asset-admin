@@ -12,6 +12,8 @@ class Editor extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAction = this.handleAction.bind(this);
+    this.handleLoadingError = this.handleLoadingError.bind(this);
+    this.handleFetchingSchema = this.handleFetchingSchema.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
 
@@ -87,6 +89,14 @@ class Editor extends Component {
     });
   }
 
+  handleLoadingError(error) {
+    this.state.loadingError = true;
+  }
+
+  handleFetchingSchema(error) {
+    this.state.loadingError = false;
+  }
+
   renderCancelButton() {
     return (<a
       tabIndex="0"
@@ -130,6 +140,15 @@ class Editor extends Component {
       editorClasses.push(this.props.className);
     }
 
+    let error = null;
+    if(this.state.loadingError) {
+      error = (
+        <div className="editor__file-preview-message--file-missing">
+          {i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found')}
+        </div>
+      );
+    }
+
     return (<div className={editorClasses.join(' ')}>
       <div className="editor__details fill-height">
         <FormBuilderLoader
@@ -137,7 +156,10 @@ class Editor extends Component {
           afterMessages={this.renderCancelButton()}
           handleSubmit={this.handleSubmit}
           handleAction={this.handleAction}
+          onLoadingError={this.handleLoadingError}
+          onFetchingSchema={this.handleFetchingSchema}
         />
+        {error}
         <FormBuilderModal
           show={this.state.openModal}
           handleHide={this.closeModal}

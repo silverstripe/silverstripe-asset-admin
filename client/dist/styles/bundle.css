@@ -1732,6 +1732,7 @@ th.sort--disabled>span:after{
   margin:2.4616rem 0 1.2308rem;
   font-size:1.231rem;
   color:#d40404;
+  text-align:center;
 }
 
 @media (max-width:991px){
