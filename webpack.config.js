@@ -46,6 +46,7 @@ module.exports = {
     'components/LiteralField/LiteralField': 'LiteralField',
     'lib/DataFormat': 'DataFormat',
     'lib/schemaFieldValues': 'schemaFieldValues',
+    'lib/reduxFieldReducer': 'reduxFieldReducer',
     'components/FormBuilderModal/FormBuilderModal': 'FormBuilderModal',
     'components/FormBuilder/FormBuilder': 'FormBuilder',
     'components/Toolbar/Toolbar': 'Toolbar',
