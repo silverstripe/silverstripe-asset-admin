@@ -4,8 +4,12 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Control\Controller;
 
 class ImageFormFactory extends FileFormFactory
 {
@@ -54,7 +58,9 @@ class ImageFormFactory extends FileFormFactory
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow')
-            )->addExtraClass('fieldgroup--fill-width')
+            )
+            ->addExtraClass('fieldgroup--fill-width')
+            ->setName('Dimensions')
         );
 
         $tab->insertBefore(
@@ -73,5 +79,49 @@ class ImageFormFactory extends FileFormFactory
         );
 
         return $tab;
+    }
+
+    /**
+     * @param Controller $controller
+     * @param string $name
+     * @param array $context
+     * @return Form
+     */
+    public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
+    {
+        $this->beforeExtending('updateForm', function ($form) use ($context) {
+            $record = null;
+            if (isset($context['Record'])) {
+                $record = $context['Record'];
+            }
+            
+            if (!$record) {
+                return;
+            }
+            /** @var FieldList $fields */
+            $fields = $form->Fields();
+            
+            $dimensions = $fields->fieldByName('Editor.Placement.Dimensions');
+            $width = null;
+            $height = null;
+            
+            if ($dimensions) {
+                $width = $record->getWidth();
+                $height = $record->getHeight();
+            }
+    
+            if ($width && $height) {
+                $ratio = $width / $height;
+        
+                $dimensions->setSchemaComponent('ProportionConstraintField');
+                $dimensions->setSchemaState([
+                    'data' => [
+                        'ratio' => $ratio
+                    ]
+                ]);
+            }
+        });
+
+        return parent::getForm($controller, $name, $context);
     }
 }
