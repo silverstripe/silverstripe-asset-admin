@@ -212,7 +212,7 @@ return"action_addtocampaign"===r?(this.openModal(),void t.preventDefault()):"act
 }},{key:"handleCancelKeyDown",value:function e(t){t.keyCode!==f.default.SPACE_KEY_CODE&&t.keyCode!==f.default.RETURN_KEY_CODE||this.handleClose(t)}},{key:"handleSubmit",value:function e(t,n,r){return"function"==typeof this.props.onSubmit?this.props.onSubmit(t,n,r):r()
 
 }},{key:"handleClose",value:function e(t){this.props.onClose(),this.closeModal(),t&&t.preventDefault()}},{key:"openModal",value:function e(){this.setState({openModal:!0})}},{key:"closeModal",value:function e(){
-this.setState({openModal:!1})}},{key:"handleLoadingError",value:function e(t){this.state.loadingError=!0}},{key:"handleFetchingSchema",value:function e(t){this.state.loadingError=!1}},{key:"renderCancelButton",
+this.setState({openModal:!1})}},{key:"handleLoadingError",value:function e(){this.state.loadingError=!0}},{key:"handleFetchingSchema",value:function e(){this.state.loadingError=!1}},{key:"renderCancelButton",
 value:function e(){return d.default.createElement("a",{tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,
 type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")})}},{key:"renderCancelButton",value:function e(){return d.default.createElement("a",{tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",
 onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")})}},{key:"renderCancelButton",value:function e(){return d.default.createElement("a",{

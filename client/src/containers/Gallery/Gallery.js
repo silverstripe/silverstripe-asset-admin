@@ -811,17 +811,16 @@ class Gallery extends Component {
           </div>
         );
       }
-      if(this.props.loading) {
+      if (this.props.loading) {
         return <div className="flexbox-area-grow"></div>;
-      } else {
-        return (
-          <div className="flexbox-area-grow">
-            <div className="editor__file-preview-message--file-missing m-t-3">
-              {i18n._t('AssetAdmin.FOLDER_MISSING', 'Folder cannot be found')}
-            </div>
-          </div>
-        );
       }
+      return (
+        <div className="flexbox-area-grow">
+          <div className="editor__file-preview-message--file-missing m-t-3">
+            {i18n._t('AssetAdmin.FOLDER_MISSING', 'Folder cannot be found')}
+          </div>
+        </div>
+      );
     }
 
     const messages = (

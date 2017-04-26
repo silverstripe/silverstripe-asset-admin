@@ -89,11 +89,11 @@ class Editor extends Component {
     });
   }
 
-  handleLoadingError(error) {
+  handleLoadingError() {
     this.state.loadingError = true;
   }
 
-  handleFetchingSchema(error) {
+  handleFetchingSchema() {
     this.state.loadingError = false;
   }
 
@@ -141,7 +141,7 @@ class Editor extends Component {
     }
 
     let error = null;
-    if(this.state.loadingError) {
+    if (this.state.loadingError) {
       error = (
         <div className="editor__file-preview-message--file-missing">
           {i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found')}
