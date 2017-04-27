@@ -110,6 +110,7 @@
   margin: #{$spacer-y * 2} 0 $spacer-y;
   font-size: $font-size-lg;
   color: $brand-danger;
+  text-align: center;
 }
 
 @include media-breakpoint-down(md) {

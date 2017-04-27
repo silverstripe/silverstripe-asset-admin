@@ -204,22 +204,25 @@ var a=function(){function e(e,t){for(var n=0;n<t.length;n++){var r=t[n]
 r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),l=n(5),u=r(l),p=n(2),d=r(p),c=n(21),f=r(c),h=n(22),m=r(h),g=n(23),y=r(g),v=function(e){
 function t(e){o(this,t)
 var n=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
-return n.handleCancelKeyDown=n.handleCancelKeyDown.bind(n),n.handleClose=n.handleClose.bind(n),n.handleSubmit=n.handleSubmit.bind(n),n.handleAction=n.handleAction.bind(n),n.closeModal=n.closeModal.bind(n),
-n.openModal=n.openModal.bind(n),n.state={openModal:!1},n}return s(t,e),a(t,[{key:"handleAction",value:function e(t,n){var r=t.currentTarget.name
+return n.handleCancelKeyDown=n.handleCancelKeyDown.bind(n),n.handleClose=n.handleClose.bind(n),n.handleSubmit=n.handleSubmit.bind(n),n.handleAction=n.handleAction.bind(n),n.handleLoadingError=n.handleLoadingError.bind(n),
+n.handleFetchingSchema=n.handleFetchingSchema.bind(n),n.closeModal=n.closeModal.bind(n),n.openModal=n.openModal.bind(n),n.state={openModal:!1},n}return s(t,e),a(t,[{key:"handleAction",value:function e(t,n){
+var r=t.currentTarget.name
 return"action_addtocampaign"===r?(this.openModal(),void t.preventDefault()):"action_delete"===r?(confirm(u.default._t("AssetAdmin.CONFIRMDELETE"))&&this.props.onDelete(n.ID),void t.preventDefault()):void 0
 
 }},{key:"handleCancelKeyDown",value:function e(t){t.keyCode!==f.default.SPACE_KEY_CODE&&t.keyCode!==f.default.RETURN_KEY_CODE||this.handleClose(t)}},{key:"handleSubmit",value:function e(t,n,r){return"function"==typeof this.props.onSubmit?this.props.onSubmit(t,n,r):r()
 
 }},{key:"handleClose",value:function e(t){this.props.onClose(),this.closeModal(),t&&t.preventDefault()}},{key:"openModal",value:function e(){this.setState({openModal:!0})}},{key:"closeModal",value:function e(){
-this.setState({openModal:!1})}},{key:"renderCancelButton",value:function e(){return d.default.createElement("a",{tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",
+this.setState({openModal:!1})}},{key:"handleLoadingError",value:function e(){this.state.loadingError=!0}},{key:"handleFetchingSchema",value:function e(){this.state.loadingError=!1}},{key:"renderCancelButton",
+value:function e(){return d.default.createElement("a",{tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,
+type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")})}},{key:"renderCancelButton",value:function e(){return d.default.createElement("a",{tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",
 onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")})}},{key:"renderCancelButton",value:function e(){return d.default.createElement("a",{
 tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")
-})}},{key:"renderCancelButton",value:function e(){return d.default.createElement("a",{tabIndex:"0",className:"btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl",onClick:this.handleClose,onKeyDown:this.handleCancelKeyDown,
-type:"button","aria-label":u.default._t("AssetAdmin.CANCEL")})}},{key:"render",value:function e(){var t=this.props.schemaUrl+"/"+this.props.targetId,n=this.props.addToCampaignSchemaUrl+"/"+this.props.targetId,r=["panel","form--no-dividers","editor"]
-
-
-return this.props.className&&r.push(this.props.className),d.default.createElement("div",{className:r.join(" ")},d.default.createElement("div",{className:"editor__details fill-height"},d.default.createElement(m.default,{
-schemaUrl:t,afterMessages:this.renderCancelButton(),handleSubmit:this.handleSubmit,handleAction:this.handleAction}),d.default.createElement(y.default,{show:this.state.openModal,handleHide:this.closeModal,
+})}},{key:"render",value:function e(){var t=this.props.schemaUrl+"/"+this.props.targetId,n=this.props.addToCampaignSchemaUrl+"/"+this.props.targetId,r=["panel","form--no-dividers","editor"]
+this.props.className&&r.push(this.props.className)
+var o=null
+return this.state.loadingError&&(o=d.default.createElement("div",{className:"editor__file-preview-message--file-missing"},u.default._t("AssetAdmin.FILE_MISSING","File cannot be found"))),d.default.createElement("div",{
+className:r.join(" ")},d.default.createElement("div",{className:"editor__details fill-height"},d.default.createElement(m.default,{schemaUrl:t,afterMessages:this.renderCancelButton(),handleSubmit:this.handleSubmit,
+handleAction:this.handleAction,onLoadingError:this.handleLoadingError,onFetchingSchema:this.handleFetchingSchema}),o,d.default.createElement(y.default,{show:this.state.openModal,handleHide:this.closeModal,
 schemaUrl:n,bodyClassName:"modal__dialog",responseClassBad:"modal__response modal__response--error",responseClassGood:"modal__response modal__response--good"})))}}]),t}(p.Component)
 v.propTypes={dialog:d.default.PropTypes.bool,className:d.default.PropTypes.string,targetId:d.default.PropTypes.number.isRequired,onClose:d.default.PropTypes.func.isRequired,onSubmit:d.default.PropTypes.func.isRequired,
 onDelete:d.default.PropTypes.func.isRequired,schemaUrl:d.default.PropTypes.string.isRequired,addToCampaignSchemaUrl:d.default.PropTypes.string,openAddCampaignModal:d.default.PropTypes.bool},t.default=v
@@ -336,8 +339,10 @@ highlighted:t.itemIsHighlighted(e.id)})}),s=this.props,a=s.type,l=s.loading,u=s.
 totalCount:p,limit:c,sort:f,selectedFiles:h,badges:m,onSort:this.handleSort,onSetPage:this.handleSetPage,onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,onSelect:this.handleSelect,onCancelUpload:this.handleCancelUpload,
 onDropFiles:this.handleMoveFiles,onRemoveErroredUpload:this.handleRemoveErroredUpload,onEnableDropzone:this.handleEnableDropzone}
 return v.default.createElement(n,g)}},{key:"render",value:function e(){if(!this.props.folder)return this.props.errorMessage?v.default.createElement("div",{className:"gallery__error flexbox-area-grow"},v.default.createElement("div",{
-className:"gallery__error-message"},v.default.createElement("h3",null,g.default._t("AssetAdmin.DROPZONE_RESPONSE_ERROR","Server responded with an error.")),v.default.createElement("p",null,this.props.errorMessage))):v.default.createElement("div",{
-className:"flexbox-area-grow"})
+className:"gallery__error-message"},v.default.createElement("h3",null,g.default._t("AssetAdmin.DROPZONE_RESPONSE_ERROR","Server responded with an error.")),v.default.createElement("p",null,this.props.errorMessage))):this.props.loading?v.default.createElement("div",{
+className:"flexbox-area-grow"}):v.default.createElement("div",{className:"flexbox-area-grow"},v.default.createElement("div",{className:"editor__file-preview-message--file-missing m-t-3"},g.default._t("AssetAdmin.FOLDER_MISSING","Folder cannot be found")))
+
+
 var t=v.default.createElement("div",{className:"gallery_messages"},this.props.errorMessage&&v.default.createElement(j.default,{value:this.props.errorMessage,type:"danger"}),this.props.noticeMessage&&v.default.createElement(j.default,{
 value:this.props.noticeMessage,type:"success"}),this.renderSearchAlert()),n={height:U.default.THUMBNAIL_HEIGHT,width:U.default.THUMBNAIL_WIDTH},r={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,
 paramName:"Upload",clickable:"#upload-button"},o=this.props.securityId,i=this.props.folder.canEdit&&this.props.enableDropzone,s=["panel","panel--padded","panel--scrollable","gallery__main"]
