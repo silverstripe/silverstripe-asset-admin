@@ -21,6 +21,11 @@
     height: 100%;
   }
 
+  // If the editor is in the dialog
+  .editor__details {
+    height: calc(100vh - #{$toolbar-total-height * 2}); // Safari fix for scroll, should be better fix
+  }
+
   @include media-breakpoint-up(lg) {
     .btn--close-panel {
       display: none;
