@@ -1751,7 +1751,6 @@ th.sort--disabled>span:after{
     float:left;
     right:auto;
     margin-right:0;
-    position:absolute;
     margin-left:-15px;
     color:#66727d;
   }
