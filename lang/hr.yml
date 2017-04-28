@@ -1,5 +1,7 @@
 hr:
-  AssetAdmin:
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Obriši direktorije'
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
     Alignment: Poravnavanje
     AltText: 'Alternativni tekst (alt)'
     AltTextDescription: 'Prikaži čitačima ekrana ili ako je sliku nemoguće prikazati'
@@ -8,18 +10,15 @@ hr:
     EditLink: 'Uredi originalnu datoteku'
     ImageHeight: Visina
     ImageSpecs: Dimenzije
-    ImageWidth: Širina
+    ImageWidth: 'Širina'
+    MENUTITLE: Datoteke
     TitleTooltip: 'Naslov (tooltip)'
     TitleTooltipDescription: 'Za dodatne informacije o slici'
-  AssetAdmin_DeleteBatchAction:
-    TITLE: 'Obriši direktorije'
-  CMSMain:
-    INSERT: 'Ubaci datoteku'
-  File:
+  SilverStripe\Assets\File:
     PUBLISHED: Objavljeno
+  SilverStripe\CMS\Controllers\CMSMain:
+    INSERT: 'Ubaci datoteku'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Datoteke
-  SilverStripe\\AssetAdmin\\Controller\\AssetAdmin:
     ADDTOCAMPAIGN: 'Dodaj na kampanju'
     AppCategoryArchive: Arhiviraj
     AppCategoryAudio: Zvuk
@@ -39,12 +38,12 @@ hr:
     UNKNOWN: Nepoznatno
     UNPUBLISH_BUTTON: Odjavi
     UPLOADEDFILE: 'Prenesena datoteka'
-  SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile:
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Premještena datoteka'
     RENAMEDFILE: 'Zamjenjena datoteka'
     RENAMEDTITLE: 'Promjeni naslov u'
-  SilverStripe\\AssetAdmin\\Forms\\FileFormFactory:
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
     OTHER_ACTIONS: 'Druge akcije'
-  SilverStripe\\AssetAdmin\\Forms\\FileHistoryFormFactory:
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Objavljeno
     SAVED: Spremljeno
