@@ -2,23 +2,6 @@ hr:
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Obriši direktorije'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    Alignment: Poravnavanje
-    AltText: 'Alternativni tekst (alt)'
-    AltTextDescription: 'Prikaži čitačima ekrana ili ako je sliku nemoguće prikazati'
-    AttributesDescription: 'Ove promjene će utjecati samo na specifičan smještan ove datoteke.'
-    Caption: Natpis
-    EditLink: 'Uredi originalnu datoteku'
-    ImageHeight: Visina
-    ImageSpecs: Dimenzije
-    ImageWidth: 'Širina'
-    MENUTITLE: Datoteke
-    TitleTooltip: 'Naslov (tooltip)'
-    TitleTooltipDescription: 'Za dodatne informacije o slici'
-  SilverStripe\Assets\File:
-    PUBLISHED: Objavljeno
-  SilverStripe\CMS\Controllers\CMSMain:
-    INSERT: 'Ubaci datoteku'
-  SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Dodaj na kampanju'
     AppCategoryArchive: Arhiviraj
     AppCategoryAudio: Zvuk
@@ -32,6 +15,7 @@ hr:
     ErrorNotFound: 'Taj {Type} nemoguće pronaći'
     Filetype: 'Vrsta datoteke'
     LoadIntoFileFailed: 'Greška pri učitavanju datoteke'
+    MENUTITLE: Datoteke
     NOSUMMARY: 'Sažetak nije dostupan'
     PUBLISH_BUTTON: Objavi
     SAVEDFILE: 'Spremljena datoteke'
@@ -47,3 +31,7 @@ hr:
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Objavljeno
     SAVED: Spremljeno
+  SilverStripe\Assets\File:
+    PUBLISHED: Objavljeno
+  SilverStripe\CMS\Controllers\CMSMain:
+    INSERT: 'Ubaci datoteku'
