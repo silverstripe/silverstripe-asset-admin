@@ -1,5 +1,8 @@
 en:
-  AssetAdmin:
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Delete folders'
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Add to campaign'
     Alignment: Alignment
     AlignmentCenter: Center
     AlignmentLeft: 'Left wrap'
@@ -8,63 +11,57 @@ en:
     AlignmentRightAlone: Right
     AltText: 'Alternative text (alt)'
     AltTextDescription: 'Shown to screen readers or if image can''t be displayed'
-    AttributesDescription: 'These changes will only affect this particular placement of the file.'
-    Caption: Caption
-    EditLink: 'Edit original file'
-    ImageHeight: Height
-    ImageSpecs: Dimensions
-    ImageWidth: Width
-    Placement: Placement
-    TitleTooltip: 'Title text (tooltip)'
-    TitleTooltipDescription: 'For additional information about the image'
-  AssetAdmin_DeleteBatchAction:
-    TITLE: 'Delete folders'
-  AssetTableField:
-    CREATED: 'First uploaded'
-    LASTEDIT: 'Last changed'
-    PATH: Path
-  CMSMain:
-    INSERT: 'Insert file'
-  CMSSearch:
-    FILTERDATEFROM: From
-    FILTERDATETO: To
-  Enum:
-    ANY: Any
-  File:
-    PUBLISHED: Published
-  RemoteFileForm:
-    AddMedia: 'Add media'
-    Cancel: Cancel
-    InsertMedia: 'Insert media'
-    UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
-  SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Files
-  SilverStripe\\AssetAdmin\\Controller\\AssetAdmin:
-    ADDTOCAMPAIGN: 'Add to campaign'
     AppCategoryArchive: Archive
     AppCategoryAudio: Audio
     AppCategoryDocument: Document
     AppCategoryImage: Image
     AppCategoryVideo: Video
+    AttributesDescription: 'These changes will only affect this particular placement of the file.'
+    CREATED: 'First uploaded'
+    Caption: Caption
     CreatePermissionDenied: 'You do not have permission to add files'
     CurrentFolderOnly: 'Limit to current folder and its sub-folders?'
     DELETE_BUTTON: Delete
+    EditLink: 'Edit original file'
     ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
     ErrorNotFound: 'That {Type} couldn''t be found'
     Filetype: 'File type'
+    ImageHeight: Height
+    ImageSpecs: Dimensions
+    ImageWidth: Width
+    LASTEDIT: 'Last changed'
     LoadIntoFileFailed: 'Failed to load file'
+    MENUTITLE: Files
     NOSUMMARY: 'No summary available'
+    NewFile: 'New {file}'
+    PATH: Path
     PUBLISH_BUTTON: Publish
+    Placement: Placement
     SAVEDFILE: 'Saved file'
+    TitleTooltip: 'Title text (tooltip)'
+    TitleTooltipDescription: 'For additional information about the image'
     UNKNOWN: Unknown
     UNPUBLISH_BUTTON: Unpublish
     UPLOADEDFILE: 'Uploaded file'
-  SilverStripe\\AssetAdmin\\Controller\\AssetAdminFile:
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Moved file'
     RENAMEDFILE: 'Replaced file'
     RENAMEDTITLE: 'Updated title to '
-  SilverStripe\\AssetAdmin\\Forms\\FileFormFactory:
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
     OTHER_ACTIONS: 'Other actions'
-  SilverStripe\\AssetAdmin\\Forms\\FileHistoryFormFactory:
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
     SAVED: Saved
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Add media'
+    Cancel: Cancel
+    InsertMedia: 'Insert media'
+    UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
+  SilverStripe\Assets\File:
+    PUBLISHED: Published
+  SilverStripe\Assets\Folder:
+    Filename: 'Folder name'
+  SilverStripe\CMS\Controllers\CMSMain:
+    CREATE: Create
+    INSERT: 'Insert file'
+    SAVE: Save
