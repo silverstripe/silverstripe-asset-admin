@@ -62,9 +62,9 @@
   "AssetAdmin.BROWSE": "Pretraži",
   "AssetAdmin.EMPTY": "Nema datoteka",
   "AssetAdmin.OR": "ili",
-  "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed je samo kompatibilan s vanjskim datotekama"
+  "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed je samo kompatibilan s vanjskim datotekama",
   "AssetAdmin.CreateTitle": "Insert new media from the web",
   "AssetAdmin.EditTitle": "Media from the web",
   "AssetAdmin.NEXT": "Sljedeći",
-  "AssetAdmin.PREVIOUS": "Prethodni",
+  "AssetAdmin.PREVIOUS": "Prethodni"
 }
