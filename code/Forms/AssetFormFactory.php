@@ -126,7 +126,7 @@ abstract class AssetFormFactory implements FormFactory
     protected function getSaveAction($record)
     {
         if ($record && $record->isInDB() && $record->canEdit()) {
-            return FormAction::create('save', _t('CMSMain.SAVE', 'Save'))
+            return FormAction::create('save', _t('SilverStripe\\CMS\\Controllers\\CMSMain.SAVE', 'Save'))
                 ->setIcon('save');
         }
         return null;

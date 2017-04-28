@@ -14,7 +14,7 @@ class DeleteAssets extends CMSBatchAction
 {
     public function getActionTitle()
     {
-        return _t('AssetAdmin_DeleteBatchAction.TITLE', 'Delete folders');
+        return _t(__CLASS__.'.TITLE', 'Delete folders');
     }
 
     public function run(SS_List $records)

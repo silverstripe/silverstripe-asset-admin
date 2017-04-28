@@ -220,7 +220,7 @@ class UploadField extends SilverStripeComponent {
         return null;
       }
       return (
-        <p>{i18n._t('AssetAdminUploadField.EMPTY', 'No files')}</p>
+        <p>{i18n._t('AssetAdmin.EMPTY', 'No files')}</p>
       );
     }
 
@@ -253,13 +253,13 @@ class UploadField extends SilverStripeComponent {
         <div className="uploadfield__backdrop"></div>
         <span className="uploadfield__droptext">
           <button onClick={this.handleSelect} className="uploadfield__upload-button">
-            {i18n._t('AssetAdminUploadField.BROWSE', 'Browse')}
+            {i18n._t('AssetAdmin.BROWSE', 'Browse')}
           </button>
           {' '}
-          {i18n._t('AssetAdminUploadField.OR', 'or')}
+          {i18n._t('AssetAdmin.OR', 'or')}
           {' '}
           <button onClick={this.handleAddShow} className="uploadfield__add-button">
-            {i18n._t('AssetAdminUploadField.ADD_FILES', 'Add from files')}
+            {i18n._t('AssetAdmin.ADD_FILES', 'Add from files')}
           </button>
         </span>
       </AssetDropzone>

@@ -37,7 +37,7 @@ class FolderCreateFormFactory extends FolderFormFactory
             $fields->push(HiddenField::create('ParentID', null, $context['ParentID']));
 
             $title = $fields->fieldByName('TitleHeader');
-            $titleNew = _t('AssetAdmin.NewFile', 'New {file}', [
+            $titleNew = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.NewFile', 'New {file}', [
                 'file' => Folder::singleton()->i18n_singular_name()
             ]);
             $title->setTitle($titleNew);
@@ -52,7 +52,7 @@ class FolderCreateFormFactory extends FolderFormFactory
      */
     protected function getSaveAction($record)
     {
-        return FormAction::create('createfolder', _t('CMSMain.CREATE', 'Create'))
+        return FormAction::create('createfolder', _t('SilverStripe\\CMS\\Controllers\\CMSMain.CREATE', 'Create'))
             ->setIcon('plus-circled')
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
     }

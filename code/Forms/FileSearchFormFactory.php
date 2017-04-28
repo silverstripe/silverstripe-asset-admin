@@ -74,7 +74,7 @@ class FileSearchFormFactory implements FormFactory
             'appCategory',
             _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Filetype', 'File type'),
             $appCategories
-        )->setEmptyString(_t('Enum.ANY', 'Any'));
+        )->setEmptyString(_t('SilverStripe\\ORM\\FieldType\\DBEnum.ANY', 'Any'));
 
         // Limit to current folder
         $limitCheckbox = CheckboxField::create('currentFolderOnly', _t(
@@ -83,10 +83,10 @@ class FileSearchFormFactory implements FormFactory
         ));
 
         // Last updated range field
-        $dateFrom = DateField::create('lastEditedFrom', _t('CMSSearch.FILTERDATEFROM', 'From'));
-        $dateTo = DateField::create('lastEditedTo', _t('CMSSearch.FILTERDATETO', 'To'));
+        $dateFrom = DateField::create('lastEditedFrom', _t('SilverStripe\\CMS\\Search\\SearchForm.FILTERDATEFROM', 'From'));
+        $dateTo = DateField::create('lastEditedTo', _t('SilverStripe\\CMS\\Search\\SearchForm.FILTERDATETO', 'To'));
         $dateGroup = FieldGroup::create(
-            _t('AssetTableField.LASTEDIT', 'Last changed'),
+            _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LASTEDIT', 'Last changed'),
             [$dateFrom, $dateTo]
         )->setName('LastChanged');
 

@@ -76,9 +76,9 @@ class ThumbnailView extends Component {
       setPage: this.handleSetPage,
       maxPage: Math.ceil(this.props.totalCount / this.props.limit),
       next: this.handleNextPage,
-      nextText: i18n._t('Pagination.NEXT', 'Next'),
+      nextText: i18n._t('AssetAdmin.NEXT', 'Next'),
       previous: this.handlePrevPage,
-      previousText: i18n._t('Pagination.PREVIOUS', 'Previous'),
+      previousText: i18n._t('AssetAdmin.PREVIOUS', 'Previous'),
       currentPage: this.props.page - 1,
       useGriddleStyles: false,
     };
