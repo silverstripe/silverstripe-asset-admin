@@ -69,7 +69,6 @@ class InsertEmbedModal extends Component {
       },
       this.props,
       {
-        bodyClassName: 'fill-height',
         className: `insert-embed-modal ${this.props.className}`,
         bsSize: 'lg',
         handleHide: this.props.onHide,
