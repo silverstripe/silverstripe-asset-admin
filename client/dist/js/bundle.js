@@ -140,8 +140,8 @@ return this.props.actions.files.deleteFile(r.id,o).then(function(){n.props.actio
 })}},{key:"handleUnpublish",value:function e(t){var n=this,r=this.findFile(t)
 if(!r&&this.props.folder&&this.props.folder.id===t&&(r=this.props.folder),!r)throw new Error("File selected for unpublish cannot be found: "+t)
 var o=this.props.client.dataId({__typename:r.__typename,id:r.id})
-return this.props.actions.files.unpublishFile(r.id,o).then(function(e){return n.props.actions.files.readFiles().then(function(){n.handleCloseFile(),n.handleOpenFile(e.data.unpublishFile.id)})})}},{key:"findFile",
-value:function e(t){var n=[].concat(i(this.props.files),i(this.props.queuedFiles.items))
+this.props.actions.files.unpublishFile(r.id,o).then(function(e){n.props.actions.files.readFiles().then(function(){n.handleCloseFile(),n.handleOpenFile(e.data.unpublishFile.id)})})}},{key:"findFile",value:function e(t){
+var n=[].concat(i(this.props.files),i(this.props.queuedFiles.items))
 return n.find(function(e){return e.id===parseInt(t,10)})}},{key:"handleUpload",value:function e(){}},{key:"handleCreateFolder",value:function e(){this.props.onBrowse(this.getFolderId(),null,this.props.query,W.default.ACTIONS.CREATE_FOLDER)
 
 }},{key:"handleMoveFilesSuccess",value:function e(t,n){var r=this,o=this.props.queuedFiles.items.filter(function(e){return n.includes(e.id)})
@@ -1949,7 +1949,7 @@ delete n.ID
 var r={fields:Object.entries(n).map(function(e){var t=p(e,2),n=t[0],r=t[1]
 return{name:n,value:r}})}
 this.props.actions.schema.setSchemaStateOverrides(t.schemaUrl,r)}}},{key:"getModalProps",value:function e(){var t=d({handleSubmit:this.handleSubmit,onLoadingError:this.handleLoadingError,showErrorMessage:!0,
-responseClassBad:"alert alert-danger"},this.props,{bodyClassName:"fill-height",className:"insert-embed-modal "+this.props.className,bsSize:"lg",handleHide:this.props.onHide,title:this.props.targetUrl?h.default._t("AssetAdmin.EditTitle","Media from the web"):h.default._t("AssetAdmin.CreateTitle","Insert new media from the web")
+responseClassBad:"alert alert-danger"},this.props,{className:"insert-embed-modal "+this.props.className,bsSize:"lg",handleHide:this.props.onHide,title:this.props.targetUrl?h.default._t("AssetAdmin.EditTitle","Media from the web"):h.default._t("AssetAdmin.CreateTitle","Insert new media from the web")
 })
 return delete t.onHide,delete t.sectionConfig,delete t.onInsert,delete t.fileAttributes,t}},{key:"clearOverrides",value:function e(){this.props.actions.schema.setSchemaStateOverrides(this.props.schemaUrl,null)
 
