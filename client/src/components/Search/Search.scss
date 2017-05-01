@@ -1,21 +1,19 @@
 // AssetAdmin search
 
 .search {
-  position: absolute;
-  top: 0;
-  right: $panel-padding-x;
+  margin-right: $panel-padding-x;
 
   @include media-breakpoint-up(md) {
     position: relative;
     right: auto;
 
     &.search--active {
-      position: relative;
       right: 0;
     }
   }
 
   &.search--active {
+    position: relative;
     width: calc(100% - #{$panel-padding-x});
   }
 }
