@@ -64,4 +64,3 @@ en:
   SilverStripe\CMS\Controllers\CMSMain:
     CREATE: Create
     INSERT: 'Insert file'
-    SAVE: Save
