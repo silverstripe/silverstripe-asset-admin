@@ -92,7 +92,10 @@ class RemoteFileFormFactory implements FormFactory
                 'left' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeft', 'Left wrap'),
                 'right' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRight', 'Right wrap'),
             );
-
+    
+            $width = $embed->getWidth();
+            $height = $embed->getHeight();
+    
             $fields = CompositeField::create([
                 LiteralField::create(
                     'Preview',
@@ -114,19 +117,31 @@ class RemoteFileFormFactory implements FormFactory
                         $alignments
                     )
                         ->addExtraClass('insert-embed-modal__placement'),
-                    FieldGroup::create(
+                    $dimensions = FieldGroup::create(
                         _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
-                        TextField::create('Width', '', $embed->getWidth())
+                        TextField::create('Width', '', $width)
                             ->setRightTitle(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width'))
                             ->setMaxLength(5)
                             ->addExtraClass('flexbox-area-grow'),
-                        TextField::create('Height', '', $embed->getHeight())
+                        TextField::create('Height', '', $height)
                             ->setRightTitle(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight', 'Height'))
                             ->setMaxLength(5)
                             ->addExtraClass('flexbox-area-grow')
                     )->addExtraClass('fieldgroup--fill-width')
+                        ->setName('Dimensions')
                 ])->addExtraClass('flexbox-area-grow'),
             ])->addExtraClass('insert-embed-modal__fields--fill-width');
+    
+            if ($dimensions && $width && $height) {
+                $ratio = $width / $height;
+        
+                $dimensions->setSchemaComponent('ProportionConstraintField');
+                $dimensions->setSchemaState([
+                    'data' => [
+                        'ratio' => $ratio
+                    ]
+                ]);
+            }
         }
 
         return FieldList::create($fields);
