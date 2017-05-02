@@ -329,11 +329,12 @@ value:e}))})}},{key:"renderBackButton",value:function e(){var t=this.props.folde
 if(null!==t){var n=this.props.badges.find(function(e){return e.id===t})
 return v.default.createElement("div",{className:"gallery__back-container"},v.default.createElement(q.default,{item:{id:t},onClick:this.handleBackClick,onDropFiles:this.handleMoveFiles,badge:n}))}return null
 
-}},{key:"renderBulkActions",value:function e(){var t=this,n=U.default.BULK_ACTIONS.map(function(e){if(!e.callback)switch(e.value){case"delete":return d({},e,{callback:t.handleBulkDelete})
+}},{key:"renderTransitionBulkActions",value:function e(){return"admin"===this.props.type?v.default.createElement(w.default,{transitionName:"bulk-actions",transitionEnterTimeout:U.default.CSS_TRANSITION_TIME,
+transitionLeaveTimeout:U.default.CSS_TRANSITION_TIME},this.renderBulkActions()):null}},{key:"renderBulkActions",value:function e(){var t=this,n=U.default.BULK_ACTIONS.map(function(e){if(!e.callback)switch(e.value){
+case"delete":return d({},e,{callback:t.handleBulkDelete})
 case"edit":return d({},e,{callback:t.handleBulkEdit})
-default:return e}return e}),r=[].concat(i(this.props.files),i(this.props.queuedFiles.items)),o=this.props.selectedFiles.map(function(e){return r.find(function(t){return t&&e===t.id})}),s=null
-return o.length>0&&(s=v.default.createElement(O.default,{actions:n,items:o,key:o.length>0})),"admin"===this.props.type?v.default.createElement(w.default,{transitionName:"bulk-actions",transitionEnterTimeout:U.default.CSS_TRANSITION_TIME,
-transitionLeaveTimeout:U.default.CSS_TRANSITION_TIME},s):null}},{key:"renderGalleryView",value:function e(){var t=this,n="table"===this.props.view?N.default:D.default,r=this.props.queuedFiles.items.filter(function(e){
+default:return e}return e}),r=[].concat(i(this.props.files),i(this.props.queuedFiles.items)),o=this.props.selectedFiles.map(function(e){return r.find(function(t){return t&&e===t.id})})
+return o.length>0&&"admin"===this.props.type?v.default.createElement(O.default,{actions:n,items:o,key:o.length>0}):null}},{key:"renderGalleryView",value:function e(){var t=this,n="table"===this.props.view?N.default:D.default,r=this.props.queuedFiles.items.filter(function(e){
 return!e.id||!t.props.files.find(function(t){return t.id===e.id})}).map(function(e){return d({},e,{uploading:!(e.id>0)})}),o=[].concat(i(r),i(this.props.files)).map(function(e){return d({},e||{},{selected:t.itemIsSelected(e.id),
 highlighted:t.itemIsHighlighted(e.id)})}),s=this.props,a=s.type,l=s.loading,u=s.page,p=s.totalCount,c=s.limit,f=s.sort,h=s.selectedFiles,m=s.badges,g={selectableItems:"admin"===a,files:o,loading:l,page:u,
 totalCount:p,limit:c,sort:f,selectedFiles:h,badges:m,onSort:this.handleSort,onSetPage:this.handleSetPage,onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,onSelect:this.handleSelect,onCancelUpload:this.handleCancelUpload,
@@ -346,7 +347,7 @@ className:"flexbox-area-grow"}):v.default.createElement("div",{className:"flexbo
 var t=v.default.createElement("div",{className:"gallery_messages"},this.props.errorMessage&&v.default.createElement(j.default,{value:this.props.errorMessage,type:"danger"}),this.props.noticeMessage&&v.default.createElement(j.default,{
 value:this.props.noticeMessage,type:"success"}),this.renderSearchAlert()),n={height:U.default.THUMBNAIL_HEIGHT,width:U.default.THUMBNAIL_WIDTH},r={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,
 paramName:"Upload",clickable:"#upload-button"},o=this.props.securityId,i=this.props.folder.canEdit&&this.props.enableDropzone,s=["panel","panel--padded","panel--scrollable","gallery__main"]
-return"insert"===this.props.type&&s.push("insert-media-modal__main"),v.default.createElement("div",{className:"flexbox-area-grow gallery__outer"},this.renderBulkActions(),v.default.createElement(T.default,{
+return"insert"===this.props.type&&s.push("insert-media-modal__main"),v.default.createElement("div",{className:"flexbox-area-grow gallery__outer"},this.renderTransitionBulkActions(),v.default.createElement(T.default,{
 name:"gallery-container",canUpload:i,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,
 preview:n,folderId:this.props.folderId,options:r,securityID:o,uploadButton:!1},v.default.createElement(Z.default,{className:s.join(" ")},this.renderToolbar(),t,this.renderGalleryView())))}}]),t}(y.Component),ee={
 page:1,limit:15,sort:X[0].field+","+X[0].direction},te={loading:y.PropTypes.bool,sort:y.PropTypes.string,files:y.PropTypes.arrayOf(y.PropTypes.shape({id:y.PropTypes.number,parent:y.PropTypes.shape({id:y.PropTypes.number

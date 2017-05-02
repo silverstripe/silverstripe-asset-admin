@@ -688,7 +688,30 @@ class Gallery extends Component {
   }
 
   /**
-   * Generates the react components needed for the BulkActions part of this component.
+   * Generates the react component that wraps around the actual bulk actions
+   * and provides transition effect.
+   *
+   * @returns {XML}
+   */
+  renderTransitionBulkActions() {
+    if (this.props.type === 'admin') {
+      return (
+        <ReactCSSTransitionGroup
+          transitionName="bulk-actions"
+          transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
+          transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
+        >
+          {this.renderBulkActions()}
+        </ReactCSSTransitionGroup>
+      );
+    }
+
+    return null;
+  }
+
+  /**
+   * Generates the react components needed for the BulkActions part of this
+   * component.
    *
    * @returns {XML}
    */
@@ -709,31 +732,19 @@ class Gallery extends Component {
       }
       return action;
     });
+
     // Bulk actions can happen for both queuedFiles (after they've completed the upload),
     // and the actual props.files in the current view.
     // TODO Refactor "queued files" into separate visual area and remove coupling here
     const allFiles = [...this.props.files, ...this.props.queuedFiles.items];
     const selectedFileObjs = this.props.selectedFiles.map(id => allFiles.find(file => file && id === file.id));
-    let bulkActions = null;
 
-    if (selectedFileObjs.length > 0) {
-      bulkActions = (<BulkActions
+    if (selectedFileObjs.length > 0 && this.props.type === 'admin') {
+      return (<BulkActions
         actions={actions}
         items={selectedFileObjs}
         key={selectedFileObjs.length > 0}
       />);
-    }
-
-    if (this.props.type === 'admin') {
-      return (
-        <ReactCSSTransitionGroup
-          transitionName="bulk-actions"
-          transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-          transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-        >
-          {bulkActions}
-        </ReactCSSTransitionGroup>
-      );
     }
 
     return null;
@@ -863,7 +874,7 @@ class Gallery extends Component {
 
     return (
       <div className="flexbox-area-grow gallery__outer">
-        {this.renderBulkActions()}
+        {this.renderTransitionBulkActions()}
         <AssetDropzone
           name="gallery-container"
           canUpload={canEdit}
