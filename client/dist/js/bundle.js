@@ -331,9 +331,9 @@ return v.default.createElement("div",{className:"gallery__back-container"},v.def
 
 }},{key:"renderBulkActions",value:function e(){var t=this,n=U.default.BULK_ACTIONS.map(function(e){if(!e.callback)switch(e.value){case"delete":return d({},e,{callback:t.handleBulkDelete})
 case"edit":return d({},e,{callback:t.handleBulkEdit})
-default:return e}return e}),r=[].concat(i(this.props.files),i(this.props.queuedFiles.items)),o=this.props.selectedFiles.map(function(e){return r.find(function(t){return t&&e===t.id})})
-return o.length>0&&"admin"===this.props.type?v.default.createElement(w.default,{transitionName:"bulk-actions",transitionEnterTimeout:U.default.CSS_TRANSITION_TIME,transitionLeaveTimeout:U.default.CSS_TRANSITION_TIME
-},v.default.createElement(O.default,{actions:n,items:o,key:o.length>0})):null}},{key:"renderGalleryView",value:function e(){var t=this,n="table"===this.props.view?N.default:D.default,r=this.props.queuedFiles.items.filter(function(e){
+default:return e}return e}),r=[].concat(i(this.props.files),i(this.props.queuedFiles.items)),o=this.props.selectedFiles.map(function(e){return r.find(function(t){return t&&e===t.id})}),s=null
+return o.length>0&&(s=v.default.createElement(O.default,{actions:n,items:o,key:o.length>0})),"admin"===this.props.type?v.default.createElement(w.default,{transitionName:"bulk-actions",transitionEnterTimeout:U.default.CSS_TRANSITION_TIME,
+transitionLeaveTimeout:U.default.CSS_TRANSITION_TIME},s):null}},{key:"renderGalleryView",value:function e(){var t=this,n="table"===this.props.view?N.default:D.default,r=this.props.queuedFiles.items.filter(function(e){
 return!e.id||!t.props.files.find(function(t){return t.id===e.id})}).map(function(e){return d({},e,{uploading:!(e.id>0)})}),o=[].concat(i(r),i(this.props.files)).map(function(e){return d({},e||{},{selected:t.itemIsSelected(e.id),
 highlighted:t.itemIsHighlighted(e.id)})}),s=this.props,a=s.type,l=s.loading,u=s.page,p=s.totalCount,c=s.limit,f=s.sort,h=s.selectedFiles,m=s.badges,g={selectableItems:"admin"===a,files:o,loading:l,page:u,
 totalCount:p,limit:c,sort:f,selectedFiles:h,badges:m,onSort:this.handleSort,onSetPage:this.handleSetPage,onOpenFile:this.handleOpenFile,onOpenFolder:this.handleOpenFolder,onSelect:this.handleSelect,onCancelUpload:this.handleCancelUpload,

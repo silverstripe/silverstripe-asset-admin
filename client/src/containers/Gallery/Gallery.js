@@ -714,19 +714,24 @@ class Gallery extends Component {
     // TODO Refactor "queued files" into separate visual area and remove coupling here
     const allFiles = [...this.props.files, ...this.props.queuedFiles.items];
     const selectedFileObjs = this.props.selectedFiles.map(id => allFiles.find(file => file && id === file.id));
+    let bulkActions = null;
 
-    if (selectedFileObjs.length > 0 && this.props.type === 'admin') {
+    if (selectedFileObjs.length > 0) {
+      bulkActions = (<BulkActions
+        actions={actions}
+        items={selectedFileObjs}
+        key={selectedFileObjs.length > 0}
+      />);
+    }
+
+    if (this.props.type === 'admin') {
       return (
         <ReactCSSTransitionGroup
           transitionName="bulk-actions"
           transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
           transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
         >
-          <BulkActions
-            actions={actions}
-            items={selectedFileObjs}
-            key={selectedFileObjs.length > 0}
-          />
+          {bulkActions}
         </ReactCSSTransitionGroup>
       );
     }
