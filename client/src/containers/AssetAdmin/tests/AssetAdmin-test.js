@@ -211,5 +211,15 @@ describe('AssetAdmin', () => {
           .toBeCalledWith(props.queuedFiles.items[0].queuedId);
       });
     });
+
+    it('should retain view type by passing existing type value to props.onBrowse()', () => {
+      const id = props.files[0].id;
+      props.query.view = 'tile';
+      props.onBrowse = jest.genMockFunction();
+      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
+      return component.handleDelete(id).then(() => {
+        expect(props.onBrowse).toBeCalledWith(0, null, { view: 'tile' });
+      });
+    });
   });
 });
