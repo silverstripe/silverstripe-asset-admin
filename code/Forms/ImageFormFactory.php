@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
@@ -9,7 +10,6 @@ use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TextField;
-use SilverStripe\Control\Controller;
 
 class ImageFormFactory extends FileFormFactory
 {
@@ -82,12 +82,12 @@ class ImageFormFactory extends FileFormFactory
     }
 
     /**
-     * @param Controller $controller
+     * @param RequestHandler $controller
      * @param string $name
      * @param array $context
      * @return Form
      */
-    public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
+    public function getForm(RequestHandler $controller = null, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
         $this->beforeExtending('updateForm', function ($form) use ($context) {
             $record = null;

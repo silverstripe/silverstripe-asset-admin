@@ -4,7 +4,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
-use SilverStripe\Control\Controller;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
@@ -16,7 +16,7 @@ class FolderCreateFormFactory extends FolderFormFactory
         return ['ParentID'];
     }
 
-    public function getFormFields(Controller $controller, $name, $context = [])
+    public function getFormFields(RequestHandler $controller = null, $name, $context = [])
     {
         // Add status flag before extensions are triggered
         $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($context) {

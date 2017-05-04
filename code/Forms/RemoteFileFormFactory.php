@@ -4,8 +4,8 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
-use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Forms\CompositeField;
@@ -31,12 +31,12 @@ class RemoteFileFormFactory implements FormFactory
     private static $fileurl_domain_whitelist = [];
 
     /**
-     * @param Controller $controller
+     * @param RequestHandler $controller
      * @param string $name
      * @param array $context
      * @return Form
      */
-    public function getForm(Controller $controller, $name = self::DEFAULT_NAME, $context = [])
+    public function getForm(RequestHandler $controller = null, $name = self::DEFAULT_NAME, $context = [])
     {
         // Validate context
         foreach ($this->getRequiredContext() as $required) {

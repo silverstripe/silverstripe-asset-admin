@@ -2,7 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
-use SilverStripe\Control\Controller;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TextField;
@@ -24,7 +24,7 @@ class FolderFormFactory extends AssetFormFactory
         );
     }
 
-    protected function getFormFields(Controller $controller, $name, $context = [])
+    protected function getFormFields(RequestHandler $controller = null, $name, $context = [])
     {
         // Add delete action as top level button before extensions are triggered
         $this->beforeExtending('updateFormFields', function (FieldList $fields) {

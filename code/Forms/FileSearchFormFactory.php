@@ -2,7 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
-use SilverStripe\Control\Controller;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Forms\CheckboxField;
@@ -29,14 +29,14 @@ class FileSearchFormFactory implements FormFactory
     /**
      * Generates the form
      *
-     * @param Controller $controller Parent controller
+     * @param RequestHandler $controller Parent controller
      * @param string $name
      * @param array $context List of properties which may influence form scaffolding.
      * E.g. 'Record' if building a form for a record.
      * Custom factories may support more advanced parameters.
      * @return Form
      */
-    public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
+    public function getForm(RequestHandler $controller = null, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
         $fields = $this->getFormFields($controller, $name, $context);
         $actions = FieldList::create();
@@ -49,12 +49,12 @@ class FileSearchFormFactory implements FormFactory
 
     /**
      *
-     * @param Controller $controller
+     * @param RequestHandler $controller
      * @param $name
      * @param array $context
      * @return FieldList
      */
-    protected function getFormFields(Controller $controller, $name, $context = [])
+    protected function getFormFields(RequestHandler $controller = null, $name, $context = [])
     {
         // Note: "Name" field is excluded as it is baked directly into the Search.js react component
 

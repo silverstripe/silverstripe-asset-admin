@@ -4,7 +4,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
-use SilverStripe\Control\Controller;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
@@ -47,12 +47,12 @@ abstract class AssetFormFactory implements FormFactory
     }
 
     /**
-     * @param Controller $controller
+     * @param RequestHandler $controller
      * @param string $name
      * @param array $context
      * @return Form
      */
-    public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
+    public function getForm(RequestHandler $controller = null, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
         // Validate context
         foreach ($this->getRequiredContext() as $required) {
@@ -82,12 +82,12 @@ abstract class AssetFormFactory implements FormFactory
     /**
      * Get the validator for the form to be built
      *
-     * @param $controller
+     * @param RequestHandler $controller
      * @param $formName
      * @param $context
      * @return RequiredFields
      */
-    protected function getValidator(Controller $controller, $formName, $context = [])
+    protected function getValidator(RequestHandler $controller = null, $formName, $context = [])
     {
         $validator = new RequiredFields('Name');
 
@@ -150,12 +150,12 @@ abstract class AssetFormFactory implements FormFactory
     }
 
     /**
-     * @param Controller $controller
+     * @param RequestHandler $controller
      * @param $formName
      * @param array $context
      * @return FieldList
      */
-    protected function getFormActions(Controller $controller, $formName, $context = [])
+    protected function getFormActions(RequestHandler $controller = null, $formName, $context = [])
     {
         $record = isset($context['Record']) ? $context['Record'] : null;
 
@@ -175,12 +175,12 @@ abstract class AssetFormFactory implements FormFactory
     /**
      * Get fields for this form
      *
-     * @param Controller $controller
+     * @param RequestHandler $controller
      * @param string $formName
      * @param array $context
      * @return FieldList
      */
-    protected function getFormFields(Controller $controller, $formName, $context = [])
+    protected function getFormFields(RequestHandler $controller = null, $formName, $context = [])
     {
         $record = isset($context['Record']) ? $context['Record'] : null;
 
