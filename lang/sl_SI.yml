@@ -1,14 +1,13 @@
-sl:
+sl_SI:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Datoteke
-    BACKLINKCOUNT: 'Uporabljeno na:'
-    PAGES: Stran/Strani
+    HEIGHT: Višina
     SIZE: 'Velikost datoteke'
-    TYPE: Tip
+    TYPE: 'Tip datoteke'
     URL: URL
+    WIDTH: 'Širina'
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Dimenzije
     EDIT: Uredi
     EDITINFO: 'Uredi datoteko'
-    FIELDNOTSET: 'Pred uvozom počisti bazo podatkov'
+    FIELDNOTSET: 'Ni informacij o datoteki'
     REMOVE: Odstrani

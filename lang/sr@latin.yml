@@ -1,8 +1,5 @@
-sr_RS@latin:
+sr@latin:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Datoteke
-    BACKLINKCOUNT: 'Koristi se na:'
-    PAGES: stranici(a)
     SIZE: Veličina
     TYPE: Tip
     URL: URL

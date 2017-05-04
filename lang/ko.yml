@@ -1,3 +1,5 @@
 ko:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: 파일
+    BACKLINKCOUNT: '다음에서 사용중 '
+    PAGES: 페이지

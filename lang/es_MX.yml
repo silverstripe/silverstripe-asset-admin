@@ -1,0 +1,9 @@
+es_MX:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    SIZE: Tamaño
+    TYPE: Tipo
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Dimensiones
+    EDITINFO: 'Editar este archivo'
+    FIELDNOTSET: 'Información acerca del archivo no encontrada'
+    REMOVE: Remover

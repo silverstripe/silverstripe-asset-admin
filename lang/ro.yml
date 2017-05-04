@@ -1,3 +1,7 @@
 ro:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Fişiere
+    BACKLINKCOUNT: 'Folosit la'
+    PAGES: pagină(pagini)
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    EDITINFO: 'Editeaza acest fisier'

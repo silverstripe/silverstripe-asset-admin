@@ -1,11 +1,9 @@
-id:
+id_ID:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Berkas
-    BACKLINKCOUNT: 'Dipakai pada:'
-    PAGES: laman
     SIZE: 'Ukuran berkas'
     TYPE: 'Jenis berkas'
     URL: URL
+    WIDTH: Lebar
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Dimensi
     EDIT: Edit

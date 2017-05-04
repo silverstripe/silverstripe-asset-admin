@@ -1,0 +1,4 @@
+si:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    SIZE: තරම
+    TYPE: වර්ගය

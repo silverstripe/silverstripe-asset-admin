@@ -1,0 +1,8 @@
+tr:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    PAGES: sayfa(lar)
+    SIZE: Boyutu
+    TYPE: Türü
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    EDITINFO: 'Dosyayı düzenle'
+    FIELDNOTSET: 'Dosya bilgisi bulunamadı'

@@ -1,3 +1,14 @@
 ja:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: ファイル
+    BACKLINKCOUNT: 以下で使用される：
+    PAGES: ページ
+    SIZE: ファイルサイズ
+    TYPE: ファイルの種類
+    URL: URL
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: 大きさ
+    EDIT: 編集
+    EDITINFO: このファイルを編集
+    FIELDNOTSET: 'ファイル情報が見つかりませんでした'
+    REMOVE: 削除

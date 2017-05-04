@@ -1,3 +1,16 @@
 nl:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Bestanden
+    BACKLINKCOUNT: 'Gebruikt op:'
+    PAGES: pagina(s)
+    HEIGHT: Hoogte
+    SIZE: Grootte
+    TYPE: Type
+    URL: URL
+    WIDTH: Breedte
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Afmetingen
+    EDIT: Bewerken
+    EDITINFO: 'Bewerk dit bestand'
+    FIELDNOTSET: 'Bestandsinformatie niet gevonden'
+    REMOVE: Verwijder

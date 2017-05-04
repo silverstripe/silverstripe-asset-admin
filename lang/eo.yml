@@ -1,3 +1,16 @@
 eo:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Dosieroj
+    BACKLINKCOUNT: 'Uzite ĉe:'
+    PAGES: paĝo(j)
+    HEIGHT: Alto
+    SIZE: Grando
+    TYPE: Tipo
+    URL: URL
+    WIDTH: Larĝo
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Dimensioj
+    EDIT: Redakti
+    EDITINFO: 'Redakti ĉi tiun dosieron'
+    FIELDNOTSET: 'Ne trovis informon'
+    REMOVE: Forigi

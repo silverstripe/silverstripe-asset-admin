@@ -1,3 +1,16 @@
 fi:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Tiedostot
+    BACKLINKCOUNT: 'Linkitetty:'
+    PAGES: sivu(t)
+    HEIGHT: Korkeus
+    SIZE: Koko
+    TYPE: Tyyppi
+    URL: URL
+    WIDTH: Leveys
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Mitat
+    EDIT: Muokkaa
+    EDITINFO: 'Muokkaa tätä tiedostoa'
+    FIELDNOTSET: 'Tietoja tiedostosta ei löytynyt'
+    REMOVE: Poista
