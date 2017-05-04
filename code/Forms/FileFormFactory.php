@@ -232,23 +232,6 @@ class FileFormFactory extends AssetFormFactory
     }
 
     /**
-     * Get action for adding to campaign
-     *
-     * @param File $record
-     * @return FormAction|null
-     */
-    protected function getAddToCampaignAction($record)
-    {
-        if ($record && $record->canPublish()) {
-            return FormAction::create(
-                'addtocampaign',
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ADDTOCAMPAIGN', 'Add to campaign')
-            );
-        }
-        return null;
-    }
-
-    /**
      * Get action for publishing
      *
      * @param File $record
@@ -269,7 +252,7 @@ class FileFormFactory extends AssetFormFactory
         return FormAction::create('unpublish', $unpublishText)
             ->setIcon('cancel-circled');
     }
-    
+
     /**
      * Get actions that go into the Popover menu
      *
@@ -278,11 +261,12 @@ class FileFormFactory extends AssetFormFactory
      */
     protected function getPopoverActions($record)
     {
-        return array_filter([
-            $this->getAddToCampaignAction($record),
-            $this->getUnpublishAction($record),
-            $this->getDeleteAction($record)
-        ]);
+        $this->beforeExtending('updatePopoverActions', function (&$actions, $record) {
+            // add the unpublish action to the start of the array
+            array_unshift($actions, $this->getUnpublishAction($record));
+        });
+
+        return parent::getPopoverActions($record);
     }
 
     /**

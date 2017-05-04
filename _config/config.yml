@@ -34,3 +34,11 @@ After:
 SilverStripe\Core\Injector\Injector:
   SilverStripe\Forms\FileHandleField:
     class: SilverStripe\AssetAdmin\Forms\UploadField
+
+---
+Only:
+  moduleexists: 'silverstripe/campaign-admin'
+---
+SilverStripe\AssetAdmin\Forms\FileFormFactory:
+  extensions:
+    - 'SilverStripe\AssetAdmin\Extensions\CampaignAdminExtension'

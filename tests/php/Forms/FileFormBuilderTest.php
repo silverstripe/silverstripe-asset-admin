@@ -3,13 +3,16 @@
 namespace SilverStripe\AssetAdmin\Tests\Forms;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
+use SilverStripe\AssetAdmin\Extensions\CampaignAdminExtension;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
+use SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest\FileExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\LiteralField;
 
@@ -42,6 +45,9 @@ class FileFormBuilderTest extends SapphireTest
 
     public function testEditFileForm()
     {
+        // Ensure campaign-admin extension is not applied!
+        Config::modify()->remove(FileFormFactory::class, 'extensions');
+
         $this->logInWithPermission('ADMIN');
 
         $file = $this->objFromFixture(File::class, 'file1');
@@ -82,9 +88,73 @@ class FileFormBuilderTest extends SapphireTest
         // Test actions exist
         $this->assertNotNull($form->Actions()->fieldByName('Actions.action_save'));
         $this->assertNotNull($form->Actions()->fieldByName('Actions.action_publish'));
-        $this->assertNotNull($form->Actions()->fieldByName('actionaddtocampaignactiondelete.action_addtocampaign'));
-        $this->assertNotNull($form->Actions()->fieldByName('actionaddtocampaignactiondelete.action_delete'));
-        $this->assertNull($form->Actions()->fieldByName('actionaddtocampaignactiondelete.action_unpublish'));
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
+
+        // Add to campaign should not be there by default
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
+
+        // Add extension for campaign-admin
+        Config::modify()->merge(
+            FileFormFactory::class,
+            'extensions',
+            [ CampaignAdminExtension::class ]
+        );
+
+        $builder = new FileFormFactory();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+
+        // Add to campaign should now be available
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
+    }
+
+    public function testEditFileFormWithPermissions()
+    {
+        // Add extension for campaign-admin
+        FileFormFactory::add_extension(CampaignAdminExtension::class);
+        // Add extension to simulate different permissions
+        File::add_extension(FileExtension::class);
+
+        $this->logInWithPermission('ADMIN');
+
+        /** @var File $file */
+        $file = $this->objFromFixture(File::class, 'file1');
+        $controller = new AssetAdmin();
+        $builder = new FileFormFactory();
+
+        FileExtension::$canDelete = false;
+        FileExtension::$canPublish = false;
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
+
+        FileExtension::$canDelete = false;
+        FileExtension::$canPublish = true;
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
+
+        FileExtension::$canDelete = true;
+        FileExtension::$canPublish = false;
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
+
+        FileExtension::$canDelete = true;
+        FileExtension::$canPublish = true;
+        FileExtension::$canUnpublish = true;
+        $file->publishSingle();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
+
+        FileFormFactory::remove_extension(CampaignAdminExtension::class);
+        File::remove_extension(FileExtension::class);
     }
 
     public function testCreateFileForm()

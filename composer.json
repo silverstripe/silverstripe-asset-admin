@@ -4,9 +4,8 @@
   "type": "silverstripe-module",
   "license": "BSD-3-Clause",
   "require": {
-    "silverstripe/cms": "^4@dev",
+    "silverstripe/admin": "^1.0@dev",
     "silverstripe/framework": "^4@dev",
-    "silverstripe/campaign-admin": "^1@dev",
     "silverstripe/graphql": "^0.2@dev"
   },
   "require-dev": {
@@ -14,6 +13,8 @@
     "silverstripe/behat-extension": "^2.1.0",
     "silverstripe/serve": "dev-master",
     "silverstripe/testsession": "^2.0.0-alpha3",
+    "silverstripe/cms": "^4@dev",
+    "silverstripe/campaign-admin": "^1@dev",
     "se/selenium-server-standalone": "2.41.0"
   },
   "extra": {
