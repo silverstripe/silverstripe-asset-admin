@@ -3,7 +3,7 @@
 namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Assets\File;
-use SilverStripe\Control\Controller;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\FieldList;
@@ -53,9 +53,15 @@ class FileFormFactory extends AssetFormFactory
         // Add new tab for usage
         return Tab::create(
             'Usage',
-            DatetimeField::create("Created", _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CREATED', 'First uploaded'))
+            DatetimeField::create(
+                "Created",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CREATED', 'First uploaded')
+            )
                 ->setReadonly(true),
-            DatetimeField::create("LastEdited", _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LASTEDIT', 'Last changed'))
+            DatetimeField::create(
+                "LastEdited",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LASTEDIT', 'Last changed')
+            )
                 ->setReadonly(true)
         );
     }
@@ -67,7 +73,11 @@ class FileFormFactory extends AssetFormFactory
             'Details',
             TextField::create("Title", File::singleton()->fieldLabel('Title')),
             TextField::create('Name', File::singleton()->fieldLabel('Filename')),
-            ReadonlyField::create("Path", _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'), $this->getPath($record))
+            ReadonlyField::create(
+                "Path",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'),
+                $this->getPath($record)
+            )
         );
 
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
@@ -115,8 +125,8 @@ class FileFormFactory extends AssetFormFactory
                 ->setRecord($record)
         );
     }
-
-    protected function getFormFields(Controller $controller, $name, $context = [])
+    
+    protected function getFormFields(RequestHandler $controller = null, $formName, $context = [])
     {
         /** @var File $record */
         $record = $context['Record'];
@@ -133,7 +143,7 @@ class FileFormFactory extends AssetFormFactory
             $fields->push(HiddenField::create('FileVariant'));
         });
 
-        return parent::getFormFields($controller, $name, $context);
+        return parent::getFormFields($controller, $formName, $context);
     }
 
     /**
@@ -157,8 +167,8 @@ class FileFormFactory extends AssetFormFactory
 
         return $action;
     }
-
-    protected function getFormActions(Controller $controller, $formName, $context = [])
+    
+    protected function getFormActions(RequestHandler $controller = null, $formName, $context = [])
     {
         $record = $context['Record'];
 

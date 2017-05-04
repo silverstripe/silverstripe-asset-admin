@@ -3,7 +3,7 @@
 namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Assets\File;
-use SilverStripe\Control\Controller;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Convert;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormFactory;
@@ -12,7 +12,7 @@ use SilverStripe\Forms\ReadonlyField;
 
 class FileHistoryFormFactory extends FileFormFactory
 {
-    public function getForm(Controller $controller, $name = FormFactory::DEFAULT_NAME, $context = [])
+    public function getForm(RequestHandler $controller = null, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
         $form = parent::getForm($controller, $name, $context);
         $form->makeReadonly();
@@ -49,7 +49,7 @@ class FileHistoryFormFactory extends FileFormFactory
         );
     }
 
-    protected function getFormFields(Controller $controller, $name, $context = [])
+    protected function getFormFields(RequestHandler $controller = null, $name, $context = [])
     {
         $record = $context['Record'];
 
@@ -60,7 +60,11 @@ class FileHistoryFormFactory extends FileFormFactory
             LiteralField::create('FileSpecs', $this->getSpecsMarkup($record)),
             ReadonlyField::create("Title", File::singleton()->fieldLabel('Title')),
             ReadonlyField::create('Name', File::singleton()->fieldLabel('Filename')),
-            ReadonlyField::create("Path", _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'), $this->getPath($record))
+            ReadonlyField::create(
+                "Path",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'),
+                $this->getPath($record)
+            )
         );
 
         $this->invokeWithExtensions('updateFormFields', $fields, $controller, $name, $context);
@@ -69,7 +73,7 @@ class FileHistoryFormFactory extends FileFormFactory
     }
 
 
-    protected function getFormActions(Controller $controller, $formName, $context = [])
+    protected function getFormActions(RequestHandler $controller = null, $formName, $context = [])
     {
         $actions = new FieldList();
         // Update

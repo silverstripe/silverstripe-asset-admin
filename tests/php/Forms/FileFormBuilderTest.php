@@ -226,7 +226,7 @@ class FileFormBuilderTest extends SapphireTest
 
         $folder = $this->objFromFixture(Folder::class, 'parent');
         $controller = new AssetAdmin();
-        $builder = new FolderFormFactory($controller, $folder);
+        $builder = new FolderFormFactory();
         $form = $builder->getForm($controller, 'EditForm', ['Record' => $folder]);
 
         // Check fields
