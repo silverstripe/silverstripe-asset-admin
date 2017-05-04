@@ -19,7 +19,7 @@ class FixtureContext extends BaseFixtureContext
     /**
      * Select a gallery item by type and name
      *
-     * @Given /^I (?:(?:click on)|(?:select)) the file named "([^"]+)" in the gallery$/
+     * @Given /^I (?:(?:click on)|(?:select)) the (?:file|folder) named "([^"]+)" in the gallery$/
      * @param string $name
      */
     public function stepISelectGalleryItem($name)
@@ -31,7 +31,7 @@ class FixtureContext extends BaseFixtureContext
 
     /**
      * Check the checkbox for a given gallery item
-     * @Given /^I check the file named "([^"]+)" in the gallery$/
+     * @Given /^I check the (?:file|folder) named "([^"]+)" in the gallery$/
      * @param string $name
      */
     public function stepICheckTheGalleryItem($name)

@@ -13,6 +13,7 @@ describe('GalleryItem', () => {
   beforeEach(() => {
     props = {
       id: 0,
+      selectable: true,
       selected: false,
       onSelect: jest.genMockFunction(),
       onActivate: jest.genMockFunction(),
@@ -24,6 +25,7 @@ describe('GalleryItem', () => {
         category: 'image',
         id: 1,
         title: 'test',
+        canEdit: true,
       },
     };
   });

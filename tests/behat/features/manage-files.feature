@@ -41,8 +41,20 @@ Feature: Manage files
     Then I should see the file named "renamedfile" in the gallery
       And I should not see the file named "file1" in the gallery
 
+  Scenario: I can edit a folder
+    When I check the folder named "folder1" in the gallery
+    Then I should see an ".bulk-actions__action[value='edit']" element
+      And the ".bulk-actions-counter" element should contain "1"
+    When I press the "Edit" button
+      And I wait for 1 second
+      Then I should see the "Form_fileEditForm" form
+    When I fill in "foldernew" for "Name"
+      And I press the "Save" button
+    Then I should see the file named "foldernew" in the gallery
+      And I should not see the file named "folder1" in the gallery
+
   Scenario: I can publish a file and unpublish a file
-    When I click on the file named "folder1" in the gallery
+    When I click on the folder named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileEditForm" form
       And I should see the file status flag

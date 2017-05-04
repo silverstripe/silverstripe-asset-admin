@@ -116,6 +116,15 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   /**
+   * Determine if the item has enabled checkbox
+   *
+   * @return {Boolean}
+   */
+  canBatchSelect() {
+    return this.props.selectable && this.props.item.canEdit;
+  }
+
+  /**
    * Retrieves class names for the item
    *
    * @returns {string}
@@ -246,7 +255,9 @@ class GalleryItem extends SilverStripeComponent {
     // If space is pressed, select file
     if (CONSTANTS.SPACE_KEY_CODE === event.keyCode) {
       event.preventDefault(); // Stop page scrolling if spaceKey is pressed
-      this.handleSelect(event);
+      if (this.canBatchSelect()) {
+        this.handleSelect(event);
+      }
     }
 
     // If return is pressed, navigate folder
@@ -311,7 +322,9 @@ class GalleryItem extends SilverStripeComponent {
     let overlay = null;
 
     if (this.props.selectable) {
-      action = this.handleSelect;
+      if (this.canBatchSelect()) {
+        action = this.handleSelect;
+      }
       actionIcon = 'font-icon-tick';
     }
 
@@ -323,6 +336,26 @@ class GalleryItem extends SilverStripeComponent {
     }
 
     const badge = this.props.badge;
+
+    const inputProps = {
+      className: 'gallery-item__checkbox',
+      type: 'checkbox',
+      title: i18n._t('AssetAdmin.SELECT'),
+      tabIndex: -1,
+      onMouseDown: this.preventFocus,
+    };
+    const inputLabelClasses = [
+      'gallery-item__checkbox-label',
+      actionIcon,
+    ];
+    if (!this.canBatchSelect()) {
+      inputProps.disabled = true;
+      inputLabelClasses.push('gallery-item__checkbox-label--disabled');
+    }
+    const inputLabelProps = {
+      className: inputLabelClasses.join(' '),
+      onClick: action,
+    };
 
     return (
       <div
@@ -350,17 +383,8 @@ class GalleryItem extends SilverStripeComponent {
         {this.getProgressBar()}
         {this.getErrorMessage()}
         <div className="gallery-item__title" ref="title">
-          <label
-            className={`gallery-item__checkbox-label ${actionIcon}`}
-            onClick={action}
-          >
-            <input
-              className="gallery-item__checkbox"
-              type="checkbox"
-              title={i18n._t('AssetAdmin.SELECT')}
-              tabIndex="-1"
-              onMouseDown={this.preventFocus}
-            />
+          <label {...inputLabelProps} >
+            <input {...inputProps} />
           </label>
           {this.props.item.title}
         </div>

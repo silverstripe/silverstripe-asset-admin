@@ -119,8 +119,12 @@
   background-color:#fff;
 }
 
-.gallery-item--selectable .gallery-item__checkbox-label:hover:before{
+.gallery-item--selectable .gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled):hover:before{
   border:1px solid #29abe2;
+}
+
+.gallery-item--selectable .gallery-item__checkbox-label--disabled:before{
+  cursor:not-allowed;
 }
 
 .gallery-item--error .gallery-item__checkbox-label:before,.gallery-item__upload-progress+.gallery-item__title .gallery-item__checkbox-label:before{

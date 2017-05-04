@@ -122,10 +122,16 @@ $gallery-item-label-height: 40px;
     color: transparent;
     background-color: $white;
   }
+}
 
+.gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled) {
   .gallery-item--selectable &:hover::before {
     border: 1px solid $component-active-border-color;
   }
+}
+
+.gallery-item--selectable .gallery-item__checkbox-label--disabled::before {
+  cursor: not-allowed;
 }
 
 // If error or currently uploading the label becomes an X to cancel upload
