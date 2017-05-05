@@ -134,10 +134,9 @@ o.handleOpenFile(e.record.id)),e})})}},{key:"handleCloseFile",value:function e()
 delete n.page,delete n.filter,this.handleBrowse(t,null,n)}},{key:"handleDelete",value:function e(t){var n=this,r=this.findFile(t)
 if(!r&&this.props.folder&&this.props.folder.id===t&&(r=this.props.folder),!r)throw new Error("File selected for deletion cannot be found: "+t)
 var o=this.props.client.dataId({__typename:r.__typename,id:r.id})
-return this.props.actions.files.deleteFile(r.id,o).then(function(){if(n.props.actions.gallery.deselectFiles([r.id]),r.queuedId&&n.props.actions.queuedFiles.removeQueuedFile(r.queuedId),r){var e=n.props.query&&n.props.query.view
+return this.props.actions.files.deleteFile(r.id,o).then(function(){n.props.actions.gallery.deselectFiles([r.id]),r.queuedId&&n.props.actions.queuedFiles.removeQueuedFile(r.queuedId),r&&n.handleBrowse(r.parentId?r.parentId:0,null,n.props.query)
 
-
-n.handleBrowse(r.parentId?r.parentId:0,null,{view:e})}})}},{key:"handleUnpublish",value:function e(t){var n=this,r=this.findFile(t)
+})}},{key:"handleUnpublish",value:function e(t){var n=this,r=this.findFile(t)
 if(!r&&this.props.folder&&this.props.folder.id===t&&(r=this.props.folder),!r)throw new Error("File selected for unpublish cannot be found: "+t)
 var o=this.props.client.dataId({__typename:r.__typename,id:r.id})
 this.props.actions.files.unpublishFile(r.id,o).then(function(e){n.props.actions.files.readFiles().then(function(){n.handleCloseFile(),n.handleOpenFile(e.data.unpublishFile.id)})})}},{key:"findFile",value:function e(t){
