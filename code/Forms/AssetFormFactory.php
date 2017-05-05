@@ -218,6 +218,7 @@ abstract class AssetFormFactory implements FormFactory
         if ($popoverActions) {
             return PopoverField::create($popoverActions)
                 ->setPlacement('top')
+                ->setName('PopoverActions')
                 ->setButtonTooltip(_t(
                     'SilverStripe\\AssetAdmin\\Forms\\FileFormFactory.OTHER_ACTIONS',
                     'Other actions'
@@ -234,9 +235,12 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function getPopoverActions($record)
     {
-        return array_filter([
+        $actions = [
             $this->getDeleteAction($record)
-        ]);
+        ];
+
+        $this->invokeWithExtensions('updatePopoverActions', $actions, $record);
+        return array_filter($actions);
     }
 
     /**
