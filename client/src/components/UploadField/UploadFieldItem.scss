@@ -45,7 +45,7 @@ $uploadfield-item-label-height: 40px;
 
 .uploadfield-item--folder {
   .uploadfield-item__thumbnail {
-    background: url("../images/folder.png") 12px 14px no-repeat;
+    background: url("../../images/folder.png") 12px 14px no-repeat;
     background-size: 27px 24px;
   }
 }
@@ -96,23 +96,23 @@ $uploadfield-item-label-height: 40px;
 }
 
 .uploadfield-item--archive .uploadfield-item__thumbnail {
-  background: $white url("../images/icon_archive.png") center center no-repeat;
+  background: $white url("../../images/icon_archive.png") center center no-repeat;
 }
 
 .uploadfield-item--audio .uploadfield-item__thumbnail {
-  background: $white url("../images/icon_audio.png") center center no-repeat;
+  background: $white url("../../images/icon_audio.png") center center no-repeat;
 }
 
 .uploadfield-item--video .uploadfield-item__thumbnail {
-  background: $white url("../images/icon_video.png") center center no-repeat;
+  background: $white url("../../images/icon_video.png") center center no-repeat;
 }
 
 .uploadfield-item--document .uploadfield-item__thumbnail {
-  background: $white url("../images/icon_document.png") center center no-repeat;
+  background: $white url("../../images/icon_document.png") center center no-repeat;
 }
 
 .uploadfield-item--false .uploadfield-item__thumbnail {
-  background: $white url("../images/icon_file.png") center center no-repeat;
+  background: $white url("../../images/icon_file.png") center center no-repeat;
 }
 
 // Individual progress bar

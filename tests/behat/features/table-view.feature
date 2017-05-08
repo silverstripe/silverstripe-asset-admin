@@ -1,4 +1,4 @@
-@assets
+@assets @retry
 Feature: Change view for asset admin
   As a cms author
   I want to change the way I'm viewing files
@@ -26,6 +26,5 @@ Feature: Change view for asset admin
     When I press the "table" button
       And I wait until I see the ".gallery__table-row" element
       And I click on the file named "folder1" in the gallery
-      And I wait for 1 second
       And I click "file1" in the ".gallery__table-row" element
     Then I should see the "Form_fileEditForm" form
