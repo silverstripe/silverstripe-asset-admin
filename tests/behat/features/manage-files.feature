@@ -47,7 +47,6 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
       And I should see the file status flag
     When I press the "Publish" button
-      And I wait for 1 second
     Then I should see the "Form_fileEditForm" form
       And I should not see the file status flag
     When I press the "Other actions" button

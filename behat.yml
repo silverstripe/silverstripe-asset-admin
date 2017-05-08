@@ -22,8 +22,8 @@ default:
             - %paths.modules.asset-admin%/tests/behat/files/
   extensions:
     SilverStripe\BehatExtension\Extension:
-      bootstrap_file: %paths.modules.cms%/tests/behat/serve-bootstrap.php
-      screenshot_path: %behat.paths.base%/artifacts/screenshots
+      bootstrap_file: cms/tests/behat/serve-bootstrap.php
+      screenshot_path: %paths.base%/artifacts/screenshots
     SilverStripe\BehatExtension\MinkExtension:
       default_session: selenium2
       javascript_session: selenium2

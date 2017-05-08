@@ -2,14 +2,22 @@
 
 use SilverStripe\Forms\HTMLEditor\TinyMCEConfig;
 
-define('ASSET_ADMIN_PATH', __DIR__);
-define('ASSET_ADMIN_DIR', basename(__DIR__));
+// Avoid creating global variables
+call_user_func(function () {
+    if (strcasecmp(__DIR__, BASE_PATH) === 0) {
+        // Admin is root
+        $clientPath = 'client';
+    } else {
+        // Asset-admin is subdir
+        $clientPath = basename(__DIR__) . '/client';
+    }
 
-// Re-enable media dialog
-$config = TinyMCEConfig::get('cms');
-$config->enablePlugins([
-    'ssmedia' => ASSET_ADMIN_DIR . '/client/dist/js/TinyMCE_ssmedia.js',
-    'ssembed' => ASSET_ADMIN_DIR . '/client/dist/js/TinyMCE_ssembed.js'
-]);
-$config->insertButtonsAfter('table', 'ssmedia');
-$config->insertButtonsAfter('ssmedia', 'ssembed');
+    // Re-enable media dialog
+    $config = TinyMCEConfig::get('cms');
+    $config->enablePlugins([
+        'ssmedia' => "{$clientPath}/dist/js/TinyMCE_ssmedia.js",
+        'ssembed' => "{$clientPath}/dist/js/TinyMCE_ssembed.js",
+    ]);
+    $config->insertButtonsAfter('table', 'ssmedia');
+    $config->insertButtonsAfter('ssmedia', 'ssembed');
+});

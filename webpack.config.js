@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
 
 const PATHS = {
   MODULES: './node_modules',
@@ -113,6 +114,14 @@ module.exports = {
         test: /\.(woff|eot|ttf)$/,
         loader: 'file?name=fonts/[name].[ext]',
       },
+    ],
+  },
+  sassLoader: {
+    // Non-standard include path for silverstripe/admin module
+    includePaths: [
+      path.resolve(__dirname, 'client/src/styles'),
+      path.resolve(__dirname, 'silverstripe-admin/client/src/styles'),
+      path.resolve(__dirname, '../silverstripe-admin/client/src/styles'),
     ],
   },
   postcss: [

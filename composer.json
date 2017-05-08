@@ -21,6 +21,9 @@
       "dev-master": "1.0.x-dev"
     }
   },
+  "scripts": {
+    "lint": "phpcs -s code/ tests/"
+  },
   "autoload": {
     "psr-4": {
       "SilverStripe\\AssetAdmin\\": "code/",

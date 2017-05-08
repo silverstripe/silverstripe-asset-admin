@@ -7,6 +7,7 @@ env:
     - COMPOSER_ROOT_VERSION=1.0.x-dev
     - DISPLAY=":99"
     - XVFBARGS=":99 -ac -screen 0 1024x768x16"
+    - TRAVIS_NODE_VERSION="6"
 
 matrix:
   include:
@@ -29,28 +30,33 @@ before_script:
   - phpenv config-rm xdebug.ini
   - echo 'always_populate_raw_post_data = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
-# Run travis support
-  - git clone git://github.com/silverstripe-labs/silverstripe-travis-support.git ~/travis-support
-  - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss
-  - cd ~/builds/ss
+# Install composer dependencies
+  - composer validate
+  - composer install --prefer-dist
+  - composer require symfony/config:^3.2 silverstripe/framework:4.0.x-dev silverstripe/config:1.0.x-dev silverstripe/admin:1.0.x-dev silverstripe/assets:1.0.x-dev silverstripe/versioned:1.0.x-dev silverstripe/cms:4.0.x-dev silverstripe/campaign-admin:1.0.x-dev silverstripe/siteconfig:4.0.x-dev silverstripe/reports:4.0.x-dev --no-update --prefer-dist
+  - composer update
+
+# Bootstrap dependencies
+  - php ./cms/tests/bootstrap/mysite.php
 
 # Start behat services
   - if [[ $BEHAT_TEST ]]; then echo 'SS_BASE_URL=http://localhost:8080/' >> .env; fi
-  - if [[ $BEHAT_TEST ]]; then mkdir asset-admin/artifacts; fi
+  - if [[ $BEHAT_TEST ]]; then mkdir artifacts; fi
   - if [[ $BEHAT_TEST ]]; then sh -e /etc/init.d/xvfb start; sleep 3; fi
-  - if [[ $BEHAT_TEST ]]; then (vendor/bin/selenium-server-standalone > asset-admin/artifacts/selenium.log 2>&1 &); fi
-  - if [[ $BEHAT_TEST ]]; then (vendor/bin/serve --bootstrap-file cms/tests/behat/serve-bootstrap.php &> asset-admin/artifacts/serve.log &); fi
+  - if [[ $BEHAT_TEST ]]; then (vendor/bin/selenium-server-standalone > artifacts/selenium.log 2>&1 &); fi
+  - if [[ $BEHAT_TEST ]]; then (vendor/bin/serve --bootstrap-file cms/tests/behat/serve-bootstrap.php &> artifacts/serve.log &); fi
+
+# Install NPM dependencies
+  - if [[ $NPM_TEST ]]; then nvm install $TRAVIS_NODE_VERSION && nvm use $TRAVIS_NODE_VERSION && npm install -g yarn && yarn install --network-concurrency 1 && (cd silverstripe-admin && yarn install --network-concurrency 1) && yarn run build; fi
 
 script:
-  - if [[ $PHPUNIT_TEST ]]; then vendor/bin/phpunit asset-admin/tests/php; fi
-  - if [[ $NPM_TEST ]]; then (nvm install 6 && npm install -g yarn); fi
-  - if [[ $NPM_TEST ]]; then (cd silverstripe-admin && nvm use 6 && yarn install --network-concurrency 1 ); fi
-  - if [[ $NPM_TEST ]]; then (cd asset-admin && nvm use 6 && yarn install --network-concurrency 1 ); fi
-  - if [[ $NPM_TEST ]]; then (cd asset-admin && nvm use 6 && yarn run test); fi
-  - if [[ $NPM_TEST ]]; then (cd asset-admin && nvm use 6 && yarn run lint); fi
+  - if [[ $PHPUNIT_TEST ]]; then vendor/bin/phpunit tests/php; fi
+  - if [[ $NPM_TEST ]]; then git diff-files --quiet -w --relative=client; fi
+  - if [[ $NPM_TEST ]]; then git diff -w --no-color --relative=client; fi
+  - if [[ $NPM_TEST ]]; then yarn run test; fi
+  - if [[ $NPM_TEST ]]; then yarn run lint; fi
   - if [[ $BEHAT_TEST ]]; then vendor/bin/behat @asset-admin; fi
-  - if [[ $PHPCS_TEST ]]; then phpcs --standard=asset-admin/tests/phpcs/ruleset.xml asset-admin/code/ asset-admin/tests/; fi
-  - if [[ $PHPCS_TEST ]]; then composer validate -d asset-admin; fi
+  - if [[ $PHPCS_TEST ]]; then composer run-script lint; fi
 
 after_failure:
-  - php ./framework/tests/behat/travis-upload-artifacts.php --if-env BEHAT_TEST,ARTIFACTS_BUCKET,ARTIFACTS_KEY,ARTIFACTS_SECRET --target-path $TRAVIS_REPO_SLUG/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID --artifacts-base-url https://s3.amazonaws.com/$ARTIFACTS_BUCKET/ --artifacts-path ./asset-admin/artifacts/
+  - php ./framework/tests/behat/travis-upload-artifacts.php --if-env BEHAT_TEST,ARTIFACTS_BUCKET,ARTIFACTS_KEY,ARTIFACTS_SECRET --target-path $TRAVIS_REPO_SLUG/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID --artifacts-base-url https://s3.amazonaws.com/$ARTIFACTS_BUCKET/ --artifacts-path ./artifacts/

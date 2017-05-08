@@ -81,7 +81,7 @@ class FixtureContext extends BaseFixtureContext
      */
     public function iShouldSeeTheFileStatusFlag()
     {
-        $page = $this->getSession()->getPage();
+        $page = $this->getMainContext()->getSession()->getPage();
         $flag = $page->find('css', '.editor__status-flag');
         assertNotNull($flag, "File editor status flag could not be found");
         assertTrue($flag->isVisible(), "File status flag is not visible");
@@ -92,7 +92,7 @@ class FixtureContext extends BaseFixtureContext
      */
     public function iShouldNotSeeTheFileStatusFlag()
     {
-        $page = $this->getSession()->getPage();
+        $page = $this->getMainContext()->getSession()->getPage();
         $flag = $page->find('css', '.editor__status-flag');
         assertNull($flag, "File editor status flag should not be present");
     }

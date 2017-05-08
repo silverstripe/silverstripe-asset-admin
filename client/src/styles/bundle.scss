@@ -1,10 +1,10 @@
 // Variables
-// @import "../../../../framework/node_modules/bootstrap/scss/bootstrap";
+@import "assets-variables";
+// See includePaths in webpack.config.js
 @import "variables";
-@import "../../../../silverstripe-admin/client/src/styles/variables";
 
 // Thirdparty
-@import "../../../../silverstripe-admin/node_modules/bootstrap/scss/mixins";
+@import "~bootstrap/scss/mixins";
 
 // Base
 
