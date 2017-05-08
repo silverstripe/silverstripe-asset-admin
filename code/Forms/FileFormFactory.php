@@ -276,7 +276,7 @@ class FileFormFactory extends AssetFormFactory
     protected function getInsertAction($record)
     {
         if ($record && $record->isInDB() && $record->canEdit()) {
-            return FormAction::create('insert', _t('SilverStripe\\CMS\\Controllers\\CMSMain.INSERT', 'Insert file'))
+            return FormAction::create('insert', _t(__CLASS__.'.INSERT_FILE', 'Insert file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return null;

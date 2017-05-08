@@ -1,3 +1,8 @@
 pt:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Ficheiros
+    BACKLINKCOUNT: 'Usado em:'
+    PAGES: página(s)
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    EDITINFO: 'Editar este ficheiro'
+    FIELDNOTSET: 'Informação do ficheiro não encontrada'

@@ -31,7 +31,3 @@ hr:
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Objavljeno
     SAVED: Spremljeno
-  SilverStripe\Assets\File:
-    PUBLISHED: Objavljeno
-  SilverStripe\CMS\Controllers\CMSMain:
-    INSERT: 'Ubaci datoteku'

@@ -1,3 +1,14 @@
 mi:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: 'Ngā Kōnae'
+    BACKLINKCOUNT: 'I whakamahia i:'
+    PAGES: 'te/ngā whārangi'
+    SIZE: 'Rahi kōnae'
+    TYPE: 'Momo kōnae'
+    URL: PRO
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: 'Ngā Rahinga'
+    EDIT: Whakatika
+    EDITINFO: 'Whakatikatia tēnei kōnae'
+    FIELDNOTSET: 'Kāore i kitea te mōhiohio kōnae'
+    REMOVE: Tango

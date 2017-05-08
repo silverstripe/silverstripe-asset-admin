@@ -1,3 +1,14 @@
 ar:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: 'الملفات'
+    BACKLINKCOUNT: 'مستعمل في:'
+    PAGES: 'صفحة (صفحات)'
+    SIZE: 'الحجم'
+    TYPE: النوع
+    URL: الرابط
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: الأبعاد
+    EDIT: تعديل
+    EDITINFO: 'قم بتعديل هذا الملف'
+    FIELDNOTSET: 'لا يوجد معلومات عن الملف'
+    REMOVE: حذف

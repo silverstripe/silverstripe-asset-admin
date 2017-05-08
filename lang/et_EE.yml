@@ -1,3 +1,14 @@
 et_EE:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Failid
+    BACKLINKCOUNT: 'Kasutatakse:'
+    PAGES: 'leht (lehed)'
+    SIZE: Failisuurus
+    TYPE: Failitüüp
+    URL: URL
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Mõõtmed
+    EDIT: Muuda
+    EDITINFO: 'Muuda seda faili'
+    FIELDNOTSET: 'Failiteavet ei leitud'
+    REMOVE: Eemalda

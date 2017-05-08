@@ -1,3 +1,9 @@
 uk:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Файли
+    BACKLINKCOUNT: 'Використовується в:'
+    PAGES: сторінка(и)
+    SIZE: 'Розмір'
+    TYPE: Тип
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    EDITINFO: 'Редагувати цей файл'

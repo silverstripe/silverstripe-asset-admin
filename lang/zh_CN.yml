@@ -1,0 +1,4 @@
+zh_CN:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    SIZE: 大小
+    TYPE: 类型

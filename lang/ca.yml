@@ -1,0 +1,4 @@
+ca:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    SIZE: Mida
+    TYPE: Tipus

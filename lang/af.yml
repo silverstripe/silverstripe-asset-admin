@@ -1,3 +1,13 @@
 af:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Lêers
+    BACKLINKCOUNT: 'Gebruik op:'
+    PAGES: bladsy(e)
+    SIZE: 'Lêer grootte'
+    TYPE: 'Lêer tipe'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Afmetings
+    EDIT: Verander
+    EDITINFO: 'Verander die lêer'
+    FIELDNOTSET: 'Die lêer informasie kan nie gevind word nie'
+    REMOVE: Verwyder

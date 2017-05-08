@@ -1,3 +1,16 @@
 de:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Dateien
+    BACKLINKCOUNT: 'Verwendet auf:'
+    PAGES: Seite(n)
+    HEIGHT: Höhe
+    SIZE: Größe
+    TYPE: Typ
+    URL: URL
+    WIDTH: Breite
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Dimensionen
+    EDIT: Bearbeiten
+    EDITINFO: 'Diese Datei bearbeiten'
+    FIELDNOTSET: 'Dateiinformationen nicht gefunden'
+    REMOVE: Entfernen

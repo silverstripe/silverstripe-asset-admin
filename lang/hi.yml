@@ -1,0 +1,4 @@
+hi:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    HEIGHT: लंबाई
+    WIDTH: चौड़ाई

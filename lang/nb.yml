@@ -1,3 +1,14 @@
 nb:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Filer
+    BACKLINKCOUNT: 'Brukt på:'
+    PAGES: side(r)
+    SIZE: Filstørrelse
+    TYPE: Filtype
+    URL: Nettadresse
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Dimensjoner
+    EDIT: Rediger
+    EDITINFO: 'Rediger denne filen'
+    FIELDNOTSET: 'Filinformasjon ikke funnet'
+    REMOVE: Fjern

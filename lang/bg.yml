@@ -1,3 +1,15 @@
 bg:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Файлове
+    BACKLINKCOUNT: 'Използвано от:'
+    PAGES: Страница/и
+    HEIGHT: Височина
+    SIZE: 'Големина на файла'
+    TYPE: 'Тип на файла'
+    URL: URL
+    WIDTH: Широчина
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: 'Размери'
+    EDITINFO: 'Редактирай този файл'
+    FIELDNOTSET: 'Информация за файла не беше намерена'
+    REMOVE: 'Премахни'

@@ -1,0 +1,4 @@
+pt_BR:
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    SIZE: Tamanho
+    TYPE: Tipo

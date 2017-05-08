@@ -1,3 +1,16 @@
 lt:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Bylos
+    BACKLINKCOUNT: 'Naudojama:'
+    PAGES: puslapis(-iai)
+    HEIGHT: Aukštis
+    SIZE: 'Bylos dydis'
+    TYPE: 'Bylos tipas'
+    URL: 'URL adresas'
+    WIDTH: Plotis
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Matmenys
+    EDIT: Redaguoti
+    EDITINFO: 'Redaguoti šią bylą'
+    FIELDNOTSET: 'Informacija apie bylą nerasta'
+    REMOVE: Pašalinti

@@ -1,3 +1,14 @@
 pl:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     MENUTITLE: Pliki
+    BACKLINKCOUNT: 'Używany na:'
+    PAGES: stron(y)
+    SIZE: 'Rozmiar pliku'
+    TYPE: 'Typ pliku'
+    URL: 'Adres URL'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Rozmiar
+    EDIT: Edytuj
+    EDITINFO: 'Edytuj plik'
+    FIELDNOTSET: 'Nie znaleziono informacji o pliku'
+    REMOVE: Usuń

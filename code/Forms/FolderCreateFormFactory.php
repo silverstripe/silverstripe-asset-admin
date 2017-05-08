@@ -52,7 +52,7 @@ class FolderCreateFormFactory extends FolderFormFactory
      */
     protected function getSaveAction($record)
     {
-        return FormAction::create('createfolder', _t('SilverStripe\\CMS\\Controllers\\CMSMain.CREATE', 'Create'))
+        return FormAction::create('createfolder', _t(__CLASS__.'.CREATE', 'Create'))
             ->setIcon('plus-circled')
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
     }

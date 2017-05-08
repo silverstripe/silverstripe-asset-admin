@@ -1,8 +1,5 @@
-sr:
+sr_RS:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Датотеке
-    BACKLINKCOUNT: 'Користи се на:'
-    PAGES: страници(а)
     SIZE: Величина
     TYPE: Тип
     URL: URL

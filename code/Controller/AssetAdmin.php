@@ -438,23 +438,23 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                     // if no summary returned by humanizedChanges, i.e we cannot work out what changed, just show a
                     // generic message
                     if (!$summary) {
-                        $summary = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.SAVEDFILE', "Saved file");
+                        $summary = _t(__CLASS__.'.SAVEDFILE', "Saved file");
                     }
                 } else {
-                    $summary = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UPLOADEDFILE', "Uploaded file");
+                    $summary = _t(__CLASS__.'.UPLOADEDFILE', "Uploaded file");
                 }
 
                 $output[] = array(
                     'versionid' => $version->Version,
                     'date_ago' => $version->dbObject('LastEdited')->Ago(),
                     'date_formatted' => $version->dbObject('LastEdited')->Nice(),
-                    'status' => ($version->WasPublished) ? _t('SilverStripe\\Assets\\File.PUBLISHED', 'Published') : '',
+                    'status' => ($version->WasPublished) ? _t(__CLASS__.'.PUBLISHED', 'Published') : '',
                     'author' => ($author)
                         ? $author->Name
-                        : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UNKNOWN', "Unknown"),
+                        : _t(__CLASS__.'.UNKNOWN', "Unknown"),
                     'summary' => ($summary)
                         ? $summary
-                        : _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.NOSUMMARY', "No summary available")
+                        : _t(__CLASS__.'.NOSUMMARY', "No summary available")
                 );
             }
         }
