@@ -15,26 +15,26 @@ use SilverStripe\Forms\TextField;
  */
 class FolderFormFactory extends AssetFormFactory
 {
-    
+
     protected function getFormFieldDetailsTab($record, $context = [])
     {
         return Tab::create(
             'Details',
-            TextField::create('Name', _t('SilverStripe\\Assets\\Folder.Filename', 'Folder name'))
+            TextField::create('Name', _t(__CLASS__.'.FOLDER_NAME', 'Folder name'))
         );
     }
-    
+
     protected function getFormFields(Controller $controller, $name, $context = [])
     {
         // Add delete action as top level button before extensions are triggered
         $this->beforeExtending('updateFormFields', function (FieldList $fields) {
             $preview = $fields->fieldByName('PreviewImage');
-            
+
             if ($preview) {
                 $preview->addExtraClass('editor__file-preview--folder');
             }
         });
-    
+
         return parent::getFormFields($controller, $name, $context);
     }
 }

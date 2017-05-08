@@ -35,6 +35,7 @@ en:
     NOSUMMARY: 'No summary available'
     NewFile: 'New {file}'
     PATH: Path
+    PUBLISHED: Published
     PUBLISH_BUTTON: Publish
     Placement: Placement
     SAVEDFILE: 'Saved file'
@@ -43,30 +44,22 @@ en:
     UNKNOWN: Unknown
     UNPUBLISH_BUTTON: Unpublish
     UPLOADEDFILE: 'Uploaded file'
-    BACKLINKCOUNT: 'Used on:'
-    PAGES: page(s)
-    URL: URL
-    HEIGHT: Height
-    SIZE: 'File size'
-    TYPE: 'File type'
-    WIDTH: Width
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Moved file'
     RENAMEDFILE: 'Replaced file'
     RENAMEDTITLE: 'Updated title to '
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_FILE: 'Insert file'
     OTHER_ACTIONS: 'Other actions'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
     SAVED: Saved
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Create
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDER_NAME: 'Folder name'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Add media'
     Cancel: Cancel
     InsertMedia: 'Insert media'
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Dimensions
-    EDIT: Edit
-    EDITINFO: 'Edit this file'
-    FIELDNOTSET: 'File information not found'
-    REMOVE: Remove
