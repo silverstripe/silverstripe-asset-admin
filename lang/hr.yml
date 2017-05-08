@@ -22,13 +22,6 @@ hr:
     UNKNOWN: Nepoznatno
     UNPUBLISH_BUTTON: Odjavi
     UPLOADEDFILE: 'Prenesena datoteka'
-    BACKLINKCOUNT: 'Korišteno na:'
-    PAGES: stranica(e)
-    HEIGHT: Visina
-    SIZE: 'Veličina datoteke'
-    TYPE: 'Tip datoteke'
-    URL: Link
-    WIDTH: 'Širina'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Premještena datoteka'
     RENAMEDFILE: 'Zamjenjena datoteka'
@@ -38,7 +31,3 @@ hr:
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Objavljeno
     SAVED: Spremljeno
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    EDIT: Uredi
-    EDITINFO: 'Uredi ovu datoteku'
-    REMOVE: Ukloni
