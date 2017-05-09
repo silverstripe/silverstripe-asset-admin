@@ -5,7 +5,10 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\Assets\Storage\AssetStore;
+use SilverStripe\Assets\Storage\DBFile;
 use SilverStripe\CMS\Model\SiteTreeFileExtension;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\GraphQL\TypeCreator;
@@ -15,6 +18,14 @@ use SilverStripe\Assets\Folder;
 
 class FileTypeCreator extends TypeCreator
 {
+    /**
+     * Safely limit max inline thumbnail size to 200kb
+     *
+     * @config
+     * @var int
+     */
+    private static $max_thumbnail_bytes = 200000;
+
     /**
      * @var CaseInsensitiveFieldAccessor
      */
@@ -190,11 +201,27 @@ class FileTypeCreator extends TypeCreator
         // Large thumbnail
         $width = AssetAdmin::config()->uninherited('thumbnail_width');
         $height = AssetAdmin::config()->uninherited('thumbnail_height');
+        $maxSize = Config::inst()->get(static::class, 'max_thumbnail_bytes');
+
+        // Validate thumbnail exists and doesn't exceed max safety bounds
+        /** @var DBFile $thumbnail */
         $thumbnail = $object->FitMax($width, $height);
-        if ($thumbnail && $thumbnail->exists()) {
-            return $thumbnail->getAbsoluteURL();
+        if (!$thumbnail || !$thumbnail->exists() || $thumbnail->getAbsoluteSize() > $maxSize) {
+            return null;
         }
-        return null;
+
+        // Only return direct url for public thumbnails
+        if ($object->getVisibility() === AssetStore::VISIBILITY_PUBLIC) {
+            return $thumbnail->getURL();
+        }
+
+        // Generate inline content
+        $base64 = base64_encode($thumbnail->getString());
+        return sprintf(
+            'data:%s;base64,%s',
+            $thumbnail->getMimeType(),
+            $base64
+        );
     }
 
     /**
