@@ -80,7 +80,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @config
      * @var int
      */
-    private static $page_length = 15;
+    private static $page_length = 50;
 
     /**
      * @config
@@ -119,9 +119,29 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
 
-    private static $thumbnail_width = 400;
+    /**
+     * Retina thumbnail image (native size: 176)
+     *
+     * @config
+     * @var int
+     */
+    private static $thumbnail_width = 352;
 
-    private static $thumbnail_height = 300;
+    /**
+     * Retina thumbnail height (native size: 132)
+     *
+     * @config
+     * @var int
+     */
+    private static $thumbnail_height = 264;
+    
+    /**
+     * Safely limit max inline thumbnail size to 200kb
+     *
+     * @config
+     * @var int
+     */
+    private static $max_thumbnail_bytes = 200000;
 
     /**
      * Set up the controller
@@ -268,6 +288,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $file->write();
 
         $result = [$this->getObjectFromData($file)];
+
+        // Don't discard pre-generated client side canvas thumbnail
+        if ($result[0]['category'] === 'image') {
+            unset($result[0]['thumbnail']);
+        }
 
         return (new HTTPResponse(json_encode($result)))
             ->addHeader('Content-Type', 'application/json');
