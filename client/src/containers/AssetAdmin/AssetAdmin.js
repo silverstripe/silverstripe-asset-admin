@@ -382,7 +382,7 @@ class AssetAdmin extends SilverStripeComponent {
 
       // redirect to open parent folder if the file/folder is open and on screen to close it
       if (file) {
-        this.handleBrowse((file.parentId) ? file.parentId : 0);
+        this.handleBrowse((file.parentId) ? file.parentId : 0, null, this.props.query);
       }
     });
   }
