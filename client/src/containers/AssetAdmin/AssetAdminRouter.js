@@ -177,7 +177,7 @@ AssetAdminRouter.propTypes = {
 };
 
 function mapStateToProps(state) {
-  const sectionConfig = state.config.sections[sectionConfigKey];
+  const sectionConfig = state.config.sections.find((section) => section.name === sectionConfigKey);
 
   return {
     sectionConfig,

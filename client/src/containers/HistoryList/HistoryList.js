@@ -5,6 +5,8 @@ import Config from 'lib/Config';
 import HistoryItem from 'containers/HistoryList/HistoryItem';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 
+const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
+
 class HistoryList extends Component {
 
   constructor(props) {
@@ -164,7 +166,7 @@ HistoryList.defaultProps = {
 };
 
 function mapStateToProps(state) {
-  const sectionConfig = state.config.sections['SilverStripe\\AssetAdmin\\Controller\\AssetAdmin'];
+  const sectionConfig = state.config.sections.find((section) => section.name === sectionConfigKey);
   return {
     sectionConfig,
     historySchemaUrl: sectionConfig.form.fileHistoryForm.schemaUrl,

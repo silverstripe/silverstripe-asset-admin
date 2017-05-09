@@ -111,14 +111,22 @@ class InsertEmbedModal extends Component {
    * @returns {Promise}
    */
   handleSubmit(data, action) {
-    if (action === 'action_addmedia') {
-      this.props.onCreate(data);
-    }
-    if (action === 'action_insertmedia') {
-      this.props.onInsert(data);
-    }
-    if (action === 'action_cancel') {
-      this.props.onHide();
+    switch (action) {
+      case 'action_addmedia': {
+        this.props.onCreate(data);
+        break;
+      }
+      case 'action_insertmedia': {
+        this.props.onInsert(data);
+        break;
+      }
+      case 'action_cancel': {
+        this.props.onHide();
+        break;
+      }
+      default: {
+        // noop
+      }
     }
 
     return Promise.resolve();
@@ -159,7 +167,7 @@ InsertEmbedModal.defaultProps = {
 };
 
 function mapStateToProps(state, ownProps) {
-  const sectionConfig = state.config.sections[sectionConfigKey];
+  const sectionConfig = state.config.sections.find((section) => section.name === sectionConfigKey);
 
   // get the schemaUrl to use as a key for overrides
   const targetUrl = ownProps.fileAttributes ? ownProps.fileAttributes.Url : '';
