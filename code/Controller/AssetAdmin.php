@@ -134,6 +134,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @var int
      */
     private static $thumbnail_height = 264;
+    
+    /**
+     * Safely limit max inline thumbnail size to 200kb
+     *
+     * @config
+     * @var int
+     */
+    private static $max_thumbnail_bytes = 200000;
 
     /**
      * Set up the controller
