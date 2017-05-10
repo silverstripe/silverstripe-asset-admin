@@ -39,7 +39,7 @@ You'll also need to run `dev/build`.
 
 ## Documentation
 
-See the [docs/en](docs/en/introduction.md) folder.
+See the [docs/en](https://github.com/silverstripe/silverstripe-asset-admin/tree/master/docs/en) folder.
 
 ## Versioning
 
