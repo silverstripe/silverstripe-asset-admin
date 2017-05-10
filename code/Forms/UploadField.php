@@ -37,6 +37,8 @@ class UploadField extends FormField implements FileHandleField
      */
     private static $thumbnail_height = 60;
 
+    protected $inputType = 'file';
+
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
 
     protected $schemaComponent = 'UploadField';

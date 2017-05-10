@@ -57,7 +57,7 @@ class UploadFieldTest extends SapphireTest
         $schema = [
             'name' => 'MyField',
             'id' => 'Form_MyForm_MyField',
-            'type' => 'Custom',
+            'type' => 'file',
             'component' => 'UploadField',
             'holderId' => 'Form_MyForm_MyField_Holder',
             'title' => 'My Field',
@@ -80,6 +80,7 @@ class UploadFieldTest extends SapphireTest
                 'multi' => false,
                 'parentid' => 0,
             ],
+            'schemaType' => 'Custom'
         ];
         $state = [
             'name' => 'MyField',
