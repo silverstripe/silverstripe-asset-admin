@@ -3,10 +3,7 @@ $bulk-actions-width: 300px;
 
 .bulk-actions {
   width: 100%;
-  padding-top: $spacer-y * .625;
-  padding-bottom: $spacer-y * .625;
-  padding-left: $grid-gutter-width-half;
-  padding-right: $grid-gutter-width-half;
+  padding: $spacer-y * .625 $grid-gutter-width-half;
   margin: 0 auto;
   position: fixed;
   height: $toolbar-total-height;
