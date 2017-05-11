@@ -51,6 +51,7 @@ class AssetAdminRouter extends Component {
     super(props);
 
     this.handleBrowse = this.handleBrowse.bind(this);
+    this.handleReplaceUrl = this.handleReplaceUrl.bind(this);
     this.getUrl = this.getUrl.bind(this);
   }
 
@@ -125,6 +126,7 @@ class AssetAdminRouter extends Component {
       query: this.getQuery(),
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
+      onReplaceUrl: this.handleReplaceUrl,
     };
   }
 
@@ -149,6 +151,21 @@ class AssetAdminRouter extends Component {
     const pathname = this.getUrl(folderId, fileId, query, action);
 
     this.props.router.push(pathname);
+  }
+
+  /**
+   * Handle browsing with the router but does not add to history, useful for
+   * cases when the user is redirected to a correct url.
+   *
+   * @param {number} [folderId]
+   * @param {number} [fileId]
+   * @param {object} [query]
+   * @param {string} [action]
+   */
+  handleReplaceUrl(folderId, fileId, query, action) {
+    const pathname = this.getUrl(folderId, fileId, query, action);
+
+    this.props.router.replace(pathname);
   }
 
   render() {

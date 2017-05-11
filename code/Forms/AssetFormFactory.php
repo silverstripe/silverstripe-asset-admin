@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
 use SilverStripe\Control\RequestHandler;
+use SilverStripe\Assets\Folder;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
@@ -17,11 +18,13 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\PopoverField;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Group;
+use SilverStripe\Forms\TreeDropdownField;
 
 abstract class AssetFormFactory implements FormFactory
 {
@@ -265,10 +268,40 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function getFormFieldDetailsTab($record, $context = [])
     {
-        return Tab::create(
+        /** @var Tab $tab */
+        $tab = Tab::create(
             'Details',
-            TextField::create('Name', File::singleton()->fieldLabel('Filename'))
+            TextField::create('Name', File::singleton()->fieldLabel('Filename')),
+            $location = TreeDropdownField::create('ParentID', 'FolderLocation', Folder::class),
+            ReadonlyField::create(
+                "Path",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'),
+                $this->getPath($record)
+            )
         );
+        
+        $location
+            ->setEmptyTitle('(root)')
+            ->setShowRootOption(true);
+        return $tab;
+    }
+    
+    /**
+     * Get user-visible "Path" for this record
+     *
+     * @param File $record
+     * @return string
+     */
+    protected function getPath($record)
+    {
+        if ($record && $record->isInDB()) {
+            if ($record->ParentID) {
+                return $record->Parent()->getFilename();
+            } else {
+                return '/';
+            }
+        }
+        return null;
     }
 
     /**

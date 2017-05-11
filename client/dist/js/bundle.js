@@ -70,7 +70,7 @@ for(var r in n)Object.prototype.hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},
 r.enumerable=r.enumerable||!1,r.configurable=!0,"value"in r&&(r.writable=!0),Object.defineProperty(e,r.key,r)}}return function(t,n,r){return n&&e(t.prototype,n),r&&e(t,r),t}}(),d=n(2),c=r(d),f=n(9),h=n(11),m=n(12),g=r(m),y=n(30),v=n(306),b=r(v),E=n(21),_=r(E),C="SilverStripe\\AssetAdmin\\Controller\\AssetAdmin",S=Object.keys(_.default.ACTIONS).map(function(e){
 return _.default.ACTIONS[e]}),w=function(e){function t(e){o(this,t)
 var n=i(this,(t.__proto__||Object.getPrototypeOf(t)).call(this,e))
-return n.handleBrowse=n.handleBrowse.bind(n),n.getUrl=n.getUrl.bind(n),n}return s(t,e),p(t,[{key:"getUrl",value:function e(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null,r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},o=arguments.length>3&&void 0!==arguments[3]?arguments[3]:_.default.ACTIONS.EDIT_FILE,i=parseInt(t||0,10),s=parseInt(n||0,10),l=i!==this.getFolderId(),p=u({},r)
+return n.handleBrowse=n.handleBrowse.bind(n),n.handleReplaceUrl=n.handleReplaceUrl.bind(n),n.getUrl=n.getUrl.bind(n),n}return s(t,e),p(t,[{key:"getUrl",value:function e(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:0,n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:null,r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},o=arguments.length>3&&void 0!==arguments[3]?arguments[3]:_.default.ACTIONS.EDIT_FILE,i=parseInt(t||0,10),s=parseInt(n||0,10),l=i!==this.getFolderId(),p=u({},r)
 
 
 return(l||p.page<=1)&&delete p.page,a({base:this.props.sectionConfig.url,folderId:i,fileId:s,query:p,action:o})}},{key:"getFolderId",value:function e(){return this.props.params&&this.props.params.folderId?parseInt(this.props.params.folderId,10):0
@@ -78,10 +78,10 @@ return(l||p.page<=1)&&delete p.page,a({base:this.props.sectionConfig.url,folderI
 }},{key:"getFileId",value:function e(){return this.props.params&&this.props.params.fileId?parseInt(this.props.params.fileId,10):0}},{key:"getViewAction",value:function e(){return this.props.params&&this.props.params.viewAction?this.props.params.viewAction:_.default.ACTIONS.EDIT_FILE
 
 }},{key:"getSectionProps",value:function e(){return{sectionConfig:this.props.sectionConfig,type:"admin",folderId:this.getFolderId(),viewAction:this.getViewAction(),fileId:this.getFileId(),query:this.getQuery(),
-getUrl:this.getUrl,onBrowse:this.handleBrowse}}},{key:"getQuery",value:function e(){return(0,y.decodeQuery)(this.props.location.search)}},{key:"handleBrowse",value:function e(t,n,r,o){var i=this.getUrl(t,n,r,o)
-
-
-this.props.router.push(i)}},{key:"render",value:function e(){return this.props.sectionConfig?c.default.createElement(g.default,this.getSectionProps()):null}}]),t}(d.Component)
+getUrl:this.getUrl,onBrowse:this.handleBrowse,onReplaceUrl:this.handleReplaceUrl}}},{key:"getQuery",value:function e(){return(0,y.decodeQuery)(this.props.location.search)}},{key:"handleBrowse",value:function e(t,n,r,o){
+var i=this.getUrl(t,n,r,o)
+this.props.router.push(i)}},{key:"handleReplaceUrl",value:function e(t,n,r,o){var i=this.getUrl(t,n,r,o)
+this.props.router.replace(i)}},{key:"render",value:function e(){return this.props.sectionConfig?c.default.createElement(g.default,this.getSectionProps()):null}}]),t}(d.Component)
 w.propTypes={sectionConfig:d.PropTypes.shape({url:d.PropTypes.string,limit:d.PropTypes.number,form:d.PropTypes.object}),location:d.PropTypes.shape({pathname:d.PropTypes.string,query:d.PropTypes.object,
 search:d.PropTypes.string}),params:d.PropTypes.object,router:d.PropTypes.object},t.AssetAdminRouter=w,t.buildUrl=a,t.default=(0,h.withRouter)((0,f.connect)(l)(w))},function(e,t){e.exports=ReactRouter},function(e,t,n){
 "use strict"
@@ -107,10 +107,10 @@ n.handleBackButtonClick=n.handleBackButtonClick.bind(n),n.handleFolderIcon=n.han
 n.handleCreateFolder=n.handleCreateFolder.bind(n),n.handleMoveFilesSuccess=n.handleMoveFilesSuccess.bind(n),n.compare=n.compare.bind(n),n}return l(t,e),c(t,[{key:"componentWillMount",value:function e(){
 var t=this.props.sectionConfig
 this.endpoints={historyApi:this.createEndpoint(t.historyEndpoint)}}},{key:"componentWillReceiveProps",value:function e(t){var n=this.compare(this.props.folder,t.folder);(n||(0,j.hasFilters)(t.query.filter)!==(0,
-j.hasFilters)(this.props.query.filter))&&this.setBreadcrumbs(t)}},{key:"getFolderId",value:function e(){return null!==this.props.folderId?this.props.folderId:this.props.folder?this.props.folder.id:0}},{
-key:"handleBrowse",value:function e(t,n,r){"function"==typeof this.props.onBrowse&&this.props.onBrowse(t,n,r),t!==this.getFolderId()&&this.props.actions.gallery.deselectFiles()}},{key:"handleSetPage",value:function e(t){
-this.handleBrowse(this.getFolderId(),this.props.fileId,d({},this.props.query,{page:t}))}},{key:"handleDoSearch",value:function e(t){this.handleBrowse(t.currentFolderOnly?this.getFolderId():0,0,d({},this.getBlankQuery(),{
-filter:t}))}},{key:"getBlankQuery",value:function e(){var t={}
+j.hasFilters)(this.props.query.filter))&&this.setBreadcrumbs(t),!t.loading&&t.folder&&t.folderId!==t.folder.id&&t.onReplaceUrl(t.folder.id,t.fileId,t.query,t.viewAction)}},{key:"getFolderId",value:function e(){
+return null!==this.props.folderId?this.props.folderId:this.props.folder?this.props.folder.id:0}},{key:"handleBrowse",value:function e(t,n,r){"function"==typeof this.props.onBrowse&&this.props.onBrowse(t,n,r),
+t!==this.getFolderId()&&this.props.actions.gallery.deselectFiles()}},{key:"handleSetPage",value:function e(t){this.handleBrowse(this.getFolderId(),this.props.fileId,d({},this.props.query,{page:t}))}},{
+key:"handleDoSearch",value:function e(t){this.handleBrowse(t.currentFolderOnly?this.getFolderId():0,0,d({},this.getBlankQuery(),{filter:t}))}},{key:"getBlankQuery",value:function e(){var t={}
 return Object.keys(this.props.query).forEach(function(e){t[e]=void 0}),t}},{key:"handleSort",value:function e(t){this.handleBrowse(this.getFolderId(),this.props.fileId,d({},this.props.query,{sort:t,limit:void 0,
 page:void 0}))}},{key:"handleViewChange",value:function e(t){this.handleBrowse(this.getFolderId(),this.props.fileId,d({},this.props.query,{view:t}))}},{key:"createEndpoint",value:function e(t){var n=!(arguments.length>1&&void 0!==arguments[1])||arguments[1]
 
@@ -167,7 +167,7 @@ return h.default.createElement("div",{className:"fill-height"},h.default.createE
 folderId:this.getFolderId(),filters:r}),this.props.toolbarChildren)),h.default.createElement("div",{className:"flexbox-area-grow fill-width fill-height gallery"},this.renderGallery(),this.renderEditor()),"admin"!==this.props.type&&this.props.loading&&[h.default.createElement("div",{
 key:"overlay",className:"cms-content-loading-overlay ui-widget-overlay-light"}),h.default.createElement("div",{key:"spinner",className:"cms-content-loading-spinner"})])}}]),t}(v.default)
 $.propTypes={dialog:f.PropTypes.bool,sectionConfig:f.PropTypes.shape({url:f.PropTypes.string,limit:f.PropTypes.number,form:f.PropTypes.object}),fileId:f.PropTypes.number,folderId:f.PropTypes.number,onBrowse:f.PropTypes.func,
-getUrl:f.PropTypes.func,query:f.PropTypes.shape({sort:f.PropTypes.string,limit:f.PropTypes.oneOfType([f.PropTypes.number,f.PropTypes.string]),page:f.PropTypes.oneOfType([f.PropTypes.number,f.PropTypes.string]),
+onReplaceUrl:f.PropTypes.func,getUrl:f.PropTypes.func,query:f.PropTypes.shape({sort:f.PropTypes.string,limit:f.PropTypes.oneOfType([f.PropTypes.number,f.PropTypes.string]),page:f.PropTypes.oneOfType([f.PropTypes.number,f.PropTypes.string]),
 filter:f.PropTypes.object}),onSubmitEditor:f.PropTypes.func,type:f.PropTypes.oneOf(["insert","select","admin"]),files:f.PropTypes.array,queuedFiles:f.PropTypes.shape({items:f.PropTypes.array.isRequired
 }),filesTotalCount:f.PropTypes.number,folder:f.PropTypes.shape({id:f.PropTypes.number,title:f.PropTypes.string,parents:f.PropTypes.array,parentId:f.PropTypes.number,canView:f.PropTypes.bool,canEdit:f.PropTypes.bool
 }),loading:f.PropTypes.bool,actions:f.PropTypes.object},$.defaultProps={type:"admin",query:{sort:"",limit:null,page:0,filter:{}}},t.AssetAdmin=$,t.default=(0,g.compose)((0,m.connect)(u,p),B.default,H.default,V.default,function(e){

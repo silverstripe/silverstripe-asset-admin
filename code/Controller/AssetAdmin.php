@@ -947,6 +947,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         if ($doPublish) {
             $record->publishRecursive();
         }
+        // regenerate form, so that it constants/literals on the form are updated
+        $form = $this->getFileEditForm($record->ID);
 
         // Note: Force return of schema / state in success result
         return $this->getRecordUpdatedResponse($record, $form);

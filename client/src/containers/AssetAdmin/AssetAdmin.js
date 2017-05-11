@@ -57,6 +57,10 @@ class AssetAdmin extends SilverStripeComponent {
     if (viewChanged || hasFilters(props.query.filter) !== hasFilters(this.props.query.filter)) {
       this.setBreadcrumbs(props);
     }
+
+    if (!props.loading && props.folder && props.folderId !== props.folder.id) {
+      props.onReplaceUrl(props.folder.id, props.fileId, props.query, props.viewAction);
+    }
   }
 
   /**
@@ -607,6 +611,7 @@ AssetAdmin.propTypes = {
   fileId: PropTypes.number,
   folderId: PropTypes.number,
   onBrowse: PropTypes.func,
+  onReplaceUrl: PropTypes.func,
   getUrl: PropTypes.func,
   query: PropTypes.shape({
     sort: PropTypes.string,
