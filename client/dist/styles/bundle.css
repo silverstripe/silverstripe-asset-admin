@@ -63,7 +63,7 @@
   margin:0 auto;
   background-repeat:no-repeat;
   background-position:50%;
-  background-size:contain;
+  background-size:cover;
   border-radius:.2rem .2rem 0 0;
 }
 
