@@ -8,17 +8,20 @@ use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\PopoverField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Security\Group;
 
 abstract class AssetFormFactory implements FormFactory
 {
@@ -71,7 +74,13 @@ abstract class AssetFormFactory implements FormFactory
 
         // Populate form from record
         if (isset($context['Record'])) {
-            $form->loadDataFrom($context['Record']);
+            /** @var File $record */
+            $record = $context['Record'];
+            $form->loadDataFrom($record);
+
+            if (!$record->canEdit()) {
+                $form->makeReadonly();
+            }
         }
 
         $form->addExtraClass('form--fill-height form--padded');
@@ -114,9 +123,13 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function getFormFieldTabs($record, $context = [])
     {
-        $tabs = TabSet::create('Editor', $this->getFormFieldDetailsTab($record));
-
-        return $tabs;
+        return TabSet::create(
+            'Editor',
+            [
+                $this->getFormFieldDetailsTab($record, $context),
+                $this->getFormFieldSecurityTab($record, $context),
+            ]
+        );
     }
 
     /**
@@ -255,6 +268,53 @@ abstract class AssetFormFactory implements FormFactory
         return Tab::create(
             'Details',
             TextField::create('Name', File::singleton()->fieldLabel('Filename'))
+        );
+    }
+
+    /**
+     * Build security tab
+     *
+     * @param File $record
+     * @param array $context
+     * @return Tab
+     */
+    protected function getFormFieldSecurityTab($record, $context = [])
+    {
+        // Get groups
+        $groupsMap = array();
+        foreach (Group::get() as $group) {
+            $groupsMap[$group->ID] = $group->getBreadcrumbs(' > ');
+        }
+        asort($groupsMap);
+
+        // Get permissions
+        $viewersOptionsField = [
+            'Inherit' => _t(__CLASS__.'.INHERIT', 'Inherit from parent folder'),
+            'Anyone' => _t(__CLASS__.'.ANYONE', 'Anyone'),
+            'LoggedInUsers' => _t(__CLASS__.'.LOGGED_IN', 'Logged-in users'),
+            'OnlyTheseUsers' => _t(__CLASS__.'.ONLY_GROUPS', 'Only these people (choose from list)')
+        ];
+
+        // No "Anyone" editors option
+        $editorsOptionsField = $viewersOptionsField;
+        unset($editorsOptionsField['Anyone']);
+
+        return Tab::create(
+            'Permissions',
+            OptionsetField::create(
+                'CanViewType',
+                _t(__CLASS__.'.ACCESSHEADER', 'Who can view this file?')
+            )
+                ->setSource($viewersOptionsField),
+            CheckboxSetField::create('ViewerGroups', _t(__CLASS__.'.VIEWERGROUPS', 'Viewer Groups'))
+                ->setSource($groupsMap),
+            OptionsetField::create(
+                "CanEditType",
+                _t(__CLASS__.'.EDITHEADER', 'Who can edit this file?')
+            )
+                ->setSource($editorsOptionsField),
+            CheckboxSetField::create('EditorGroups', _t(__CLASS__.'.EDITORGROUPS', 'Editor Groups'))
+                ->setSource($groupsMap)
         );
     }
 

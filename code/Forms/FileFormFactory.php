@@ -23,6 +23,7 @@ class FileFormFactory extends AssetFormFactory
         $tabs = TabSet::create(
             'Editor',
             $this->getFormFieldDetailsTab($record, $context),
+            $this->getFormFieldSecurityTab($record, $context),
             $this->getFormFieldUsageTab($record, $context),
             $this->getFormFieldHistoryTab($record, $context)
         );
@@ -173,21 +174,33 @@ class FileFormFactory extends AssetFormFactory
         $record = $context['Record'];
 
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
-            $actions = new FieldList(array_filter([
+            $actionItems = array_filter([
                 $this->getInsertAction($record),
-            ]));
+            ]);
         } else {
-            // Build top level bar
-            $actions = new FieldList(array_filter([
-                FieldGroup::create(array_filter([
-                    $this->getSaveAction($record),
-                    $this->getPublishAction($record)
-                ]))
-                    ->setName('Actions')
-                    ->addExtraClass('btn-group'),
-                $this->getPopoverMenu($record),
-            ]));
+            $actionItems = array_filter([
+                $this->getSaveAction($record),
+                $this->getPublishAction($record)
+            ]);
         }
+
+        // Group all actions
+        if (count($actionItems) > 1) {
+            $actionItems = [
+                FieldGroup::create($actionItems)
+                    ->setName('Actions')
+                    ->addExtraClass('btn-group')
+            ];
+        }
+
+        // Add popover
+        $popover = $this->getPopoverMenu($record);
+        if ($popover) {
+            $actionItems[] = $popover;
+        }
+
+        // Build
+        $actions = new FieldList($actionItems);
 
         // Update
         $this->invokeWithExtensions('updateFormActions', $actions, $controller, $formName, $context);

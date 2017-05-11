@@ -48,6 +48,15 @@ en:
     MOVEDFOLDER: 'Moved file'
     RENAMEDFILE: 'Replaced file'
     RENAMEDTITLE: 'Updated title to '
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Who can view this file?'
+    ANYONE: Anyone
+    EDITHEADER: 'Who can edit this file?'
+    EDITORGROUPS: 'Editor Groups'
+    INHERIT: 'Inherit from parent folder'
+    LOGGED_IN: 'Logged-in users'
+    ONLY_GROUPS: 'Only these people (choose from list)'
+    VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_FILE: 'Insert file'
     OTHER_ACTIONS: 'Other actions'

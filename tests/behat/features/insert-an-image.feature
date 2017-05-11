@@ -43,8 +43,7 @@ Feature: Insert an image into a page
     When I fill in "Url" with "http://www.silverstripe.org/themes/ssv3/img/ss_logo.png"
     And I press the "Add media" button
     Then I wait for 2 seconds until I see the ".insert-embed-modal--edit" element
-    # Note: this is in a 'p[name=UrlPreview]' tag and may change in the future
-    Then I should see "ss_logo.png" in the "[name='UrlPreview']" element
+    Then the "UrlPreview" field should contain "http://www.silverstripe.org/themes/ssv3/img/ss_logo.png"
 
     When I press the "Insert media" button
     Then the "Content" HTML field should contain "ss_logo.png"

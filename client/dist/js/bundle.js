@@ -737,9 +737,8 @@ return this.isImage()&&t&&(this.exists()||this.uploading())?{backgroundImage:"ur
 return this.props.item.message&&(e="error"===this.props.item.message.type),e}},{key:"getErrorMessage",value:function e(){var t=null
 return this.hasError()?t=this.props.item.message.value:this.exists()||this.uploading()||(t=u.default._t("AssetAdmin.FILE_MISSING","File cannot be found")),null!==t?d.default.createElement("span",{className:"gallery-item__error-message"
 },t):null}},{key:"getThumbnailClassNames",value:function e(){var t=["gallery-item__thumbnail"]
-return this.isImageSmallerThanThumbnail()&&t.push("gallery-item__thumbnail--small"),t.join(" ")}},{key:"getItemClassNames",value:function e(){var t=this.props.item.category||"false",n=["gallery-item gallery-item--"+t]
-
-
+return this.isImageSmallerThanThumbnail()&&t.push("gallery-item__thumbnail--small"),t.join(" ")}},{key:"canBatchSelect",value:function e(){return this.props.selectable&&this.props.item.canEdit}},{key:"getItemClassNames",
+value:function e(){var t=this.props.item.category||"false",n=["gallery-item gallery-item--"+t]
 return this.exists()||this.uploading()||n.push("gallery-item--missing"),this.props.selectable&&(n.push("gallery-item--selectable"),this.props.item.selected&&n.push("gallery-item--selected")),this.props.enlarged&&n.push("gallery-item--enlarged"),
 this.props.item.highlighted&&n.push("gallery-item--highlighted"),this.hasError()&&n.push("gallery-item--error"),n.join(" ")}},{key:"getStatusFlags",value:function e(){var t=[]
 return"folder"!==this.props.item.type&&(this.props.item.draft?t.push(d.default.createElement("span",{key:"status-draft",title:u.default._t("File.DRAFT","Draft"),className:"gallery-item--draft"})):this.props.item.modified&&t.push(d.default.createElement("span",{
@@ -748,27 +747,28 @@ value:function e(){return this.props.item.exists}},{key:"uploading",value:functi
 
 }},{key:"isImageSmallerThanThumbnail",value:function e(){if(!this.isImage()||!this.exists()&&!this.uploading())return!1
 var t=this.props.item.width,n=this.props.item.height
-return n&&t&&n<f.default.THUMBNAIL_HEIGHT&&t<f.default.THUMBNAIL_WIDTH}},{key:"handleKeyDown",value:function e(t){t.stopPropagation(),f.default.SPACE_KEY_CODE===t.keyCode&&(t.preventDefault(),this.handleSelect(t)),
+return n&&t&&n<f.default.THUMBNAIL_HEIGHT&&t<f.default.THUMBNAIL_WIDTH}},{key:"handleKeyDown",value:function e(t){t.stopPropagation(),f.default.SPACE_KEY_CODE===t.keyCode&&(t.preventDefault(),this.canBatchSelect()&&this.handleSelect(t)),
 f.default.RETURN_KEY_CODE===t.keyCode&&this.handleActivate(t)}},{key:"preventFocus",value:function e(t){t.preventDefault()}},{key:"handleCancelUpload",value:function e(t){t.stopPropagation(),this.hasError()?this.props.onRemoveErroredUpload(this.props.item):this.props.onCancelUpload&&this.props.onCancelUpload(this.props.item)
 
 }},{key:"getProgressBar",value:function e(){var t=null,n={className:"gallery-item__progress-bar",style:{width:this.props.item.progress+"%"}}
 return this.hasError()||!this.uploading()||this.complete()||(t=d.default.createElement("div",{className:"gallery-item__upload-progress"},d.default.createElement("div",n))),t}},{key:"render",value:function e(){
 var t=null,n=null,r=null
-this.props.selectable&&(t=this.handleSelect,n="font-icon-tick"),this.uploading()?(t=this.handleCancelUpload,n="font-icon-cancel"):this.exists()&&(r=d.default.createElement("div",{className:"gallery-item--overlay font-icon-edit"
-},"View"))
-var o=this.props.badge
+this.props.selectable&&(this.canBatchSelect()&&(t=this.handleSelect),n="font-icon-tick"),this.uploading()?(t=this.handleCancelUpload,n="font-icon-cancel"):this.exists()&&(r=d.default.createElement("div",{
+className:"gallery-item--overlay font-icon-edit"},"View"))
+var o=this.props.badge,i={className:"gallery-item__checkbox",type:"checkbox",title:u.default._t("AssetAdmin.SELECT"),tabIndex:-1,onMouseDown:this.preventFocus},s=["gallery-item__checkbox-label",n]
+this.canBatchSelect()||(i.disabled=!0,s.push("gallery-item__checkbox-label--disabled"))
+var a={className:s.join(" "),onClick:t}
 return d.default.createElement("div",{className:this.getItemClassNames(),"data-id":this.props.item.id,tabIndex:"0",onKeyDown:this.handleKeyDown,onClick:this.handleActivate},!!o&&d.default.createElement(S.default,{
 className:"gallery-item__badge",status:o.status,message:o.message}),d.default.createElement("div",{ref:"thumbnail",className:this.getThumbnailClassNames(),style:this.getThumbnailStyles()},r,this.getStatusFlags()),this.getProgressBar(),this.getErrorMessage(),d.default.createElement("div",{
-className:"gallery-item__title",ref:"title"},d.default.createElement("label",{className:"gallery-item__checkbox-label "+n,onClick:t},d.default.createElement("input",{className:"gallery-item__checkbox",
-type:"checkbox",title:u.default._t("AssetAdmin.SELECT"),tabIndex:"-1",onMouseDown:this.preventFocus})),this.props.item.title))}}]),t}(m.default)
+className:"gallery-item__title",ref:"title"},d.default.createElement("label",a,d.default.createElement("input",i)),this.props.item.title))}}]),t}(m.default)
 w.propTypes={item:y.default,highlighted:p.PropTypes.bool,selected:p.PropTypes.bool,enlarged:p.PropTypes.bool,message:p.PropTypes.shape({value:p.PropTypes.string,type:p.PropTypes.string}),selectable:p.PropTypes.bool,
 onActivate:p.PropTypes.func,onSelect:p.PropTypes.func,onCancelUpload:p.PropTypes.func,onRemoveErroredUpload:p.PropTypes.func}
 var P="GalleryItem",F=(0,b.default)(P)(w),x=(0,_.default)(P)(F)
 t.Folder=x,t.File=F,t.default=w},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(t,"__esModule",{value:!0})
-var o=n(2),i=r(o),s=i.default.PropTypes.shape({exists:i.default.PropTypes.bool,type:i.default.PropTypes.string,smallThumbnail:i.default.PropTypes.string,thumbnail:i.default.PropTypes.string,width:i.default.PropTypes.number,
-height:i.default.PropTypes.number,category:i.default.PropTypes.oneOfType([i.default.PropTypes.bool,i.default.PropTypes.string]),id:i.default.PropTypes.number,url:i.default.PropTypes.string,title:i.default.PropTypes.string,
-progress:i.default.PropTypes.number})
+var o=n(2),i=r(o),s=i.default.PropTypes.shape({canEdit:i.default.PropTypes.bool,canDelete:i.default.PropTypes.bool,canView:i.default.PropTypes.bool,exists:i.default.PropTypes.bool,type:i.default.PropTypes.string,
+smallThumbnail:i.default.PropTypes.string,thumbnail:i.default.PropTypes.string,width:i.default.PropTypes.number,height:i.default.PropTypes.number,category:i.default.PropTypes.oneOfType([i.default.PropTypes.bool,i.default.PropTypes.string]),
+id:i.default.PropTypes.number,url:i.default.PropTypes.string,title:i.default.PropTypes.string,progress:i.default.PropTypes.number})
 t.default=s},function(e,t,n){"use strict"
 function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called")
 

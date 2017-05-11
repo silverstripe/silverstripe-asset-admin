@@ -1,6 +1,9 @@
 import React from 'react';
 
 const fileShape = React.PropTypes.shape({
+  canEdit: React.PropTypes.bool,
+  canDelete: React.PropTypes.bool,
+  canView: React.PropTypes.bool,
   exists: React.PropTypes.bool,
   type: React.PropTypes.string,
   smallThumbnail: React.PropTypes.string,
