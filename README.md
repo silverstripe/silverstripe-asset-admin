@@ -39,7 +39,7 @@ You'll also need to run `dev/build`.
 
 ## Documentation
 
-See the [docs/en](tree/master/docs/en) folder.
+See the [docs/en](docs/en) folder.
 
 ## Versioning
 
