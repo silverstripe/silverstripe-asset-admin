@@ -1208,6 +1208,12 @@
   height:calc(100vh - 53px);
 }
 
+@media (max-width:991px){
+  .gallery__main.gallery__main--has-opened-item{
+    display:none;
+  }
+}
+
 .gallery__no-item-notice{
   text-align:center;
   font-size:1.231rem;

@@ -295,9 +295,10 @@ if(this.props.actions.queuedFiles.succeedUpload(t._queuedId,n[0]),this.props.onS
 var r=n.pop()
 this.props.onOpenFile(r.id)}}},{key:"handleFailedUpload",value:function e(t,n){this.props.actions.queuedFiles.failUpload(t._queuedId,n)}},{key:"itemIsSelected",value:function e(t){return this.props.selectedFiles.indexOf(t)>-1
 
-}},{key:"itemIsHighlighted",value:function e(t){return this.props.fileId===t}},{key:"handleClearSearch",value:function e(t){this.handleOpenFolder(t,this.props.folder)}},{key:"handleOpenFolder",value:function e(t,n){
-t.preventDefault(),this.props.actions.gallery.setErrorMessage(null),this.props.actions.gallery.setNoticeMessage(null),this.props.onOpenFolder(n.id)}},{key:"handleOpenFile",value:function e(t,n){t.preventDefault(),
-null!==n.created&&this.props.onOpenFile(n.id,n)}},{key:"handleSelect",value:function e(t,n){this.props.selectedFiles.indexOf(n.id)===-1?this.props.actions.gallery.selectFiles([n.id]):this.props.actions.gallery.deselectFiles([n.id])
+}},{key:"itemIsHighlighted",value:function e(t){return this.props.fileId===t}},{key:"hasOpenedItem",value:function e(){return!!this.props.fileId}},{key:"handleClearSearch",value:function e(t){this.handleOpenFolder(t,this.props.folder)
+
+}},{key:"handleOpenFolder",value:function e(t,n){t.preventDefault(),this.props.actions.gallery.setErrorMessage(null),this.props.actions.gallery.setNoticeMessage(null),this.props.onOpenFolder(n.id)}},{key:"handleOpenFile",
+value:function e(t,n){t.preventDefault(),null!==n.created&&this.props.onOpenFile(n.id,n)}},{key:"handleSelect",value:function e(t,n){this.props.selectedFiles.indexOf(n.id)===-1?this.props.actions.gallery.selectFiles([n.id]):this.props.actions.gallery.deselectFiles([n.id])
 
 }},{key:"handleBackClick",value:function e(t){t.preventDefault(),this.props.onOpenFolder(this.props.folder.parentId)}},{key:"handleViewChange",value:function e(t){var n=t.currentTarget.value
 this.props.onViewChange(n)}},{key:"handleEnableDropzone",value:function e(t){this.props.actions.gallery.setEnableDropzone(t)}},{key:"handleMoveFiles",value:function e(t,n){var r=this
@@ -346,7 +347,9 @@ className:"flexbox-area-grow"}):v.default.createElement("div",{className:"flexbo
 var t=v.default.createElement("div",{className:"gallery_messages"},this.props.errorMessage&&v.default.createElement(j.default,{value:this.props.errorMessage,type:"danger"}),this.props.noticeMessage&&v.default.createElement(j.default,{
 value:this.props.noticeMessage,type:"success"}),this.renderSearchAlert()),n={height:U.default.THUMBNAIL_HEIGHT,width:U.default.THUMBNAIL_WIDTH},r={url:this.props.createFileApiUrl,method:this.props.createFileApiMethod,
 paramName:"Upload",clickable:"#upload-button"},o=this.props.securityId,i=this.props.folder.canEdit&&this.props.enableDropzone,s=["panel","panel--padded","panel--scrollable","gallery__main"]
-return"insert"===this.props.type&&s.push("insert-media-modal__main"),v.default.createElement("div",{className:"flexbox-area-grow gallery__outer"},this.renderTransitionBulkActions(),v.default.createElement(T.default,{
+"insert"===this.props.type&&s.push("insert-media-modal__main")
+var a=s
+return this.hasOpenedItem()&&a.push("gallery__main--has-opened-item"),v.default.createElement("div",{className:"flexbox-area-grow gallery__outer"},this.renderTransitionBulkActions(),v.default.createElement(T.default,{
 name:"gallery-container",canUpload:i,handleAddedFile:this.handleAddedFile,handleError:this.handleFailedUpload,handleSuccess:this.handleSuccessfulUpload,handleSending:this.handleSending,handleUploadProgress:this.handleUploadProgress,
 preview:n,folderId:this.props.folderId,options:r,securityID:o,uploadButton:!1},v.default.createElement(Z.default,{className:s.join(" ")},this.renderToolbar(),t,this.renderGalleryView())))}}]),t}(y.Component),ee={
 page:1,limit:15,sort:X[0].field+","+X[0].direction},te={loading:y.PropTypes.bool,sort:y.PropTypes.string,files:y.PropTypes.arrayOf(y.PropTypes.shape({id:y.PropTypes.number,parent:y.PropTypes.shape({id:y.PropTypes.number
