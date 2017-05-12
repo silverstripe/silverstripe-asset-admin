@@ -38,18 +38,14 @@ class CreateFolderMutationCreator extends MutationCreator implements OperationRe
 
     public function type()
     {
-        return function () {
-            return $this->manager->getType('FileInterface');
-        };
+        return $this->manager->getType('FileInterface');
     }
 
     public function args()
     {
         return [
             'folder' => [
-                'type' => function () {
-                    return $this->manager->getType('FolderInput');
-                }
+                'type' => $this->manager->getType('FolderInput')
             ],
         ];
     }

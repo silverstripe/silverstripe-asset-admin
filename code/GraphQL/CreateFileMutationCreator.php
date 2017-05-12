@@ -37,18 +37,14 @@ class CreateFileMutationCreator extends MutationCreator implements OperationReso
 
     public function type()
     {
-        return function () {
-            return $this->manager->getType('FileInterface');
-        };
+        return $this->manager->getType('FileInterface');
     }
 
     public function args()
     {
         return [
             'file' => [
-                'type' => function () {
-                    return $this->manager->getType('FileInput');
-                }
+                'type' => $this->manager->getType('FileInput')
             ],
         ];
     }

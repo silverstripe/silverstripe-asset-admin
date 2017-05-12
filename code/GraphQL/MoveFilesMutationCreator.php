@@ -34,9 +34,7 @@ class MoveFilesMutationCreator extends MutationCreator implements OperationResol
 
     public function type()
     {
-        return function () {
-            return $this->manager->getType('FileInterface');
-        };
+        return $this->manager->getType('FileInterface');
     }
 
     public function args()

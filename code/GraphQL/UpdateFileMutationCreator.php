@@ -37,9 +37,7 @@ class UpdateFileMutationCreator extends MutationCreator implements OperationReso
 
     public function type()
     {
-        return function () {
-            return $this->manager->getType('File');
-        };
+        return $this->manager->getType('File');
     }
 
     public function args()
@@ -49,9 +47,7 @@ class UpdateFileMutationCreator extends MutationCreator implements OperationReso
                 'type' => Type::nonNull(Type::id()),
             ],
             'file' => [
-                'type' => function () {
-                    return $this->manager->getType('FileInput');
-                }
+                'type' => $this->manager->getType('FileInput')
             ],
         ];
     }
