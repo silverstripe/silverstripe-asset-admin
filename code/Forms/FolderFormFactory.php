@@ -15,15 +15,6 @@ use SilverStripe\Forms\TextField;
  */
 class FolderFormFactory extends AssetFormFactory
 {
-
-    protected function getFormFieldDetailsTab($record, $context = [])
-    {
-        return Tab::create(
-            'Details',
-            TextField::create('Name', _t(__CLASS__.'.FOLDER_NAME', 'Folder name'))
-        );
-    }
-
     protected function getFormFields(RequestHandler $controller = null, $name, $context = [])
     {
         // Add delete action as top level button before extensions are triggered
