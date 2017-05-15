@@ -882,7 +882,7 @@ class Gallery extends Component {
     }
 
     const cssClasses = galleryClasses;
-    if(this.hasOpenedItem()) {
+    if (this.hasOpenedItem()) {
       cssClasses.push('gallery__main--has-opened-item');
     }
 

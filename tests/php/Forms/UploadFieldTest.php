@@ -68,6 +68,7 @@ class UploadFieldTest extends SapphireTest
             'leftTitle' => null,
             'readOnly' => false,
             'disabled' => false,
+            'autoFocus' => false,
             'customValidationMessage' => '',
             'validation' => [],
             'attributes' => [],
