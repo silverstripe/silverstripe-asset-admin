@@ -160,7 +160,7 @@ case"select":n=t.form.fileSelectForm.schemaUrl
 break
 case"admin":default:n=t.form.fileEditForm.schemaUrl}if(!this.props.fileId)return null
 r=this.props.fileId}return h.default.createElement(O.default,{className:"insert"===this.props.type?"editor--dialog":"",targetId:r,onClose:this.handleCloseFile,schemaUrl:n,onSubmit:this.handleSubmitEditor,
-onDelete:this.handleDelete,onUnpublish:this.handleUnpublish,addToCampaignSchemaUrl:t.form.addToCampaignForm.schemaUrl,autoFocus:!0})}},{key:"render",value:function e(){var t=!!(this.props.folder&&this.props.folder.id||(0,
+onDelete:this.handleDelete,onUnpublish:this.handleUnpublish,addToCampaignSchemaUrl:t.form.addToCampaignForm.schemaUrl})}},{key:"render",value:function e(){var t=!!(this.props.folder&&this.props.folder.id||(0,
 j.hasFilters)(this.props.query.filter)),n=this.props.sectionConfig.form.fileSearchForm.schemaUrl,r=this.props.query.filter||{}
 return h.default.createElement("div",{className:"fill-height"},h.default.createElement(U.default,{showBackButton:t,handleBackButtonClick:this.handleBackButtonClick},h.default.createElement(N.default,{multiline:!0
 }),h.default.createElement("div",{className:"asset-admin__toolbar-extra pull-xs-right fill-width"},h.default.createElement(M.default,{onSearch:this.handleDoSearch,id:"AssetSearchForm",searchFormSchemaUrl:n,
