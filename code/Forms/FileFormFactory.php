@@ -72,7 +72,8 @@ class FileFormFactory extends AssetFormFactory
         // Update details tab
         $tab = Tab::create(
             'Details',
-            TextField::create("Title", File::singleton()->fieldLabel('Title')),
+            TextField::create("Title", File::singleton()->fieldLabel('Title'))
+                ->setAutofocus(true),
             TextField::create('Name', File::singleton()->fieldLabel('Filename')),
             ReadonlyField::create(
                 "Path",
@@ -126,7 +127,7 @@ class FileFormFactory extends AssetFormFactory
                 ->setRecord($record)
         );
     }
-    
+
     protected function getFormFields(RequestHandler $controller = null, $formName, $context = [])
     {
         /** @var File $record */
@@ -168,7 +169,7 @@ class FileFormFactory extends AssetFormFactory
 
         return $action;
     }
-    
+
     protected function getFormActions(RequestHandler $controller = null, $formName, $context = [])
     {
         $record = $context['Record'];

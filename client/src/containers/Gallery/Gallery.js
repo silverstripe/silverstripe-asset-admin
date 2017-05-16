@@ -392,6 +392,15 @@ class Gallery extends Component {
     return this.props.fileId === id;
   }
 
+  /**
+   * Check if the gallery has an opened (for editing) item
+   *
+   * @return {Boolean}
+   */
+  hasOpenedItem() {
+    return !!this.props.fileId;
+  }
+
   handleClearSearch(event) {
     this.handleOpenFolder(event, this.props.folder);
   }
@@ -870,6 +879,11 @@ class Gallery extends Component {
     ];
     if (this.props.type === 'insert') {
       galleryClasses.push('insert-media-modal__main');
+    }
+
+    const cssClasses = galleryClasses;
+    if (this.hasOpenedItem()) {
+      cssClasses.push('gallery__main--has-opened-item');
     }
 
     return (

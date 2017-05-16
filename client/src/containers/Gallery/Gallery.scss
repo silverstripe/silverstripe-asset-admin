@@ -10,6 +10,13 @@
 .gallery__main {
   height: calc(100vh - #{$toolbar-total-height}); // Safari fix for scroll, should be better fix
   position: relative;
+
+  &.gallery__main--has-opened-item {
+
+    @include media-breakpoint-down(md) {
+      display: none;
+    }
+  }
 }
 
 .gallery__no-item-notice {

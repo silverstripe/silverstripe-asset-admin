@@ -558,7 +558,6 @@ class AssetAdmin extends SilverStripeComponent {
         onDelete={this.handleDelete}
         onUnpublish={this.handleUnpublish}
         addToCampaignSchemaUrl={config.form.addToCampaignForm.schemaUrl}
-        autoFocus
       />
     );
   }
