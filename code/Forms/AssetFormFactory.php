@@ -280,9 +280,7 @@ abstract class AssetFormFactory implements FormFactory
             )
         );
         
-        $location
-            ->setEmptyTitle('(root)')
-            ->setShowRootOption(true);
+        $location->setEmptyString('(root)');
         return $tab;
     }
     
