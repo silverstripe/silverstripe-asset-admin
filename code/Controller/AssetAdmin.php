@@ -134,7 +134,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      * @var int
      */
     private static $thumbnail_height = 264;
-    
+
     /**
      * Safely limit max inline thumbnail size to 200kb
      *
@@ -440,7 +440,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         $_cachedMembers = array();
 
-        /** @var File $version */
+        /** @var File|AssetAdminFile $version */
         foreach ($versions as $version) {
             $author = null;
 
@@ -525,13 +525,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Get an asset renamer for the given filename.
      *
-     * @param  string             $filename Path name
+     * @param string $filename Path name
      * @return AssetNameGenerator
      */
     protected function getNameGenerator($filename)
     {
         return Injector::inst()
-            ->createWithArgs('AssetNameGenerator', array($filename));
+            ->createWithArgs(AssetNameGenerator::class, array($filename));
     }
 
     /**
