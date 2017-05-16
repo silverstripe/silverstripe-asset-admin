@@ -869,11 +869,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $folder = Folder::create();
         $form->saveInto($folder);
         $folder->write();
+        
+        $createForm = $this->getFolderCreateForm($folder->ID);
 
         // Return the record data in the same response as the schema to save a postback
         $schemaData = ['record' => $this->getObjectFromData($folder)];
         $schemaId = Controller::join_links($this->Link('schema/folderCreateForm'), $folder->ID);
-        return $this->getSchemaResponse($schemaId, $form, null, $schemaData);
+        return $this->getSchemaResponse($schemaId, $createForm, null, $schemaData);
     }
 
     /**

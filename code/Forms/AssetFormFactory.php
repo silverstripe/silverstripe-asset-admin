@@ -276,7 +276,7 @@ abstract class AssetFormFactory implements FormFactory
             ReadonlyField::create(
                 "Path",
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'),
-                $this->getPath($record)
+                $this->getPath($record, $context)
             )
         );
         
@@ -290,13 +290,22 @@ abstract class AssetFormFactory implements FormFactory
      * @param File $record
      * @return string
      */
-    protected function getPath($record)
+    protected function getPath($record, $context = [])
     {
         if ($record && $record->isInDB()) {
             if ($record->ParentID) {
                 return $record->Parent()->getFilename();
             } else {
                 return '/';
+            }
+        }
+        if (isset($context['ParentID'])) {
+            if ($context['ParentID'] === 0) {
+                return '/';
+            }
+            $file = File::get()->byID($context['ParentID']);
+            if ($file) {
+                return $file->getFilename();
             }
         }
         return null;
