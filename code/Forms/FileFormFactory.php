@@ -10,7 +10,6 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
@@ -70,18 +69,10 @@ class FileFormFactory extends AssetFormFactory
     protected function getFormFieldDetailsTab($record, $context = [])
     {
         // Update details tab
-        $tab = Tab::create(
-            'Details',
-            TextField::create("Title", File::singleton()->fieldLabel('Title'))
-                ->setAutofocus(true),
-            TextField::create('Name', File::singleton()->fieldLabel('Filename')),
-            ReadonlyField::create(
-                "Path",
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'),
-                $this->getPath($record)
-            )
-        );
+        $tab = parent::getFormFieldDetailsTab($record, $context);
 
+        $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
+        
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
             $tab->push(LiteralField::create(
                 'EditLink',
@@ -236,24 +227,6 @@ class FileFormFactory extends AssetFormFactory
     {
         if ($record && ($statusTitle = $record->getStatusTitle())) {
             return "<span class=\"editor__status-flag\">{$statusTitle}</span>";
-        }
-        return null;
-    }
-
-    /**
-     * Get user-visible "Path" for this record
-     *
-     * @param File $record
-     * @return string
-     */
-    protected function getPath($record)
-    {
-        if ($record && $record->isInDB()) {
-            if ($record->ParentID) {
-                return $record->Parent()->getFilename();
-            } else {
-                return '/';
-            }
         }
         return null;
     }

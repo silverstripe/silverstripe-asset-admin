@@ -152,6 +152,7 @@ class InsertMediaModal extends Component {
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
       onSubmitEditor: this.handleSubmit,
+      onReplaceUrl: this.handleBrowse,
     };
   }
 

@@ -70,6 +70,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // for validating before generating the schema
         'schemaWithValidate/$FormName' => 'schemaWithValidate',
         'fileEditForm/$ID' => 'fileEditForm',
+        'fileInsertForm/$ID' => 'fileInsertForm',
         'fileHistoryForm/$ID/$VersionID' => 'fileHistoryForm',
         'folderCreateForm/$ParentID' => 'folderCreateForm',
     ];
@@ -642,11 +643,18 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      *
      * @return Form
      */
-    public function fileInsertForm()
+    public function fileInsertForm($request = null)
     {
         // Get ID either from posted back value, or url parameter
-        $request = $this->getRequest();
-        $id = $request->param('ID') ?: $request->postVar('ID');
+        if (!$request) {
+            $this->httpError(400);
+            return null;
+        }
+        $id = $request->param('ID');
+        if (!$id) {
+            $this->httpError(400);
+            return null;
+        }
         return $this->getFileInsertForm($id);
     }
 
@@ -869,11 +877,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $folder = Folder::create();
         $form->saveInto($folder);
         $folder->write();
+        
+        $createForm = $this->getFolderCreateForm($folder->ID);
 
         // Return the record data in the same response as the schema to save a postback
         $schemaData = ['record' => $this->getObjectFromData($folder)];
         $schemaId = Controller::join_links($this->Link('schema/folderCreateForm'), $folder->ID);
-        return $this->getSchemaResponse($schemaId, $form, null, $schemaData);
+        return $this->getSchemaResponse($schemaId, $createForm, null, $schemaData);
     }
 
     /**
@@ -947,6 +957,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         if ($doPublish) {
             $record->publishRecursive();
         }
+        // regenerate form, so that it constants/literals on the form are updated
+        $form = $this->getFileEditForm($record->ID);
 
         // Note: Force return of schema / state in success result
         return $this->getRecordUpdatedResponse($record, $form);
