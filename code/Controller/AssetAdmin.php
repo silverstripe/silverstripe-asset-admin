@@ -70,6 +70,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // for validating before generating the schema
         'schemaWithValidate/$FormName' => 'schemaWithValidate',
         'fileEditForm/$ID' => 'fileEditForm',
+        'fileInsertForm/$ID' => 'fileInsertForm',
         'fileHistoryForm/$ID/$VersionID' => 'fileHistoryForm',
         'folderCreateForm/$ParentID' => 'folderCreateForm',
     ];
@@ -642,11 +643,18 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      *
      * @return Form
      */
-    public function fileInsertForm()
+    public function fileInsertForm($request = null)
     {
         // Get ID either from posted back value, or url parameter
-        $request = $this->getRequest();
-        $id = $request->param('ID') ?: $request->postVar('ID');
+        if (!$request) {
+            $this->httpError(400);
+            return null;
+        }
+        $id = $request->param('ID');
+        if (!$id) {
+            $this->httpError(400);
+            return null;
+        }
         return $this->getFileInsertForm($id);
     }
 

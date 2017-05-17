@@ -38,7 +38,7 @@ return(a||l.page<=1)&&delete l.page,(0,b.buildUrl)({base:this.props.sectionConfi
 
 }},{key:"getFileId",value:function e(){return parseInt(this.state.fileId||this.props.fileId||0,10)}},{key:"getViewAction",value:function e(){return this.state.action||x.default.ACTIONS.EDIT_FILE}},{key:"getSectionProps",
 value:function e(){return{dialog:!0,type:this.props.type,toolbarChildren:this.renderToolbarChildren(),sectionConfig:this.props.sectionConfig,folderId:this.getFolderId(),fileId:this.getFileId(),viewAction:this.getViewAction(),
-query:this.state.query,getUrl:this.getUrl,onBrowse:this.handleBrowse,onSubmitEditor:this.handleSubmit}}},{key:"getModalProps",value:function e(){var t=d({},this.props,{className:"insert-media-modal "+this.props.className,
+query:this.state.query,getUrl:this.getUrl,onBrowse:this.handleBrowse,onSubmitEditor:this.handleSubmit,onReplaceUrl:this.handleBrowse}}},{key:"getModalProps",value:function e(){var t=d({},this.props,{className:"insert-media-modal "+this.props.className,
 bsSize:"lg"})
 return delete t.onHide,delete t.onInsert,delete t.sectionConfig,delete t.schemaUrl,t}},{key:"handleSubmit",value:function e(t,n,r,o){return"action_createfolder"===n?r():this.props.onInsert(t,o)}},{key:"handleBrowse",
 value:function e(t,n){var r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},o=arguments.length>3&&void 0!==arguments[3]?arguments[3]:x.default.ACTIONS.EDIT_FILE
