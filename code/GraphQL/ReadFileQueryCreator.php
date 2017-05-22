@@ -21,25 +21,22 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
     public function createConnection()
     {
         return Connection::create('readFiles')
-            ->setConnectionType(function () {
-                $unionType = new UnionType([
-                    'name' => 'Result',
-                    'types' => [
-                        $this->manager->getType('File'),
-                        $this->manager->getType('Folder')
-                    ],
-                    'resolveType' => function ($object) {
-                        if ($object instanceof Folder) {
-                            return $this->manager->getType('Folder');
-                        }
-                        if ($object instanceof File) {
-                            return $this->manager->getType('File');
-                        }
-                        return null;
+            ->setConnectionType(new UnionType([
+                'name' => 'Result',
+                'types' => [
+                    $this->manager->getType('File'),
+                    $this->manager->getType('Folder')
+                ],
+                'resolveType' => function ($object) {
+                    if ($object instanceof Folder) {
+                        return $this->manager->getType('Folder');
                     }
-                ]);
-                return $unionType;
-            })
+                    if ($object instanceof File) {
+                        return $this->manager->getType('File');
+                    }
+                    return null;
+                }
+            ]))
             ->setArgs(function () {
                 return [
                     'filter' => [

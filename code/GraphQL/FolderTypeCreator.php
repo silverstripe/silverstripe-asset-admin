@@ -100,9 +100,7 @@ class FolderTypeCreator extends FileTypeCreator
     public function getChildrenConnection()
     {
         return Connection::create('Children')
-            ->setConnectionType(function () {
-                return $this->manager->getType('FileInterface');
-            })
+            ->setConnectionType($this->manager->getType('FileInterface'))
             ->setArgs(function () {
                 return [
                     'filter' => [
