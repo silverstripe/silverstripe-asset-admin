@@ -86,9 +86,7 @@ class FolderTypeCreator extends FileTypeCreator
                 }
             ],
             'parents' => [
-                'type' => function () {
-                    return Type::listOf($this->manager->getType('FileInterface'));
-                }
+                'type' => Type::listOf($this->manager->getType('FileInterface'))
             ],
             'filesInUseCount' => [
                 'type' => Type::int(),

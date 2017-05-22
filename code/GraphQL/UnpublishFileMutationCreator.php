@@ -21,9 +21,7 @@ class UnpublishFileMutationCreator extends MutationCreator implements OperationR
 
     public function type()
     {
-        return function () {
-            return $this->manager->getType('FileInterface');
-        };
+        return $this->manager->getType('FileInterface');
     }
 
     public function args()
