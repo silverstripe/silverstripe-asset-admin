@@ -1,13 +1,21 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.mock('lib/Injector', () => ({
-  // eslint-disable-next-line react/prop-types
-  getComponentByName: () => ({ children }) => <div>{children}</div>,
-}));
-
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
 import ProportionConstraintField from '../ProportionConstraintField';
+import Injector, { provideInjector } from 'lib/Injector';
+
+const TestableProportionConstraintField = provideInjector(
+  // eslint-disable-next-line react/prefer-stateless-function
+  class extends React.Component {
+    render() {
+      return <div><ProportionConstraintField {...this.props} /></div>;
+    }
+  }
+);
+
+Injector.register('FieldGroup', ({ children }) => <div>{children}</div>);
+Injector.load();
 
 describe('ProportionConstraintField', () => {
   describe('mount()', () => {
@@ -15,7 +23,7 @@ describe('ProportionConstraintField', () => {
       let error = null;
       try {
         ReactTestUtils.renderIntoDocument(
-          <ProportionConstraintField ratio={1} />
+          <TestableProportionConstraintField ratio={1} />
         );
       } catch (e) {
         error = e;
@@ -26,10 +34,10 @@ describe('ProportionConstraintField', () => {
     it('should call autofill with the correct values', () => {
       const autofill = jest.fn();
       const item = ReactTestUtils.renderIntoDocument(
-        <ProportionConstraintField data={{ ratio: 1.5 }} onAutofill={autofill}>
+        <TestableProportionConstraintField data={{ ratio: 1.5 }} onAutofill={autofill}>
           <input name="one" type="text" value="0" />
           <input name="two" type="text" value="0" />
-        </ProportionConstraintField>
+        </TestableProportionConstraintField>
       );
       const inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(item, 'input');
       ReactTestUtils.Simulate.change(inputs[0], { target: { value: 6 } });
@@ -44,10 +52,10 @@ describe('ProportionConstraintField', () => {
     it('should not constrain when not active', () => {
       const mockFn = jest.fn();
       const item = ReactTestUtils.renderIntoDocument(
-        <ProportionConstraintField active={false} data={{ ratio: 1.5 }} onAutofill={mockFn}>
+        <TestableProportionConstraintField active={false} data={{ ratio: 1.5 }} onAutofill={mockFn}>
           <input name="one" type="text" value="0" />
           <input name="two" type="text" value="0" />
-        </ProportionConstraintField>
+        </TestableProportionConstraintField>
       );
       const inputs = ReactTestUtils.scryRenderedDOMComponentsWithTag(item, 'input');
       ReactTestUtils.Simulate.change(inputs[0], { target: { value: 6 } });
