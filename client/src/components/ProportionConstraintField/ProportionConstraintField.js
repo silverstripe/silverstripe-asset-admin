@@ -1,5 +1,5 @@
 import React, { PropTypes, Component, Children, cloneElement } from 'react';
-import { withInjector } from 'lib/Injector';
+import { inject } from 'lib/Injector';
 
 class ProportionConstraintField extends Component {
 
@@ -35,7 +35,7 @@ class ProportionConstraintField extends Component {
   }
 
   render() {
-    const FieldGroup = this.context.injector.get('FieldGroup');
+    const { FieldGroup } = this.props;
     return (
       <FieldGroup {...this.props}>
         {this.props.children.map((child, key) => (
@@ -57,10 +57,18 @@ ProportionConstraintField.propTypes = {
   data: PropTypes.shape({
     ratio: PropTypes.number.isRequired,
   }),
+  FieldGroup: PropTypes.func.isRequired,
 };
 
 ProportionConstraintField.defaultProps = {
   active: true,
 };
 
-export default withInjector(ProportionConstraintField);
+export {
+  ProportionConstraintField,
+};
+
+export default inject(
+  ProportionConstraintField,
+  ['FieldGroup']
+);
