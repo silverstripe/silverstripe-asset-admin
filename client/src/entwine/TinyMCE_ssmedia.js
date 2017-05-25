@@ -54,6 +54,7 @@ const filter = 'img[data-shortcode="image"]';
 
       ed.on('SaveContent', (o) => {
         const content = jQuery(o.content);
+        // @todo - replace with `lib/ShortcodeSerialiser` library
         const attrsFn = (attrs) => (
           Object.keys(attrs)
             .map((name) => (attrs[name] ? `${name}="${attrs[name]}"` : null))
@@ -77,6 +78,7 @@ const filter = 'img[data-shortcode="image"]';
               title: el.attr('title'),
               alt: el.attr('alt'),
             };
+            // @todo - replace with `lib/ShortcodeSerialiser` library
             const shortCode = `[image ${attrsFn(attrs)}]`;
             el.replaceWith(shortCode);
           });
@@ -93,6 +95,7 @@ const filter = 'img[data-shortcode="image"]';
       });
       ed.on('BeforeSetContent', (o) => {
         let matches = null;
+        // @todo - replace with `lib/ShortcodeSerialiser` library
         let content = o.content;
         const attrFromStrFn = (str) => (
           str
