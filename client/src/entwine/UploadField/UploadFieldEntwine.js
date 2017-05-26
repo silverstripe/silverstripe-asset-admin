@@ -4,6 +4,9 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { schemaMerge } from 'lib/schemaFieldValues';
 import { ConnectedUploadField } from 'components/UploadField/UploadField';
+import { provideInjector } from 'lib/Injector';
+
+const InjectableUploadField = provideInjector(ConnectedUploadField);
 
 /**
  * Shiv for inserting react UploadField into entwine forms
@@ -31,7 +34,7 @@ jQuery.entwine('ss', ($) => {
       const props = this.getAttributes();
       ReactDOM.render(
         <ApolloProvider store={store} client={client}>
-          <ConnectedUploadField {...props} />
+          <InjectableUploadField {...props} />
         </ApolloProvider>,
         this.parent()[0]
       );

@@ -57,7 +57,7 @@ ProportionConstraintField.propTypes = {
   data: PropTypes.shape({
     ratio: PropTypes.number.isRequired,
   }),
-  FieldGroup: PropTypes.func.isRequired,
+  FieldGroup: PropTypes.element.isRequired,
 };
 
 ProportionConstraintField.defaultProps = {

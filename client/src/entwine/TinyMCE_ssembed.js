@@ -4,7 +4,10 @@ import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
+import { provideInjector } from 'lib/Injector';
+import InsertEmbedModal from 'components/InsertEmbedModal/InsertEmbedModal';
 
+const InjectableInsertEmbedModal = provideInjector(InsertEmbedModal);
 const filter = 'div[data-shortcode="embed"]';
 
 /**
@@ -198,16 +201,11 @@ jQuery.entwine('ss', ($) => {
       const store = window.ss.store;
       const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
-      const InsertEmbedModal = window.InsertEmbedModal.default;
-
-      if (!InsertEmbedModal) {
-        throw new Error('Invalid Insert embed modal component found');
-      }
 
       // create/update the react component
       ReactDOM.render(
         <ApolloProvider store={store} client={client}>
-          <InsertEmbedModal
+          <InjectableInsertEmbedModal
             show={show}
             onCreate={handleCreate}
             onInsert={handleInsert}
