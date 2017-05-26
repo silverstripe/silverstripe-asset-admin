@@ -1,13 +1,11 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.mock('lib/Injector', () => ({
-  // eslint-disable-next-line react/prop-types
-  getComponentByName: () => ({ children }) => <div>{children}</div>,
-}));
-
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import ProportionConstraintField from '../ProportionConstraintField';
+import { ProportionConstraintField } from '../ProportionConstraintField';
+
+// eslint-disable-next-line react/prop-types
+const FieldGroup = ({ children }) => <div>{children}</div>;
 
 describe('ProportionConstraintField', () => {
   describe('mount()', () => {
@@ -15,7 +13,7 @@ describe('ProportionConstraintField', () => {
       let error = null;
       try {
         ReactTestUtils.renderIntoDocument(
-          <ProportionConstraintField ratio={1} />
+          <ProportionConstraintField ratio={1} FieldGroup={FieldGroup} />
         );
       } catch (e) {
         error = e;
@@ -26,7 +24,7 @@ describe('ProportionConstraintField', () => {
     it('should call autofill with the correct values', () => {
       const autofill = jest.fn();
       const item = ReactTestUtils.renderIntoDocument(
-        <ProportionConstraintField data={{ ratio: 1.5 }} onAutofill={autofill}>
+        <ProportionConstraintField data={{ ratio: 1.5 }} onAutofill={autofill} FieldGroup={FieldGroup}>
           <input name="one" type="text" value="0" />
           <input name="two" type="text" value="0" />
         </ProportionConstraintField>
@@ -44,7 +42,7 @@ describe('ProportionConstraintField', () => {
     it('should not constrain when not active', () => {
       const mockFn = jest.fn();
       const item = ReactTestUtils.renderIntoDocument(
-        <ProportionConstraintField active={false} data={{ ratio: 1.5 }} onAutofill={mockFn}>
+        <ProportionConstraintField active={false} data={{ ratio: 1.5 }} onAutofill={mockFn} FieldGroup={FieldGroup}>
           <input name="one" type="text" value="0" />
           <input name="two" type="text" value="0" />
         </ProportionConstraintField>

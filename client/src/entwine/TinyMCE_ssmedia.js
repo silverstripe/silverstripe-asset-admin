@@ -8,6 +8,10 @@ import i18n from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
+import { provideInjector } from 'lib/Injector';
+import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
+
+const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
 
 const filter = 'img[data-shortcode="image"]';
 
@@ -166,18 +170,13 @@ jQuery.entwine('ss', ($) => {
       const store = window.ss.store;
       const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
-      const InsertMediaModal = window.InsertMediaModal.default;
-
-      if (!InsertMediaModal) {
-        throw new Error('Invalid Insert media modal component found');
-      }
 
       delete attrs.url;
 
       // create/update the react component
       ReactDOM.render(
         <ApolloProvider store={store} client={client}>
-          <InsertMediaModal
+          <InjectableInsertMediaModal
             title={false}
             show={show}
             onInsert={handleInsert}

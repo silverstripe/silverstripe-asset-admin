@@ -4,12 +4,14 @@ return t[i].call(a.exports,a,a.exports,e),a.loaded=!0,a.exports}var n={}
 return e.m=t,e.c=n,e.p="",e(0)}([function(t,e,n){"use strict"
 function i(t){return t&&t.__esModule?t:{default:t}}function a(t,e,n){return e in t?Object.defineProperty(t,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):t[e]=n,t}var r=Object.assign||function(t){
 for(var e=1;e<arguments.length;e++){var n=arguments[e]
-for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},o=n(1),s=i(o),l=n(5),d=i(l),c=n(2),u=i(c),f=n(3),m=i(f),h=n(4),p='img[data-shortcode="image"]'
+for(var i in n)Object.prototype.hasOwnProperty.call(n,i)&&(t[i]=n[i])}return t},o=n(1),s=i(o),l=n(7),d=i(l),c=n(2),u=i(c),f=n(3),m=i(f),p=n(4),h=n(5),g=n(12),v=i(g),x=(0,h.provideInjector)(v.default),I='img[data-shortcode="image"]'
+
+
 !function(){var t={init:function t(e){e.addButton("ssmedia",{icon:"image",title:"Insert Media",cmd:"ssmedia"}),e.addMenuItem("ssmedia",{icon:"image",text:"Insert Media",cmd:"ssmedia"}),e.addCommand("ssmedia",function(){
 (0,s.default)("#"+e.id).entwine("ss").openMediaDialog()}),e.on("BeforeExecCommand",function(t){var n=t.command,i=t.ui,a=t.value
 "mceAdvImage"!==n&&"mceImage"!==n||(t.preventDefault(),e.execCommand("ssmedia",i,a))}),e.on("SaveContent",function(t){var e=(0,s.default)(t.content),n=function t(e){return Object.keys(e).map(function(t){
 return e[t]?t+'="'+e[t]+'"':null}).filter(function(t){return null!==t}).join(" ")}
-e.find(p).add(e.filter(p)).each(function(){var t=(0,s.default)(this),e={src:t.attr("src"),id:t.data("id"),width:t.attr("width"),height:t.attr("height"),class:t.attr("class"),title:t.attr("title"),alt:t.attr("alt")
+e.find(I).add(e.filter(I)).each(function(){var t=(0,s.default)(this),e={src:t.attr("src"),id:t.data("id"),width:t.attr("width"),height:t.attr("height"),class:t.attr("class"),title:t.attr("title"),alt:t.attr("alt")
 },i="[image "+n(e)+"]"
 t.replaceWith(i)}),t.content="",e.each(function(){void 0!==this.outerHTML&&(t.content+=this.outerHTML)})}),e.on("BeforeSetContent",function(t){for(var e=null,n=t.content,i=function t(e){return e.match(/([^\s\/'"=,]+)\s*=\s*(('([^']+)')|("([^"]+)")|([^\s,\]]+))/g).reduce(function(t,e){
 var n=e.match(/^([^\s\/'"=,]+)\s*=\s*(?:(?:'([^']+)')|(?:"([^"]+)")|(?:[^\s,\]]+))$/),i=n[1],o=n[2]||n[3]||n[4]
@@ -20,11 +22,10 @@ n=n.replace(e[0],(0,s.default)("<div/>").append(d).html())}t.content=n})}}
 tinymce.PluginManager.add("ssmedia",function(e){return t.init(e)})}(),s.default.entwine("ss",function(t){t(".insert-media-react__dialog-wrapper .nav-link").entwine({onclick:function t(e){return e.preventDefault()
 
 }}),t("#insert-media-react__dialog-wrapper").entwine({Element:null,Data:{},onunmatch:function t(){this._clearModal()},_clearModal:function t(){m.default.unmountComponentAtNode(this[0])},open:function t(){
-this._renderModal(!0)},close:function t(){this._renderModal(!1)},_renderModal:function t(e){var n=this,i=function t(){return n.close()},a=function t(){return n._handleInsert.apply(n,arguments)},r=window.ss.store,o=window.ss.apolloClient,s=this.getOriginalAttributes(),l=window.InsertMediaModal.default
+this._renderModal(!0)},close:function t(){this._renderModal(!1)},_renderModal:function t(e){var n=this,i=function t(){return n.close()},a=function t(){return n._handleInsert.apply(n,arguments)},r=window.ss.store,o=window.ss.apolloClient,s=this.getOriginalAttributes()
 
 
-if(!l)throw new Error("Invalid Insert media modal component found")
-delete s.url,m.default.render(u.default.createElement(h.ApolloProvider,{store:r,client:o},u.default.createElement(l,{title:!1,show:e,onInsert:a,onHide:i,bodyClassName:"modal__dialog",className:"insert-media-react__dialog-wrapper",
+delete s.url,m.default.render(u.default.createElement(p.ApolloProvider,{store:r,client:o},u.default.createElement(x,{title:!1,show:e,onInsert:a,onHide:i,bodyClassName:"modal__dialog",className:"insert-media-react__dialog-wrapper",
 fileAttributes:s})),this[0])},_handleInsert:function t(e,n){var i=!1
 this.setData(r({},e,n))
 try{var a=null
@@ -59,4 +60,4 @@ return s&&s.not(u).length&&s.replaceWith(u),d&&d.prepend(l),s||(i.repaint(),i.in
 
 t.noticeAdd({text:a,type:i,stayTime:5e3,inEffect:{left:"0",opacity:"show"}})}})})},function(t,e){t.exports=jQuery},function(t,e){t.exports=React},function(t,e){t.exports=ReactDom},function(t,e){t.exports=ReactApollo
 
-},function(t,e){t.exports=i18n}])
+},function(t,e){t.exports=Injector},,function(t,e){t.exports=i18n},,,,,function(t,e){t.exports=InsertMediaModal}])
