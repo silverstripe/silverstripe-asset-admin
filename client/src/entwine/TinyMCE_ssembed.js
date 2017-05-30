@@ -46,6 +46,7 @@ const filter = 'div[data-shortcode="embed"]';
 
       editor.on('SaveContent', (o) => {
         const content = jQuery(`<div>${o.content}</div>`);
+        // @todo - replace with `lib/ShortcodeSerialiser` library
         const attrsFn = (attrs) => (
           Object.entries(attrs)
             .map(([name, value]) => ((value)
@@ -84,6 +85,7 @@ const filter = 'div[data-shortcode="embed"]';
               height: isNaN(height) ? null : height,
               caption,
             };
+            // @todo - replace with `lib/ShortcodeSerialiser` library
             const shortCode = `[embed ${attrsFn(attrs)}]${url}[/embed]`;
             embed.replaceWith(shortCode);
           });
@@ -92,6 +94,7 @@ const filter = 'div[data-shortcode="embed"]';
         o.content = content.html();
       });
       editor.on('BeforeSetContent', (o) => {
+        // @todo - replace with `lib/ShortcodeSerialiser` library
         let content = o.content;
         const attrFromStrFn = (str) => (
           str

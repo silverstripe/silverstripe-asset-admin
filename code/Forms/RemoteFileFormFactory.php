@@ -4,6 +4,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
+use SilverStripe\AssetAdmin\Model\EmbedResource;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
@@ -15,7 +16,6 @@ use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\HiddenField;
-use SilverStripe\Forms\HTMLEditor\HTMLEditorField_Embed;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\RequiredFields;
@@ -26,8 +26,20 @@ class RemoteFileFormFactory implements FormFactory
     use Extensible;
     use Configurable;
 
+    /**
+     * Force whitelist for resource protocols to the given list
+     *
+     * @config
+     * @var array
+     */
     private static $fileurl_scheme_whitelist = ['http', 'https'];
 
+    /**
+     * Force whitelist for resource domains to the given list
+     *
+     * @config
+     * @var array
+     */
     private static $fileurl_domain_whitelist = [];
 
     /**
@@ -67,84 +79,15 @@ class RemoteFileFormFactory implements FormFactory
 
     protected function getFormFields($controller, $name, $context)
     {
-        $fields = [];
-        $url = (isset($context['url'])) ? $context['url'] : null;
-
-        if ($context['type'] === 'create') {
-            $fields = [
-                TextField::create(
-                    'Url',
-                    _t(
-                        'SilverStripe\\AssetAdmin\\Forms\\RemoteFileFormFactory.UrlDescription',
-                        'Embed Youtube and Vimeo videos, images and other media directly from the web.'
-                    )
-                )
-                ->addExtraClass('insert-embed-modal__url-create'),
-            ];
+        $formType = $context['type'];
+        switch ($formType) {
+            case 'create':
+                return $this->getCreateFormFields();
+            case 'edit':
+                return $this->getEditFormFields($context);
+            default:
+                throw new InvalidArgumentException("Unknown media form type: {$formType}");
         }
-
-        if ($context['type'] === 'edit' && $url && $this->validateUrl($url)) {
-            $embed = $this->getEmbed($url);
-            $alignments = array(
-                'leftAlone' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeftAlone', 'Left'),
-                'center' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentCenter', 'Center'),
-                'rightAlone' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRightAlone', 'Right'),
-                'left' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeft', 'Left wrap'),
-                'right' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRight', 'Right wrap'),
-            );
-    
-            $width = $embed->getWidth();
-            $height = $embed->getHeight();
-    
-            $fields = CompositeField::create([
-                LiteralField::create(
-                    'Preview',
-                    sprintf(
-                        '<img src="%s" class="%s" />',
-                        $embed->getPreviewURL(),
-                        'insert-embed-modal__preview'
-                    )
-                )->addExtraClass('insert-embed-modal__preview-container'),
-                HiddenField::create('PreviewUrl', 'PreviewUrl', $embed->getPreviewURL()),
-                CompositeField::create([
-                    TextField::create('UrlPreview', $embed->getName(), $url)
-                        ->setReadonly(true),
-                    HiddenField::create('Url', false, $url),
-                    TextField::create('CaptionText', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Caption', 'Caption')),
-                    OptionsetField::create(
-                        'Placement',
-                        _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Placement', 'Placement'),
-                        $alignments
-                    )
-                        ->addExtraClass('insert-embed-modal__placement'),
-                    $dimensions = FieldGroup::create(
-                        _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
-                        TextField::create('Width', '', $width)
-                            ->setRightTitle(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width'))
-                            ->setMaxLength(5)
-                            ->addExtraClass('flexbox-area-grow'),
-                        TextField::create('Height', '', $height)
-                            ->setRightTitle(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight', 'Height'))
-                            ->setMaxLength(5)
-                            ->addExtraClass('flexbox-area-grow')
-                    )->addExtraClass('fieldgroup--fill-width')
-                        ->setName('Dimensions')
-                ])->addExtraClass('flexbox-area-grow'),
-            ])->addExtraClass('insert-embed-modal__fields--fill-width');
-    
-            if ($dimensions && $width && $height) {
-                $ratio = $width / $height;
-        
-                $dimensions->setSchemaComponent('ProportionConstraintField');
-                $dimensions->setSchemaState([
-                    'data' => [
-                        'ratio' => $ratio
-                    ]
-                ]);
-            }
-        }
-
-        return FieldList::create($fields);
     }
 
     protected function getFormActions($controller, $name, $context)
@@ -153,16 +96,16 @@ class RemoteFileFormFactory implements FormFactory
 
         if ($context['type'] === 'create') {
             $actions = [
-                FormAction::create('addmedia', _t('SilverStripe\\AssetAdmin\\Forms\\RemoteFileFormFactory.AddMedia', 'Add media'))
+                FormAction::create('addmedia', _t(__CLASS__.'.AddMedia', 'Add media'))
                     ->setSchemaData(['data' => ['buttonStyle' => 'primary']]),
             ];
         }
 
         if ($context['type'] === 'edit') {
             $actions = [
-                FormAction::create('insertmedia', _t('SilverStripe\\AssetAdmin\\Forms\\RemoteFileFormFactory.InsertMedia', 'Insert media'))
+                FormAction::create('insertmedia', _t(__CLASS__.'.InsertMedia', 'Insert media'))
                     ->setSchemaData(['data' => ['buttonStyle' => 'primary']]),
-                FormAction::create('cancel', _t('SilverStripe\\AssetAdmin\\Forms\\RemoteFileFormFactory.Cancel', 'Cancel')),
+                FormAction::create('cancel', _t(__CLASS__.'.Cancel', 'Cancel')),
             ];
         }
 
@@ -170,7 +113,7 @@ class RemoteFileFormFactory implements FormFactory
     }
 
     /**
-     * @param $url
+     * @param string $url
      * @return bool
      * @throws InvalidUrlException
      */
@@ -178,33 +121,133 @@ class RemoteFileFormFactory implements FormFactory
     {
         if (!Director::is_absolute_url($url)) {
             throw new InvalidUrlException(_t(
-                "SilverStripe\\Forms\\HTMLEditor\\HTMLEditorField_Toolbar.ERROR_ABSOLUTE",
-                "Only absolute urls can be embedded"
+                __CLASS__.'.ERROR_ABSOLUTE',
+                'Only absolute urls can be embedded'
             ));
         }
         $scheme = strtolower(parse_url($url, PHP_URL_SCHEME));
         $allowed_schemes = self::config()->get('fileurl_scheme_whitelist');
         if (!$scheme || ($allowed_schemes && !in_array($scheme, $allowed_schemes))) {
             throw new InvalidUrlException(_t(
-                "SilverStripe\\Forms\\HTMLEditor\\HTMLEditorField_Toolbar.ERROR_SCHEME",
-                "This file scheme is not included in the whitelist"
+                __CLASS__.'.ERROR_SCHEME',
+                'This file scheme is not included in the whitelist'
             ));
         }
         $domain = strtolower(parse_url($url, PHP_URL_HOST));
         $allowed_domains = self::config()->get('fileurl_domain_whitelist');
         if (!$domain || ($allowed_domains && !in_array($domain, $allowed_domains))) {
             throw new InvalidUrlException(_t(
-                "SilverStripe\\Forms\\HTMLEditor\\HTMLEditorField_Toolbar.ERROR_HOSTNAME",
-                "This file hostname is not included in the whitelist"
+                __CLASS__.'.ERROR_HOSTNAME',
+                'This file hostname is not included in the whitelist'
             ));
         }
         return true;
     }
 
-    protected function getEmbed($url)
+    /**
+     * Get form fields for create new embed
+     *
+     * @return FieldList
+     */
+    protected function getCreateFormFields()
     {
-        $embed = new HTMLEditorField_Embed($url);
+        return FieldList::create([
+            TextField::create(
+                'Url',
+                _t(
+                    __CLASS__.'.UrlDescription',
+                    'Embed Youtube and Vimeo videos, images and other media directly from the web.'
+                )
+            )
+                ->addExtraClass('insert-embed-modal__url-create'),
+        ]);
+    }
 
-        return $embed;
+    /**
+     * Get form fields for edit form
+     *
+     * @param array $context
+     * @return FieldList
+     */
+    protected function getEditFormFields($context)
+    {
+        // Check if the url is valid
+        $url = (isset($context['url'])) ? $context['url'] : null;
+        if (empty($url)) {
+            return $this->getCreateFormFields();
+        }
+
+        // Get embed
+        $this->validateUrl($url);
+        $embed = new EmbedResource($url);
+
+        // Build form
+        $alignments = array(
+            'leftAlone' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeftAlone', 'Left'),
+            'center' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentCenter', 'Center'),
+            'rightAlone' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRightAlone', 'Right'),
+            'left' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentLeft', 'Left wrap'),
+            'right' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRight', 'Right wrap'),
+        );
+
+        $width = $embed->getWidth();
+        $height = $embed->getHeight();
+
+        $fields = CompositeField::create([
+            LiteralField::create(
+                'Preview',
+                sprintf(
+                    '<img src="%s" class="%s" />',
+                    $embed->getPreviewURL(),
+                    'insert-embed-modal__preview'
+                )
+            )->addExtraClass('insert-embed-modal__preview-container'),
+            HiddenField::create('PreviewUrl', 'PreviewUrl', $embed->getPreviewURL()),
+            CompositeField::create([
+                TextField::create('UrlPreview', $embed->getName(), $url)
+                    ->setReadonly(true),
+                HiddenField::create('Url', false, $url),
+                TextField::create(
+                    'CaptionText',
+                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Caption', 'Caption')
+                ),
+                OptionsetField::create(
+                    'Placement',
+                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Placement', 'Placement'),
+                    $alignments
+                )
+                    ->addExtraClass('insert-embed-modal__placement'),
+                $dimensions = FieldGroup::create(
+                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
+                    TextField::create('Width', '', $width)
+                        ->setRightTitle(_t(
+                            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth',
+                            'Width'
+                        ))
+                        ->setMaxLength(5)
+                        ->addExtraClass('flexbox-area-grow'),
+                    TextField::create('Height', '', $height)
+                        ->setRightTitle(_t(
+                            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight',
+                            'Height'
+                        ))
+                        ->setMaxLength(5)
+                        ->addExtraClass('flexbox-area-grow')
+                )->addExtraClass('fieldgroup--fill-width')
+                    ->setName('Dimensions')
+            ])->addExtraClass('flexbox-area-grow'),
+        ])->addExtraClass('insert-embed-modal__fields--fill-width');
+
+        if ($dimensions && $width && $height) {
+            $ratio = $width / $height;
+
+            $dimensions->setSchemaComponent('ProportionConstraintField');
+            $dimensions->setSchemaState([
+                'data' => [
+                    'ratio' => $ratio
+                ]
+            ]);
+        }
+        return FieldList::create($fields);
     }
 }
