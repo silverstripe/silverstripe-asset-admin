@@ -964,7 +964,6 @@ Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
-  client: React.PropTypes.object,
   onUploadSuccess: React.PropTypes.func,
   onCreateFolder: React.PropTypes.func,
   onMoveFilesSuccess: React.PropTypes.func,

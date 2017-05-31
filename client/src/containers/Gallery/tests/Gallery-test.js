@@ -27,7 +27,6 @@ describe('Gallery', () => {
 
   beforeEach(() => {
     props = {
-      client: jest.genMockFromModule('apollo-client'),
       actions: {
         gallery: {
           selectFiles: () => {},
