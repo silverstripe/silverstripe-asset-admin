@@ -2,7 +2,7 @@ import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
+import AssetAdmin, { getFormSchema } from 'containers/AssetAdmin/AssetAdmin';
 import stateRouter from 'containers/AssetAdmin/stateRouter';
 import fileSchemaModalHandler from 'containers/InsertLinkModal/fileSchemaModalHandler';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
@@ -35,16 +35,9 @@ class InsertMediaModal extends Component {
    */
   getSectionProps() {
     return {
+      ...this.props,
       dialog: true,
-      type: this.props.type,
       toolbarChildren: this.renderToolbarChildren(),
-      sectionConfig: this.props.sectionConfig,
-      folderId: this.props.folderId,
-      fileId: this.props.fileId,
-      viewAction: this.props.viewAction,
-      query: this.props.query,
-      getUrl: this.props.getUrl,
-      onBrowse: this.props.onBrowse,
       onSubmitEditor: this.handleSubmit,
       onReplaceUrl: this.props.onBrowse,
     };
@@ -118,7 +111,7 @@ InsertMediaModal.propTypes = {
     url: PropTypes.string,
     form: PropTypes.object,
   }),
-  type: PropTypes.oneOf(['insert', 'select', 'admin']),
+  type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   schemaUrl: PropTypes.string,
   show: PropTypes.bool,
   setOverrides: PropTypes.func,
@@ -130,6 +123,8 @@ InsertMediaModal.propTypes = {
     Height: PropTypes.number,
     TitleTooltip: PropTypes.string,
     Alignment: PropTypes.string,
+    Description: PropTypes.string,
+    TargetBlank: PropTypes.bool,
   }),
   folderId: PropTypes.number,
   fileId: PropTypes.number,
@@ -145,20 +140,39 @@ InsertMediaModal.propTypes = {
 InsertMediaModal.defaultProps = {
   className: '',
   fileAttributes: {},
-  type: 'insert',
+  type: 'insert-media',
 };
 
 function mapStateToProps(state, ownProps) {
-  const sectionConfig = ownProps.sectionConfig;
+  const config = ownProps.sectionConfig;
 
-  // get the schemaUrl to use as a key for overrides
-  const fileId = ownProps.fileAttributes ? ownProps.fileAttributes.ID : null;
-  const schemaUrl = (sectionConfig && fileId)
-    ? `${sectionConfig.form.fileInsertForm.schemaUrl}/${fileId}`
-    : null;
+  if (!config) {
+    return {};
+  }
 
+  let folderId = 0;
+  if (ownProps.folderId !== null) {
+    folderId = ownProps.folderId;
+  } else if (ownProps.folder) {
+    folderId = ownProps.folder.id;
+  }
+
+  const props = {
+    config,
+    viewAction: ownProps.viewAction,
+    folderId,
+    type: ownProps.type,
+    fileId: ownProps.fileAttributes.ID,
+  };
+  const { schemaUrl, targetId } = getFormSchema(props);
+
+  if (!schemaUrl) {
+    return {};
+  }
+
+  // set schemaUrl for `fileSchemaModalHandler` to load the default form values properly
   return {
-    schemaUrl,
+    schemaUrl: `${schemaUrl}/${targetId}`,
   };
 }
 

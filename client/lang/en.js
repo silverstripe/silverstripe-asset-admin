@@ -46,6 +46,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.JOIN": ",",
     "AssetAdmin.JOINLAST": "and",
     "AssetAdmin.LASTEDIT": "Last changed",
+    "AssetAdmin.LINKLABEL_FILE": "Link to a file",
     "AssetAdmin.LOADMORE": "Load more",
     "AssetAdmin.NOITEMSFOUND": "No items found",
     "AssetAdmin.PROMPTFOLDERNAME": "Please enter a folder name (or blank to cancel)",

@@ -17,6 +17,7 @@ call_user_func(function () {
     $config->enablePlugins([
         'ssmedia' => "{$clientPath}/dist/js/TinyMCE_ssmedia.js",
         'ssembed' => "{$clientPath}/dist/js/TinyMCE_ssembed.js",
+        'sslinkfile' => "{$clientPath}/dist/js/TinyMCE_sslink-file.js",
     ]);
     $config->insertButtonsAfter('table', 'ssmedia');
     $config->insertButtonsAfter('ssmedia', 'ssembed');

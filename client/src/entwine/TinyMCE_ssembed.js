@@ -214,7 +214,7 @@ jQuery.entwine('ss', ($) => {
             onInsert={handleInsert}
             onHide={handleHide}
             onLoadingError={handleLoadingError}
-            bodyClassName="modal__dialog"
+            bodyClassName="modal__dialog fill-height"
             className="insert-embed-react__dialog-wrapper"
             fileAttributes={attrs}
           />

@@ -47,7 +47,6 @@ class Editor extends Component {
         this.props.onDelete(data.ID);
       }
       event.preventDefault();
-      return;
     }
   }
 

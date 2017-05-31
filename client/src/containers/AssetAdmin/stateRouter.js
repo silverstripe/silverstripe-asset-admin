@@ -123,7 +123,7 @@ class AssetAdminStateRouter extends Component {
 }
 
 AssetAdminStateRouter.propTypes = {
-  Component: PropTypes.element.isRequired,
+  Component: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
   sectionConfig: PropTypes.shape({
     url: PropTypes.string.isRequired,
   }).isRequired,

@@ -33,10 +33,15 @@ abstract class AssetFormFactory implements FormFactory
     use Configurable;
 
     /**
-     * Insert into HTML content area
+     * Insert into HTML content area as a media object
      */
-    const TYPE_INSERT = 'insert';
-
+    const TYPE_INSERT_MEDIA = 'insert-media';
+    
+    /**
+     * Insert into HTML content area as a link
+     */
+    const TYPE_INSERT_LINK = 'insert-link';
+    
     /**
      * Select file by ID only
      */
@@ -288,6 +293,7 @@ abstract class AssetFormFactory implements FormFactory
      * Get user-visible "Path" for this record
      *
      * @param File $record
+     * @param array $context
      * @return string
      */
     protected function getPath($record, $context = [])
