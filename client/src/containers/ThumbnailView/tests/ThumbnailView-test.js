@@ -3,6 +3,7 @@
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('components/FormAlert/FormAlert');
 jest.mock('components/GalleryItem/GalleryItem');
+jest.mock('griddle-react');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

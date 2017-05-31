@@ -58,7 +58,7 @@
     "eslint-config-airbnb": "^6.2.0",
     "eslint-plugin-react": "^4.2.3",
     "jest-cli": "^19.0.2",
-    "react-addons-test-utils": "^15.5.1",
+    "react-addons-test-utils": "15.3.1",
     "redux-mock-store": "0.0.6"
   },
   "dependencies": {
@@ -72,13 +72,13 @@
     "jquery": "^3.1.1",
     "modernizr": "^3.5.0",
     "qs": "^6.2.1",
-    "react": "^15.3.1",
-    "react-addons-css-transition-group": "^15.3.1",
+    "react": "15.3.1",
+    "react-addons-css-transition-group": "15.3.1",
     "react-apollo": "^0.7.1",
     "react-bootstrap-ss": "^0.30.6",
     "react-dnd": "^2.2.3",
     "react-dnd-html5-backend": "^2.2.3",
-    "react-dom": "^15.3.1",
+    "react-dom": "15.3.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.5.2",
     "react-router-redux": "^4.0.5",
@@ -89,8 +89,12 @@
   },
   "babel": {
     "presets": [
-      "react",
-      "es2015"
+      "es2015",
+      "es2016",
+      "react"
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
     ]
   }
 }

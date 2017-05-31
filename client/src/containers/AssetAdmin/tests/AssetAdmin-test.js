@@ -134,7 +134,7 @@ describe('AssetAdmin', () => {
     });
 
     it('should call handleOpenFolder if action is creating a folder not in admin', () => {
-      props.type = 'insert';
+      props.type = 'insert-media';
       component = ReactTestUtils.renderIntoDocument(
         <AssetAdmin
           {...props}
