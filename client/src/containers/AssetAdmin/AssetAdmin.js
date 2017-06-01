@@ -588,7 +588,7 @@ class AssetAdmin extends SilverStripeComponent {
             {this.props.toolbarChildren}
           </div>
         </Toolbar>
-        <div className="flexbox-area-grow fill-width fill-height gallery">
+        <div className="flexbox-area-grow fill-width gallery">
           {this.renderGallery()}
           {this.renderEditor()}
         </div>
