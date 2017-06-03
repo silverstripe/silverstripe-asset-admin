@@ -35,6 +35,7 @@ use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
+use SilverStripe\Security\Security;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\View\Requirements;
 use SilverStripe\Versioned\Versioned;
@@ -901,7 +902,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Check permission
-        if (!Folder::singleton()->canCreate(Member::currentUser(), $data)) {
+        if (!Folder::singleton()->canCreate(Security::getCurrentUser(), $data)) {
             throw new \InvalidArgumentException(sprintf(
                 '%s create not allowed',
                 Folder::class
