@@ -212,12 +212,29 @@ class FileFormBuilderTest extends SapphireTest
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => 'insert']);
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]);
 
         // Check thumbnail
         // Note: force_resample is turned off for testing
         $altTextField = $form->Fields()->dataFieldByName('AltText');
         $this->assertNotNull($altTextField);
+    }
+
+    public function testInsertFileForm()
+    {
+        $this->logInWithPermission('ADMIN');
+
+        $image = $this->objFromFixture(Image::class, 'image1');
+        $controller = new AssetAdmin();
+        $builder = new ImageFormFactory();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_LINK]);
+
+        // Ensure form contains correct fields
+        $this->assertNotNull($form->Fields()->dataFieldByName('Description'));
+        $this->assertNotNull($form->Fields()->dataFieldByName('TargetBlank'));
+
+        // Don't show dimension tags
+        $this->assertNull($form->Fields()->dataFieldByName('InsertWidth'));
     }
 
     public function testFolderForm()
