@@ -21,7 +21,7 @@ class ProportionConstraintField extends Component {
   handleChange(childIndex, e) {
     const { children, active, onAutofill, data: { ratio } } = this.props;
     const value = e.target.value;
-    const peerIndex = Number(childIndex === 0);
+    const peerIndex = (childIndex === 0) ? 1 : 0;
     const currentName = children[childIndex].props.name;
     const peerName = children[peerIndex].props.name;
     const multiplier = childIndex === 0 ? 1 / ratio : ratio;
@@ -57,7 +57,7 @@ ProportionConstraintField.propTypes = {
   data: PropTypes.shape({
     ratio: PropTypes.number.isRequired,
   }),
-  FieldGroup: PropTypes.element.isRequired,
+  FieldGroup: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired,
 };
 
 ProportionConstraintField.defaultProps = {

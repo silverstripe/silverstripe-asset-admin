@@ -1,5 +1,7 @@
 /* global jest, describe, it, expect, beforeEach */
 
+jest.mock('griddle-react');
+
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
 import { TableView } from '../TableView';

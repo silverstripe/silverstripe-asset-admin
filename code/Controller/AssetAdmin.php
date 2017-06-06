@@ -24,6 +24,7 @@ use SilverStripe\Assets\Upload;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\Form;
@@ -66,6 +67,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'GET api/history' => 'apiHistory',
         'fileEditForm/$ID' => 'fileEditForm',
         'fileInsertForm/$ID' => 'fileInsertForm',
+        'fileEditorLinkForm/$ID' => 'fileEditorLinkForm',
         'fileHistoryForm/$ID/$VersionID' => 'fileHistoryForm',
         'folderCreateForm/$ParentID' => 'folderCreateForm',
     ];
@@ -105,6 +107,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'fileHistoryForm',
         'addToCampaignForm',
         'fileInsertForm',
+        'fileEditorLinkForm',
         'schema',
         'fileSelectForm',
         'fileSearchForm',
@@ -201,6 +204,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ],
                 'folderCreateForm' => [
                     'schemaUrl' => $this->Link('schema/folderCreateForm')
+                ],
+                'fileEditorLinkForm' => [
+                    'schemaUrl' => $this->Link('schema/fileEditorLinkForm'),
                 ],
             ],
         ]);
@@ -629,12 +635,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFileInsertForm($id)
     {
-        return $this->getAbstractFileForm($id, 'fileInsertForm', [ 'Type' => AssetFormFactory::TYPE_INSERT ]);
+        return $this->getAbstractFileForm($id, 'fileInsertForm', [ 'Type' => AssetFormFactory::TYPE_INSERT_MEDIA ]);
     }
 
     /**
-     * Get file insert form
+     * Get file insert media form
      *
+     * @param HTTPRequest $request
      * @return Form
      */
     public function fileInsertForm($request = null)
@@ -651,7 +658,40 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
         return $this->getFileInsertForm($id);
     }
-
+    
+    /**
+     * The form used to generate a form schema, since it's used directly on API endpoints,
+     * it does not have any form actions.
+     *
+     * @param $id
+     * @return Form
+     */
+    public function getFileEditorLinkForm($id)
+    {
+        return $this->getAbstractFileForm($id, 'fileInsertForm', [ 'Type' => AssetFormFactory::TYPE_INSERT_LINK ]);
+    }
+    
+    /**
+     * Get the file insert link form
+     *
+     * @param HTTPRequest $request
+     * @return Form
+     */
+    public function fileEditorLinkForm($request = null)
+    {
+        // Get ID either from posted back value, or url parameter
+        if (!$request) {
+            $this->httpError(400);
+            return null;
+        }
+        $id = $request->param('ID');
+        if (!$id) {
+            $this->httpError(400);
+            return null;
+        }
+        return $this->getFileInsertForm($id);
+    }
+    
     /**
      * Abstract method for generating a form for a file
      *

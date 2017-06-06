@@ -4,6 +4,7 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Control\RequestHandler;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\FieldList;
@@ -29,9 +30,13 @@ class FileFormFactory extends AssetFormFactory
 
         // All non-admin forms are typically readonly
         switch ($this->getFormType($context)) {
-            case static::TYPE_INSERT:
+            case static::TYPE_INSERT_MEDIA:
                 $tabs->setReadonly(true);
                 $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
+                break;
+            case static::TYPE_INSERT_LINK:
+                $tabs->setReadonly(true);
+                $tabs->unshift($this->getFormFieldLinkOptionsTab($record, $context));
                 break;
             case static::TYPE_SELECT:
                 $tabs->setReadonly(true);
@@ -88,6 +93,22 @@ class FileFormFactory extends AssetFormFactory
         return $tab;
     }
 
+    protected function getFormFieldLinkOptionsTab($record, $context = [])
+    {
+        return Tab::create(
+            'LinkOptions',
+            _t(__CLASS__ .'.LINKOPTIONS', 'Link options'),
+            TextField::create(
+                'Description',
+                _t(__CLASS__.'.LINKDESCR', 'Link description')
+            ),
+            CheckboxField::create(
+                'TargetBlank',
+                _t(__CLASS__.'.LINKOPENNEWWIN', 'Open in new window/tab')
+            )
+        );
+    }
+    
     /**
      * Create tab for file attributes
      *
@@ -164,10 +185,15 @@ class FileFormFactory extends AssetFormFactory
     protected function getFormActions(RequestHandler $controller = null, $formName, $context = [])
     {
         $record = $context['Record'];
+        $type = $this->getFormType($context);
 
-        if ($this->getFormType($context) !== static::TYPE_ADMIN) {
+        if ($type === static::TYPE_SELECT || $type === static::TYPE_INSERT_MEDIA) {
             $actionItems = array_filter([
                 $this->getInsertAction($record),
+            ]);
+        } elseif ($type === static::TYPE_INSERT_LINK) {
+            $actionItems = array_filter([
+                $this->getInsertLinkAction($record),
             ]);
         } else {
             $actionItems = array_filter([
@@ -185,10 +211,12 @@ class FileFormFactory extends AssetFormFactory
             ];
         }
 
-        // Add popover
-        $popover = $this->getPopoverMenu($record);
-        if ($popover) {
-            $actionItems[] = $popover;
+        if ($type === static::TYPE_ADMIN) {
+            // Add popover
+            $popover = $this->getPopoverMenu($record);
+            if ($popover) {
+                $actionItems[] = $popover;
+            }
         }
 
         // Build
@@ -279,6 +307,21 @@ class FileFormFactory extends AssetFormFactory
         if ($record && $record->isInDB() && $record->canEdit()) {
             /** @var FormAction $action */
             $action = FormAction::create('insert', _t(__CLASS__.'.INSERT_FILE', 'Insert file'))
+                ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
+        }
+        return $action;
+    }
+    
+    /**
+     * @param File $record
+     * @return FormAction
+     */
+    protected function getInsertLinkAction($record)
+    {
+        $action = null;
+        if ($record && $record->isInDB() && $record->canEdit()) {
+            /** @var FormAction $action */
+            $action = FormAction::create('insert', _t(__CLASS__.'.INSERT_LINK', 'Link to file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return $action;

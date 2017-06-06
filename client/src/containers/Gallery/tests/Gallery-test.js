@@ -27,7 +27,6 @@ describe('Gallery', () => {
 
   beforeEach(() => {
     props = {
-      client: jest.genMockFromModule('apollo-client'),
       actions: {
         gallery: {
           selectFiles: () => {},
@@ -228,7 +227,7 @@ describe('Gallery', () => {
     });
 
     it('should not render bulk actions if not admin type', () => {
-      props.type = 'insert';
+      props.type = 'insert-media';
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
       const bulkActions = gallery.renderBulkActions();
 
@@ -292,8 +291,8 @@ describe('Gallery', () => {
       expect(props.actions.queuedFiles.removeQueuedFile).not.toBeCalled();
     });
 
-    it('should openFile if type is "insert"', () => {
-      props.type = 'insert';
+    it('should openFile if type is "insert-media"', () => {
+      props.type = 'insert-media';
       props.onOpenFile = jest.genMockFunction();
 
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
@@ -302,7 +301,7 @@ describe('Gallery', () => {
       expect(props.onOpenFile).toBeCalled();
     });
 
-    it('should not openFile if type is not "insert"', () => {
+    it('should not openFile if type is not "insert-media"', () => {
       props.type = 'admin';
       props.onOpenFile = jest.genMockFunction();
 
@@ -313,7 +312,7 @@ describe('Gallery', () => {
     });
 
     it('should not openFile if a file is open', () => {
-      props.type = 'insert';
+      props.type = 'insert-media';
       props.fileId = 10;
       props.onOpenFile = jest.genMockFunction();
 
@@ -324,7 +323,7 @@ describe('Gallery', () => {
     });
 
     it('should not openFile if items are still in the queue', () => {
-      props.type = 'insert';
+      props.type = 'insert-media';
       props.queuedFiles.items.push({ _queuedAtTime: 35 });
       props.onOpenFile = jest.genMockFunction();
 

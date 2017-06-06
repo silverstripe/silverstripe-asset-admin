@@ -59,7 +59,11 @@ en:
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_FILE: 'Insert file'
+    INSERT_LINK: 'Link to file'
     OTHER_ACTIONS: 'Other actions'
+    LINKOPTIONS: 'Link options'
+    LINKDESCR: 'Link description'
+    LINKOPENNEWWIN: 'Open in new window/tab'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
     SAVED: Saved

@@ -18,6 +18,44 @@ import deleteFileMutation from 'state/files/deleteFileMutation';
 import unpublishFileMutation from 'state/files/unpublishFileMutation';
 import CONSTANTS from 'constants/index';
 
+function getFormSchema({ config, viewAction, folderId, fileId, type }) {
+  let schemaUrl = null;
+  let targetId = null;
+
+  if (viewAction === CONSTANTS.ACTIONS.CREATE_FOLDER) {
+    schemaUrl = config.form.folderCreateForm.schemaUrl;
+    targetId = folderId;
+  } else if (viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
+    // Types are:
+    // 'insert' -> Insert into html area with options
+    // 'select' -> Select a file with no editable fields
+    // 'edit' (default) -> edit files
+    switch (type) {
+      case 'insert-media':
+        schemaUrl = config.form.fileInsertForm.schemaUrl;
+        break;
+      case 'insert-link':
+        schemaUrl = config.form.fileEditorLinkForm.schemaUrl;
+        break;
+      case 'select':
+        schemaUrl = config.form.fileSelectForm.schemaUrl;
+        break;
+      case 'admin':
+      default:
+        schemaUrl = config.form.fileEditForm.schemaUrl;
+        break;
+    }
+
+    if (!fileId) {
+      return {};
+    }
+    targetId = fileId;
+  } else {
+    return {};
+  }
+  return { schemaUrl, targetId };
+}
+
 class AssetAdmin extends SilverStripeComponent {
 
   constructor(props) {
@@ -520,41 +558,21 @@ class AssetAdmin extends SilverStripeComponent {
    */
   renderEditor() {
     const config = this.props.sectionConfig;
-    // Types are:
-    // 'insert' -> Insert into html area with options
-    // 'select' -> Select a file with no editable fields
-    // 'edit' (default) -> edit files
-    let schemaUrl = null;
-    let targetId = null;
+    const { schemaUrl, targetId } = getFormSchema({
+      config,
+      viewAction: this.props.viewAction,
+      folderId: this.getFolderId(),
+      type: this.props.type,
+      fileId: this.props.fileId,
+    });
 
-    if (this.props.viewAction === CONSTANTS.ACTIONS.CREATE_FOLDER) {
-      schemaUrl = config.form.folderCreateForm.schemaUrl;
-      targetId = this.getFolderId();
-    } else if (this.props.viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
-      switch (this.props.type) {
-        case 'insert':
-          schemaUrl = config.form.fileInsertForm.schemaUrl;
-          break;
-        case 'select':
-          schemaUrl = config.form.fileSelectForm.schemaUrl;
-          break;
-        case 'admin':
-        default:
-          schemaUrl = config.form.fileEditForm.schemaUrl;
-          break;
-      }
-
-      if (!this.props.fileId) {
-        return null;
-      }
-      targetId = this.props.fileId;
-    } else {
+    if (!schemaUrl) {
       return null;
     }
 
     return (
       <Editor
-        className={(this.props.type === 'insert') ? 'editor--dialog' : ''}
+        className={(this.props.dialog) ? 'editor--dialog' : ''}
         targetId={targetId}
         onClose={this.handleCloseFile}
         schemaUrl={schemaUrl}
@@ -620,7 +638,7 @@ AssetAdmin.propTypes = {
     filter: PropTypes.object,
   }),
   onSubmitEditor: PropTypes.func,
-  type: PropTypes.oneOf(['insert', 'select', 'admin']),
+  type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   files: PropTypes.array,
   queuedFiles: PropTypes.shape({
     items: PropTypes.array.isRequired,
@@ -667,7 +685,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { AssetAdmin };
+export { AssetAdmin, getFormSchema };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

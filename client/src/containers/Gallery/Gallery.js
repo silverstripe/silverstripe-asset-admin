@@ -964,12 +964,11 @@ Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
-  client: React.PropTypes.object,
   onUploadSuccess: React.PropTypes.func,
   onCreateFolder: React.PropTypes.func,
   onMoveFilesSuccess: React.PropTypes.func,
   onDelete: React.PropTypes.func,
-  type: PropTypes.oneOf(['insert', 'select', 'admin']),
+  type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
   dialog: PropTypes.bool,
   fileId: PropTypes.number,
