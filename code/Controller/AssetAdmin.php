@@ -67,6 +67,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'GET api/history' => 'apiHistory',
         'fileEditForm/$ID' => 'fileEditForm',
         'fileInsertForm/$ID' => 'fileInsertForm',
+        'fileUpdateForm/$ID' => 'fileUpdateForm',
         'fileEditorLinkForm/$ID' => 'fileEditorLinkForm',
         'fileHistoryForm/$ID/$VersionID' => 'fileHistoryForm',
         'folderCreateForm/$ParentID' => 'folderCreateForm',
@@ -107,6 +108,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'fileHistoryForm',
         'addToCampaignForm',
         'fileInsertForm',
+        'fileUpdateForm',
         'fileEditorLinkForm',
         'schema',
         'fileSelectForm',
@@ -181,6 +183,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ],
                 'fileInsertForm' => [
                     'schemaUrl' => $this->Link('schema/fileInsertForm')
+                ],
+                'fileUpdateForm' => [
+                    'schemaUrl' => $this->Link('schema/fileUpdateForm')
                 ],
                 'remoteEditForm' => [
                     'schemaUrl' => LeftAndMain::singleton()
@@ -638,6 +643,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $this->getAbstractFileForm($id, 'fileInsertForm', [ 'Type' => AssetFormFactory::TYPE_INSERT_MEDIA ]);
     }
 
+    public function getFileUpdateform($id)
+    {
+        return $this->getAbstractFileForm($id, 'fileUpdateForm', [ 'Type' => AssetFormFactory::TYPE_UPDATE_MEDIA ]);
+    }
+
     /**
      * Get file insert media form
      *
@@ -658,7 +668,22 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
         return $this->getFileInsertForm($id);
     }
-    
+
+    public function fileUpdateForm($request = null)
+    {
+        // Get ID either from posted back value, or url parameter
+        if (!$request) {
+            $this->httpError(400);
+            return null;
+        }
+        $id = $request->param('ID');
+        if (!$id) {
+            $this->httpError(400);
+            return null;
+        }
+        return $this->getFileUpdateform($id);
+    }
+
     /**
      * The form used to generate a form schema, since it's used directly on API endpoints,
      * it does not have any form actions.
@@ -670,7 +695,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         return $this->getAbstractFileForm($id, 'fileInsertForm', [ 'Type' => AssetFormFactory::TYPE_INSERT_LINK ]);
     }
-    
+
     /**
      * Get the file insert link form
      *
@@ -691,7 +716,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
         return $this->getFileInsertForm($id);
     }
-    
+
     /**
      * Abstract method for generating a form for a file
      *

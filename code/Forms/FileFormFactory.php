@@ -31,6 +31,7 @@ class FileFormFactory extends AssetFormFactory
         // All non-admin forms are typically readonly
         switch ($this->getFormType($context)) {
             case static::TYPE_INSERT_MEDIA:
+            case static::TYPE_UPDATE_MEDIA:
                 $tabs->setReadonly(true);
                 $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
                 break;
@@ -77,7 +78,7 @@ class FileFormFactory extends AssetFormFactory
         $tab = parent::getFormFieldDetailsTab($record, $context);
 
         $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
-        
+
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
             $tab->push(LiteralField::create(
                 'EditLink',
@@ -108,7 +109,7 @@ class FileFormFactory extends AssetFormFactory
             )
         );
     }
-    
+
     /**
      * Create tab for file attributes
      *
@@ -190,6 +191,10 @@ class FileFormFactory extends AssetFormFactory
         if ($type === static::TYPE_SELECT || $type === static::TYPE_INSERT_MEDIA) {
             $actionItems = array_filter([
                 $this->getInsertAction($record),
+            ]);
+        } elseif ($type === static::TYPE_UPDATE_MEDIA) {
+            $actionItems = array_filter([
+                $this->getUpdateAction($record),
             ]);
         } elseif ($type === static::TYPE_INSERT_LINK) {
             $actionItems = array_filter([
@@ -311,7 +316,22 @@ class FileFormFactory extends AssetFormFactory
         }
         return $action;
     }
-    
+
+    /**
+     * @param File $record
+     * @return FormAction
+     */
+    protected function getUpdateAction($record)
+    {
+        $action = null;
+        if ($record && $record->isInDB() && $record->canEdit()) {
+            /** @var FormAction $action */
+            $action = FormAction::create('update', _t(__CLASS__.'.UPDATE_FILE', 'Update file'))
+                ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
+        }
+        return $action;
+    }
+
     /**
      * @param File $record
      * @return FormAction

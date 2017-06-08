@@ -31,6 +31,9 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
     // 'select' -> Select a file with no editable fields
     // 'edit' (default) -> edit files
     switch (type) {
+      case 'update-media':
+        schemaUrl = config.form.fileUpdateForm.schemaUrl;
+        break;
       case 'insert-media':
         schemaUrl = config.form.fileInsertForm.schemaUrl;
         break;
@@ -53,6 +56,7 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   } else {
     return {};
   }
+
   return { schemaUrl, targetId };
 }
 
