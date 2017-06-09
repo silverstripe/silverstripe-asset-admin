@@ -111,7 +111,7 @@ InsertMediaModal.propTypes = {
     url: PropTypes.string,
     form: PropTypes.object,
   }),
-  type: PropTypes.oneOf(['insert-media', 'update-media', 'insert-link', 'select', 'admin']),
+  type: PropTypes.oneOf(['insert-media', 'update-media', 'insert-link', 'update-link', 'select', 'admin']),
   schemaUrl: PropTypes.string,
   show: PropTypes.bool,
   setOverrides: PropTypes.func,

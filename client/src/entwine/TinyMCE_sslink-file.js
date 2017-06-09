@@ -61,13 +61,14 @@ jQuery.entwine('ss', ($) => {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this.handleInsert(...args);
       const attrs = this.getOriginalAttributes();
+      const type = attrs.ID ? 'update-link' : 'insert-link';
 
       // create/update the react component
       ReactDOM.render(
         <ApolloProvider store={store} client={client}>
           <InjectableInsertMediaModal
             show={show}
-            type="insert-link"
+            type={type}
             onInsert={handleInsert}
             onHide={handleHide}
             title={false}

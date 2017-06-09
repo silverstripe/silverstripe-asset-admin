@@ -37,12 +37,20 @@ abstract class AssetFormFactory implements FormFactory
      */
     const TYPE_INSERT_MEDIA = 'insert-media';
 
+    /**
+     * Update a media object
+     */
     const TYPE_UPDATE_MEDIA = 'update-media';
 
     /**
      * Insert into HTML content area as a link
      */
     const TYPE_INSERT_LINK = 'insert-link';
+
+    /**
+     * Update a link
+     */
+    const TYPE_UPDATE_LINK  = 'update-link';
 
     /**
      * Select file by ID only

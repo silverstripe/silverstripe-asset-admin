@@ -36,6 +36,7 @@ class FileFormFactory extends AssetFormFactory
                 $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
                 break;
             case static::TYPE_INSERT_LINK:
+            case static::TYPE_UPDATE_LINK:
                 $tabs->setReadonly(true);
                 $tabs->unshift($this->getFormFieldLinkOptionsTab($record, $context));
                 break;
@@ -200,6 +201,10 @@ class FileFormFactory extends AssetFormFactory
             $actionItems = array_filter([
                 $this->getInsertLinkAction($record),
             ]);
+        } elseif ($type === static::TYPE_UPDATE_LINK) {
+            $actionItems = array_filter([
+                $this->getUpdateLinkAction($record),
+            ]);
         } else {
             $actionItems = array_filter([
                 $this->getSaveAction($record),
@@ -342,6 +347,21 @@ class FileFormFactory extends AssetFormFactory
         if ($record && $record->isInDB() && $record->canEdit()) {
             /** @var FormAction $action */
             $action = FormAction::create('insert', _t(__CLASS__.'.INSERT_LINK', 'Link to file'))
+                ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
+        }
+        return $action;
+    }
+
+    /**
+     * @param File $record
+     * @return FormAction
+     */
+    protected function getUpdateLinkAction($record)
+    {
+        $action = null;
+        if ($record && $record->isInDB() && $record->canEdit()) {
+            /** @var FormAction $action */
+            $action = FormAction::create('insert', _t(__CLASS__.'.UPDATE_LINK', 'Update link'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return $action;
