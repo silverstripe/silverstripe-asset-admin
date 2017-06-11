@@ -173,6 +173,7 @@ jQuery.entwine('ss', ($) => {
       const store = window.ss.store;
       const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
+      const type = attrs.ID ? 'update-media' : 'insert-media';
 
       delete attrs.url;
 
@@ -182,6 +183,7 @@ jQuery.entwine('ss', ($) => {
           <InjectableInsertMediaModal
             title={false}
             show={show}
+            type={type}
             onInsert={handleInsert}
             onHide={handleHide}
             bodyClassName="modal__dialog"

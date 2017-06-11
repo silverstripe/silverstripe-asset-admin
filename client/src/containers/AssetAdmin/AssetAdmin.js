@@ -28,14 +28,21 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   } else if (viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
     // Types are:
     // 'insert' -> Insert into html area with options
+    // 'update' -> Update inserted item with options
     // 'select' -> Select a file with no editable fields
     // 'edit' (default) -> edit files
     switch (type) {
       case 'insert-media':
         schemaUrl = config.form.fileInsertForm.schemaUrl;
         break;
+      case 'update-media':
+        schemaUrl = config.form.fileUpdateForm.schemaUrl;
+        break;
       case 'insert-link':
         schemaUrl = config.form.fileEditorLinkForm.schemaUrl;
+        break;
+      case 'update-link':
+        schemaUrl = config.form.fileUpdateEditorLinkForm.schemaUrl;
         break;
       case 'select':
         schemaUrl = config.form.fileSelectForm.schemaUrl;
@@ -53,6 +60,7 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   } else {
     return {};
   }
+
   return { schemaUrl, targetId };
 }
 

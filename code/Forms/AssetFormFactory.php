@@ -36,12 +36,22 @@ abstract class AssetFormFactory implements FormFactory
      * Insert into HTML content area as a media object
      */
     const TYPE_INSERT_MEDIA = 'insert-media';
-    
+
+    /**
+     * Update a media object
+     */
+    const TYPE_UPDATE_MEDIA = 'update-media';
+
     /**
      * Insert into HTML content area as a link
      */
     const TYPE_INSERT_LINK = 'insert-link';
-    
+
+    /**
+     * Update a link
+     */
+    const TYPE_UPDATE_LINK  = 'update-link';
+
     /**
      * Select file by ID only
      */
@@ -284,11 +294,11 @@ abstract class AssetFormFactory implements FormFactory
                 $this->getPath($record, $context)
             )
         );
-        
+
         $location->setEmptyString('(root)');
         return $tab;
     }
-    
+
     /**
      * Get user-visible "Path" for this record
      *
