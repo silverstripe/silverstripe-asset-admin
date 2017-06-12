@@ -32,7 +32,7 @@ class AssetAdminTest extends FunctionalTest
 
         TestAssetStore::activate('AssetAdminTest');
         $memberID = $this->logInWithPermission('ADMIN');
-        $this->session = Session::create(array('loggedInAs' => $memberID));
+        $this->session = new Session([ 'loggedInAs' => $memberID ]);
 
         File::add_extension(FileExtension::class);
         Folder::add_extension(FolderExtension::class);
@@ -53,7 +53,7 @@ class AssetAdminTest extends FunctionalTest
 
         // Override FunctionalTest defaults
         SecurityToken::enable();
-        $this->session->inst_set('SecurityID', SecurityToken::inst()->getValue());
+        $this->session->set('SecurityID', SecurityToken::inst()->getValue());
     }
 
     public function tearDown()
