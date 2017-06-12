@@ -14,10 +14,10 @@ import ProportionConstraintField from 'components/ProportionConstraintField/Prop
 import HistoryList from 'containers/HistoryList/HistoryList';
 
 document.addEventListener('DOMContentLoaded', () => {
-  Injector.register('UploadField', UploadField);
-  Injector.register('PreviewImageField', PreviewImageField);
-  Injector.register('HistoryList', HistoryList);
-  Injector.register('ProportionConstraintField', ProportionConstraintField);
+  Injector.react.register('UploadField', UploadField);
+  Injector.react.register('PreviewImageField', PreviewImageField);
+  Injector.react.register('HistoryList', HistoryList);
+  Injector.react.register('ProportionConstraintField', ProportionConstraintField);
 
   const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
 
