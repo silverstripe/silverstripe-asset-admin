@@ -168,6 +168,8 @@ class UploadField extends SilverStripeComponent {
   handleAddInsert(data, file) {
     this.props.actions.uploadField.addFile(this.props.id, file);
     this.handleAddHide();
+
+    return Promise.resolve({});
   }
 
   render() {

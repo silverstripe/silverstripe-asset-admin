@@ -156,13 +156,14 @@ function mapStateToProps(state, ownProps) {
   } else if (ownProps.folder) {
     folderId = ownProps.folder.id;
   }
+  const fileId = (ownProps.fileAttributes) ? ownProps.fileAttributes.ID : ownProps.fileId;
 
   const props = {
     config,
     viewAction: ownProps.viewAction,
     folderId,
     type: ownProps.type,
-    fileId: ownProps.fileAttributes.ID,
+    fileId,
   };
   const { schemaUrl, targetId } = getFormSchema(props);
 

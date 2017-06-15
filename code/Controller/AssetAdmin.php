@@ -71,6 +71,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'fileEditorLinkForm/$ID' => 'fileEditorLinkForm',
         'fileHistoryForm/$ID/$VersionID' => 'fileHistoryForm',
         'folderCreateForm/$ParentID' => 'folderCreateForm',
+        'fileSelectForm/$ID' => 'fileSelectForm',
     ];
 
     /**
