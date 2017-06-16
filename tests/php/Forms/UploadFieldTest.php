@@ -3,12 +3,10 @@
 namespace SilverStripe\AssetAdmin\Tests\Forms;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
-use SilverStripe\Assets\File;
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
-use SilverStripe\Control\Controller;
-use SilverStripe\Dev\Debug;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -50,8 +48,8 @@ class UploadFieldTest extends SapphireTest
         /** @var Image $image */
         $image = $this->objFromFixture(Image::class, 'image1');
         $field->setItems(new ArrayList([$image]));
-        Form::create(new Controller(), 'MyForm', FieldList::create($field), FieldList::create());
         $admin = new AssetAdmin();
+        Form::create($admin, 'MyForm', FieldList::create($field), FieldList::create());
 
         $attributes = $field->getAttributes();
         $schema = [
@@ -74,7 +72,7 @@ class UploadFieldTest extends SapphireTest
             'attributes' => [],
             'data' => [
                 'createFileEndpoint' => [
-                    'url' => 'admin/assets/api/createFile',
+                    'url' => 'admin/assets/MyForm/field/MyField/upload',
                     'method' => 'post',
                     'payloadFormat' => 'urlencoded',
                 ],
