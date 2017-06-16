@@ -32,9 +32,17 @@ jQuery.entwine('ss', ($) => {
       const store = window.ss.store;
       const client = window.ss.apolloClient;
       const props = this.getAttributes();
+      const form = $(this).closest('form');
+      const onChange = () => {
+        // Trigger change detection (see jquery.changetracker.js)
+        setTimeout(() => {
+          form.trigger('change');
+        }, 0);
+      };
+
       ReactDOM.render(
         <ApolloProvider store={store} client={client}>
-          <InjectableUploadField {...props} />
+          <InjectableUploadField {...props} onChange={onChange} />
         </ApolloProvider>,
         this.parent()[0]
       );
