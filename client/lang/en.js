@@ -19,6 +19,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.BULK_ACTIONS_PLACEHOLDER": "Select an action...",
     "AssetAdmin.CANCEL": "Cancel",
     "AssetAdmin.CONFIRMDELETE": "Are you sure you want to delete this record?",
+    "AssetAdmin.CONFIRMUNPUBLISH": "Are you sure you want to unpublish this record?",
     "AssetAdmin.CREATED": "First uploaded",
     "AssetAdmin.DELETE": "Delete",
     "AssetAdmin.DIM": "Dimensions",
