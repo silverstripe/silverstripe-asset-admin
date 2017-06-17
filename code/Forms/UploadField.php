@@ -3,7 +3,10 @@
 namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Forms\FileHandleField;
 use SilverStripe\Forms\FileUploadReceiver;
 use SilverStripe\Forms\FormField;
@@ -24,6 +27,14 @@ use SilverStripe\ORM\SS_List;
 class UploadField extends FormField implements FileHandleField
 {
     use FileUploadReceiver;
+
+    /**
+     * @config
+     * @var array
+     */
+    private static $allowed_actions = [
+        'upload'
+    ];
 
     /**
      * @config
@@ -58,6 +69,10 @@ class UploadField extends FormField implements FileHandleField
     public function __construct($name, $title = null, SS_List $items = null)
     {
         $this->constructFileUploadReceiver();
+
+        // When creating new files, rename on conflict
+        $this->getUpload()->setReplaceFile(false);
+
         parent::__construct($name, $title);
         if ($items) {
             $this->setItems($items);
@@ -67,7 +82,7 @@ class UploadField extends FormField implements FileHandleField
     public function getSchemaDataDefaults()
     {
         $defaults = parent::getSchemaDataDefaults();
-        $uploadLink = AssetAdmin::singleton()->Link('api/createFile');
+        $uploadLink = $this->Link('upload');
         $defaults['data']['createFileEndpoint'] = [
             'url' => $uploadLink,
             'method' => 'post',
@@ -76,6 +91,55 @@ class UploadField extends FormField implements FileHandleField
         $defaults['data']['multi'] = $this->getIsMultiUpload();
         $defaults['data']['parentid'] = $this->getFolderID();
         return $defaults;
+    }
+
+    /**
+     * Creates a single file based on a form-urlencoded upload.
+     *
+     * @param HTTPRequest $request
+     * @return HTTPResponse
+     */
+    public function upload(HTTPRequest $request)
+    {
+        if ($this->isDisabled() || $this->isReadonly()) {
+            return $this->httpError(403);
+        }
+
+        // CSRF check
+        $token = $this->getForm()->getSecurityToken();
+        if (!$token->checkRequest($request)) {
+            return $this->httpError(400);
+        }
+
+        $tmpFile = $request->postVar('Upload');
+        /** @var File $file */
+        $file = $this->saveTemporaryFile($tmpFile, $error);
+
+        // Prepare result
+        if ($error) {
+            $result = [
+                'message' => [
+                    'type' => 'error',
+                    'value' => $error,
+                ]
+            ];
+            $this->getUpload()->clearErrors();
+            return (new HTTPResponse(json_encode($result), 400))
+                ->addHeader('Content-Type', 'application/json');
+        }
+
+        // Return success response
+        $result = [
+            AssetAdmin::singleton()->getObjectFromData($file)
+        ];
+
+        // Don't discard pre-generated client side canvas thumbnail
+        if ($result[0]['category'] === 'image') {
+            unset($result[0]['thumbnail']);
+        }
+        $this->getUpload()->clearErrors();
+        return (new HTTPResponse(json_encode($result)))
+            ->addHeader('Content-Type', 'application/json');
     }
 
     /**
