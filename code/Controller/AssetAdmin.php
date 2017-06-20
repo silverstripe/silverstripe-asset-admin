@@ -473,7 +473,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 }
 
                 $output[] = array(
-                    'versionid' => $version->Version,
+                    'versionid' => (int) $version->Version,
                     'date_ago' => $version->dbObject('LastEdited')->Ago(),
                     'date_formatted' => $version->dbObject('LastEdited')->Nice(),
                     'status' => ($version->WasPublished) ? _t(__CLASS__.'.PUBLISHED', 'Published') : '',

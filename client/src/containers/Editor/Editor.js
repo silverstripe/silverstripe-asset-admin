@@ -138,6 +138,7 @@ class Editor extends Component {
     return (<div className={editorClasses.join(' ')}>
       <div className="editor__details fill-height">
         <FormBuilderLoader
+          identifier="AssetAdmin.EditForm"
           schemaUrl={formSchemaUrl}
           afterMessages={this.renderCancelButton()}
           handleSubmit={this.handleSubmit}
