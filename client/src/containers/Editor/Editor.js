@@ -148,6 +148,7 @@ class Editor extends Component {
         />
         {error}
         <FormBuilderModal
+          identifier="AssetAdmin.AddToCampaign"
           show={this.state.openModal}
           handleHide={this.closeModal}
           schemaUrl={modalSchemaUrl}

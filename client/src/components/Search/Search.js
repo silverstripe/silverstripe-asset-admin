@@ -315,7 +315,10 @@ class Search extends SilverStripeComponent {
 
           <Collapse in={expanded}>
             <div id={formId} className="search__filter-panel">
-              <FormBuilderLoader identifier="AssetAdmin.SearchForm" schemaUrl={this.props.searchFormSchemaUrl} />
+              <FormBuilderLoader
+                identifier="AssetAdmin.SearchForm"
+                schemaUrl={this.props.searchFormSchemaUrl}
+              />
             </div>
           </Collapse>
         </div>

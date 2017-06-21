@@ -66,6 +66,7 @@ class InsertEmbedModal extends Component {
         onLoadingError: this.handleLoadingError,
         showErrorMessage: true,
         responseClassBad: 'alert alert-danger',
+        identifier: 'AssetAdmin.InsertEmbedModal',
       },
       this.props,
       {
