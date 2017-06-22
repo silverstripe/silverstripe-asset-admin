@@ -181,6 +181,7 @@ jQuery.entwine('ss', ($) => {
         <ApolloProvider store={store} client={client}>
           <InjectableInsertMediaModal
             title={false}
+            type="insert-media"
             show={show}
             onInsert={handleInsert}
             onHide={handleHide}

@@ -68,7 +68,4 @@ export {
   ProportionConstraintField,
 };
 
-export default inject(
-  ProportionConstraintField,
-  ['FieldGroup']
-);
+export default inject(['FieldGroup'])(ProportionConstraintField);
