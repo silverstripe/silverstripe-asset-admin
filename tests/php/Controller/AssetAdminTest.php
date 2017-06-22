@@ -7,6 +7,7 @@ use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
+use SilverStripe\Assets\Upload_Validator;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Session;
 use SilverStripe\Dev\FunctionalTest;
@@ -32,7 +33,7 @@ class AssetAdminTest extends FunctionalTest
 
         TestAssetStore::activate('AssetAdminTest');
         $memberID = $this->logInWithPermission('ADMIN');
-        $this->session = Session::create(array('loggedInAs' => $memberID));
+        $this->session = new Session([ 'loggedInAs' => $memberID ]);
 
         File::add_extension(FileExtension::class);
         Folder::add_extension(FolderExtension::class);
@@ -53,7 +54,10 @@ class AssetAdminTest extends FunctionalTest
 
         // Override FunctionalTest defaults
         SecurityToken::enable();
-        $this->session->inst_set('SecurityID', SecurityToken::inst()->getValue());
+        $this->session->set('SecurityID', SecurityToken::inst()->getValue());
+
+        // Disable is_uploaded_file() in tests
+        Upload_Validator::config()->set('use_is_uploaded_file', false);
     }
 
     public function tearDown()
