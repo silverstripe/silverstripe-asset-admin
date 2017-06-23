@@ -19,7 +19,9 @@ class ImageFormFactory extends FileFormFactory
             return null;
         }
         // Add dimensions to specs
-        $dimensions = $record->getDimensions() ? $record->getDimensions() . 'px,' : '';
+        $width = $record->getWidth();
+        $height = $record->getHeight();
+        $dimensions = $width && $height ? sprintf('%dx%dpx', $width, $height) : '';
         return sprintf(
             '<div class="editor__specs">%s %s %s</div>',
             $dimensions,
