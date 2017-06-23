@@ -72,12 +72,12 @@ class AssetAdminFile extends DataExtension
      */
     protected function getInsertDimensions()
     {
-        $dimensions = $this->owner->getDimensions('array');
-        if (!$dimensions) {
+        $width = $this->owner->getWidth();
+        $height = $this->owner->getHeight();
+        if (!$height || !$width) {
             return null;
         }
 
-        list ($width, $height) = $dimensions;
         $maxWidth = $this->owner->config()->get('insert_width');
         $maxHeight = $this->owner->config()->get('insert_height');
 
