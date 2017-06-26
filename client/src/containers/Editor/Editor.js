@@ -19,6 +19,7 @@ class Editor extends Component {
 
     this.state = {
       openModal: false,
+      loadingError: null,
     };
   }
 
@@ -97,12 +98,12 @@ class Editor extends Component {
     });
   }
 
-  handleLoadingError() {
-    this.state.loadingError = true;
+  handleLoadingError(exception) {
+    this.setState({ loadingError: exception.errors[0] });
   }
 
   handleFetchingSchema() {
-    this.state.loadingError = false;
+    this.setState({ loadingError: null });
   }
 
   renderCancelButton() {
@@ -128,9 +129,13 @@ class Editor extends Component {
 
     let error = null;
     if (this.state.loadingError) {
+      const message = this.state.loadingError.value;
       error = (
         <div className="editor__file-preview-message--file-missing">
-          {i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found')}
+          {(message.contains('Unexpected token < in JSON'))
+            ? i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found')
+            : message
+          }
         </div>
       );
     }
