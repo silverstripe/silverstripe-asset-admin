@@ -7,8 +7,8 @@ use SilverStripe\Core\Convert;
 use SilverStripe\ORM\SS_List;
 
 /**
- * Delete multiple {@link Folder} records (and the associated filesystem nodes).
- * Usually used through the {@link AssetAdmin} interface.
+ * Delete multiple {@link SilverStripe\Assets\Folder} records (and the associated filesystem nodes).
+ * Usually used through the {@link SilverStripe\AssetAdmin\Controller\AssetAdmin} interface.
  */
 class DeleteAssets extends CMSBatchAction
 {

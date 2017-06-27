@@ -13,7 +13,7 @@ use SilverStripe\GraphQL\Manager;
 use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
 
 /**
- * Most of the search functionality is covered in {@link FileFilterInputTypeCreatorTest}
+ * Most of the search functionality is covered in {@link SilverStripe\AssetAdmin\Tests\GraphQL\FileFilterInputTypeCreatorTest}
  */
 class ReadFileQueryCreatorTest extends SapphireTest
 {
