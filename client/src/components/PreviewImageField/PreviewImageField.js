@@ -1,7 +1,7 @@
 import i18n from 'i18n';
 import React, { PropTypes, Component } from 'react';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
-import CONSTANTS from 'constants';
+import CONSTANTS from 'constants/index';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { formValueSelector } from 'redux-form';

@@ -43,9 +43,9 @@ class PreviewImageField extends FormField
 
             $defaults['data'] = array_merge_recursive($defaults['data'], [
                 'id' => $record->ID,
-                'parentid' => ($parent) ? $parent->ID : 0,
+                'parentid' => ($parent) ? (int) $parent->ID : 0,
                 'url' => $record->Link(),
-                'version' => $record->Version,
+                'version' => (int) $record->Version,
                 'exists' => $record->exists(),
                 'preview' => $record->PreviewLink(),
                 'category' => $record instanceof Folder ? 'folder' : $record->appCategory(),

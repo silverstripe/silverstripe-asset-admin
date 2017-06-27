@@ -27,8 +27,8 @@ class HistoryListField extends FormField
         if ($record = $this->getRecord()) {
             $latest = Versioned::get_latest_version($record->baseClass(), $record->ID);
             if ($latest) {
-                $state['data']['fileId'] = $latest->ID;
-                $state['data']['latestVersionId'] = $latest->Version;
+                $state['data']['fileId'] = (int) $latest->ID;
+                $state['data']['latestVersionId'] = (int) $latest->Version;
             }
         }
 
