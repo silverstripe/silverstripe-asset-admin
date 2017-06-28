@@ -385,8 +385,8 @@ function mapStateToProps(state, ownProps) {
   const securityID = state.config.SecurityID;
   const id = ownProps.id;
   const upload = state.assetAdmin.previewField[id] || {};
-  const selector = formValueSelector(ownProps.formid);
-
+  const formID = `formState.${ownProps.formid}`;
+  const selector = formValueSelector(formID);
   return {
     securityID,
     upload,
