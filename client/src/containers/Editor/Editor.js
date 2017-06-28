@@ -132,7 +132,7 @@ class Editor extends Component {
       const message = this.state.loadingError.value;
       error = (
         <div className="editor__file-preview-message--file-missing">
-          {(message.contains('Unexpected token < in JSON'))
+          {(message.includes('Unexpected token < in JSON'))
             ? i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found')
             : message
           }
