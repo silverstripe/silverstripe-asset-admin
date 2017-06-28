@@ -112,6 +112,17 @@
     > span {
       text-align: right;
       color: inherit;
+
+      @include media-breakpoint-down(sm) {
+        font-size: 0;
+
+        &:after {
+          content: "\e002";
+          font-size: $font-size-lg;
+          font-family: silverstripe;
+          color: $btn-secondary-color;
+        }
+      }
     }
 
     > span::before {
