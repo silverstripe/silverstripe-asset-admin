@@ -149,9 +149,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         parent::init();
 
         $module = ModuleLoader::getModule('silverstripe/asset-admin');
-        Requirements::add_i18n_javascript($module->getResourcePath('client/lang'), false, true);
-        Requirements::javascript($module->getResourcePath("client/dist/js/bundle.js"));
-        Requirements::css($module->getResourcePath("client/dist/styles/bundle.css"));
+        Requirements::add_i18n_javascript($module->getRelativeResourcePath('client/lang'), false, true);
+        Requirements::javascript($module->getRelativeResourcePath("client/dist/js/bundle.js"));
+        Requirements::css($module->getRelativeResourcePath("client/dist/styles/bundle.css"));
 
         CMSBatchActionHandler::register('delete', DeleteAssets::class, Folder::class);
     }
@@ -660,7 +660,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
         return $this->getFileInsertForm($id);
     }
-    
+
     /**
      * The form used to generate a form schema, since it's used directly on API endpoints,
      * it does not have any form actions.
@@ -672,7 +672,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         return $this->getAbstractFileForm($id, 'fileInsertForm', [ 'Type' => AssetFormFactory::TYPE_INSERT_LINK ]);
     }
-    
+
     /**
      * Get the file insert link form
      *
@@ -693,7 +693,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
         return $this->getFileInsertForm($id);
     }
-    
+
     /**
      * Abstract method for generating a form for a file
      *
