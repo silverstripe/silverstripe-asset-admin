@@ -235,4 +235,18 @@ class UploadField extends FormField implements FileHandleField
     {
         return 'entwine-uploadfield uploadfield';
     }
+
+    public function performReadonlyTransformation()
+    {
+        $clone = clone $this;
+        $clone->setReadonly(true);
+        return $clone;
+    }
+
+    public function performDisabledTransformation()
+    {
+        $clone = clone $this;
+        $clone->setDisabled(true);
+        return $clone;
+    }
 }
