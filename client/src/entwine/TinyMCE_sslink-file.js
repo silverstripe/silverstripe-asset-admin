@@ -32,7 +32,8 @@ const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
 jQuery.entwine('ss', ($) => {
   // this is required because the React version of e.preventDefault() doesn't work
   // this is to stop React Tabs from navigating the page
-  $('.insert-link__dialog-wrapper--internal .nav-link').entwine({
+  $('.insert-link__dialog-wrapper--internal .nav-link, ' +
+  '.insert-media-react__dialog-wrapper .breadcrumb__container a').entwine({
     onclick: (e) => e.preventDefault(),
   });
 

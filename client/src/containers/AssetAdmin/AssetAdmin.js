@@ -78,6 +78,7 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
     this.compare = this.compare.bind(this);
+    this.setBreadcrumbs = this.setBreadcrumbs.bind(this);
   }
 
   componentWillMount() {

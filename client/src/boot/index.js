@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 import Config from 'lib/Config';
 import reactRouteRegister from 'lib/ReactRouteRegister';
-import reducerRegister from 'lib/ReducerRegister';
 import galleryReducer from 'state/gallery/GalleryReducer';
 import queuedFilesReducer from 'state/queuedFiles/QueuedFilesReducer';
 import AssetAdminRouter from 'containers/AssetAdmin/AssetAdminRouter';
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ],
   });
 
-  reducerRegister.add('assetAdmin', combineReducers({
+  Injector.reducer.register('assetAdmin', combineReducers({
     gallery: galleryReducer,
     queuedFiles: queuedFilesReducer,
     uploadField: uploadFieldReducer,

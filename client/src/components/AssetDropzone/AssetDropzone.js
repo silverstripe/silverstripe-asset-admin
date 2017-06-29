@@ -355,7 +355,7 @@ class AssetDropzone extends SilverStripeComponent {
         type: file.type,
         url: preview.thumbnailURL,
         thumbnail: preview.thumbnailURL,
-        smallThumbail: preview.thumbnailURL,
+        smallThumbnail: preview.thumbnailURL,
       };
 
       this.props.handleAddedFile(details);
@@ -377,7 +377,7 @@ class AssetDropzone extends SilverStripeComponent {
         // and using the canvas data URI as the thumbnail image instead.
 
         if (this.getFileCategory(file.type) === 'image') {
-          const img = document.createElement('img');
+          const img = new Image();
 
           resolve(this.loadImage(img, event.target.result));
         } else {
@@ -410,10 +410,11 @@ class AssetDropzone extends SilverStripeComponent {
    */
   loadImage(img, newSource) {
     return new Promise((resolve) => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
       // eslint-disable-next-line no-param-reassign
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
         // two times for retina
         const previewWidth = this.props.preview.width * 2;
         const previewHeight = this.props.preview.height * 2;
@@ -435,7 +436,6 @@ class AssetDropzone extends SilverStripeComponent {
         }
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
         const thumbnailURL = canvas.toDataURL('image/png');
 
         resolve({

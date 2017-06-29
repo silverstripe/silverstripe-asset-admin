@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { formValueSelector } from 'redux-form';
 import * as previewFieldActions from 'state/previewField/PreviewFieldActions';
 import { getFileExtension } from 'lib/DataFormat';
+import getFormState from 'lib/getFormState';
 
 class PreviewImageField extends Component {
   constructor(props) {
@@ -385,7 +386,7 @@ function mapStateToProps(state, ownProps) {
   const securityID = state.config.SecurityID;
   const id = ownProps.id;
   const upload = state.assetAdmin.previewField[id] || {};
-  const selector = formValueSelector(ownProps.formid);
+  const selector = formValueSelector(ownProps.formid, getFormState);
 
   return {
     securityID,
