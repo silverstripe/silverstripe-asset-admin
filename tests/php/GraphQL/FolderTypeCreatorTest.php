@@ -10,7 +10,7 @@ use SilverStripe\Dev\SapphireTest;
 use SilverStripe\GraphQL\Manager;
 
 /**
- * Most of the search functionality is covered in {@link FileFilterInputTypeCreatorTest}
+ * Most of the search functionality is covered in {@link SilverStripe\AssetAdmin\Tests\GraphQL\FileFilterInputTypeCreatorTest}
  */
 class FolderTypeCreatorTest extends SapphireTest
 {
