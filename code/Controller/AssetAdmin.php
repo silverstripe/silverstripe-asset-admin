@@ -602,7 +602,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFileEditForm($id)
     {
-        return $this->getAbstractFileForm($id, 'fileEditForm');
+        $form = $this->getAbstractFileForm($id, 'fileEditForm');
+        $form->setNotifyUnsavedChanges(true);
+        return $form;
     }
 
     /**
