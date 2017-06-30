@@ -1,8 +1,11 @@
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import React, { PropTypes, Component } from 'react';
 import CONSTANTS from 'constants/index';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
+import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
 
 class Editor extends Component {
   constructor(props) {
@@ -45,6 +48,7 @@ class Editor extends Component {
     if (name === 'action_delete') {
       // eslint-disable-next-line no-alert
       if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
+        this.props.actions.unsavedForms.removeFormChanged('AssetAdmin.EditForm');
         this.props.onDelete(data.ID);
       }
       event.preventDefault();
@@ -169,16 +173,27 @@ class Editor extends Component {
 }
 
 Editor.propTypes = {
-  dialog: React.PropTypes.bool,
-  className: React.PropTypes.string,
-  targetId: React.PropTypes.number.isRequired,
-  onClose: React.PropTypes.func.isRequired,
-  onSubmit: React.PropTypes.func.isRequired,
-  onDelete: React.PropTypes.func.isRequired,
-  onUnpublish: React.PropTypes.func.isRequired,
-  schemaUrl: React.PropTypes.string.isRequired,
-  addToCampaignSchemaUrl: React.PropTypes.string,
-  openAddCampaignModal: React.PropTypes.bool,
+  dialog: PropTypes.bool,
+  className: PropTypes.string,
+  targetId: PropTypes.number.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onUnpublish: PropTypes.func.isRequired,
+  schemaUrl: PropTypes.string.isRequired,
+  addToCampaignSchemaUrl: PropTypes.string,
+  openAddCampaignModal: PropTypes.bool,
+  actions: PropTypes.object,
 };
 
-export default Editor;
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      unsavedForms: bindActionCreators(UnsavedFormsActions, dispatch),
+    },
+  };
+}
+
+export { Editor };
+
+export default connect(() => ({}), mapDispatchToProps)(Editor);

@@ -40,6 +40,7 @@ const config = [
       {
         // @todo remove this once @silverstripe/webpack-config has this updated and published
         'containers/InsertLinkModal/fileSchemaModalHandler': 'FileSchemaModalHandler',
+        'state/unsavedForms/UnsavedFormsActions': 'UnsavedFormsActions',
       }
     ),
     module: moduleJS(ENV, PATHS),
