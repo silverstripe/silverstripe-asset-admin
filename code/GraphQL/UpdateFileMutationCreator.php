@@ -12,6 +12,7 @@ use SilverStripe\GraphQL\Manager;
 
 /**
  * Handles create and update
+ * @skipUpgrade
  */
 class UpdateFileMutationCreator extends MutationCreator implements OperationResolver
 {

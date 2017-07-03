@@ -7,6 +7,9 @@ use GraphQL\Type\Definition\Type;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 
+/**
+ * @skipUpgrade
+ */
 class FileInterfaceTypeCreator extends DataObjectInterfaceTypeCreator
 {
 
