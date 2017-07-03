@@ -60,19 +60,20 @@ en:
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_FILE: 'Insert file'
     INSERT_LINK: 'Link to file'
-    OTHER_ACTIONS: 'Other actions'
-    LINKOPTIONS: 'Link options'
     LINKDESCR: 'Link description'
     LINKOPENNEWWIN: 'Open in new window/tab'
+    LINKOPTIONS: 'Link options'
+    OTHER_ACTIONS: 'Other actions'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
     SAVED: Saved
   SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
     CREATE: Create
-  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
-    FOLDER_NAME: 'Folder name'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Add media'
     Cancel: Cancel
+    ERROR_ABSOLUTE: 'Only absolute urls can be embedded'
+    ERROR_HOSTNAME: 'This file hostname is not included in the whitelist'
+    ERROR_SCHEME: 'This file scheme is not included in the whitelist'
     InsertMedia: 'Insert media'
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
