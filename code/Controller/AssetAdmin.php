@@ -44,6 +44,7 @@ use Exception;
 /**
  * AssetAdmin is the 'file store' section of the CMS.
  * It provides an interface for manipulating the File and Folder objects in the system.
+ * @skipUpgrade
  */
 class AssetAdmin extends LeftAndMain implements PermissionProvider
 {

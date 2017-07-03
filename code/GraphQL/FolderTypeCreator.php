@@ -14,6 +14,9 @@ use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DataList;
 
+/**
+ * @skipUpgrade
+ */
 class FolderTypeCreator extends FileTypeCreator
 {
 

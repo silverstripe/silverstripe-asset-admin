@@ -8,6 +8,9 @@ use SilverStripe\GraphQL\Pagination\PaginatedQueryCreator;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\Versioned\Versioned;
 
+/**
+ * @skipUpgrade
+ */
 class ReadFileQueryCreator extends PaginatedQueryCreator
 {
 

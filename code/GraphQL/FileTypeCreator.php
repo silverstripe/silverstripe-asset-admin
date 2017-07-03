@@ -16,6 +16,9 @@ use SilverStripe\GraphQL\Manager;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 
+/**
+ * @skipUpgrade
+ */
 class FileTypeCreator extends TypeCreator
 {
     /**

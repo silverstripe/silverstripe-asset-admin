@@ -16,6 +16,7 @@ use SilverStripe\Versioned\DataDifferencer;
 /**
  * Update File dataobjects to be editable in this asset admin
  *
+ * @skipUpgrade
  * @property File $owner
  */
 class AssetAdminFile extends DataExtension

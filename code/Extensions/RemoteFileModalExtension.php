@@ -18,6 +18,7 @@ use SilverStripe\ORM\ValidationResult;
 
 /**
  * Decorates ModalController with an insert-oembed modal
+ * @skipUpgrade
  * @see ModalController
  */
 class RemoteFileModalExtension extends Extension

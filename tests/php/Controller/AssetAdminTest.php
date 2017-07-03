@@ -16,6 +16,7 @@ use SilverStripe\Security\SecurityToken;
 
 /**
  * Tests {@see AssetAdmin}
+ * @skipUpgrade
  */
 class AssetAdminTest extends FunctionalTest
 {
