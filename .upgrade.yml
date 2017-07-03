@@ -2,3 +2,4 @@ mappings:
   RemoteFileForm: SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory
   SiteConfig: SilverStripe\SiteConfig\SiteConfig
   SiteConfigLeftAndMain: SilverStripe\SiteConfig\SiteConfigLeftAndMain
+  UploadField: SilverStripe\AssetAdmin\Forms\UploadField
