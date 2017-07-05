@@ -16,7 +16,12 @@
         "silverstripe/campaign-admin": "^1@dev",
         "se/selenium-server-standalone": "2.41.0"
     },
-    "extra": [],
+    "extra": {
+        "branch-alias": {
+            "1.x-dev": "1.0.x-dev",
+            "dev-master": "2.x-dev"
+        }
+    },
     "scripts": {
         "lint": "phpcs -s code/ tests/"
     },
