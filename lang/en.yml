@@ -57,6 +57,8 @@ en:
     LOGGED_IN: 'Logged-in users'
     ONLY_GROUPS: 'Only these people (choose from list)'
     VIEWERGROUPS: 'Viewer Groups'
+    ROOTNAME: '(Top level)'
+    FOLDERLOCATION: 'Folder location'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_FILE: 'Insert file'
     INSERT_LINK: 'Link to file'
