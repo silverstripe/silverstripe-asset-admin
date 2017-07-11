@@ -8,6 +8,7 @@ import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import { Collapse } from 'react-bootstrap-ss';
 import * as schemaActions from 'state/schema/SchemaActions';
 import { reset, initialize } from 'redux-form';
+import ClickOutComponent from './ClickOutComponent';
 
 const view = {
   NONE: 'NONE',
@@ -28,7 +29,6 @@ class Search extends SilverStripeComponent {
   constructor(props) {
     super(props);
     this.expand = this.expand.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.doSearch = this.doSearch.bind(this);
@@ -45,12 +45,10 @@ class Search extends SilverStripeComponent {
   }
 
   componentWillMount() {
-    document.addEventListener('click', this.handleClick, false);
     this.setOverrides(this.props);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick, false);
     this.setOverrides();
   }
 
@@ -146,14 +144,6 @@ class Search extends SilverStripeComponent {
       // set overrides into redux store, so that it can be accessed by FormBuilder with the same
       // schemaUrl.
       this.props.actions.schema.setSchemaStateOverrides(props.searchFormSchemaUrl, overrides);
-    }
-  }
-
-  handleClick(event) {
-    // If clicking outside this element, hide this node
-    const node = ReactDOM.findDOMNode(this);
-    if (node && !node.contains(event.target)) {
-      this.hide();
     }
   }
 
@@ -265,64 +255,66 @@ class Search extends SilverStripeComponent {
     }
 
     return (
-      <div className={searchClasses.join(' ')}>
-        <button
-          className="btn btn--no-text btn-secondary search__trigger"
-          type="button"
-          title={i18n._t('AssetAdmin.SEARCH', 'Search')}
-          aria-owns={this.props.id}
-          aria-controls={this.props.id}
-          aria-expanded="false"
-          onClick={this.open}
-          id={triggerId}
-        >
-          <span className="font-icon-search btn--icon-large"></span>
-        </button>
-        <div id={this.props.id} className="search__group">
-          <input
-            aria-labelledby={triggerId}
-            type="text"
-            name="name"
-            placeholder={i18n._t('AssetAdmin.SEARCH', 'Search')}
-            className="form-control search__content-field"
-            onKeyUp={this.handleKeyUp}
-            onChange={this.handleChange}
-            value={searchText}
-            autoFocus
-          />
+      <ClickOutComponent onClickOut={this.hide} callerComponent={this}>
+        <div className={searchClasses.join(' ')}>
           <button
-            aria-expanded={expanded}
-            aria-controls={formId}
-            onClick={this.toggle}
-            className={advancedButtonClasses.join(' ')}
-            title={i18n._t('AssetAdmin.ADVANCED', 'Advanced')}
-          >
-            <span className="search__filter-trigger-text">{i18n._t('AssetAdmin.ADVANCED', 'Advanced')}</span>
-          </button>
-          <button
-            className="btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text"
+            className="btn btn--no-text btn-secondary search__trigger"
+            type="button"
             title={i18n._t('AssetAdmin.SEARCH', 'Search')}
-            onClick={this.doSearch}
-          />
-          <button
-            onClick={this.hide}
-            title={i18n._t('AssetAdmin.CLOSE', 'Close')}
-            className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel"
+            aria-owns={this.props.id}
             aria-controls={this.props.id}
-            aria-expanded="true"
+            aria-expanded="false"
+            onClick={this.open}
+            id={triggerId}
           >
+            <span className="font-icon-search btn--icon-large"></span>
           </button>
+          <div id={this.props.id} className="search__group">
+            <input
+              aria-labelledby={triggerId}
+              type="text"
+              name="name"
+              placeholder={i18n._t('AssetAdmin.SEARCH', 'Search')}
+              className="form-control search__content-field"
+              onKeyUp={this.handleKeyUp}
+              onChange={this.handleChange}
+              value={searchText}
+              autoFocus
+            />
+            <button
+              aria-expanded={expanded}
+              aria-controls={formId}
+              onClick={this.toggle}
+              className={advancedButtonClasses.join(' ')}
+              title={i18n._t('AssetAdmin.ADVANCED', 'Advanced')}
+            >
+              <span className="search__filter-trigger-text">{i18n._t('AssetAdmin.ADVANCED', 'Advanced')}</span>
+            </button>
+            <button
+              className="btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text"
+              title={i18n._t('AssetAdmin.SEARCH', 'Search')}
+              onClick={this.doSearch}
+            />
+            <button
+              onClick={this.hide}
+              title={i18n._t('AssetAdmin.CLOSE', 'Close')}
+              className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel"
+              aria-controls={this.props.id}
+              aria-expanded="true"
+            >
+            </button>
 
-          <Collapse in={expanded}>
-            <div id={formId} className="search__filter-panel">
-              <FormBuilderLoader
-                identifier="AssetAdmin.SearchForm"
-                schemaUrl={this.props.searchFormSchemaUrl}
-              />
-            </div>
-          </Collapse>
+            <Collapse in={expanded}>
+              <div id={formId} className="search__filter-panel">
+                <FormBuilderLoader
+                  identifier="AssetAdmin.SearchForm"
+                  schemaUrl={this.props.searchFormSchemaUrl}
+                />
+              </div>
+            </Collapse>
+          </div>
         </div>
-      </div>
+      </ClickOutComponent>
     );
   }
 }
