@@ -131,18 +131,14 @@ $gallery-list-thumb-height: 68px;
 
 .gallery__table-image {
   background-repeat: no-repeat;
-  background-size: $gallery-list-thumb-width auto;
   background-position: center center;
   height: $gallery-list-thumb-height;
   width: $gallery-list-thumb-width;
+  background-size: calc(#{$gallery-list-thumb-width} - #{$panel-padding-x}) auto; // Allow for space either side of folder
 }
 
-.gallery__table-image--folder,
-.gallery__table-image--archive,
-.gallery__table-image--audio,
-.gallery__table-image--video,
-.gallery__table-image--document {
-  background-size: calc(#{$gallery-list-thumb-width} - #{$panel-padding-x}) auto; // Allow for space either side of folder
+.gallery__table-image--image {
+  background-size: $gallery-list-thumb-width auto;
 }
 
 .gallery__table-image--folder {

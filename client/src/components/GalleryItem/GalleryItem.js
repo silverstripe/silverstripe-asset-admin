@@ -332,7 +332,8 @@ class GalleryItem extends SilverStripeComponent {
       action = this.handleCancelUpload;
       actionIcon = 'font-icon-cancel';
     } else if (this.exists()) {
-      overlay = <div className="gallery-item--overlay font-icon-edit">Details</div>;
+      const label = i18n._t('AssetAdmin.DETAILS', 'Details');
+      overlay = <div className="gallery-item--overlay font-icon-edit">{label}</div>;
     }
 
     const badge = this.props.badge;
@@ -340,7 +341,7 @@ class GalleryItem extends SilverStripeComponent {
     const inputProps = {
       className: 'gallery-item__checkbox',
       type: 'checkbox',
-      title: i18n._t('AssetAdmin.SELECT'),
+      title: i18n._t('AssetAdmin.SELECT', 'Select'),
       tabIndex: -1,
       onMouseDown: this.preventFocus,
     };
