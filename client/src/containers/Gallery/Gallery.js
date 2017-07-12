@@ -573,26 +573,28 @@ class Gallery extends Component {
       <div className="toolbar--content toolbar--space-save">
         <div className="fill-width">
           <div className="flexbox-area-grow">
-            {this.renderBackButton()}
+            <div className="btn-toolbar">
+              {this.renderBackButton()}
 
-            <button
-              id="upload-button"
-              className="btn btn-secondary font-icon-upload btn--icon-xl"
-              type="button"
-              disabled={!canEdit}
-            >
-              <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
-            </button>
+              <button
+                id="upload-button"
+                className="btn btn-secondary font-icon-upload btn--icon-xl"
+                type="button"
+                disabled={!canEdit}
+              >
+                <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
+              </button>
 
-            <button
-              id="add-folder-button"
-              className="btn btn-secondary font-icon-folder-add btn--icon-xl"
-              type="button"
-              onClick={this.handleCreateFolder}
-              disabled={!canEdit}
-            >
-              <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
-            </button>
+              <button
+                id="add-folder-button"
+                className="btn btn-secondary font-icon-folder-add btn--icon-xl"
+                type="button"
+                onClick={this.handleCreateFolder}
+                disabled={!canEdit}
+              >
+                <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
+              </button>
+            </div>
           </div>
 
           <div className="gallery__state-buttons">
