@@ -9,16 +9,20 @@ import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import { provideInjector } from 'lib/Injector';
 
+const commandName = 'sslinkfile';
+
 // Link to external url
-TinyMCEActionRegistrar.addAction('sslink', {
-  text: i18n._t('AssetAdmin.LINKLABEL_FILE', 'Link to a file'),
-  // eslint-disable-next-line no-console
-  onclick: (editor) => editor.execCommand('sslinkfile'),
-});
+TinyMCEActionRegistrar
+  .addAction('sslink', {
+    text: i18n._t('AssetAdmin.LINKLABEL_FILE', 'Link to a file'),
+    // eslint-disable-next-line no-console
+    onclick: (editor) => editor.execCommand(commandName),
+  })
+  .addCommandWithUrlTest(commandName, /^\[file_link/);
 
 const plugin = {
   init(editor) {
-    editor.addCommand('sslinkfile', () => {
+    editor.addCommand(commandName, () => {
       const field = jQuery(`#${editor.id}`).entwine('ss');
 
       field.openLinkFileDialog();
@@ -129,6 +133,6 @@ jQuery.entwine('ss', ($) => {
 });
 
 // Adds the plugin class to the list of available TinyMCE plugins
-tinymce.PluginManager.add('sslinkfile', (editor) => plugin.init(editor));
+tinymce.PluginManager.add(commandName, (editor) => plugin.init(editor));
 
 export default plugin;
