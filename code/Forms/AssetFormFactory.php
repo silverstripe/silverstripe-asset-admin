@@ -280,7 +280,11 @@ abstract class AssetFormFactory implements FormFactory
         $tab = Tab::create(
             'Details',
             TextField::create('Name', File::singleton()->fieldLabel('Filename')),
-            $location = TreeDropdownField::create('ParentID', 'FolderLocation', Folder::class),
+            $location = TreeDropdownField::create(
+                'ParentID',
+                _t(__CLASS__.'.FOLDERLOCATION', 'Folder location'),
+                Folder::class
+            ),
             ReadonlyField::create(
                 "Path",
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'),
@@ -288,7 +292,9 @@ abstract class AssetFormFactory implements FormFactory
             )
         );
 
-        $location->setEmptyString('(root)');
+        $location
+            ->setEmptyString(_t(__CLASS__.'.ROOTNAME', '(Top level)'))
+            ->setShowSearch(true);
         return $tab;
     }
 

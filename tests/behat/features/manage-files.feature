@@ -117,13 +117,13 @@ Feature: Manage files
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileEditForm" form
     When I click "folder1" in the ".Select-value" element
-      And I click "(root)" in the ".treedropdownfield__menu" element
+      And I click "(Top level)" in the ".treedropdownfield__menu" element
       And I press the "Save" button
     Then I should see the file named "file1" in the gallery
       And I should see the file named "folder1" in the gallery
       And I should not see "File cannot be found" in the "#Form_fileEditForm" element
     # test moving again to see if Tuple has updated value
-    When I click "(root)" in the ".Select-value" element
+    When I click "(Top level)" in the ".Select-value" element
       And I click "folder2" in the ".treedropdownfield__menu" element
       And I press the "Save" button
     Then I should see the file named "file1" in the gallery
