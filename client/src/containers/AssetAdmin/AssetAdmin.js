@@ -153,23 +153,10 @@ class AssetAdmin extends SilverStripeComponent {
   handleDoSearch(data) {
     this.handleBrowse(
       data.currentFolderOnly ? this.getFolderId() : 0,
-      0,
-      // Reset current query
-      Object.assign({}, this.getBlankQuery(), { filter: data })
+      null,
+      // Reset current query, retain "view" type
+      { filter: data, view: this.props.query.view }
     );
-  }
-
-  /**
-   * Generate a blank query based on current query
-   *
-   * @return {Object}
-   */
-  getBlankQuery() {
-    const query = {};
-    Object.keys(this.props.query).forEach((key) => {
-      query[key] = undefined;
-    });
-    return query;
   }
 
   /**
@@ -181,16 +168,13 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleBrowse(
       this.getFolderId(),
       this.props.fileId,
-      Object.assign(
-        {},
-        this.props.query,
-        {
-          sort,
-          // clear pagination
-          limit: undefined,
-          page: undefined,
-        }
-      )
+      {
+        ...this.props.query,
+        sort,
+        // clear pagination
+        limit: undefined,
+        page: undefined,
+      }
     );
   }
 
@@ -378,7 +362,7 @@ class AssetAdmin extends SilverStripeComponent {
    * Handle for closing the editor
    */
   handleCloseFile() {
-    this.handleOpenFolder(this.getFolderId());
+    this.handleBrowse(this.getFolderId(), null, this.props.query);
   }
 
   /**
@@ -520,7 +504,7 @@ class AssetAdmin extends SilverStripeComponent {
 
     const sort = this.props.query && this.props.query.sort;
     const view = this.props.query && this.props.query.view;
-    const filters = (this.props.query && this.props.query.filter) || {};
+    const filters = this.props.query.filter || {};
 
     return (
       <Gallery
