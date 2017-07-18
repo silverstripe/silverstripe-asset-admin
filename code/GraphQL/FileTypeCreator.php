@@ -3,18 +3,16 @@
 namespace SilverStripe\AssetAdmin\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\Type;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;
-use SilverStripe\Assets\Storage\AssetStore;
-use SilverStripe\Assets\Storage\DBFile;
-use SilverStripe\CMS\Model\SiteTreeFileExtension;
-use SilverStripe\Core\Config\Config;
-use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
-use GraphQL\Type\Definition\Type;
-use SilverStripe\GraphQL\TypeCreator;
-use SilverStripe\GraphQL\Manager;
+use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\CMS\Model\SiteTreeFileExtension;
+use SilverStripe\GraphQL\Manager;
+use SilverStripe\GraphQL\TypeCreator;
+use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 
 /**
  * @skipUpgrade
@@ -25,6 +23,19 @@ class FileTypeCreator extends TypeCreator
      * @var CaseInsensitiveFieldAccessor
      */
     protected $accessor;
+
+    /**
+     * @var ThumbnailGenerator
+     */
+    protected $thumbnailGenerator;
+
+    /**
+     * @config
+     * @var array
+     */
+    private static $dependencies = [
+        'ThumbnailGenerator' => '%$' . ThumbnailGenerator::class,
+    ];
 
     public function __construct(Manager $manager = null)
     {
@@ -165,19 +176,11 @@ class FileTypeCreator extends TypeCreator
      */
     public function resolveSmallThumbnailField($object, array $args, $context, $info)
     {
-        if (!$object->getIsImage()) {
-            return null;
-        }
-
-        // Small thumbnail
-        $smallWidth = UploadField::config()->uninherited('thumbnail_width');
-        $smallHeight = UploadField::config()->uninherited('thumbnail_height');
-        $smallThumbnail = $object->FitMax($smallWidth, $smallHeight);
-        if ($smallThumbnail && $smallThumbnail->exists()) {
-            return $smallThumbnail->getAbsoluteURL();
-        }
-
-        return null;
+        // Make small thumbnail
+        $width = UploadField::config()->uninherited('thumbnail_width');
+        $height = UploadField::config()->uninherited('thumbnail_height');
+        $thumbnail = $this->getThumbnailGenerator()->generateThumbnail($object, $width, $height);
+        return $this->getThumbnailGenerator()->generateLink($thumbnail);
     }
 
     /**
@@ -189,34 +192,11 @@ class FileTypeCreator extends TypeCreator
      */
     public function resolveThumbnailField($object, array $args, $context, $info)
     {
-        if (!$object->getIsImage()) {
-            return null;
-        }
-
-        // Large thumbnail
+        // Make large thumbnail
         $width = AssetAdmin::config()->uninherited('thumbnail_width');
         $height = AssetAdmin::config()->uninherited('thumbnail_height');
-        $maxSize = Config::inst()->get(AssetAdmin::class, 'max_thumbnail_bytes');
-
-        // Validate thumbnail exists and doesn't exceed max safety bounds
-        /** @var DBFile $thumbnail */
-        $thumbnail = $object->FitMax($width, $height);
-        if (!$thumbnail || !$thumbnail->exists() || $thumbnail->getAbsoluteSize() > $maxSize) {
-            return null;
-        }
-
-        // Only return direct url for public thumbnails
-        if ($object->getVisibility() === AssetStore::VISIBILITY_PUBLIC) {
-            return $thumbnail->getURL();
-        }
-
-        // Generate inline content
-        $base64 = base64_encode($thumbnail->getString());
-        return sprintf(
-            'data:%s;base64,%s',
-            $thumbnail->getMimeType(),
-            $base64
-        );
+        $thumbnail = $this->getThumbnailGenerator()->generateThumbnail($object, $width, $height);
+        return $this->getThumbnailGenerator()->generateLink($thumbnail);
     }
 
     /**
@@ -261,5 +241,23 @@ class FileTypeCreator extends TypeCreator
             return $object->BackLinkTrackingCount();
         }
         return 0;
+    }
+
+    /**
+     * @return ThumbnailGenerator
+     */
+    public function getThumbnailGenerator()
+    {
+        return $this->thumbnailGenerator;
+    }
+
+    /**
+     * @param ThumbnailGenerator $generator
+     * @return $this
+     */
+    public function setThumbnailGenerator(ThumbnailGenerator $generator)
+    {
+        $this->thumbnailGenerator = $generator;
+        return $this;
     }
 }
