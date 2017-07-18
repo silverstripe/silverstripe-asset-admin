@@ -10,6 +10,7 @@ import * as schemaActions from 'state/schema/SchemaActions';
 import { reset, initialize } from 'redux-form';
 import ClickOutComponent from './ClickOutComponent';
 
+const identifier = 'AssetAdmin.SearchForm';
 const view = {
   NONE: 'NONE',
   VISIBLE: 'VISIBLE',
@@ -109,8 +110,8 @@ class Search extends SilverStripeComponent {
 
     const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
     if (schemaUrl) {
-      this.props.actions.reduxForm.initialize(schemaUrl, {}, Object.keys(this.props.formData));
-      this.props.actions.reduxForm.reset(schemaUrl);
+      this.props.actions.reduxForm.initialize(identifier, {}, Object.keys(this.props.formData));
+      this.props.actions.reduxForm.reset(identifier);
 
       this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
     }
@@ -307,7 +308,7 @@ class Search extends SilverStripeComponent {
             <Collapse in={expanded}>
               <div id={formId} className="search__filter-panel">
                 <FormBuilderLoader
-                  identifier="AssetAdmin.SearchForm"
+                  identifier={identifier}
                   schemaUrl={this.props.searchFormSchemaUrl}
                 />
               </div>
