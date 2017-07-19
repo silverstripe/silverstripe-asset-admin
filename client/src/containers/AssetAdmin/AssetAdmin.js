@@ -17,6 +17,7 @@ import readFilesQuery from 'state/files/readFilesQuery';
 import deleteFileMutation from 'state/files/deleteFileMutation';
 import unpublishFileMutation from 'state/files/unpublishFileMutation';
 import CONSTANTS from 'constants/index';
+import configShape from 'lib/configShape';
 
 function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   let schemaUrl = null;
@@ -606,11 +607,7 @@ class AssetAdmin extends SilverStripeComponent {
 
 AssetAdmin.propTypes = {
   dialog: PropTypes.bool,
-  sectionConfig: PropTypes.shape({
-    url: PropTypes.string,
-    limit: PropTypes.number,
-    form: PropTypes.object,
-  }),
+  sectionConfig: configShape,
   fileId: PropTypes.number,
   folderId: PropTypes.number,
   onBrowse: PropTypes.func,

@@ -167,6 +167,15 @@ EOS
     }
 
     /**
+     * @Then I should see an error message on the file :file
+     */
+    public function iShouldSeeAnErrorMessageOnTheFile($file)
+    {
+        $fileNode = $this->getGalleryItem($file);
+        assertTrue($fileNode->getParent()->hasClass('gallery-item--error'));
+    }
+
+    /**
      * Checks that the message box contains specified text.
      *
      * @Then /^I should see "(?P<text>(?:[^"]|\\")*)" in the message box$/

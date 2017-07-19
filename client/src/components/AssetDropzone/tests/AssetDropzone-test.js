@@ -6,7 +6,6 @@ import AssetDropzone from '../AssetDropzone';
 
 describe('AssetDropzone', () => {
   let props = null;
-
   beforeEach(() => {
     props = {
       options: {
@@ -82,26 +81,20 @@ describe('AssetDropzone', () => {
     });
 
     it('should not remove anything if not exceeded', () => {
-      item.dropzone = {
-        files: ['a'],
-        removeFile: jest.genMockFunction(),
-      };
+      item.dropzone.files = [{ accepted: true }];
+      item.dropzone.accept({ name: 'test', size: 100 }, () => {});
 
-      item.handleAddedFile({});
-
-      expect(item.dropzone.removeFile).not.toBeCalled();
       expect(props.handleMaxFilesExceeded).not.toBeCalled();
     });
 
     it('should remove the first file if exceeded and trigger callback', () => {
-      item.dropzone = {
-        files: ['a', 'b', 'c'],
-        removeFile: jest.genMockFunction(),
-      };
+      item.dropzone.files = [
+        { accepted: true },
+        { accepted: true },
+        { accepted: true },
+      ];
+      item.dropzone.accept({ name: 'test', size: 100 }, () => {});
 
-      item.handleAddedFile({});
-
-      expect(item.dropzone.removeFile).toBeCalled();
       expect(props.handleMaxFilesExceeded).toBeCalled();
     });
   });
@@ -168,24 +161,25 @@ describe('AssetDropzone', () => {
     beforeEach(() => {
       uploadProps = Object.assign({}, props, {
         handleAddedFile: jest.genMockFunction(),
+        handlePreviewLoaded: jest.genMockFunction(),
       });
     });
 
-    it('restricts uploading', (done) => {
+    it('validates uploads', () => {
       uploadProps.canUpload = false;
 
       item = ReactTestUtils.renderIntoDocument(
         <AssetDropzone {...uploadProps} />
       );
-
-      return item.handleAddedFile({})
-        .then(() => {
-          expect("This shouldn't be called").toBeFalsey();
-        })
-        .catch((error) => {
-          expect(error instanceof Error).toBeTruthy();
-        })
-        .then(() => done());
+      item.dropzone._errorProcessing = jest.genMockFunction();
+      item.dropzone.addFile({ name: 'test', size: 100, type: 'text/plain' });
+      // The error gets called asynchronously
+      return new Promise(resolve => {
+        setTimeout(() => {
+          expect(item.dropzone._errorProcessing).toBeCalled();
+          resolve();
+        }, 0);
+      });
     });
 
     it('loads non-images', () => {
@@ -198,15 +192,12 @@ describe('AssetDropzone', () => {
       item = ReactTestUtils.renderIntoDocument(
         <AssetDropzone {...uploadProps} />
       );
-      item.dropzone = {
-        processFile: jest.genMockFunction(),
-      };
       item.getLoadPreview = () => Promise.resolve({});
 
       return item.handleAddedFile(file)
         .then((details) => {
           expect(uploadProps.handleAddedFile).toBeCalled();
-          expect(item.dropzone.processFile).toBeCalled();
+          expect(uploadProps.handlePreviewLoaded).toBeCalled();
           expect(details.size).toBe(123);
           expect(details.title).toBe('Test file');
           expect(details.url).toBeUndefined();

@@ -282,7 +282,7 @@ class GalleryItem extends SilverStripeComponent {
    */
   handleCancelUpload(event) {
     event.stopPropagation();
-
+    event.preventDefault();
     if (this.hasError()) {
       this.props.onRemoveErroredUpload(this.props.item);
     } else if (this.props.onCancelUpload) {
@@ -320,7 +320,8 @@ class GalleryItem extends SilverStripeComponent {
     let action = null;
     let actionIcon = null;
     let overlay = null;
-
+    const { id, queuedId } = this.props.item;
+    const htmlID = id ? `item-${id}` : `queued-${queuedId}`;
     if (this.props.selectable) {
       if (this.canBatchSelect()) {
         action = this.handleSelect;
@@ -344,6 +345,7 @@ class GalleryItem extends SilverStripeComponent {
       title: i18n._t('AssetAdmin.SELECT', 'Select'),
       tabIndex: -1,
       onMouseDown: this.preventFocus,
+      id: htmlID,
     };
     const inputLabelClasses = [
       'gallery-item__checkbox-label',
@@ -355,6 +357,7 @@ class GalleryItem extends SilverStripeComponent {
     }
     const inputLabelProps = {
       className: inputLabelClasses.join(' '),
+      htmlFor: htmlID,
       onClick: action,
     };
 

@@ -24,7 +24,7 @@ default:
     SilverStripe\BehatExtension\Extension:
       bootstrap_file: cms/tests/behat/serve-bootstrap.php
       screenshot_path: %paths.base%/artifacts/screenshots
-      retry_seconds: 3 # default is 2
+      retry_seconds: 4 # default is 2
     SilverStripe\BehatExtension\MinkExtension:
       default_session: selenium2
       javascript_session: selenium2

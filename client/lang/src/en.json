@@ -17,6 +17,7 @@
     "AssetAdmin.DIM": "Dimensions",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Cancel upload",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD_CONFIRMATION": "Are you sure you want to cancel this upload?",
+    "AssetAdmin.DROPZONE_CANNOT_UPLOAD": "Uploading not permitted.",
     "AssetAdmin.DROPZONE_DEFAULT_MESSAGE": "Drop files here to upload",
     "AssetAdmin.DROPZONE_FAILED_UPLOAD": "Failed to upload file",
     "AssetAdmin.DROPZONE_FALLBACK_MESSAGE": "Your browser does not support drag'n'drop file uploads.",

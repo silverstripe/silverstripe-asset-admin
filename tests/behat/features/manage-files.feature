@@ -32,6 +32,11 @@ Feature: Manage files
       And I attach the file "testfile.jpg" to dropzone "gallery-container"
     Then I should see the file named "testfile" in the gallery
 
+  Scenario: I am blocked from uploading invalid files
+    When I click on the file named "folder1" in the gallery
+    And I attach the file "file.invalid" to dropzone "gallery-container"
+    Then I should see an error message on the file "file"
+
   Scenario: I can edit a file
     When I click on the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
