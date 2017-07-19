@@ -179,8 +179,7 @@ class FileTypeCreator extends TypeCreator
         // Make small thumbnail
         $width = UploadField::config()->uninherited('thumbnail_width');
         $height = UploadField::config()->uninherited('thumbnail_height');
-        $thumbnail = $this->getThumbnailGenerator()->generateThumbnail($object, $width, $height);
-        return $this->getThumbnailGenerator()->generateLink($thumbnail);
+        return $this->getThumbnailGenerator()->generateThumbnailLink($object, $width, $height);
     }
 
     /**
@@ -195,8 +194,7 @@ class FileTypeCreator extends TypeCreator
         // Make large thumbnail
         $width = AssetAdmin::config()->uninherited('thumbnail_width');
         $height = AssetAdmin::config()->uninherited('thumbnail_height');
-        $thumbnail = $this->getThumbnailGenerator()->generateThumbnail($object, $width, $height);
-        return $this->getThumbnailGenerator()->generateLink($thumbnail);
+        return $this->getThumbnailGenerator()->generateThumbnailLink($object, $width, $height);
     }
 
     /**

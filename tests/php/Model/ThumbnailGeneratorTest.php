@@ -54,7 +54,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         $this->assertNull($thumbnail);
     }
 
-    public function testGenerateUrl()
+    public function testGenerateLink()
     {
         $generator = new ThumbnailGenerator();
 
@@ -67,21 +67,30 @@ class ThumbnailGeneratorTest extends SapphireTest
         $image = new Image();
         $image->setFromLocalFile(__DIR__.'/../Forms/fixtures/testimage.png', 'TestImage.png');
         $image->write();
+        
+        // Non-images are ignored
+        $file = new File();
+        $link = $generator->generateLink($file);
+        $this->assertNull($link);
 
+        // original image
+        $thumbnail = $generator->generateLink($image);
+        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACW', $thumbnail);
+        
         // protected image should have inline thumbnail
-        $thumbnail = $generator->generateLink($generator->generateThumbnail($image, 100, 200));
+        $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
         $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAy', $thumbnail);
 
         // public image should have url
         $image->publishSingle();
-        $thumbnail = $generator->generateLink($generator->generateThumbnail($image, 100, 200));
+        $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
         $this->assertEquals('/assets/ThumbnailGeneratorTest/906835357d/TestImage__FitWzEwMCwyMDBd.png', $thumbnail);
 
         // Public assets can be set to inline
         ThumbnailGenerator::config()->merge('thumbnail_links', [
             AssetStore::VISIBILITY_PUBLIC => ThumbnailGenerator::INLINE,
         ]);
-        $thumbnail = $generator->generateLink($generator->generateThumbnail($image, 100, 200));
+        $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
         $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAy', $thumbnail);
 
         // Protected assets can be set to url
@@ -90,7 +99,7 @@ class ThumbnailGeneratorTest extends SapphireTest
             AssetStore::VISIBILITY_PROTECTED => ThumbnailGenerator::URL,
         ]);
         $image->doUnpublish();
-        $thumbnail = $generator->generateLink($generator->generateThumbnail($image, 100, 200));
+        $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
         $this->assertEquals('/assets/906835357d/TestImage__FitWzEwMCwyMDBd.png', $thumbnail);
     }
 }

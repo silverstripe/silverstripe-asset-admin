@@ -1085,29 +1085,24 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         /** @var File $file */
         if ($file->getIsImage()) {
+            $generator = $this->getThumbnailGenerator();
+            
             // Small thumbnail
             $smallWidth = UploadField::config()->uninherited('thumbnail_width');
             $smallHeight = UploadField::config()->uninherited('thumbnail_height');
-            $smallThumbnail = $this
-                ->getThumbnailGenerator()
-                ->generateThumbnail($file, $smallWidth, $smallHeight);
 
             // Large thumbnail
             $width = $this->config()->get('thumbnail_width');
             $height = $this->config()->get('thumbnail_height');
-            $thumbnail = $this
-                ->getThumbnailGenerator()
-                ->generateThumbnail($file, $width, $height);
 
             // Generate links if client requests them
-            // Note: Thumbnails are always generated even if links are not
+            // Note: Thumbnails should always be generated even if links are not
             if ($thumbnailLinks) {
-                $object['smallThumbnail'] = $this
-                    ->getThumbnailGenerator()
-                    ->generateLink($smallThumbnail);
-                $object['thumbnail'] = $this
-                    ->getThumbnailGenerator()
-                    ->generateLink($thumbnail);
+                $object['smallThumbnail'] = $generator->generateThumbnailLink($file, $smallWidth, $smallHeight);
+                $object['thumbnail'] = $generator->generateThumbnailLink($file, $width, $height);
+            } else {
+                $generator->generateThumbnail($file, $smallWidth, $smallHeight);
+                $generator->generateThumbnail($file, $width, $height);
             }
 
             // Save dimensions

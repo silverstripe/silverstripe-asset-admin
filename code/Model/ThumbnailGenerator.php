@@ -51,7 +51,22 @@ class ThumbnailGenerator
         AssetStore::VISIBILITY_PROTECTED => self::INLINE,
         AssetStore::VISIBILITY_PUBLIC => self::URL,
     ];
-
+    
+    /**
+     * Generate thumbnail and return the "src" property for this thumbnail
+     *
+     * @param AssetContainer|DBFile|File $file
+     * @param int $width
+     * @param int $height
+     * @return string
+     */
+    public function generateThumbnailLink(AssetContainer $file, $width, $height)
+    {
+        $thumbnail = $this->generateThumbnail($file, $width, $height);
+        
+        return $this->generateLink($thumbnail);
+    }
+    
     /**
      * Generate thumbnail object
      *
