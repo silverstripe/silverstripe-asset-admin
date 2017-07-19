@@ -2,29 +2,30 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use Exception;
 use InvalidArgumentException;
-use SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory;
-use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
-use SilverStripe\Admin\LeftAndMainFormRequestHandler;
-use SilverStripe\CampaignAdmin\AddToCampaignHandler;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\Admin\LeftAndMainFormRequestHandler;
 use SilverStripe\AssetAdmin\BatchAction\DeleteAssets;
 use SilverStripe\AssetAdmin\Forms\AssetFormFactory;
-use SilverStripe\AssetAdmin\Forms\FileSearchFormFactory;
-use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory;
+use SilverStripe\AssetAdmin\Forms\FileSearchFormFactory;
+use SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory;
+use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
+use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Storage\AssetNameGenerator;
 use SilverStripe\Assets\Upload;
+use SilverStripe\CampaignAdmin\AddToCampaignHandler;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\Form;
@@ -37,9 +38,8 @@ use SilverStripe\Security\Member;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\SecurityToken;
-use SilverStripe\View\Requirements;
 use SilverStripe\Versioned\Versioned;
-use Exception;
+use SilverStripe\View\Requirements;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -135,12 +135,17 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     private static $thumbnail_height = 264;
 
     /**
-     * Safely limit max inline thumbnail size to 200kb
-     *
-     * @config
-     * @var int
+     * @var ThumbnailGenerator
      */
-    private static $max_thumbnail_bytes = 200000;
+    protected $thumbnailGenerator;
+
+    /**
+     * @config
+     * @var array
+     */
+    private static $dependencies = [
+        'ThumbnailGenerator' => '%$' . ThumbnailGenerator::class,
+    ];
 
     /**
      * Set up the controller
@@ -291,12 +296,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $file->ParentID = $parentRecord ? $parentRecord->ID : 0;
         $file->write();
 
-        $result = [$this->getObjectFromData($file)];
-
-        // Don't discard pre-generated client side canvas thumbnail
-        if ($result[0]['category'] === 'image') {
-            unset($result[0]['thumbnail']);
-        }
+        $result = [
+            $this->getObjectFromData($file, false)
+        ];
 
         return (new HTTPResponse(json_encode($result)))
             ->addHeader('Content-Type', 'application/json');
@@ -1030,10 +1032,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     /**
      * @param File $file
-     *
+     * @param bool $thumbnailLinks Set to true if thumbnail links should be included.
+     * Set to false to skip thumbnail link generation.
+     * Note: Thumbnail content is always generated to pre-optimise for future use, even if
+     * links are not generated.
      * @return array
      */
-    public function getObjectFromData(File $file)
+    public function getObjectFromData(File $file, $thumbnailLinks = true)
     {
         $object = array(
             'id' => $file->ID,
@@ -1080,23 +1085,29 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         /** @var File $file */
         if ($file->getIsImage()) {
+            $generator = $this->getThumbnailGenerator();
+            
             // Small thumbnail
             $smallWidth = UploadField::config()->uninherited('thumbnail_width');
             $smallHeight = UploadField::config()->uninherited('thumbnail_height');
-            $smallThumbnail = $file->FitMax($smallWidth, $smallHeight);
-            if ($smallThumbnail && $smallThumbnail->exists()) {
-                $object['smallThumbnail'] = $smallThumbnail->getAbsoluteURL();
-            }
 
             // Large thumbnail
             $width = $this->config()->get('thumbnail_width');
             $height = $this->config()->get('thumbnail_height');
-            $thumbnail = $file->FitMax($width, $height);
-            if ($thumbnail && $thumbnail->exists()) {
-                $object['thumbnail'] = $thumbnail->getAbsoluteURL();
+
+            // Generate links if client requests them
+            // Note: Thumbnails should always be generated even if links are not
+            if ($thumbnailLinks) {
+                $object['smallThumbnail'] = $generator->generateThumbnailLink($file, $smallWidth, $smallHeight);
+                $object['thumbnail'] = $generator->generateThumbnailLink($file, $width, $height);
+            } else {
+                $generator->generateThumbnail($file, $smallWidth, $smallHeight);
+                $generator->generateThumbnail($file, $width, $height);
             }
-            $object['width'] = $file->Width;
-            $object['height'] = $file->Height;
+
+            // Save dimensions
+            $object['width'] = $file->getWidth();
+            $object['height'] = $file->getHeight();
         } else {
             $object['thumbnail'] = $file->PreviewLink();
         }
@@ -1269,5 +1280,23 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getFileSearchform()
     {
         return $this->fileSearchForm();
+    }
+
+    /**
+     * @return ThumbnailGenerator
+     */
+    public function getThumbnailGenerator()
+    {
+        return $this->thumbnailGenerator;
+    }
+
+    /**
+     * @param ThumbnailGenerator $generator
+     * @return $this
+     */
+    public function setThumbnailGenerator(ThumbnailGenerator $generator)
+    {
+        $this->thumbnailGenerator = $generator;
+        return $this;
     }
 }
