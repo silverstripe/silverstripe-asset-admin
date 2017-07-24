@@ -93,9 +93,9 @@ const config = {
   props(
     {
       data: {
-        networkStatus: currentNetworkStatus,
         refetch,
         readFiles,
+        loading,
       },
       ownProps: { actions },
     }
@@ -111,14 +111,6 @@ const config = {
     const filesTotalCount = (folder && folder.children)
       ? folder.children.pageInfo.totalCount
       : 0;
-
-    // Only set to loading if a network request is in progress.
-    // TODO Use built-in 'loading' indicator once it's set to true on setVariables() calls.
-    // TODO Respect optimistic loading results. We can't check for presence of readFiles object,
-    // since Apollo sends through the previous result before optimistically setting the new result.
-    const loading =
-      currentNetworkStatus !== NetworkStatus.ready
-      && currentNetworkStatus !== NetworkStatus.error;
 
     return {
       loading,
