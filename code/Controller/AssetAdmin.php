@@ -98,6 +98,13 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     private static $max_history_entries = 100;
 
     /**
+     * @config
+     *
+     * @var int The max file size, in megabytes
+     */
+    private static $max_upload_size;
+
+    /**
      * @var array
      */
     private static $allowed_actions = array(
@@ -165,6 +172,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function getClientConfig()
     {
         $baseLink = $this->Link();
+        $validator = $this->getUpload()->getValidator();
+
         return array_merge(parent::getClientConfig(), [
             'reactRouter' => true,
             'createFileEndpoint' => [
@@ -217,6 +226,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                     'schemaUrl' => $this->Link('schema/fileEditorLinkForm'),
                 ],
             ],
+            'dropzoneOptions' => [
+                'maxFilesize' => floor(
+                    $validator->getAllowedMaxFileSize() / (1024 * 1024)
+                ),
+                'filesizeBase' => 1024,
+                'acceptedFiles' => implode(',', array_map(function ($ext) {
+                    return $ext[0] != '.' ? ".$ext" : $ext;
+                }, $validator->getAllowedExtensions()))
+
+            ]
         ]);
     }
 
@@ -1200,6 +1219,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $upload->getValidator()->setAllowedExtensions(
             // filter out '' since this would be a regex problem on JS end
             array_filter(File::config()->uninherited('allowed_extensions'))
+        );
+        $upload->getValidator()->setAllowedMaxFileSize(
+            $this->config()->max_upload_size
         );
 
         return $upload;

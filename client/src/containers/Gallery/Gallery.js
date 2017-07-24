@@ -62,6 +62,7 @@ class Gallery extends Component {
     this.handleSelect = this.handleSelect.bind(this);
     this.handleSelectSort = this.handleSelectSort.bind(this);
     this.handleAddedFile = this.handleAddedFile.bind(this);
+    this.handlePreviewLoaded = this.handlePreviewLoaded.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
     this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
     this.handleUploadProgress = this.handleUploadProgress.bind(this);
@@ -304,6 +305,10 @@ class Gallery extends Component {
    */
   handleAddedFile(fileData) {
     this.props.actions.queuedFiles.addQueuedFile(fileData);
+  }
+
+  handlePreviewLoaded(fileData, previewData) {
+    this.props.actions.queuedFiles.updateQueuedFile(fileData.queuedId, previewData);
   }
 
   /**
@@ -871,6 +876,7 @@ class Gallery extends Component {
       method: this.props.createFileApiMethod,
       paramName: 'Upload',
       clickable: '#upload-button',
+      ...this.props.sectionConfig.dropzoneOptions,
     };
 
     const securityID = this.props.securityId;
@@ -895,6 +901,7 @@ class Gallery extends Component {
           name="gallery-container"
           canUpload={canEdit}
           handleAddedFile={this.handleAddedFile}
+          handlePreviewLoaded={this.handlePreviewLoaded}
           handleError={this.handleFailedUpload}
           handleSuccess={this.handleSuccessfulUpload}
           handleSending={this.handleSending}

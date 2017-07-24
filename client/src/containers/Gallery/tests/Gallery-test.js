@@ -71,6 +71,7 @@ describe('Gallery', () => {
       onSetPage: () => {},
       onViewChange: () => {},
       badges: [],
+      sectionConfig: {},
     };
   });
 

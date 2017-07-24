@@ -16,6 +16,7 @@ class AssetDropzone extends SilverStripeComponent {
     this.dropzone = null;
     this.dragging = false;
 
+    this.handleAccept = this.handleAccept.bind(this);
     this.handleAddedFile = this.handleAddedFile.bind(this);
     this.handleDragEnter = this.handleDragEnter.bind(this);
     this.handleDragLeave = this.handleDragLeave.bind(this);
@@ -25,6 +26,7 @@ class AssetDropzone extends SilverStripeComponent {
     this.handleSending = this.handleSending.bind(this);
     this.handleSuccess = this.handleSuccess.bind(this);
     this.loadImage = this.loadImage.bind(this);
+    this.handleMaxFilesExceeded = this.handleMaxFilesExceeded.bind(this);
   }
 
   componentDidMount() {
@@ -122,9 +124,8 @@ class AssetDropzone extends SilverStripeComponent {
    */
   getDefaultOptions() {
     return {
-      // We handle the queue processing ourself in the FileReader callback.
-      // See `this.handleAddedFile`
-      autoProcessQueue: false,
+      // Custom validation handler
+      accept: this.handleAccept,
 
       // By default Dropzone adds markup to the DOM for displaying a thumbnail preview.
       // Here we're relpacing that default behaviour with our own React / Redux implementation.
@@ -139,39 +140,49 @@ class AssetDropzone extends SilverStripeComponent {
       // When the user drops a file onto the dropzone.
       drop: this.handleDrop,
 
+      // When the queue size exceeds the limit
+      maxfilesexceeded: this.handleMaxFilesExceeded,
+
       // Whenever the file upload progress changes
       uploadprogress: this.handleUploadProgress,
 
       // The text used before any files are dropped
-      dictDefaultMessage: i18n._t('AssetAdmin.DROPZONE_DEFAULT_MESSAGE'),
+      dictDefaultMessage: i18n._t('AssetAdmin.DROPZONE_DEFAULT_MESSAGE', 'Drop files here to upload'),
 
       // The text that replaces the default message text it the browser is not supported
-      dictFallbackMessage: i18n._t('AssetAdmin.DROPZONE_FALLBACK_MESSAGE'),
+      dictFallbackMessage: i18n._t(
+        'AssetAdmin.DROPZONE_FALLBACK_MESSAGE',
+        'Your browser does not support drag\'n\'drop file uploads.'
+      ),
 
       // The text that will be added before the fallback form
       // If null, no text will be added at all.
-      dictFallbackText: i18n._t('AssetAdmin.DROPZONE_FALLBACK_TEXT'),
+      dictFallbackText: i18n._t(
+        'AssetAdmin.DROPZONE_FALLBACK_TEXT',
+        'Please use the fallback form below to upload your files like in the olden days.'
+      ),
 
       // If the file doesn't match the file type.
-      dictInvalidFileType: i18n._t('AssetAdmin.DROPZONE_INVALID_FILE_TYPE'),
+      dictInvalidFileType: i18n._t('AssetAdmin.DROPZONE_INVALID_FILE_TYPE', 'You can\'t upload files of this type.'),
 
       // If the server response was invalid.
-      dictResponseError: i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR'),
+      dictResponseError: i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.'),
 
       // If used, the text to be used for the cancel upload link.
-      dictCancelUpload: i18n._t('AssetAdmin.DROPZONE_CANCEL_UPLOAD'),
+      dictCancelUpload: i18n._t('AssetAdmin.DROPZONE_CANCEL_UPLOAD', 'Cancel upload'),
 
       // If used, the text to be used for confirmation when cancelling upload.
       dictCancelUploadConfirmation: i18n._t(
-        'AssetAdmin.DROPZONE_CANCEL_UPLOAD_CONFIRMATION'
+        'AssetAdmin.DROPZONE_CANCEL_UPLOAD_CONFIRMATION',
+        'Are you sure you want to cancel this upload?'
       ),
 
       // If used, the text to be used to remove a file.
-      dictRemoveFile: i18n._t('AssetAdmin.DROPZONE_REMOVE_FILE'),
+      dictRemoveFile: i18n._t('AssetAdmin.DROPZONE_REMOVE_FILE', 'Remove file'),
 
       // Displayed when the maxFiles have been exceeded
       // You can use {{maxFiles}} here, which will be replaced by the option.
-      dictMaxFilesExceeded: i18n._t('AssetAdmin.DROPZONE_MAX_FILES_EXCEEDED'),
+      dictMaxFilesExceeded: i18n._t('AssetAdmin.DROPZONE_MAX_FILES_EXCEEDED', 'You can not upload any more files.'),
 
       // When a file upload fails.
       error: this.handleError,
@@ -300,6 +311,19 @@ class AssetDropzone extends SilverStripeComponent {
   }
 
   /**
+   * Invoked when validation fails for max files
+   * @param file
+   * @returns {boolean}
+   */
+  handleMaxFilesExceeded(file) {
+    if (typeof this.props.handleMaxFilesExceeded === 'function') {
+      return this.props.handleMaxFilesExceeded(file);
+    }
+
+    return true;
+  }
+
+  /**
    * Generate unique ID
    *
    * @returns {String}
@@ -309,59 +333,72 @@ class AssetDropzone extends SilverStripeComponent {
   }
 
   /**
+   * Custom validation hook for the Dropzone library. Invoking the done() callback
+   * invalidates the upload.
+   *
+   * @param {object} file
+   * @param {callback} done
+   * @returns {*}
+   */
+  handleAccept(file, done) {
+    // check with parent if there are other forms of validation to be done
+    if (typeof this.props.canFileUpload === 'function' && !this.props.canFileUpload(file)) {
+      return done(i18n._t(
+        'AssetAdmin.DROPZONE_CANNOT_UPLOAD',
+        'Uploading not permitted.'
+      ));
+    }
+
+    if (!this.props.canUpload) {
+      return done(i18n._t(
+        'AssetAdmin.DROPZONE_CANNOT_UPLOAD',
+        'Uploading not permitted.'
+      ));
+    }
+
+    return done();
+  }
+
+  /**
    * Event handler for files being added. Called before the request is made to the server.
    *
    * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleAddedFile(file) {
-    if (this.props.options.maxFiles && this.dropzone.files.length > this.props.options.maxFiles) {
-      this.dropzone.removeFile(this.dropzone.files[0]);
-      if (typeof this.props.handleMaxFilesExceeded === 'function') {
-        // can add a warning message here
-        this.props.handleMaxFilesExceeded(file);
-      }
-      // shouldn't return error, as there isn't a way to catch it...
-      return Promise.resolve();
-    }
-
-    // check with parent if there are other forms of validation to be done
-    if (typeof this.props.canFileUpload === 'function' && !this.props.canFileUpload(file)) {
-      this.dropzone.removeFile(file);
-      return Promise.resolve();
-    }
-
-    if (!this.props.canUpload) {
-      this.dropzone.removeFile(file);
-      return Promise.reject(new Error(i18n._t('AssetAdmin.DROPZONE_CANNOT_UPLOAD')));
-    }
-
     // The queuedId is used to uniquely identify file while it's in the queue.
     // eslint-disable-next-line no-param-reassign
     file._queuedId = this.generateQueuedId();
+    const details = {
+      category: this.getFileCategory(file.type),
+      filename: file.name,
+      queuedId: file._queuedId,
+      size: file.size,
+      title: this.getFileTitle(file.name),
+      extension: getFileExtension(file.name),
+      type: file.type,
+    };
+    // Add the file optimistically.
+    this.props.handleAddedFile(details);
 
     const loadPreview = this.getLoadPreview(file);
 
     // JS Synonym for AssetAdmin::getObjectFromData()
     return loadPreview.then((preview) => {
-      const details = {
+      const previewDetails = {
         height: preview.height,
         width: preview.width,
-        category: this.getFileCategory(file.type),
-        filename: file.name,
-        queuedId: file._queuedId,
-        size: file.size,
-        title: this.getFileTitle(file.name),
-        extension: getFileExtension(file.name),
-        type: file.type,
         url: preview.thumbnailURL,
         thumbnail: preview.thumbnailURL,
         smallThumbnail: preview.thumbnailURL,
       };
+      if (typeof this.props.handlePreviewLoaded === 'function') {
+        this.props.handlePreviewLoaded(details, previewDetails);
+      }
 
-      this.props.handleAddedFile(details);
-      this.dropzone.processFile(file);
-
-      return details;
+      return {
+        ...details,
+        ...previewDetails,
+      };
     });
   }
 
@@ -489,11 +526,13 @@ class AssetDropzone extends SilverStripeComponent {
 
 AssetDropzone.propTypes = {
   folderId: React.PropTypes.number.isRequired,
+  handleAccept: React.PropTypes.func,
   handleAddedFile: React.PropTypes.func.isRequired,
   handleDragEnter: React.PropTypes.func,
   handleDragLeave: React.PropTypes.func,
   handleDrop: React.PropTypes.func,
   handleError: React.PropTypes.func.isRequired,
+  handlePreviewLoaded: React.PropTypes.func,
   handleSending: React.PropTypes.func,
   updateFormData: React.PropTypes.func,
   handleSuccess: React.PropTypes.func.isRequired,
