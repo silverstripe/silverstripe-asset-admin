@@ -596,7 +596,7 @@ class AssetAdmin extends SilverStripeComponent {
           {this.renderGallery()}
           {this.renderEditor()}
         </div>
-        {this.props.type !== 'admin' && this.props.loading &&
+        {this.props.loading &&
         [<div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
         <div key="spinner" className="cms-content-loading-spinner"></div>]
         }
