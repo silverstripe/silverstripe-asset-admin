@@ -1,6 +1,5 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { NetworkStatus } from 'apollo-client/queries/store';
 import { fileInterface, file as fileFragment, folder as folderFragment } from 'lib/fileFragments';
 import { hasFilters } from 'components/Search/Search';
 
