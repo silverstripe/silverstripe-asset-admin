@@ -4,12 +4,11 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
-use SilverStripe\Control\RequestHandler;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
@@ -23,8 +22,8 @@ use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
-use SilverStripe\Security\Group;
 use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\Forms\TreeMultiselectField;
 
 /**
  * @skipUpgrade
@@ -335,13 +334,6 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function getFormFieldSecurityTab($record, $context = [])
     {
-        // Get groups
-        $groupsMap = array();
-        foreach (Group::get() as $group) {
-            $groupsMap[$group->ID] = $group->getBreadcrumbs(' > ');
-        }
-        asort($groupsMap);
-
         // Get permissions
         $viewersOptionsField = [
             'Inherit' => _t(__CLASS__.'.INHERIT', 'Inherit from parent folder'),
@@ -361,15 +353,19 @@ abstract class AssetFormFactory implements FormFactory
                 _t(__CLASS__.'.ACCESSHEADER', 'Who can view this file?')
             )
                 ->setSource($viewersOptionsField),
-            CheckboxSetField::create('ViewerGroups', _t(__CLASS__.'.VIEWERGROUPS', 'Viewer Groups'))
-                ->setSource($groupsMap),
+            TreeMultiselectField::create(
+                'ViewerGroups',
+                _t(__CLASS__.'.VIEWERGROUPS', 'Viewer Groups')
+            ),
             OptionsetField::create(
                 "CanEditType",
                 _t(__CLASS__.'.EDITHEADER', 'Who can edit this file?')
             )
                 ->setSource($editorsOptionsField),
-            CheckboxSetField::create('EditorGroups', _t(__CLASS__.'.EDITORGROUPS', 'Editor Groups'))
-                ->setSource($groupsMap)
+            TreeMultiselectField::create(
+                'EditorGroups',
+                _t(__CLASS__.'.EDITORGROUPS', 'Editor Groups')
+            )
         );
     }
 
