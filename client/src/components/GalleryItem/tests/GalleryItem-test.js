@@ -2,10 +2,12 @@
 
 jest.unmock('react');
 jest.unmock('../GalleryItem');
+jest.unmock('../../../state/imageLoad/ImageLoadStatus');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import GalleryItem from '../GalleryItem';
+import { GalleryItem } from '../GalleryItem';
+import IMAGE_STATUS from '../../../state/imageLoad/ImageLoadStatus';
 
 describe('GalleryItem', () => {
   let props = null;
@@ -27,6 +29,14 @@ describe('GalleryItem', () => {
         title: 'test',
         canEdit: true,
       },
+      sectionConfig: {
+        imageRetry: {
+          minRetry: 0,
+          maxRetry: 0,
+          expiry: 0,
+        },
+      },
+      loadState: IMAGE_STATUS.DISABLED,
     };
   });
 
@@ -157,6 +167,7 @@ describe('GalleryItem', () => {
       item.props.item.thumbnail = 'myThumbnailUrl';
 
       expect(JSON.stringify(item.getThumbnailStyles())).toBe('{"backgroundImage":"url(myThumbnailUrl)"}');
+      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail gallery-item__thumbnail--small');
     });
 
     it('should not return backgroundImage with no thumbnail can be found', () => {
@@ -165,6 +176,23 @@ describe('GalleryItem', () => {
       item.props.item.thumbnail = '';
 
       expect(JSON.stringify(item.getThumbnailStyles())).toBe('{}');
+      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail gallery-item__thumbnail--small');
+    });
+
+    it('should not return backgroundImage if thumbnail failed to load', () => {
+      props = Object.assign({}, props, {
+        loadState: IMAGE_STATUS.FAILED,
+      });
+      item.props.item.category = 'image';
+      item.props.item.url = 'myUrl';
+      item.props.item.thumbnail = 'myThumbnailUrl';
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
+      );
+      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{}');
+      expect(item.getThumbnailClassNames()).toBe(
+        'gallery-item__thumbnail gallery-item__thumbnail--small gallery-item__thumbnail--error'
+      );
     });
 
     it('should return an empty object if the item is not an image', () => {
@@ -172,6 +200,7 @@ describe('GalleryItem', () => {
       item.props.item.url = 'myUrl';
 
       expect(JSON.stringify(item.getThumbnailStyles())).toBe('{}');
+      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail');
     });
   });
 
