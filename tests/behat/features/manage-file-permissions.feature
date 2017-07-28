@@ -22,7 +22,7 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
     When I click "Permissions" in the "#Editor .nav-tabs" element
       And I select "Only these people (choose from list)" from "Who can edit this file?" input group
-      And I select "ADMIN group" from "Editor Groups" input group
+      And I select "ADMIN group" in the "#Form_fileEditForm_EditorGroups_Holder" tree dropdown
       And I press the "Save" button
       And I am not logged in
       And I am logged in with "EDITOR" permissions
@@ -44,7 +44,7 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
     When I click "Permissions" in the "#Editor .nav-tabs" element
       And I select "Only these people (choose from list)" from "Who can edit this file?" input group
-      And I select "EDITOR group" from "Editor Groups" input group
+      And I select "EDITOR group" in the "#Form_fileEditForm_EditorGroups_Holder" tree dropdown
       And I press the "Save" button
       And I am not logged in
       And I am logged in with "EDITOR" permissions
