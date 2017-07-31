@@ -100,8 +100,6 @@ class Gallery extends Component {
     if (!this.compareFiles(this.props.files, nextProps.files)) {
       nextProps.actions.queuedFiles.purgeUploadQueue();
     }
-
-    this.checkLoadingIndicator(nextProps);
   }
 
   componentDidUpdate() {
@@ -188,26 +186,6 @@ class Gallery extends Component {
       i18n._t('AssetAdmin.SEARCHRESULTSMESSAGE', 'Search results {parts}'),
       searchResults
     );
-  }
-
-  /**
-   * Required anti-pattern, because `.cms-content` is the container for the React component.
-   *
-   * Adds or removes the load class from `.cms-content` if it is for the AssetAdmin
-   *
-   * @param {Object} props
-   */
-  checkLoadingIndicator(props) {
-    const $sectionWrapper = $('.cms-content.AssetAdmin');
-    if (!$sectionWrapper.length) {
-      return;
-    }
-
-    if (props.loading) {
-      $sectionWrapper.addClass('loading');
-    } else {
-      $sectionWrapper.removeClass('loading');
-    }
   }
 
   /**
@@ -844,7 +822,12 @@ class Gallery extends Component {
         );
       }
       if (this.props.loading) {
-        return <div className="flexbox-area-grow"></div>;
+        return (
+          <div className="flexbox-area-grow">
+            <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>
+            <div key="spinner" className="cms-content-loading-spinner"></div>
+          </div>
+        );
       }
       return (
         <div className="flexbox-area-grow">
@@ -918,6 +901,10 @@ class Gallery extends Component {
             {this.renderGalleryView()}
           </GalleryDND>
         </AssetDropzone>
+        { this.props.loading && [
+          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
+          <div key="spinner" className="cms-content-loading-spinner"></div>,
+        ]}
       </div>
     );
   }

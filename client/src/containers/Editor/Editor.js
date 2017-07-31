@@ -15,6 +15,7 @@ class Editor extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAction = this.handleAction.bind(this);
+    this.handleLoadingSuccess = this.handleLoadingSuccess.bind(this);
     this.handleLoadingError = this.handleLoadingError.bind(this);
     this.handleFetchingSchema = this.handleFetchingSchema.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -22,6 +23,7 @@ class Editor extends Component {
 
     this.state = {
       openModal: false,
+      loadingForm: false,
       loadingError: null,
     };
   }
@@ -103,11 +105,23 @@ class Editor extends Component {
   }
 
   handleLoadingError(exception) {
-    this.setState({ loadingError: exception.errors[0] });
+    this.setState({
+      loadingForm: false,
+      loadingError: exception.errors[0],
+    });
+  }
+
+  handleLoadingSuccess() {
+    this.setState({
+      loadingForm: false,
+      loadingError: null,
+    });
   }
 
   handleFetchingSchema() {
-    this.setState({ loadingError: null });
+    this.setState({
+      loadingForm: true,
+    });
   }
 
   renderCancelButton() {
@@ -152,6 +166,7 @@ class Editor extends Component {
           afterMessages={this.renderCancelButton()}
           handleSubmit={this.handleSubmit}
           handleAction={this.handleAction}
+          onLoadingSuccess={this.handleLoadingSuccess}
           onLoadingError={this.handleLoadingError}
           onFetchingSchema={this.handleFetchingSchema}
         />
@@ -165,6 +180,10 @@ class Editor extends Component {
           responseClassBad="modal__response modal__response--error"
           responseClassGood="modal__response modal__response--good"
         />
+        { this.state.loadingForm && [
+          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
+          <div key="spinner" className="cms-content-loading-spinner"></div>,
+        ]}
       </div>
 
     </div>);

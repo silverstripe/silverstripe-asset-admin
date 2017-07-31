@@ -509,8 +509,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             }
         }
 
-        return
-            (new HTTPResponse(json_encode($output)))->addHeader('Content-Type', 'application/json');
+        $response = new HTTPResponse(json_encode($output));
+        return $response->addHeader('Content-Type', 'application/json');
     }
 
     /**
