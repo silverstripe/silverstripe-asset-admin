@@ -54,6 +54,7 @@ class HistoryList extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.timer);
+    this.timer = null;
   }
 
   /**
@@ -81,7 +82,10 @@ class HistoryList extends Component {
         this.api({
           fileId,
         }).then((history) => {
-          this.setState({ history, loadedDetails: true });
+          // check that timer wasn't nulled out by unmounting
+          if (this.timer) {
+            this.setState({ history, loadedDetails: true });
+          }
         });
       }, 250);
     }
