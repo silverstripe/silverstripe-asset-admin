@@ -96,7 +96,7 @@ Feature: Manage files
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
-      And I should see "successfully archived" in the message box
+      And I should see "successfully deleted" in the message box
 
   @modal
   Scenario: I cannot delete a folder containing a file that is in use
@@ -114,7 +114,7 @@ Feature: Manage files
     Then I press the "Delete" button
       And I see the text "file is currently in use" in the alert
       And I confirm the dialog
-    Then I should see "successfully archived" in the message box
+    Then I should see "successfully deleted" in the message box
       And I should not see the file named "file1" in the gallery
 
   Scenario: I can move a file through editing
