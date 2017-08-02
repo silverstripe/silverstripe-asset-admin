@@ -17,12 +17,12 @@ use SilverStripe\Forms\TextField;
 
 class FileFormFactory extends AssetFormFactory
 {
-    protected function getFormFieldTabs($record, $context = [])
+    protected function getFormFieldTabs($controller, $record, $context = [])
     {
         // Add extra tab
         $tabs = TabSet::create(
             'Editor',
-            $this->getFormFieldDetailsTab($record, $context),
+            $this->getFormFieldDetailsTab($controller, $record, $context),
             $this->getFormFieldSecurityTab($record, $context),
             $this->getFormFieldUsageTab($record, $context),
             $this->getFormFieldHistoryTab($record, $context)
@@ -36,7 +36,7 @@ class FileFormFactory extends AssetFormFactory
                 break;
             case static::TYPE_INSERT_LINK:
                 $tabs->setReadonly(true);
-                $tabs->unshift($this->getFormFieldLinkOptionsTab($record, $context));
+                $tabs->unshift($this->getFormFieldLinkOptionsTab($controller, $record, $context));
                 break;
             case static::TYPE_SELECT:
                 $tabs->setReadonly(true);
@@ -71,13 +71,13 @@ class FileFormFactory extends AssetFormFactory
         );
     }
 
-    protected function getFormFieldDetailsTab($record, $context = [])
+    protected function getFormFieldDetailsTab($controller, $record, $context = [])
     {
         // Update details tab
-        $tab = parent::getFormFieldDetailsTab($record, $context);
+        $tab = parent::getFormFieldDetailsTab($controller, $record, $context);
 
         $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
-        
+
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
             $tab->push(LiteralField::create(
                 'EditLink',
@@ -93,9 +93,9 @@ class FileFormFactory extends AssetFormFactory
         return $tab;
     }
 
-    protected function getFormFieldLinkOptionsTab($record, $context = [])
+    protected function getFormFieldLinkOptionsTab($controller, $record, $context = [])
     {
-        return Tab::create(
+        $tab = Tab::create(
             'LinkOptions',
             _t(__CLASS__ .'.LINKOPTIONS', 'Link options'),
             TextField::create(
@@ -107,8 +107,15 @@ class FileFormFactory extends AssetFormFactory
                 _t(__CLASS__.'.LINKOPENNEWWIN', 'Open in new window/tab')
             )
         );
+
+        $requireLinkText = $controller->getRequest()->getVar('requireLinkText');
+        if (isset($requireLinkText)) {
+            $tab->insertBefore('Description', TextField::create('Text', _t(__CLASS__.'.LINKTEXT', 'Link text')));
+        }
+
+        return $tab;
     }
-    
+
     /**
      * Create tab for file attributes
      *
@@ -311,7 +318,7 @@ class FileFormFactory extends AssetFormFactory
         }
         return $action;
     }
-    
+
     /**
      * @param File $record
      * @return FormAction

@@ -131,7 +131,7 @@ abstract class AssetFormFactory implements FormFactory
      * @param array $context
      * @return TabSet
      */
-    protected function getFormFieldTabs($record, $context = [])
+    protected function getFormFieldTabs($controller, $record, $context = [])
     {
         return TabSet::create(
             'Editor',
@@ -212,7 +212,7 @@ abstract class AssetFormFactory implements FormFactory
         $fields = new FieldList(
             HeaderField::create('TitleHeader', $record ? $record->Title : null, 1)
                 ->addExtraClass('editor__heading'),
-            $this->getFormFieldTabs($record, $context)
+            $this->getFormFieldTabs($controller, $record, $context)
         );
         if ($record) {
             $fields->push(HiddenField::create('ID', $record->ID));
@@ -273,7 +273,7 @@ abstract class AssetFormFactory implements FormFactory
      * @param array $context
      * @return Tab
      */
-    protected function getFormFieldDetailsTab($record, $context = [])
+    protected function getFormFieldDetailsTab($controller, $record, $context = [])
     {
         /** @var Tab $tab */
         $tab = Tab::create(

@@ -1105,7 +1105,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         /** @var File $file */
         if ($file->getIsImage()) {
             $generator = $this->getThumbnailGenerator();
-            
+
             // Small thumbnail
             $smallWidth = UploadField::config()->uninherited('thumbnail_width');
             $smallHeight = UploadField::config()->uninherited('thumbnail_height');
