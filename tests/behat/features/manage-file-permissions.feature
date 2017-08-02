@@ -13,7 +13,6 @@ Feature: Manage files
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/assets"
 
-  @modal
   Scenario: I can limit edit permissions to admins
     When I check the folder named "folder1" in the gallery
     Then I should see an ".bulk-actions__action[value='edit']" element
@@ -34,8 +33,6 @@ Feature: Manage files
       And I should not see the "Save" button
       And I should not see the "Publish" button
 
-
-  @modal
   Scenario: I can edit permissions if I am in the right group
     When I check the folder named "folder1" in the gallery
     Then I should see an ".bulk-actions__action[value='edit']" element
