@@ -14,6 +14,7 @@ class FileHistoryFormFactory extends FileFormFactory
 {
     public function getForm(RequestHandler $controller = null, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
+        $context['RequireLinkText'] = false;
         $form = parent::getForm($controller, $name, $context);
         $form->makeReadonly();
         return $form;
@@ -80,5 +81,10 @@ class FileHistoryFormFactory extends FileFormFactory
         $this->invokeWithExtensions('updateFormActions', $actions, $controller, $formName, $context);
 
         return $actions;
+    }
+
+    public function getRequiredContext()
+    {
+        return ['Record'];
     }
 }

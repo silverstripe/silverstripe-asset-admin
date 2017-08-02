@@ -131,7 +131,7 @@ abstract class AssetFormFactory implements FormFactory
      * @param array $context
      * @return TabSet
      */
-    protected function getFormFieldTabs($controller, $record, $context = [])
+    protected function getFormFieldTabs($record, $context = [])
     {
         return TabSet::create(
             'Editor',
@@ -174,7 +174,7 @@ abstract class AssetFormFactory implements FormFactory
 
     /**
      * @param RequestHandler $controller
-     * @param $formName
+     * @param string $formName
      * @param array $context
      * @return FieldList
      */
@@ -212,7 +212,7 @@ abstract class AssetFormFactory implements FormFactory
         $fields = new FieldList(
             HeaderField::create('TitleHeader', $record ? $record->Title : null, 1)
                 ->addExtraClass('editor__heading'),
-            $this->getFormFieldTabs($controller, $record, $context)
+            $this->getFormFieldTabs($record, $context)
         );
         if ($record) {
             $fields->push(HiddenField::create('ID', $record->ID));
@@ -273,7 +273,7 @@ abstract class AssetFormFactory implements FormFactory
      * @param array $context
      * @return Tab
      */
-    protected function getFormFieldDetailsTab($controller, $record, $context = [])
+    protected function getFormFieldDetailsTab($record, $context = [])
     {
         /** @var Tab $tab */
         $tab = Tab::create(
@@ -317,6 +317,7 @@ abstract class AssetFormFactory implements FormFactory
             if ($context['ParentID'] === 0) {
                 return '/';
             }
+            /** @var File $file */
             $file = File::get()->byID($context['ParentID']);
             if ($file) {
                 return $file->getFilename();

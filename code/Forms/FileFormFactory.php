@@ -17,12 +17,12 @@ use SilverStripe\Forms\TextField;
 
 class FileFormFactory extends AssetFormFactory
 {
-    protected function getFormFieldTabs($controller, $record, $context = [])
+    protected function getFormFieldTabs($record, $context = [])
     {
         // Add extra tab
         $tabs = TabSet::create(
             'Editor',
-            $this->getFormFieldDetailsTab($controller, $record, $context),
+            $this->getFormFieldDetailsTab($record, $context),
             $this->getFormFieldSecurityTab($record, $context),
             $this->getFormFieldUsageTab($record, $context),
             $this->getFormFieldHistoryTab($record, $context)
@@ -36,7 +36,7 @@ class FileFormFactory extends AssetFormFactory
                 break;
             case static::TYPE_INSERT_LINK:
                 $tabs->setReadonly(true);
-                $tabs->unshift($this->getFormFieldLinkOptionsTab($controller, $record, $context));
+                $tabs->unshift($this->getFormFieldLinkOptionsTab($record, $context));
                 break;
             case static::TYPE_SELECT:
                 $tabs->setReadonly(true);
@@ -71,10 +71,10 @@ class FileFormFactory extends AssetFormFactory
         );
     }
 
-    protected function getFormFieldDetailsTab($controller, $record, $context = [])
+    protected function getFormFieldDetailsTab($record, $context = [])
     {
         // Update details tab
-        $tab = parent::getFormFieldDetailsTab($controller, $record, $context);
+        $tab = parent::getFormFieldDetailsTab($record, $context);
 
         $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
 
@@ -93,7 +93,7 @@ class FileFormFactory extends AssetFormFactory
         return $tab;
     }
 
-    protected function getFormFieldLinkOptionsTab($controller, $record, $context = [])
+    protected function getFormFieldLinkOptionsTab($record, $context = [])
     {
         $tab = Tab::create(
             'LinkOptions',
@@ -108,8 +108,7 @@ class FileFormFactory extends AssetFormFactory
             )
         );
 
-        $requireLinkText = $controller->getRequest()->getVar('requireLinkText');
-        if (isset($requireLinkText)) {
+        if ($context['RequireLinkText']) {
             $tab->insertBefore('Description', TextField::create('Text', _t(__CLASS__.'.LINKTEXT', 'Link text')));
         }
 
@@ -332,5 +331,10 @@ class FileFormFactory extends AssetFormFactory
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return $action;
+    }
+
+    public function getRequiredContext()
+    {
+        return parent::getRequiredContext() + [ 'RequireLinkText' ];
     }
 }

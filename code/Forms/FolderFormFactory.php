@@ -4,14 +4,9 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\Tab;
-use SilverStripe\Forms\TextField;
 
 /**
  * Empty form factory, because the defaults from AssetFormFactory was enough
- *
- * Class FolderFormFactory
- * @package SilverStripe\AssetAdmin\Forms
  */
 class FolderFormFactory extends AssetFormFactory
 {
