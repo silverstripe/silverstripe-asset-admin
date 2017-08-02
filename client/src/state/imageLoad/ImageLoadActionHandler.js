@@ -5,17 +5,31 @@ const defaultOptions = {
   minRetry: 0,
   maxRetry: 0,
   expiry: 0,
+  // set noops as default for events
+  onStatusChange: () => null,
+  onRetry: () => null,
+  onReset: () => null,
+  onTimeout: () => null,
+};
+
+/**
+ * Default factory to test for image
+ *
+ * @param {String} url
+ * @param {function} resolve
+ * @param {function} reject
+ */
+const defaultImageFactory = (url, resolve, reject) => {
+  const img = new Image();
+  img.onload = resolve;
+  img.onerror = reject;
+  img.src = url;
 };
 
 class ImageLoadActionHandler {
-
-  constructor(options, action) {
-    this.onStatusChange = null;
-    this.onRetry = null;
-    this.onReset = null;
-    this.onTimeout = null;
-    this.options = Object.assign({}, defaultOptions, options);
-    this.action = action;
+  constructor(options, factory = defaultImageFactory) {
+    this.options = { ...defaultOptions, ...options };
+    this.factory = factory;
   }
 
   /**
@@ -25,13 +39,13 @@ class ImageLoadActionHandler {
    * @return {Promise}|{null} - Promise, or null if not able to attempt
    */
   loadImage(url) {
-    // Attempt to lock this url, but return if already locked by another process
-    if (!ImageLoadLocker.lock(url)) {
+    // If retry is disabled
+    if (!this.options.minRetry) {
       return null;
     }
 
-    // If retry is disabled
-    if (!this.options.minRetry) {
+    // Attempt to lock this url, but return if already locked by another process
+    if (!ImageLoadLocker.lock(url)) {
       return null;
     }
 
@@ -39,39 +53,20 @@ class ImageLoadActionHandler {
   }
 
   /**
-   * Register event for a retry being started
+   * Attempt request to asset
    *
-   * @param {Function} callback
+   * @param {String} url - URL to load
+   * @param {Number} retryAfter - Delay after which we should retry, if this fails
+   * @return {Promise}
    */
-  setOnRetry(callback) {
-    this.onRetry = callback;
-  }
+  loadImageLoop(url, retryAfter) {
+    // Set status to loading
+    this.options.onStatusChange(url, IMAGE_STATUS.LOADING);
 
-  /**
-   * Register event for a file being reset
-   *
-   * @param {Function} callback
-   */
-  setOnReset(callback) {
-    this.onReset = callback;
-  }
-
-  /**
-   * Register event for a status change
-   *
-   * @param {Function} callback
-   */
-  setOnStatusChange(callback) {
-    this.onStatusChange = callback;
-  }
-
-  /**
-   * Register event for a tick action
-   *
-   * @param {Function} callback
-   */
-  setOnTimeout(callback) {
-    this.onTimeout = callback;
+    // Begin loading image
+    return new Promise((resolve, reject) => this.factory(url, resolve, reject))
+      .then(() => this.handleSuccess(url))
+      .catch(() => this.handleError(url, retryAfter));
   }
 
   /**
@@ -81,29 +76,20 @@ class ImageLoadActionHandler {
    * @param {Function} resolve - Resolution handler for promise
    */
   handleReset(url, resolve) {
-    if (this.onReset) {
-      this.onReset(url);
-    }
+    this.options.onReset(url);
     resolve();
   }
 
   /**
-   * Change the status of a file
+   * Setup a timeout delay and trigger an event
    *
-   * @param {String} url
-   * @param {String} status
+   * @param {Function} callback
+   * @param {Number} delay
+   * @return {Number} id
    */
-  handleStatusChange(url, status) {
-    if (this.onStatusChange) {
-      this.onStatusChange(url, status);
-    }
-  }
-
   handleTimeout(callback, delay) {
     const id = setTimeout(callback, delay);
-    if (this.onTimeout) {
-      this.onTimeout(id, delay);
-    }
+    this.options.onTimeout(id, delay);
     return id;
   }
 
@@ -115,19 +101,19 @@ class ImageLoadActionHandler {
   handleSuccess(url) {
     // Unlock after success
     ImageLoadLocker.unlock(url);
-    this.handleStatusChange(url, IMAGE_STATUS.SUCCESS);
+    this.options.onStatusChange(url, IMAGE_STATUS.SUCCESS);
   }
 
   /**
    * When we have exhausted all possible attempts mark as failed
    *
    * @param {String} url
-   * @return {Promise}|{null}
+   * @return {Promise|null}
    */
   handleFailure(url) {
     // Unlock after final failure
     ImageLoadLocker.unlock(url);
-    this.handleStatusChange(url, IMAGE_STATUS.FAILED);
+    this.options.onStatusChange(url, IMAGE_STATUS.FAILED);
 
     // Allow failure to expire if configured
     if (this.options.expiry) {
@@ -147,6 +133,7 @@ class ImageLoadActionHandler {
    * On failure we want to temporarily mark as failed, and retry later
    *
    * @param {String} url
+   * @param {Number} retryAfter
    * @return {Promise}|{null}
    */
   handleError(url, retryAfter) {
@@ -156,7 +143,7 @@ class ImageLoadActionHandler {
     }
 
     // Set waiting status during timeout
-    this.handleStatusChange(url, IMAGE_STATUS.WAITING);
+    this.options.onStatusChange(url, IMAGE_STATUS.WAITING);
 
     // Wait for the specified retryAfter seconds, then repeat the loop
     // with a new retryAfter
@@ -177,27 +164,44 @@ class ImageLoadActionHandler {
         retryAfter * 1000
       );
     });
-    if (this.onRetry) {
-      this.onRetry(url, retryAfter);
-    }
+    this.options.onRetry(url, retryAfter, promise);
     return promise;
   }
 
   /**
-   * Attempt request to asset
+   * Register event for a retry being started
    *
-   * @param {String} url - URL to load
-   * @param {Number} retryAfter - Delay after which we should retry, if this fails
-   * @return {Promise}
+   * @param {Function} callback
    */
-  loadImageLoop(url, retryAfter) {
-    // Set status to loading
-    this.handleStatusChange(url, IMAGE_STATUS.LOADING);
+  setOnRetry(callback) {
+    this.options.onRetry = callback;
+  }
 
-    // Begin loading image
-    return new Promise((resolve, reject) => this.action(url, resolve, reject))
-      .then(() => this.handleSuccess(url))
-      .catch(() => this.handleError(url, retryAfter));
+  /**
+   * Register event for a file being reset
+   *
+   * @param {Function} callback
+   */
+  setOnReset(callback) {
+    this.options.onReset = callback;
+  }
+
+  /**
+   * Register event for a status change
+   *
+   * @param {Function} callback
+   */
+  setOnStatusChange(callback) {
+    this.options.onStatusChange = callback;
+  }
+
+  /**
+   * Register event for a tick action
+   *
+   * @param {Function} callback
+   */
+  setOnTimeout(callback) {
+    this.options.onTimeout = callback;
   }
 }
 

@@ -18,14 +18,22 @@ import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
  * @param {Object} props - Props to inspect
  */
 function shouldLoadImage(props) {
-  return props.item
-    && props.item.thumbnail
-    && props.item.thumbnail.match(/https?:\/\//)
+  return props.item.thumbnail
+    && props.item.category === 'image'
+    && props.item.exists
     && !props.item.uploading // Don't load images for uploaded images (retain client thumbnail)
-    && props.sectionConfig.imageRetry
     && props.sectionConfig.imageRetry.minRetry
     && props.sectionConfig.imageRetry.maxRetry;
 }
+
+/**
+ * Avoids the browser's default focus state when selecting an item.
+ *
+ * @param {Object} event Event object.
+ */
+const preventFocus = (event) => {
+  event.preventDefault();
+};
 
 class GalleryItem extends SilverStripeComponent {
   constructor(props) {
@@ -35,7 +43,6 @@ class GalleryItem extends SilverStripeComponent {
     this.handleActivate = this.handleActivate.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
-    this.preventFocus = this.preventFocus.bind(this);
   }
 
   /**
@@ -66,7 +73,7 @@ class GalleryItem extends SilverStripeComponent {
   componentWillReceiveProps(nextProps) {
     if (shouldLoadImage(nextProps)) {
       // Tell backend to start loading the image
-      this.props.actions.imageLoad.loadImage(
+      nextProps.actions.imageLoad.loadImage(
         nextProps.item.thumbnail,
         nextProps.sectionConfig.imageRetry
       );
@@ -322,15 +329,6 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   /**
-   * Avoids the browser's default focus state when selecting an item.
-   *
-   * @param {Object} event Event object.
-   */
-  preventFocus(event) {
-    event.preventDefault();
-  }
-
-  /**
    * Callback for cancelling or removing (if failed) this item when it's still uploading.
    *
    * @param event
@@ -399,7 +397,7 @@ class GalleryItem extends SilverStripeComponent {
       type: 'checkbox',
       title: i18n._t('AssetAdmin.SELECT', 'Select'),
       tabIndex: -1,
-      onMouseDown: this.preventFocus,
+      onMouseDown: preventFocus,
       id: htmlID,
     };
     const inputLabelClasses = [
@@ -473,17 +471,21 @@ GalleryItem.propTypes = {
   onRemoveErroredUpload: PropTypes.func,
 };
 
+GalleryItem.defaultProps = {
+  item: {},
+  sectionConfig: {
+    imageRetry: {},
+  },
+};
 function mapStateToProps(state, ownprops) {
   // If image is broken, replace with placeholder
   if (shouldLoadImage(ownprops)) {
     // Find state of this file
-    const file = state.assetAdmin
-      && state.assetAdmin.imageLoad
-      && state.assetAdmin.imageLoad.files
-      && state.assetAdmin.imageLoad.files.find((next) => ownprops.item.thumbnail === next.url);
+    const imageLoad = state.assetAdmin.imageLoad;
+    const file = imageLoad.files.find((next) => ownprops.item.thumbnail === next.url);
 
     // Use file state, or mark none prior to loadFile being called
-    const loadState = file && file.status || IMAGE_STATUS.NONE;
+    const loadState = (file && file.status) || IMAGE_STATUS.NONE;
     return { loadState };
   }
   // None implies disabled preloading

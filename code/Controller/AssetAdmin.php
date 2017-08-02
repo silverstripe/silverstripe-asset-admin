@@ -221,9 +221,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             ],
             'limit' => $this->config()->page_length,
             'imageRetry' => [
-                'minRetry' => 1, // $this->config()->image_retry_min,
-                'maxRetry' => 4, // $this->config()->image_retry_max,
-                'expiry' => 0, // $this->config()->image_retry_failure_expiry
+                'minRetry' => $this->config()->image_retry_min,
+                'maxRetry' => $this->config()->image_retry_max,
+                'expiry' => $this->config()->image_retry_failure_expiry,
             ],
             'form' => [
                 'fileEditForm' => [
