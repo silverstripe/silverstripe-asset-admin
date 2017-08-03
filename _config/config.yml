@@ -19,10 +19,15 @@ SilverStripe\Core\Injector\Injector:
 Name: assetadmincampaigns
 Only:
   moduleexists: 'silverstripe/campaign-admin'
+After:
+  - '#cmscampaigns'
 ---
 SilverStripe\AssetAdmin\Forms\FileFormFactory:
   extensions:
     - 'SilverStripe\AssetAdmin\Extensions\CampaignAdminExtension'
+SilverStripe\CampaignAdmin\CampaignAdmin:
+  placeholder_group_classes:
+    - 'SilverStripe\Assets\File'
 ---
 Name: assetadminmodals
 ---
