@@ -1,9 +1,10 @@
 /* global jest, describe, it, expect, beforeEach, jasmine */
 
-jest.unmock('../ImageLoadActions');
-jest.unmock('../ImageLoadActionHandler');
+jest.mock('../ImageLoadActionHandler', () => jest.fn());
 
+import ImageLoadActionHandler from '../ImageLoadActionHandler';
 import IMAGE_STATUS from '../ImageLoadStatus';
+import IMAGE_LOAD from '../ImageLoadActionTypes';
 import { loadImage } from '../ImageLoadActions';
 
 describe('loadImage', () => {
@@ -12,63 +13,71 @@ describe('loadImage', () => {
   const options = { minRetry: 2, maxRetry: 4 };
 
   beforeEach(() => {
-    dispatch = jest
-      .genMockFn();
-    getState = jest
-      .genMockFn()
-      .mockReturnValue({
-        assetAdmin: {
-          imageLoad: {
-            files: [{
-              url: 'http://www.mysite.com/file.jpg',
-              state: IMAGE_STATUS.FAILED,
-            }],
-          },
+    dispatch = jest.fn();
+    getState = jest.fn(() => ({
+      assetAdmin: {
+        imageLoad: {
+          files: [{
+            url: 'http://www.mysite.com/file.jpg',
+            state: IMAGE_STATUS.FAILED,
+          }],
         },
-      });
+      },
+    }));
   });
 
   it('should skip missing images', () => {
     const result = loadImage('', {})(dispatch, getState);
     expect(result).toBe(null);
-    expect(dispatch).toHaveBeenCalledTimes(0);
+    expect(dispatch).not.toBeCalled();
     expect(getState).toHaveBeenCalledTimes(0);
   });
 
   it('should skip processed files', () => {
     const result = loadImage('http://www.mysite.com/file.jpg', options)(dispatch, getState);
     expect(result).toBe(null);
-    expect(dispatch).toHaveBeenCalledTimes(0);
+    expect(dispatch).not.toBeCalled();
     expect(getState).toHaveBeenCalledTimes(1);
   });
 
   it('should process new files', () => {
-    const mockFactory = jest
-      .genMockFn()
-      .mockImplementation((url, resolve) => resolve());
+    class MockHandler {
+      constructor(opts) {
+        expect(opts.minRetry).toBe(2);
+        expect(opts.maxRetry).toBe(4);
+        this.opts = opts;
+      }
+      loadImage(url) {
+        expect(url).toBe('http://www.mysite.com/another.jpg');
+        return Promise.resolve(this.opts);
+      }
+    }
 
-    const result = loadImage('http://www.mysite.com/another.jpg', options, mockFactory)(dispatch, getState);
+    ImageLoadActionHandler.mockImplementation((opts) => new MockHandler(opts));
+
+    const url = 'http://www.mysite.com/another.jpg';
+    const result = loadImage(url, options)(dispatch, getState);
     expect(result).toBeInstanceOf(Promise);
 
     // Assert result of calls after promise is resolved
-    return result.then(() => {
-      expect(dispatch).toHaveBeenCalledTimes(2);
+    return result.then((opts) => {
+      expect(dispatch).not.toBeCalled();
+
+      opts.onReset(url);
       expect(dispatch.mock.calls[0][0]).toEqual({
-        type: 'IMAGE_LOAD_SET_STATUS',
-        payload: {
-          status: IMAGE_STATUS.LOADING,
-          url: 'http://www.mysite.com/another.jpg',
-        },
+        type: IMAGE_LOAD.RESET,
+        payload: { url },
       });
+
+
+      const status = 'MY_MOCK_STATUS';
+      opts.onStatusChange(url, status);
       expect(dispatch.mock.calls[1][0]).toEqual({
-        type: 'IMAGE_LOAD_SET_STATUS',
-        payload: {
-          status: IMAGE_STATUS.SUCCESS,
-          url: 'http://www.mysite.com/another.jpg',
-        },
+        type: IMAGE_LOAD.SET_STATUS,
+        payload: { status, url },
       });
+
       expect(getState).toHaveBeenCalledTimes(1);
-      expect(mockFactory).toHaveBeenCalledTimes(1);
     });
   });
 });

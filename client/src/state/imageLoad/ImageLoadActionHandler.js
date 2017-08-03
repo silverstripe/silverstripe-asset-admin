@@ -27,9 +27,9 @@ const defaultImageFactory = (url, resolve, reject) => {
 };
 
 class ImageLoadActionHandler {
-  constructor(options, factory = null) {
+  constructor(options, factory = defaultImageFactory) {
     this.options = { ...defaultOptions, ...options };
-    this.factory = factory || defaultImageFactory();
+    this.factory = factory;
   }
 
   /**
@@ -204,5 +204,7 @@ class ImageLoadActionHandler {
     this.options.onTimeout = callback;
   }
 }
+
+export { defaultImageFactory };
 
 export default ImageLoadActionHandler;
