@@ -1,5 +1,7 @@
 /* global jest, describe, it, expect, beforeEach, jasmine */
 
+jest.unmock('../ImageLoadActionHandler');
+
 import ImageLoadActionHandler from '../ImageLoadActionHandler';
 import IMAGE_STATUS from '../ImageLoadStatus';
 

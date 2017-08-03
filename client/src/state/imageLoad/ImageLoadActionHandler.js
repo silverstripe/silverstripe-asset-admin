@@ -27,9 +27,9 @@ const defaultImageFactory = (url, resolve, reject) => {
 };
 
 class ImageLoadActionHandler {
-  constructor(options, factory = defaultImageFactory) {
+  constructor(options, factory = null) {
     this.options = { ...defaultOptions, ...options };
-    this.factory = factory;
+    this.factory = factory || defaultImageFactory();
   }
 
   /**

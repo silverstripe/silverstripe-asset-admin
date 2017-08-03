@@ -6,8 +6,9 @@ import ImageLoadActionHandler from './ImageLoadActionHandler';
  *
  * @param {String} url - URL to load
  * @param {Object} options - see configShape.imageRetry for shape
+ * @param {Function} factory - Factory for performing the image load
  */
-export function loadImage(url, options) {
+export function loadImage(url, options, factory = null) {
   return (dispatch, getState) => {
     // Ensure url is loadable
     if (!url) {
@@ -38,7 +39,7 @@ export function loadImage(url, options) {
     };
 
     // Pass to handler
-    const handler = new ImageLoadActionHandler(loadOptions);
+    const handler = new ImageLoadActionHandler(loadOptions, factory);
     return handler.loadImage(url);
   };
 }
