@@ -1,11 +1,9 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('react');
-jest.unmock('../GalleryItem');
-
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import GalleryItem from '../GalleryItem';
+import { GalleryItem } from '../GalleryItem';
+import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
 
 describe('GalleryItem', () => {
   let props = null;
@@ -27,6 +25,14 @@ describe('GalleryItem', () => {
         title: 'test',
         canEdit: true,
       },
+      sectionConfig: {
+        imageRetry: {
+          minRetry: 0,
+          maxRetry: 0,
+          expiry: 0,
+        },
+      },
+      loadState: IMAGE_STATUS.DISABLED,
     };
   });
 
@@ -61,14 +67,11 @@ describe('GalleryItem', () => {
   describe('hasError()', () => {
     let item = null;
 
-    beforeEach(() => {
+    it('should give an error if message type is "error"', () => {
+      props.item.message = { type: 'error', value: '' };
       item = ReactTestUtils.renderIntoDocument(
         <GalleryItem {...props} />
       );
-    });
-
-    it('should give an error if message type is "error"', () => {
-      props.item.message = { type: 'error', value: '' };
       const error = item.hasError();
 
       expect(error).toBe(true);
@@ -76,6 +79,9 @@ describe('GalleryItem', () => {
 
     it('should give no error if message type is "success"', () => {
       props.item.message = { type: 'success', value: '' };
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
+      );
       const error = item.hasError();
 
       expect(error).toBe(false);
@@ -145,33 +151,69 @@ describe('GalleryItem', () => {
   describe('getThumbnailStyles()', () => {
     let item = null;
 
-    beforeEach(() => {
+    it('should return backgroundImage with the correct url if the item is a thumbnail', () => {
+      props.item = {
+        ...props.item,
+        category: 'image',
+        url: 'myUrl',
+        thumbnail: 'myThumbnailUrl',
+      };
+
       item = ReactTestUtils.renderIntoDocument(
         <GalleryItem {...props} />
       );
-    });
 
-    it('should return backgroundImage with the correct url if the item is a thumbnail', () => {
-      item.props.item.category = 'image';
-      item.props.item.url = 'myUrl';
-      item.props.item.thumbnail = 'myThumbnailUrl';
-
-      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{"backgroundImage":"url(myThumbnailUrl)"}');
+      expect(item.getThumbnailStyles()).toEqual({ backgroundImage: 'url(myThumbnailUrl)' });
+      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail gallery-item__thumbnail--small');
     });
 
     it('should not return backgroundImage with no thumbnail can be found', () => {
-      item.props.item.category = 'image';
-      item.props.item.url = 'myUrl';
-      item.props.item.thumbnail = '';
+      props.item = {
+        ...props.item,
+        category: 'image',
+        url: 'myUrl',
+        thumbnail: '',
+      };
 
-      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{}');
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
+      );
+
+      expect(item.getThumbnailStyles()).toEqual({});
+      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail gallery-item__thumbnail--small');
+    });
+
+    it('should not return backgroundImage if thumbnail failed to load', () => {
+      props = {
+        ...props,
+        loadState: IMAGE_STATUS.FAILED,
+        item: {
+          ...props.item,
+          category: 'image',
+          url: 'myUrl',
+          thumbnail: 'myThumbnailUrl',
+        },
+      };
+
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
+      );
+
+      expect(item.getThumbnailStyles()).toEqual({});
+      expect(item.getThumbnailClassNames()).toBe(
+        'gallery-item__thumbnail gallery-item__thumbnail--small gallery-item__thumbnail--error'
+      );
     });
 
     it('should return an empty object if the item is not an image', () => {
-      item.props.item.category = 'notAnImage';
-      item.props.item.url = 'myUrl';
+      props.item = {
+        ...props.item,
+        category: 'notAnImage',
+        url: 'myUrl',
+      };
 
-      expect(JSON.stringify(item.getThumbnailStyles())).toBe('{}');
+      expect(item.getThumbnailStyles()).toEqual({});
+      expect(item.getThumbnailClassNames()).toContain('gallery-item__thumbnail');
     });
   });
 
@@ -303,27 +345,6 @@ describe('GalleryItem', () => {
     it('should prevent the default behaviour of the event', () => {
       event.keyCode = 32;
       item.handleKeyDown(event);
-
-      expect(event.preventDefault).toBeCalled();
-    });
-  });
-
-  describe('preventFocus()', () => {
-    let item = null;
-    let event = null;
-
-    beforeEach(() => {
-      item = ReactTestUtils.renderIntoDocument(
-        <GalleryItem {...props} />
-      );
-
-      event = {
-        preventDefault: jest.genMockFunction(),
-      };
-    });
-
-    it('should prevent the default behaviour of the event', () => {
-      item.preventFocus(event);
 
       expect(event.preventDefault).toBeCalled();
     });

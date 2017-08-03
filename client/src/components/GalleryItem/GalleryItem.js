@@ -6,6 +6,34 @@ import fileShape from 'lib/fileShape';
 import draggable from 'components/GalleryItem/draggable';
 import droppable from 'components/GalleryItem/droppable';
 import Badge from 'components/Badge/Badge';
+import configShape from 'lib/configShape';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as imageLoadActions from 'state/imageLoad/ImageLoadActions';
+import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
+
+/**
+ * Determine if image loading should be performed
+ *
+ * @param {Object} props - Props to inspect
+ */
+function shouldLoadImage(props) {
+  return props.item.thumbnail
+    && props.item.category === 'image'
+    && props.item.exists
+    && !props.item.uploading // Don't load images for uploaded images (retain client thumbnail)
+    && props.sectionConfig.imageRetry.minRetry
+    && props.sectionConfig.imageRetry.maxRetry;
+}
+
+/**
+ * Avoids the browser's default focus state when selecting an item.
+ *
+ * @param {Object} event Event object.
+ */
+const preventFocus = (event) => {
+  event.preventDefault();
+};
 
 class GalleryItem extends SilverStripeComponent {
   constructor(props) {
@@ -15,7 +43,6 @@ class GalleryItem extends SilverStripeComponent {
     this.handleActivate = this.handleActivate.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
-    this.preventFocus = this.preventFocus.bind(this);
   }
 
   /**
@@ -43,6 +70,16 @@ class GalleryItem extends SilverStripeComponent {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (shouldLoadImage(nextProps)) {
+      // Tell backend to start loading the image
+      nextProps.actions.imageLoad.loadImage(
+        nextProps.item.thumbnail,
+        nextProps.sectionConfig.imageRetry
+      );
+    }
+  }
+
   /**
    * Gets props for thumbnail
    *
@@ -51,13 +88,21 @@ class GalleryItem extends SilverStripeComponent {
   getThumbnailStyles() {
     // Don't fall back to this.props.item.url since it might be huge
     const thumbnail = this.props.item.thumbnail;
-    if (this.isImage() && thumbnail && (this.exists() || this.uploading())) {
-      return {
-        backgroundImage: `url(${thumbnail})`,
-      };
+    if (!this.isImage() || !thumbnail || !(this.exists() || this.uploading())) {
+      return {};
     }
 
-    return {};
+    // Check loading status of thumbnail
+    switch (this.props.loadState) {
+      // Use thumbnail if successfully loaded, or preloading isn't enabled
+      case IMAGE_STATUS.SUCCESS:
+      case IMAGE_STATUS.DISABLED:
+        return {
+          backgroundImage: `url(${thumbnail})`,
+        };
+      default:
+        return {};
+    }
   }
 
   /**
@@ -87,6 +132,8 @@ class GalleryItem extends SilverStripeComponent {
       message = this.props.item.message.value;
     } else if (!this.exists() && !this.uploading()) {
       message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
+    } else if (this.props.loadState === IMAGE_STATUS.FAILED) {
+      message = i18n._t('AssetAdmin.FILE_LOAD_ERROR', 'Thumbnail not available');
     }
 
     if (message !== null) {
@@ -110,6 +157,21 @@ class GalleryItem extends SilverStripeComponent {
 
     if (this.isImageSmallerThanThumbnail()) {
       thumbnailClassNames.push('gallery-item__thumbnail--small');
+    }
+
+    // Check loading status of thumbnail
+    switch (this.props.loadState) {
+      // Show loading indicator for preloading images
+      case IMAGE_STATUS.LOADING: // Beginning first load
+      case IMAGE_STATUS.WAITING: // Waiting for subsequent load to retry
+        thumbnailClassNames.push('gallery-item__thumbnail--loading');
+        break;
+      // Show error styles if failed to load thumbnail
+      case IMAGE_STATUS.FAILED:
+        thumbnailClassNames.push('gallery-item__thumbnail--error');
+        break;
+      default:
+        break;
     }
 
     return thumbnailClassNames.join(' ');
@@ -267,15 +329,6 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   /**
-   * Avoids the browser's default focus state when selecting an item.
-   *
-   * @param {Object} event Event object.
-   */
-  preventFocus(event) {
-    event.preventDefault();
-  }
-
-  /**
    * Callback for cancelling or removing (if failed) this item when it's still uploading.
    *
    * @param event
@@ -308,7 +361,7 @@ class GalleryItem extends SilverStripeComponent {
     if (!this.hasError() && this.uploading() && !this.complete()) {
       progressBar = (
         <div className="gallery-item__upload-progress">
-          <div {...progressBarProps}></div>
+          <div {...progressBarProps} />
         </div>
       );
     }
@@ -344,7 +397,7 @@ class GalleryItem extends SilverStripeComponent {
       type: 'checkbox',
       title: i18n._t('AssetAdmin.SELECT', 'Select'),
       tabIndex: -1,
-      onMouseDown: this.preventFocus,
+      onMouseDown: preventFocus,
       id: htmlID,
     };
     const inputLabelClasses = [
@@ -398,7 +451,9 @@ class GalleryItem extends SilverStripeComponent {
 }
 
 GalleryItem.propTypes = {
+  sectionConfig: configShape,
   item: fileShape,
+  loadState: PropTypes.oneOf(Object.values(IMAGE_STATUS)),
   // Can be used to highlight a currently edited file
   highlighted: PropTypes.bool,
   // Styles according to the checkbox selection state
@@ -416,12 +471,43 @@ GalleryItem.propTypes = {
   onRemoveErroredUpload: PropTypes.func,
 };
 
+GalleryItem.defaultProps = {
+  item: {},
+  sectionConfig: {
+    imageRetry: {},
+  },
+};
+function mapStateToProps(state, ownprops) {
+  // If image is broken, replace with placeholder
+  if (shouldLoadImage(ownprops)) {
+    // Find state of this file
+    const imageLoad = state.assetAdmin.imageLoad;
+    const file = imageLoad.files.find((next) => ownprops.item.thumbnail === next.url);
+
+    // Use file state, or mark none prior to loadFile being called
+    const loadState = (file && file.status) || IMAGE_STATUS.NONE;
+    return { loadState };
+  }
+  // None implies disabled preloading
+  return { loadState: IMAGE_STATUS.DISABLED };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      imageLoad: bindActionCreators(imageLoadActions, dispatch),
+    },
+  };
+}
+
+const ConnectedGalleryItem = connect(mapStateToProps, mapDispatchToProps)(GalleryItem);
 const type = 'GalleryItem';
 
-const File = draggable(type)(GalleryItem);
+const File = draggable(type)(ConnectedGalleryItem);
 const Folder = droppable(type)(File);
 export {
+  GalleryItem,
   Folder,
   File,
 };
-export default GalleryItem;
+export default ConnectedGalleryItem;

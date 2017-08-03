@@ -105,6 +105,34 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     private static $max_upload_size;
 
     /**
+     * If an image load fails in JS, retry it after this many seconds.
+     * This value will be doubled and retried multiple times until it reaches max_image_retry
+     * (inclusive)
+     *
+     * @config
+     * @var int
+     */
+    private static $image_retry_min = 0;
+
+    /**
+     * Stop retrying after we reach this retry period.
+     *
+     * @config
+     * @var int
+     */
+    private static $image_retry_max = 0;
+
+    /**
+     * If we fail after max_image_retry, a reload can be re-attempted again
+     * after this period, but won't be automatically started.
+     *
+     * @config
+     * @var int
+     */
+    private static $image_retry_failure_expiry = 300;
+
+
+    /**
      * @var array
      */
     private static $allowed_actions = array(
@@ -192,6 +220,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'responseFormat' => 'json',
             ],
             'limit' => $this->config()->page_length,
+            'imageRetry' => [
+                'minRetry' => $this->config()->image_retry_min,
+                'maxRetry' => $this->config()->image_retry_max,
+                'expiry' => $this->config()->image_retry_failure_expiry,
+            ],
             'form' => [
                 'fileEditForm' => [
                     'schemaUrl' => $this->Link('schema/fileEditForm')

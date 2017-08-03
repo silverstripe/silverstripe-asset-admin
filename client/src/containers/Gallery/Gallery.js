@@ -20,6 +20,7 @@ import createFolderMutation from 'state/files/createFolderMutation';
 import moveFilesMutation from 'state/files/moveFilesMutation';
 import { withApollo } from 'react-apollo';
 import GalleryDND from './GalleryDND';
+import configShape from 'lib/configShape';
 
 /**
  * List of sorters for tile view, required here because it's rendered outside the tile view
@@ -802,6 +803,7 @@ class Gallery extends Component {
       onDropFiles: this.handleMoveFiles,
       onRemoveErroredUpload: this.handleRemoveErroredUpload,
       onEnableDropzone: this.handleEnableDropzone,
+      sectionConfig: this.props.sectionConfig,
     };
 
     return <GalleryView {...props} />;
@@ -917,6 +919,7 @@ const sharedDefaultProps = {
 };
 
 const sharedPropTypes = {
+  sectionConfig: configShape,
   loading: PropTypes.bool,
   sort: PropTypes.string,
   files: PropTypes.arrayOf(PropTypes.shape({

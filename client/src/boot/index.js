@@ -6,6 +6,7 @@ import queuedFilesReducer from 'state/queuedFiles/QueuedFilesReducer';
 import AssetAdminRouter from 'containers/AssetAdmin/AssetAdminRouter';
 import uploadFieldReducer from 'state/uploadField/UploadFieldReducer';
 import previewFieldReducer from 'state/previewField/PreviewFieldReducer';
+import imageLoadReducer from 'state/imageLoad/ImageLoadReducer';
 import Injector from 'lib/Injector';
 import UploadField from 'components/UploadField/UploadField';
 import PreviewImageField from 'components/PreviewImageField/PreviewImageField';
@@ -45,5 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
     queuedFiles: queuedFilesReducer,
     uploadField: uploadFieldReducer,
     previewField: previewFieldReducer,
+    imageLoad: imageLoadReducer,
   }));
 });
