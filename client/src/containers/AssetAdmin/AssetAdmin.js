@@ -562,6 +562,7 @@ class AssetAdmin extends SilverStripeComponent {
         targetId={targetId}
         onClose={this.handleCloseFile}
         schemaUrl={schemaUrl}
+        schemaUrlQueries={this.props.requireLinkText ? [{ name: 'requireLinkText', value: true }] : []}
         onSubmit={this.handleSubmitEditor}
         onDelete={this.handleDelete}
         onUnpublish={this.handleUnpublish}

@@ -77,7 +77,7 @@ class FileFormFactory extends AssetFormFactory
         $tab = parent::getFormFieldDetailsTab($record, $context);
 
         $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
-        
+
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
             $tab->push(LiteralField::create(
                 'EditLink',
@@ -95,7 +95,7 @@ class FileFormFactory extends AssetFormFactory
 
     protected function getFormFieldLinkOptionsTab($record, $context = [])
     {
-        return Tab::create(
+        $tab = Tab::create(
             'LinkOptions',
             _t(__CLASS__ .'.LINKOPTIONS', 'Link options'),
             TextField::create(
@@ -107,8 +107,14 @@ class FileFormFactory extends AssetFormFactory
                 _t(__CLASS__.'.LINKOPENNEWWIN', 'Open in new window/tab')
             )
         );
+
+        if ($context['RequireLinkText']) {
+            $tab->insertBefore('Description', TextField::create('Text', _t(__CLASS__.'.LINKTEXT', 'Link text')));
+        }
+
+        return $tab;
     }
-    
+
     /**
      * Create tab for file attributes
      *
@@ -311,7 +317,7 @@ class FileFormFactory extends AssetFormFactory
         }
         return $action;
     }
-    
+
     /**
      * @param File $record
      * @return FormAction
@@ -325,5 +331,10 @@ class FileFormFactory extends AssetFormFactory
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return $action;
+    }
+
+    public function getRequiredContext()
+    {
+        return parent::getRequiredContext() + [ 'RequireLinkText' ];
     }
 }

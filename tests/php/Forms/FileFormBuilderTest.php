@@ -53,7 +53,7 @@ class FileFormBuilderTest extends SapphireTest
         $file = $this->objFromFixture(File::class, 'file1');
         $controller = new AssetAdmin();
         $builder = new FileFormFactory();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
 
         // Verify file form is scaffolded correctly
         $this->assertEquals('EditForm', $form->getName());
@@ -102,7 +102,7 @@ class FileFormBuilderTest extends SapphireTest
         );
 
         $builder = new FileFormFactory();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
 
         // Add to campaign should now be available
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
@@ -124,7 +124,7 @@ class FileFormBuilderTest extends SapphireTest
 
         FileExtension::$canDelete = false;
         FileExtension::$canPublish = false;
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
         $this->assertNull($form->Actions()->fieldByName('PopoverActions'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
@@ -132,7 +132,7 @@ class FileFormBuilderTest extends SapphireTest
 
         FileExtension::$canDelete = false;
         FileExtension::$canPublish = true;
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
@@ -148,7 +148,7 @@ class FileFormBuilderTest extends SapphireTest
         FileExtension::$canPublish = true;
         FileExtension::$canUnpublish = true;
         $file->publishSingle();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
@@ -164,7 +164,7 @@ class FileFormBuilderTest extends SapphireTest
         $file = $this->objFromFixture(File::class, 'file1');
         $controller = new AssetAdmin();
         $builder = new FileFormFactory();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
 
         // Test fields
         /** @var LiteralField $fileSpecsField */
@@ -227,7 +227,7 @@ class FileFormBuilderTest extends SapphireTest
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_LINK]);
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_LINK, 'RequireLinkText' => false]);
 
         // Ensure form contains correct fields
         $this->assertNotNull($form->Fields()->dataFieldByName('Description'));

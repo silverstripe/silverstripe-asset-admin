@@ -136,7 +136,12 @@ class Editor extends Component {
   }
 
   render() {
-    const formSchemaUrl = `${this.props.schemaUrl}/${this.props.targetId}`;
+    let urlQueryString = this.props.schemaUrlQueries
+      .map(query => `${query.name}=${query.value}`)
+      .join('&')
+      .trim();
+    urlQueryString = urlQueryString ? `?${urlQueryString}` : '';
+    const formSchemaUrl = `${this.props.schemaUrl}/${this.props.targetId}${urlQueryString}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.targetId}`;
     const editorClasses = [
       'panel', 'form--no-dividers', 'editor',
@@ -200,6 +205,10 @@ Editor.propTypes = {
   onDelete: PropTypes.func.isRequired,
   onUnpublish: PropTypes.func.isRequired,
   schemaUrl: PropTypes.string.isRequired,
+  schemaUrlQueries: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string,
+    value: PropTypes.any,
+  })),
   addToCampaignSchemaUrl: PropTypes.string,
   openAddCampaignModal: PropTypes.bool,
   actions: PropTypes.object,

@@ -174,7 +174,7 @@ abstract class AssetFormFactory implements FormFactory
 
     /**
      * @param RequestHandler $controller
-     * @param $formName
+     * @param string $formName
      * @param array $context
      * @return FieldList
      */
@@ -317,6 +317,7 @@ abstract class AssetFormFactory implements FormFactory
             if ($context['ParentID'] === 0) {
                 return '/';
             }
+            /** @var File $file */
             $file = File::get()->byID($context['ParentID']);
             if ($file) {
                 return $file->getFilename();
