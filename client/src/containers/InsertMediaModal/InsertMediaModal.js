@@ -15,6 +15,19 @@ class InsertMediaModal extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentDidMount() {
+    if (!this.props.show) {
+      this.props.onBrowse(0);
+    }
+    if (typeof this.props.setOverrides === 'function'
+      && this.props.show
+      && this.props.fileAttributes.ID
+    ) {
+      this.props.setOverrides(this.props);
+      this.props.onBrowse(null, this.props.fileAttributes.ID);
+    }
+  }
+
   componentWillReceiveProps(props) {
     if (!props.show && this.props.show) {
       props.onBrowse(0);

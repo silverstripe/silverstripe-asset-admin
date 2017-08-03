@@ -138,8 +138,9 @@ class Editor extends Component {
   render() {
     let urlQueryString = this.props.schemaUrlQueries
       .map(query => `${query.name}=${query.value}`)
-      .join('&');
-    urlQueryString = urlQueryString.trim() !== '' && `?${urlQueryString}`;
+      .join('&')
+      .trim();
+    urlQueryString = urlQueryString ? `?${urlQueryString}` : '';
     const formSchemaUrl = `${this.props.schemaUrl}/${this.props.targetId}${urlQueryString}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.targetId}`;
     const editorClasses = [
