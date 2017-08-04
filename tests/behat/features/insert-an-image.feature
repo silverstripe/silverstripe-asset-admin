@@ -58,7 +58,7 @@ Feature: Insert an image into a page
       And I click on the file named "file1" in the gallery
     Then I should see an "form#Form_fileInsertForm" element
       And I fill in "Description" with "My file"
-      And I press the "Link to file" button
+      And I press the "Insert file" button
     Then the "Content" HTML field should contain "<a title="My file" href="[file_link,id=2]">awesome</a>"
     # Required to avoid "unsaved changes" browser dialog
       And I press the "Save draft" button
@@ -68,3 +68,4 @@ Feature: Insert an image into a page
       And I click "Link to a file" in the ".mce-menu" element
     Then I should see an "form#Form_fileInsertForm" element
       And the "Description" field should contain "My file"
+      And I should see "Update file" in the "button[name=action_insert]" element

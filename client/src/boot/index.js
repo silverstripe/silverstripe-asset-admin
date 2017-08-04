@@ -1,3 +1,4 @@
+import i18n from 'i18n';
 import { combineReducers } from 'redux';
 import Config from 'lib/Config';
 import reactRouteRegister from 'lib/ReactRouteRegister';
@@ -19,6 +20,26 @@ document.addEventListener('DOMContentLoaded', () => {
   Injector.component.register('HistoryList', HistoryList);
   Injector.component.register('ProportionConstraintField', ProportionConstraintField);
 
+  Injector.transform(
+    'insert-media-modal',
+    (updater) => {
+      updater.form.alterSchema('AssetAdmin.EditForm', form => {
+        const schema = form.getState();
+        const schemaId = schema.schema.id;
+        const overrides = schema.stateOverride && schema.stateOverride.fields;
+        const customTitle = (schemaId === 'Form_fileInsertForm' && overrides)
+          ? i18n._t('AssetAdmin.UPDATE_FILE', 'Update file')
+          : i18n._t('AssetAdmin.INSERT_FILE', 'Insert file');
+
+        form.mutateField('action_insert', (field) => ({
+          ...field,
+          title: customTitle || field.title,
+        }));
+
+        return form.getState();
+      });
+    }
+  );
   const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
 
   reactRouteRegister.add({

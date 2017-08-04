@@ -73,6 +73,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CreateTitle": "Insert new media from the web",
     "AssetAdmin.EditTitle": "Media from the web",
     "AssetAdmin.NEXT": "Next",
-    "AssetAdmin.PREVIOUS": "Previous"
-});
+    "AssetAdmin.PREVIOUS": "Previous",
+    "AssetAdmin.DETAILS": "Details",
+    "AssetAdmin.INSERT_FILE": "Insert file",
+    "AssetAdmin.UPDATE_FILE": "Update file"
+  });
 }
