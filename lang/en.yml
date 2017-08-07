@@ -53,18 +53,19 @@ en:
     ANYONE: Anyone
     EDITHEADER: 'Who can edit this file?'
     EDITORGROUPS: 'Editor Groups'
+    FOLDERLOCATION: 'Folder location'
     INHERIT: 'Inherit from parent folder'
     LOGGED_IN: 'Logged-in users'
     ONLY_GROUPS: 'Only these people (choose from list)'
-    VIEWERGROUPS: 'Viewer Groups'
     ROOTNAME: '(Top level)'
-    FOLDERLOCATION: 'Folder location'
+    VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_FILE: 'Insert file'
     INSERT_LINK: 'Link to file'
     LINKDESCR: 'Link description'
     LINKOPENNEWWIN: 'Open in new window/tab'
     LINKOPTIONS: 'Link options'
+    LINKTEXT: 'Link text'
     OTHER_ACTIONS: 'Other actions'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
