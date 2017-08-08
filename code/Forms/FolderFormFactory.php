@@ -15,6 +15,11 @@ class FolderFormFactory extends AssetFormFactory
         // Add delete action as top level button before extensions are triggered
         $this->beforeExtending('updateFormFields', function (FieldList $fields) {
             $preview = $fields->fieldByName('PreviewImage');
+            $name = $fields->dataFieldByName('Name');
+            
+            if ($name) {
+                $name->setTitle(_t(__CLASS__.'.FOLDERNAME', 'Folder name'));
+            }
 
             if ($preview) {
                 $preview->addExtraClass('editor__file-preview--folder');
