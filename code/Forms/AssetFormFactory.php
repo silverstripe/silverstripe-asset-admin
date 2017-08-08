@@ -278,10 +278,10 @@ abstract class AssetFormFactory implements FormFactory
         /** @var Tab $tab */
         $tab = Tab::create(
             'Details',
-            TextField::create('Name', File::singleton()->fieldLabel('Filename')),
+            TextField::create('Name', _t(__CLASS__.'.FILENAME', 'Filename')),
             $location = TreeDropdownField::create(
                 'ParentID',
-                _t(__CLASS__.'.FOLDERLOCATION', 'Folder location'),
+                _t(__CLASS__.'.FOLDERLOCATION', 'Location'),
                 Folder::class
             ),
             ReadonlyField::create(

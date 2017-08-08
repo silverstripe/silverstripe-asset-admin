@@ -53,7 +53,8 @@ en:
     ANYONE: Anyone
     EDITHEADER: 'Who can edit this file?'
     EDITORGROUPS: 'Editor Groups'
-    FOLDERLOCATION: 'Folder location'
+    FOLDERLOCATION: 'Location'
+    FILENAME: 'Filename'
     INHERIT: 'Inherit from parent folder'
     LOGGED_IN: 'Logged-in users'
     ONLY_GROUPS: 'Only these people (choose from list)'
@@ -67,6 +68,8 @@ en:
     LINKOPTIONS: 'Link options'
     LINKTEXT: 'Link text'
     OTHER_ACTIONS: 'Other actions'
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Folder name'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
     SAVED: Saved
