@@ -105,7 +105,8 @@ $gallery-item-label-height: 40px;
   position: relative;
 
   .gallery-item--selectable & {
-    padding-right: 29px;
+    // Make space for the checkbox on the right hand side
+    padding-right: 32px;
   }
 }
 
@@ -149,10 +150,6 @@ $gallery-item-label-height: 40px;
   }
 }
 
-.gallery-item--selectable .gallery-item__checkbox-label--disabled::before {
-  cursor: not-allowed;
-}
-
 // If error or currently uploading the label becomes an X to cancel upload
 .gallery-item--error .gallery-item__checkbox-label,
 .gallery-item__upload-progress + .gallery-item__title .gallery-item__checkbox-label {
@@ -169,8 +166,18 @@ $gallery-item-label-height: 40px;
   }
 }
 
-.gallery-item--error .gallery-item__checkbox-label::before {
-  color: $brand-danger;
+.gallery-item--error {
+
+  &:hover,
+  .gallery-item__thumbnail,
+  .gallery-item__title,
+  .gallery-item__checkbox-label {
+    cursor: not-allowed;
+  }
+
+  .gallery-item__checkbox-label::before {
+    color: $brand-danger;
+  }
 }
 
 .gallery-item__error-message {
