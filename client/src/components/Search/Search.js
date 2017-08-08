@@ -8,7 +8,9 @@ import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import { Collapse } from 'react-bootstrap-ss';
 import * as schemaActions from 'state/schema/SchemaActions';
 import { reset, initialize } from 'redux-form';
+import getIn from 'redux-form/lib/structure/plain/getIn';
 import ClickOutComponent from './ClickOutComponent';
+import getFormState from 'lib/getFormState';
 
 const identifier = 'AssetAdmin.SearchForm';
 const view = {
@@ -110,10 +112,9 @@ class Search extends SilverStripeComponent {
 
     const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
     if (schemaUrl) {
+      this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
       this.props.actions.reduxForm.initialize(identifier, {}, Object.keys(this.props.formData));
       this.props.actions.reduxForm.reset(identifier);
-
-      this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
     }
   }
 
@@ -224,6 +225,7 @@ class Search extends SilverStripeComponent {
       }
     });
 
+    this.show();
     this.props.onSearch(data);
   }
 
@@ -268,7 +270,7 @@ class Search extends SilverStripeComponent {
             onClick={this.open}
             id={triggerId}
           >
-            <span className="font-icon-search btn--icon-large"></span>
+            <span className="font-icon-search btn--icon-large" />
           </button>
           <div id={this.props.id} className="search__group">
             <input
@@ -330,12 +332,12 @@ Search.propTypes = {
   formData: PropTypes.object,
 };
 
-function mapStateToProps(state, ownProps) {
-  let formData = {};
-  const form = state.form[ownProps.searchFormSchemaUrl];
-  if (form && form.values) {
-    formData = form.values;
-  }
+function mapStateToProps(state) {
+  const formState = getFormState(state);
+  const form = getIn(formState, identifier);
+
+  const formData = (form && form.values) || {};
+
   return { formData };
 }
 

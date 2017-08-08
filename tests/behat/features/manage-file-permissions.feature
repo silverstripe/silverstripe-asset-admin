@@ -46,6 +46,7 @@ Feature: Manage files
       And I am not logged in
       And I am logged in with "EDITOR" permissions
       And I go to "/admin/assets"
+      And I wait for 1 second
       And I click on the folder named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileEditForm" form

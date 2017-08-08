@@ -94,7 +94,7 @@ const config = {
       data: {
         refetch,
         readFiles,
-        loading,
+        loading: networkLoading,
       },
       ownProps: { actions },
     }
@@ -111,8 +111,10 @@ const config = {
       ? folder.children.pageInfo.totalCount
       : 0;
 
+    const filesLoading = (folder && !folder.children);
+
     return {
-      loading,
+      loading: networkLoading || filesLoading,
       folder,
       files,
       filesTotalCount,
