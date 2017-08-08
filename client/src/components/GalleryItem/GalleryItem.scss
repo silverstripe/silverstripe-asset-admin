@@ -105,7 +105,8 @@ $gallery-item-label-height: 40px;
   position: relative;
 
   .gallery-item--selectable & {
-    padding-right: 29px;
+    // Make space for the checkbox on the right hand side
+    padding-right: 32px;
   }
 }
 
