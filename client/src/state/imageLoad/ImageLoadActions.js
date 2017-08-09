@@ -39,7 +39,6 @@ export function loadImage(url, options) {
 
     // Pass to handler
     const handler = new ImageLoadActionHandler(loadOptions);
-    console.log(handler);
     return handler.loadImage(url);
   };
 }
