@@ -93,7 +93,7 @@ class FileFormFactory extends AssetFormFactory
                 sprintf(
                     '<a href="%s" class="%s" target="_blank"><i class="%s" />%s</a>',
                     $record->CMSEditLink(),
-                    'btn btn-secondary-outline font-icon-edit editor__edit-link',
+                    'btn btn-outline-secondary font-icon-edit editor__edit-link',
                     '',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.EditLink', 'Edit original file')
                 )
