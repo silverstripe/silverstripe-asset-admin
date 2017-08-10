@@ -17,6 +17,13 @@ use SilverStripe\Forms\TextField;
 
 class FileFormFactory extends AssetFormFactory
 {
+    /**
+     * History tab/form to be shown to the user or not
+     *
+     * @var bool
+     */
+    private static $show_history = false;
+    
     protected function getFormFieldTabs($record, $context = [])
     {
         // Add extra tab
@@ -24,10 +31,12 @@ class FileFormFactory extends AssetFormFactory
             'Editor',
             $this->getFormFieldDetailsTab($record, $context),
             $this->getFormFieldSecurityTab($record, $context),
-            $this->getFormFieldUsageTab($record, $context),
-            $this->getFormFieldHistoryTab($record, $context)
+            $this->getFormFieldUsageTab($record, $context)
         );
 
+        if ($this->config()->get('show_history')) {
+            $tabs->push($this->getFormFieldHistoryTab($record, $context));
+        }
         // All non-admin forms are typically readonly
         switch ($this->getFormType($context)) {
             case static::TYPE_INSERT_MEDIA:
