@@ -66,8 +66,6 @@ class FileFormBuilderTest extends SapphireTest
             '<div class="editor__specs">11 bytes <span class="editor__status-flag">Draft</span></div>',
             $fileSpecs
         );
-        $filePath = $form->Fields()->fieldByName('Editor.Details.Path')->Value();
-        $this->assertEquals('files/', $filePath);
 
         /** @var LiteralField $iconFullField */
         $iconFullField = $form->Fields()->fieldByName('PreviewImage');
@@ -172,10 +170,6 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertEquals(
             '<div class="editor__specs">11 bytes <span class="editor__status-flag">Draft</span></div>',
             $fileSpecsField->getContent()
-        );
-        $this->assertEquals(
-            'files/',
-            $form->Fields()->fieldByName('Editor.Details.Path')->dataValue()
         );
 
         // Test actions
