@@ -160,8 +160,15 @@ class FileFormFactory extends AssetFormFactory
         /** @var File $record */
         $record = $context['Record'];
 
+
         // Add status flag before extensions are triggered
-        $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record) {
+        $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record, $context) {
+            if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
+                if ($record->appCategory() !== 'image') {
+                    $unembedableMsg = _t(__CLASS__.'.UNEMEDABLE_MESSAGE', '<p class="alert alert-info alert--no-border">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>');
+                    $fields->unshift(LiteralField::create('UnembedableMessage', $unembedableMsg));
+                }
+            }
             // @todo move specs to a component/class, so it can update specs when a File is replaced
             $fields->insertAfter(
                 'TitleHeader',
@@ -171,6 +178,7 @@ class FileFormFactory extends AssetFormFactory
             $fields->push(HiddenField::create('FileHash'));
             $fields->push(HiddenField::create('FileVariant'));
         });
+
 
         return parent::getFormFields($controller, $formName, $context);
     }
