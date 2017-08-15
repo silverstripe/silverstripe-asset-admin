@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
+import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 
 const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
 
@@ -329,12 +330,28 @@ jQuery.entwine('ss', ($) => {
      * @returns {boolean} success
      */
     insertFile() {
-      this.statusMessage(i18n._t(
-        'AssetAdmin.ERROR_OEMBED_REMOTE',
-        'Embed is only compatible with remote files'),
-        'bad');
+      const data = this.getData();
+      const shortcode = ShortcodeSerialiser.serialise({
+        name: 'file_link',
+        properties: { id: data.ID },
+      }, true);
 
-      return false;
+      this.insertLinkInEditor({ href: shortcode }, data.filename);
+      return true;
+    },
+
+    insertLinkInEditor(attributes, linkText) {
+      const editor = this.getElement().getEditor();
+      editor.insertLink(attributes, null, linkText);
+      editor.addUndo();
+      editor.repaint();
+
+      const instance = editor.getInstance();
+      const selection = instance.selection;
+
+      // Workaround to editing a link that is just inserted issue.
+      // What it does here is deselecting the link text in the editor
+      setTimeout(() => selection && selection.collapse(), 0);
     },
 
     /**
