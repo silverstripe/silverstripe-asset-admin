@@ -4,7 +4,6 @@
 /* eslint-disable func-names */
 
 import jQuery from 'jquery';
-import i18n from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';

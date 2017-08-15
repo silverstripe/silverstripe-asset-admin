@@ -9,9 +9,15 @@ const insertTransform = form => {
     return schema;
   }
   const overrides = schema.stateOverride && schema.stateOverride.fields;
-  const customTitle = (overrides && overrides.length > 0)
+  let customTitle = (overrides && overrides.length > 0)
     ? i18n._t('AssetAdmin.UPDATE_FILE', 'Update file')
     : i18n._t('AssetAdmin.INSERT_FILE', 'Insert file');
+
+  // If UnembedableMessage field is present, it means form's type is insert
+  // media and the file type is not embedable.
+  if (form.getFieldByName('UnembedableMessage')) {
+    customTitle = i18n._t('AssetAdmin.INSERT_LINK', 'Insert link');
+  }
 
   form.mutateField('action_insert', (field) => ({
     ...field,
