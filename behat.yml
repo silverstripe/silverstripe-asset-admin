@@ -20,6 +20,9 @@ default:
         -
           SilverStripe\AssetAdmin\Tests\Behat\Context\FixtureContext:
             - %paths.modules.asset-admin%/tests/behat/files/
+        -
+          SilverStripe\Framework\Tests\Behaviour\ConfigContext:
+            - %paths.modules.asset-admin%/tests/behat/files/
   extensions:
     SilverStripe\BehatExtension\Extension:
       bootstrap_file: cms/tests/behat/serve-bootstrap.php
