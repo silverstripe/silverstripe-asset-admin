@@ -11,6 +11,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
@@ -133,7 +134,7 @@ class FileFormFactory extends AssetFormFactory
      */
     protected function getFormFieldAttributesTab($record, $context = [])
     {
-        return Tab::create(
+        $tab = Tab::create(
             'Placement',
             LiteralField::create(
                 'AttributesDescription',
@@ -144,6 +145,18 @@ class FileFormFactory extends AssetFormFactory
             ),
             TextField::create('Caption', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Caption', 'Caption'))
         );
+
+        if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
+            if ($record->appCategory() !== 'image') {
+                $tab->removeByName('AttributesDescription');
+                $tab->removeByName('Caption');
+                $tab->push(ReadonlyField::create('ReadonlyLinkText', 'Link text', $record->getFilename()));
+                $tab->push(ReadonlyField::create('ReadonlyFilename', 'Filename', $record->Title));
+                $tab->push(ReadonlyField::create('ReadonlyURL', 'URL', $record->getAbsoluteURL()));
+            }
+        }
+
+        return $tab;
     }
 
     protected function getFormFieldHistoryTab($record, $context = [])
