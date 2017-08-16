@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
 import InsertEmbedModal from 'components/InsertEmbedModal/InsertEmbedModal';
+import i18n from 'i18n';
 
 const InjectableInsertEmbedModal = provideInjector(InsertEmbedModal);
 const filter = 'div[data-shortcode="embed"]';
@@ -17,14 +18,15 @@ const filter = 'div[data-shortcode="embed"]';
 (() => {
   const ssembed = {
     init: (editor) => {
+      const title = i18n._t('AssetAdmin.INSERT_VIA_URL', 'Insert media via URL');
       editor.addButton('ssembed', {
         icon: 'media',
-        title: 'Insert media via URL',
+        title,
         cmd: 'ssembed',
       });
       editor.addMenuItem('ssembed', {
         icon: 'media',
-        text: 'Insert media via URL',
+        text: title,
         cmd: 'ssembed',
       });
 

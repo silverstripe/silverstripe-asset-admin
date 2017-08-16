@@ -76,6 +76,8 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.PREVIOUS": "Previous",
     "AssetAdmin.DETAILS": "Details",
     "AssetAdmin.INSERT_FILE": "Insert file",
-    "AssetAdmin.UPDATE_FILE": "Update file"
+    "AssetAdmin.UPDATE_FILE": "Update file",
+    "AssetAdmin.INSERT_FROM_FILES": "Insert from Files",
+    "AssetAdmin.INSERT_VIA_URL": "Insert media via URL"
   });
 }

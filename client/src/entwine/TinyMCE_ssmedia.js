@@ -24,14 +24,15 @@ const filter = 'img[data-shortcode="image"]';
      * @param {Object} ed
      */
     init(ed) {
+      const title = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
       ed.addButton('ssmedia', {
         icon: 'image',
-        title: 'Insert from Files',
+        title,
         cmd: 'ssmedia',
       });
       ed.addMenuItem('ssmedia', {
         icon: 'image',
-        text: 'Insert from Files',
+        text: title,
         cmd: 'ssmedia',
       });
 
