@@ -26,12 +26,12 @@ const filter = 'img[data-shortcode="image"]';
     init(ed) {
       ed.addButton('ssmedia', {
         icon: 'image',
-        title: 'Insert Media',
+        title: 'Insert from Files',
         cmd: 'ssmedia',
       });
       ed.addMenuItem('ssmedia', {
         icon: 'image',
-        text: 'Insert Media',
+        text: 'Insert from Files',
         cmd: 'ssmedia',
       });
 

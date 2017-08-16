@@ -14,7 +14,7 @@ Feature: Insert an image into a page
 
   @assets
   Scenario: I can insert an image from the CMS file store
-    When I press the "Insert Media" HTML field button
+    When I press the "Insert from Files" HTML field button
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
@@ -25,7 +25,7 @@ Feature: Insert an image into a page
 
   @assets
   Scenario: I can edit properties of an image before inserting it
-    When I press the "Insert Media" HTML field button
+    When I press the "Insert from Files" HTML field button
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
@@ -38,7 +38,7 @@ Feature: Insert an image into a page
 
   @assets
   Scenario: I can insert an image from a URL
-    Given I press the "Insert Embedded content" HTML field button
+    Given I press the "Insert media via URL" HTML field button
       And I wait for 2 seconds until I see the ".insert-embed-modal--create" element
     When I fill in "Url" with "http://www.silverstripe.org/themes/ssv3/img/ss_logo.png"
       And I press the "Add media" button

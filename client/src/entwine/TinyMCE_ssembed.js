@@ -19,12 +19,12 @@ const filter = 'div[data-shortcode="embed"]';
     init: (editor) => {
       editor.addButton('ssembed', {
         icon: 'media',
-        title: 'Insert Embedded content',
+        title: 'Insert media via URL',
         cmd: 'ssembed',
       });
       editor.addMenuItem('ssembed', {
         icon: 'media',
-        text: 'Insert Embedded content',
+        text: 'Insert media via URL',
         cmd: 'ssembed',
       });
 
