@@ -178,7 +178,7 @@ class FileFormFactory extends AssetFormFactory
         $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record, $context) {
             if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
                 if ($record->appCategory() !== 'image') {
-                    $unembedableMsg = _t(__CLASS__.'.UNEMEDABLE_MESSAGE', '<p class="alert alert-info alert--no-border">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>');
+                    $unembedableMsg = _t(__CLASS__.'.UNEMEDABLE_MESSAGE', '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>');
                     $fields->unshift(LiteralField::create('UnembedableMessage', $unembedableMsg));
                 }
             }
