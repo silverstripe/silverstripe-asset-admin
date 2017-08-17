@@ -6,11 +6,11 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/open-sausages/silverstripe-asset-admin.git"
+    "url": "git+https://github.com/silverstripe/silverstripe-asset-admin.git"
   },
-  "homepage": "https://github.com/open-sausages/silverstripe-asset-admin",
+  "homepage": "https://github.com/silverstripe/silverstripe-asset-admin",
   "bugs": {
-    "url": "https://github.com/open-sausages/silverstripe-asset-admin/issues"
+    "url": "https://github.com/silverstripe/silverstripe-asset-admin/issues"
   },
   "author": "SilverStripe Ltd",
   "engines": {
