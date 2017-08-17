@@ -32,7 +32,7 @@ class MoveModal extends React.Component {
         setNotice({
           react: (
             <span>
-              Moved ${selectedFiles.length} items to <a href="#" onClick={goToFolder}>{filename}</a>
+              Moved {selectedFiles.length} item(s) to <a href="#" onClick={goToFolder}>{filename}</a>
             </span>
           ),
         });
