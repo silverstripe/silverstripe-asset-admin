@@ -15,6 +15,7 @@ use SilverStripe\AssetAdmin\Forms\FileSearchFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
+use SilverStripe\AssetAdmin\Forms\MoveFormFactory;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\File;
@@ -73,6 +74,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'fileHistoryForm/$ID/$VersionID' => 'fileHistoryForm',
         'folderCreateForm/$ParentID' => 'folderCreateForm',
         'fileSelectForm/$ID' => 'fileSelectForm',
+        'moveForm/$ID' => 'moveForm',
     ];
 
     /**
@@ -149,6 +151,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         'schema',
         'fileSelectForm',
         'fileSearchForm',
+        'moveForm',
     );
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
@@ -257,6 +260,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 ],
                 'fileEditorLinkForm' => [
                     'schemaUrl' => $this->Link('schema/fileEditorLinkForm'),
+                ],
+                'moveForm' => [
+                    'schemaUrl' => $this->Link('schema/moveForm'),
                 ],
             ],
             'dropzoneOptions' => [
@@ -795,6 +801,33 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $this->getFileSelectForm($id);
     }
 
+    /**
+     * Get form for moving files/folders to a new location
+     *
+     * @return Form
+     */
+    public function moveForm()
+    {
+        return $this->getMoveForm();
+    }
+
+    /**
+     * Get form for moving files/folders to a new location
+     *
+     * @return Form
+     */
+    public function getMoveForm()
+    {
+        $id = $this->getRequest()->param('ID');
+        $scaffolder = Injector::inst()->get(MoveFormFactory::class);
+
+        $form = $scaffolder->getForm($this, 'moveForm', ['FolderID' => $id]);
+        $form->setRequestHandler(
+            LeftAndMainFormRequestHandler::create($form, [ $id ])
+        );
+
+        return $form;
+    }
     /**
      * Get form for selecting a file
      *

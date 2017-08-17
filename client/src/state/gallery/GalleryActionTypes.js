@@ -13,4 +13,6 @@ export default [
   'SET_ENABLE_DROPZONE',
   'SET_FILE_BADGE',
   'CLEAR_FILE_BADGE',
+  'ACTIVATE_MODAL',
+  'DEACTIVATE_MODAL',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});

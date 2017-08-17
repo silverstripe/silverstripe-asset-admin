@@ -96,3 +96,20 @@ export function setFileBadge(id, message, status, duration) {
     });
   };
 }
+
+export function activateModal(name) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.ACTIVATE_MODAL,
+      payload: name,
+    });
+  };
+}
+
+export function deactivateModal() {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.DEACTIVATE_MODAL,
+    });
+  };
+}

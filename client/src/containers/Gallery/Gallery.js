@@ -21,6 +21,7 @@ import moveFilesMutation from 'state/files/moveFilesMutation';
 import { withApollo } from 'react-apollo';
 import GalleryDND from './GalleryDND';
 import configShape from 'lib/configShape';
+import MoveModal from '../MoveModal/MoveModal';
 
 /**
  * List of sorters for tile view, required here because it's rendered outside the tile view
@@ -80,6 +81,7 @@ class Gallery extends Component {
     this.handleMoveFiles = this.handleMoveFiles.bind(this);
     this.handleBulkDelete = this.handleBulkDelete.bind(this);
     this.handleBulkEdit = this.handleBulkEdit.bind(this);
+    this.handleBulkMove = this.handleBulkMove.bind(this);
   }
 
   componentDidMount() {
@@ -512,6 +514,10 @@ class Gallery extends Component {
     this.props.onOpenFile(items[0].id);
   }
 
+  handleBulkMove() {
+    this.props.actions.gallery.activateModal(CONSTANTS.MODAL_MOVE);
+  }
+
   /**
    * Generates the react components needed for the Sorter part of this component
    *
@@ -715,10 +721,13 @@ class Gallery extends Component {
       if (!action.callback) {
         switch (action.value) {
           case 'delete': {
-            return Object.assign({}, action, { callback: this.handleBulkDelete });
+            return { ...action, callback: this.handleBulkdDelete };
           }
           case 'edit': {
-            return Object.assign({}, action, { callback: this.handleBulkEdit });
+            return { ...action, callback: this.handleBulkEdit };
+          }
+          case 'move': {
+            return { ...action, callback: this.handleBulkMove };
           }
           default: {
             return action;
@@ -884,6 +893,12 @@ class Gallery extends Component {
 
     return (
       <div className="flexbox-area-grow gallery__outer">
+        <MoveModal
+          sectionConfig={this.props.sectionConfig}
+          folderId={this.props.folderId}
+          onSuccess={this.props.onMoveFilesSuccess}
+          onOpenFolder={this.props.onOpenFolder}
+        />
         {this.renderTransitionBulkActions()}
         <AssetDropzone
           name="gallery-container"
