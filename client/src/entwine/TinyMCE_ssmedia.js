@@ -10,6 +10,7 @@ import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
+import i18n from 'i18n';
 
 const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
 
