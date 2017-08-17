@@ -34,8 +34,8 @@
   }
 
   tbody td {
-    padding-top: $table-lg-cell-padding;
-    padding-bottom: $table-lg-cell-padding;
+    padding-top: $table-cell-padding-lg;
+    padding-bottom: $table-cell-padding-lg;
 
     // hide details for smaller screens
     @include media-breakpoint-down(sm) {

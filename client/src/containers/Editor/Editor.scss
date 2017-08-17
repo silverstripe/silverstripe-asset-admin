@@ -29,7 +29,7 @@
 }
 
 .editor__heading {
-  margin-right: $spacer-x * 2;
+  margin-right: $spacer * 2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -51,7 +51,7 @@
 .editor__specs {
   color: $text-muted;
   font-size: $font-size-xs;
-  margin-bottom: $spacer-y;
+  margin-bottom: $spacer ;
 }
 
 .editor__file-preview {
@@ -117,7 +117,7 @@
 }
 
 .editor__file-preview-message--file-missing {
-  margin: #{$spacer-y * 2} 0 $spacer-y;
+  margin: #{$spacer * 2} 0 $spacer ;
   font-size: $font-size-lg;
   color: $brand-danger;
   text-align: center;
@@ -127,8 +127,8 @@
   .editor__heading,
   .editor__specs {
     text-align: center;
-    margin-right: $spacer-x * 1.5;
-    margin-left: $spacer-x * 1.5;
+    margin-right: $spacer * 1.5;
+    margin-left: $spacer * 1.5;
   }
 
   // Changes a .btn-close-panel into a back arrow for smaller screens

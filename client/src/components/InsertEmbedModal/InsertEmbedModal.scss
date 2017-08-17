@@ -59,10 +59,10 @@ $placement-image-height: 36px;
 }
 
 .insert-embed-modal__preview-container {
-  padding-bottom: $spacer-y;
+  padding-bottom: $spacer ;
 
   @include media-breakpoint-up(md) {
-    padding-right: $spacer-x;
+    padding-right: $spacer;
     width: 30%;
   }
 }
@@ -84,7 +84,7 @@ $placement-image-height: 36px;
     padding: 0;
     position: relative;
     width: 80px;
-    margin-bottom: #{$line-height}em;
+    margin-bottom: #{$line-height-base}em;
 
     &:before {
       background: url("placement.png");
