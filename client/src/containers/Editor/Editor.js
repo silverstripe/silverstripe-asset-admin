@@ -152,14 +152,12 @@ class Editor extends Component {
 
     let error = null;
     if (this.state.loadingError) {
-      const message = this.state.loadingError.value;
+      let message = this.state.loadingError.value;
+      if (this.state.loadingError.code === 404) {
+        message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
+      }
       error = (
-        <div className="editor__file-preview-message--file-missing">
-          {(message.includes('Unexpected token < in JSON'))
-            ? i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found')
-            : message
-          }
-        </div>
+        <div className="editor__file-preview-message--file-missing">{message}</div>
       );
     }
 
@@ -186,8 +184,8 @@ class Editor extends Component {
           responseClassGood="modal__response modal__response--good"
         />
         { this.state.loadingForm && [
-          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
-          <div key="spinner" className="cms-content-loading-spinner"></div>,
+          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
+          <div key="spinner" className="cms-content-loading-spinner" />,
         ]}
       </div>
 
