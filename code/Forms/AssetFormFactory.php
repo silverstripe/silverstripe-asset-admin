@@ -283,12 +283,8 @@ abstract class AssetFormFactory implements FormFactory
                 'ParentID',
                 _t(__CLASS__.'.FOLDERLOCATION', 'Location'),
                 Folder::class
-            ),
-            ReadonlyField::create(
-                "Path",
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'),
-                $this->getPath($record, $context)
             )
+                ->setShowSelectedPath(true)
         );
 
         $location
