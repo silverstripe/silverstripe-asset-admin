@@ -89,7 +89,7 @@ export default {
     {
       value: 'move',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_MOVE', 'Move'),
-      className: 'font-icon-move',
+      className: 'font-icon-folder-move',
       destructive: false,
       callback: null,
     },

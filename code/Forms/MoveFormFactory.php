@@ -20,15 +20,14 @@ class MoveFormFactory implements FormFactory
             FieldList::create(
                 TreeDropdownField::create(
                     'FolderID',
-                    'Choose a folder',
+                    _t(__CLASS__.'CHOOSEFOLDER','Choose a folder'),
                     Folder::class
-                )->setTreeBaseID($context['FolderID'])
-                ->setEmptyString(Folder::singleton()->Filename)
+                )->setValue((int) $context['FolderID'])
                 ->setTitleField('Filename')
             ),
             FieldList::create(
-                FormAction::create('move', 'Move')
-                    ->addExtraClass('btn-primary')
+                FormAction::create('move', _t(__CLASS__.'MOVE', 'Move'))
+                    ->addExtraClass('btn-primary font-icon-folder-move')
             )
         );
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import i18n from 'i18n';
 import CONSTANTS from 'constants/index';
 import { deactivateModal, setNoticeMessage } from '../../state/gallery/GalleryActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
@@ -32,7 +33,11 @@ class MoveModal extends React.Component {
         setNotice({
           react: (
             <span>
-              Moved {selectedFiles.length} item(s) to <a href="#" onClick={goToFolder}>{filename}</a>
+              {i18n.sprintf(
+                i18n._t('AssetAdmin.MOVED_ITEMS_TO', 'Moved %s item(s) to ')
+                , selectedFiles.length
+              )}
+              <a href="#" onClick={goToFolder}>{filename}</a>
             </span>
           ),
         });
@@ -83,7 +88,10 @@ function mapStateToProps(state) {
   return {
     show: modal === CONSTANTS.MODAL_MOVE,
     selectedFiles,
-    title: `Move ${selectedFiles.length} items to...`,
+    title: i18n.sprintf(
+      i18n._t('AssetAdmin.MOVE_ITEMS_TO', 'Move %s item(s) to...'),
+      selectedFiles.length
+    ),
   };
 }
 

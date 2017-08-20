@@ -818,7 +818,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getMoveForm()
     {
-        $id = $this->getRequest()->param('ID');
+        $id = $this->getRequest()->param('ItemID');
         $scaffolder = Injector::inst()->get(MoveFormFactory::class);
 
         $form = $scaffolder->getForm($this, 'moveForm', ['FolderID' => $id]);
