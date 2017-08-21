@@ -92,6 +92,10 @@ class AssetAdmin extends SilverStripeComponent {
     };
   }
 
+  componentDidMount() {
+    this.setBreadcrumbs(this.props);
+  }
+
   componentWillReceiveProps(props) {
     const viewChanged = this.compare(this.props.folder, props.folder);
     if (viewChanged || hasFilters(props.query.filter) !== hasFilters(this.props.query.filter)) {
@@ -519,6 +523,7 @@ class AssetAdmin extends SilverStripeComponent {
         totalCount={this.props.filesTotalCount}
         view={view}
         filters={filters}
+        graphQLErrors={this.props.graphQLErrors}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         onDelete={this.handleDelete}
@@ -573,7 +578,7 @@ class AssetAdmin extends SilverStripeComponent {
 
   render() {
     const showBackButton = !!(
-      (this.props.folder && this.props.folder.id)
+      (this.props.folderId)
       || hasFilters(this.props.query.filter)
     );
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
@@ -609,6 +614,7 @@ AssetAdmin.propTypes = {
   folderId: PropTypes.number,
   onBrowse: PropTypes.func,
   onReplaceUrl: PropTypes.func,
+  graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   getUrl: PropTypes.func,
   query: PropTypes.shape({
     sort: PropTypes.string,

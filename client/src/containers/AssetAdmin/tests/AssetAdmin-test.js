@@ -66,15 +66,17 @@ describe('AssetAdmin', () => {
       },
       actions: {
         gallery: {
-          deselectFiles: jest.genMockFunction(),
+          deselectFiles: jest.fn(),
         },
-        breadcrumbsActions: {},
+        breadcrumbsActions: {
+          setBreadcrumbs: jest.fn(),
+        },
         queuedFiles: {
-          addQueuedFile: () => null,
-          failUpload: () => null,
-          purgeUploadQueue: () => null,
-          removeQueuedFile: () => null,
-          succeedUpload: () => null,
+          addQueuedFile: jest.fn(),
+          failUpload: jest.fn(),
+          purgeUploadQueue: jest.fn(),
+          removeQueuedFile: jest.fn(),
+          succeedUpload: jest.fn(),
         },
         files: {
           deleteFile: jest.fn(() => Promise.resolve()),

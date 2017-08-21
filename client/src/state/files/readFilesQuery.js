@@ -92,6 +92,7 @@ const config = {
   props(
     {
       data: {
+        error,
         refetch,
         readFiles,
         loading: networkLoading,
@@ -113,11 +114,14 @@ const config = {
 
     const filesLoading = (folder && !folder.children);
 
+    const errors = error && error.graphQLErrors &&
+      error.graphQLErrors.map((graphQLError) => graphQLError.message);
     return {
       loading: networkLoading || filesLoading,
       folder,
       files,
       filesTotalCount,
+      graphQLErrors: errors,
       actions: Object.assign({}, actions, {
         files: Object.assign({}, actions.files, {
           readFiles: refetch,

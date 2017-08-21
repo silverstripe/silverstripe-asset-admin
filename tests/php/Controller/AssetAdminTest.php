@@ -205,9 +205,13 @@ class AssetAdminTest extends FunctionalTest
         $this->assertTrue($response->isError());
         $this->assertEquals(400, $response->getStatusCode());
         $responseData = json_decode($response->getBody(), true);
-        $this->assertContains(
-            'Extension is not allowed',
-            $responseData['message']['value']
+        $this->assertEquals(
+            [
+                'type' => 'error',
+                'code' => 400,
+                'value' => 'Extension is not allowed',
+            ],
+            $responseData['errors'][0]
         );
     }
 

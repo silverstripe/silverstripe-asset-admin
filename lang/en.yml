@@ -83,3 +83,5 @@ en:
     ERROR_SCHEME: 'This file scheme is not included in the whitelist'
     InsertMedia: 'Insert media'
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'File or Folder could not be found'
