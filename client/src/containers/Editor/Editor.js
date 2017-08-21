@@ -156,6 +156,9 @@ class Editor extends Component {
       if (this.state.loadingError.code === 404) {
         message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
       }
+      if (!message) {
+        message = i18n._t('Admin.UNKNOWN_ERROR', 'An unknown error has occurred');
+      }
       error = (
         <div className="editor__file-preview-message--file-missing">{message}</div>
       );

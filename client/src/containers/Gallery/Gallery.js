@@ -811,14 +811,17 @@ class Gallery extends Component {
 
   render() {
     if (!this.props.folder) {
-      if (this.props.errorMessage) {
+      if (this.props.errorMessage || this.props.graphQLErrors) {
         return (
           <div className="gallery__error flexbox-area-grow">
             <div className="gallery__error-message">
               <h3>
                 { i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.') }
               </h3>
-              <p>{ this.props.errorMessage }</p>
+              { this.props.errorMessage && <p>{ this.props.errorMessage }</p> }
+              { this.props.graphQLErrors && this.props.graphQLErrors.map((error, index) => (
+                <p key={index}>{error}</p>
+              ))}
             </div>
           </div>
         );
@@ -834,7 +837,7 @@ class Gallery extends Component {
       return (
         <div className="flexbox-area-grow">
           <div className="editor__file-preview-message--file-missing m-t-3">
-            {i18n._t('AssetAdmin.FOLDER_MISSING', 'Folder cannot be found')}
+            {i18n._t('Admin.UNKNOWN_ERROR', 'An unknown error has occurred')}
           </div>
         </div>
       );
@@ -983,6 +986,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
     items: PropTypes.array.isRequired,
   }),
   errorMessage: PropTypes.string,
+  graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   actions: PropTypes.object,
   securityId: PropTypes.string,
   onViewChange: PropTypes.func.isRequired,

@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\EnumType;
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
+use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\Assets\File;
 use SilverStripe\ORM\Filterable;
@@ -88,6 +89,13 @@ class FileFilterInputTypeCreator extends TypeCreator
         // ID filtering
         if (isset($filter['id']) && (int)$filter['id'] > 0) {
             $list = $list->filter('ID', $filter['id']);
+            
+            if ($list->count() === 0) {
+                throw new HTTPResponse_Exception(_t(
+                    __CLASS__ . '.FileNotFound',
+                    'File or Folder could not be found'
+                ));
+            }
         } elseif (isset($filter['id']) && (int)$filter['id'] === 0) {
             // Special case for root folder
             $list = new ArrayList([new Folder([

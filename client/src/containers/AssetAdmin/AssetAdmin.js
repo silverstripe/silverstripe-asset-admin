@@ -523,6 +523,7 @@ class AssetAdmin extends SilverStripeComponent {
         totalCount={this.props.filesTotalCount}
         view={view}
         filters={filters}
+        graphQLErrors={this.props.graphQLErrors}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         onDelete={this.handleDelete}
@@ -613,6 +614,7 @@ AssetAdmin.propTypes = {
   folderId: PropTypes.number,
   onBrowse: PropTypes.func,
   onReplaceUrl: PropTypes.func,
+  graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   getUrl: PropTypes.func,
   query: PropTypes.shape({
     sort: PropTypes.string,
