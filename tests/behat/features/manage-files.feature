@@ -98,6 +98,33 @@ Feature: Manage files
       And I should not see the file named "testfile" in the gallery
       And I should see "successfully deleted" in the message box
 
+  Scenario: I can move multiple files
+    Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
+      And a "folder" "assets/folder1/folder3"
+    When I click on the file named "folder1" in the gallery
+    And I check the file named "file1" in the gallery
+    And I check the file named "file2" in the gallery
+    Then I should see an ".bulk-actions__action[value='move']" element
+    And the ".bulk-actions-counter" element should contain "2"
+    And the ".bulk-actions__action[value='move']" element should contain "Move"
+    When I attach the file "testfile.jpg" to dropzone "gallery-container"
+    And I check the file named "testfile" in the gallery
+    Then the ".bulk-actions-counter" element should contain "3"
+      And I press the "Move" button
+    Then I should see a modal titled "Move 3 item(s) to..."
+    Then I should see the "Form_moveForm" form
+    When I select "folder2/" in the "#Form_moveForm_FolderID_Holder" tree dropdown
+    Given I click "Move" in the "#Form_moveForm_action_move" element
+    Then I should not see the file named "file1" in the gallery
+      And I should not see the file named "file2" in the gallery
+      And I should not see the file named "testfile" in the gallery
+    When I press the "Navigate up a level" button
+      And I click on the file named "folder2" in the gallery
+    Then I should see the file named "file1" in the gallery
+      And I should see the file named "file2" in the gallery
+      And I should see the file named "testfile" in the gallery
+
+
   @modal
   Scenario: I cannot delete a folder containing a file that is in use
     When I check the file named "folder3" in the gallery

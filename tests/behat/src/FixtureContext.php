@@ -245,4 +245,16 @@ EOS
         ]);
         $this->fixtureFactory->createObject(Page::class, $page, $fields);
     }
-}
+
+    /**
+     * @Then I should see a modal titled :title
+     */
+    public function iShouldSeeAModalTitled($title)
+    {
+        $page = $this->getMainContext()->getSession()->getPage();
+        $modalTitle = $page->find('css', '[role=dialog] .modal-header > .modal-title');
+        assertNotNull($modalTitle, 'No modal on the page');
+        assertTrue($modalTitle->getText() == $title);
+    }
+
+¯}
