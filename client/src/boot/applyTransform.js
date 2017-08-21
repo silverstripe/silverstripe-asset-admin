@@ -27,12 +27,13 @@ const DisabledTreeDropdownField = (TreeDropdownField) => (props) => {
     ...props,
     findTreeByPath(tree, visible) {
       const visibleTree = findTreeByPath(tree, visible);
+      const pathDisabled = visible.some(id => disabledIDs.includes(id));
       return visibleTree ? {
         ...visibleTree,
-        disabled: disabledIDs.includes(visibleTree.id),
-        children: visibleTree.children.map(child => (
-          disabledIDs.includes(child.id) ? { ...child, disabled: true } : child
-        )),
+        children: visibleTree.children.map(child => ({
+          ...child,
+          disabled: disabledIDs.includes(child.id) || pathDisabled,
+        })),
       } : null;
     },
   };
