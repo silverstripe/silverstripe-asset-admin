@@ -21,12 +21,15 @@ const insertTransform = (form) => {
 };
 
 const DisabledTreeDropdownField = (TreeDropdownField) => (props) => {
-  // eslint-disable-next-line react/prop-types
+  /* eslint-disable react/prop-types */
   const { disabledIDs } = props;
+  const find = props.findTreeByPath || findTreeByPath;
+  /* eslint-enable react/prop-types */
+
   const newProps = {
     ...props,
     findTreeByPath(tree, visible) {
-      const visibleTree = findTreeByPath(tree, visible);
+      const visibleTree = find(tree, visible);
       const pathDisabled = visible.some(id => disabledIDs.includes(id));
       return visibleTree ? {
         ...visibleTree,
