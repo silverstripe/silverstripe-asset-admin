@@ -71,5 +71,9 @@
     "AssetAdmin.INSERT_FILE": "Insert file",
     "AssetAdmin.UPDATE_FILE": "Update file",
     "AssetAdmin.INSERT_FROM_FILES": "Insert from Files",
-    "AssetAdmin.INSERT_VIA_URL": "Insert media via URL"
+    "AssetAdmin.INSERT_VIA_URL": "Insert media via URL",
+    "AssetAdmin.MOVED_ITEMS_TO": "Moved %s item(s) to ",
+    "AssetAdmin.MOVE_ITEMS_TO": "Move %s item(s) to...",
+    "AssetAdmin.FAILED_MOVE": "There was an error moving the selected items."
+
 }

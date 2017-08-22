@@ -86,9 +86,18 @@ export default {
       canApply: (items) => items.length === 1,
       callback: null, // defined in <Gallery> for now
     },
+    {
+      value: 'move',
+      label: i18n._t('AssetAdmin.BULK_ACTIONS_MOVE', 'Move'),
+      className: 'font-icon-folder-move',
+      destructive: false,
+      callback: null,
+    },
+
   ],
   BULK_ACTIONS_PLACEHOLDER: i18n._t('AssetAdmin.BULK_ACTIONS_PLACEHOLDER'),
   SPACE_KEY_CODE: 32,
   RETURN_KEY_CODE: 13,
   DEFAULT_PREVIEW: 'framework/client/dist/images/app_icons/generic_92.png',
+  MODAL_MOVE: 'MODAL_MOVE',
 };

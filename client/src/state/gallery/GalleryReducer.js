@@ -4,7 +4,9 @@ import GALLERY from './GalleryActionTypes';
 const initialState = {
   selectedFiles: [],
   errorMessage: null,
+  noticeMessage: null,
   enableDropzone: true,
+  modal: null,
   badges: [],
 };
 
@@ -115,6 +117,20 @@ export default function galleryReducer(state = initialState, { type, payload } =
       return deepFreeze({
         ...state,
         selectedFiles,
+      });
+    }
+
+    case GALLERY.ACTIVATE_MODAL: {
+      return deepFreeze({
+        ...state,
+        modal: payload,
+      });
+    }
+
+    case GALLERY.DEACTIVATE_MODAL: {
+      return deepFreeze({
+        ...state,
+        modal: null,
       });
     }
 

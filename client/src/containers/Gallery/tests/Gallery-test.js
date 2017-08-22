@@ -4,6 +4,7 @@
 jest.mock('components/FormAlert/FormAlert');
 jest.mock('components/AssetDropzone/AssetDropzone');
 jest.mock('components/BulkActions/BulkActions');
+jest.mock('../../MoveModal/MoveModal');
 // mock jquery, as leaving it causes more problems than it solves
 jest.mock('jquery', () => {
   const jqueryMock = {

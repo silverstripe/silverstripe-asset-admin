@@ -168,6 +168,7 @@ EOS
 
     /**
      * @Then I should see an error message on the file :file
+     * @param string $file
      */
     public function iShouldSeeAnErrorMessageOnTheFile($file)
     {
@@ -244,5 +245,17 @@ EOS
             ),
         ]);
         $this->fixtureFactory->createObject(Page::class, $page, $fields);
+    }
+
+    /**
+     * @Then I should see a modal titled :title
+     * @param string $title
+     */
+    public function iShouldSeeAModalTitled($title)
+    {
+        $page = $this->getMainContext()->getSession()->getPage();
+        $modalTitle = $page->find('css', '[role=dialog] .modal-header > .modal-title');
+        assertNotNull($modalTitle, 'No modal on the page');
+        assertTrue($modalTitle->getText() == $title);
     }
 }
