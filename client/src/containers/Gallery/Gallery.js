@@ -726,7 +726,7 @@ class Gallery extends Component {
       if (!action.callback) {
         switch (action.value) {
           case 'delete': {
-            return { ...action, callback: this.handleBulkdDelete };
+            return { ...action, callback: this.handleBulkDelete };
           }
           case 'edit': {
             return { ...action, callback: this.handleBulkEdit };
