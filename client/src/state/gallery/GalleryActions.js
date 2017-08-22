@@ -79,6 +79,7 @@ export function clearFileBadge(id) {
 
 export function setFileBadge(id, message, status, duration) {
   return (dispatch, getState) => {
+    console.log('duration is ', duration);
     const { assetAdmin } = getState();
     const badge = assetAdmin.gallery.badges.find((item) => item.id === id);
 

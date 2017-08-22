@@ -471,6 +471,11 @@ class Gallery extends Component {
         if (typeof this.props.onMoveFilesSuccess === 'function') {
           this.props.onMoveFilesSuccess(folderId, fileIds);
         }
+      })
+      .catch(() => {
+        this.props.actions.gallery.setErrorMessage(
+          i18n._t('AssetAdmin.FAILED_MOVE', 'There was an error moving the selected items.')
+        );
       });
   }
 
