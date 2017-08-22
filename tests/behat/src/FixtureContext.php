@@ -168,6 +168,7 @@ EOS
 
     /**
      * @Then I should see an error message on the file :file
+     * @param string $file
      */
     public function iShouldSeeAnErrorMessageOnTheFile($file)
     {
@@ -248,6 +249,7 @@ EOS
 
     /**
      * @Then I should see a modal titled :title
+     * @param string $title
      */
     public function iShouldSeeAModalTitled($title)
     {
@@ -256,5 +258,4 @@ EOS
         assertNotNull($modalTitle, 'No modal on the page');
         assertTrue($modalTitle->getText() == $title);
     }
-
-¯}
+}

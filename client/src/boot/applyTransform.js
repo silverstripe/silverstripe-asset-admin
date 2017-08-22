@@ -35,7 +35,7 @@ const DisabledTreeDropdownField = (TreeDropdownField) => (props) => {
         ...visibleTree,
         children: visibleTree.children.map(child => ({
           ...child,
-          disabled: disabledIDs.includes(child.id) || pathDisabled,
+          disabled: pathDisabled || disabledIDs.includes(child.id),
         })),
       } : null;
     },
