@@ -41,7 +41,7 @@ class FileFormFactory extends AssetFormFactory
         $type = $this->getFormType($context);
 
         // Unsupported media insertion will use insert link form instead
-        if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
+        if ($type === static::TYPE_INSERT_MEDIA) {
             if ($record->appCategory() !== 'image') {
                 $type = static::TYPE_INSERT_LINK;
             }
