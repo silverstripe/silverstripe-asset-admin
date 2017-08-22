@@ -175,6 +175,11 @@ jQuery.entwine('ss', ($) => {
       const store = window.ss.store;
       const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
+      const selection = tinymce.activeEditor.selection;
+      const selectionContent = selection.getContent() || '';
+      const tagName = selection.getNode().tagName;
+      // Unsupported media insertion will use insert link form instead
+      const requireLinkText = tagName !== 'A' && selectionContent.trim() === '';
 
       delete attrs.url;
 
@@ -189,6 +194,7 @@ jQuery.entwine('ss', ($) => {
             onHide={handleHide}
             bodyClassName="modal__dialog"
             className="insert-media-react__dialog-wrapper"
+            requireLinkText={requireLinkText}
             fileAttributes={attrs}
           />
         </ApolloProvider>,

@@ -23,7 +23,7 @@ class FileFormFactory extends AssetFormFactory
      * @var bool
      */
     private static $show_history = false;
-    
+
     protected function getFormFieldTabs($record, $context = [])
     {
         // Add extra tab
@@ -37,8 +37,18 @@ class FileFormFactory extends AssetFormFactory
         if ($this->config()->get('show_history')) {
             $tabs->push($this->getFormFieldHistoryTab($record, $context));
         }
+
+        $type = $this->getFormType($context);
+
+        // Unsupported media insertion will use insert link form instead
+        if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
+            if ($record->appCategory() !== 'image') {
+                $type = static::TYPE_INSERT_LINK;
+            }
+        }
+
         // All non-admin forms are typically readonly
-        switch ($this->getFormType($context)) {
+        switch ($type) {
             case static::TYPE_INSERT_MEDIA:
                 $tabs->setReadonly(true);
                 $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
@@ -161,7 +171,13 @@ class FileFormFactory extends AssetFormFactory
         $record = $context['Record'];
 
         // Add status flag before extensions are triggered
-        $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record) {
+        $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record, $context) {
+            if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
+                if ($record->appCategory() !== 'image') {
+                    $unembedableMsg = _t(__CLASS__.'.UNEMEDABLE_MESSAGE', '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>');
+                    $fields->unshift(LiteralField::create('UnembedableMessage', $unembedableMsg));
+                }
+            }
             // @todo move specs to a component/class, so it can update specs when a File is replaced
             $fields->insertAfter(
                 'TitleHeader',
