@@ -180,7 +180,8 @@ jQuery.entwine('ss', ($) => {
       const selectionContent = selection.getContent() || '';
       const tagName = selection.getNode().tagName;
       // Unsupported media insertion will use insert link form instead
-      const requireLinkText = tagName !== 'A' && selectionContent.trim() === '';
+      // treat image tag selection as blank content
+      const requireLinkText = tagName !== 'A' && (tagName === 'IMG' || selectionContent.trim() === '');
 
       delete attrs.url;
 
@@ -259,6 +260,22 @@ jQuery.entwine('ss', ($) => {
         return {};
       }
       const $node = $(node);
+
+      // Handler for if the selection is a link instead of image media
+      const hrefParts = ($node.attr('href') || '').split('#');
+      if (hrefParts[0]) {
+        // check if file is safe
+        const shortcode = ShortcodeSerialiser.match('file_link', false, hrefParts[0]);
+        if (shortcode) {
+          return {
+            ID: shortcode.properties.id ? parseInt(shortcode.properties.id, 10) : 0,
+            Anchor: hrefParts[1] || '',
+            Description: $node.attr('title'),
+            TargetBlank: !!$node.attr('target'),
+          };
+        }
+      }
+
       const $caption = $node.parent('.captionImage').find('.caption');
 
       const attr = {
@@ -337,6 +354,10 @@ jQuery.entwine('ss', ($) => {
      */
     insertFile() {
       const data = this.getData();
+
+      const editor = this.getElement().getEditor();
+      const $node = $(editor.getSelectedNode());
+
       const shortcode = ShortcodeSerialiser.serialise({
         name: 'file_link',
         properties: { id: data.ID },
@@ -344,13 +365,30 @@ jQuery.entwine('ss', ($) => {
 
       const selection = tinymce.activeEditor.selection;
       const selectionContent = selection.getContent() || '';
-      const linkText = selectionContent || data.Text || data.filename;
+      let linkText = selectionContent || data.Text || data.filename;
+
+      // if link was highlighted, then we don't want to place more text inside that text
+      if ($node.is('a') && $node.html()) {
+        linkText = '';
+      }
+
       const linkAttributes = {
         href: shortcode,
         target: data.TargetBlank ? '_blank' : '',
         title: data.Description,
       };
-      this.insertLinkInEditor(linkAttributes, linkText);
+
+      // if the selection is an image, then replace it
+      if ($node.is('img')) {
+        // selectionContent is the image html, so we don't want that
+        linkText = data.Text || data.filename;
+        const newLink = $('<a />').attr(linkAttributes).text(linkText);
+        $node.replaceWith(newLink);
+        editor.addUndo();
+        editor.repaint();
+      } else {
+        this.insertLinkInEditor(linkAttributes, linkText);
+      }
       return true;
     },
 
@@ -374,7 +412,7 @@ jQuery.entwine('ss', ($) => {
       const extraData = this.getExtraData();
 
       // Find the element we are replacing - either the img, it's wrapper parent, or nothing (if creating)
-      let replacee = (node && node.is('img')) ? node : null;
+      let replacee = (node && node.is('img,a')) ? node : null;
       if (replacee && replacee.parent().is('.captionImage')) replacee = replacee.parent();
 
       // Find the img node - either the existing img or a new one, and update it
