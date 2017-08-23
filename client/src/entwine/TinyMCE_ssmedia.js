@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
+import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 
 const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
 
@@ -335,12 +336,22 @@ jQuery.entwine('ss', ($) => {
      * @returns {boolean} success
      */
     insertFile() {
-      this.statusMessage(i18n._t(
-        'AssetAdmin.ERROR_OEMBED_REMOTE',
-        'Embed is only compatible with remote files'),
-        'bad');
+      const data = this.getData();
+      const shortcode = ShortcodeSerialiser.serialise({
+        name: 'file_link',
+        properties: { id: data.ID },
+      }, true);
 
-      return false;
+      const selection = tinymce.activeEditor.selection;
+      const selectionContent = selection.getContent() || '';
+      const linkText = selectionContent || data.Text || data.filename;
+      const linkAttributes = {
+        href: shortcode,
+        target: data.TargetBlank ? '_blank' : '',
+        title: data.Description,
+      };
+      this.insertLinkInEditor(linkAttributes, linkText);
+      return true;
     },
 
     /**
