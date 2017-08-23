@@ -54,18 +54,25 @@ export default {
           msg = i18n.sprintf(
             i18n._t(
               'AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM',
-              'This file is currently in use in %s places, are you sure you want to delete it?'
+              'This file is currently used in %s place(s), are you sure you want to delete it?'
             ),
             items[0].inUseCount
           );
-        }
-        if (filesInUse.length > 1) {
-          i18n.sprintf(
+        } else if (filesInUse.length > 0) {
+          msg = i18n.sprintf(
             i18n._t(
               'AssetAdmin.BULK_ACTIONS_DELETE_MULTI_CONFIRM',
               'There are %s files currently in use, are you sure you want to delete these files?'
             ),
             filesInUse.length
+          );
+        }
+        if (filesInUse.length > 0) {
+          msg += '\n\n';
+          msg += i18n._t(
+            'AssetAdmin.BULK_ACTIONS_DELETE_WARNING',
+            'Ensure files are removed from content areas prior to deleting them,'
+            + ' otherwise they will appear as broken links.'
           );
         }
 

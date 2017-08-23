@@ -139,7 +139,7 @@ Feature: Manage files
     When I click on the file named "folder3" in the gallery
       And I check the file named "file1" in the gallery
     Then I press the "Delete" button
-      And I see the text "file is currently in use" in the alert
+      And I see the text "file is currently used" in the alert
       And I confirm the dialog
     Then I should see "successfully deleted" in the message box
       And I should not see the file named "file1" in the gallery

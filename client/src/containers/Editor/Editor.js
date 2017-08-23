@@ -6,6 +6,7 @@ import CONSTANTS from 'constants/index';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
+import fileShape from 'lib/fileShape.js';
 
 class Editor extends Component {
   constructor(props) {
@@ -40,7 +41,7 @@ class Editor extends Component {
 
     if (name === 'action_unpublish') {
       // eslint-disable-next-line no-alert
-      if (confirm(i18n._t('AssetAdmin.CONFIRMUNPUBLISH'))) {
+      if (confirm(i18n._t('AssetAdmin.CONFIRMUNPUBLISH', 'Are you sure you want to unpublish this record?'))) {
         this.props.onUnpublish(data.ID);
       }
       event.preventDefault();
@@ -48,8 +49,25 @@ class Editor extends Component {
     }
 
     if (name === 'action_delete') {
+      // Customise message based on usage
+      let message = i18n._t('AssetAdmin.CONFIRMDELETE', 'Are you sure you want to delete this record?');
+      if (this.props.file && this.props.file.inUseCount > 0) {
+        message = i18n.sprintf(
+          i18n._t(
+            'AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM',
+            'This file is currently used in %s place(s), are you sure you want to delete it?'
+          ),
+          this.props.file.inUseCount
+        );
+        message += '\n\n';
+        message += i18n._t(
+          'AssetAdmin.BULK_ACTIONS_DELETE_WARNING',
+          'Ensure files are removed from content areas prior to deleting them,'
+          + ' otherwise they will appear as broken links.'
+        );
+      }
       // eslint-disable-next-line no-alert
-      if (confirm(i18n._t('AssetAdmin.CONFIRMDELETE'))) {
+      if (confirm(message)) {
         this.props.actions.unsavedForms.removeFormChanged('AssetAdmin.EditForm');
         this.props.onDelete(data.ID);
       }
@@ -194,10 +212,10 @@ class Editor extends Component {
 
     </div>);
   }
-
 }
 
 Editor.propTypes = {
+  file: fileShape,
   dialog: PropTypes.bool,
   className: PropTypes.string,
   targetId: PropTypes.number.isRequired,

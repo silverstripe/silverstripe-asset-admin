@@ -12,6 +12,7 @@ const fileShape = React.PropTypes.shape({
   height: React.PropTypes.number,
   category: React.PropTypes.oneOfType([React.PropTypes.bool, React.PropTypes.string]),
   id: React.PropTypes.number,
+  inUseCount: React.PropTypes.number,
   url: React.PropTypes.string,
   title: React.PropTypes.string,
   progress: React.PropTypes.number,
