@@ -30,8 +30,7 @@ class FileFormFactory extends AssetFormFactory
         $tabs = TabSet::create(
             'Editor',
             $this->getFormFieldDetailsTab($record, $context),
-            $this->getFormFieldSecurityTab($record, $context),
-            $this->getFormFieldUsageTab($record, $context)
+            $this->getFormFieldSecurityTab($record, $context)
         );
 
         if ($this->config()->get('show_history')) {
@@ -55,38 +54,27 @@ class FileFormFactory extends AssetFormFactory
         return $tabs;
     }
 
-    /**
-     * Build "Usage" tab
-     *
-     * @param File $record
-     * @param array $context
-     * @return Tab
-     */
-    protected function getFormFieldUsageTab($record, $context = [])
-    {
-        // Add new tab for usage
-        return Tab::create(
-            'Usage',
-            DatetimeField::create(
-                "Created",
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CREATED', 'First uploaded')
-            )
-                ->setReadonly(true),
-            DatetimeField::create(
-                "LastEdited",
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LASTEDIT', 'Last changed')
-            )
-                ->setReadonly(true)
-        );
-    }
-
     protected function getFormFieldDetailsTab($record, $context = [])
     {
         // Update details tab
         $tab = parent::getFormFieldDetailsTab($record, $context);
 
         $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
-
+    
+        $tab->push(
+            DatetimeField::create(
+                "Created",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CREATED', 'First uploaded')
+            )
+                ->setReadonly(true)
+        );
+        $tab->push(
+            DatetimeField::create(
+                "LastEdited",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LASTEDIT', 'Last changed')
+            )
+                ->setReadonly(true)
+        );
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
             $tab->push(LiteralField::create(
                 'EditLink',

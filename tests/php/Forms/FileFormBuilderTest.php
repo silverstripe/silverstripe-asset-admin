@@ -76,8 +76,7 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertContains('document_92.png', $state['data']['preview']);
         $this->assertEquals('document', $state['data']['category']);
 
-        // Usage tab
-        $uploaded = $form->Fields()->fieldByName('Editor.Usage.Created');
+        $uploaded = $form->Fields()->fieldByName('Editor.Details.Created');
         $this->assertEquals(
             $file->Created,
             $uploaded->dataValue()
