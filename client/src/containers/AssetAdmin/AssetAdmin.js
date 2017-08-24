@@ -565,6 +565,7 @@ class AssetAdmin extends SilverStripeComponent {
       <Editor
         className={(this.props.dialog) ? 'editor--dialog' : ''}
         targetId={targetId}
+        file={this.findFile(targetId)}
         onClose={this.handleCloseFile}
         schemaUrl={schemaUrl}
         schemaUrlQueries={this.props.requireLinkText ? [{ name: 'requireLinkText', value: true }] : []}

@@ -1111,6 +1111,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $object = array(
             'id' => $file->ID,
+            // Slightly more accurate than graphql bulk-usage lookup, but more expensive
+            'inUseCount' => $file->findOwners()->count(),
             'created' => $file->Created,
             'lastUpdated' => $file->LastEdited,
             'owner' => null,

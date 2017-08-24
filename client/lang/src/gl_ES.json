@@ -7,7 +7,7 @@
     "AssetAdmin.BULK_ACTIONS_DELETE_FAIL": "%s folders/files were successfully deleted, but %s files were not able to be deleted.",
     "AssetAdmin.BULK_ACTIONS_DELETE_FOLDER": "These folders contain files which are currently in use, you must move or delete their contents before you can delete the folder.",
     "AssetAdmin.BULK_ACTIONS_DELETE_MULTI_CONFIRM": "There are %s files currently in use, are you sure you want to delete these files?",
-    "AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM": "This file is currently in use in %s places, are you sure you want to delete it?",
+    "AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM": "This file is currently used in %s place(s), are you sure you want to delete it?",
     "AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS": "%s folders/files were successfully deleted.",
     "AssetAdmin.BULK_ACTIONS_PLACEHOLDER": "Select an action...",
     "AssetAdmin.CANCEL": "Cancel",
