@@ -12,6 +12,9 @@ use SilverStripe\Dev\SapphireTest;
 
 class FileTypeCreatorTest extends SapphireTest
 {
+
+    protected $usesDatabase = true;
+
     public function setUp()
     {
         parent::setUp();
