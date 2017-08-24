@@ -885,7 +885,7 @@ class Gallery extends Component {
     const canEdit = this.props.folder.canEdit && this.props.enableDropzone;
 
     const galleryClasses = [
-      'panel', 'panel--padded', 'panel--scrollable', 'gallery__main',
+      'panel', 'panel--padded', 'panel--scrollable', 'gallery__main', 'fill-height',
     ];
     if (this.props.type === 'insert') {
       galleryClasses.push('insert-media-modal__main');
@@ -905,27 +905,28 @@ class Gallery extends Component {
           onOpenFolder={this.props.onOpenFolder}
         />
         {this.renderTransitionBulkActions()}
-        <AssetDropzone
-          name="gallery-container"
-          canUpload={canEdit}
-          handleAddedFile={this.handleAddedFile}
-          handlePreviewLoaded={this.handlePreviewLoaded}
-          handleError={this.handleFailedUpload}
-          handleSuccess={this.handleSuccessfulUpload}
-          handleSending={this.handleSending}
-          handleUploadProgress={this.handleUploadProgress}
-          preview={dimensions}
-          folderId={this.props.folderId}
-          options={dropzoneOptions}
-          securityID={securityID}
-          uploadButton={false}
-        >
-          <GalleryDND className={galleryClasses.join(' ')}>
-            {this.renderToolbar()}
+        <GalleryDND className={galleryClasses.join(' ')}>
+          {this.renderToolbar()}
+          <AssetDropzone
+            name="gallery-container"
+            className="flexbox-area-grow"
+            canUpload={canEdit}
+            handleAddedFile={this.handleAddedFile}
+            handlePreviewLoaded={this.handlePreviewLoaded}
+            handleError={this.handleFailedUpload}
+            handleSuccess={this.handleSuccessfulUpload}
+            handleSending={this.handleSending}
+            handleUploadProgress={this.handleUploadProgress}
+            preview={dimensions}
+            folderId={this.props.folderId}
+            options={dropzoneOptions}
+            securityID={securityID}
+            uploadButton={false}
+          >
             {messages}
             {this.renderGalleryView()}
-          </GalleryDND>
-        </AssetDropzone>
+          </AssetDropzone>
+        </GalleryDND>
         { this.props.loading && [
           <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
           <div key="spinner" className="cms-content-loading-spinner"></div>,
