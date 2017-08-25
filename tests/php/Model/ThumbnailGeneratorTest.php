@@ -12,6 +12,8 @@ use SilverStripe\Dev\SapphireTest;
 class ThumbnailGeneratorTest extends SapphireTest
 {
 
+    protected $usesDatabase = true;
+
     public function setUp()
     {
         parent::setUp();
@@ -67,7 +69,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         $image = new Image();
         $image->setFromLocalFile(__DIR__.'/../Forms/fixtures/testimage.png', 'TestImage.png');
         $image->write();
-        
+
         // Non-images are ignored
         $file = new File();
         $link = $generator->generateLink($file);
@@ -76,7 +78,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         // original image
         $thumbnail = $generator->generateLink($image);
         $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACW', $thumbnail);
-        
+
         // protected image should have inline thumbnail
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
         $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAy', $thumbnail);
