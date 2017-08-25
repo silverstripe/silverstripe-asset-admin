@@ -805,8 +805,6 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderGalleryView() {
-    const GalleryView = (this.props.view === 'table') ? TableView : ThumbnailView;
-
     const queuedFiles = this.props.queuedFiles.items
       .filter((file) => (
         // Exclude uploaded files that have been reloaded via graphql
@@ -860,7 +858,16 @@ class Gallery extends Component {
       sectionConfig: this.props.sectionConfig,
     };
 
-    return <GalleryView {...props} />;
+    return (this.props.view === 'table')
+      ? <TableView {...props} />
+      : <SelectableGroup
+        className="gallery__main--selectable"
+        onSelection={this.handleGroupSelect}
+        onNonItemClick={this.handleClearSelection}
+        fixedPosition
+      >
+        <ThumbnailView {...props} />
+        </SelectableGroup>;
   }
 
   render() {
@@ -964,13 +971,7 @@ class Gallery extends Component {
             uploadButton={false}
           >
             {messages}
-            <SelectableGroup
-              onSelection={this.handleGroupSelect}
-              onNonItemClick={this.handleClearSelection}
-              fixedPosition
-            >
             {this.renderGalleryView()}
-            </SelectableGroup>
           </AssetDropzone>
         </GalleryDND>
         { this.props.loading && [
