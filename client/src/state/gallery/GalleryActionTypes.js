@@ -15,4 +15,5 @@ export default [
   'CLEAR_FILE_BADGE',
   'ACTIVATE_MODAL',
   'DEACTIVATE_MODAL',
+  'CONCATENATE_SELECT',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});

@@ -9,6 +9,7 @@ import Badge from 'components/Badge/Badge';
 import configShape from 'lib/configShape';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { createSelectable } from 'react-selectable';
 import * as imageLoadActions from 'state/imageLoad/ImageLoadActions';
 import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
 
@@ -312,8 +313,6 @@ class GalleryItem extends SilverStripeComponent {
    * @param {Object} event
    */
   handleKeyDown(event) {
-    event.stopPropagation();
-
     // If space is pressed, select file
     if (CONSTANTS.SPACE_KEY_CODE === event.keyCode) {
       event.preventDefault(); // Stop page scrolling if spaceKey is pressed
@@ -503,8 +502,8 @@ function mapDispatchToProps(dispatch) {
 const ConnectedGalleryItem = connect(mapStateToProps, mapDispatchToProps)(GalleryItem);
 const type = 'GalleryItem';
 
-const File = draggable(type)(ConnectedGalleryItem);
-const Folder = droppable(type)(File);
+const File = createSelectable(draggable(type)(ConnectedGalleryItem));
+const Folder = createSelectable(droppable(type)(File));
 export {
   GalleryItem,
   Folder,

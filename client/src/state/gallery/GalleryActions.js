@@ -32,6 +32,18 @@ export function selectFiles(ids = null) {
 }
 
 /**
+ * Toggles whether group selection is additive o
+ * @param bool
+ * @returns {function(*): *}
+ */
+export function setConcatenateSelect(bool) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.CONCATENATE_SELECT,
+      payload: !!bool,
+    });
+}
+/**
  * Deselects files. If no param is passed all files are deselected.
  *
  * @param Array ids - Array of file ids to deselect.

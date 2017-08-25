@@ -336,12 +336,6 @@ describe('GalleryItem', () => {
       expect(item.handleActivate).toBeCalled();
     });
 
-    it('should stop propagation of the event', () => {
-      item.handleKeyDown(event);
-
-      expect(event.stopPropagation).toBeCalled();
-    });
-
     it('should prevent the default behaviour of the event', () => {
       event.keyCode = 32;
       item.handleKeyDown(event);

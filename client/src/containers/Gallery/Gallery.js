@@ -19,6 +19,7 @@ import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import createFolderMutation from 'state/files/createFolderMutation';
 import moveFilesMutation from 'state/files/moveFilesMutation';
 import { withApollo } from 'react-apollo';
+import { SelectableGroup } from 'react-selectable';
 import GalleryDND from './GalleryDND';
 import configShape from 'lib/configShape';
 import MoveModal from '../MoveModal/MoveModal';
@@ -82,10 +83,15 @@ class Gallery extends Component {
     this.handleBulkDelete = this.handleBulkDelete.bind(this);
     this.handleBulkEdit = this.handleBulkEdit.bind(this);
     this.handleBulkMove = this.handleBulkMove.bind(this);
+    this.toggleSelectConcat = this.toggleSelectConcat.bind(this);
+    this.handleGroupSelect = this.handleGroupSelect.bind(this);
+    this.handleClearSelection = this.handleClearSelection.bind(this);
   }
 
   componentDidMount() {
     this.initSortDropdown();
+    window.addEventListener('keydown', this.toggleSelectConcat);
+    window.addEventListener('keyup', this.toggleSelectConcat);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -107,6 +113,11 @@ class Gallery extends Component {
 
   componentDidUpdate() {
     this.initSortDropdown();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.toggleSelectConcat);
+    window.removeEventListener('keyup', this.toggleSelectConcat);
   }
 
   /**
@@ -368,6 +379,14 @@ class Gallery extends Component {
   }
 
   /**
+   * Toggle concatenating selected items based on the key event
+   * @param e
+   */
+  toggleSelectConcat(e) {
+    this.props.actions.gallery.setConcatenateSelect(!!e.metaKey);
+  }
+
+  /**
    * Checks if a file or folder is currently highlighted,
    * which typically means its own for viewing or editing.
    *
@@ -389,6 +408,27 @@ class Gallery extends Component {
 
   handleClearSearch(event) {
     this.handleOpenFolder(event, this.props.folder);
+  }
+
+  /**
+   * Handles the lasso selection of items from <SelectionGroup />
+   *
+   * @param items
+   */
+  handleGroupSelect(items) {
+    const { deselectFiles, selectFiles } = this.props.actions.gallery;
+    if (!this.props.concatenateSelect) {
+      deselectFiles(null);
+    }
+
+    selectFiles(items);
+  }
+
+  /**
+   * Clears all files from selection
+   */
+  handleClearSelection() {
+    this.props.actions.gallery.deselectFiles(null);
   }
 
   /**
@@ -924,7 +964,13 @@ class Gallery extends Component {
             uploadButton={false}
           >
             {messages}
+            <SelectableGroup
+              onSelection={this.handleGroupSelect}
+              onNonItemClick={this.handleClearSelection}
+              fixedPosition
+            >
             {this.renderGalleryView()}
+            </SelectableGroup>
           </AssetDropzone>
         </GalleryDND>
         { this.props.loading && [
@@ -1015,6 +1061,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   createFileApiMethod: PropTypes.string,
   search: PropTypes.object,
   enableDropzone: PropTypes.bool,
+  concatenateSelect: PropTypes.bool,
 });
 
 function mapStateToProps(state) {
@@ -1024,6 +1071,7 @@ function mapStateToProps(state) {
     noticeMessage,
     enableDropzone,
     badges,
+    concatenateSelect,
   } = state.assetAdmin.gallery;
 
   return {
@@ -1032,6 +1080,7 @@ function mapStateToProps(state) {
     noticeMessage,
     enableDropzone,
     badges,
+    concatenateSelect,
     queuedFiles: state.assetAdmin.queuedFiles,
     securityId: state.config.SecurityID,
   };
