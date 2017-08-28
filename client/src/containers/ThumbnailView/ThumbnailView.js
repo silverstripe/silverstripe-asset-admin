@@ -101,6 +101,7 @@ class ThumbnailView extends Component {
     const props = {
       sectionConfig: this.props.sectionConfig,
       key: index,
+      selectableKey: item.id,
       item,
       selectedFiles: this.props.selectedFiles,
       onDrag: this.handleDrag,

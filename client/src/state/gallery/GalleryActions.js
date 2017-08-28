@@ -32,6 +32,18 @@ export function selectFiles(ids = null) {
 }
 
 /**
+ * Toggles whether group selection should concatenate to existing selection or not
+ * @param {boolean} concat
+ * @returns {function}
+ */
+export function setConcatenateSelect(concat) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.CONCATENATE_SELECT,
+      payload: !!concat,
+    });
+}
+/**
  * Deselects files. If no param is passed all files are deselected.
  *
  * @param Array ids - Array of file ids to deselect.

@@ -58,6 +58,11 @@
   }
 }
 
+.gallery__main--selectable {
+  margin: #{-$panel-padding-y} #{-$panel-padding-x};
+  padding: #{$panel-padding-y} #{$panel-padding-x};
+}
+
 .gallery__back-container {
   display: inline-block;
 
@@ -193,7 +198,7 @@
   margin-top: -3px;
 
   select { // Replicate .form-control;
-    height: calc(#{$line-height-base} + #{$spacer });
+    height: calc(#{$line-height-base} + #{$spacer});
     padding: $input-padding-y $input-padding-x;
     line-height: $line-height-base;
     color: $input-color;

@@ -8,6 +8,7 @@ const initialState = {
   enableDropzone: true,
   modal: null,
   badges: [],
+  concatenateSelect: false,
 };
 
 /**
@@ -131,6 +132,13 @@ export default function galleryReducer(state = initialState, { type, payload } =
       return deepFreeze({
         ...state,
         modal: null,
+      });
+    }
+
+    case GALLERY.CONCATENATE_SELECT: {
+      return deepFreeze({
+        ...state,
+        concatenateSelect: payload,
       });
     }
 
