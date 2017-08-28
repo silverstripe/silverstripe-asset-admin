@@ -32,15 +32,15 @@ export function selectFiles(ids = null) {
 }
 
 /**
- * Toggles whether group selection is additive o
- * @param bool
- * @returns {function(*): *}
+ * Toggles whether group selection should concatenate to existing selection or not
+ * @param {boolean} concat
+ * @returns {function}
  */
-export function setConcatenateSelect(bool) {
+export function setConcatenateSelect(concat) {
   return (dispatch) =>
     dispatch({
       type: GALLERY.CONCATENATE_SELECT,
-      payload: !!bool,
+      payload: !!concat,
     });
 }
 /**

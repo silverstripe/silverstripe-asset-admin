@@ -383,7 +383,7 @@ class Gallery extends Component {
    * @param e
    */
   toggleSelectConcat(e) {
-    this.props.actions.gallery.setConcatenateSelect(!!e.metaKey);
+    this.props.actions.gallery.setConcatenateSelect(e.metaKey || e.ctrlKey);
   }
 
   /**
