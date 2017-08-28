@@ -156,6 +156,7 @@ class AssetAdmin extends SilverStripeComponent {
    * @param {Object} data
    */
   handleDoSearch(data) {
+    this.props.actions.gallery.deselectFiles();
     this.handleBrowse(
       data.currentFolderOnly ? this.getFolderId() : 0,
       null,
@@ -218,6 +219,7 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleBackButtonClick(event) {
     event.preventDefault();
+    this.props.actions.gallery.deselectFiles();
     if (this.props.folder) {
       this.handleOpenFolder(this.props.folder.parentId || 0);
     } else {
