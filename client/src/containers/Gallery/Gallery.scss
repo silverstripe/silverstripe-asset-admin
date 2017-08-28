@@ -11,10 +11,6 @@
   height: calc(100vh - #{$toolbar-total-height}); // Safari fix for scroll, should be better fix
   position: relative;
 
-  .toolbar--content {
-    padding-bottom: 0;
-  }
-
   &.gallery__main--has-opened-item {
 
     @include media-breakpoint-down(md) {
@@ -60,6 +56,11 @@
     width: 100%;
     border-radius: 3px;
   }
+}
+
+.gallery__main--selectable {
+  margin: #{-$panel-padding-y} #{-$panel-padding-x};
+  padding: #{$panel-padding-y} #{$panel-padding-x};
 }
 
 .gallery__back-container {

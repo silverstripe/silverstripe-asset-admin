@@ -948,6 +948,7 @@ class Gallery extends Component {
         <GalleryDND className={galleryClasses.join(' ')}>
           <SelectableGroup
             enabled={this.props.view === 'tile'}
+            className="flexbox-area-grow fill-height gallery__main--selectable"
             onSelection={this.handleGroupSelect}
             onNonItemClick={this.handleClearSelection}
             fixedPosition
