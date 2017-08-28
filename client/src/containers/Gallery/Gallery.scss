@@ -23,11 +23,6 @@
   }
 }
 
-.gallery__main--selectable {
-  padding: $spacer $panel-padding-x $panel-padding-y;
-  margin: 0 #{-$panel-padding-x} #{-$panel-padding-y};
-}
-
 .gallery__no-item-notice {
   text-align: center;
   font-size: $font-size-lg;

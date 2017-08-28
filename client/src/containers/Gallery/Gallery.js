@@ -805,6 +805,8 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderGalleryView() {
+    const GalleryView = (this.props.view === 'table') ? TableView : ThumbnailView;
+
     const queuedFiles = this.props.queuedFiles.items
       .filter((file) => (
         // Exclude uploaded files that have been reloaded via graphql
@@ -858,18 +860,7 @@ class Gallery extends Component {
       sectionConfig: this.props.sectionConfig,
     };
 
-    return (this.props.view === 'table')
-      ? <TableView {...props} />
-      : (
-        <SelectableGroup
-          className="gallery__main--selectable"
-          onSelection={this.handleGroupSelect}
-          onNonItemClick={this.handleClearSelection}
-          fixedPosition
-        >
-          <ThumbnailView {...props} />
-        </SelectableGroup>
-      );
+    return <GalleryView {...props} />;
   }
 
   render() {
@@ -955,26 +946,33 @@ class Gallery extends Component {
         />
         {this.renderTransitionBulkActions()}
         <GalleryDND className={galleryClasses.join(' ')}>
-          {this.renderToolbar()}
-          <AssetDropzone
-            name="gallery-container"
-            className="flexbox-area-grow"
-            canUpload={canEdit}
-            handleAddedFile={this.handleAddedFile}
-            handlePreviewLoaded={this.handlePreviewLoaded}
-            handleError={this.handleFailedUpload}
-            handleSuccess={this.handleSuccessfulUpload}
-            handleSending={this.handleSending}
-            handleUploadProgress={this.handleUploadProgress}
-            preview={dimensions}
-            folderId={this.props.folderId}
-            options={dropzoneOptions}
-            securityID={securityID}
-            uploadButton={false}
+          <SelectableGroup
+            enabled={this.props.view === 'tile'}
+            onSelection={this.handleGroupSelect}
+            onNonItemClick={this.handleClearSelection}
+            fixedPosition
           >
-            {messages}
-            {this.renderGalleryView()}
-          </AssetDropzone>
+            {this.renderToolbar()}
+            <AssetDropzone
+              name="gallery-container"
+              className="flexbox-area-grow"
+              canUpload={canEdit}
+              handleAddedFile={this.handleAddedFile}
+              handlePreviewLoaded={this.handlePreviewLoaded}
+              handleError={this.handleFailedUpload}
+              handleSuccess={this.handleSuccessfulUpload}
+              handleSending={this.handleSending}
+              handleUploadProgress={this.handleUploadProgress}
+              preview={dimensions}
+              folderId={this.props.folderId}
+              options={dropzoneOptions}
+              securityID={securityID}
+              uploadButton={false}
+            >
+              {messages}
+              {this.renderGalleryView()}
+            </AssetDropzone>
+          </SelectableGroup>
         </GalleryDND>
         { this.props.loading && [
           <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
