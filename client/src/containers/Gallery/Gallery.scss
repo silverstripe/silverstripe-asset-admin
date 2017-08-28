@@ -11,6 +11,10 @@
   height: calc(100vh - #{$toolbar-total-height}); // Safari fix for scroll, should be better fix
   position: relative;
 
+  .toolbar--content {
+    padding-bottom: 0;
+  }
+
   &.gallery__main--has-opened-item {
 
     @include media-breakpoint-down(md) {
@@ -20,7 +24,8 @@
 }
 
 .gallery__main--selectable {
-  padding-top: 15px;
+  padding: $spacer $panel-padding-x $panel-padding-y;
+  margin: 0 #{-$panel-padding-x} #{-$panel-padding-y};
 }
 
 .gallery__no-item-notice {
@@ -197,7 +202,7 @@
   margin-top: -3px;
 
   select { // Replicate .form-control;
-    height: calc(#{$line-height-base} + #{$spacer });
+    height: calc(#{$line-height-base} + #{$spacer});
     padding: $input-padding-y $input-padding-x;
     line-height: $line-height-base;
     color: $input-color;

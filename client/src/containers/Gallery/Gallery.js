@@ -860,14 +860,16 @@ class Gallery extends Component {
 
     return (this.props.view === 'table')
       ? <TableView {...props} />
-      : <SelectableGroup
-        className="gallery__main--selectable"
-        onSelection={this.handleGroupSelect}
-        onNonItemClick={this.handleClearSelection}
-        fixedPosition
-      >
-        <ThumbnailView {...props} />
-        </SelectableGroup>;
+      : (
+        <SelectableGroup
+          className="gallery__main--selectable"
+          onSelection={this.handleGroupSelect}
+          onNonItemClick={this.handleClearSelection}
+          fixedPosition
+        >
+          <ThumbnailView {...props} />
+        </SelectableGroup>
+      );
   }
 
   render() {
