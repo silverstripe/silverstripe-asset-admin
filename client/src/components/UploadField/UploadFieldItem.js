@@ -10,6 +10,7 @@ class UploadFieldItem extends SilverStripeComponent {
     super(props);
 
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleItemClick = this.handleItemClick.bind(this);
   }
 
   /**
@@ -181,8 +182,20 @@ class UploadFieldItem extends SilverStripeComponent {
    */
   handleRemove(event) {
     event.preventDefault();
-    if (this.props.handleRemove) {
-      this.props.handleRemove(event, this.props.item);
+    if (this.props.onRemove) {
+      this.props.onRemove(event, this.props.item);
+    }
+  }
+
+  /**
+   * Handles click of an item
+   *
+   * @param {Object} event
+   */
+  handleItemClick(event) {
+    event.preventDefault();
+    if (this.props.onItemClick) {
+      this.props.onItemClick(event, this.props.item);
     }
   }
 
@@ -277,7 +290,8 @@ class UploadFieldItem extends SilverStripeComponent {
           ref="thumbnail"
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
-        ></div>
+          onClick={this.handleItemClick}
+        />
         {this.renderFileDetails()}
         {this.renderProgressBar()}
         {this.renderErrorMessage()}
@@ -291,7 +305,8 @@ UploadFieldItem.propTypes = {
   canEdit: React.PropTypes.bool,
   name: React.PropTypes.string.isRequired,
   item: fileShape,
-  handleRemove: React.PropTypes.func,
+  onRemove: React.PropTypes.func,
+  onItemClick: React.PropTypes.func,
 };
 
 export default UploadFieldItem;

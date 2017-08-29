@@ -24,20 +24,22 @@ class InsertMediaModal extends Component {
       && this.props.fileAttributes.ID
     ) {
       this.props.setOverrides(this.props);
-      this.props.onBrowse(null, this.props.fileAttributes.ID);
+      this.props.onBrowse(this.props.folderId, this.props.fileAttributes.ID);
     }
   }
 
   componentWillReceiveProps(props) {
+    console.log('receive');
     if (!props.show && this.props.show) {
+      console.log('zero');
       props.onBrowse(0);
     }
     if (typeof this.props.setOverrides === 'function' &&
       props.show && !this.props.show &&
       props.fileAttributes.ID) {
       this.props.setOverrides(props);
-
-      props.onBrowse(null, props.fileAttributes.ID);
+console.log('browse', props.folderId, props.fileAttributes.ID);
+      props.onBrowse(props.folderId, props.fileAttributes.ID);
     }
   }
 
@@ -154,6 +156,7 @@ InsertMediaModal.defaultProps = {
   className: '',
   fileAttributes: {},
   type: 'insert-media',
+  folderId: 0,
 };
 
 function mapStateToProps(state, ownProps) {

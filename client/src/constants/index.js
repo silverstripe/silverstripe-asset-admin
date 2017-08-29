@@ -107,4 +107,6 @@ export default {
   RETURN_KEY_CODE: 13,
   DEFAULT_PREVIEW: 'framework/client/dist/images/app_icons/generic_92.png',
   MODAL_MOVE: 'MODAL_MOVE',
+  MODAL_EDIT: 'MODAL_EDIT',
+  MODAL_ADD: 'MODAL_ADD',
 };

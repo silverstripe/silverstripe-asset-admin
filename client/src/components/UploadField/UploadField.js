@@ -11,6 +11,11 @@ import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
+const getInitialState = () => ({
+  modal: null,
+  item: null,
+});
+
 class UploadField extends SilverStripeComponent {
 
   constructor(props) {
@@ -18,6 +23,7 @@ class UploadField extends SilverStripeComponent {
     this.renderChild = this.renderChild.bind(this);
     this.handleAddShow = this.handleAddShow.bind(this);
     this.handleAddHide = this.handleAddHide.bind(this);
+    this.handleEditHide = this.handleEditHide.bind(this);
     this.handleAddInsert = this.handleAddInsert.bind(this);
     this.handleAddedFile = this.handleAddedFile.bind(this);
     this.handleSending = this.handleSending.bind(this);
@@ -25,9 +31,10 @@ class UploadField extends SilverStripeComponent {
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleItemRemove = this.handleItemRemove.bind(this);
+    this.handleItemEdit = this.handleItemEdit.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
-    this.state = { selecting: false };
+    this.state = getInitialState();
   }
 
   componentDidMount() {
@@ -113,8 +120,27 @@ class UploadField extends SilverStripeComponent {
     this.props.actions.uploadField.failUpload(this.props.id, file._queuedId, response);
   }
 
+  /**
+   * Handler for removing an uploaded item
+   *
+   * @param {Object} event
+   * @param {Object} item
+   */
   handleItemRemove(event, item) {
     this.props.actions.uploadField.removeFile(this.props.id, item);
+  }
+
+  /**
+   * Handler for clicking on the uploaded item
+   *
+   * @param {Object} event
+   * @param {Object} item
+   */
+  handleItemEdit(event, item) {
+    this.setState({
+      modal: CONSTANTS.MODAL_EDIT,
+      item,
+    });
   }
 
   /**
@@ -149,14 +175,24 @@ class UploadField extends SilverStripeComponent {
    */
   handleAddShow(event) {
     event.preventDefault();
-    this.setState({ selecting: true });
+    this.setState({
+      modal: CONSTANTS.MODAL_ADD,
+      item: null,
+    });
   }
 
   /**
    * Close 'add from files' dialog
    */
   handleAddHide() {
-    this.setState({ selecting: false });
+    this.setState(getInitialState());
+  }
+
+  /**
+   * Close 'edit file' dialog
+   */
+  handleEditHide() {
+    this.setState(getInitialState());
   }
 
   /**
@@ -177,7 +213,7 @@ class UploadField extends SilverStripeComponent {
       <div className="uploadfield">
         {this.renderDropzone()}
         {this.props.files.map(this.renderChild)}
-        {this.renderDialog()}
+        {this.renderDialogs()}
       </div>
     );
   }
@@ -268,18 +304,32 @@ class UploadField extends SilverStripeComponent {
     );
   }
 
-  renderDialog() {
-    return (
+  renderDialogs() {
+    const { item } = this.state;
+    const commonProps = {
+      bodyClassName: 'modal__dialog',
+      className: 'insert-media-react__dialog-wrapper',
+      fileAttributes: item ? { ID: item.id } : null,
+      folderId: item && typeof item === 'object' ? item.parent.id : 0,
+    };
+console.log(commonProps);
+    return [
       <InsertMediaModal
         title={false}
-        show={this.state.selecting}
+        show={this.state.modal === CONSTANTS.MODAL_ADD}
         onInsert={this.handleAddInsert}
         onHide={this.handleAddHide}
-        bodyClassName="modal__dialog"
-        className="insert-media-react__dialog-wrapper"
         type="select"
-      />
-    );
+        {...commonProps}
+      />,
+      <InsertMediaModal
+        title={false}
+        show={this.state.modal === CONSTANTS.MODAL_EDIT}
+        onHide={this.handleEditHide}
+        type="admin"
+        {...commonProps}
+      />,
+    ];
   }
 
   /**
@@ -295,6 +345,7 @@ class UploadField extends SilverStripeComponent {
       name: this.props.name,
       handleRemove: this.handleItemRemove,
       canEdit: this.canEdit(),
+      onItemClick: this.handleItemEdit,
     };
     return <UploadFieldItem {...itemProps} />;
   }
