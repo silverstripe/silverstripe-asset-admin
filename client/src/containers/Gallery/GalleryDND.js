@@ -50,7 +50,10 @@ class GalleryDND extends Component {
 
 GalleryDND.propTypes = {
   className: PropTypes.string,
-  children: PropTypes.arrayOf(PropTypes.node),
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.arrayOf(React.PropTypes.node),
+    React.PropTypes.node,
+  ]),
 };
 
 export default context(GalleryDND);
