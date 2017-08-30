@@ -367,9 +367,7 @@ exports.default = {
   SPACE_KEY_CODE: 32,
   RETURN_KEY_CODE: 13,
   DEFAULT_PREVIEW: 'framework/client/dist/images/app_icons/generic_92.png',
-  MODAL_MOVE: 'MODAL_MOVE',
-  MODAL_EDIT: 'MODAL_EDIT',
-  MODAL_ADD: 'MODAL_ADD'
+  MODAL_MOVE: 'MODAL_MOVE'
 };
 
 /***/ }),
@@ -4942,9 +4940,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ConnectedUploadField = exports.UploadField = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -5002,13 +5000,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var getInitialState = function getInitialState() {
-  return {
-    modal: null,
-    item: null
-  };
-};
-
 var UploadField = function (_SilverStripeComponen) {
   _inherits(UploadField, _SilverStripeComponen);
 
@@ -5020,7 +5011,6 @@ var UploadField = function (_SilverStripeComponen) {
     _this.renderChild = _this.renderChild.bind(_this);
     _this.handleAddShow = _this.handleAddShow.bind(_this);
     _this.handleAddHide = _this.handleAddHide.bind(_this);
-    _this.handleEditHide = _this.handleEditHide.bind(_this);
     _this.handleAddInsert = _this.handleAddInsert.bind(_this);
     _this.handleAddedFile = _this.handleAddedFile.bind(_this);
     _this.handleSending = _this.handleSending.bind(_this);
@@ -5029,9 +5019,14 @@ var UploadField = function (_SilverStripeComponen) {
     _this.handleSuccessfulUpload = _this.handleSuccessfulUpload.bind(_this);
     _this.handleItemRemove = _this.handleItemRemove.bind(_this);
     _this.handleItemEdit = _this.handleItemEdit.bind(_this);
+    _this.handleReplaceShow = _this.handleReplaceShow.bind(_this);
     _this.handleChange = _this.handleChange.bind(_this);
+    _this.handleReplace = _this.handleReplace.bind(_this);
 
-    _this.state = getInitialState();
+    _this.state = {
+      selecting: false,
+      selectingItem: null
+    };
     return _this;
   }
 
@@ -5068,7 +5063,7 @@ var UploadField = function (_SilverStripeComponen) {
   }, {
     key: 'handleAddedFile',
     value: function handleAddedFile(data) {
-      var file = Object.assign({}, data, { uploaded: true });
+      var file = _extends({}, data, { uploaded: true });
       this.props.actions.uploadField.addFile(this.props.id, file);
     }
   }, {
@@ -5106,9 +5101,14 @@ var UploadField = function (_SilverStripeComponen) {
   }, {
     key: 'handleItemEdit',
     value: function handleItemEdit(event, item) {
+      window.location.href = '/admin/assets/show/' + item.parent.id + '/edit/' + item.id;
+    }
+  }, {
+    key: 'handleReplaceShow',
+    value: function handleReplaceShow(event, selectingItem) {
       this.setState({
-        modal: _index2.default.MODAL_EDIT,
-        item: item
+        selecting: true,
+        selectingItem: selectingItem
       });
     }
   }, {
@@ -5134,24 +5134,41 @@ var UploadField = function (_SilverStripeComponen) {
     value: function handleAddShow(event) {
       event.preventDefault();
       this.setState({
-        modal: _index2.default.MODAL_ADD,
-        item: null
+        selecting: true,
+        selectingItem: null
       });
     }
   }, {
     key: 'handleAddHide',
     value: function handleAddHide() {
-      this.setState(getInitialState());
-    }
-  }, {
-    key: 'handleEditHide',
-    value: function handleEditHide() {
-      this.setState(getInitialState());
+      this.setState({
+        selecting: false,
+        selectingItem: null
+      });
     }
   }, {
     key: 'handleAddInsert',
     value: function handleAddInsert(data, file) {
       this.props.actions.uploadField.addFile(this.props.id, file);
+      this.handleAddHide();
+
+      return Promise.resolve({});
+    }
+  }, {
+    key: 'handleReplace',
+    value: function handleReplace(data, file) {
+      var selectingItem = this.state.selectingItem;
+      var _props = this.props,
+          id = _props.id,
+          _props$actions$upload = _props.actions.uploadField,
+          addFile = _props$actions$upload.addFile,
+          removeFile = _props$actions$upload.removeFile;
+
+      if (!selectingItem) {
+        throw new Error('Tried to replace a file when none was selected.');
+      }
+      removeFile(id, selectingItem);
+      addFile(id, file);
       this.handleAddHide();
 
       return Promise.resolve({});
@@ -5164,7 +5181,7 @@ var UploadField = function (_SilverStripeComponen) {
         { className: 'uploadfield' },
         this.renderDropzone(),
         this.props.files.map(this.renderChild),
-        this.renderDialogs()
+        this.renderDialog()
       );
     }
   }, {
@@ -5251,29 +5268,24 @@ var UploadField = function (_SilverStripeComponen) {
       );
     }
   }, {
-    key: 'renderDialogs',
-    value: function renderDialogs() {
-      var item = this.state.item;
+    key: 'renderDialog',
+    value: function renderDialog() {
+      var _state = this.state,
+          selecting = _state.selecting,
+          selectingItem = _state.selectingItem;
 
-      var commonProps = {
+
+      return _react2.default.createElement(_InsertMediaModal2.default, {
+        title: false,
+        show: selecting,
+        onInsert: selectingItem ? this.handleReplace : this.handleAddInsert,
+        onHide: this.handleAddHide,
+        type: 'select',
         bodyClassName: 'modal__dialog',
         className: 'insert-media-react__dialog-wrapper',
-        fileAttributes: item ? { ID: item.id } : null,
-        folderId: item && (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' ? item.parent.id : 0
-      };
-      console.log(commonProps);
-      return [_react2.default.createElement(_InsertMediaModal2.default, _extends({
-        title: false,
-        show: this.state.modal === _index2.default.MODAL_ADD,
-        onInsert: this.handleAddInsert,
-        onHide: this.handleAddHide,
-        type: 'select'
-      }, commonProps)), _react2.default.createElement(_InsertMediaModal2.default, _extends({
-        title: false,
-        show: this.state.modal === _index2.default.MODAL_EDIT,
-        onHide: this.handleEditHide,
-        type: 'admin'
-      }, commonProps))];
+        fileAttributes: selectingItem ? { ID: selectingItem.id } : null,
+        folderId: selectingItem && (typeof item === 'undefined' ? 'undefined' : _typeof(item)) === 'object' ? selectingItem.parent.id : 0
+      });
     }
   }, {
     key: 'renderChild',
@@ -5282,9 +5294,10 @@ var UploadField = function (_SilverStripeComponen) {
         key: index,
         item: item,
         name: this.props.name,
-        handleRemove: this.handleItemRemove,
+        onRemove: this.handleItemRemove,
         canEdit: this.canEdit(),
-        onItemClick: this.handleItemEdit
+        onItemClick: this.handleReplaceShow,
+        onEdit: this.handleItemEdit
       };
       return _react2.default.createElement(_UploadFieldItem2.default, itemProps);
     }
@@ -12065,6 +12078,7 @@ var UploadFieldItem = function (_SilverStripeComponen) {
 
     _this.handleRemove = _this.handleRemove.bind(_this);
     _this.handleItemClick = _this.handleItemClick.bind(_this);
+    _this.handleEdit = _this.handleEdit.bind(_this);
     return _this;
   }
 
@@ -12182,6 +12196,14 @@ var UploadFieldItem = function (_SilverStripeComponen) {
       }
     }
   }, {
+    key: 'handleEdit',
+    value: function handleEdit(event) {
+      event.preventDefault();
+      if (this.props.onEdit) {
+        this.props.onEdit(event, this.props.item);
+      }
+    }
+  }, {
     key: 'handleItemClick',
     value: function handleItemClick(event) {
       event.preventDefault();
@@ -12226,6 +12248,18 @@ var UploadFieldItem = function (_SilverStripeComponen) {
       });
     }
   }, {
+    key: 'renderEditButton',
+    value: function renderEditButton() {
+      if (!this.props.canEdit) {
+        return null;
+      }
+      var classes = ['btn', 'uploadfield-item__edit-btn', 'btn-secondary', 'btn--no-text', 'font-icon-edit', 'btn--icon-md'].join(' ');
+      return _react2.default.createElement('button', {
+        className: classes,
+        onClick: this.handleEdit
+      });
+    }
+  }, {
     key: 'renderFileDetails',
     value: function renderFileDetails() {
       var size = '';
@@ -12265,6 +12299,7 @@ var UploadFieldItem = function (_SilverStripeComponen) {
         this.renderFileDetails(),
         this.renderProgressBar(),
         this.renderErrorMessage(),
+        this.renderEditButton(),
         this.renderRemoveButton()
       );
     }
@@ -12278,7 +12313,8 @@ UploadFieldItem.propTypes = {
   name: _react2.default.PropTypes.string.isRequired,
   item: _fileShape2.default,
   onRemove: _react2.default.PropTypes.func,
-  onItemClick: _react2.default.PropTypes.func
+  onItemClick: _react2.default.PropTypes.func,
+  onEdit: _react2.default.PropTypes.func
 };
 
 exports.default = UploadFieldItem;
@@ -15391,26 +15427,31 @@ var InsertMediaModal = function (_Component) {
   _createClass(InsertMediaModal, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      if (!this.props.show) {
-        this.props.onBrowse(0);
+      var _props = this.props,
+          show = _props.show,
+          onBrowse = _props.onBrowse,
+          setOverrides = _props.setOverrides,
+          fileAttributes = _props.fileAttributes,
+          folderId = _props.folderId;
+
+
+      if (!show) {
+        onBrowse(0);
       }
-      if (typeof this.props.setOverrides === 'function' && this.props.show && this.props.fileAttributes.ID) {
-        this.props.setOverrides(this.props);
-        this.props.onBrowse(this.props.folderId, this.props.fileAttributes.ID);
+      if (typeof setOverrides === 'function' && show && fileAttributes.ID) {
+        setOverrides(this.props);
+        onBrowse(folderId, fileAttributes.ID);
       }
     }
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(props) {
-      console.log('receive');
       if (!props.show && this.props.show) {
-        console.log('zero');
         props.onBrowse(0);
       }
-      if (typeof this.props.setOverrides === 'function' && props.show && !this.props.show && props.fileAttributes.ID) {
+      if (typeof this.props.setOverrides === 'function' && props.show && !this.props.show) {
         this.props.setOverrides(props);
-        console.log('browse', props.folderId, props.fileAttributes.ID);
-        props.onBrowse(props.folderId, props.fileAttributes.ID);
+        props.onBrowse(props.folderId, props.fileAttributes ? props.fileAttributes.ID : null);
       }
     }
   }, {

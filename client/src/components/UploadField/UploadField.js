@@ -11,11 +11,6 @@ import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
-const getInitialState = () => ({
-  modal: null,
-  item: null,
-});
-
 class UploadField extends SilverStripeComponent {
 
   constructor(props) {
@@ -23,7 +18,6 @@ class UploadField extends SilverStripeComponent {
     this.renderChild = this.renderChild.bind(this);
     this.handleAddShow = this.handleAddShow.bind(this);
     this.handleAddHide = this.handleAddHide.bind(this);
-    this.handleEditHide = this.handleEditHide.bind(this);
     this.handleAddInsert = this.handleAddInsert.bind(this);
     this.handleAddedFile = this.handleAddedFile.bind(this);
     this.handleSending = this.handleSending.bind(this);
@@ -32,9 +26,14 @@ class UploadField extends SilverStripeComponent {
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleItemRemove = this.handleItemRemove.bind(this);
     this.handleItemEdit = this.handleItemEdit.bind(this);
+    this.handleReplaceShow = this.handleReplaceShow.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleReplace = this.handleReplace.bind(this);
 
-    this.state = getInitialState();
+    this.state = {
+      selecting: false,
+      selectingItem: null,
+    };
   }
 
   componentDidMount() {
@@ -74,7 +73,7 @@ class UploadField extends SilverStripeComponent {
   }
 
   handleAddedFile(data) {
-    const file = Object.assign({}, data, { uploaded: true });
+    const file = { ...data, uploaded: true };
     this.props.actions.uploadField.addFile(this.props.id, file);
   }
 
@@ -131,15 +130,25 @@ class UploadField extends SilverStripeComponent {
   }
 
   /**
-   * Handler for clicking on the uploaded item
+   * Handler for editing an uploaded item
    *
    * @param {Object} event
    * @param {Object} item
    */
   handleItemEdit(event, item) {
+    window.location.href = `/admin/assets/show/${item.parent.id}/edit/${item.id}`;
+  }
+
+  /**
+   * Handler for clicking on the uploaded item
+   *
+   * @param {Object} event
+   * @param {Object} selectingItem
+   */
+  handleReplaceShow(event, selectingItem) {
     this.setState({
-      modal: CONSTANTS.MODAL_EDIT,
-      item,
+      selecting: true,
+      selectingItem,
     });
   }
 
@@ -176,8 +185,8 @@ class UploadField extends SilverStripeComponent {
   handleAddShow(event) {
     event.preventDefault();
     this.setState({
-      modal: CONSTANTS.MODAL_ADD,
-      item: null,
+      selecting: true,
+      selectingItem: null,
     });
   }
 
@@ -185,14 +194,10 @@ class UploadField extends SilverStripeComponent {
    * Close 'add from files' dialog
    */
   handleAddHide() {
-    this.setState(getInitialState());
-  }
-
-  /**
-   * Close 'edit file' dialog
-   */
-  handleEditHide() {
-    this.setState(getInitialState());
+    this.setState({
+      selecting: false,
+      selectingItem: null,
+    });
   }
 
   /**
@@ -208,12 +213,32 @@ class UploadField extends SilverStripeComponent {
     return Promise.resolve({});
   }
 
+  /**
+   * Handle file being replaced from the modal
+   *
+   * @param {Object} data
+   * @param {Object} file
+   */
+  handleReplace(data, file) {
+    const { selectingItem } = this.state;
+    const { id, actions: { uploadField: { addFile, removeFile } } } = this.props;
+    if (!selectingItem) {
+      throw new Error('Tried to replace a file when none was selected.');
+    }
+    removeFile(id, selectingItem);
+    addFile(id, file);
+    this.handleAddHide();
+
+    return Promise.resolve({});
+  }
+
+
   render() {
     return (
       <div className="uploadfield">
         {this.renderDropzone()}
         {this.props.files.map(this.renderChild)}
-        {this.renderDialogs()}
+        {this.renderDialog()}
       </div>
     );
   }
@@ -304,32 +329,22 @@ class UploadField extends SilverStripeComponent {
     );
   }
 
-  renderDialogs() {
-    const { item } = this.state;
-    const commonProps = {
-      bodyClassName: 'modal__dialog',
-      className: 'insert-media-react__dialog-wrapper',
-      fileAttributes: item ? { ID: item.id } : null,
-      folderId: item && typeof item === 'object' ? item.parent.id : 0,
-    };
-console.log(commonProps);
-    return [
+  renderDialog() {
+    const { selecting, selectingItem } = this.state;
+
+    return (
       <InsertMediaModal
         title={false}
-        show={this.state.modal === CONSTANTS.MODAL_ADD}
-        onInsert={this.handleAddInsert}
+        show={selecting}
+        onInsert={selectingItem ? this.handleReplace : this.handleAddInsert}
         onHide={this.handleAddHide}
         type="select"
-        {...commonProps}
-      />,
-      <InsertMediaModal
-        title={false}
-        show={this.state.modal === CONSTANTS.MODAL_EDIT}
-        onHide={this.handleEditHide}
-        type="admin"
-        {...commonProps}
-      />,
-    ];
+        bodyClassName="modal__dialog"
+        className="insert-media-react__dialog-wrapper"
+        fileAttributes={ selectingItem ? { ID: selectingItem.id } : null }
+        folderId={selectingItem && typeof item === 'object' ? selectingItem.parent.id : 0}
+      />
+    );
   }
 
   /**
@@ -343,9 +358,10 @@ console.log(commonProps);
       key: index,
       item,
       name: this.props.name,
-      handleRemove: this.handleItemRemove,
+      onRemove: this.handleItemRemove,
       canEdit: this.canEdit(),
-      onItemClick: this.handleItemEdit,
+      onItemClick: this.handleReplaceShow,
+      onEdit: this.handleItemEdit,
     };
     return <UploadFieldItem {...itemProps} />;
   }
