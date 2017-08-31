@@ -25,7 +25,6 @@ class UploadField extends SilverStripeComponent {
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleItemRemove = this.handleItemRemove.bind(this);
-    this.handleItemEdit = this.handleItemEdit.bind(this);
     this.handleReplaceShow = this.handleReplaceShow.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleReplace = this.handleReplace.bind(this);
@@ -127,16 +126,6 @@ class UploadField extends SilverStripeComponent {
    */
   handleItemRemove(event, item) {
     this.props.actions.uploadField.removeFile(this.props.id, item);
-  }
-
-  /**
-   * Handler for editing an uploaded item
-   *
-   * @param {Object} event
-   * @param {Object} item
-   */
-  handleItemEdit(event, item) {
-    window.location.href = `/admin/assets/show/${item.parent.id}/edit/${item.id}`;
   }
 
   /**
@@ -360,8 +349,7 @@ class UploadField extends SilverStripeComponent {
       name: this.props.name,
       onRemove: this.handleItemRemove,
       canEdit: this.canEdit(),
-      onItemClick: this.handleReplaceShow,
-      onEdit: this.handleItemEdit,
+      onView: this.handleReplaceShow,
     };
     return <UploadFieldItem {...itemProps} />;
   }

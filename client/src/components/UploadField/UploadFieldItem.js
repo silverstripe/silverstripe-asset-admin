@@ -11,7 +11,7 @@ class UploadFieldItem extends SilverStripeComponent {
 
     this.handleRemove = this.handleRemove.bind(this);
     this.handleItemClick = this.handleItemClick.bind(this);
-    this.handleEdit = this.handleEdit.bind(this);
+    this.handleView = this.handleView.bind(this);
   }
 
   /**
@@ -193,10 +193,10 @@ class UploadFieldItem extends SilverStripeComponent {
    *
    * @param {Object} event
    */
-  handleEdit(event) {
+  handleView(event) {
     event.preventDefault();
-    if (this.props.onEdit) {
-      this.props.onEdit(event, this.props.item);
+    if (this.props.onView) {
+      this.props.onView(event, this.props.item);
     }
   }
 
@@ -273,22 +273,22 @@ class UploadFieldItem extends SilverStripeComponent {
    *
    * @returns {XML}
    */
-  renderEditButton() {
+  renderViewButton() {
     if (!this.props.canEdit) {
       return null;
     }
     const classes = [
       'btn',
-      'uploadfield-item__edit-btn',
+      'uploadfield-item__view-btn',
       'btn-secondary',
       'btn--no-text',
-      'font-icon-edit',
+      'font-icon-eye',
       'btn--icon-md',
     ].join(' ');
     return (
       <button
         className={classes}
-        onClick={this.handleEdit}
+        onClick={this.handleView}
       />
     );
   }
@@ -333,7 +333,7 @@ class UploadFieldItem extends SilverStripeComponent {
         {this.renderFileDetails()}
         {this.renderProgressBar()}
         {this.renderErrorMessage()}
-        {this.renderEditButton()}
+        {this.renderViewButton()}
         {this.renderRemoveButton()}
       </div>
     );
@@ -346,7 +346,7 @@ UploadFieldItem.propTypes = {
   item: fileShape,
   onRemove: React.PropTypes.func,
   onItemClick: React.PropTypes.func,
-  onEdit: React.PropTypes.func,
+  onView: React.PropTypes.func,
 };
 
 export default UploadFieldItem;
