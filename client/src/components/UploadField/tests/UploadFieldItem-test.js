@@ -209,5 +209,4 @@ describe('UploadFieldItem', () => {
       expect(button).toBe(null);
     });
   });
-
 });
