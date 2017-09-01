@@ -25,9 +25,14 @@ class UploadField extends SilverStripeComponent {
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleItemRemove = this.handleItemRemove.bind(this);
+    this.handleReplaceShow = this.handleReplaceShow.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleReplace = this.handleReplace.bind(this);
 
-    this.state = { selecting: false };
+    this.state = {
+      selecting: false,
+      selectingItem: null,
+    };
   }
 
   componentDidMount() {
@@ -67,7 +72,7 @@ class UploadField extends SilverStripeComponent {
   }
 
   handleAddedFile(data) {
-    const file = Object.assign({}, data, { uploaded: true });
+    const file = { ...data, uploaded: true };
     this.props.actions.uploadField.addFile(this.props.id, file);
   }
 
@@ -113,8 +118,27 @@ class UploadField extends SilverStripeComponent {
     this.props.actions.uploadField.failUpload(this.props.id, file._queuedId, response);
   }
 
+  /**
+   * Handler for removing an uploaded item
+   *
+   * @param {Object} event
+   * @param {Object} item
+   */
   handleItemRemove(event, item) {
     this.props.actions.uploadField.removeFile(this.props.id, item);
+  }
+
+  /**
+   * Handler for clicking on the uploaded item
+   *
+   * @param {Object} event
+   * @param {Object} selectingItem
+   */
+  handleReplaceShow(event, selectingItem) {
+    this.setState({
+      selecting: true,
+      selectingItem,
+    });
   }
 
   /**
@@ -149,14 +173,20 @@ class UploadField extends SilverStripeComponent {
    */
   handleAddShow(event) {
     event.preventDefault();
-    this.setState({ selecting: true });
+    this.setState({
+      selecting: true,
+      selectingItem: null,
+    });
   }
 
   /**
    * Close 'add from files' dialog
    */
   handleAddHide() {
-    this.setState({ selecting: false });
+    this.setState({
+      selecting: false,
+      selectingItem: null,
+    });
   }
 
   /**
@@ -171,6 +201,26 @@ class UploadField extends SilverStripeComponent {
 
     return Promise.resolve({});
   }
+
+  /**
+   * Handle file being replaced from the modal
+   *
+   * @param {Object} data
+   * @param {Object} file
+   */
+  handleReplace(data, file) {
+    const { selectingItem } = this.state;
+    const { id, actions: { uploadField: { addFile, removeFile } } } = this.props;
+    if (!selectingItem) {
+      throw new Error('Tried to replace a file when none was selected.');
+    }
+    removeFile(id, selectingItem);
+    addFile(id, file);
+    this.handleAddHide();
+
+    return Promise.resolve({});
+  }
+
 
   render() {
     return (
@@ -269,15 +319,19 @@ class UploadField extends SilverStripeComponent {
   }
 
   renderDialog() {
+    const { selecting, selectingItem } = this.state;
+
     return (
       <InsertMediaModal
         title={false}
-        show={this.state.selecting}
-        onInsert={this.handleAddInsert}
+        show={selecting}
+        onInsert={selectingItem ? this.handleReplace : this.handleAddInsert}
         onHide={this.handleAddHide}
+        type="select"
         bodyClassName="modal__dialog"
         className="insert-media-react__dialog-wrapper"
-        type="select"
+        fileAttributes={ selectingItem ? { ID: selectingItem.id } : null }
+        folderId={selectingItem && typeof item === 'object' ? selectingItem.parent.id : 0}
       />
     );
   }
@@ -293,8 +347,9 @@ class UploadField extends SilverStripeComponent {
       key: index,
       item,
       name: this.props.name,
-      handleRemove: this.handleItemRemove,
+      onRemove: this.handleItemRemove,
       canEdit: this.canEdit(),
+      onView: this.handleReplaceShow,
     };
     return <UploadFieldItem {...itemProps} />;
   }

@@ -10,6 +10,8 @@ class UploadFieldItem extends SilverStripeComponent {
     super(props);
 
     this.handleRemove = this.handleRemove.bind(this);
+    this.handleItemClick = this.handleItemClick.bind(this);
+    this.handleView = this.handleView.bind(this);
   }
 
   /**
@@ -181,8 +183,32 @@ class UploadFieldItem extends SilverStripeComponent {
    */
   handleRemove(event) {
     event.preventDefault();
-    if (this.props.handleRemove) {
-      this.props.handleRemove(event, this.props.item);
+    if (this.props.onRemove) {
+      this.props.onRemove(event, this.props.item);
+    }
+  }
+
+  /**
+   * Handles edit button click
+   *
+   * @param {Object} event
+   */
+  handleView(event) {
+    event.preventDefault();
+    if (this.props.onView) {
+      this.props.onView(event, this.props.item);
+    }
+  }
+
+  /**
+   * Handles click of an item
+   *
+   * @param {Object} event
+   */
+  handleItemClick(event) {
+    event.preventDefault();
+    if (this.props.onItemClick) {
+      this.props.onItemClick(event, this.props.item);
     }
   }
 
@@ -243,6 +269,31 @@ class UploadFieldItem extends SilverStripeComponent {
   }
 
   /**
+   * Gets the edit item button
+   *
+   * @returns {XML}
+   */
+  renderViewButton() {
+    if (!this.props.canEdit) {
+      return null;
+    }
+    const classes = [
+      'btn',
+      'uploadfield-item__view-btn',
+      'btn-secondary',
+      'btn--no-text',
+      'font-icon-eye',
+      'btn--icon-md',
+    ].join(' ');
+    return (
+      <button
+        className={classes}
+        onClick={this.handleView}
+      />
+    );
+  }
+
+  /**
    * Get file title / metadata block
    *
    * @returns {XML}
@@ -277,10 +328,12 @@ class UploadFieldItem extends SilverStripeComponent {
           ref="thumbnail"
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
-        ></div>
+          onClick={this.handleItemClick}
+        />
         {this.renderFileDetails()}
         {this.renderProgressBar()}
         {this.renderErrorMessage()}
+        {this.renderViewButton()}
         {this.renderRemoveButton()}
       </div>
     );
@@ -291,7 +344,9 @@ UploadFieldItem.propTypes = {
   canEdit: React.PropTypes.bool,
   name: React.PropTypes.string.isRequired,
   item: fileShape,
-  handleRemove: React.PropTypes.func,
+  onRemove: React.PropTypes.func,
+  onItemClick: React.PropTypes.func,
+  onView: React.PropTypes.func,
 };
 
 export default UploadFieldItem;
