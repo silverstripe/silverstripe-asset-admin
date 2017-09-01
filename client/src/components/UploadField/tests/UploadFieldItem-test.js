@@ -191,21 +191,21 @@ describe('UploadFieldItem', () => {
     });
   });
 
-  describe('renderEditButton()', () => {
-    it('displays edit button', () => {
+  describe('renderViewButton()', () => {
+    it('displays view button', () => {
       props.canEdit = true;
       file = ReactTestUtils.renderIntoDocument(
         <UploadFieldItem {...props} />
       );
-      const button = file.renderEditButton();
+      const button = file.renderViewButton();
       expect(button.type).toBe('button');
     });
-    it('hides remove button when disabled', () => {
+    it('hides view button when disabled', () => {
       props.canEdit = false;
       file = ReactTestUtils.renderIntoDocument(
         <UploadFieldItem {...props} />
       );
-      const button = file.renderEditButton();
+      const button = file.renderViewButton();
       expect(button).toBe(null);
     });
   });
