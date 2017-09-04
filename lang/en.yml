@@ -51,6 +51,8 @@ en:
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'File or Folder could not be found'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    SAVE: Save
+    SAVED: Saved
     ACCESSHEADER: 'Who can view this file?'
     ANYONE: Anyone
     EDITHEADER: 'Who can edit this file?'
@@ -63,6 +65,8 @@ en:
     ROOTNAME: '(Top level)'
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    PUBLISH: Publish
+    PUBLISHED: Published
     INSERT_FILE: 'Insert file'
     INSERT_LINK: 'Link to file'
     LINKDESCR: 'Link description'

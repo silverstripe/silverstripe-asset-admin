@@ -40,11 +40,13 @@ class Editor extends Component {
     }
 
     if (name === 'action_unpublish') {
+      const message = i18n._t('AssetAdmin.CONFIRMUNPUBLISH', 'Are you sure you want to unpublish this record?');
       // eslint-disable-next-line no-alert
-      if (confirm(i18n._t('AssetAdmin.CONFIRMUNPUBLISH', 'Are you sure you want to unpublish this record?'))) {
-        this.props.onUnpublish(data.ID);
+      if (!confirm(message)) {
+        // @todo go back to using graphql when form schema state consistency can be achieved with graphql
+        // this.props.onUnpublish(data.ID);
+        event.preventDefault();
       }
-      event.preventDefault();
       return;
     }
 
