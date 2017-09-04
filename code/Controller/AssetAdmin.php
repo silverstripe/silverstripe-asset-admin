@@ -1199,7 +1199,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $record = File::get()->byID($id);
 
         $handler = AddToCampaignHandler::create($this, $record, 'addToCampaignForm');
-        $results = $handler->addToCampaign($record, $data['Campaign']);
+        $results = $handler->addToCampaign($record, $data);
         if (!isset($results)) {
             return null;
         }

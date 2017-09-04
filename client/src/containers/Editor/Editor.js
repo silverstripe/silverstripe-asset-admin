@@ -181,6 +181,7 @@ class Editor extends Component {
         <div className="editor__file-preview-message--file-missing">{message}</div>
       );
     }
+    const campaignTitle = i18n._t('Admin.ADD_TO_CAMPAIGN', 'Add to campaign');
 
     return (<div className={editorClasses.join(' ')}>
       <div className="editor__details fill-height">
@@ -196,6 +197,7 @@ class Editor extends Component {
         />
         {error}
         <FormBuilderModal
+          title={campaignTitle}
           identifier="AssetAdmin.AddToCampaign"
           show={this.state.openModal}
           handleHide={this.closeModal}
