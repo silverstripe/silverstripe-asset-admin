@@ -356,9 +356,6 @@ class AssetAdmin extends SilverStripeComponent {
             // open the containing folder, since folder edit mode isn't desired
             if (action === 'action_createfolder' && this.props.type !== 'admin') {
               this.handleOpenFolder(this.getFolderId());
-            } else if (action === 'action_publish') {
-              this.handleCloseFile();
-              this.handleOpenFile(response.record.id);
             }
             return response;
           });
@@ -447,6 +444,7 @@ class AssetAdmin extends SilverStripeComponent {
       // see https://dev-blog.apollodata.com/apollo-clients-new-imperative-store-api-6cb69318a1e3
       this.props.actions.files.readFiles()
         .then(() => {
+          // @todo form action cannot use graphql due to this forced editor reloading
           this.handleCloseFile();
           this.handleOpenFile(response.data.unpublishFile.id);
         });

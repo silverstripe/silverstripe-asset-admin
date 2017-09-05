@@ -196,6 +196,17 @@ class FileFormFactory extends AssetFormFactory
         /** @var FormAction $action */
         $action = FormAction::create('publish', $publishText)
             ->setIcon('rocket')
+            ->setSchemaState([
+                'data' => [
+                    'isPublished' => $record->isPublished(),
+                    'pristineTitle' => _t(__CLASS__.'PUBLISHED', 'Published'),
+                    'pristineIcon' => 'tick',
+                    'dirtyTitle' => _t(__CLASS__.'PUBLISH', 'Publish'),
+                    'dirtyIcon' => 'rocket',
+                    'pristineClass' => 'btn-outline-primary',
+                    'dirtyClass' => '',
+                ],
+            ])
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
 
         return $action;

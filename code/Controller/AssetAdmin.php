@@ -1096,6 +1096,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $record->doUnpublish();
+        
+        // regenerate form, so that it constants/literals on the form are updated
+        $form = $this->getFileEditForm($record->ID);
         return $this->getRecordUpdatedResponse($record, $form);
     }
 
