@@ -81,6 +81,8 @@ describe('AssetAdmin', () => {
         files: {
           deleteFile: jest.fn(() => Promise.resolve()),
           readFiles: jest.fn(() => Promise.resolve()),
+          publishFile: jest.fn(() => Promise.resolve()),
+          unpublishFile: jest.fn(() => Promise.resolve()),
         },
       },
     };
@@ -221,6 +223,86 @@ describe('AssetAdmin', () => {
       component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
       return component.handleDelete(id).then(() => {
         expect(props.onBrowse).toBeCalledWith(0, null, Object.assign({}, props.query, { view: 'tile' }));
+      });
+    });
+  });
+  describe('handlePublish', () => {
+    let component = null;
+
+    beforeEach(() => {
+      props.files = [
+        getMockFile(1),
+      ];
+      props.queuedFiles = {
+        items: [
+          Object.assign({}, getMockFile(2), { queuedId: 2 }),
+        ],
+      };
+      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
+    });
+
+    it('should publish a file', () => {
+      const id = props.files[0].id;
+      component.doPublish(id);
+
+      expect(props.actions.files.publishFile).toBeCalledWith(id, getMockFile(1));
+    });
+
+    it('should deselect files after a publish', () => {
+      const id = props.files[0].id;
+      props.actions.gallery.deselectFiles = jest.genMockFunction();
+      return component.doPublish(id).then(() => {
+        expect(props.actions.gallery.deselectFiles)
+          .toBeCalledWith([id]);
+      });
+    });
+
+    it('should remove the file from the queued files list', () => {
+      const id = props.queuedFiles.items[0].id;
+      props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
+      return component.doPublish(id).then(() => {
+        expect(props.actions.queuedFiles.removeQueuedFile)
+          .toBeCalledWith(props.queuedFiles.items[0].queuedId);
+      });
+    });
+  });
+  describe('handleUnpublish', () => {
+    let component = null;
+
+    beforeEach(() => {
+      props.files = [
+        getMockFile(1),
+      ];
+      props.queuedFiles = {
+        items: [
+          Object.assign({}, getMockFile(2), { queuedId: 2 }),
+        ],
+      };
+      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
+    });
+
+    it('should unpublish a file', () => {
+      const id = props.files[0].id;
+      component.doUnpublish(id);
+
+      expect(props.actions.files.unpublishFile).toBeCalledWith(id, getMockFile(1));
+    });
+
+    it('should deselect files after an unpublish', () => {
+      const id = props.files[0].id;
+      props.actions.gallery.deselectFiles = jest.genMockFunction();
+      return component.doUnpublish(id).then(() => {
+        expect(props.actions.gallery.deselectFiles)
+          .toBeCalledWith([id]);
+      });
+    });
+
+    it('should remove the file from the queued files list', () => {
+      const id = props.queuedFiles.items[0].id;
+      props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
+      return component.doUnpublish(id).then(() => {
+        expect(props.actions.queuedFiles.removeQueuedFile)
+          .toBeCalledWith(props.queuedFiles.items[0].queuedId);
       });
     });
   });

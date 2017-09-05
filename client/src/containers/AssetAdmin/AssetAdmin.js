@@ -16,6 +16,7 @@ import Search, { hasFilters } from 'components/Search/Search';
 import readFilesQuery from 'state/files/readFilesQuery';
 import deleteFileMutation from 'state/files/deleteFileMutation';
 import unpublishFileMutation from 'state/files/unpublishFileMutation';
+import publishFileMutation from 'state/files/publishFileMutation';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
 
@@ -65,6 +66,9 @@ class AssetAdmin extends SilverStripeComponent {
     this.handleCloseFile = this.handleCloseFile.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleUnpublish = this.handleUnpublish.bind(this);
+    this.handleBulkUnpublish = this.handleBulkUnpublish.bind(this);
+    this.handlePublish = this.handlePublish.bind(this);
+    this.handleBulkPublish = this.handleBulkPublish.bind(this);
     this.handleDoSearch = this.handleDoSearch.bind(this);
     this.handleSubmitEditor = this.handleSubmitEditor.bind(this);
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
@@ -212,6 +216,15 @@ class AssetAdmin extends SilverStripeComponent {
     ));
   }
 
+  resetFile(file) {
+    this.props.actions.gallery.deselectFiles([file.id]);
+    // If the file was just uploaded, it doesn't exist in the Apollo store,
+    // and has to be removed from the queue instead.
+    if (file.queuedId) {
+      this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
+    }
+  }
+
   /**
    * Navigate to parent folder
    *
@@ -330,7 +343,6 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleSubmitEditor(data, action, submitFn) {
     let promise = null;
-
     if (typeof this.props.onSubmitEditor === 'function') {
       // Look for file first in `files`, then `queuedFiles` property
       const file = this.findFile(this.props.fileId);
@@ -403,14 +415,7 @@ class AssetAdmin extends SilverStripeComponent {
     });
 
     return this.props.actions.files.deleteFile(file.id, dataId).then(() => {
-      this.props.actions.gallery.deselectFiles([file.id]);
-
-      // If the file was just uploaded, it doesn't exist in the Apollo store,
-      // and has to be removed from the queue instead.
-      if (file.queuedId) {
-        this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
-      }
-
+      this.resetFile(file);
       // redirect to open parent folder if the file/folder is open and on screen to close it
       if (file) {
         this.handleBrowse((file.parentId) ? file.parentId : 0, null, this.props.query);
@@ -419,17 +424,15 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   /**
-   * Unpublish a file or folder
+   * Unpublish a file
    *
    * @param {number} fileId
+   * @return {Promise}
    */
-  handleUnpublish(fileId) {
-    let file = this.findFile(fileId);
-    if (!file && this.props.folder && this.props.folder.id === fileId) {
-      file = this.props.folder;
-    }
+  doUnpublish(fileId) {
+    const file = this.findFile(fileId);
 
-    if (!file) {
+    if (!file || file.type === 'folder') {
       throw new Error(`File selected for unpublish cannot be found: ${fileId}`);
     }
 
@@ -438,7 +441,75 @@ class AssetAdmin extends SilverStripeComponent {
       id: file.id,
     });
 
-    this.props.actions.files.unpublishFile(file.id, dataId).then((response) => {
+    return this.props.actions.files.unpublishFile(file.id, dataId).then(() => {
+      this.resetFile(file);
+    });
+  }
+
+  /**
+   * Unpublish a file and update the UI
+   *
+   * @param {number} fileId
+   */
+  handleUnpublish(fileId) {
+    return this.doUnpublish(fileId).then((response) => {
+      // TODO Update GraphQL store with new model or update apollo and use new API
+      // see https://github.com/silverstripe/silverstripe-graphql/issues/14
+      // see https://dev-blog.apollodata.com/apollo-clients-new-imperative-store-api-6cb69318a1e3
+      this.props.actions.files.readFiles()
+        .then(() => {
+          this.handleCloseFile();
+          this.handleOpenFile(response.data.unpublishFile.id);
+        });
+    });
+  }
+
+  /**
+   * Unpublish multiple files and update the UI
+   *
+   * @param fileId
+   * @returns {Promise}
+   */
+  handleBulkUnpublish(fileId) {
+    return this.doUnpublish(fileId).then(() => {
+      this.props.actions.files.readFiles();
+    });
+  }
+
+  /**
+   * Publish a file or folder
+   *
+   * @param {number} fileId
+   * @return {Promise}
+   */
+  doPublish(fileId) {
+    let file = this.findFile(fileId);
+    if (!file && this.props.folder && this.props.folder.id === fileId) {
+      file = this.props.folder;
+    }
+
+    if (!file || file.type === 'folder') {
+      throw new Error(`File selected for publish cannot be found: ${fileId}`);
+    }
+
+    const dataId = this.props.client.dataId({
+      __typename: file.__typename,
+      id: file.id,
+    });
+
+    return this.props.actions.files.publishFile(file.id, dataId).then(() => {
+      this.resetFile(file);
+    });
+  }
+
+  /**
+   * Publish a file and update the UI
+   *
+   * @param fileId
+   * @returns {Promise}
+   */
+  handlePublish(fileId) {
+    return this.doPublish(fileId).then((response) => {
       // TODO Update GraphQL store with new model or update apollo and use new API
       // see https://github.com/silverstripe/silverstripe-graphql/issues/14
       // see https://dev-blog.apollodata.com/apollo-clients-new-imperative-store-api-6cb69318a1e3
@@ -446,8 +517,20 @@ class AssetAdmin extends SilverStripeComponent {
         .then(() => {
           // @todo form action cannot use graphql due to this forced editor reloading
           this.handleCloseFile();
-          this.handleOpenFile(response.data.unpublishFile.id);
+          this.handleOpenFile(response.data.publishFile.id);
         });
+    });
+  }
+
+  /**
+   * Unpublish multiple files
+   *
+   * @param fileId
+   * @returns {Promise}
+   */
+  handleBulkPublish(fileId) {
+    return this.doPublish(fileId).then(() => {
+      this.props.actions.files.readFiles();
     });
   }
 
@@ -527,6 +610,8 @@ class AssetAdmin extends SilverStripeComponent {
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         onDelete={this.handleDelete}
+        onPublish={this.handleBulkPublish}
+        onUnpublish={this.handleBulkUnpublish}
         onOpenFile={this.handleOpenFile}
         onOpenFolder={this.handleOpenFolder}
         onSuccessfulUpload={this.handleUpload}
@@ -678,5 +763,6 @@ export default compose(
   readFilesQuery,
   deleteFileMutation,
   unpublishFileMutation,
+  publishFileMutation,
   (component) => withApollo(component)
 )(AssetAdmin);

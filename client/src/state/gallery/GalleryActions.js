@@ -125,3 +125,12 @@ export function deactivateModal() {
     });
   };
 }
+
+export function setLoading(active) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.SET_LOADING,
+      payload: !!active,
+    });
+  };
+}

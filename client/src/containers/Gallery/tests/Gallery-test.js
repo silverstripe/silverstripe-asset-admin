@@ -415,12 +415,23 @@ describe('Gallery', () => {
       expect(gallery.renderBulkActions()).toBe(null);
     });
 
-    it('should return a BulkActionsComponent if there are items in the selectedFiles array.', () => {
+    it(`should not return a BulkActionsComponent if there are items in the
+        selectedFiles array that do not resolve to files.`, () => {
       props.selectedFiles = [1];
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
 
+      expect(gallery.renderBulkActions()).toBe(null);
+    });
+
+    it(`should return a BulkActionsComponent if there are items in the
+        selectedFiles array that resolve to files.`, () => {
+      props.files = [{ id: 1 }];
+      props.selectedFiles = [1];
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
       expect(gallery.renderBulkActions()).not.toBe(null);
     });
   });
