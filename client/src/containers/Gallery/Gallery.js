@@ -172,7 +172,8 @@ class Gallery extends Component {
       ));
     }
 
-    if (filters.currentFolderOnly) {
+    // Show folder messagee, except for root folder
+    if (filters.currentFolderOnly && this.props.folder.title) {
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGELIMIT',
         'limited to the folder \'{folder}\''
