@@ -332,12 +332,13 @@ Search.propTypes = {
   formData: PropTypes.object,
 };
 
-function mapStateToProps(state) {
-  const formState = getFormState(state);
-  const form = getIn(formState, identifier);
-
+function mapStateToProps(state, ownProps) {
+  const schema = state.form.formSchemas[ownProps.searchFormSchemaUrl];
+  if (!schema || !schema.name) {
+    return { formData: {} };
+  }
+  const form = getIn(getFormState(state), schema.name);
   const formData = (form && form.values) || {};
-
   return { formData };
 }
 
