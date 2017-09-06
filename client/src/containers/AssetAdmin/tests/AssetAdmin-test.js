@@ -185,7 +185,7 @@ describe('AssetAdmin', () => {
       ];
       props.queuedFiles = {
         items: [
-          Object.assign({}, getMockFile(2), { queuedId: 2 }),
+          { ...getMockFile(2), queuedId: 2 },
         ],
       };
       component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
@@ -196,15 +196,6 @@ describe('AssetAdmin', () => {
       component.handleDelete(id);
 
       expect(props.actions.files.deleteFile).toBeCalledWith(id, getMockFile(1));
-    });
-
-    it('should deselect files after a delete', () => {
-      const id = props.files[0].id;
-      props.actions.gallery.deselectFiles = jest.genMockFunction();
-      return component.handleDelete(id).then(() => {
-        expect(props.actions.gallery.deselectFiles)
-          .toBeCalledWith([id]);
-      });
     });
 
     it('should remove the file from the queued files list', () => {
@@ -248,15 +239,6 @@ describe('AssetAdmin', () => {
       expect(props.actions.files.publishFile).toBeCalledWith(id, getMockFile(1));
     });
 
-    it('should deselect files after a publish', () => {
-      const id = props.files[0].id;
-      props.actions.gallery.deselectFiles = jest.genMockFunction();
-      return component.doPublish(id).then(() => {
-        expect(props.actions.gallery.deselectFiles)
-          .toBeCalledWith([id]);
-      });
-    });
-
     it('should remove the file from the queued files list', () => {
       const id = props.queuedFiles.items[0].id;
       props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
@@ -286,15 +268,6 @@ describe('AssetAdmin', () => {
       component.doUnpublish(id);
 
       expect(props.actions.files.unpublishFile).toBeCalledWith(id, getMockFile(1));
-    });
-
-    it('should deselect files after an unpublish', () => {
-      const id = props.files[0].id;
-      props.actions.gallery.deselectFiles = jest.genMockFunction();
-      return component.doUnpublish(id).then(() => {
-        expect(props.actions.gallery.deselectFiles)
-          .toBeCalledWith([id]);
-      });
     });
 
     it('should remove the file from the queued files list', () => {

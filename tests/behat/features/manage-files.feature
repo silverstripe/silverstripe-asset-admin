@@ -124,6 +124,41 @@ Feature: Manage files
       And I should see the file named "file2" in the gallery
       And I should see the file named "testfile" in the gallery
 
+  Scenario: I can publish and unpublish multiple files
+    Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
+      And a "image" "assets/folder1/testfile.jpg"
+      And a "folder" "assets/folder1/folder2"
+    When I click on the file named "folder1" in the gallery
+      And I check the file named "file2" in the gallery
+      And I check the file named "testfile" in the gallery
+      And I check the folder named "folder2" in the gallery
+      Then I should not see an ".bulk-actions__action[value='publish']" element
+        And I should not see an ".bulk-actions__action[value='unpublish']" element
+    When I check the folder named "folder2" in the gallery
+      Then I should see an ".bulk-actions__action[value='publish']" element
+        And I should not see an ".bulk-actions__action[value='unpublish']" element
+    When I press the "Publish" button
+    And I wait 2 seconds
+      Then I should see an ".message-box.message-box--success" element
+    When I check the file named "file2" in the gallery
+    And I check the file named "testfile" in the gallery
+      Then I should not see an ".bulk-actions__action[value='publish']" element
+      And I should see an ".bulk-actions__action[value='unpublish']" element
+    When I check the file named "testfile" in the gallery
+    And I press the "Unpublish" button, confirming the dialog
+    And I wait 2 seconds
+      Then I should see an ".message-box.message-box--success" element
+    When I check the file named "file2" in the gallery
+    And I check the file named "testfile" in the gallery
+      Then I should see an ".bulk-actions__action[value='publish']" element
+      And I should see an ".bulk-actions__action[value='unpublish']" element
+    When I click on the file named "file2" in the gallery
+      Then I should see an ".font-icon-rocket[name='action_publish']" element
+    And I click "Publish" in the ".bulk-actions" element
+    And I wait 2 seconds
+      Then I should not see an ".font-icon-rocket[name='action_publish']" element
+      And I should see an ".font-icon-tick[name='action_publish']" element
+
 
   @modal
   Scenario: I cannot delete a folder containing a file that is in use

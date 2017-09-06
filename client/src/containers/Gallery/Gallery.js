@@ -81,29 +81,13 @@ class Gallery extends Component {
     this.handleEnableDropzone = this.handleEnableDropzone.bind(this);
     this.handleMoveFiles = this.handleMoveFiles.bind(this);
     this.handleBulkEdit = this.handleBulkEdit.bind(this);
+    this.handleBulkPublish = this.handleBulkPublish.bind(this);
+    this.handleBulkUnpublish = this.handleBulkUnpublish.bind(this);
+    this.handleBulkDelete = this.handleBulkDelete.bind(this);
     this.handleBulkMove = this.handleBulkMove.bind(this);
     this.handleGroupSelect = this.handleGroupSelect.bind(this);
     this.handleClearSelection = this.handleClearSelection.bind(this);
     this.toggleSelectConcat = this.toggleSelectConcat.bind(this);
-    // Bulk actions
-    this.handleBulkDelete = this.createBulkAction(
-      'DELETE',
-      (item) => {
-        if (item.queuedId) {
-          this.props.actions.queuedFiles.removeQueuedFile(item.queuedId);
-          return Promise.resolve(true);
-        }
-        return this.props.onDelete(item.id).then(() => true).catch(() => false);
-      }
-    );
-    this.handleBulkUnpublish = this.createBulkAction(
-      'UNPUBLISH',
-      (item) => this.props.onUnpublish(item.id).then(() => true).catch(() => false)
-    );
-    this.handleBulkPublish = this.createBulkAction(
-      'PUBLISH',
-      (item) => this.props.onPublish(item.id).then(() => true).catch(() => false)
-    );
   }
 
   componentDidMount() {
@@ -244,42 +228,99 @@ class Gallery extends Component {
   }
 
   /**
-   * Creates a function that can be used in the bulk actions bar, based on the common pattern
-   * of executing a promise and rendering a success/fail message.
-   *
-   * @param {string} action The name of the action. Used to create unique i18n keys.
-   * @param {function} promiseFn A function that returns a promise. Accepts an individual item
-   *  as a param, e.g. (item) => this.somePromise(item.id).then(...)
-   * @returns {function} A function that accepts an array of items as a param
+   * Delete a list of items
+   * @param {Array} items
+   * @returns {Promise}
    */
-  createBulkAction(action, promiseFn) {
-    return (items) => {
-      this.props.actions.gallery.setLoading(true);
-      return Promise.all(items.map(promiseFn))
-        .then((resultItems) => {
-          this.props.actions.gallery.setLoading(false);
-          const successes = resultItems.filter((result) => result).length;
-          const i18nKey = action.toUpperCase();
-          if (successes !== items.length) {
-            this.props.actions.gallery.setErrorMessage(
-              i18n.sprintf(
-                i18n._t(`AssetAdmin.BULK_ACTIONS_${i18nKey}_FAIL`),
-                successes,
-                items.length - successes
-              )
-            );
-            this.props.actions.gallery.setNoticeMessage(null);
-          } else {
-            this.props.actions.gallery.setNoticeMessage(
-              i18n.sprintf(
-                i18n._t(`AssetAdmin.BULK_ACTIONS_${i18nKey}_SUCCESS`),
-                successes
-              )
-            );
-            this.props.actions.gallery.setErrorMessage(null);
-          }
-        });
+  handleBulkDelete(items) {
+    this.props.actions.gallery.setLoading(true);
+    const promiseFn = (item) => {
+      if (item.queuedId) {
+        this.props.actions.queuedFiles.removeQueuedFile(item.queuedId);
+        return Promise.resolve(true);
+      }
+      return this.props.onDelete(item.id).then(() => true).catch(() => false);
     };
+    return Promise.all(items.map(promiseFn))
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        const successes = resultItems.filter((result) => result).length;
+        if (successes !== items.length) {
+          this.props.actions.gallery.setErrorMessage(
+            i18n.sprintf(
+              i18n._t(
+                'AssetAdmin.BULK_ACTIONS_DELETE_FAIL',
+                '%s folders/files were successfully deleted, but %s files were not able to be deleted.'
+              ),
+              successes,
+              items.length - successes
+            )
+          );
+          this.props.actions.gallery.setNoticeMessage(null);
+        } else {
+          this.props.actions.gallery.setNoticeMessage(
+            i18n.sprintf(
+              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS', '%s folders/files were successfully deleted.'),
+              successes
+            )
+          );
+          this.props.actions.gallery.setErrorMessage(null);
+          this.props.actions.gallery.deselectFiles();
+        }
+      })
+      .then(this.props.onDeleteComplete);
+  }
+
+  /**
+   * Publish a list of items
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  handleBulkPublish(items) {
+    this.props.actions.gallery.setLoading(true);
+    return Promise.all(
+      items
+        .filter(item => !item.published)
+        .map(item => this.props.onPublish(item.id))
+      )
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        this.props.actions.gallery.setNoticeMessage(
+          i18n.sprintf(
+            i18n._t('AssetAdmin.BULK_ACTIONS_PUBLISH_SUCCESS', '%s folders/files were successfully published.'),
+            resultItems.length
+          )
+        );
+        this.props.actions.gallery.setErrorMessage(null);
+        this.props.actions.gallery.deselectFiles();
+      })
+      .then(this.props.onUnpublishComplete);
+  }
+
+  /**
+   * Unpublish a list of items
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  handleBulkUnpublish(items) {
+    this.props.actions.gallery.setLoading(true);
+    return Promise.all(
+      items
+        .filter(item => item.published)
+        .map(item => this.props.onUnpublish(item.id))
+      )
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        this.props.actions.gallery.setNoticeMessage(
+          i18n.sprintf(
+            i18n._t('AssetAdmin.BULK_ACTIONS_UNPUBLISH_SUCCESS', '%s folders/files were successfully unpublished.'),
+            resultItems.length
+          )
+        );
+        this.props.actions.gallery.setErrorMessage(null);
+        this.props.actions.gallery.deselectFiles();
+      })
+      .then(this.props.onUnpublishComplete);
   }
 
   initSortDropdown() {
@@ -1069,8 +1110,11 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   onCreateFolder: React.PropTypes.func,
   onMoveFilesSuccess: React.PropTypes.func,
   onDelete: React.PropTypes.func,
+  onDeleteComplete: React.PropTypes.func,
   onPublish: React.PropTypes.func,
   onUnpublish: React.PropTypes.func,
+  onPublishComplete: React.PropTypes.func,
+  onUnpublishComplete: React.PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
   dialog: PropTypes.bool,

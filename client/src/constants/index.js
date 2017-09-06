@@ -106,37 +106,7 @@ export default {
         items.some(item => item && !item.published) &&
         items.every(item => item.canEdit && item.type !== 'folder')
       ),
-      confirm: (items) => new Promise((resolve, reject) => {
-        const filesInUse = items.filter((item) => item.inUseCount > 0);
-
-        let msg = i18n._t(
-          'AssetAdmin.BULK_ACTIONS_PUBLISH_CONFIRM',
-          'Are you sure you want to publish these files?'
-        );
-        if (items.length === 1 && filesInUse.length === 1) {
-          msg = i18n.sprintf(
-            i18n._t(
-              'AssetAdmin.BULK_ACTIONS_PUBLISH_SINGLE_CONFIRM',
-              'This file is currently used in %s place(s), are you sure you want to publish it?'
-            ),
-            items[0].inUseCount
-          );
-        } else if (filesInUse.length > 0) {
-          msg = i18n.sprintf(
-            i18n._t(
-              'AssetAdmin.BULK_ACTIONS_PUBLISH_MULTI_CONFIRM',
-              'There are %s files currently in use, are you sure you want to publish these files?'
-            ),
-            filesInUse.length
-          );
-        }
-        // eslint-disable-next-line no-alert
-        if (confirm(msg)) {
-          resolve();
-        } else {
-          reject('cancelled');
-        }
-      }),
+      confirm: null,
     },
     {
       value: 'unpublish',
