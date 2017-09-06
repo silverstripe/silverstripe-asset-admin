@@ -546,9 +546,9 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.onPublish = jest.fn(() => Promise.resolve({ id: 5 }));
-      props.onUnpublish = jest.fn(() => Promise.resolve({ id: 5 }));
-      props.onDelete = jest.fn(() => Promise.resolve({ id: 5 }));
+      props.onPublish = jest.fn((id) => Promise.resolve({ id }));
+      props.onUnpublish = jest.fn((id) => Promise.resolve({ id }));
+      props.onDelete = jest.fn((id) => Promise.resolve({ id }));
       props.actions.gallery.setLoading = jest.genMockFunction();
       props.actions.gallery.setNoticeMessage = jest.genMockFunction();
       props.actions.gallery.setErrorMessage = jest.genMockFunction();
@@ -559,24 +559,26 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      gallery.handleBulkDelete([{ id: 5 }])
+      return gallery.handleBulkDelete([{ id: 5 }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
           expect(props.onDelete).toBeCalledWith(5);
           expect(props.actions.gallery.deselectFiles).toBeCalled();
-        });
-      gallery.handleBulkDelete([{ id: 5 }, { id: 6 }])
+        })
+        .then(() => {
+          gallery.handleBulkDelete([{ id: 5 }, { id: 6 }]);
+        })
         .then(() => {
           expect(props.actions.gallery.setErrorMessage).toBeCalled();
         });
     });
 
-    it('publishes a list of items', () => {
+    it('publishes a list of items if it was unpublished', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      gallery.handleBulkPublish([{ id: 5 }])
+      return gallery.handleBulkPublish([{ id: 5, published: false }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
@@ -585,15 +587,41 @@ describe('Gallery', () => {
         });
     });
 
-    it.only('unpublishes a list of items', () => {
+    it('does not publish an item if it was published', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      gallery.handleBulkUnpublish([{ id: 5 }])
+      return gallery.handleBulkPublish([{ id: 5, published: true }])
+        .then(() => {
+          expect(props.actions.gallery.setLoading).toBeCalled();
+          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.onPublish).not.toBeCalled();
+          expect(props.actions.gallery.deselectFiles).toBeCalled();
+        });
+    });
+
+    it('unpublishes a list of items if it was published', () => {
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+      return gallery.handleBulkUnpublish([{ id: 5, published: true }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
           expect(props.onUnpublish).toBeCalledWith(5);
+          expect(props.actions.gallery.deselectFiles).toBeCalled();
+        });
+    });
+
+    it('does not unpublish an item if it was not published', () => {
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+      return gallery.handleBulkUnpublish([{ id: 5, published: false }])
+        .then(() => {
+          expect(props.actions.gallery.setLoading).toBeCalled();
+          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.onUnpublish).not.toBeCalled();
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         });
     });

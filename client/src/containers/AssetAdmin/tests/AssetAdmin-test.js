@@ -226,7 +226,7 @@ describe('AssetAdmin', () => {
       ];
       props.queuedFiles = {
         items: [
-          Object.assign({}, getMockFile(2), { queuedId: 2 }),
+          { ...getMockFile(2), queuedId: 2 },
         ],
       };
       component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
@@ -257,7 +257,7 @@ describe('AssetAdmin', () => {
       ];
       props.queuedFiles = {
         items: [
-          Object.assign({}, getMockFile(2), { queuedId: 2 }),
+          { ...getMockFile(2), queuedId: 2 },
         ],
       };
       component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);

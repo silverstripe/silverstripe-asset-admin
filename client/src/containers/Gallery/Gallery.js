@@ -294,7 +294,7 @@ class Gallery extends Component {
         this.props.actions.gallery.setErrorMessage(null);
         this.props.actions.gallery.deselectFiles();
       })
-      .then(this.props.onUnpublishComplete);
+      .then(this.props.onPublishComplete);
   }
 
   /**
