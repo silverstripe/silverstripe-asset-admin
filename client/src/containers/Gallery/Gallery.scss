@@ -59,6 +59,7 @@
 }
 
 .gallery__main--selectable {
+  user-select: none;
   margin: #{-$panel-padding-y} #{-$panel-padding-x};
   padding: #{$panel-padding-y} #{$panel-padding-x};
 }
