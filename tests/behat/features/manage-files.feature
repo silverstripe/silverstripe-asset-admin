@@ -132,26 +132,32 @@ Feature: Manage files
       And I check the file named "file2" in the gallery
       And I check the file named "testfile" in the gallery
       And I check the folder named "folder2" in the gallery
-      Then I should not see an ".bulk-actions__action[value='publish']" element
+        Then I should not see an "#BulkActions" element
+        And I should not see an ".bulk-actions__action[value='publish']" element
         And I should not see an ".bulk-actions__action[value='unpublish']" element
     When I check the folder named "folder2" in the gallery
+    And I press the "BulkActions" button
       Then I should see an ".bulk-actions__action[value='publish']" element
         And I should not see an ".bulk-actions__action[value='unpublish']" element
-    When I press the "Publish" button
+    When I click "Publish" in the ".bulk-actions" element
       Then I should see an ".message-box.message-box--success" element
     When I check the file named "file2" in the gallery
     And I check the file named "testfile" in the gallery
+    And I press the "BulkActions" button
       Then I should not see an ".bulk-actions__action[value='publish']" element
       And I should see an ".bulk-actions__action[value='unpublish']" element
     When I check the file named "testfile" in the gallery
+    And I press the "BulkActions" button
     And I press the "Unpublish" button, confirming the dialog
       Then I should see an ".message-box.message-box--success" element
     When I check the file named "file2" in the gallery
     And I check the file named "testfile" in the gallery
+    And I press the "BulkActions" button
       Then I should see an ".bulk-actions__action[value='publish']" element
       And I should see an ".bulk-actions__action[value='unpublish']" element
     When I click on the file named "file2" in the gallery
       Then I should see an ".font-icon-rocket[name='action_publish']" element
+    When I press the "BulkActions" button
     And I click "Publish" in the ".bulk-actions" element
       Then I should not see an ".font-icon-rocket[name='action_publish']" element
       And I should see an ".font-icon-tick[name='action_publish']" element
