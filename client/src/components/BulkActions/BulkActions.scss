@@ -150,3 +150,16 @@ $bulk-actions-width: 300px;
     }
   }
 }
+
+.bulk-actions__action--more {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+@include media-breakpoint-down(sm) {
+  .bulk-actions__more-actions-menu {
+    top: auto!important;
+    bottom: 42px!important;
+  }
+}

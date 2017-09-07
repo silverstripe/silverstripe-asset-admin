@@ -1022,6 +1022,7 @@ class Gallery extends Component {
             className="flexbox-area-grow fill-height gallery__main--selectable"
             onSelection={this.handleGroupSelect}
             onNonItemClick={this.handleClearSelection}
+            preventDefault={false}
             fixedPosition
           >
             {this.renderToolbar()}

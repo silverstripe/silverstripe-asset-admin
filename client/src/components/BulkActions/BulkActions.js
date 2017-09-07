@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
+import PopoverField from 'components/PopoverField/PopoverField';
 
 export class BulkActions extends SilverStripeComponent {
 
@@ -43,22 +44,30 @@ export class BulkActions extends SilverStripeComponent {
         'ss-ui-button',
         'ui-corner-all',
         action.className || 'font-icon-info-circled',
-      ].join(' ');
+      ];
+      if (i > 2) {
+        className.push('bulk-actions__action--more');
+      }
       return (<button
         type="button"
-        className={className}
-        key={i}
+        className={className.join(' ')}
+        key={action.value}
         onClick={this.onChangeValue}
         value={action.value}
       >
         {action.label}
       </button>);
-    });
+    }).filter(item => item);
 
     return (
       <div className="bulk-actions fieldholder-small">
         <div className="bulk-actions-counter">{this.props.items.length}</div>
-        {children}
+        {children.slice(0, 2)}
+        {children.length > 2 &&
+          <PopoverField id="BulkActions" popoverClassName="bulk-actions__more-actions-menu" container={this}>
+            {children.slice(2)}
+          </PopoverField>
+        }
       </div>
     );
   }

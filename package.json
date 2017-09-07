@@ -23,10 +23,10 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
-    "lint": "eslint client/src && sass-lint client/src -v",
+    "lint": "eslint client/src && sass-lint client/src",
     "lint-js": "eslint client/src",
     "lint-js-fix": "eslint client/src --fix",
-    "lint-sass": "sass-lint client/src -v"
+    "lint-sass": "sass-lint client/src"
   },
   "jest": {
     "roots": [
