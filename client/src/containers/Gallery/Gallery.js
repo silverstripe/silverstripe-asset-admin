@@ -260,8 +260,7 @@ class Gallery extends Component {
           this.props.actions.gallery.setErrorMessage(null);
           this.props.actions.gallery.deselectFiles();
         }
-      })
-      .then(this.props.onDeleteComplete);
+      });
   }
 
   /**
@@ -290,8 +289,7 @@ class Gallery extends Component {
         );
         this.props.actions.gallery.setErrorMessage(null);
         this.props.actions.gallery.deselectFiles();
-      })
-      .then(this.props.onPublishComplete);
+      });
   }
 
   /**
@@ -320,8 +318,7 @@ class Gallery extends Component {
         );
         this.props.actions.gallery.setErrorMessage(null);
         this.props.actions.gallery.deselectFiles();
-      })
-      .then(this.props.onUnpublishComplete);
+      });
   }
 
   initSortDropdown() {
@@ -1112,11 +1109,8 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   onCreateFolder: React.PropTypes.func,
   onMoveFilesSuccess: React.PropTypes.func,
   onDelete: React.PropTypes.func,
-  onDeleteComplete: React.PropTypes.func,
   onPublish: React.PropTypes.func,
   onUnpublish: React.PropTypes.func,
-  onPublishComplete: React.PropTypes.func,
-  onUnpublishComplete: React.PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
   dialog: PropTypes.bool,

@@ -581,8 +581,6 @@ class AssetAdmin extends SilverStripeComponent {
         onDelete={this.handleDelete}
         onPublish={this.doPublish}
         onUnpublish={this.doUnpublish}
-        onPublishComplete={this.props.actions.files.readFiles}
-        onUnpublishComplete={this.props.actions.files.readFiles}
         onOpenFile={this.handleOpenFile}
         onOpenFolder={this.handleOpenFolder}
         onSuccessfulUpload={this.handleUpload}
