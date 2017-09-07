@@ -79,10 +79,10 @@ describe('AssetAdmin', () => {
           succeedUpload: jest.fn(),
         },
         files: {
-          deleteFile: jest.fn(() => Promise.resolve()),
+          deleteFiles: jest.fn(() => Promise.resolve({ data: { deleteFiles: [] } })),
           readFiles: jest.fn(() => Promise.resolve()),
-          publishFile: jest.fn(() => Promise.resolve()),
-          unpublishFile: jest.fn(() => Promise.resolve()),
+          publishFiles: jest.fn(() => Promise.resolve({ data: { publishFiles: [] } })),
+          unpublishFiles: jest.fn(() => Promise.resolve({ data: { unpublishFiles: [] } })),
         },
       },
     };
@@ -193,15 +193,15 @@ describe('AssetAdmin', () => {
 
     it('should delete a file', () => {
       const id = props.files[0].id;
-      component.handleDelete(id);
+      component.handleDelete([id]);
 
-      expect(props.actions.files.deleteFile).toBeCalledWith(id, getMockFile(1));
+      expect(props.actions.files.deleteFiles).toBeCalledWith([id], [getMockFile(1)]);
     });
 
     it('should remove the file from the queued files list', () => {
       const id = props.queuedFiles.items[0].id;
       props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
-      return component.handleDelete(id).then(() => {
+      return component.handleDelete([id]).then(() => {
         expect(props.actions.queuedFiles.removeQueuedFile)
           .toBeCalledWith(props.queuedFiles.items[0].queuedId);
       });
@@ -212,12 +212,12 @@ describe('AssetAdmin', () => {
       props.query.view = 'tile';
       props.onBrowse = jest.genMockFunction();
       component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-      return component.handleDelete(id).then(() => {
-        expect(props.onBrowse).toBeCalledWith(0, null, Object.assign({}, props.query, { view: 'tile' }));
+      return component.handleDelete([id]).then(() => {
+        expect(props.onBrowse).toBeCalledWith(0, null, { ...props.query, view: 'tile' });
       });
     });
   });
-  describe('handlePublish', () => {
+  describe('doPublish', () => {
     let component = null;
 
     beforeEach(() => {
@@ -234,21 +234,13 @@ describe('AssetAdmin', () => {
 
     it('should publish a file', () => {
       const id = props.files[0].id;
-      component.doPublish(id);
+      component.doPublish([id]);
 
-      expect(props.actions.files.publishFile).toBeCalledWith(id, getMockFile(1));
-    });
-
-    it('should remove the file from the queued files list', () => {
-      const id = props.queuedFiles.items[0].id;
-      props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
-      return component.doPublish(id).then(() => {
-        expect(props.actions.queuedFiles.removeQueuedFile)
-          .toBeCalledWith(props.queuedFiles.items[0].queuedId);
-      });
+      expect(props.actions.files.publishFiles).toBeCalledWith([id]);
     });
   });
-  describe('handleUnpublish', () => {
+
+  describe('doUnpublish', () => {
     let component = null;
 
     beforeEach(() => {
@@ -265,18 +257,9 @@ describe('AssetAdmin', () => {
 
     it('should unpublish a file', () => {
       const id = props.files[0].id;
-      component.doUnpublish(id);
+      component.doUnpublish([id]);
 
-      expect(props.actions.files.unpublishFile).toBeCalledWith(id, getMockFile(1));
-    });
-
-    it('should remove the file from the queued files list', () => {
-      const id = props.queuedFiles.items[0].id;
-      props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
-      return component.doUnpublish(id).then(() => {
-        expect(props.actions.queuedFiles.removeQueuedFile)
-          .toBeCalledWith(props.queuedFiles.items[0].queuedId);
-      });
+      expect(props.actions.files.unpublishFiles).toBeCalledWith([id]);
     });
   });
 });

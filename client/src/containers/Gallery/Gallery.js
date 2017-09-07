@@ -234,14 +234,7 @@ class Gallery extends Component {
    */
   handleBulkDelete(items) {
     this.props.actions.gallery.setLoading(true);
-    const promiseFn = (item) => {
-      if (item.queuedId) {
-        this.props.actions.queuedFiles.removeQueuedFile(item.queuedId);
-        return Promise.resolve(true);
-      }
-      return this.props.onDelete(item.id).then(() => true).catch(() => false);
-    };
-    return Promise.all(items.map(promiseFn))
+    return this.props.onDelete(items.map(item => item.id))
       .then((resultItems) => {
         this.props.actions.gallery.setLoading(false);
         const successes = resultItems.filter((result) => result).length;
@@ -277,12 +270,16 @@ class Gallery extends Component {
    * @returns {Promise}
    */
   handleBulkPublish(items) {
+    const publishItems = items.filter(item => !item.published)
+      .map(item => item.id);
+    if (!publishItems.length) {
+      this.props.actions.gallery.deselectFiles();
+
+      return Promise.resolve(true);
+    }
     this.props.actions.gallery.setLoading(true);
-    return Promise.all(
-      items
-        .filter(item => !item.published)
-        .map(item => this.props.onPublish(item.id))
-      )
+
+    return this.props.onPublish(publishItems)
       .then((resultItems) => {
         this.props.actions.gallery.setLoading(false);
         this.props.actions.gallery.setNoticeMessage(
@@ -303,12 +300,16 @@ class Gallery extends Component {
    * @returns {Promise}
    */
   handleBulkUnpublish(items) {
+    const unpublishItems = items.filter(item => item.published)
+      .map(item => item.id);
+    if (!unpublishItems.length) {
+      this.props.actions.gallery.deselectFiles();
+
+      return Promise.resolve(true);
+    }
     this.props.actions.gallery.setLoading(true);
-    return Promise.all(
-      items
-        .filter(item => item.published)
-        .map(item => this.props.onUnpublish(item.id))
-      )
+
+    return this.props.onUnpublish(unpublishItems)
       .then((resultItems) => {
         this.props.actions.gallery.setLoading(false);
         this.props.actions.gallery.setNoticeMessage(

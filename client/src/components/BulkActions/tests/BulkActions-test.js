@@ -22,6 +22,7 @@ describe('BulkActions', () => {
     let props = null;
     beforeEach(() => {
       props = {
+        PopoverField: 'div',
         actions: [
           {
             value: 'action-with-apply',

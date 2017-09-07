@@ -38,7 +38,9 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
      */
     public function type()
     {
-        return $this->manager->getType('FileInterface');
+        return Type::listOf(
+            $this->manager->getType('FileInterface')
+        );
     }
 
     /**
@@ -47,8 +49,8 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
     public function args()
     {
         return [
-            'id' => [
-                'type' => Type::nonNull(Type::id()),
+            'IDs' => [
+                'type' => Type::nonNull(Type::listOf(Type::id())),
             ],
         ];
     }
@@ -62,33 +64,33 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
      */
     public function resolve($object, array $args, $context, ResolveInfo $info)
     {
-        if (!isset($args['id']) || !ctype_digit($args['id'])) {
-            throw new \InvalidArgumentException('Invalid id');
+        if (!isset($args['IDs']) || !is_array($args['IDs'])) {
+            throw new \InvalidArgumentException('IDs must be an array');
         }
 
-        $file = Versioned::get_by_stage(File::class, $this->sourceStage())
-            ->byId($args['id']);
+        $idList = $args['IDs'];
+        $files = Versioned::get_by_stage(File::class, $this->sourceStage())
+            ->byIds($idList);
 
-        if (!$file) {
+        if ($files->count() < count($idList)) {
+            // Find out which files count not be found
+            $missingIds = array_diff($idList, $files->column('ID'));
             throw new \InvalidArgumentException(sprintf(
-                '%s#%s not published or doesn\'t exist',
+                '%s#%s items are not published or don\'t exist',
                 File::class,
-                $args['id']
+                implode(', ', $missingIds)
             ));
         }
 
-        if (!$this->hasPermission($file, $context['currentUser'])) {
-            throw new \InvalidArgumentException(sprintf(
-                '%s#%s %s not allowed',
-                File::class,
-                $args['id'],
-                $this->name
-            ));
+        $writtenFiles = [];
+        foreach($files as $file) {
+            if ($this->hasPermission($file, $context['currentUser'])) {
+                $this->mutateFile($file);
+                $writtenFiles[] = $file;
+            }
         }
 
-        $this->mutateFile($file);
-
-        return $file;
+        return $writtenFiles;
     }
 
     /**

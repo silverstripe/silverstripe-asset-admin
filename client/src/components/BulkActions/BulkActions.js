@@ -4,9 +4,9 @@ import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
-import PopoverField from 'components/PopoverField/PopoverField';
+import { inject } from 'lib/Injector';
 
-export class BulkActions extends SilverStripeComponent {
+class BulkActions extends SilverStripeComponent {
 
   constructor(props) {
     super(props);
@@ -59,12 +59,19 @@ export class BulkActions extends SilverStripeComponent {
       </button>);
     }).filter(item => item);
 
+    const { PopoverField } = this.props;
+
     return (
       <div className="bulk-actions fieldholder-small">
         <div className="bulk-actions-counter">{this.props.items.length}</div>
         {children.slice(0, 2)}
         {children.length > 2 &&
-          <PopoverField id="BulkActions" popoverClassName="bulk-actions__more-actions-menu" container={this}>
+          <PopoverField
+            id="BulkActions"
+            popoverClassName="bulk-actions__more-actions-menu"
+            container={this}
+            data={{ placement: 'bottom' }}
+          >
             {children.slice(2)}
           </PopoverField>
         }
@@ -128,6 +135,10 @@ BulkActions.propTypes = {
     canApply: React.PropTypes.func,
     confirm: React.PropTypes.func,
   })),
+  PopoverField: React.PropTypes.oneOfType([
+    React.PropTypes.element,
+    React.PropTypes.string,
+  ]),
 };
 
 function mapStateToProps(state) {
@@ -136,4 +147,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(BulkActions);
+const BulkActionsWithState = connect(mapStateToProps)(BulkActions);
+
+export { BulkActions };
+
+export default inject(
+  ['PopoverField'],
+  (PopoverField) => ({ PopoverField }),
+  () => 'BulkActions'
+)(BulkActionsWithState);

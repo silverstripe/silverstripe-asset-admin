@@ -11,12 +11,12 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator
     /**
      * @var string
      */
-    protected $name = 'unpublishFile';
+    protected $name = 'unpublishFiles';
 
     /**
      * @var string
      */
-    protected $description = 'Unpublishes a file';
+    protected $description = 'Unpublishes a list of files';
 
     /**
      * @return string

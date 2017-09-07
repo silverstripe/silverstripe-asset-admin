@@ -14,9 +14,9 @@ import Toolbar from 'components/Toolbar/Toolbar';
 import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
 import readFilesQuery from 'state/files/readFilesQuery';
-import deleteFileMutation from 'state/files/deleteFileMutation';
-import unpublishFileMutation from 'state/files/unpublishFileMutation';
-import publishFileMutation from 'state/files/publishFileMutation';
+import deleteFilesMutation from 'state/files/deleteFilesMutation';
+import unpublishFilesMutation from 'state/files/unpublishFilesMutation';
+import publishFilesMutation from 'state/files/publishFilesMutation';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
 
@@ -396,103 +396,111 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   /**
-   * Delete a file or folder
+   * Delete files or folders
    *
-   * @param {number} fileId
+   * @param {array} ids
    */
-  handleDelete(fileId) {
-    let file = this.findFile(fileId);
-    if (!file && this.props.folder && this.props.folder.id === fileId) {
-      file = this.props.folder;
-    }
-
-    if (!file) {
-      throw new Error(`File selected for deletion cannot be found: ${fileId}`);
-    }
-
-    const dataId = this.props.client.dataId({
-      __typename: file.__typename,
-      id: file.id,
+  handleDelete(ids) {
+    const files = ids.map(id => {
+      const result = this.findFile(id);
+      if (!result) {
+        throw new Error(`File selected for deletion cannot be found: ${id}`);
+      }
+      if (result.queuedId) {
+        this.props.actions.queuedFiles.removeQueuedFile(result.queuedId);
+      }
+      return result;
     });
 
-    return this.props.actions.files.deleteFile(file.id, dataId).then(() => {
-      if (file.queuedId) {
-        this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
-      }
-      // redirect to open parent folder if the file/folder is open and on screen to close it
-      if (file) {
-        this.handleBrowse((file.parentId) ? file.parentId : 0, null, this.props.query);
-      }
+    const dataIds = files.map(({ __typename, id }) => (
+      this.props.client.dataId({ __typename, id })
+    ));
+    const fileIDs = files.map(file => file.id);
+    const parentId = this.props.folder ? this.props.folder.id : 0;
+    return this.props.actions.files.deleteFiles(fileIDs, dataIds).then(({ data: { deleteFiles } }) => {
+      this.handleBrowse(parentId, null, this.props.query);
+
+      return deleteFiles;
     });
   }
 
   /**
-   * Unpublish a file
+   * Unpublish files
    *
-   * @param {number} fileId
+   * @param {array} ids
    * @return {Promise}
    */
-  doUnpublish(fileId) {
-    const file = this.findFile(fileId);
+  doUnpublish(ids) {
+    const files = ids.map(id => {
+      const result = this.findFile(id);
+      if (!result) {
+        throw new Error(`File selected for unpublishing cannot be found: ${id}`);
+      } else if (result.type === 'folder') {
+        throw new Error('Cannot unpublish folders');
+      }
 
-    if (!file || file.type === 'folder') {
-      throw new Error(`File selected for unpublish cannot be found: ${fileId}`);
-    }
-
-    const dataId = this.props.client.dataId({
-      __typename: file.__typename,
-      id: file.id,
+      return result;
     });
 
-    return this.props.actions.files.unpublishFile(file.id, dataId).then(() => {
-      this.resetFile(file);
-    });
+    const fileIDs = files.map(file => file.id);
+
+    return this.props.actions.files.unpublishFiles(fileIDs)
+      .then(({ data: { unpublishFiles } }) => (
+        unpublishFiles.map(file => {
+          this.resetFile(file);
+          return file;
+        })
+      ));
   }
 
   /**
-   * Unpublish a file and update the UI
+   * Unpublish files and update the UI
    *
-   * @param {number} fileId
+   * @param {array} fileIds
    */
-  handleUnpublish(fileId) {
-    return this.doUnpublish(fileId).then((response) => {
+  handleUnpublish(fileIds) {
+    return this.doUnpublish(fileIds).then((response) => {
       // TODO Update GraphQL store with new model or update apollo and use new API
       // see https://github.com/silverstripe/silverstripe-graphql/issues/14
       // see https://dev-blog.apollodata.com/apollo-clients-new-imperative-store-api-6cb69318a1e3
+      const { fileId } = this.props;
       this.props.actions.files.readFiles()
         .then(() => {
-          this.handleCloseFile();
-          this.handleOpenFile(response.data.unpublishFile.id);
+          if (fileId && response.find(file => file.id === fileId)) {
+            this.handleCloseFile();
+            this.handleOpenFile(fileId);
+          }
         });
     });
   }
 
   /**
-   * Publish a file or folder
+   * Publish files
    *
-   * @param {number} fileId
+   * @param {array} ids
    * @return {Promise}
    */
-  doPublish(fileId) {
-    let file = this.findFile(fileId);
-    if (!file && this.props.folder && this.props.folder.id === fileId) {
-      file = this.props.folder;
-    }
+  doPublish(ids) {
+    const files = ids.map(id => {
+      const result = this.findFile(id);
+      if (!result) {
+        throw new Error(`File selected for publishing cannot be found: ${id}`);
+      } else if (result.type === 'folder') {
+        throw new Error('Cannot publish folders');
+      }
 
-    if (!file) {
-      throw new Error(`File selected for publish cannot be found: ${fileId}`);
-    } else if (file.type === 'folder') {
-      throw new Error('Folders cannot be published or unpublished.');
-    }
-
-    const dataId = this.props.client.dataId({
-      __typename: file.__typename,
-      id: file.id,
+      return result;
     });
 
-    return this.props.actions.files.publishFile(file.id, dataId).then(() => {
-      this.resetFile(file);
-    });
+    const fileIDs = files.map(file => file.id);
+
+    return this.props.actions.files.publishFiles(fileIDs)
+      .then(({ data: { publishFiles } }) => (
+        publishFiles.map(file => {
+          this.resetFile(file);
+          return file;
+        })
+      ));
   }
 
   /**
@@ -724,8 +732,8 @@ export { AssetAdmin, getFormSchema };
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   readFilesQuery,
-  deleteFileMutation,
-  unpublishFileMutation,
-  publishFileMutation,
+  deleteFilesMutation,
+  unpublishFilesMutation,
+  publishFilesMutation,
   (component) => withApollo(component)
 )(AssetAdmin);

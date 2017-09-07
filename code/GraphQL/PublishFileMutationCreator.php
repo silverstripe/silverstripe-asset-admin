@@ -12,12 +12,12 @@ class PublishFileMutationCreator extends PublicationMutationCreator implements O
     /**
      * @var string
      */
-    protected $name = 'publishFile';
+    protected $name = 'publishFiles';
 
     /**
      * @var string
      */
-    protected $description = 'Publishes a file';
+    protected $description = 'Publishes a list of files';
 
     /**
      * @return string

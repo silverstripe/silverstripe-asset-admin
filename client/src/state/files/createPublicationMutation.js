@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 import { fileInterface, file } from 'lib/fileFragments';
 
-const createPublicationMutation = (mutationName, behaviourType) => {
+const createPublicationMutation = (mutationName) => {
   const operationName = mutationName.charAt(0).toUpperCase() + mutationName.slice(1);
   const mutation = gql`
-  mutation ${operationName}($id:ID!) {
-    ${mutationName}(id: $id) {
+  mutation ${operationName}($IDs:[ID]!) {
+    ${mutationName}(IDs: $IDs) {
       ...FileInterfaceFields
       ...FileFields
     }
@@ -16,16 +16,10 @@ const createPublicationMutation = (mutationName, behaviourType) => {
 
   const config = {
     props: ({ mutate, ownProps: { actions } }) => {
-      const mutationAction = (id, dataId) => mutate({
+      const mutationAction = (IDs) => mutate({
         variables: {
-          id,
+          IDs,
         },
-        resultBehaviors: [
-          {
-            type: behaviourType,
-            dataId,
-          },
-        ],
       });
 
       return {

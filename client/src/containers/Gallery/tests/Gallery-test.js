@@ -546,9 +546,9 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.onPublish = jest.fn((id) => Promise.resolve({ id }));
-      props.onUnpublish = jest.fn((id) => Promise.resolve({ id }));
-      props.onDelete = jest.fn((id) => Promise.resolve({ id }));
+      props.onPublish = jest.fn((id) => Promise.resolve([{ id }]));
+      props.onUnpublish = jest.fn((id) => Promise.resolve([{ id }]));
+      props.onDelete = jest.fn((id) => Promise.resolve([id]));
       props.actions.gallery.setLoading = jest.genMockFunction();
       props.actions.gallery.setNoticeMessage = jest.genMockFunction();
       props.actions.gallery.setErrorMessage = jest.genMockFunction();
@@ -563,7 +563,7 @@ describe('Gallery', () => {
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
-          expect(props.onDelete).toBeCalledWith(5);
+          expect(props.onDelete).toBeCalledWith([5]);
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         })
         .then(() => {
@@ -582,7 +582,7 @@ describe('Gallery', () => {
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
-          expect(props.onPublish).toBeCalledWith(5);
+          expect(props.onPublish).toBeCalledWith([5]);
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         });
     });
@@ -593,8 +593,8 @@ describe('Gallery', () => {
       );
       return gallery.handleBulkPublish([{ id: 5, published: true }])
         .then(() => {
-          expect(props.actions.gallery.setLoading).toBeCalled();
-          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.actions.gallery.setLoading).not.toBeCalled();
+          expect(props.actions.gallery.setNoticeMessage).not.toBeCalled();
           expect(props.onPublish).not.toBeCalled();
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         });
@@ -608,7 +608,7 @@ describe('Gallery', () => {
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
-          expect(props.onUnpublish).toBeCalledWith(5);
+          expect(props.onUnpublish).toBeCalledWith([5]);
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         });
     });
@@ -619,8 +619,8 @@ describe('Gallery', () => {
       );
       return gallery.handleBulkUnpublish([{ id: 5, published: false }])
         .then(() => {
-          expect(props.actions.gallery.setLoading).toBeCalled();
-          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.actions.gallery.setLoading).not.toBeCalled();
+          expect(props.actions.gallery.setNoticeMessage).not.toBeCalled();
           expect(props.onUnpublish).not.toBeCalled();
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         });
