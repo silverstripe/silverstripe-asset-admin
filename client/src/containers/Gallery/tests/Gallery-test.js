@@ -587,19 +587,6 @@ describe('Gallery', () => {
         });
     });
 
-    it('does not publish an item if it was published', () => {
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-      return gallery.handleBulkPublish([{ id: 5, published: true }])
-        .then(() => {
-          expect(props.actions.gallery.setLoading).not.toBeCalled();
-          expect(props.actions.gallery.setNoticeMessage).not.toBeCalled();
-          expect(props.onPublish).not.toBeCalled();
-          expect(props.actions.gallery.deselectFiles).toBeCalled();
-        });
-    });
-
     it('unpublishes a list of items if it was published', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />

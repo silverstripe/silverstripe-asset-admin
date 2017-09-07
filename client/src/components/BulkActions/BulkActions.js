@@ -5,6 +5,7 @@ import SilverStripeComponent from 'lib/SilverStripeComponent';
 import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
 import { inject } from 'lib/Injector';
+import classnames from 'classnames';
 
 class BulkActions extends SilverStripeComponent {
 
@@ -39,18 +40,18 @@ class BulkActions extends SilverStripeComponent {
         return '';
       }
 
-      const className = [
+      const className = classnames(
         'bulk-actions__action',
         'ss-ui-button',
         'ui-corner-all',
         action.className || 'font-icon-info-circled',
-      ];
-      if (i > 2) {
-        className.push('bulk-actions__action--more');
-      }
+        {
+          'bulk-actions__action--more': (i > 2),
+        }
+      );
       return (<button
         type="button"
-        className={className.join(' ')}
+        className={className}
         key={action.value}
         onClick={this.onChangeValue}
         value={action.value}
