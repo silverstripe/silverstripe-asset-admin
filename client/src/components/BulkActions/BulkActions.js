@@ -59,21 +59,27 @@ class BulkActions extends SilverStripeComponent {
       </button>);
     }).filter(item => item);
 
+    if (!children.length) {
+      return null;
+    }
     const { PopoverField } = this.props;
 
     return (
       <div className="bulk-actions fieldholder-small">
         <div className="bulk-actions-counter">{this.props.items.length}</div>
         {children.slice(0, 2)}
-        {children.length > 2 &&
-          <PopoverField
-            id="BulkActions"
-            popoverClassName="bulk-actions__more-actions-menu"
-            container={this}
-            data={{ placement: 'bottom' }}
-          >
-            {children.slice(2)}
-          </PopoverField>
+        {children.length > 2 && PopoverField
+          ? (
+            <PopoverField
+              id="BulkActions"
+              popoverClassName="bulk-actions__more-actions-menu"
+              container={this}
+              data={{ placement: 'bottom' }}
+            >
+              {children.slice(2)}
+            </PopoverField>
+          )
+          : children.slice(2)
         }
       </div>
     );
@@ -135,10 +141,13 @@ BulkActions.propTypes = {
     canApply: React.PropTypes.func,
     confirm: React.PropTypes.func,
   })),
-  PopoverField: React.PropTypes.oneOfType([
-    React.PropTypes.element,
-    React.PropTypes.string,
-  ]),
+  PopoverField: React.PropTypes.node,
+};
+
+BulkActions.defaultProps = {
+  items: [],
+  actions: [],
+  PopoverField: null,
 };
 
 function mapStateToProps(state) {

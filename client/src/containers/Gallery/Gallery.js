@@ -270,7 +270,7 @@ class Gallery extends Component {
    * @returns {Promise}
    */
   handleBulkPublish(items) {
-    const publishItems = items.filter(item => !item.published)
+    const publishItems = items
       .map(item => item.id);
     if (!publishItems.length) {
       this.props.actions.gallery.deselectFiles();
