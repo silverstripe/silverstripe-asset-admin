@@ -83,7 +83,7 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
         }
 
         $writtenFiles = [];
-        foreach($files as $file) {
+        foreach ($files as $file) {
             if ($this->hasPermission($file, $context['currentUser'])) {
                 $this->mutateFile($file);
                 $writtenFiles[] = $file;

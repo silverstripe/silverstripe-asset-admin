@@ -57,7 +57,7 @@ class DeleteFileMutationCreator extends MutationCreator implements OperationReso
         }
 
         $deletedIDs = [];
-        foreach($files as $file) {
+        foreach ($files as $file) {
             if ($file->canArchive($context['currentUser'])) {
                 $file->doArchive();
                 $deletedIDs[] = $file->ID;
