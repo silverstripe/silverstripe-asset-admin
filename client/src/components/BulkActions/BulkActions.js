@@ -142,7 +142,7 @@ BulkActions.propTypes = {
     canApply: React.PropTypes.func,
     confirm: React.PropTypes.func,
   })),
-  PopoverField: React.PropTypes.node,
+  PopoverField: React.PropTypes.oneOfType([React.PropTypes.node, React.PropTypes.func]),
 };
 
 BulkActions.defaultProps = {
