@@ -71,7 +71,7 @@ class Editor extends Component {
       // eslint-disable-next-line no-alert
       if (confirm(message)) {
         this.props.actions.unsavedForms.removeFormChanged('AssetAdmin.EditForm');
-        this.props.onDelete(data.ID);
+        this.props.onDelete([data.ID]);
       }
       event.preventDefault();
     }
