@@ -25,21 +25,30 @@ class ThumbnailView extends Component {
    * @param {number} page
    */
   handleSetPage(page) {
-    this.props.onSetPage(page);
+    // +1 to cater for the 0-indexed page that is returned from Griddle
+    this.props.onSetPage(page + 1);
   }
 
   /**
    * Handler for incrementing the set page
    */
   handleNextPage() {
-    this.handleSetPage(this.props.page + 1);
+    // (page -1) to cater for the 0-indexed page that is returned from Griddle
+    const currentPage = this.props.page - 1;
+    this.handleSetPage(currentPage + 1);
   }
 
   /**
    * Handler for decrementing the set page
    */
   handlePrevPage() {
-    this.handleSetPage(this.props.page - 1);
+    // (page -1) to cater for the 0-indexed page that is returned from Griddle
+    const currentPage = this.props.page - 1;
+    if (currentPage === 0) {
+      this.handleSetPage(currentPage);
+      return;
+    }
+    this.handleSetPage(currentPage - 1);
   }
 
   /**

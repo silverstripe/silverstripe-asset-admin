@@ -38,23 +38,35 @@ describe('ThumbnailView', () => {
       const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
       view.handleSetPage(3);
 
-      expect(props.onSetPage).toBeCalledWith(3);
+      expect(props.onSetPage).toBeCalledWith(4);
     });
+  });
 
+  describe('handleNextPage()', () => {
     it('should increment from the current page', () => {
-      props.page = 2;
+      props.page = 3;
       const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
       view.handleNextPage();
 
-      expect(props.onSetPage).toBeCalledWith(3);
+      expect(props.onSetPage).toBeCalledWith(4);
+    });
+  });
+
+  describe('handlePrevPage()', () => {
+    it('should decrement from the current page', () => {
+      props.page = 3;
+      const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
+      view.handlePrevPage();
+
+      expect(props.onSetPage).toBeCalledWith(2);
     });
 
-    it('should decrement from the current page', () => {
+    it('should stay on page 1 if that is the current page', () => {
       props.page = 1;
       const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
       view.handlePrevPage();
 
-      expect(props.onSetPage).toBeCalledWith(0);
+      expect(props.onSetPage).toBeCalledWith(1);
     });
   });
 
