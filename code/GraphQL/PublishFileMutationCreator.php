@@ -4,26 +4,27 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\GraphQL\OperationResolver;
 use SilverStripe\Security\Member;
 
-class UnpublishFileMutationCreator extends PublicationMutationCreator
+class PublishFileMutationCreator extends PublicationMutationCreator implements OperationResolver
 {
     /**
      * @var string
      */
-    protected $name = 'unpublishFiles';
+    protected $name = 'publishFiles';
 
     /**
      * @var string
      */
-    protected $description = 'Unpublishes a list of files';
+    protected $description = 'Publishes a list of files';
 
     /**
      * @return string
      */
     protected function sourceStage()
     {
-        return Versioned::LIVE;
+        return Versioned::DRAFT;
     }
 
     /**
@@ -33,7 +34,7 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator
      */
     protected function hasPermission(File $file, Member $member)
     {
-        return $file->canUnpublish($member);
+        return $file->canPublish($member);
     }
 
     /**
@@ -41,6 +42,6 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator
      */
     protected function mutateFile(File $file)
     {
-        $file->doUnpublish();
+        $file->publishRecursive();
     }
 }

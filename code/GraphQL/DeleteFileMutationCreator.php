@@ -7,6 +7,7 @@ use SilverStripe\Assets\File;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\GraphQL\MutationCreator;
 use SilverStripe\GraphQL\OperationResolver;
+use SilverStripe\ORM\DataList;
 use SilverStripe\Versioned\Versioned;
 
 /**
@@ -18,46 +19,51 @@ class DeleteFileMutationCreator extends MutationCreator implements OperationReso
     public function attributes()
     {
         return [
-            'name' => 'deleteFile'
+            'name' => 'deleteFiles'
         ];
     }
 
     public function type()
     {
-        return Type::id();
+        return Type::listOf(Type::id());
     }
 
     public function args()
     {
         return [
-            'id' => [
-                'type' => Type::nonNull(Type::id()),
+            'IDs' => [
+                'type' => Type::nonNull(Type::listOf(Type::id())),
             ],
         ];
     }
 
     public function resolve($object, array $args, $context, ResolveInfo $info)
     {
-        /** @var File $file */
-        $file = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byID($args['id']);
-        if (!$file) {
+        if (!isset($args['IDs']) || !is_array($args['IDs'])) {
+            throw new \InvalidArgumentException('IDs must be an array');
+        }
+        $idList = $args['IDs'];
+
+        /** @var DataList $file */
+        $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($idList);
+        if ($files->count() < count($idList)) {
+            // Find out which files count not be found
+            $missingIds = array_diff($idList, $files->column('ID'));
             throw new \InvalidArgumentException(sprintf(
-                '%s#%s not found',
+                '%s items %s are not found',
                 File::class,
-                $args['id']
+                implode(', ', $missingIds)
             ));
         }
 
-        if (!$file->canArchive($context['currentUser'])) {
-            throw new \InvalidArgumentException(sprintf(
-                '%s#%s delete not allowed',
-                File::class,
-                $args['id']
-            ));
+        $deletedIDs = [];
+        foreach ($files as $file) {
+            if ($file->canArchive($context['currentUser'])) {
+                $file->doArchive();
+                $deletedIDs[] = $file->ID;
+            }
         }
 
-        $file->doArchive();
-
-        return $args['id'];
+        return $deletedIDs;
     }
 }

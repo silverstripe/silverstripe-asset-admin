@@ -4,8 +4,10 @@ import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
+import { inject } from 'lib/Injector';
+import classnames from 'classnames';
 
-export class BulkActions extends SilverStripeComponent {
+class BulkActions extends SilverStripeComponent {
 
   constructor(props) {
     super(props);
@@ -38,27 +40,48 @@ export class BulkActions extends SilverStripeComponent {
         return '';
       }
 
-      const className = [
+      const className = classnames(
         'bulk-actions__action',
         'ss-ui-button',
         'ui-corner-all',
         action.className || 'font-icon-info-circled',
-      ].join(' ');
+        {
+          'bulk-actions__action--more': (i > 2),
+        }
+      );
       return (<button
         type="button"
         className={className}
-        key={i}
+        key={action.value}
         onClick={this.onChangeValue}
         value={action.value}
       >
         {action.label}
       </button>);
-    });
+    }).filter(item => item);
+
+    if (!children.length) {
+      return null;
+    }
+    const { PopoverField } = this.props;
 
     return (
       <div className="bulk-actions fieldholder-small">
         <div className="bulk-actions-counter">{this.props.items.length}</div>
-        {children}
+        {children.slice(0, 2)}
+        {children.length > 2 && PopoverField
+          ? (
+            <PopoverField
+              id="BulkActions"
+              popoverClassName="bulk-actions__more-actions-menu"
+              container={this}
+              data={{ placement: 'bottom' }}
+            >
+              {children.slice(2)}
+            </PopoverField>
+          )
+          : children.slice(2)
+        }
       </div>
     );
   }
@@ -119,6 +142,13 @@ BulkActions.propTypes = {
     canApply: React.PropTypes.func,
     confirm: React.PropTypes.func,
   })),
+  PopoverField: React.PropTypes.node,
+};
+
+BulkActions.defaultProps = {
+  items: [],
+  actions: [],
+  PopoverField: null,
 };
 
 function mapStateToProps(state) {
@@ -127,4 +157,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(BulkActions);
+const BulkActionsWithState = connect(mapStateToProps)(BulkActions);
+
+export { BulkActions };
+
+export default inject(
+  ['PopoverField'],
+  (PopoverField) => ({ PopoverField }),
+  () => 'BulkActions'
+)(BulkActionsWithState);

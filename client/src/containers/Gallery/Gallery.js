@@ -80,12 +80,14 @@ class Gallery extends Component {
     this.handleClearSearch = this.handleClearSearch.bind(this);
     this.handleEnableDropzone = this.handleEnableDropzone.bind(this);
     this.handleMoveFiles = this.handleMoveFiles.bind(this);
-    this.handleBulkDelete = this.handleBulkDelete.bind(this);
     this.handleBulkEdit = this.handleBulkEdit.bind(this);
+    this.handleBulkPublish = this.handleBulkPublish.bind(this);
+    this.handleBulkUnpublish = this.handleBulkUnpublish.bind(this);
+    this.handleBulkDelete = this.handleBulkDelete.bind(this);
     this.handleBulkMove = this.handleBulkMove.bind(this);
-    this.toggleSelectConcat = this.toggleSelectConcat.bind(this);
     this.handleGroupSelect = this.handleGroupSelect.bind(this);
     this.handleClearSelection = this.handleClearSelection.bind(this);
+    this.toggleSelectConcat = this.toggleSelectConcat.bind(this);
   }
 
   componentDidMount() {
@@ -223,6 +225,100 @@ class Gallery extends Component {
       }
     }
     return true;
+  }
+
+  /**
+   * Delete a list of items
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  handleBulkDelete(items) {
+    this.props.actions.gallery.setLoading(true);
+    return this.props.onDelete(items.map(item => item.id))
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        const successes = resultItems.filter((result) => result).length;
+        if (successes !== items.length) {
+          this.props.actions.gallery.setErrorMessage(
+            i18n.sprintf(
+              i18n._t(
+                'AssetAdmin.BULK_ACTIONS_DELETE_FAIL',
+                '%s folders/files were successfully deleted, but %s files were not able to be deleted.'
+              ),
+              successes,
+              items.length - successes
+            )
+          );
+          this.props.actions.gallery.setNoticeMessage(null);
+        } else {
+          this.props.actions.gallery.setNoticeMessage(
+            i18n.sprintf(
+              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS', '%s folders/files were successfully deleted.'),
+              successes
+            )
+          );
+          this.props.actions.gallery.setErrorMessage(null);
+          this.props.actions.gallery.deselectFiles();
+        }
+      });
+  }
+
+  /**
+   * Publish a list of items
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  handleBulkPublish(items) {
+    const publishItems = items
+      .map(item => item.id);
+    if (!publishItems.length) {
+      this.props.actions.gallery.deselectFiles();
+
+      return Promise.resolve(true);
+    }
+    this.props.actions.gallery.setLoading(true);
+
+    return this.props.onPublish(publishItems)
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        this.props.actions.gallery.setNoticeMessage(
+          i18n.sprintf(
+            i18n._t('AssetAdmin.BULK_ACTIONS_PUBLISH_SUCCESS', '%s folders/files were successfully published.'),
+            resultItems.length
+          )
+        );
+        this.props.actions.gallery.setErrorMessage(null);
+        this.props.actions.gallery.deselectFiles();
+      });
+  }
+
+  /**
+   * Unpublish a list of items
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  handleBulkUnpublish(items) {
+    const unpublishItems = items.filter(item => item.published)
+      .map(item => item.id);
+    if (!unpublishItems.length) {
+      this.props.actions.gallery.deselectFiles();
+
+      return Promise.resolve(true);
+    }
+    this.props.actions.gallery.setLoading(true);
+
+    return this.props.onUnpublish(unpublishItems)
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        this.props.actions.gallery.setNoticeMessage(
+          i18n.sprintf(
+            i18n._t('AssetAdmin.BULK_ACTIONS_UNPUBLISH_SUCCESS', '%s folders/files were successfully unpublished.'),
+            resultItems.length
+          )
+        );
+        this.props.actions.gallery.setErrorMessage(null);
+        this.props.actions.gallery.deselectFiles();
+      });
   }
 
   initSortDropdown() {
@@ -521,42 +617,6 @@ class Gallery extends Component {
       });
   }
 
-  handleBulkDelete(items) {
-    return Promise.all(items.map(item => {
-      // If the file was just uploaded, it doesn't exist in the files list,
-      // and has to be removed from the queue instead.
-      if (item.queuedId) {
-        this.props.actions.queuedFiles.removeQueuedFile(item.queuedId);
-        return Promise.resolve(true);
-      }
-
-// parent handle the files list
-      return this.props.onDelete(item.id).then(() => true).catch(() => false);
-    }))
-      .then((deletes) => {
-        const successes = deletes.filter((result) => result).length;
-
-        if (successes !== deletes.length) {
-          this.props.actions.gallery.setErrorMessage(
-            i18n.sprintf(
-              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_FAIL'),
-              successes,
-              deletes.length - successes
-            )
-          );
-          this.props.actions.gallery.setNoticeMessage(null);
-        } else {
-          this.props.actions.gallery.setNoticeMessage(
-            i18n.sprintf(
-              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS'),
-              successes
-            )
-          );
-          this.props.actions.gallery.setErrorMessage(null);
-        }
-      });
-  }
-
   handleBulkEdit(items) {
     this.props.onOpenFile(items[0].id);
   }
@@ -776,6 +836,12 @@ class Gallery extends Component {
           case 'move': {
             return { ...action, callback: this.handleBulkMove };
           }
+          case 'publish': {
+            return { ...action, callback: this.handleBulkPublish };
+          }
+          case 'unpublish': {
+            return { ...action, callback: this.handleBulkUnpublish };
+          }
           default: {
             return action;
           }
@@ -788,8 +854,9 @@ class Gallery extends Component {
     // and the actual props.files in the current view.
     // TODO Refactor "queued files" into separate visual area and remove coupling here
     const allFiles = [...this.props.files, ...this.props.queuedFiles.items];
-    const selectedFileObjs = this.props.selectedFiles.map(id => allFiles.find(file => file && id === file.id));
-
+    const selectedFileObjs = this.props.selectedFiles
+      .map(id => allFiles.find(file => file && id === file.id))
+      .filter(item => item);
     if (selectedFileObjs.length > 0 && this.props.type === 'admin') {
       return (<BulkActions
         actions={actions}
@@ -953,6 +1020,7 @@ class Gallery extends Component {
             className="flexbox-area-grow fill-height gallery__main--selectable"
             onSelection={this.handleGroupSelect}
             onNonItemClick={this.handleClearSelection}
+            preventDefault={false}
             fixedPosition
           >
             {this.renderToolbar()}
@@ -1041,6 +1109,8 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   onCreateFolder: React.PropTypes.func,
   onMoveFilesSuccess: React.PropTypes.func,
   onDelete: React.PropTypes.func,
+  onPublish: React.PropTypes.func,
+  onUnpublish: React.PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
   dialog: PropTypes.bool,
@@ -1068,7 +1138,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   concatenateSelect: PropTypes.bool,
 });
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   const {
     selectedFiles,
     errorMessage,
@@ -1076,6 +1146,7 @@ function mapStateToProps(state) {
     enableDropzone,
     badges,
     concatenateSelect,
+    loading,
   } = state.assetAdmin.gallery;
 
   return {
@@ -1085,6 +1156,7 @@ function mapStateToProps(state) {
     enableDropzone,
     badges,
     concatenateSelect,
+    loading: ownProps.loading || loading,
     queuedFiles: state.assetAdmin.queuedFiles,
     securityId: state.config.SecurityID,
   };

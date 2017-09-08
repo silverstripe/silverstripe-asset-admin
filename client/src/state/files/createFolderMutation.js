@@ -14,7 +14,7 @@ const mutation = gql`
 `;
 
 const config = {
-  props: ({ mutate, ownProps: { errors, actions } }) => {
+  props: ({ mutate, ownProps: { errors, actions, errorMessage } }) => {
     const createFolder = (parentId, name) => mutate({
       variables: {
         folder: {
@@ -25,7 +25,7 @@ const config = {
     });
 
     return {
-      errorMessage: errors && errors[0].message,
+      errorMessage: errorMessage || (errors && errors[0].message),
       actions: Object.assign({}, actions, {
         files: Object.assign({}, actions.files, {
           createFolder,

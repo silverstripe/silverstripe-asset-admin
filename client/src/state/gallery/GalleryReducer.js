@@ -9,6 +9,7 @@ const initialState = {
   modal: null,
   badges: [],
   concatenateSelect: false,
+  loading: false,
 };
 
 /**
@@ -139,6 +140,13 @@ export default function galleryReducer(state = initialState, { type, payload } =
       return deepFreeze({
         ...state,
         concatenateSelect: payload,
+      });
+    }
+
+    case GALLERY.SET_LOADING: {
+      return deepFreeze({
+        ...state,
+        loading: payload,
       });
     }
 

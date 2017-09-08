@@ -16,4 +16,5 @@ export default [
   'ACTIVATE_MODAL',
   'DEACTIVATE_MODAL',
   'CONCATENATE_SELECT',
+  'SET_LOADING',
 ].reduce((obj, item) => Object.assign(obj, { [item]: `GALLERY.${item}` }), {});
