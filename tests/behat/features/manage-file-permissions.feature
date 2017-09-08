@@ -1,5 +1,5 @@
 @javascript @assets @retry
-Feature: Manage files
+Feature: Manage file permissions
   As a cms author
   I want to set permissions on files
   So that I can prevent or allow users access
