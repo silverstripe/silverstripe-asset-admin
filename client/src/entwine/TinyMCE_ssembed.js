@@ -1,5 +1,4 @@
-/* global tinymce */
-
+/* global tinymce, window */
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';

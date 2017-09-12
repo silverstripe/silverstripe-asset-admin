@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
 
 class HistoryItem extends SilverStripeComponent {
-
   constructor(props) {
     super(props);
 
@@ -26,6 +25,8 @@ class HistoryItem extends SilverStripeComponent {
     }
 
     return (
+      // @todo wrap the contents in an `<a>` tag
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <li
         className="list-group-item history-item"
         onClick={this.handleClick}

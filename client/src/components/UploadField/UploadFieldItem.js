@@ -129,10 +129,10 @@ class UploadFieldItem extends SilverStripeComponent {
    * Check if this item is in the process uploaded.
    * If false this file was attached to this editor instead.
    *
-   * @returns {Boolean}
+   * @returns {boolean}
    */
   uploading() {
-    return !!this.props.item.uploaded;
+    return Boolean(this.props.item.uploaded);
   }
 
   /**
@@ -147,7 +147,8 @@ class UploadFieldItem extends SilverStripeComponent {
   }
 
   /**
-   * Determine that this record is an image, and the thumbnail is smaller than the given thumbnail area
+   * Determine that this record is an image, and the thumbnail is smaller than the given
+   * thumbnail area
    *
    * @returns {boolean}
    */
@@ -228,12 +229,12 @@ class UploadFieldItem extends SilverStripeComponent {
     if (!this.hasError() && this.uploading()) {
       if (this.complete()) {
         return (
-          <div className="uploadfield-item__complete-icon"></div>
+          <div className="uploadfield-item__complete-icon" />
         );
       }
       return (
         <div className="uploadfield-item__upload-progress">
-          <div {...progressBarProps}></div>
+          <div {...progressBarProps} />
         </div>
       );
     }
@@ -262,9 +263,8 @@ class UploadFieldItem extends SilverStripeComponent {
       <button
         className={classes}
         onClick={this.handleRemove}
-        ref="backButton"
-      >
-      </button>
+        ref={(button) => { this.backButton = button; }}
+      />
     );
   }
 
@@ -305,7 +305,7 @@ class UploadFieldItem extends SilverStripeComponent {
     }
     return (
       <div className="uploadfield-item__details fill-width flexbox-area-grow">
-        <span className="uploadfield-item__title" ref="title">
+        <span className="uploadfield-item__title" ref={(title) => { this.title = title; }}>
           {this.props.item.title}
         </span>
         <span className="uploadfield-item__meta">
@@ -325,10 +325,12 @@ class UploadFieldItem extends SilverStripeComponent {
       <div className={this.getItemClassNames()}>
         <input type="hidden" value={this.props.item.id} name={fieldName} />
         <div
-          ref="thumbnail"
+          ref={(thumbnail) => { this.thumbnail = thumbnail; }}
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
           onClick={this.handleItemClick}
+          role="button"
+          tabIndex={0}
         />
         {this.renderFileDetails()}
         {this.renderProgressBar()}

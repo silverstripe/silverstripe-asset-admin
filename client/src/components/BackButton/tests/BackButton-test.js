@@ -1,12 +1,8 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('../BackButton');
-jest.unmock('components/GalleryItem/droppable');
-jest.unmock('components/Badge/Badge');
-
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { BackButton } from '../BackButton';
+import { Component as BackButton } from '../BackButton';
 
 describe('BackButton', () => {
   let props = null;

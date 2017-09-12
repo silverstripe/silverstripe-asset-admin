@@ -15,7 +15,7 @@ jest.mock('jquery', () => {
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { BulkActions } from '../BulkActions.js';
+import { Component as BulkActions } from '../BulkActions';
 
 describe('BulkActions', () => {
   describe('canApply()', () => {
@@ -51,7 +51,7 @@ describe('BulkActions', () => {
     it('does not show an action button when canApply returns false', () => {
       const propsWithItems = Object.assign({}, props, { items: [{ applies: false }] });
       const bulkActions = ReactTestUtils.renderIntoDocument(
-        <BulkActions {...propsWithItems } />
+        <BulkActions {...propsWithItems} />
       );
       const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions__action')
         .find(el => el.value === 'action-with-apply');
@@ -99,7 +99,7 @@ describe('BulkActions', () => {
         items: [],
       };
       bulkActions = ReactTestUtils.renderIntoDocument(
-          <BulkActions {...props} />
+        <BulkActions {...props} />
       );
       event = {
         target: {
@@ -130,7 +130,8 @@ describe('BulkActions', () => {
     it('should use callback if confirm is configured and resolved', () => {
       const callbackMockFn = jest.genMockFunction();
 
-      bulkActions.getOptionByValue.mockReturnValueOnce({ confirm: Promise.resolve(), callback: callbackMockFn });
+      bulkActions.getOptionByValue
+        .mockReturnValueOnce({ confirm: Promise.resolve(), callback: callbackMockFn });
       return bulkActions.onChangeValue(event).then(() => {
         expect(callbackMockFn).toBeCalled();
       });
@@ -139,7 +140,8 @@ describe('BulkActions', () => {
     it('should not use callback if confirm is configured and rejected', () => {
       const callbackMockFn = jest.genMockFunction();
 
-      bulkActions.getOptionByValue.mockReturnValueOnce({ confirm: Promise.reject(), callback: callbackMockFn });
+      bulkActions.getOptionByValue
+        .mockReturnValueOnce({ confirm: Promise.reject(), callback: callbackMockFn });
       return bulkActions.onChangeValue(event).then(() => {
         expect(callbackMockFn).toBeCalled();
       });

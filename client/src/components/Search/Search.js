@@ -1,3 +1,4 @@
+/* global document */
 import i18n from 'i18n';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
@@ -28,9 +29,9 @@ function hasFilters(filters) {
 }
 
 class Search extends SilverStripeComponent {
-
   constructor(props) {
     super(props);
+
     this.expand = this.expand.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -43,7 +44,7 @@ class Search extends SilverStripeComponent {
     this.open = this.open.bind(this);
     this.state = {
       view: view.NONE,
-      searchText: this.props.filters && this.props.filters.name || '',
+      searchText: (props.filters && props.filters.name) || '',
     };
   }
 
@@ -110,7 +111,7 @@ class Search extends SilverStripeComponent {
   clearFormData(props) {
     this.setState({ searchText: '' });
 
-    const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
+    const schemaUrl = (props && props.searchFormSchemaUrl) || this.props.searchFormSchemaUrl;
     if (schemaUrl) {
       this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
       this.props.actions.reduxForm.initialize(identifier, {}, Object.keys(this.props.formData));
@@ -124,9 +125,11 @@ class Search extends SilverStripeComponent {
    * @param {Object} props
    */
   setOverrides(props) {
-    if (props && (!hasFilters(props.filters) || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl)) {
+    if (props && (
+      !hasFilters(props.filters) || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl
+    )) {
       // clear any overrides that may be in place
-      const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
+      const schemaUrl = (props && props.searchFormSchemaUrl) || this.props.searchFormSchemaUrl;
       if (schemaUrl) {
         this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
       }
@@ -257,6 +260,15 @@ class Search extends SilverStripeComponent {
         // noop
     }
 
+    const searchButtonClasses = [
+      'btn',
+      'btn-primary',
+      'search__submit',
+      'font-icon-search',
+      'btn--icon-large',
+      'btn--no-text',
+    ];
+
     return (
       <ClickOutComponent onClickOut={this.hide} callerComponent={this}>
         <div className={searchClasses.join(' ')}>
@@ -282,6 +294,7 @@ class Search extends SilverStripeComponent {
               onKeyUp={this.handleKeyUp}
               onChange={this.handleChange}
               value={searchText}
+              // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
             />
             <button
@@ -291,10 +304,12 @@ class Search extends SilverStripeComponent {
               className={advancedButtonClasses.join(' ')}
               title={i18n._t('AssetAdmin.ADVANCED', 'Advanced')}
             >
-              <span className="search__filter-trigger-text">{i18n._t('AssetAdmin.ADVANCED', 'Advanced')}</span>
+              <span className="search__filter-trigger-text">
+                {i18n._t('AssetAdmin.ADVANCED', 'Advanced')}
+              </span>
             </button>
             <button
-              className="btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text"
+              className={searchButtonClasses}
               title={i18n._t('AssetAdmin.SEARCH', 'Search')}
               onClick={this.doSearch}
             />
@@ -304,8 +319,7 @@ class Search extends SilverStripeComponent {
               className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel"
               aria-controls={this.props.id}
               aria-expanded="true"
-            >
-            </button>
+            />
 
             <Collapse in={expanded}>
               <div id={formId} className="search__filter-panel">
@@ -351,6 +365,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { Search, hasFilters };
+export { Search as Component, hasFilters };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

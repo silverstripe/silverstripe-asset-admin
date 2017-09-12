@@ -59,7 +59,6 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
 }
 
 class AssetAdmin extends SilverStripeComponent {
-
   constructor(props) {
     super(props);
     this.handleOpenFile = this.handleOpenFile.bind(this);
@@ -233,8 +232,8 @@ class AssetAdmin extends SilverStripeComponent {
   /**
    * Assign breadcrumbs from selected folder
    *
-   * @param {Object} folder
-     */
+   * @param {Object} props
+   */
   setBreadcrumbs(props) {
     const folder = props.folder;
     const query = props.query;
@@ -292,10 +291,10 @@ class AssetAdmin extends SilverStripeComponent {
    *
    * @param {Object} left
    * @param {Object} right
-     */
+   */
   compare(left, right) {
     // Check for falsiness
-    if (left && !right || right && !left) {
+    if ((left && !right) || (right && !left)) {
       return true;
     }
 
@@ -417,11 +416,12 @@ class AssetAdmin extends SilverStripeComponent {
     ));
     const fileIDs = files.map(file => file.id);
     const parentId = this.props.folder ? this.props.folder.id : 0;
-    return this.props.actions.files.deleteFiles(fileIDs, dataIds).then(({ data: { deleteFiles } }) => {
-      this.handleBrowse(parentId, null, this.props.query);
+    return this.props.actions.files.deleteFiles(fileIDs, dataIds)
+      .then(({ data: { deleteFiles } }) => {
+        this.handleBrowse(parentId, null, this.props.query);
 
-      return deleteFiles;
-    });
+        return deleteFiles;
+      });
   }
 
   /**
@@ -549,7 +549,7 @@ class AssetAdmin extends SilverStripeComponent {
   /**
    * Generates the Gallery react component to render with
    *
-   * @returns {Component}
+   * @returns {React}
    */
   renderGallery() {
     const config = this.props.sectionConfig;
@@ -599,7 +599,7 @@ class AssetAdmin extends SilverStripeComponent {
   /**
    * Generates the Editor react component to render with
    *
-   * @returns {Component}
+   * @returns {React}
    */
   renderEditor() {
     const config = this.props.sectionConfig;
@@ -646,8 +646,11 @@ class AssetAdmin extends SilverStripeComponent {
         >
           <Breadcrumb multiline />
           <div className="asset-admin__toolbar-extra pull-xs-right fill-width">
-            <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
-              searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.getFolderId()}
+            <Search
+              onSearch={this.handleDoSearch}
+              id="AssetSearchForm"
+              searchFormSchemaUrl={searchFormSchemaUrl}
+              folderId={this.getFolderId()}
               filters={filters}
             />
             {this.props.toolbarChildren}
@@ -725,7 +728,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { AssetAdmin, getFormSchema };
+export { AssetAdmin as Component, getFormSchema };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

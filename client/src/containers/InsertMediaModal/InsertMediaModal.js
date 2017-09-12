@@ -193,7 +193,7 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
-export { InsertMediaModal };
+export { InsertMediaModal as Component };
 
 export default compose(
   stateRouter,

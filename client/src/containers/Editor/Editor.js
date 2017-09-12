@@ -1,3 +1,4 @@
+/* global confirm */
 import i18n from 'i18n';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -6,7 +7,7 @@ import CONSTANTS from 'constants/index';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
-import fileShape from 'lib/fileShape.js';
+import fileShape from 'lib/fileShape';
 
 class Editor extends Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class Editor extends Component {
       const message = i18n._t('AssetAdmin.CONFIRMUNPUBLISH', 'Are you sure you want to unpublish this record?');
       // eslint-disable-next-line no-alert
       if (!confirm(message)) {
-        // @todo go back to using graphql when form schema state consistency can be achieved with graphql
+        // @todo go back to using graphql when form schema state consistency can be achieved
         // this.props.onUnpublish(data.ID);
         event.preventDefault();
       }
@@ -146,7 +147,8 @@ class Editor extends Component {
 
   renderCancelButton() {
     return (<a
-      tabIndex="0"
+      role="button"
+      tabIndex={0}
       className="btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl"
       onClick={this.handleClose}
       onKeyDown={this.handleCancelKeyDown}
@@ -220,20 +222,18 @@ class Editor extends Component {
 
 Editor.propTypes = {
   file: fileShape,
-  dialog: PropTypes.bool,
   className: PropTypes.string,
   targetId: PropTypes.number.isRequired,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  onUnpublish: PropTypes.func.isRequired,
+  // onUnpublish: PropTypes.func.isRequired,
   schemaUrl: PropTypes.string.isRequired,
   schemaUrlQueries: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string,
     value: PropTypes.any,
   })),
   addToCampaignSchemaUrl: PropTypes.string,
-  openAddCampaignModal: PropTypes.bool,
   actions: PropTypes.object,
 };
 
@@ -245,6 +245,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { Editor };
+export { Editor as Component };
 
 export default connect(() => ({}), mapDispatchToProps)(Editor);

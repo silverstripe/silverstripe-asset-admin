@@ -55,8 +55,9 @@ export function failUpload(fieldId, queuedId, response) {
 /**
  * Removes a file from the queue.
  *
- * @param {String} fieldId - Identifier of UploadField
- * @param {Object} file - File record to remove. Will have either an id or queuedId to identify this file
+ * @param {string} fieldId - Identifier of UploadField
+ * @param {object} file - File record to remove. Will have either an id or queuedId to identify
+ * this file
  */
 export function removeFile(fieldId, file) {
   return (dispatch) =>

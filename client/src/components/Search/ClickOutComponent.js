@@ -1,3 +1,4 @@
+/* global document */
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -26,7 +27,6 @@ import ReactDOM from 'react-dom';
  */
 
 class ClickOutComponent extends React.Component {
-
   componentDidMount() {
     let elTouchIsClick = true;
     let documentTouchIsClick = true;

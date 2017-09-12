@@ -12,7 +12,6 @@ import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
 class UploadField extends SilverStripeComponent {
-
   constructor(props) {
     super(props);
     this.renderChild = this.renderChild.bind(this);
@@ -302,7 +301,7 @@ class UploadField extends SilverStripeComponent {
         securityID={securityID}
         className={classNames.join(' ')}
       >
-        <div className="uploadfield__backdrop"></div>
+        <div className="uploadfield__backdrop" />
         <span className="uploadfield__droptext">
           <button onClick={this.handleSelect} className="uploadfield__upload-button">
             {i18n._t('AssetAdmin.BROWSE', 'Browse')}
@@ -330,7 +329,7 @@ class UploadField extends SilverStripeComponent {
         type="select"
         bodyClassName="modal__dialog"
         className="insert-media-react__dialog-wrapper"
-        fileAttributes={ selectingItem ? { ID: selectingItem.id } : null }
+        fileAttributes={selectingItem ? { ID: selectingItem.id } : null}
         folderId={selectingItem && typeof item === 'object' ? selectingItem.parent.id : 0}
       />
     );
@@ -339,12 +338,12 @@ class UploadField extends SilverStripeComponent {
   /**
    *
    * @param {Object} item
-   * @param {Object} extraProps
-   * @returns {XML}
+   * @param {Object} index
+   * @returns {React}
    */
-  renderChild(item, index) {
+  renderChild(item) {
     const itemProps = {
-      key: index,
+      key: item.id,
       item,
       name: this.props.name,
       onRemove: this.handleItemRemove,
@@ -407,6 +406,6 @@ function mapDispatchToProps(dispatch) {
 
 const ConnectedUploadField = connect(mapStateToProps, mapDispatchToProps)(UploadField);
 
-export { UploadField, ConnectedUploadField };
+export { UploadField as Component, ConnectedUploadField };
 
 export default fieldHolder(ConnectedUploadField);

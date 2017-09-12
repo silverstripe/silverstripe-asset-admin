@@ -1,4 +1,4 @@
-// TODO pull out jQuery library to separate HOC
+/* global window */
 import $ from 'jquery';
 import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
@@ -56,7 +56,6 @@ const sorters = [
 ];
 
 class Gallery extends Component {
-
   constructor(props) {
     super(props);
 
@@ -642,9 +641,9 @@ class Gallery extends Component {
           style={{ width: '160px' }}
           defaultValue={this.props.sort}
         >
-          {sorters.map((sorter, i) => (
+          {sorters.map((sorter) => (
             <option
-              key={i}
+              key={`${sorter.field}-${sorter.direction}`}
               onClick={this.handleSelectSort}
               data-field={sorter.field}
               data-direction={sorter.direction}
@@ -744,7 +743,7 @@ class Gallery extends Component {
    */
   renderViewChangeButtons() {
     const views = ['tile', 'table'];
-    return views.map((view, index) => {
+    return views.map((view) => {
       const icon = (view === 'table') ? 'list' : 'thumbnails';
       const classNames = [
         'gallery__view-change-button',
@@ -760,14 +759,13 @@ class Gallery extends Component {
       return (
         <button
           id={`button-view-${view}`}
-          key={index}
+          key={view}
           className={classNames.join(' ')}
           type="button"
           title="Change view gallery/list"
           onClick={this.handleViewChange}
           value={view}
-        >
-        </button>
+        />
       );
     });
   }
@@ -882,9 +880,10 @@ class Gallery extends Component {
         !file.id || !this.props.files.find((next) => (next.id === file.id))
       ))
       .map((file) => Object.assign({}, file, {
-        // Queued files get removed in componentWillReceiveProps when the props.files array has changed identity,
-        // which will also get rid of this flag. But intermediary render calls *after* upload might still
-        // show queued files with successful uploads, hence we determine uploading status by absence of a database id.
+        // Queued files get removed in componentWillReceiveProps when the props.files array has
+        // changed identity, which will also get rid of this flag. But intermediary render calls
+        // *after* upload might still show queued files with successful uploads, hence we determine
+        // uploading status by absence of a database id.
         uploading: !(file.id > 0),
       }));
     const files = [
@@ -943,6 +942,7 @@ class Gallery extends Component {
               </h3>
               { this.props.errorMessage && <p>{ this.props.errorMessage }</p> }
               { this.props.graphQLErrors && this.props.graphQLErrors.map((error, index) => (
+                // eslint-disable-next-line react/no-array-index-key
                 <p key={index}>{error}</p>
               ))}
             </div>
@@ -952,8 +952,8 @@ class Gallery extends Component {
       if (this.props.loading) {
         return (
           <div className="flexbox-area-grow">
-            <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>
-            <div key="spinner" className="cms-content-loading-spinner"></div>
+            <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />
+            <div key="spinner" className="cms-content-loading-spinner" />
           </div>
         );
       }
@@ -1046,8 +1046,8 @@ class Gallery extends Component {
           </SelectableGroup>
         </GalleryDND>
         { this.props.loading && [
-          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
-          <div key="spinner" className="cms-content-loading-spinner"></div>,
+          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
+          <div key="spinner" className="cms-content-loading-spinner" />,
         ]}
       </div>
     );
@@ -1171,7 +1171,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { Gallery, sorters, galleryViewPropTypes, galleryViewDefaultProps };
+export { Gallery as Component, sorters, galleryViewPropTypes, galleryViewDefaultProps };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

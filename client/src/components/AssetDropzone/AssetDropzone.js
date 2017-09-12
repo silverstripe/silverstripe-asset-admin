@@ -1,3 +1,4 @@
+/* global FileReader, Image, document, FormData */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
@@ -9,7 +10,6 @@ import { getFileExtension } from 'lib/DataFormat';
 let idCounter = 0;
 
 class AssetDropzone extends SilverStripeComponent {
-
   constructor(props) {
     super(props);
 
@@ -202,7 +202,7 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Gets a file's category based on its type.
    *
-   * @param string fileType - For example 'image/jpg'.
+   * @param {string} fileType - For example 'image/jpg'.
    *
    * @return string
    */
@@ -213,7 +213,7 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Event handler triggered when the user drags a file into the dropzone.
    *
-   * @param object event
+   * @param {Event} event
    */
   handleDragEnter(event) {
     if (!this.props.canUpload) {
@@ -231,7 +231,7 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Event handler triggered when a user's curser leaves the dropzone while dragging a file.
    *
-   * @param object event
+   * @param {Event} event
    */
   handleDragLeave(event) {
     const componentNode = ReactDOM.findDOMNode(this);
@@ -258,9 +258,9 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Event handler when a file's upload progress changes.
    *
-   * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
-   * @param integer progress - the upload progress percentage
-   * @param integer bytesSent - total bytesSent
+   * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {number} progress - the upload progress percentage
+   * @param {number} bytesSent - total bytesSent
    */
   handleUploadProgress(file, progress, bytesSent) {
     if (typeof this.props.handleUploadProgress === 'function') {
@@ -271,7 +271,7 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Event handler triggered when the user drops a file on the dropzone.
    *
-   * @param object event
+   * @param {Event} event
    */
   handleDrop(event) {
     this.dragging = false;
@@ -287,9 +287,9 @@ class AssetDropzone extends SilverStripeComponent {
    * so you can modify it (for example to add a CSRF token)
    * and a `formData` object to add additional information.
    *
-   * @param object file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
-   * @param object xhr
-   * @param object formData - FormData interface. See https://developer.mozilla.org/en-US/docs/Web/API/FormData
+   * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   * @param {object} xhr
+   * @param {FormData} formData - FormData interface. See https://developer.mozilla.org/en-US/docs/Web/API/FormData
    */
   handleSending(file, xhr, formData) {
     // Allow submitted data to be decorated
@@ -326,10 +326,11 @@ class AssetDropzone extends SilverStripeComponent {
   /**
    * Generate unique ID
    *
-   * @returns {String}
+   * @returns {number}
    */
   generateQueuedId() {
-    return ++idCounter;
+    idCounter += 1;
+    return idCounter;
   }
 
   /**
@@ -337,7 +338,7 @@ class AssetDropzone extends SilverStripeComponent {
    * invalidates the upload.
    *
    * @param {object} file
-   * @param {callback} done
+   * @param {function} done
    * @returns {*}
    */
   handleAccept(file, done) {
@@ -521,7 +522,6 @@ class AssetDropzone extends SilverStripeComponent {
   setPromptOnRemove(userPrompt) {
     this.dropzone.options.dictRemoveFileConfirmation = userPrompt;
   }
-
 }
 
 AssetDropzone.propTypes = {

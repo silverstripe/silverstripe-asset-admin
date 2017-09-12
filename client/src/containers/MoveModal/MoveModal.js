@@ -14,7 +14,6 @@ import configShape from 'lib/configShape';
 import moveFilesMutation from 'state/files/moveFilesMutation';
 
 class MoveModal extends React.Component {
-
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);

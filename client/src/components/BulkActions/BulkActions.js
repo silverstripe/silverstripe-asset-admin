@@ -8,7 +8,6 @@ import { inject } from 'lib/Injector';
 import classnames from 'classnames';
 
 class BulkActions extends SilverStripeComponent {
-
   constructor(props) {
     super(props);
 
@@ -159,7 +158,7 @@ function mapStateToProps(state) {
 
 const BulkActionsWithState = connect(mapStateToProps)(BulkActions);
 
-export { BulkActions };
+export { BulkActions as Component };
 
 export default inject(
   ['PopoverField'],

@@ -1,8 +1,8 @@
-/* global jest, jasmine, describe, it, expect, beforeEach */
+/* global jest, jasmine, describe, it, expect, beforeEach, Event */
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { GalleryItem } from '../GalleryItem';
+import { Component as GalleryItem } from '../GalleryItem';
 import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
 
 describe('GalleryItem', () => {

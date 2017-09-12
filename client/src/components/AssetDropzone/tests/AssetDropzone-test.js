@@ -1,4 +1,4 @@
-/* global jest, jasmine, describe, it, expect, beforeEach */
+/* global jest, jasmine, describe, it, expect, beforeEach, FormData */
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';

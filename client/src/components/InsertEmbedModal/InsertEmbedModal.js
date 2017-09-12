@@ -194,6 +194,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { InsertEmbedModal };
+export { InsertEmbedModal as Component };
 
 export default connect(mapStateToProps, mapDispatchToProps)(InsertEmbedModal);

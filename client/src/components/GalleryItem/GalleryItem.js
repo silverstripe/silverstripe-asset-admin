@@ -287,7 +287,8 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   /**
-   * Determine that this record is an image, and the thumbnail is smaller than the given thumbnail area
+   * Determine that this record is an image, and the thumbnail is smaller than the given
+   * thumbnail area
    *
    * @returns {boolean}
    */
@@ -409,7 +410,6 @@ class GalleryItem extends SilverStripeComponent {
     }
     const inputLabelProps = {
       className: inputLabelClasses.join(' '),
-      htmlFor: htmlID,
       onClick: action,
     };
 
@@ -417,7 +417,8 @@ class GalleryItem extends SilverStripeComponent {
       <div
         className={this.getItemClassNames()}
         data-id={this.props.item.id}
-        tabIndex="0"
+        tabIndex={0}
+        role="button"
         onKeyDown={this.handleKeyDown}
         onClick={this.handleActivate}
       >
@@ -429,7 +430,7 @@ class GalleryItem extends SilverStripeComponent {
         />
         }
         <div
-          ref="thumbnail"
+          ref={(thumbnail) => { this.thumbnail = thumbnail; }}
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
         >
@@ -438,8 +439,8 @@ class GalleryItem extends SilverStripeComponent {
         </div>
         {this.getProgressBar()}
         {this.getErrorMessage()}
-        <div className="gallery-item__title" ref="title">
-          <label {...inputLabelProps} >
+        <div className="gallery-item__title" ref={(title) => { this.title = title; }}>
+          <label {...inputLabelProps} htmlFor={htmlID}>
             <input {...inputProps} />
           </label>
           {this.props.item.title}
@@ -505,7 +506,7 @@ const type = 'GalleryItem';
 const File = createSelectable(draggable(type)(ConnectedGalleryItem));
 const Folder = createSelectable(droppable(type)(File));
 export {
-  GalleryItem,
+  GalleryItem as Component,
   Folder,
   File,
 };
