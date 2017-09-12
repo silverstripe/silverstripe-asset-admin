@@ -88,7 +88,7 @@ describe('BulkActions', () => {
     });
   });
 
-  describe('onChangeValue()', () => {
+  describe('handleChangeValue()', () => {
     let bulkActions = null;
     let event = null;
     let props = null;
@@ -114,7 +114,7 @@ describe('BulkActions', () => {
     it('should return undefined if no valid option is selected', () => {
       bulkActions.getOptionByValue.mockReturnValueOnce(null);
 
-      expect(bulkActions.onChangeValue(event)).toBeFalsy();
+      expect(bulkActions.handleChangeValue(event)).toBeFalsy();
     });
 
 
@@ -122,7 +122,7 @@ describe('BulkActions', () => {
       const callbackMockFn = jest.genMockFunction();
 
       bulkActions.getOptionByValue.mockReturnValueOnce({ confirm: null, callback: callbackMockFn });
-      return bulkActions.onChangeValue(event).then(() => {
+      return bulkActions.handleChangeValue(event).then(() => {
         expect(callbackMockFn).toBeCalled();
       });
     });
@@ -132,7 +132,7 @@ describe('BulkActions', () => {
 
       bulkActions.getOptionByValue
         .mockReturnValueOnce({ confirm: Promise.resolve(), callback: callbackMockFn });
-      return bulkActions.onChangeValue(event).then(() => {
+      return bulkActions.handleChangeValue(event).then(() => {
         expect(callbackMockFn).toBeCalled();
       });
     });
@@ -142,7 +142,7 @@ describe('BulkActions', () => {
 
       bulkActions.getOptionByValue
         .mockReturnValueOnce({ confirm: Promise.reject(), callback: callbackMockFn });
-      return bulkActions.onChangeValue(event).then(() => {
+      return bulkActions.handleChangeValue(event).then(() => {
         expect(callbackMockFn).toBeCalled();
       });
     });

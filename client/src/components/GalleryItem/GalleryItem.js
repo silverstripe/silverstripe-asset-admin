@@ -1,7 +1,6 @@
 import i18n from 'i18n';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import CONSTANTS from 'constants/index';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import fileShape from 'lib/fileShape';
 import draggable from 'components/GalleryItem/draggable';
 import droppable from 'components/GalleryItem/droppable';
@@ -36,7 +35,7 @@ const preventFocus = (event) => {
   event.preventDefault();
 };
 
-class GalleryItem extends SilverStripeComponent {
+class GalleryItem extends Component {
   constructor(props) {
     super(props);
 
@@ -44,31 +43,6 @@ class GalleryItem extends SilverStripeComponent {
     this.handleActivate = this.handleActivate.bind(this);
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
-  }
-
-  /**
-   * Wrapper around this.props.onActivate
-   *
-   * @param {Object} event - Event object.
-   */
-  handleActivate(event) {
-    event.stopPropagation();
-    if (typeof this.props.onActivate === 'function') {
-      this.props.onActivate(event, this.props.item);
-    }
-  }
-
-  /**
-   * Wrapper around this.props.onSelect
-   *
-   * @param {Object} event Event object.
-   */
-  handleSelect(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    if (typeof this.props.onSelect === 'function') {
-      this.props.onSelect(event, this.props.item);
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -104,21 +78,6 @@ class GalleryItem extends SilverStripeComponent {
       default:
         return {};
     }
-  }
-
-  /**
-   * Checks if the component has an error set.
-   *
-   * @return {boolean}
-   */
-  hasError() {
-    let hasError = false;
-
-    if (this.props.item.message) {
-      hasError = this.props.item.message.type === 'error';
-    }
-
-    return hasError;
   }
 
   /**
@@ -176,15 +135,6 @@ class GalleryItem extends SilverStripeComponent {
     }
 
     return thumbnailClassNames.join(' ');
-  }
-
-  /**
-   * Determine if the item has enabled checkbox
-   *
-   * @return {Boolean}
-   */
-  canBatchSelect() {
-    return this.props.selectable && this.props.item.canEdit;
   }
 
   /**
@@ -249,41 +199,29 @@ class GalleryItem extends SilverStripeComponent {
   }
 
   /**
-   * Determine if this is an image type
+   * Gets upload progress bar
    *
-   * @returns {boolean}
+   * @returns {Object}
    */
-  isImage() {
-    return this.props.item.category === 'image';
-  }
+  getProgressBar() {
+    let progressBar = null;
 
-  /**
-   * Validate that the file backing this record is not missing
-   *
-   * @returns {boolean}
-   */
-  exists() {
-    return this.props.item.exists;
-  }
+    const progressBarProps = {
+      className: 'gallery-item__progress-bar',
+      style: {
+        width: `${this.props.item.progress}%`,
+      },
+    };
 
-  /**
-   * Validate that the file is in upload progress
-   *
-   * @returns {boolean}
-   */
-  uploading() {
-    return this.props.item.uploading;
-  }
+    if (!this.hasError() && this.uploading() && !this.complete()) {
+      progressBar = (
+        <div className="gallery-item__upload-progress">
+          <div {...progressBarProps} />
+        </div>
+      );
+    }
 
-  /**
-   * Check if this item has been successfully uploaded.
-   * Excludes items not uploaded in this request.
-   *
-   * @returns {Boolean}
-   */
-  complete() {
-    // Uploading is complete if saved with a DB id
-    return this.uploading() && this.props.item.id > 0;
+    return progressBar;
   }
 
   /**
@@ -306,6 +244,93 @@ class GalleryItem extends SilverStripeComponent {
       && height < CONSTANTS.THUMBNAIL_HEIGHT
       && width < CONSTANTS.THUMBNAIL_WIDTH
     );
+  }
+
+  /**
+   * Check if this item has been successfully uploaded.
+   * Excludes items not uploaded in this request.
+   *
+   * @returns {Boolean}
+   */
+  complete() {
+    // Uploading is complete if saved with a DB id
+    return this.uploading() && this.props.item.id > 0;
+  }
+
+  /**
+   * Validate that the file is in upload progress
+   *
+   * @returns {boolean}
+   */
+  uploading() {
+    return this.props.item.uploading;
+  }
+
+  /**
+   * Validate that the file backing this record is not missing
+   *
+   * @returns {boolean}
+   */
+  exists() {
+    return this.props.item.exists;
+  }
+
+  /**
+   * Determine if this is an image type
+   *
+   * @returns {boolean}
+   */
+  isImage() {
+    return this.props.item.category === 'image';
+  }
+
+  /**
+   * Determine if the item has enabled checkbox
+   *
+   * @return {Boolean}
+   */
+  canBatchSelect() {
+    return this.props.selectable && this.props.item.canEdit;
+  }
+
+  /**
+   * Checks if the component has an error set.
+   *
+   * @return {boolean}
+   */
+  hasError() {
+    let hasError = false;
+
+    if (this.props.item.message) {
+      hasError = this.props.item.message.type === 'error';
+    }
+
+    return hasError;
+  }
+
+  /**
+   * Wrapper around this.props.onActivate
+   *
+   * @param {Object} event - Event object.
+   */
+  handleActivate(event) {
+    event.stopPropagation();
+    if (typeof this.props.onActivate === 'function') {
+      this.props.onActivate(event, this.props.item);
+    }
+  }
+
+  /**
+   * Wrapper around this.props.onSelect
+   *
+   * @param {Object} event Event object.
+   */
+  handleSelect(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    if (typeof this.props.onSelect === 'function') {
+      this.props.onSelect(event, this.props.item);
+    }
   }
 
   /**
@@ -341,32 +366,6 @@ class GalleryItem extends SilverStripeComponent {
     } else if (this.props.onCancelUpload) {
       this.props.onCancelUpload(this.props.item);
     }
-  }
-
-  /**
-   * Gets upload progress bar
-   *
-   * @returns {Object}
-   */
-  getProgressBar() {
-    let progressBar = null;
-
-    const progressBarProps = {
-      className: 'gallery-item__progress-bar',
-      style: {
-        width: `${this.props.item.progress}%`,
-      },
-    };
-
-    if (!this.hasError() && this.uploading() && !this.complete()) {
-      progressBar = (
-        <div className="gallery-item__upload-progress">
-          <div {...progressBarProps} />
-        </div>
-      );
-    }
-
-    return progressBar;
   }
 
   render() {

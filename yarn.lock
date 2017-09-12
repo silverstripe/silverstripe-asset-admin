@@ -3,7 +3,7 @@
 
 
 "@silverstripe/webpack-config@file:../../webpack-config":
-  version "0.2.8"
+  version "0.2.9"
   dependencies:
     autoprefixer "^6.4.0"
     babel-core "^6.24.1"

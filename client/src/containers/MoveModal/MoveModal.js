@@ -63,8 +63,8 @@ class MoveModal extends React.Component {
       <FormBuilderModal
         title={title}
         show={show}
-        handleHide={onHide}
-        handleSubmit={this.handleSubmit}
+        onHide={onHide}
+        onSubmit={this.handleSubmit}
         identifier="AssetAdmin.MoveForm"
         schemaUrl={`${schemaUrl}/${folderId}`}
       />

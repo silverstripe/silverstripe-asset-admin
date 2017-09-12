@@ -9,7 +9,7 @@ describe('BackButton', () => {
 
   beforeEach(() => {
     props = {
-      onClick: jest.genMockFunction(),
+      onClick: jest.fn(),
       enlarged: false,
       badge: {
         status: 'success',
@@ -25,12 +25,12 @@ describe('BackButton', () => {
       );
       let badge = null;
       try {
-        badge = ReactTestUtils.findRenderedDOMComponentWithClass(item, 'gallery__back-badge');
+        badge = ReactTestUtils.scryRenderedDOMComponentsWithClass(item, 'gallery__back-badge')[0];
       } catch (e) {
         // something happened
       }
 
-      expect(badge).not.toBe(null);
+      expect(badge).toBeTruthy();
     });
 
     it('should not render a badge when the badge property is falsey', () => {
@@ -40,12 +40,12 @@ describe('BackButton', () => {
       );
       let badge = null;
       try {
-        badge = ReactTestUtils.findRenderedDOMComponentWithClass(item, 'gallery__back-badge');
+        badge = ReactTestUtils.scryRenderedDOMComponentsWithClass(item, 'gallery__back-badge')[0];
       } catch (e) {
         // something happened
       }
 
-      expect(badge).toBe(null);
+      expect(badge).toBeFalsy();
     });
 
     it('should have extra classes when "enlarged"', () => {
@@ -53,9 +53,9 @@ describe('BackButton', () => {
       const item = ReactTestUtils.renderIntoDocument(
         <BackButton {...props} />
       );
-      const element = item && item.render();
+      const button = ReactTestUtils.scryRenderedDOMComponentsWithClass(item, 'gallery__back')[0];
 
-      expect(element.props.className).toContain('gallery__back--droppable-hover');
+      expect(Array.from(button.classList)).toContain('gallery__back--droppable-hover');
     });
   });
 });

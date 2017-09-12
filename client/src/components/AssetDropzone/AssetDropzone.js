@@ -1,7 +1,6 @@
 /* global FileReader, Image, document, FormData */
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
 import $ from 'jquery';
@@ -9,7 +8,7 @@ import { getFileExtension } from 'lib/DataFormat';
 
 let idCounter = 0;
 
-class AssetDropzone extends SilverStripeComponent {
+class AssetDropzone extends Component {
   constructor(props) {
     super(props);
 
@@ -30,8 +29,6 @@ class AssetDropzone extends SilverStripeComponent {
   }
 
   componentDidMount() {
-    super.componentDidMount();
-
     const defaultOptions = this.getDefaultOptions();
 
     let uploadSelector = this.props.uploadSelector;
@@ -66,13 +63,6 @@ class AssetDropzone extends SilverStripeComponent {
     }
   }
 
-  componentWillUnmount() {
-    super.componentWillUnmount();
-
-    // Remove all dropzone event listeners.
-    this.dropzone.disable();
-  }
-
   componentWillReceiveProps(nextProps) {
     // add listeners when necessary
     if (nextProps.canUpload) {
@@ -85,36 +75,9 @@ class AssetDropzone extends SilverStripeComponent {
     }
   }
 
-  render() {
-    const className = ['asset-dropzone'];
-
-    if (this.props.className) {
-      className.push(this.props.className);
-    }
-
-    const buttonProps = {
-      className: 'asset-dropzone__upload-button ss-ui-button font-icon-upload',
-      type: 'button',
-    };
-
-    if (!this.props.canUpload) {
-      buttonProps.disabled = true;
-    }
-
-    if (this.dragging === true) {
-      className.push('dragging');
-    }
-
-    return (
-      <div className={className.join(' ')}>
-        {this.props.uploadButton &&
-          <button {...buttonProps}>
-            {i18n._t('AssetAdmin.DROPZONE_UPLOAD')}
-          </button>
-        }
-        {this.props.children}
-      </div>
-    );
+  componentWillUnmount() {
+    // Remove all dropzone event listeners.
+    this.dropzone.disable();
   }
 
   /**
@@ -210,6 +173,51 @@ class AssetDropzone extends SilverStripeComponent {
     return fileType.split('/')[0];
   }
 
+  getLoadPreview(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        // If the user uploads multiple large images, we could run into memory issues
+        // by simply using the `event.target.result` data URI as the thumbnail image.
+        //
+        // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
+        // and using the canvas data URI as the thumbnail image instead.
+
+        if (this.getFileCategory(file.type) === 'image') {
+          const img = new Image();
+
+          resolve(this.loadImage(img, event.target.result));
+        } else {
+          resolve({});
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /**
+   * JS Synonym for File::setName()
+   *
+   * @param {String} filename
+   * @returns {String}
+   */
+  getFileTitle(filename) {
+    return filename
+      .replace(/[.][^.]+$/, '')
+      .replace(/-_/, ' ');
+  }
+
+  /**
+   * Set the text displayed when a user tries to remove a file.
+   *
+   * @param {string} userPrompt - The message to display.
+   */
+  setPromptOnRemove(userPrompt) {
+    this.dropzone.options.dictRemoveFileConfirmation = userPrompt;
+  }
+
   /**
    * Event handler triggered when the user drags a file into the dropzone.
    *
@@ -223,8 +231,8 @@ class AssetDropzone extends SilverStripeComponent {
     this.dragging = true;
     this.forceUpdate();
 
-    if (typeof this.props.handleDragEnter === 'function') {
-      this.props.handleDragEnter(event);
+    if (typeof this.props.onDragEnter === 'function') {
+      this.props.onDragEnter(event);
     }
   }
 
@@ -250,8 +258,8 @@ class AssetDropzone extends SilverStripeComponent {
     this.dragging = false;
     this.forceUpdate();
 
-    if (typeof this.props.handleDragLeave === 'function') {
-      this.props.handleDragLeave(event, componentNode);
+    if (typeof this.props.onDragLeave === 'function') {
+      this.props.onDragLeave(event, componentNode);
     }
   }
 
@@ -263,8 +271,8 @@ class AssetDropzone extends SilverStripeComponent {
    * @param {number} bytesSent - total bytesSent
    */
   handleUploadProgress(file, progress, bytesSent) {
-    if (typeof this.props.handleUploadProgress === 'function') {
-      this.props.handleUploadProgress(file, progress, bytesSent);
+    if (typeof this.props.onUploadProgress === 'function') {
+      this.props.onUploadProgress(file, progress, bytesSent);
     }
   }
 
@@ -277,8 +285,8 @@ class AssetDropzone extends SilverStripeComponent {
     this.dragging = false;
     this.forceUpdate();
 
-    if (typeof this.props.handleDrop === 'function') {
-      this.props.handleDrop(event);
+    if (typeof this.props.onDrop === 'function') {
+      this.props.onDrop(event);
     }
   }
 
@@ -305,8 +313,8 @@ class AssetDropzone extends SilverStripeComponent {
         xhr.abort();
       },
     });
-    if (typeof this.props.handleSending === 'function') {
-      this.props.handleSending(file, newXhr, formData);
+    if (typeof this.props.onSending === 'function') {
+      this.props.onSending(file, newXhr, formData);
     }
   }
 
@@ -316,8 +324,8 @@ class AssetDropzone extends SilverStripeComponent {
    * @returns {boolean}
    */
   handleMaxFilesExceeded(file) {
-    if (typeof this.props.handleMaxFilesExceeded === 'function') {
-      return this.props.handleMaxFilesExceeded(file);
+    if (typeof this.props.onMaxFilesExceeded === 'function') {
+      return this.props.onMaxFilesExceeded(file);
     }
 
     return true;
@@ -379,7 +387,7 @@ class AssetDropzone extends SilverStripeComponent {
       type: file.type,
     };
     // Add the file optimistically.
-    this.props.handleAddedFile(details);
+    this.props.onAddedFile(details);
 
     const loadPreview = this.getLoadPreview(file);
 
@@ -392,8 +400,8 @@ class AssetDropzone extends SilverStripeComponent {
         thumbnail: preview.thumbnailURL,
         smallThumbnail: preview.thumbnailURL,
       };
-      if (typeof this.props.handlePreviewLoaded === 'function') {
-        this.props.handlePreviewLoaded(details, previewDetails);
+      if (typeof this.props.onPreviewLoaded === 'function') {
+        this.props.onPreviewLoaded(details, previewDetails);
       }
 
       return {
@@ -401,42 +409,6 @@ class AssetDropzone extends SilverStripeComponent {
         ...previewDetails,
       };
     });
-  }
-
-  getLoadPreview(file) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-
-      reader.onload = (event) => {
-        // If the user uploads multiple large images, we could run into memory issues
-        // by simply using the `event.target.result` data URI as the thumbnail image.
-        //
-        // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
-        // and using the canvas data URI as the thumbnail image instead.
-
-        if (this.getFileCategory(file.type) === 'image') {
-          const img = new Image();
-
-          resolve(this.loadImage(img, event.target.result));
-        } else {
-          resolve({});
-        }
-      };
-
-      reader.readAsDataURL(file);
-    });
-  }
-
-  /**
-   * JS Synonym for File::setName()
-   *
-   * @param {String} filename
-   * @returns {String}
-   */
-  getFileTitle(filename) {
-    return filename
-      .replace(/[.][^.]+$/, '')
-      .replace(/-_/, ' ');
   }
 
   /**
@@ -497,9 +469,7 @@ class AssetDropzone extends SilverStripeComponent {
     // remove files list, as they are no longer needed
     this.dropzone.removeFile(file);
 
-    if (typeof this.props.handleError === 'function') {
-      this.props.handleError(file, message);
-    }
+    this.props.onError(file, message);
   }
 
   /**
@@ -511,32 +481,65 @@ class AssetDropzone extends SilverStripeComponent {
     // remove files list, as they are no longer needed
     this.dropzone.removeFile(file);
 
-    this.props.handleSuccess(file);
+    this.props.onSuccess(file);
   }
 
-  /**
-   * Set the text displayed when a user tries to remove a file.
-   *
-   * @param {string} userPrompt - The message to display.
-   */
-  setPromptOnRemove(userPrompt) {
-    this.dropzone.options.dictRemoveFileConfirmation = userPrompt;
+  render() {
+    const className = ['asset-dropzone'];
+
+    if (this.props.className) {
+      className.push(this.props.className);
+    }
+
+    const buttonProps = {
+      className: 'asset-dropzone__upload-button ss-ui-button font-icon-upload',
+      type: 'button',
+    };
+
+    if (!this.props.canUpload) {
+      buttonProps.disabled = true;
+    }
+
+    if (this.dragging === true) {
+      className.push('dragging');
+    }
+
+    return (
+      <div className={className.join(' ')}>
+        {this.props.uploadButton &&
+        <button {...buttonProps}>
+          {i18n._t('AssetAdmin.DROPZONE_UPLOAD')}
+        </button>
+        }
+        {this.props.children}
+      </div>
+    );
   }
 }
 
 AssetDropzone.propTypes = {
   folderId: React.PropTypes.number.isRequired,
-  handleAccept: React.PropTypes.func,
-  handleAddedFile: React.PropTypes.func.isRequired,
-  handleDragEnter: React.PropTypes.func,
-  handleDragLeave: React.PropTypes.func,
-  handleDrop: React.PropTypes.func,
-  handleError: React.PropTypes.func.isRequired,
-  handlePreviewLoaded: React.PropTypes.func,
-  handleSending: React.PropTypes.func,
+  onAccept: React.PropTypes.func,
+  onAddedFile: React.PropTypes.func.isRequired,
+  onDragEnter: React.PropTypes.func,
+  onDragLeave: React.PropTypes.func,
+  onDrop: React.PropTypes.func,
+  onError: React.PropTypes.func.isRequired,
+  onPreviewLoaded: React.PropTypes.func,
+  onSending: React.PropTypes.func,
+  onSuccess: React.PropTypes.func.isRequired,
+  onMaxFilesExceeded: React.PropTypes.func,
+  handleAccept: (props) => { if (props.handleAccept) { throw new Error('handleAccept: no longer used'); } },
+  handleAddedFile: (props) => { if (props.handleAddedFile) { throw new Error('handleAddedFile: no longer used'); } },
+  handleDragEnter: (props) => { if (props.handleDragEnter) { throw new Error('handleDragEnter: no longer used'); } },
+  handleDragLeave: (props) => { if (props.handleDragLeave) { throw new Error('handleDragLeave: no longer used'); } },
+  handleDrop: (props) => { if (props.handleDrop) { throw new Error('handleDrop: no longer used'); } },
+  handleError: (props) => { if (props.handleError) { throw new Error('handleError: no longer used'); } },
+  handlePreviewLoaded: (props) => { if (props.handlePreviewLoaded) { throw new Error('handlePreviewLoaded: no longer used'); } },
+  handleSending: (props) => { if (props.handleSending) { throw new Error('handleSending: no longer used'); } },
+  handleSuccess: (props) => { if (props.handleSuccess) { throw new Error('handleSuccess: no longer used'); } },
+  handleMaxFilesExceeded: (props) => { if (props.handleMaxFilesExceeded) { throw new Error('handleMaxFilesExceeded: no longer used'); } },
   updateFormData: React.PropTypes.func,
-  handleSuccess: React.PropTypes.func.isRequired,
-  handleMaxFilesExceeded: React.PropTypes.func,
   canFileUpload: React.PropTypes.func,
   options: React.PropTypes.shape({
     url: React.PropTypes.string.isRequired,

@@ -13,9 +13,9 @@ describe('GalleryItem', () => {
       id: 0,
       selectable: true,
       selected: false,
-      onSelect: jest.genMockFunction(),
-      onActivate: jest.genMockFunction(),
-      handleDelete: jest.genMockFunction(),
+      onSelect: jest.fn(),
+      onActivate: jest.fn(),
+      onDelete: jest.fn(),
       item: {
         width: 10,
         height: 10,

@@ -1,17 +1,16 @@
 import $ from 'jquery';
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
 import { inject } from 'lib/Injector';
 import classnames from 'classnames';
 
-class BulkActions extends SilverStripeComponent {
+class BulkActions extends Component {
   constructor(props) {
     super(props);
 
-    this.onChangeValue = this.onChangeValue.bind(this);
+    this.handleChangeValue = this.handleChangeValue.bind(this);
   }
 
   componentDidMount() {
@@ -24,6 +23,50 @@ class BulkActions extends SilverStripeComponent {
 
     // Chosen stops the change event from reaching React so we have to simulate a click.
     $select.change(() => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
+  }
+
+  /**
+   * @param {String} value
+   * @returns {Object} One of props.actions.
+   */
+  getOptionByValue(value) {
+    return this.props.actions.find(action => action.value === value);
+  }
+
+  /**
+   * @param {Event} event
+   * @returns {Promise|null}
+   */
+  handleChangeValue(event) {
+    let promise = null;
+
+    // Make sure a valid option has been selected.
+    const option = this.getOptionByValue(event.target.value);
+    if (option === null) {
+      return null;
+    }
+
+    // Optionally execute confirmation logic (can be async)
+    // This is kept separate from "callback" in order to support
+    // progress indicators on this component just for actual bulk processing
+    // (instead of just waiting for user feedback in a dialog etc.)
+    if (typeof option.confirm === 'function') {
+      promise = option.confirm(this.props.items)
+        .then(() => option.callback(this.props.items))
+        .catch((reason) => {
+          // Suppress and catch errors for user-cancelled actions
+          if (reason !== 'cancelled') {
+            throw reason;
+          }
+        });
+    } else {
+      promise = option.callback(this.props.items) || Promise.resolve();
+    }
+
+    // Reset the dropdown to it's placeholder value.
+    $(ReactDOM.findDOMNode(this)).find('.dropdown').val('').trigger('liszt:updated');
+
+    return promise;
   }
 
   render() {
@@ -52,7 +95,7 @@ class BulkActions extends SilverStripeComponent {
         type="button"
         className={className}
         key={action.value}
-        onClick={this.onChangeValue}
+        onClick={this.handleChangeValue}
         value={action.value}
       >
         {action.label}
@@ -83,50 +126,6 @@ class BulkActions extends SilverStripeComponent {
         }
       </div>
     );
-  }
-
-  /**
-   * @param {String} value
-   * @returns {Object} One of props.actions.
-   */
-  getOptionByValue(value) {
-    return this.props.actions.find(action => action.value === value);
-  }
-
-  /**
-   * @param {Event} event
-   * @returns {Promise|null}
-   */
-  onChangeValue(event) {
-    let promise = null;
-
-    // Make sure a valid option has been selected.
-    const option = this.getOptionByValue(event.target.value);
-    if (option === null) {
-      return null;
-    }
-
-    // Optionally execute confirmation logic (can be async)
-    // This is kept separate from "callback" in order to support
-    // progress indicators on this component just for actual bulk processing
-    // (instead of just waiting for user feedback in a dialog etc.)
-    if (typeof option.confirm === 'function') {
-      promise = option.confirm(this.props.items)
-        .then(() => option.callback(this.props.items))
-        .catch((reason) => {
-          // Suppress and catch errors for user-cancelled actions
-          if (reason !== 'cancelled') {
-            throw reason;
-          }
-        });
-    } else {
-      promise = option.callback(this.props.items) || Promise.resolve();
-    }
-
-    // Reset the dropdown to it's placeholder value.
-    $(ReactDOM.findDOMNode(this)).find('.dropdown').val('').trigger('liszt:updated');
-
-    return promise;
   }
 }
 

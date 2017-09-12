@@ -8,7 +8,7 @@ jest.mock('containers/Gallery/Gallery');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { AssetAdmin } from '../AssetAdmin';
+import { Component as AssetAdmin } from '../AssetAdmin';
 
 function getMockFile(id) {
   return {

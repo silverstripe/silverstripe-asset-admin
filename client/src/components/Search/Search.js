@@ -1,10 +1,9 @@
 /* global document */
 import i18n from 'i18n';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { bindActionCreators } from 'redux';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import { Collapse } from 'react-bootstrap-ss';
 import * as schemaActions from 'state/schema/SchemaActions';
@@ -28,7 +27,7 @@ function hasFilters(filters) {
   return (filters && Object.keys(filters).length > 0);
 }
 
-class Search extends SilverStripeComponent {
+class Search extends Component {
   constructor(props) {
     super(props);
 
@@ -52,15 +51,48 @@ class Search extends SilverStripeComponent {
     this.setOverrides(this.props);
   }
 
-  componentWillUnmount() {
-    this.setOverrides();
-  }
-
   componentWillReceiveProps(props) {
     if (props && (!hasFilters(props.filters) && hasFilters(this.props.filters))) {
       this.clearFormData(props);
     } else if (JSON.stringify(props.filters) !== JSON.stringify(this.props.filters)) {
       this.setOverrides(props);
+    }
+  }
+
+  componentWillUnmount() {
+    this.setOverrides();
+  }
+
+  /**
+   * Populate search form with search in case a pre-existing search has been queried
+   *
+   * @param {Object} props
+   */
+  setOverrides(props) {
+    if (props && (
+        !hasFilters(props.filters) || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl
+      )) {
+      // clear any overrides that may be in place
+      const schemaUrl = (props && props.searchFormSchemaUrl) || this.props.searchFormSchemaUrl;
+      if (schemaUrl) {
+        this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
+      }
+    }
+
+    if (props && (hasFilters(props.filters) && props.searchFormSchemaUrl)) {
+      const filters = props.filters || {};
+      const overrides = {
+        fields: Object
+          .keys(filters)
+          .map((name) => {
+            const value = filters[name];
+            return { name, value };
+          }),
+      };
+
+      // set overrides into redux store, so that it can be accessed by FormBuilder with the same
+      // schemaUrl.
+      this.props.actions.schema.setSchemaStateOverrides(props.searchFormSchemaUrl, overrides);
     }
   }
 
@@ -116,39 +148,6 @@ class Search extends SilverStripeComponent {
       this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
       this.props.actions.reduxForm.initialize(identifier, {}, Object.keys(this.props.formData));
       this.props.actions.reduxForm.reset(identifier);
-    }
-  }
-
-  /**
-   * Populate search form with search in case a pre-existing search has been queried
-   *
-   * @param {Object} props
-   */
-  setOverrides(props) {
-    if (props && (
-      !hasFilters(props.filters) || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl
-    )) {
-      // clear any overrides that may be in place
-      const schemaUrl = (props && props.searchFormSchemaUrl) || this.props.searchFormSchemaUrl;
-      if (schemaUrl) {
-        this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
-      }
-    }
-
-    if (props && (hasFilters(props.filters) && props.searchFormSchemaUrl)) {
-      const filters = props.filters || {};
-      const overrides = {
-        fields: Object
-          .keys(filters)
-          .map((name) => {
-            const value = filters[name];
-            return { name, value };
-          }),
-      };
-
-      // set overrides into redux store, so that it can be accessed by FormBuilder with the same
-      // schemaUrl.
-      this.props.actions.schema.setSchemaStateOverrides(props.searchFormSchemaUrl, overrides);
     }
   }
 
@@ -267,7 +266,7 @@ class Search extends SilverStripeComponent {
       'font-icon-search',
       'btn--icon-large',
       'btn--no-text',
-    ];
+    ].join(' ');
 
     return (
       <ClickOutComponent onClickOut={this.hide} callerComponent={this}>
@@ -339,8 +338,6 @@ class Search extends SilverStripeComponent {
 Search.propTypes = {
   searchFormSchemaUrl: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  data: PropTypes.object,
-  folderId: PropTypes.number,
   onSearch: PropTypes.func.isRequired,
   filters: PropTypes.object,
   formData: PropTypes.object,

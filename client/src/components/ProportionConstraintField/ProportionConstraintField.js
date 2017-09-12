@@ -40,7 +40,7 @@ class ProportionConstraintField extends Component {
         {this.props.children.map((child, key) => (
           cloneElement(child, {
             // overload the children change handler
-            onChange: () => this.handleChange(key),
+            onChange: (e) => this.handleChange(key, e),
             key,
           }, child.props.children)
         ))}

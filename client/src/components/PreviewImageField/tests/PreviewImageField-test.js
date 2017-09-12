@@ -17,7 +17,7 @@ describe('PreviewImageField', () => {
         exists: true,
         nameField: 'Name',
       },
-      onAutofill: jest.genMockFunction(),
+      onAutofill: jest.fn(),
       actions: {
         previewField: {
           removeFile: jest.genMockFunction(),

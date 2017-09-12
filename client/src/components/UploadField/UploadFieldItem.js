@@ -1,11 +1,10 @@
 import i18n from 'i18n';
-import React from 'react';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
+import React, { Component } from 'react';
 import CONSTANTS from 'constants';
 import fileShape from 'lib/fileShape';
 import { fileSize } from 'lib/DataFormat';
 
-class UploadFieldItem extends SilverStripeComponent {
+class UploadFieldItem extends Component {
   constructor(props) {
     super(props);
 
@@ -28,44 +27,6 @@ class UploadFieldItem extends SilverStripeComponent {
     }
 
     return {};
-  }
-
-  /**
-   * Checks if the component has an error set.
-   *
-   * @return {boolean}
-   */
-  hasError() {
-    if (this.props.item.message) {
-      return this.props.item.message.type === 'error';
-    }
-
-    return false;
-  }
-
-  /**
-   * Returns markup for an error message if one is set.
-   *
-   * @returns {Object}
-   */
-  renderErrorMessage() {
-    let message = null;
-
-    if (this.hasError()) {
-      message = this.props.item.message.value;
-    } else if (!this.exists() && !this.uploading()) {
-      message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
-    }
-
-    if (message !== null) {
-      return (
-        <div className="uploadfield-item__error-message">
-          {message}
-        </div>
-      );
-    }
-
-    return null;
   }
 
   /**
@@ -105,6 +66,19 @@ class UploadFieldItem extends SilverStripeComponent {
     }
 
     return itemClassNames.join(' ');
+  }
+
+  /**
+   * Checks if the component has an error set.
+   *
+   * @return {boolean}
+   */
+  hasError() {
+    if (this.props.item.message) {
+      return this.props.item.message.type === 'error';
+    }
+
+    return false;
   }
 
   /**
@@ -169,15 +143,6 @@ class UploadFieldItem extends SilverStripeComponent {
   }
 
   /**
-   * Avoids the browser's default focus state when selecting an item.
-   *
-   * @param {Object} event Event object.
-   */
-  preventFocus(event) {
-    event.preventDefault();
-  }
-
-  /**
    * Handles remove (x) button click
    *
    * @param {Object} event
@@ -214,9 +179,34 @@ class UploadFieldItem extends SilverStripeComponent {
   }
 
   /**
-   * Gets upload progress bar
+   * Returns markup for an error message if one is set.
    *
    * @returns {Object}
+   */
+  renderErrorMessage() {
+    let message = null;
+
+    if (this.hasError()) {
+      message = this.props.item.message.value;
+    } else if (!this.exists() && !this.uploading()) {
+      message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
+    }
+
+    if (message !== null) {
+      return (
+        <div className="uploadfield-item__error-message">
+          {message}
+        </div>
+      );
+    }
+
+    return null;
+  }
+
+  /**
+   * Gets upload progress bar
+   *
+   * @returns {React}
    */
   renderProgressBar() {
     const progressBarProps = {
@@ -245,7 +235,7 @@ class UploadFieldItem extends SilverStripeComponent {
   /**
    * Gets the remove item button
    *
-   * @returns {XML}
+   * @returns {React}
    */
   renderRemoveButton() {
     if (!this.props.canEdit) {
@@ -271,7 +261,7 @@ class UploadFieldItem extends SilverStripeComponent {
   /**
    * Gets the edit item button
    *
-   * @returns {XML}
+   * @returns {React}
    */
   renderViewButton() {
     if (!this.props.canEdit) {
@@ -296,7 +286,7 @@ class UploadFieldItem extends SilverStripeComponent {
   /**
    * Get file title / metadata block
    *
-   * @returns {XML}
+   * @returns {React}
    */
   renderFileDetails() {
     let size = '';
@@ -317,7 +307,7 @@ class UploadFieldItem extends SilverStripeComponent {
 
   /**
    *
-   * @returns {XML}
+   * @returns {React}
    */
   render() {
     const fieldName = `${this.props.name}[Files][]`;

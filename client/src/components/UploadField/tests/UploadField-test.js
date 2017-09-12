@@ -20,7 +20,7 @@ describe('UploadField', () => {
       id: 'Form_MyTestUpload',
       name: 'MyTestUpload',
       files,
-      onChange: jest.genMockFunction(),
+      onChange: jest.fn(),
       actions: {
         uploadField: {
           setFiles: jest.genMockFunction(),

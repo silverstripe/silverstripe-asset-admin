@@ -2,7 +2,7 @@
 
 jest.unmock('../ImageLoadLocker');
 
-import { ImageLoadLocker } from '../ImageLoadLocker';
+import { Component as ImageLoadLocker } from '../ImageLoadLocker';
 
 describe('ImageLoadLocker', () => {
   let locker = null;

@@ -1,9 +1,8 @@
 import i18n from 'i18n';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CONSTANTS from 'constants/index';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import UploadFieldItem from 'components/UploadField/UploadFieldItem';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
@@ -11,7 +10,7 @@ import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
-class UploadField extends SilverStripeComponent {
+class UploadField extends Component {
   constructor(props) {
     super(props);
     this.renderChild = this.renderChild.bind(this);
@@ -220,17 +219,6 @@ class UploadField extends SilverStripeComponent {
     return Promise.resolve({});
   }
 
-
-  render() {
-    return (
-      <div className="uploadfield">
-        {this.renderDropzone()}
-        {this.props.files.map(this.renderChild)}
-        {this.renderDialog()}
-      </div>
-    );
-  }
-
   /**
    * Check if this field can be modified
    *
@@ -243,7 +231,7 @@ class UploadField extends SilverStripeComponent {
   /**
    * Render "drop file here" area
    *
-   * @returns {XML}
+   * @returns {React}
    */
   renderDropzone() {
     if (!this.props.data.createFileEndpoint) {
@@ -291,11 +279,11 @@ class UploadField extends SilverStripeComponent {
         uploadButton={false}
         uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"
         folderId={this.props.data.parentid}
-        handleAddedFile={this.handleAddedFile}
-        handleError={this.handleFailedUpload}
-        handleSuccess={this.handleSuccessfulUpload}
-        handleSending={this.handleSending}
-        handleUploadProgress={this.handleUploadProgress}
+        onAddedFile={this.handleAddedFile}
+        onError={this.handleFailedUpload}
+        onSuccess={this.handleSuccessfulUpload}
+        onSending={this.handleSending}
+        onUploadProgress={this.handleUploadProgress}
         preview={dimensions}
         options={dropzoneOptions}
         securityID={securityID}
@@ -338,7 +326,6 @@ class UploadField extends SilverStripeComponent {
   /**
    *
    * @param {Object} item
-   * @param {Object} index
    * @returns {React}
    */
   renderChild(item) {
@@ -351,6 +338,16 @@ class UploadField extends SilverStripeComponent {
       onView: this.handleReplaceShow,
     };
     return <UploadFieldItem {...itemProps} />;
+  }
+
+  render() {
+    return (
+      <div className="uploadfield">
+        {this.renderDropzone()}
+        {this.props.files.map(this.renderChild)}
+        {this.renderDialog()}
+      </div>
+    );
   }
 }
 
