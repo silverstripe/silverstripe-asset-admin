@@ -59,8 +59,8 @@ class EmbedResource
         }
 
         // Default media
-        return ModuleLoader::getModule('silverstripe/admin')
-            ->getResourcePath('client/dist/images/src/default_media.png');
+        return ModuleLoader::getModule('silverstripe/asset-admin')
+            ->getResourceURL('client/dist/images/icon_file.png');
     }
 
     /**
