@@ -9,7 +9,7 @@ import { Collapse } from 'react-bootstrap-ss';
 import * as schemaActions from 'state/schema/SchemaActions';
 import { reset, initialize } from 'redux-form';
 import getIn from 'redux-form/lib/structure/plain/getIn';
-import ClickOutComponent from './ClickOutComponent';
+import Focusedzone from 'components/Focusedzone/Focusedzone';
 import getFormState from 'lib/getFormState';
 
 const identifier = 'AssetAdmin.SearchForm';
@@ -269,7 +269,7 @@ class Search extends Component {
     ].join(' ');
 
     return (
-      <ClickOutComponent onClickOut={this.hide} callerComponent={this}>
+      <Focusedzone onClickOut={this.hide}>
         <div className={searchClasses.join(' ')}>
           <button
             className="btn btn--no-text btn-secondary search__trigger"
@@ -330,7 +330,7 @@ class Search extends Component {
             </Collapse>
           </div>
         </div>
-      </ClickOutComponent>
+      </Focusedzone>
     );
   }
 }
