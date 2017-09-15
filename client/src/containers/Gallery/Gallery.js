@@ -566,11 +566,87 @@ class Gallery extends Component {
    * @param {Object} item - The item being selected/deselected
    */
   handleSelect(event, item) {
-    if (this.props.selectedFiles.indexOf(item.id) === -1) {
-      this.props.actions.gallery.selectFiles([item.id]);
-    } else {
+    // If item is already selected
+    if (this.props.selectedFiles.indexOf(item.id) !== -1) {
       this.props.actions.gallery.deselectFiles([item.id]);
+      return;
     }
+
+    // If item is currently unselected
+    if (event.shiftKey) {
+      this.handleShiftSelect(item);
+    } else {
+      this.props.actions.gallery.selectFiles([item.id]);
+    }
+  }
+
+  /**
+   * Handles the user selecting items while holding the shift key, selects all items between last selected item
+   * and the item being selected
+   *
+   * @param {Object} item - the item being selected
+   */
+  handleShiftSelect(item) {
+    let smallIndex = null;
+    let largeIndex = null;
+    const filesToSelect = [];
+
+    // If there are no currently selectedFiles, then select item and break out
+    if (this.props.selectedFiles.length === 0) {
+      this.props.actions.gallery.selectFiles([item.id]);
+      return;
+    }
+
+    // Get Index for last selected item and item to be selected
+    const orderedItems = this.getOrderedItems();
+    const lastSelectedItemId = this.props.selectedFiles[this.props.selectedFiles.length - 1];
+    const lastSelectedItemIndex = orderedItems.findIndex(file => lastSelectedItemId === file.id);
+    const selectedItemIndex = orderedItems.findIndex(file => item.id === file.id);
+
+    // Set small/large indexes for easy iteration
+    if (lastSelectedItemIndex > selectedItemIndex) {
+      smallIndex = selectedItemIndex;
+      largeIndex = lastSelectedItemIndex;
+    } else {
+      smallIndex = lastSelectedItemIndex;
+      largeIndex = selectedItemIndex;
+    }
+
+    // Push all items to be selected into array
+    for (smallIndex; smallIndex <= largeIndex; smallIndex++) {
+      filesToSelect.push(orderedItems[smallIndex].id);
+    }
+
+    this.props.actions.gallery.selectFiles(filesToSelect);
+  }
+
+  /**
+   * Gets all items in order of how they are currently appearing to the user
+   *
+   * @returns {Array} orderedItems
+   */
+  getOrderedItems() {
+    let orderedItems = [];
+    const files = [];
+    const folders = [];
+
+    if (this.props.view === 'tile') {
+      // Push folders first in tile view
+      this.props.files.forEach(item => {
+        if (item.type === 'folder') {
+          folders.push(item);
+        } else {
+          files.push(item);
+        }
+      });
+
+      orderedItems = folders.concat(files);
+    } else {
+      // table view
+      orderedItems = this.props.files;
+    }
+
+    return orderedItems;
   }
 
   /**
