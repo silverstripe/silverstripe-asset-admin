@@ -231,7 +231,7 @@ class UploadField extends Component {
   /**
    * Render "drop file here" area
    *
-   * @returns {React}
+   * @returns {object}
    */
   renderDropzone() {
     if (!this.props.data.createFileEndpoint) {
@@ -325,8 +325,8 @@ class UploadField extends Component {
 
   /**
    *
-   * @param {Object} item
-   * @returns {React}
+   * @param {object} item
+   * @returns {object}
    */
   renderChild(item) {
     const itemProps = {

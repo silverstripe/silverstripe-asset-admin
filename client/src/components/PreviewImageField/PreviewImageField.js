@@ -221,7 +221,7 @@ class PreviewImageField extends Component {
   /**
    * Renders the image markup as normal by LiteralField
    *
-   * @returns {React}
+   * @returns {object}
    */
   renderImage() {
     const data = this.props.data;

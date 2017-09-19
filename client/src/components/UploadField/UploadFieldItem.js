@@ -206,7 +206,7 @@ class UploadFieldItem extends Component {
   /**
    * Gets upload progress bar
    *
-   * @returns {React}
+   * @returns {object}
    */
   renderProgressBar() {
     const progressBarProps = {
@@ -235,7 +235,7 @@ class UploadFieldItem extends Component {
   /**
    * Gets the remove item button
    *
-   * @returns {React}
+   * @returns {object}
    */
   renderRemoveButton() {
     if (!this.props.canEdit) {
@@ -261,7 +261,7 @@ class UploadFieldItem extends Component {
   /**
    * Gets the edit item button
    *
-   * @returns {React}
+   * @returns {object}
    */
   renderViewButton() {
     if (!this.props.canEdit) {
@@ -286,7 +286,7 @@ class UploadFieldItem extends Component {
   /**
    * Get file title / metadata block
    *
-   * @returns {React}
+   * @returns {object}
    */
   renderFileDetails() {
     let size = '';
@@ -307,7 +307,7 @@ class UploadFieldItem extends Component {
 
   /**
    *
-   * @returns {React}
+   * @returns {object}
    */
   render() {
     const fieldName = `${this.props.name}[Files][]`;

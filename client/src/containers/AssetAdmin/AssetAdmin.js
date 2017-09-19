@@ -548,7 +548,7 @@ class AssetAdmin extends Component {
   /**
    * Generates the Gallery react component to render with
    *
-   * @returns {React}
+   * @returns {object}
    */
   renderGallery() {
     const config = this.props.sectionConfig;
@@ -598,7 +598,7 @@ class AssetAdmin extends Component {
   /**
    * Generates the Editor react component to render with
    *
-   * @returns {React}
+   * @returns {object}
    */
   renderEditor() {
     const config = this.props.sectionConfig;
