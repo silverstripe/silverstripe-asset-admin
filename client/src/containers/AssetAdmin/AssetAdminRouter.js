@@ -198,6 +198,6 @@ function mapStateToProps(state) {
   };
 }
 
-export { AssetAdminRouter, buildUrl };
+export { AssetAdminRouter as Component, buildUrl };
 
 export default withRouter(connect(mapStateToProps)(AssetAdminRouter));

@@ -1,11 +1,10 @@
 import i18n from 'i18n';
-import React from 'react';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
+import React, { Component } from 'react';
 import CONSTANTS from 'constants';
 import fileShape from 'lib/fileShape';
 import { fileSize } from 'lib/DataFormat';
 
-class UploadFieldItem extends SilverStripeComponent {
+class UploadFieldItem extends Component {
   constructor(props) {
     super(props);
 
@@ -28,44 +27,6 @@ class UploadFieldItem extends SilverStripeComponent {
     }
 
     return {};
-  }
-
-  /**
-   * Checks if the component has an error set.
-   *
-   * @return {boolean}
-   */
-  hasError() {
-    if (this.props.item.message) {
-      return this.props.item.message.type === 'error';
-    }
-
-    return false;
-  }
-
-  /**
-   * Returns markup for an error message if one is set.
-   *
-   * @returns {Object}
-   */
-  renderErrorMessage() {
-    let message = null;
-
-    if (this.hasError()) {
-      message = this.props.item.message.value;
-    } else if (!this.exists() && !this.uploading()) {
-      message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
-    }
-
-    if (message !== null) {
-      return (
-        <div className="uploadfield-item__error-message">
-          {message}
-        </div>
-      );
-    }
-
-    return null;
   }
 
   /**
@@ -108,6 +69,19 @@ class UploadFieldItem extends SilverStripeComponent {
   }
 
   /**
+   * Checks if the component has an error set.
+   *
+   * @return {boolean}
+   */
+  hasError() {
+    if (this.props.item.message) {
+      return this.props.item.message.type === 'error';
+    }
+
+    return false;
+  }
+
+  /**
    * Determine if this is an image type
    *
    * @returns {Boolean}
@@ -129,10 +103,10 @@ class UploadFieldItem extends SilverStripeComponent {
    * Check if this item is in the process uploaded.
    * If false this file was attached to this editor instead.
    *
-   * @returns {Boolean}
+   * @returns {boolean}
    */
   uploading() {
-    return !!this.props.item.uploaded;
+    return Boolean(this.props.item.uploaded);
   }
 
   /**
@@ -147,7 +121,8 @@ class UploadFieldItem extends SilverStripeComponent {
   }
 
   /**
-   * Determine that this record is an image, and the thumbnail is smaller than the given thumbnail area
+   * Determine that this record is an image, and the thumbnail is smaller than the given
+   * thumbnail area
    *
    * @returns {boolean}
    */
@@ -165,15 +140,6 @@ class UploadFieldItem extends SilverStripeComponent {
       && height < CONSTANTS.SMALL_THUMBNAIL_HEIGHT
       && width < CONSTANTS.SMALL_THUMBNAIL_WIDTH
     );
-  }
-
-  /**
-   * Avoids the browser's default focus state when selecting an item.
-   *
-   * @param {Object} event Event object.
-   */
-  preventFocus(event) {
-    event.preventDefault();
   }
 
   /**
@@ -213,9 +179,34 @@ class UploadFieldItem extends SilverStripeComponent {
   }
 
   /**
-   * Gets upload progress bar
+   * Returns markup for an error message if one is set.
    *
    * @returns {Object}
+   */
+  renderErrorMessage() {
+    let message = null;
+
+    if (this.hasError()) {
+      message = this.props.item.message.value;
+    } else if (!this.exists() && !this.uploading()) {
+      message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
+    }
+
+    if (message !== null) {
+      return (
+        <div className="uploadfield-item__error-message">
+          {message}
+        </div>
+      );
+    }
+
+    return null;
+  }
+
+  /**
+   * Gets upload progress bar
+   *
+   * @returns {object}
    */
   renderProgressBar() {
     const progressBarProps = {
@@ -228,12 +219,12 @@ class UploadFieldItem extends SilverStripeComponent {
     if (!this.hasError() && this.uploading()) {
       if (this.complete()) {
         return (
-          <div className="uploadfield-item__complete-icon"></div>
+          <div className="uploadfield-item__complete-icon" />
         );
       }
       return (
         <div className="uploadfield-item__upload-progress">
-          <div {...progressBarProps}></div>
+          <div {...progressBarProps} />
         </div>
       );
     }
@@ -244,7 +235,7 @@ class UploadFieldItem extends SilverStripeComponent {
   /**
    * Gets the remove item button
    *
-   * @returns {XML}
+   * @returns {object}
    */
   renderRemoveButton() {
     if (!this.props.canEdit) {
@@ -262,16 +253,15 @@ class UploadFieldItem extends SilverStripeComponent {
       <button
         className={classes}
         onClick={this.handleRemove}
-        ref="backButton"
-      >
-      </button>
+        ref={(button) => { this.backButton = button; }}
+      />
     );
   }
 
   /**
    * Gets the edit item button
    *
-   * @returns {XML}
+   * @returns {object}
    */
   renderViewButton() {
     if (!this.props.canEdit) {
@@ -296,7 +286,7 @@ class UploadFieldItem extends SilverStripeComponent {
   /**
    * Get file title / metadata block
    *
-   * @returns {XML}
+   * @returns {object}
    */
   renderFileDetails() {
     let size = '';
@@ -305,7 +295,7 @@ class UploadFieldItem extends SilverStripeComponent {
     }
     return (
       <div className="uploadfield-item__details fill-width flexbox-area-grow">
-        <span className="uploadfield-item__title" ref="title">
+        <span className="uploadfield-item__title" ref={(title) => { this.title = title; }}>
           {this.props.item.title}
         </span>
         <span className="uploadfield-item__meta">
@@ -317,7 +307,7 @@ class UploadFieldItem extends SilverStripeComponent {
 
   /**
    *
-   * @returns {XML}
+   * @returns {object}
    */
   render() {
     const fieldName = `${this.props.name}[Files][]`;
@@ -325,10 +315,12 @@ class UploadFieldItem extends SilverStripeComponent {
       <div className={this.getItemClassNames()}>
         <input type="hidden" value={this.props.item.id} name={fieldName} />
         <div
-          ref="thumbnail"
+          ref={(thumbnail) => { this.thumbnail = thumbnail; }}
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
           onClick={this.handleItemClick}
+          role="button"
+          tabIndex={0}
         />
         {this.renderFileDetails()}
         {this.renderProgressBar()}

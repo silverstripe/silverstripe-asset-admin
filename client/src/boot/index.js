@@ -1,3 +1,4 @@
+/* global document */
 import Config from 'lib/Config';
 import reactRouteRegister from 'lib/ReactRouteRegister';
 import AssetAdminRouter from 'containers/AssetAdmin/AssetAdminRouter';

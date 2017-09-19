@@ -5,7 +5,7 @@ jest.mock('containers/AssetAdmin/AssetAdmin');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { AssetAdminRouter } from '../AssetAdminRouter';
+import { Component as AssetAdminRouter } from '../AssetAdminRouter';
 
 describe('AssetAdminRouter', () => {
   let props = null;

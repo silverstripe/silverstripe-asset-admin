@@ -1,10 +1,10 @@
-/* global jest, describe, it, expect, beforeEach */
+/* global jest, describe, it, expect, beforeEach, Event */
 
 jest.mock('griddle-react');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { TableView } from '../TableView';
+import { Component as TableView } from '../TableView';
 
 describe('TableView', () => {
   let props = {};

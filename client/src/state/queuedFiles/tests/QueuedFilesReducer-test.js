@@ -1,10 +1,6 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.unmock('deep-freeze-strict');
-jest.unmock('../QueuedFilesActionTypes');
-jest.unmock('../QueuedFilesReducer.js');
-
-import queuedFilesReducer from '../QueuedFilesReducer.js';
+import queuedFilesReducer from '../QueuedFilesReducer';
 
 describe('queuedFilesReducer', () => {
   describe('PURGE_UPLOAD_QUEUE', () => {

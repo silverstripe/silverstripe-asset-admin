@@ -1,7 +1,9 @@
-/* global tinymce */
-/* eslint-disable no-cond-assign */
-/* eslint-disable no-param-reassign */
-/* eslint-disable func-names */
+/* global tinymce, window */
+/* eslint-disable
+  no-cond-assign,
+  no-param-reassign,
+  func-names
+*/
 
 import jQuery from 'jquery';
 import i18n from 'i18n';
@@ -411,7 +413,8 @@ jQuery.entwine('ss', ($) => {
       const attrs = this.getAttributes();
       const extraData = this.getExtraData();
 
-      // Find the element we are replacing - either the img, it's wrapper parent, or nothing (if creating)
+      // Find the element we are replacing - either the img, it's wrapper parent,
+      // or nothing (if creating)
       let replacee = (node && node.is('img,a')) ? node : null;
       if (replacee && replacee.parent().is('.captionImage')) replacee = replacee.parent();
 
@@ -442,7 +445,8 @@ jQuery.entwine('ss', ($) => {
         caption.attr('class', `caption ${attrs.class}`).text(extraData.CaptionText);
       } else {
         // Otherwise forget they exist
-        container = caption = null;
+        container = null;
+        caption = null;
       }
 
       // The element we are replacing the replacee with
@@ -454,7 +458,8 @@ jQuery.entwine('ss', ($) => {
       }
 
       // If we have a wrapper element, make sure the img is the first child - img might be the
-      // replacee, and the wrapper the replacer, and we can't do this till after the replace has happened
+      // replacee, and the wrapper the replacer, and we can't do this till after the replace has
+      // happened
       if (container) {
         container.prepend(img);
       }

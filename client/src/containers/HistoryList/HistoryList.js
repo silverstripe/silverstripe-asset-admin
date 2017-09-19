@@ -25,7 +25,6 @@ const createEndpoint = (endpointConfig, includeToken = true) => (
 );
 
 class HistoryList extends Component {
-
   constructor(props) {
     super(props);
 
@@ -129,7 +128,7 @@ class HistoryList extends Component {
         this.state.viewDetails,
       ].join('/');
 
-      const buttonClasses = [
+      const backButtonClasses = [
         'btn',
         'btn-secondary',
         'btn--icon-xl',
@@ -140,7 +139,7 @@ class HistoryList extends Component {
 
       return (
         <div className="history-list">
-          <a className={buttonClasses} onClick={this.handleBack} />
+          <a href="#" className={backButtonClasses} onClick={this.handleBack} />
           <FormBuilderLoader identifier="AssetAdmin.HistoryList" schemaUrl={schemaUrl} />
         </div>
       );
@@ -190,6 +189,6 @@ function mapStateToProps(state) {
   };
 }
 
-export { HistoryList };
+export { HistoryList as Component };
 
 export default connect(mapStateToProps)(HistoryList);

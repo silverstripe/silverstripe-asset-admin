@@ -9,7 +9,6 @@ const initialState = {
 
 function queuedFilesReducer(state = initialState, action) {
   switch (action.type) {
-
     case ACTION_TYPES.ADD_QUEUED_FILE:
       return deepFreeze({
         ...state,

@@ -1,15 +1,15 @@
+/* global document */
 import i18n from 'i18n';
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { bindActionCreators } from 'redux';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import { Collapse } from 'react-bootstrap-ss';
 import * as schemaActions from 'state/schema/SchemaActions';
 import { reset, initialize } from 'redux-form';
 import getIn from 'redux-form/lib/structure/plain/getIn';
-import ClickOutComponent from './ClickOutComponent';
+import Focusedzone from 'components/Focusedzone/Focusedzone';
 import getFormState from 'lib/getFormState';
 
 const identifier = 'AssetAdmin.SearchForm';
@@ -27,10 +27,10 @@ function hasFilters(filters) {
   return (filters && Object.keys(filters).length > 0);
 }
 
-class Search extends SilverStripeComponent {
-
+class Search extends Component {
   constructor(props) {
     super(props);
+
     this.expand = this.expand.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -43,7 +43,7 @@ class Search extends SilverStripeComponent {
     this.open = this.open.bind(this);
     this.state = {
       view: view.NONE,
-      searchText: this.props.filters && this.props.filters.name || '',
+      searchText: (props.filters && props.filters.name) || '',
     };
   }
 
@@ -51,15 +51,48 @@ class Search extends SilverStripeComponent {
     this.setOverrides(this.props);
   }
 
-  componentWillUnmount() {
-    this.setOverrides();
-  }
-
   componentWillReceiveProps(props) {
     if (props && (!hasFilters(props.filters) && hasFilters(this.props.filters))) {
       this.clearFormData(props);
     } else if (JSON.stringify(props.filters) !== JSON.stringify(this.props.filters)) {
       this.setOverrides(props);
+    }
+  }
+
+  componentWillUnmount() {
+    this.setOverrides();
+  }
+
+  /**
+   * Populate search form with search in case a pre-existing search has been queried
+   *
+   * @param {Object} props
+   */
+  setOverrides(props) {
+    if (props && (
+        !hasFilters(props.filters) || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl
+      )) {
+      // clear any overrides that may be in place
+      const schemaUrl = (props && props.searchFormSchemaUrl) || this.props.searchFormSchemaUrl;
+      if (schemaUrl) {
+        this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
+      }
+    }
+
+    if (props && (hasFilters(props.filters) && props.searchFormSchemaUrl)) {
+      const filters = props.filters || {};
+      const overrides = {
+        fields: Object
+          .keys(filters)
+          .map((name) => {
+            const value = filters[name];
+            return { name, value };
+          }),
+      };
+
+      // set overrides into redux store, so that it can be accessed by FormBuilder with the same
+      // schemaUrl.
+      this.props.actions.schema.setSchemaStateOverrides(props.searchFormSchemaUrl, overrides);
     }
   }
 
@@ -110,42 +143,11 @@ class Search extends SilverStripeComponent {
   clearFormData(props) {
     this.setState({ searchText: '' });
 
-    const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
+    const schemaUrl = (props && props.searchFormSchemaUrl) || this.props.searchFormSchemaUrl;
     if (schemaUrl) {
       this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
       this.props.actions.reduxForm.initialize(identifier, {}, Object.keys(this.props.formData));
       this.props.actions.reduxForm.reset(identifier);
-    }
-  }
-
-  /**
-   * Populate search form with search in case a pre-existing search has been queried
-   *
-   * @param {Object} props
-   */
-  setOverrides(props) {
-    if (props && (!hasFilters(props.filters) || this.props.searchFormSchemaUrl !== props.searchFormSchemaUrl)) {
-      // clear any overrides that may be in place
-      const schemaUrl = props && props.searchFormSchemaUrl || this.props.searchFormSchemaUrl;
-      if (schemaUrl) {
-        this.props.actions.schema.setSchemaStateOverrides(schemaUrl, null);
-      }
-    }
-
-    if (props && (hasFilters(props.filters) && props.searchFormSchemaUrl)) {
-      const filters = props.filters || {};
-      const overrides = {
-        fields: Object
-          .keys(filters)
-          .map((name) => {
-            const value = filters[name];
-            return { name, value };
-          }),
-      };
-
-      // set overrides into redux store, so that it can be accessed by FormBuilder with the same
-      // schemaUrl.
-      this.props.actions.schema.setSchemaStateOverrides(props.searchFormSchemaUrl, overrides);
     }
   }
 
@@ -257,8 +259,17 @@ class Search extends SilverStripeComponent {
         // noop
     }
 
+    const searchButtonClasses = [
+      'btn',
+      'btn-primary',
+      'search__submit',
+      'font-icon-search',
+      'btn--icon-large',
+      'btn--no-text',
+    ].join(' ');
+
     return (
-      <ClickOutComponent onClickOut={this.hide} callerComponent={this}>
+      <Focusedzone onClickOut={this.hide}>
         <div className={searchClasses.join(' ')}>
           <button
             className="btn btn--no-text btn-secondary search__trigger"
@@ -282,6 +293,7 @@ class Search extends SilverStripeComponent {
               onKeyUp={this.handleKeyUp}
               onChange={this.handleChange}
               value={searchText}
+              // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus
             />
             <button
@@ -291,10 +303,12 @@ class Search extends SilverStripeComponent {
               className={advancedButtonClasses.join(' ')}
               title={i18n._t('AssetAdmin.ADVANCED', 'Advanced')}
             >
-              <span className="search__filter-trigger-text">{i18n._t('AssetAdmin.ADVANCED', 'Advanced')}</span>
+              <span className="search__filter-trigger-text">
+                {i18n._t('AssetAdmin.ADVANCED', 'Advanced')}
+              </span>
             </button>
             <button
-              className="btn btn-primary search__submit font-icon-search btn--icon-large btn--no-text"
+              className={searchButtonClasses}
               title={i18n._t('AssetAdmin.SEARCH', 'Search')}
               onClick={this.doSearch}
             />
@@ -304,8 +318,7 @@ class Search extends SilverStripeComponent {
               className="btn font-icon-cancel btn--no-text btn--icon-md search__cancel"
               aria-controls={this.props.id}
               aria-expanded="true"
-            >
-            </button>
+            />
 
             <Collapse in={expanded}>
               <div id={formId} className="search__filter-panel">
@@ -317,7 +330,7 @@ class Search extends SilverStripeComponent {
             </Collapse>
           </div>
         </div>
-      </ClickOutComponent>
+      </Focusedzone>
     );
   }
 }
@@ -325,8 +338,6 @@ class Search extends SilverStripeComponent {
 Search.propTypes = {
   searchFormSchemaUrl: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  data: PropTypes.object,
-  folderId: PropTypes.number,
   onSearch: PropTypes.func.isRequired,
   filters: PropTypes.object,
   formData: PropTypes.object,
@@ -351,6 +362,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { Search, hasFilters };
+export { Search as Component, hasFilters };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Search);

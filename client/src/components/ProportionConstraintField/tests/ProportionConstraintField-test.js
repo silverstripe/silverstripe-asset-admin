@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { ProportionConstraintField } from '../ProportionConstraintField';
+import { Component as ProportionConstraintField } from '../ProportionConstraintField';
 
 // eslint-disable-next-line react/prop-types
 const FieldGroup = ({ children }) => <div>{children}</div>;
@@ -24,7 +24,11 @@ describe('ProportionConstraintField', () => {
     it('should call autofill with the correct values', () => {
       const autofill = jest.fn();
       const item = ReactTestUtils.renderIntoDocument(
-        <ProportionConstraintField data={{ ratio: 1.5 }} onAutofill={autofill} FieldGroup={FieldGroup}>
+        <ProportionConstraintField
+          data={{ ratio: 1.5 }}
+          onAutofill={autofill}
+          FieldGroup={FieldGroup}
+        >
           <input name="one" type="text" value="0" />
           <input name="two" type="text" value="0" />
         </ProportionConstraintField>
@@ -42,7 +46,12 @@ describe('ProportionConstraintField', () => {
     it('should not constrain when not active', () => {
       const mockFn = jest.fn();
       const item = ReactTestUtils.renderIntoDocument(
-        <ProportionConstraintField active={false} data={{ ratio: 1.5 }} onAutofill={mockFn} FieldGroup={FieldGroup}>
+        <ProportionConstraintField
+          active={false}
+          data={{ ratio: 1.5 }}
+          onAutofill={mockFn}
+          FieldGroup={FieldGroup}
+        >
           <input name="one" type="text" value="0" />
           <input name="two" type="text" value="0" />
         </ProportionConstraintField>

@@ -4,7 +4,7 @@ jest.mock('components/AssetDropzone/AssetDropzone');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { PreviewImageField } from '../PreviewImageField';
+import { Component as PreviewImageField } from '../PreviewImageField';
 
 describe('PreviewImageField', () => {
   let props = null;
@@ -17,7 +17,7 @@ describe('PreviewImageField', () => {
         exists: true,
         nameField: 'Name',
       },
-      onAutofill: jest.genMockFunction(),
+      onAutofill: jest.fn(),
       actions: {
         previewField: {
           removeFile: jest.genMockFunction(),

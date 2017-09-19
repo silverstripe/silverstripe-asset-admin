@@ -1,8 +1,8 @@
-/* global jest, jasmine, describe, it, expect, beforeEach */
+/* global jest, jasmine, describe, it, expect, beforeEach, Event */
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { GalleryItem } from '../GalleryItem';
+import { Component as GalleryItem } from '../GalleryItem';
 import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
 
 describe('GalleryItem', () => {
@@ -13,9 +13,9 @@ describe('GalleryItem', () => {
       id: 0,
       selectable: true,
       selected: false,
-      onSelect: jest.genMockFunction(),
-      onActivate: jest.genMockFunction(),
-      handleDelete: jest.genMockFunction(),
+      onSelect: jest.fn(),
+      onActivate: jest.fn(),
+      onDelete: jest.fn(),
       item: {
         width: 10,
         height: 10,

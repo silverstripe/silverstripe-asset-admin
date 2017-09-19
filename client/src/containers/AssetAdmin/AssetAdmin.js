@@ -1,7 +1,6 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import backend from 'lib/Backend';
 import i18n from 'i18n';
 import * as galleryActions from 'state/gallery/GalleryActions';
@@ -58,8 +57,7 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   return { schemaUrl, targetId };
 }
 
-class AssetAdmin extends SilverStripeComponent {
-
+class AssetAdmin extends Component {
   constructor(props) {
     super(props);
     this.handleOpenFile = this.handleOpenFile.bind(this);
@@ -121,6 +119,63 @@ class AssetAdmin extends SilverStripeComponent {
       return this.props.folder.id;
     }
     return 0;
+  }
+
+  /**
+   * Assign breadcrumbs from selected folder
+   *
+   * @param {Object} props
+   */
+  setBreadcrumbs(props) {
+    const folder = props.folder;
+    const query = props.query;
+    // Set root breadcrumb
+    const breadcrumbs = [{
+      text: i18n._t('AssetAdmin.FILES', 'Files'),
+      href: this.props.getUrl && this.props.getUrl(),
+      onClick: (event) => {
+        event.preventDefault();
+        this.handleBrowse();
+      },
+    }];
+
+    if (folder && folder.id) {
+      // Add parent folders
+      if (folder.parents) {
+        folder.parents.forEach((parent) => {
+          breadcrumbs.push({
+            text: parent.title,
+            href: this.props.getUrl && this.props.getUrl(parent.id),
+            onClick: (event) => {
+              event.preventDefault();
+              this.handleBrowse(parent.id);
+            },
+          });
+        });
+      }
+
+      // Add current folder
+      breadcrumbs.push({
+        text: folder.title,
+        href: this.props.getUrl && this.props.getUrl(folder.id),
+        onClick: (event) => {
+          event.preventDefault();
+          this.handleBrowse(folder.id);
+        },
+        icon: {
+          className: 'icon font-icon-edit-list',
+          onClick: this.handleFolderIcon,
+        },
+      });
+    }
+    // Search leaf if there was a search entered
+    if (hasFilters(query.filter)) {
+      breadcrumbs.push({
+        text: i18n._t('LeftAndMain.SEARCHRESULTS', 'Search results'),
+      });
+    }
+
+    this.props.actions.breadcrumbsActions.setBreadcrumbs(breadcrumbs);
   }
 
   /**
@@ -231,71 +286,14 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   /**
-   * Assign breadcrumbs from selected folder
-   *
-   * @param {Object} folder
-     */
-  setBreadcrumbs(props) {
-    const folder = props.folder;
-    const query = props.query;
-    // Set root breadcrumb
-    const breadcrumbs = [{
-      text: i18n._t('AssetAdmin.FILES', 'Files'),
-      href: this.props.getUrl && this.props.getUrl(),
-      onClick: (event) => {
-        event.preventDefault();
-        this.handleBrowse();
-      },
-    }];
-
-    if (folder && folder.id) {
-      // Add parent folders
-      if (folder.parents) {
-        folder.parents.forEach((parent) => {
-          breadcrumbs.push({
-            text: parent.title,
-            href: this.props.getUrl && this.props.getUrl(parent.id),
-            onClick: (event) => {
-              event.preventDefault();
-              this.handleBrowse(parent.id);
-            },
-          });
-        });
-      }
-
-      // Add current folder
-      breadcrumbs.push({
-        text: folder.title,
-        href: this.props.getUrl && this.props.getUrl(folder.id),
-        onClick: (event) => {
-          event.preventDefault();
-          this.handleBrowse(folder.id);
-        },
-        icon: {
-          className: 'icon font-icon-edit-list',
-          action: this.handleFolderIcon,
-        },
-      });
-    }
-    // Search leaf if there was a search entered
-    if (hasFilters(query.filter)) {
-      breadcrumbs.push({
-        text: i18n._t('LeftAndMain.SEARCHRESULTS', 'Search results'),
-      });
-    }
-
-    this.props.actions.breadcrumbsActions.setBreadcrumbs(breadcrumbs);
-  }
-
-  /**
    * Check if either of the two objects differ
    *
    * @param {Object} left
    * @param {Object} right
-     */
+   */
   compare(left, right) {
     // Check for falsiness
-    if (left && !right || right && !left) {
+    if ((left && !right) || (right && !left)) {
       return true;
     }
 
@@ -417,11 +415,12 @@ class AssetAdmin extends SilverStripeComponent {
     ));
     const fileIDs = files.map(file => file.id);
     const parentId = this.props.folder ? this.props.folder.id : 0;
-    return this.props.actions.files.deleteFiles(fileIDs, dataIds).then(({ data: { deleteFiles } }) => {
-      this.handleBrowse(parentId, null, this.props.query);
+    return this.props.actions.files.deleteFiles(fileIDs, dataIds)
+      .then(({ data: { deleteFiles } }) => {
+        this.handleBrowse(parentId, null, this.props.query);
 
-      return deleteFiles;
-    });
+        return deleteFiles;
+      });
   }
 
   /**
@@ -549,7 +548,7 @@ class AssetAdmin extends SilverStripeComponent {
   /**
    * Generates the Gallery react component to render with
    *
-   * @returns {Component}
+   * @returns {object}
    */
   renderGallery() {
     const config = this.props.sectionConfig;
@@ -599,7 +598,7 @@ class AssetAdmin extends SilverStripeComponent {
   /**
    * Generates the Editor react component to render with
    *
-   * @returns {Component}
+   * @returns {object}
    */
   renderEditor() {
     const config = this.props.sectionConfig;
@@ -642,12 +641,15 @@ class AssetAdmin extends SilverStripeComponent {
       <div className="fill-height">
         <Toolbar
           showBackButton={showBackButton}
-          handleBackButtonClick={this.handleBackButtonClick}
+          onBackButtonClick={this.handleBackButtonClick}
         >
           <Breadcrumb multiline />
           <div className="asset-admin__toolbar-extra pull-xs-right fill-width">
-            <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
-              searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.getFolderId()}
+            <Search
+              onSearch={this.handleDoSearch}
+              id="AssetSearchForm"
+              searchFormSchemaUrl={searchFormSchemaUrl}
+              folderId={this.getFolderId()}
               filters={filters}
             />
             {this.props.toolbarChildren}
@@ -725,7 +727,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { AssetAdmin, getFormSchema };
+export { AssetAdmin as Component, getFormSchema };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

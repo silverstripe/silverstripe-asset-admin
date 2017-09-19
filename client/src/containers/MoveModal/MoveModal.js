@@ -14,7 +14,6 @@ import configShape from 'lib/configShape';
 import moveFilesMutation from 'state/files/moveFilesMutation';
 
 class MoveModal extends React.Component {
-
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -64,8 +63,8 @@ class MoveModal extends React.Component {
       <FormBuilderModal
         title={title}
         show={show}
-        handleHide={onHide}
-        handleSubmit={this.handleSubmit}
+        onHide={onHide}
+        onSubmit={this.handleSubmit}
         identifier="AssetAdmin.MoveForm"
         schemaUrl={`${schemaUrl}/${folderId}`}
       />

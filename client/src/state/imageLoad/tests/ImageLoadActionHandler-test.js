@@ -84,7 +84,8 @@ describe('ImageLoadActionHandler', () => {
     };
     let attempts = 0;
     const handler = (url, resolve, reject) => {
-      if (++attempts > 2) {
+      attempts += 1;
+      if (attempts > 2) {
         resolve();
       } else {
         reject();

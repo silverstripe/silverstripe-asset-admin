@@ -4,7 +4,7 @@ jest.mock('containers/InsertMediaModal/InsertMediaModal');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { UploadField } from '../UploadField.js';
+import { Component as UploadField } from '../UploadField';
 
 describe('UploadField', () => {
   let props = {};
@@ -20,7 +20,7 @@ describe('UploadField', () => {
       id: 'Form_MyTestUpload',
       name: 'MyTestUpload',
       files,
-      onChange: jest.genMockFunction(),
+      onChange: jest.fn(),
       actions: {
         uploadField: {
           setFiles: jest.genMockFunction(),

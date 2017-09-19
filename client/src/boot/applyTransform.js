@@ -41,7 +41,7 @@ const DisabledTreeDropdownField = (TreeDropdownField) => (props) => {
     },
   };
 
-  return <TreeDropdownField { ...newProps } />;
+  return <TreeDropdownField {...newProps} />;
 };
 
 const ConnectedMoveTreeDropdownField = compose(

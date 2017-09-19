@@ -13,7 +13,6 @@ const initialState = {
  */
 export default function imageLoadReducer(state = initialState, { type, payload } = {}) {
   switch (type) {
-
     case IMAGE_LOAD.SET_STATUS: {
       return {
         ...state,

@@ -256,7 +256,7 @@ class TableView extends Component {
     }
     if (rowData.id > 0) {
       return (
-        <div className="gallery__progress-bar--complete"></div>
+        <div className="gallery__progress-bar--complete" />
       );
     }
     const progressBarProps = {
@@ -268,7 +268,7 @@ class TableView extends Component {
 
     return (
       <div className="gallery__progress-bar">
-        <div {...progressBarProps}></div>
+        <div {...progressBarProps} />
       </div>
     );
   }
@@ -350,7 +350,7 @@ class TableView extends Component {
     }
 
     return (
-        <div className={classNames.join(' ')} style={styles} />
+      <div className={classNames.join(' ')} style={styles} />
     );
   }
 
@@ -363,6 +363,6 @@ TableView.defaultProps = galleryViewDefaultProps;
 
 TableView.propTypes = galleryViewPropTypes;
 
-export { TableView };
+export { TableView as Component };
 
 export default TableView;

@@ -21,7 +21,6 @@ const initialState = {
  */
 export default function galleryReducer(state = initialState, { type, payload } = {}) {
   switch (type) {
-
     case GALLERY.SET_FILE_BADGE: {
       return {
         ...state,

@@ -62,7 +62,7 @@ class InsertEmbedModal extends Component {
   getModalProps() {
     const props = Object.assign(
       {
-        handleSubmit: this.handleSubmit,
+        onSubmit: this.handleSubmit,
         onLoadingError: this.handleLoadingError,
         showErrorMessage: true,
         responseClassBad: 'alert alert-danger',
@@ -72,7 +72,7 @@ class InsertEmbedModal extends Component {
       {
         className: `insert-embed-modal ${this.props.className}`,
         bsSize: 'lg',
-        handleHide: this.props.onHide,
+        onHide: this.props.onHide,
         title: ((this.props.targetUrl)
           ? i18n._t('AssetAdmin.EditTitle', 'Media from the web')
           : i18n._t('AssetAdmin.CreateTitle', 'Insert new media from the web')),
@@ -194,6 +194,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { InsertEmbedModal };
+export { InsertEmbedModal as Component };
 
 export default connect(mapStateToProps, mapDispatchToProps)(InsertEmbedModal);

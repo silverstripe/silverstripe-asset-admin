@@ -1,4 +1,4 @@
-/* global jest, describe, it, expect, beforeEach */
+/* global jest, describe, it, expect, beforeEach, Event */
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('components/FormAlert/FormAlert');
@@ -21,7 +21,7 @@ jest.mock('jquery', () => {
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { Gallery } from '../Gallery';
+import { Component as Gallery } from '../Gallery';
 
 describe('Gallery', () => {
   let props = null;

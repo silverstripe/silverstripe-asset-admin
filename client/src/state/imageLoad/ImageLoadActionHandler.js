@@ -1,3 +1,4 @@
+/* global Image */
 import IMAGE_STATUS from './ImageLoadStatus';
 import ImageLoadLocker from './ImageLoadLocker';
 

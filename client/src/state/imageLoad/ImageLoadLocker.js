@@ -1,3 +1,4 @@
+/* global window */
 class ImageLoadLocker {
   constructor() {
     this.urls = [];
@@ -32,6 +33,6 @@ class ImageLoadLocker {
 window.ss = window.ss || {};
 window.ss.imagelocker = window.ss.imagelocker || new ImageLoadLocker();
 
-export { ImageLoadLocker };
+export { ImageLoadLocker as Component };
 
 export default window.ss.imagelocker;
