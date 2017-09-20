@@ -96,7 +96,7 @@ Feature: Manage files
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
-      And I should see "successfully deleted" in the message box
+      And I should see "3 folders/files were successfully archived" in the message box
 
   Scenario: I can move multiple files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
@@ -177,9 +177,9 @@ Feature: Manage files
     When I click on the file named "folder3" in the gallery
       And I check the file named "file1" in the gallery
     Then I press the "Delete" button
-      And I see the text "file is currently used" in the alert
+      And I see the text "file is currently in use" in the alert
       And I confirm the dialog
-    Then I should see "successfully deleted" in the message box
+    Then I should see "1 folders/files were successfully archived" in the message box
       And I should not see the file named "file1" in the gallery
 
   Scenario: I can move a file through editing
