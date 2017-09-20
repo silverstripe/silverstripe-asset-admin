@@ -644,7 +644,7 @@ class AssetAdmin extends Component {
           onBackButtonClick={this.handleBackButtonClick}
         >
           <Breadcrumb multiline />
-          <div className="asset-admin__toolbar-extra pull-xs-right fill-width">
+          <div className="asset-admin__toolbar-extra pull-xs-right fill-width vertical-align-items">
             <Search
               onSearch={this.handleDoSearch}
               id="AssetSearchForm"
