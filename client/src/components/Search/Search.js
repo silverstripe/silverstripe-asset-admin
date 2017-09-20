@@ -11,6 +11,7 @@ import { reset, initialize } from 'redux-form';
 import getIn from 'redux-form/lib/structure/plain/getIn';
 import Focusedzone from 'components/Focusedzone/Focusedzone';
 import getFormState from 'lib/getFormState';
+import classnames from 'classnames';
 
 const identifier = 'AssetAdmin.SearchForm';
 const view = {
@@ -259,20 +260,29 @@ class Search extends Component {
         // noop
     }
 
-    const searchButtonClasses = [
+    const searchButtonClasses = classnames(
       'btn',
       'btn-primary',
       'search__submit',
       'font-icon-search',
       'btn--icon-large',
       'btn--no-text',
-    ].join(' ');
+    );
+
+    const searchTriggerButtonClasses = classnames(
+      'btn',
+      'btn--no-text',
+      'btn-secondary',
+      'search__trigger',
+      'font-icon-search',
+      'btn--icon-large'
+    );
 
     return (
       <Focusedzone onClickOut={this.hide}>
         <div className={searchClasses.join(' ')}>
           <button
-            className="btn btn--no-text btn-secondary search__trigger"
+            className={searchTriggerButtonClasses}
             type="button"
             title={i18n._t('AssetAdmin.SEARCH', 'Search')}
             aria-owns={this.props.id}
@@ -280,9 +290,7 @@ class Search extends Component {
             aria-expanded="false"
             onClick={this.open}
             id={triggerId}
-          >
-            <span className="font-icon-search btn--icon-large" />
-          </button>
+          />
           <div id={this.props.id} className="search__group">
             <input
               aria-labelledby={triggerId}

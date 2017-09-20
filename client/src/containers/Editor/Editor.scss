@@ -25,6 +25,10 @@
   .editor__details {
     height: calc(100vh - #{$toolbar-total-height}); // Height fix in Safari
     transform: translateZ(0); // Safari fix - form fields are not visible intermittently
+
+    .btn--close-panel {
+      margin-right: 0;
+    }
   }
 }
 
