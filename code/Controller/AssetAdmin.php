@@ -1050,8 +1050,15 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             $extension = File::get_file_extension($data['FileFilename']);
             $newClass = File::get_class_for_file_extension($extension);
 
-            // if the class has changed, cast it to the proper class
-            if ($record->getClassName() !== $newClass) {
+            // If the file extension has changed, change to the proper new class which represents it.
+            // The class will not change if the current class is a subclass of the new class.
+            // An exception is if new class is the generic File::class - to not change to the generic
+            // File::class make sure to register the file extension and your class to config in
+            // File::class_for_file_extension
+            $currentClass = $record->getClassName();
+            if (!is_a($currentClass, $newClass, true) ||
+                ($currentClass !== $newClass && $newClass === File::class)
+            ) {
                 $record = $record->newClassInstance($newClass);
 
                 // update the allowed category for the new file extension
