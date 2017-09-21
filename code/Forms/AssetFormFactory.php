@@ -162,7 +162,7 @@ abstract class AssetFormFactory implements FormFactory
                         'dirtyClass' => '',
                     ],
                 ]);
-            
+
             return $action;
         }
         return null;
@@ -349,7 +349,7 @@ abstract class AssetFormFactory implements FormFactory
             'Inherit' => _t(__CLASS__.'.INHERIT', 'Inherit from parent folder'),
             'Anyone' => _t(__CLASS__.'.ANYONE', 'Anyone'),
             'LoggedInUsers' => _t(__CLASS__.'.LOGGED_IN', 'Logged-in users'),
-            'OnlyTheseUsers' => _t(__CLASS__.'.ONLY_GROUPS', 'Only these people (choose from list)')
+            'OnlyTheseUsers' => _t(__CLASS__.'.ONLY_GROUPS', 'Only these groups (choose from list)')
         ];
 
         // No "Anyone" editors option
