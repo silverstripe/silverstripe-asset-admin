@@ -78,7 +78,6 @@ class InsertEmbedModal extends Component {
           : i18n._t('AssetAdmin.CreateTitle', 'Insert new media from the web')),
       }
     );
-    delete props.onHide;
     delete props.sectionConfig;
     delete props.onInsert;
     delete props.fileAttributes;
