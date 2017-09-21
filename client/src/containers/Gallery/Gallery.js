@@ -678,7 +678,7 @@ class Gallery extends Component {
                 type="button"
                 disabled={!canEdit}
               >
-                <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
+                <span className="btn__text btn__title">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
               </button>
 
               <button
@@ -688,7 +688,7 @@ class Gallery extends Component {
                 onClick={this.handleCreateFolder}
                 disabled={!canEdit}
               >
-                <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
+                <span className="btn__text btn__title">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
               </button>
             </div>
           </div>
