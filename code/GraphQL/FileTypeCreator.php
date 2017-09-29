@@ -29,14 +29,6 @@ class FileTypeCreator extends TypeCreator
      */
     protected $thumbnailGenerator;
 
-    /**
-     * @config
-     * @var array
-     */
-    private static $dependencies = [
-        'ThumbnailGenerator' => '%$' . ThumbnailGenerator::class,
-    ];
-
     public function __construct(Manager $manager = null)
     {
         $this->accessor = new CaseInsensitiveFieldAccessor();
