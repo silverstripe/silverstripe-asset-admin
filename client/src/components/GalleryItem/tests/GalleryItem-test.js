@@ -179,8 +179,11 @@ describe('GalleryItem', () => {
         <GalleryItem {...props} />
       );
 
+      const classNames = item.getThumbnailClassNames();
+
       expect(item.getThumbnailStyles()).toEqual({});
-      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail gallery-item__thumbnail--small');
+      expect(classNames).toContain('gallery-item__thumbnail');
+      expect(classNames).toContain('gallery-item__thumbnail--small');
     });
 
     it('should not return backgroundImage if thumbnail failed to load', () => {
@@ -199,10 +202,12 @@ describe('GalleryItem', () => {
         <GalleryItem {...props} />
       );
 
+      const classNames = item.getThumbnailClassNames();
+
       expect(item.getThumbnailStyles()).toEqual({});
-      expect(item.getThumbnailClassNames()).toBe(
-        'gallery-item__thumbnail gallery-item__thumbnail--small gallery-item__thumbnail--error'
-      );
+      expect(classNames).toContain('gallery-item__thumbnail');
+      expect(classNames).toContain('gallery-item__thumbnail--small');
+      expect(classNames).toContain('gallery-item__thumbnail--error');
     });
 
     it('should return an empty object if the item is not an image', () => {
@@ -229,7 +234,7 @@ describe('GalleryItem', () => {
     });
 
     it('should return not return small classes by default', () => {
-      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail');
+      expect(item.getThumbnailClassNames()).toContain('gallery-item__thumbnail');
     });
 
     it('should return small classes only if isImageSmallerThanThumbnail returns true', () => {
