@@ -1,12 +1,13 @@
 {
     "name": "silverstripe/asset-admin",
     "description": "Asset management for the SilverStripe CMS",
-    "type": "silverstripe-module",
+    "type": "silverstripe-vendormodule",
     "license": "BSD-3-Clause",
     "require": {
         "silverstripe/admin": "^1.0@dev",
         "silverstripe/framework": "^4@dev",
-        "silverstripe/graphql": "^0.2@dev"
+        "silverstripe/graphql": "^0.2@dev",
+        "silverstripe/vendor-plugin": "^1.0"
     },
     "require-dev": {
         "phpunit/PHPUnit": "^5.7",
@@ -20,7 +21,11 @@
         "branch-alias": {
             "1.x-dev": "1.0.x-dev",
             "dev-master": "2.x-dev"
-        }
+        },
+        "expose": [
+            "client/dist",
+            "client/lang"
+        ]
     },
     "scripts": {
         "lint": "phpcs -s code/ tests/"
