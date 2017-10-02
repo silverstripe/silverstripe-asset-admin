@@ -1158,26 +1158,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         /** @var File $file */
         if ($file->getIsImage()) {
-            $generator = $this->getThumbnailGenerator();
+            $thumbnails = $this->generateThumbnails($file, $thumbnailLinks);
 
-            // Small thumbnail
-            $smallWidth = UploadField::config()->uninherited('thumbnail_width');
-            $smallHeight = UploadField::config()->uninherited('thumbnail_height');
-
-            // Large thumbnail
-            $width = $this->config()->get('thumbnail_width');
-            $height = $this->config()->get('thumbnail_height');
-
-            // Generate links if client requests them
-            // Note: Thumbnails should always be generated even if links are not
             if ($thumbnailLinks) {
-                $object['smallThumbnail'] = $generator->generateThumbnailLink($file, $smallWidth, $smallHeight);
-                $object['thumbnail'] = $generator->generateThumbnailLink($file, $width, $height);
-            } else {
-                $generator->generateThumbnail($file, $smallWidth, $smallHeight);
-                $generator->generateThumbnail($file, $width, $height);
+                $object = array_merge($object, $thumbnails);
             }
-
             // Save dimensions
             $object['width'] = $file->getWidth();
             $object['height'] = $file->getHeight();
@@ -1186,6 +1171,43 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         return $object;
+    }
+
+    /**
+     * Generate thumbnails and provide links for a given file
+     *
+     * @param File $file
+     * @param bool $thumbnailLinks
+     * @return array
+     */
+    public function generateThumbnails(File $file, $thumbnailLinks = false)
+    {
+        $links = [];
+        if (!$file->getIsImage()) {
+            return $links;
+        }
+        $generator = $this->getThumbnailGenerator();
+
+        // Small thumbnail
+        $smallWidth = UploadField::config()->uninherited('thumbnail_width');
+        $smallHeight = UploadField::config()->uninherited('thumbnail_height');
+
+        // Large thumbnail
+        $width = $this->config()->get('thumbnail_width');
+        $height = $this->config()->get('thumbnail_height');
+
+        // Generate links if client requests them
+        // Note: Thumbnails should always be generated even if links are not
+        if ($thumbnailLinks) {
+            $links['smallThumbnail'] = $generator->generateThumbnailLink($file, $smallWidth, $smallHeight);
+            $links['thumbnail'] = $generator->generateThumbnailLink($file, $width, $height);
+        } else {
+            $generator->generateThumbnail($file, $smallWidth, $smallHeight);
+            $generator->generateThumbnail($file, $width, $height);
+        }
+
+        $this->extend('updateGeneratedThumbnails', $file, $links, $generator);
+        return $links;
     }
 
     /**
