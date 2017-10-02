@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Tests\GraphQL;
 
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\GraphQL\FileTypeCreator;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\Image;
@@ -38,10 +39,19 @@ class FileTypeCreatorTest extends SapphireTest
             AssetStore::VISIBILITY_PUBLIC => ThumbnailGenerator::URL,
         ]);
 
+        $assetAdmin = AssetAdmin::create();
+
         // Build image
         $image = new Image();
         $image->setFromLocalFile(__DIR__.'/../Forms/fixtures/largeimage.png', 'TestImage.png');
         $image->write();
+
+        // Image original is unset
+        $thumbnail = $type->resolveThumbnailField($image, [], [], null);
+        $this->assertNull($thumbnail);
+
+        // Generate thumbnails by viewing this file's data
+        $assetAdmin->getObjectFromData($image, false);
 
         // protected image should have inline thumbnail
         $thumbnail = $type->resolveThumbnailField($image, [], [], null);

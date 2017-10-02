@@ -9,6 +9,7 @@ $gallery-item-label-height: 40px;
   border-radius: $border-radius-sm;
   transition: box-shadow $transition-speed-fast;
   height: $gallery-item-height;
+  overflow: hidden;
 
   &:hover {
     box-shadow: $gallery-item-shadow;
@@ -67,11 +68,14 @@ $gallery-item-label-height: 40px;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
-  border-radius: $border-radius-sm $border-radius-sm 0 0;
 }
 
 .gallery-item__thumbnail--error {
   background-color: mix($white, $brand-danger, 20);
+}
+
+.gallery-item__thumbnail--no-preview {
+  background-color: $gray-600;
 }
 
 .gallery-item__thumbnail--loading {
@@ -225,7 +229,6 @@ $gallery-item-label-height: 40px;
   transition-property: opacity, background;
   transition-duration: $transition-speed-mid;
   color: $white;
-  border-radius: $border-radius-sm $border-radius-sm 0 0;
   height: $gallery-thumb-height;
   width: 100%;
   font-size: 14px;

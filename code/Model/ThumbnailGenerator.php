@@ -17,6 +17,13 @@ class ThumbnailGenerator
     use Configurable;
 
     /**
+     * Set to false to not generate
+     *
+     * @var bool
+     */
+    protected $generates = true;
+
+    /**
      * Thumbnails are inline
      */
     const INLINE = 'inline';
@@ -51,7 +58,7 @@ class ThumbnailGenerator
         AssetStore::VISIBILITY_PROTECTED => self::INLINE,
         AssetStore::VISIBILITY_PUBLIC => self::URL,
     ];
-    
+
     /**
      * Generate thumbnail and return the "src" property for this thumbnail
      *
@@ -63,10 +70,10 @@ class ThumbnailGenerator
     public function generateThumbnailLink(AssetContainer $file, $width, $height)
     {
         $thumbnail = $this->generateThumbnail($file, $width, $height);
-        
+
         return $this->generateLink($thumbnail);
     }
-    
+
     /**
      * Generate thumbnail object
      *
@@ -79,6 +86,11 @@ class ThumbnailGenerator
     {
         if (!$file->getIsImage() || !$file->exists()) {
             return null;
+        }
+
+        // Disable generation if only querying existing files
+        if (!$this->getGenerates()) {
+            $file = $file->existingOnly();
         }
 
         // Make large thumbnail
@@ -128,5 +140,23 @@ class ThumbnailGenerator
             default:
                 throw new LogicException("Invalid url rule {$urlRule}");
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function getGenerates()
+    {
+        return $this->generates;
+    }
+
+    /**
+     * @param bool $generates
+     * @return $this
+     */
+    public function setGenerates($generates)
+    {
+        $this->generates = $generates;
+        return $this;
     }
 }

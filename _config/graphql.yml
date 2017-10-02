@@ -21,3 +21,14 @@ SilverStripe\GraphQL\Controller:
       moveFiles: 'SilverStripe\AssetAdmin\GraphQL\MoveFilesMutationCreator'
       unpublishFiles: 'SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator'
       publishFiles: 'SilverStripe\AssetAdmin\GraphQL\PublishFileMutationCreator'
+---
+Name: assetadmingraphql-dependencies
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\AssetAdmin\Model\ThumbnailGenerator.graphql:
+    class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
+    properties:
+      Generates: false
+  SilverStripe\AssetAdmin\GraphQL\FileTypeCreator:
+    properties:
+      ThumbnailGenerator: '%$SilverStripe\AssetAdmin\Model\ThumbnailGenerator.graphql'

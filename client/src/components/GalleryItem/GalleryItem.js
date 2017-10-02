@@ -119,6 +119,10 @@ class GalleryItem extends Component {
       thumbnailClassNames.push('gallery-item__thumbnail--small');
     }
 
+    if (!this.props.item.thumbnail && this.isImage()) {
+      thumbnailClassNames.push('gallery-item__thumbnail--no-preview');
+    }
+
     // Check loading status of thumbnail
     switch (this.props.loadState) {
       // Show loading indicator for preloading images
