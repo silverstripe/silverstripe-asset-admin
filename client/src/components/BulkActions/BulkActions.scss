@@ -158,8 +158,36 @@ $bulk-actions-width: 300px;
 }
 
 @include media-breakpoint-down(sm) {
-  .bulk-actions__more-actions-menu {
+
+  // Flip the popover so that arrow points downward
+  .popover.bulk-actions__more-actions-menu {
     top: auto!important;
     bottom: 42px!important;
+    margin-top: 0;
+    margin-bottom: 10px;
+
+    & > .arrow {
+      top: auto;
+      bottom: 0;
+
+      &:before,
+      &::after {
+        margin-left: -6px;
+        border-top-width: 11px;
+        border-bottom-width: 0;
+      }
+
+      &:before {
+        top: auto;
+        bottom: -11px;
+        border-top-color: rgba(0,0,0,0.15);
+      }
+
+      &:after {
+        top: auto;
+        bottom: -10px;
+        border-top-color: $white;
+      }
+    }
   }
 }
