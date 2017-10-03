@@ -10,9 +10,12 @@ call_user_func(function () {
     // Re-enable media dialog
     $config = TinyMCEConfig::get('cms');
     $config->enablePlugins([
-        'ssmedia' => $module->getResource('client/dist/js/TinyMCE_ssmedia.js')->getURL(),
-        'ssembed' => $module->getResource('client/dist/js/TinyMCE_ssembed.js')->getURL(),
-        'sslinkfile' => $module->getResource('client/dist/js/TinyMCE_sslink-file.js')->getURL()
+        'ssmedia' => $module
+            ->getResource('client/dist/js/TinyMCE_ssmedia.js'),
+        'ssembed' => $module
+            ->getResource('client/dist/js/TinyMCE_ssembed.js'),
+        'sslinkfile' => $module
+            ->getResource('client/dist/js/TinyMCE_sslink-file.js'),
     ]);
     $config->insertButtonsAfter('table', 'ssmedia');
     $config->insertButtonsAfter('ssmedia', 'ssembed');
