@@ -51,10 +51,10 @@ before_script:
   - if [[ $BEHAT_TEST ]]; then mkdir artifacts; fi
   - if [[ $BEHAT_TEST ]]; then sh -e /etc/init.d/xvfb start; sleep 3; fi
   - if [[ $BEHAT_TEST ]]; then (vendor/bin/selenium-server-standalone > artifacts/selenium.log 2>&1 &); fi
-  - if [[ $BEHAT_TEST ]]; then (vendor/bin/serve --bootstrap-file cms/tests/behat/serve-bootstrap.php &> artifacts/serve.log &); fi
+  - if [[ $BEHAT_TEST ]]; then (vendor/bin/serve --bootstrap-file vendor/silverstripe/cms/tests/behat/serve-bootstrap.php &> artifacts/serve.log &); fi
 
 # Install NPM dependencies
-  - if [[ $NPM_TEST ]]; then nvm install $TRAVIS_NODE_VERSION && nvm use $TRAVIS_NODE_VERSION && npm install -g yarn && yarn install --network-concurrency 1 && (cd silverstripe-admin && yarn install --network-concurrency 1) && yarn run build; fi
+  - if [[ $NPM_TEST ]]; then nvm install $TRAVIS_NODE_VERSION && nvm use $TRAVIS_NODE_VERSION && npm install -g yarn && yarn install --network-concurrency 1 && (cd vendor/silverstripe/admin && yarn install --network-concurrency 1) && yarn run build; fi
 
 script:
   - if [[ $PHPUNIT_TEST ]]; then vendor/bin/phpunit tests/php; fi
@@ -66,4 +66,4 @@ script:
   - if [[ $PHPCS_TEST ]]; then composer run-script lint; fi
 
 after_failure:
-  - php ./framework/tests/behat/travis-upload-artifacts.php --if-env BEHAT_TEST,ARTIFACTS_BUCKET,ARTIFACTS_KEY,ARTIFACTS_SECRET --target-path $TRAVIS_REPO_SLUG/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID --artifacts-base-url https://s3.amazonaws.com/$ARTIFACTS_BUCKET/ --artifacts-path ./artifacts/
+  - php ./vendor/silverstripe/framework/tests/behat/travis-upload-artifacts.php --if-env BEHAT_TEST,ARTIFACTS_BUCKET,ARTIFACTS_KEY,ARTIFACTS_SECRET --target-path $TRAVIS_REPO_SLUG/$TRAVIS_BUILD_ID/$TRAVIS_JOB_ID --artifacts-base-url https://s3.amazonaws.com/$ARTIFACTS_BUCKET/ --artifacts-path ./artifacts/

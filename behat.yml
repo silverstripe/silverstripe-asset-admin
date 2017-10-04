@@ -2,7 +2,7 @@
 # Note that asset-admin behat tests require CMS module
 # ========================================================================= #
 # vendor/bin/selenium-server-standalone -Dwebdriver.firefox.bin="/Applications/Firefox31.app/Contents/MacOS/firefox-bin"
-# vendor/bin/serve --bootstrap-file cms/tests/behat/serve-bootstrap.php
+# vendor/bin/serve --bootstrap-file vendor/silverstripe/cms/tests/behat/serve-bootstrap.php
 # vendor/bin/behat @asset-admin
 # ========================================================================= #
 default:
@@ -25,7 +25,7 @@ default:
             - %paths.modules.asset-admin%/tests/behat/files/
   extensions:
     SilverStripe\BehatExtension\Extension:
-      bootstrap_file: cms/tests/behat/serve-bootstrap.php
+      bootstrap_file: vendor/silverstripe/cms/tests/behat/serve-bootstrap.php
       screenshot_path: %paths.base%/artifacts/screenshots
       retry_seconds: 4 # default is 2
     SilverStripe\BehatExtension\MinkExtension:

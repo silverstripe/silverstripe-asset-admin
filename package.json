@@ -35,10 +35,10 @@
     ],
     "modulePaths": [
       "client/src",
-      "../silverstripe-admin/client/src",
-      "../silverstripe-admin/node_modules",
-      "silverstripe-admin/client/src",
-      "silverstripe-admin/node_modules"
+      "../admin/client/src",
+      "../admin/node_modules",
+      "vendor/silverstripe/admin/client/src",
+      "vendor/silverstripe/admin/node_modules"
     ],
     "testMatch": [
       "**/tests/**/*-test.js?(x)"
@@ -48,7 +48,7 @@
     }
   },
   "devDependencies": {
-    "@silverstripe/webpack-config": "^0.3.0",
+    "@silverstripe/webpack-config": "^0.4.0",
     "babel-jest": "^19.0.0",
     "jest-cli": "^19.0.2"
   },
