@@ -606,9 +606,9 @@ class Gallery extends Component {
     // Set small/large indexes for easy iteration
     if (lastSelectedItemIndex > selectedItemIndex) {
       smallIndex = selectedItemIndex;
-      largeIndex = lastSelectedItemIndex;
+      largeIndex = lastSelectedItemIndex - 1; // - 1 to avoid reselecting last item
     } else {
-      smallIndex = lastSelectedItemIndex;
+      smallIndex = lastSelectedItemIndex + 1; // + 1 to avoid reselecting last item
       largeIndex = selectedItemIndex;
     }
 

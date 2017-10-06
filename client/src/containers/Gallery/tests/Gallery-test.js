@@ -525,6 +525,87 @@ describe('Gallery', () => {
 
       expect(props.actions.gallery.selectFiles).toBeCalledWith([2]);
     });
+
+    it('should call handleShiftSelect if the shiftKey is held during click', () => {
+      const item = { id: 2 };
+      event.shiftKey = true;
+      gallery.handleShiftSelect = jest.genMockFunction();
+
+      gallery.handleSelect(event, item);
+
+      expect(gallery.handleShiftSelect).toBeCalledWith(item);
+    });
+  });
+
+  describe('handleShiftSelect()', () => {
+    let gallery = null;
+
+    beforeEach(() => {
+      props.files = [{ id: 3 }, { id: 2 }, { id: 4 }, { id: 1 }];
+      props.actions.gallery.selectFiles = jest.genMockFunction();
+    });
+
+    it('should simply select the item if there are no existing selected items', () => {
+      props.selectedFiles = [];
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+
+      gallery.handleShiftSelect({ id: 1 });
+
+      expect(props.actions.gallery.selectFiles).toBeCalledWith([1]);
+    });
+
+    it('should select the files between last selected item and item being selected', () => {
+      // When selected file is after last selected item
+      props.selectedFiles = [2];
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+
+      gallery.handleShiftSelect({ id: 1 });
+
+      expect(props.actions.gallery.selectFiles).toBeCalledWith([4, 1]);
+
+      // When selected file is before last selected item
+      props.selectedFiles = [1];
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+
+      gallery.handleShiftSelect({ id: 3 });
+
+      expect(props.actions.gallery.selectFiles).toBeCalledWith([3, 2, 4]);
+    });
+  });
+
+  describe('getOrderedItems()', () => {
+    let gallery = null;
+    const file1 = { type: 'file' };
+    const file2 = { type: 'file' };
+    const folder1 = { type: 'folder' };
+
+    beforeEach(() => {
+      props.files = [file1, folder1, file2];
+    });
+
+    it('should return folders before files in tile view', () => {
+      props.view = 'tile';
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+
+      expect(gallery.getOrderedItems()).toMatchObject([folder1, file1, file2]);
+    });
+
+    it('should return items in an unchanged order in table view', () => {
+      props.view = 'table';
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+
+      expect(gallery.getOrderedItems()).toMatchObject([file1, folder1, file2]);
+    });
   });
 
   describe('handleCreateFolder()', () => {
