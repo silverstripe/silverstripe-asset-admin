@@ -300,6 +300,7 @@ class PreviewImageField extends Component {
             id="preview-replace-button"
             onClick={this.preventDefault}
             className={this.getButtonClasses('replace')}
+            type="button"
           >Replace</button>
         )
         : null }
@@ -307,6 +308,7 @@ class PreviewImageField extends Component {
           <button
             onClick={this.handleCancelUpload}
             className={this.getButtonClasses('remove')}
+            type="button"
           >Remove</button>
         ) : null }
       </div>
