@@ -108,7 +108,7 @@ class BulkActions extends Component {
     const { PopoverField } = this.props;
 
     return (
-      <div className="bulk-actions fieldholder-small">
+      <div className="bulk-actions fieldholder-small btn-group">
         <div className="bulk-actions-counter">{this.props.items.length}</div>
         {children.slice(0, 2)}
         {children.length > 2 && PopoverField
