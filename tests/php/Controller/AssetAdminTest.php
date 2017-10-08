@@ -263,7 +263,7 @@ class AssetAdminTest extends FunctionalTest
      */
     protected function getUploadFile($paramName, $tmpFileName = 'AssetAdminTest.txt')
     {
-        $tmpFilePath = TEMP_FOLDER . '/' . $tmpFileName;
+        $tmpFilePath = TEMP_PATH . DIRECTORY_SEPARATOR . $tmpFileName;
         $tmpFileContent = '';
         for ($i = 0; $i < 10000; $i++) {
             $tmpFileContent .= '0';
