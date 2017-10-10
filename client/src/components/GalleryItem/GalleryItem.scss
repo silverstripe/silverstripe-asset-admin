@@ -24,6 +24,12 @@ $gallery-item-label-height: 40px;
 .gallery-item--enlarged {
   transform: scale(1.1);
   border: 1px dashed $brand-primary;
+  font-size: 1.1em;
+
+  // Prevent hidden input breaking outside of overlay
+  .gallery-item__checkbox {
+    transform: scale(0.9);
+  }
 };
 
 .gallery-item__draggable,
@@ -142,7 +148,7 @@ $gallery-item-label-height: 40px;
     position: absolute;
     border: 1px solid $border-color;
     border-radius: $border-radius-sm;
-    font-size: 14px;
+    font-size: 1.15em;
     padding: 1px;
     color: transparent;
     background-color: $white;
