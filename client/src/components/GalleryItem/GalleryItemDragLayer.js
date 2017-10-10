@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 import { DragLayer } from 'react-dnd';
 import GalleryItem from './GalleryItem';
+import Badge from 'components/Badge/Badge';
 
 class GalleryItemDragLayer extends Component {
   getOffset() {
@@ -18,7 +19,7 @@ class GalleryItemDragLayer extends Component {
     if (!item.selected) {
       return null;
     }
-    const selected = item.selected.length;
+    const selected = `${item.selected.length}`;
 
     return (
       <div className="gallery-item__drag-layer">
@@ -30,9 +31,11 @@ class GalleryItemDragLayer extends Component {
           ]}
           <GalleryItem {...item.props} />
           {selected > 1 &&
-          <span className="gallery-item__drag-layer-count label label-primary label-pill">
-            {selected}
-          </span>
+            <Badge
+              className="gallery-item__drag-layer-count"
+              status="primary"
+              message={selected}
+            />
           }
         </div>
       </div>
