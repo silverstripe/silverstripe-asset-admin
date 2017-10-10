@@ -472,6 +472,10 @@ GalleryItem.propTypes = {
   onSelect: PropTypes.func,
   onCancelUpload: PropTypes.func,
   onRemoveErroredUpload: PropTypes.func,
+  badge: PropTypes.shape({
+    status: PropTypes.string,
+    message: PropTypes.string,
+  }),
 };
 
 GalleryItem.defaultProps = {
