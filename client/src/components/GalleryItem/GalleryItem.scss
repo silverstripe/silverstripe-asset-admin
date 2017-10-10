@@ -9,7 +9,6 @@ $gallery-item-label-height: 40px;
   border-radius: $border-radius-sm;
   transition: box-shadow $transition-speed-fast;
   height: $gallery-item-height;
-  overflow: hidden;
 
   &:hover {
     box-shadow: $gallery-item-shadow;
@@ -67,6 +66,8 @@ $gallery-item-label-height: 40px;
   margin: 0 auto;
   background-repeat: no-repeat;
   background-position: center center;
+  border-top-left-radius: $border-radius-sm;
+  border-top-right-radius: $border-radius-sm;
   background-size: cover;
 }
 
@@ -228,6 +229,8 @@ $gallery-item-label-height: 40px;
   display: none;
   transition-property: opacity, background;
   transition-duration: $transition-speed-mid;
+  border-top-left-radius: $border-radius-sm;
+  border-top-right-radius: $border-radius-sm;
   color: $white;
   height: $gallery-thumb-height;
   width: 100%;
