@@ -105,11 +105,11 @@ class ThumbnailView extends Component {
    * @param {number} index
    * @returns {XML}
    */
-  renderItem(item, index) {
+  renderItem(item) {
     const badge = this.props.badges.find((badgeItem) => badgeItem.id === item.id);
     const props = {
       sectionConfig: this.props.sectionConfig,
-      key: index,
+      key: item.id,
       selectableKey: item.id,
       item,
       selectedFiles: this.props.selectedFiles,
