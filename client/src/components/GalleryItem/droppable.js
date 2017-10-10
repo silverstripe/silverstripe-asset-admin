@@ -13,8 +13,7 @@ export default function droppable(types) {
       const item = monitor.getItem();
 
       // check that it is not a folder by itself dragged onto itself
-      // !props.item is a check for the back button specifically
-      return item.selected.length !== 1 || item.selected[0] !== props.item.id;
+      return !item.selected.includes(props.item.id);
     },
   };
 
