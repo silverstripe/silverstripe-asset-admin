@@ -518,7 +518,7 @@ class Gallery extends Component {
       deselectFiles(null);
     }
 
-    selectFiles(items);
+    selectFiles(items.filter((id, index) => items.indexOf(id) === index));
   }
 
   /**
