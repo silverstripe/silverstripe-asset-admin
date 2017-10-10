@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\Model;
 use Embed\Adapters\Adapter;
 use Embed\Embed;
 use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Core\Manifest\ModuleResourceLoader;
 
 /**
  * Encapsulation of an embed tag, linking to an external media source.
@@ -59,8 +60,9 @@ class EmbedResource
         }
 
         // Default media
-        return ModuleLoader::getModule('silverstripe/asset-admin')
-            ->getResourceURL('client/dist/images/icon_file.png');
+        return ModuleResourceLoader::resourceURL(
+            'silverstripe/asset-admin:client/dist/images/icon_file.png'
+        );
     }
 
     /**
