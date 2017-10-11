@@ -18,10 +18,6 @@
         "se/selenium-server-standalone": "2.41.0"
     },
     "extra": {
-        "branch-alias": {
-            "1.x-dev": "1.0.x-dev",
-            "dev-master": "2.x-dev"
-        },
         "expose": [
             "client/dist",
             "client/lang"
