@@ -1,3 +1,4 @@
+/* global window */
 import React, { PropTypes, Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -50,7 +51,10 @@ class GalleryDND extends Component {
 
 GalleryDND.propTypes = {
   className: PropTypes.string,
-  children: PropTypes.arrayOf(PropTypes.node),
+  children: React.PropTypes.oneOfType([
+    React.PropTypes.arrayOf(React.PropTypes.node),
+    React.PropTypes.node,
+  ]),
 };
 
 export default context(GalleryDND);

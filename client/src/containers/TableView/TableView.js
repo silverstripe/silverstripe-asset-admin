@@ -256,7 +256,7 @@ class TableView extends Component {
     }
     if (rowData.id > 0) {
       return (
-        <div className="gallery__progress-bar--complete"></div>
+        <div className="gallery__progress-bar--complete" />
       );
     }
     const progressBarProps = {
@@ -268,7 +268,7 @@ class TableView extends Component {
 
     return (
       <div className="gallery__progress-bar">
-        <div {...progressBarProps}></div>
+        <div {...progressBarProps} />
       </div>
     );
   }
@@ -332,6 +332,7 @@ class TableView extends Component {
    */
   renderThumbnail(props) {
     const url = props.data || props.rowData.url;
+    const uploading = props.rowData.uploading;
     const category = props.rowData.category || 'false';
     const baseClass = 'gallery__table-image';
     const classNames = [baseClass];
@@ -345,12 +346,12 @@ class TableView extends Component {
 
     // If the url is falsey then show error on the thumbnail. The exception is
     // folder since it doesn't have to physically exist on the file system
-    if (!url && category !== 'folder') {
+    if (!uploading && !url && category !== 'folder') {
       classNames.push(`${baseClass}--error`);
     }
 
     return (
-        <div className={classNames.join(' ')} style={styles} />
+      <div className={classNames.join(' ')} style={styles} />
     );
   }
 
@@ -363,6 +364,6 @@ TableView.defaultProps = galleryViewDefaultProps;
 
 TableView.propTypes = galleryViewPropTypes;
 
-export { TableView };
+export { TableView as Component };
 
 export default TableView;

@@ -34,8 +34,8 @@
   }
 
   tbody td {
-    padding-top: $table-lg-cell-padding;
-    padding-bottom: $table-lg-cell-padding;
+    padding-top: $table-cell-padding-lg;
+    padding-bottom: $table-cell-padding-lg;
 
     // hide details for smaller screens
     @include media-breakpoint-down(sm) {
@@ -109,7 +109,7 @@
   background-color: $component-active-bg-light;
 }
 
-$gallery-list-thumb-width: 60px;
+$gallery-list-thumb-width: 68px;
 $gallery-list-thumb-height: 68px;
 
 .gallery__table-column--image {
@@ -124,17 +124,21 @@ $gallery-list-thumb-height: 68px;
 
     &:first-child {
       max-width: none;
-      padding-left: 20px;
+      padding-left: $panel-padding-x;
     }
   }
 }
 
 .gallery__table-image {
   background-repeat: no-repeat;
-  background-size: $gallery-list-thumb-width auto;
   background-position: center center;
   height: $gallery-list-thumb-height;
   width: $gallery-list-thumb-width;
+  background-size: calc(#{$gallery-list-thumb-width} - #{$panel-padding-x}) auto; // Allow for space either side of folder
+}
+
+.gallery__table-image--image {
+  background-size: $gallery-list-thumb-width auto;
 }
 
 .gallery__table-image--folder {

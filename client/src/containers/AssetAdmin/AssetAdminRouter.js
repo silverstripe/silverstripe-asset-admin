@@ -5,6 +5,7 @@ import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import { decodeQuery } from 'lib/DataFormat';
 import qs from 'qs';
 import CONSTANTS from 'constants/index';
+import configShape from 'lib/configShape';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -179,11 +180,7 @@ class AssetAdminRouter extends Component {
 }
 
 AssetAdminRouter.propTypes = {
-  sectionConfig: PropTypes.shape({
-    url: PropTypes.string,
-    limit: PropTypes.number,
-    form: PropTypes.object,
-  }),
+  sectionConfig: configShape,
   location: PropTypes.shape({
     pathname: PropTypes.string,
     query: PropTypes.object,
@@ -201,6 +198,6 @@ function mapStateToProps(state) {
   };
 }
 
-export { AssetAdminRouter, buildUrl };
+export { AssetAdminRouter as Component, buildUrl };
 
 export default withRouter(connect(mapStateToProps)(AssetAdminRouter));

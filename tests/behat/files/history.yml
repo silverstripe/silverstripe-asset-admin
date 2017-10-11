@@ -1,0 +1,5 @@
+---
+Name: assetadmintesthistory
+---
+SilverStripe\AssetAdmin\Forms\FileFormFactory:
+  show_history: true

@@ -1,3 +1,4 @@
+/* global window, FormData */
 import i18n from 'i18n';
 import React, { PropTypes, Component } from 'react';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
@@ -8,6 +9,7 @@ import { formValueSelector } from 'redux-form';
 import * as previewFieldActions from 'state/previewField/PreviewFieldActions';
 import { getFileExtension } from 'lib/DataFormat';
 import getFormState from 'lib/getFormState';
+import classnames from 'classnames';
 
 class PreviewImageField extends Component {
   constructor(props) {
@@ -70,30 +72,102 @@ class PreviewImageField extends Component {
       options,
       securityID,
       uploadButton: false,
-      handleAddedFile: this.handleAddedFile,
-      handleError: this.handleFailedUpload,
-      handleSuccess: this.handleSuccessfulUpload,
-      handleSending: this.handleSending,
-      handleUploadProgress: this.handleUploadProgress,
+      onAddedFile: this.handleAddedFile,
+      onError: this.handleFailedUpload,
+      onSuccess: this.handleSuccessfulUpload,
+      onSending: this.handleSending,
+      onUploadProgress: this.handleUploadProgress,
       canFileUpload: this.canFileUpload,
       updateFormData: this.updateFormData,
     };
   }
 
-  /**
-   * Defines whether this field can make changes/edits/uploads, looks at readonly, disabled and if
-   * the file category is a "folder"
-   *
-   * @returns {boolean}
-   */
-  canEdit() {
-    return !this.props.readOnly
-      && !this.props.disabled
-      && this.props.data.category !== 'folder';
+  getButtonClasses(type) {
+    return classnames([
+      `preview-image-field__toolbar-button--${type}`,
+      'preview-image-field__toolbar-button'
+    ]);
   }
 
-  preventDefault(e) {
-    e.preventDefault();
+  /**
+   * Invoked by AssetDropZone to decorate additional form data fields
+   * posted to the AssetAdmin::apiUploadFile endpoint.
+   *
+   * @param {FormData} formData
+   */
+  updateFormData(formData) {
+    formData.append('ID', this.props.data.id);
+    formData.append('Name', this.props.nameValue);
+  }
+
+  /**
+   * Started the sending process for a file
+   *
+   * @param {object} file
+   * @param {object} xhr
+   */
+  handleSending(file, xhr) {
+    this.props.actions.previewField.updateFile(this.props.id, { xhr });
+  }
+
+  /**
+   * Update tuple detail fields when upload is successful.
+   *
+   * @param fileXhr
+   */
+  handleSuccessfulUpload(fileXhr) {
+    const json = JSON.parse(fileXhr.xhr.response);
+
+    if (typeof this.props.onAutofill === 'function') {
+      this.props.onAutofill('FileFilename', json.Filename);
+      this.props.onAutofill('FileHash', json.Hash);
+      this.props.onAutofill('FileVariant', json.Variant);
+
+      // Note: This Name was posted back from the current form field value,
+      // and may have been modified on the server. If so, update the form value
+      if (json.Name) {
+        this.props.onAutofill(this.props.data.nameField, json.Name);
+      }
+    }
+  }
+
+  handleFailedUpload(file, response) {
+    this.props.actions.previewField.failUpload(this.props.id, response);
+  }
+
+  /**
+   * Handles when a file is added to this field.
+   *
+   * @param {object} data
+   */
+  handleAddedFile(data) {
+    this.props.actions.previewField.addFile(this.props.id, data);
+  }
+
+  /**
+   * Handles removing an upload that had errored during/after upload
+   */
+  handleRemoveErroredUpload() {
+    // revert to initial values so errored or replaced replacement doesn't get used
+    if (typeof this.props.onAutofill === 'function') {
+      const initial = this.props.data.initialValues;
+
+      this.props.onAutofill('FileFilename', initial.FileFilename);
+      this.props.onAutofill('FileHash', initial.FileHash);
+      this.props.onAutofill('FileVariant', initial.FileVariant);
+    }
+
+    this.props.actions.previewField.removeFile(this.props.id);
+  }
+
+  /**
+   * Handles removing an upload and cancelling the request made to upload
+   */
+  handleCancelUpload() {
+    if (this.props.upload.xhr) {
+      this.props.upload.xhr.abort();
+    }
+    this.handleRemoveErroredUpload();
   }
 
   /**
@@ -118,85 +192,20 @@ class PreviewImageField extends Component {
     return this.props.confirm(message);
   }
 
-  /**
-   * Handles removing an upload and cancelling the request made to upload
-   */
-  handleCancelUpload() {
-    if (this.props.upload.xhr) {
-      this.props.upload.xhr.abort();
-    }
-    this.handleRemoveErroredUpload();
+  preventDefault(e) {
+    e.preventDefault();
   }
 
   /**
-   * Handles removing an upload that had errored during/after upload
-   */
-  handleRemoveErroredUpload() {
-    // revert to initial values so errored or replaced replacement doesn't get used
-    if (typeof this.props.onAutofill === 'function') {
-      const initial = this.props.data.initialValues;
-
-      this.props.onAutofill('FileFilename', initial.FileFilename);
-      this.props.onAutofill('FileHash', initial.FileHash);
-      this.props.onAutofill('FileVariant', initial.FileVariant);
-    }
-
-    this.props.actions.previewField.removeFile(this.props.id);
-  }
-
-  /**
-   * Handles when a file is added to this field.
+   * Defines whether this field can make changes/edits/uploads, looks at readonly, disabled and if
+   * the file category is a "folder"
    *
-   * @param {object} data
+   * @returns {boolean}
    */
-  handleAddedFile(data) {
-    this.props.actions.previewField.addFile(this.props.id, data);
-  }
-
-  handleFailedUpload(file, response) {
-    this.props.actions.previewField.failUpload(this.props.id, response);
-  }
-
-  /**
-   * Update tuple detail fields when upload is successful.
-   *
-   * @param fileXhr
-   */
-  handleSuccessfulUpload(fileXhr) {
-    const json = JSON.parse(fileXhr.xhr.response);
-
-    if (typeof this.props.onAutofill === 'function') {
-      this.props.onAutofill('FileFilename', json.Filename);
-      this.props.onAutofill('FileHash', json.Hash);
-      this.props.onAutofill('FileVariant', json.Variant);
-
-      // Note: This Name was posted back from the current form field value,
-      // and may have been modified on the server. If so, update the form value
-      if (json.Name) {
-        this.props.onAutofill(this.props.data.nameField, json.Name);
-      }
-    }
-  }
-
-  /**
-   * Started the sending process for a file
-   *
-   * @param {object} file
-   * @param {object} xhr
-   */
-  handleSending(file, xhr) {
-    this.props.actions.previewField.updateFile(this.props.id, { xhr });
-  }
-
-  /**
-   * Invoked by AssetDropZone to decorate additional form data fields
-   * posted to the AssetAdmin::apiUploadFile endpoint.
-   *
-   * @param {FormData} formData
-   */
-  updateFormData(formData) {
-    formData.append('ID', this.props.data.id);
-    formData.append('Name', this.props.nameValue);
+  canEdit() {
+    return !this.props.readOnly
+      && !this.props.disabled
+      && this.props.data.category !== 'folder';
   }
 
   /**
@@ -212,7 +221,7 @@ class PreviewImageField extends Component {
   /**
    * Renders the image markup as normal by LiteralField
    *
-   * @returns {XML}
+   * @returns {object}
    */
   renderImage() {
     const data = this.props.data;
@@ -279,27 +288,29 @@ class PreviewImageField extends Component {
     return (
       <div className="preview-image-field__toolbar fill-height">
         { (this.props.data.url) ? (
-            <a
-              href={this.props.data.url}
-              target="_blank"
-              className="preview-image-field__toolbar-button--link preview-image-field__toolbar-button"
-            >Open</a>
-          )
-          : null }
+          <a
+            href={this.props.data.url}
+            target="_blank"
+            className={this.getButtonClasses('link')}
+          >Open</a>
+        )
+        : null }
         { (canEdit) ? (
-            <button
-              id="preview-replace-button"
-              onClick={this.preventDefault}
-              className="preview-image-field__toolbar-button--replace preview-image-field__toolbar-button"
-            >Replace</button>
-          )
-          : null }
+          <button
+            id="preview-replace-button"
+            onClick={this.preventDefault}
+            className={this.getButtonClasses('replace')}
+            type="button"
+          >Replace</button>
+        )
+        : null }
         { (this.props.upload.progress || this.props.upload.message) ? (
-            <button
-              onClick={this.handleCancelUpload}
-              className="preview-image-field__toolbar-button--remove preview-image-field__toolbar-button"
-            >Remove</button>
-          ) : null }
+          <button
+            onClick={this.handleCancelUpload}
+            className={this.getButtonClasses('remove')}
+            type="button"
+          >Remove</button>
+        ) : null }
       </div>
     );
   }
@@ -403,6 +414,6 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { PreviewImageField };
+export { PreviewImageField as Component };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PreviewImageField);

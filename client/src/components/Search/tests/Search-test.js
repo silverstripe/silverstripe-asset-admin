@@ -6,7 +6,7 @@ jest.mock('containers/FormBuilderLoader/FormBuilderLoader', () => () => null);
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { Search, hasFilters } from '../Search.js';
+import { Component as Search, hasFilters } from '../Search';
 
 describe('Search', () => {
   let props = null;

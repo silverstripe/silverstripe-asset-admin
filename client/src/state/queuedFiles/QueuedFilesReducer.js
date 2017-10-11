@@ -9,69 +9,83 @@ const initialState = {
 
 function queuedFilesReducer(state = initialState, action) {
   switch (action.type) {
-
     case ACTION_TYPES.ADD_QUEUED_FILE:
-      return deepFreeze(Object.assign({}, state, {
-        items: state.items.concat([
-          Object.assign({}, fileStructure, action.payload.file),
-        ]),
-      }));
+      return deepFreeze({
+        ...state,
+        items: [
+          ...state.items,
+          {
+            ...fileStructure,
+            ...action.payload.file,
+          },
+        ],
+      });
 
     case ACTION_TYPES.FAIL_UPLOAD:
       // Add an error message to the failed file.
-      return deepFreeze(Object.assign({}, state, {
+      return deepFreeze({
+        ...state,
         items: state.items.map((file) => {
           if (file.queuedId === action.payload.queuedId) {
-            return Object.assign({}, file, {
+            return {
+              ...file,
               message: action.payload.message,
-            });
+            };
           }
 
           return file;
         }),
-      }));
+      });
 
     case ACTION_TYPES.PURGE_UPLOAD_QUEUE:
       // Successful file uploads removed.
       // Pending and failed uploads are retained.
-      return deepFreeze(Object.assign({}, state, {
+      return deepFreeze({
+        ...state,
         items: state.items.filter((file) => !file.id),
-      }));
+      });
 
     case ACTION_TYPES.REMOVE_QUEUED_FILE:
-      return deepFreeze(Object.assign({}, state, {
+      return deepFreeze({
+        ...state,
         items: state.items.filter(
           (file) => file.queuedId !== action.payload.queuedId
         ),
-      }));
+      });
 
     case ACTION_TYPES.SUCCEED_UPLOAD:
-      return deepFreeze(Object.assign({}, state, {
+      return deepFreeze({
+        ...state,
         items: state.items.map((file) => {
           if (file.queuedId === action.payload.queuedId) {
-            return Object.assign({}, file, action.payload.json, {
+            return {
+              ...file,
+              ...action.payload.json,
               messages: [{
                 value: i18n._t('AssetAdmin.DROPZONE_SUCCESS_UPLOAD'),
                 type: 'success',
                 extraClass: 'success',
               }],
-            });
+            };
           }
-
           return file;
         }),
-      }));
+      });
 
     case ACTION_TYPES.UPDATE_QUEUED_FILE:
-      return deepFreeze(Object.assign({}, state, {
+      return deepFreeze({
+        ...state,
         items: state.items.map((file) => {
           if (file.queuedId === action.payload.queuedId) {
-            return Object.assign({}, file, action.payload.updates);
+            return {
+              ...file,
+              ...action.payload.updates,
+            };
           }
 
           return file;
         }),
-      }));
+      });
 
     default:
       return state;

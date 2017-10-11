@@ -32,6 +32,18 @@ export function selectFiles(ids = null) {
 }
 
 /**
+ * Toggles whether group selection should concatenate to existing selection or not
+ * @param {boolean} concat
+ * @returns {function}
+ */
+export function setConcatenateSelect(concat) {
+  return (dispatch) =>
+    dispatch({
+      type: GALLERY.CONCATENATE_SELECT,
+      payload: !!concat,
+    });
+}
+/**
  * Deselects files. If no param is passed all files are deselected.
  *
  * @param Array ids - Array of file ids to deselect.
@@ -93,6 +105,32 @@ export function setFileBadge(id, message, status, duration) {
     dispatch({
       type: GALLERY.SET_FILE_BADGE,
       payload: { id, message, status, timer },
+    });
+  };
+}
+
+export function activateModal(name) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.ACTIVATE_MODAL,
+      payload: name,
+    });
+  };
+}
+
+export function deactivateModal() {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.DEACTIVATE_MODAL,
+    });
+  };
+}
+
+export function setLoading(active) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.SET_LOADING,
+      payload: !!active,
     });
   };
 }

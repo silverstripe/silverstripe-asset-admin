@@ -23,11 +23,18 @@ $gallery-item-label-height: 40px;
 
 .gallery-item--enlarged {
   transform: scale(1.1);
+  border: 1px dashed $brand-primary;
+  font-size: 1.1em;
+
+  // Prevent hidden input breaking outside of overlay
+  .gallery-item__checkbox {
+    transform: scale(0.9);
+  }
 };
 
 .gallery-item__draggable,
 .gallery-item__droppable {
-  margin: 0 $spacer-x $spacer-y 0;
+  margin: 0 $spacer $spacer  0;
 }
 
 .gallery-item__draggable > .gallery-item__droppable,
@@ -65,9 +72,32 @@ $gallery-item-label-height: 40px;
   margin: 0 auto;
   background-repeat: no-repeat;
   background-position: center center;
+  border-top-left-radius: $border-radius-sm;
+  border-top-right-radius: $border-radius-sm;
   background-size: cover;
-  border-radius: $border-radius-sm $border-radius-sm 0 0;
 }
+
+.gallery-item__thumbnail--error {
+  background-color: mix($white, $brand-danger, 20);
+}
+
+.gallery-item__thumbnail--no-preview {
+  background-color: $gray-600;
+}
+
+.gallery-item__thumbnail--loading {
+  background: white url("../../images/spinner.gif") center center no-repeat;
+}
+
+@media
+  only screen and (min-device-pixel-ratio: 2),
+  only screen and (min-resolution: 192dpi),
+  only screen and (min-resolution: 2dppx) {
+    .gallery-item__thumbnail--loading {
+      background: white url("../../images/spinner@2x.gif") center center no-repeat;
+      background-size: 43px 43px;
+    }
+  }
 
 .gallery-item__thumbnail--small {
   background-size: auto;
@@ -86,7 +116,8 @@ $gallery-item-label-height: 40px;
   position: relative;
 
   .gallery-item--selectable & {
-    padding-right: 29px;
+    // Make space for the checkbox on the right hand side
+    padding-right: 32px;
   }
 }
 
@@ -117,7 +148,7 @@ $gallery-item-label-height: 40px;
     position: absolute;
     border: 1px solid $border-color;
     border-radius: $border-radius-sm;
-    font-size: 14px;
+    font-size: 1.15em;
     padding: 1px;
     color: transparent;
     background-color: $white;
@@ -128,10 +159,6 @@ $gallery-item-label-height: 40px;
   .gallery-item--selectable &:hover::before {
     border: 1px solid $component-active-border-color;
   }
-}
-
-.gallery-item--selectable .gallery-item__checkbox-label--disabled::before {
-  cursor: not-allowed;
 }
 
 // If error or currently uploading the label becomes an X to cancel upload
@@ -150,8 +177,18 @@ $gallery-item-label-height: 40px;
   }
 }
 
-.gallery-item--error .gallery-item__checkbox-label::before {
-  color: $brand-danger;
+.gallery-item--error {
+
+  &:hover,
+  .gallery-item__thumbnail,
+  .gallery-item__title,
+  .gallery-item__checkbox-label {
+    cursor: not-allowed;
+  }
+
+  .gallery-item__checkbox-label::before {
+    color: $brand-danger;
+  }
 }
 
 .gallery-item__error-message {
@@ -198,8 +235,9 @@ $gallery-item-label-height: 40px;
   display: none;
   transition-property: opacity, background;
   transition-duration: $transition-speed-mid;
+  border-top-left-radius: $border-radius-sm;
+  border-top-right-radius: $border-radius-sm;
   color: $white;
-  border-radius: $border-radius-sm $border-radius-sm 0 0;
   height: $gallery-thumb-height;
   width: 100%;
   font-size: 14px;

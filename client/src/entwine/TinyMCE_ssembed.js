@@ -1,11 +1,11 @@
-/* global tinymce */
-
+/* global tinymce, window */
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
 import InsertEmbedModal from 'components/InsertEmbedModal/InsertEmbedModal';
+import i18n from 'i18n';
 
 const InjectableInsertEmbedModal = provideInjector(InsertEmbedModal);
 const filter = 'div[data-shortcode="embed"]';
@@ -17,14 +17,15 @@ const filter = 'div[data-shortcode="embed"]';
 (() => {
   const ssembed = {
     init: (editor) => {
+      const title = i18n._t('AssetAdmin.INSERT_VIA_URL', 'Insert media via URL');
       editor.addButton('ssembed', {
         icon: 'media',
-        title: 'Insert Embedded content',
+        title,
         cmd: 'ssembed',
       });
       editor.addMenuItem('ssembed', {
         icon: 'media',
-        text: 'Insert Embedded content',
+        text: title,
         cmd: 'ssembed',
       });
 
@@ -214,7 +215,7 @@ jQuery.entwine('ss', ($) => {
             onInsert={handleInsert}
             onHide={handleHide}
             onLoadingError={handleLoadingError}
-            bodyClassName="modal__dialog fill-height"
+            bodyClassName="modal__dialog modal__dialog--scrollable"
             className="insert-embed-react__dialog-wrapper"
             fileAttributes={attrs}
           />

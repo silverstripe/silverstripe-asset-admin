@@ -122,9 +122,9 @@ class FolderTypeCreator extends FileTypeCreator
     }
 
     /**
-     * @param $object
+     * @param Folder $object
      * @param array $args
-     * @param $context
+     * @param array $context
      * @param ResolveInfo $info
      * @param Connection $childrenConnection
      * @return mixed
@@ -148,6 +148,7 @@ class FolderTypeCreator extends FileTypeCreator
             ));
         }
 
+        /** @var DataList $list */
         $list = Versioned::get_by_stage(File::class, 'Stage');
         $filterInputType = new FileFilterInputTypeCreator($this->manager);
 
@@ -167,19 +168,21 @@ class FolderTypeCreator extends FileTypeCreator
             }
         });
 
+        // Filter by permission
+        $ids = $list->column('ID');
+        $permissionChecker = File::singleton()->getPermissionChecker();
+        $canViewIDs = array_keys(array_filter($permissionChecker->canViewMultiple(
+            $ids,
+            $context['currentUser']
+        )));
+        // Filter by visible IDs (or force empty set if none are visible)
+        $list = $list->filter('ID', $canViewIDs ?: 0);
+
         // Apply pagination
         $return = $childrenConnection->resolveList(
             $list,
             $args
         );
-
-        // Filter by permission. Converts from DataList to ArrayList
-        // TODO Add more records if records are filtered out here
-        /** @var Filterable $resolvedList */
-        $resolvedList = $return['edges'];
-        $return['edges'] = $resolvedList->filterByCallback(function (File $file) use ($context) {
-            return $file->canView($context['currentUser']);
-        });
 
         return $return;
     }

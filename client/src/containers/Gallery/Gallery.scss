@@ -22,7 +22,7 @@
 .gallery__no-item-notice {
   text-align: center;
   font-size: $font-size-lg;
-  margin-top: $spacer-y;
+  margin-top: $spacer ;
 }
 
 .gallery__back {
@@ -45,6 +45,23 @@
   background-color: $btn-secondary-bg;
   border-color: transparent;
   transform: scale(1.1);
+
+  &::after {
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: " ";
+    border: 1px dashed $brand-primary;
+    height: 100%;
+    width: 100%;
+    border-radius: 3px;
+  }
+}
+
+.gallery__main--selectable {
+  user-select: none;
+  margin: #{-$panel-padding-y} #{-$panel-padding-x};
+  padding: #{$panel-padding-y} #{$panel-padding-x};
 }
 
 .gallery__back-container {
@@ -92,8 +109,14 @@
 .gallery__sort {
   display: inline-block;
   vertical-align: middle;
-  padding: $btn-padding-y $btn-padding-x;
-  margin-bottom: -4px;
+  padding: $input-btn-padding-y $input-btn-padding-x;
+
+  .chosen-container-active {
+    .chosen-single {
+      outline: 1px dotted $component-active-border-color;
+      outline: 5px auto -webkit-focus-ring-color;
+    }
+  }
 
   .gallery & .chosen-single {
     border: 0;
@@ -117,7 +140,7 @@
         font-size: 0;
 
         &:after {
-          content: "\e002";
+          content: "\e003";
           font-size: $font-size-lg;
           font-family: silverstripe;
           color: $btn-secondary-color;
@@ -158,7 +181,11 @@
 }
 
 .gallery__state-buttons {
-  margin-right: -$spacer-sm;
+  margin-right: -$panel-padding-x + $input-btn-padding-x;
+
+  .btn-group:last-child {
+    margin-right: 0;
+  }
 }
 
 .gallery__view-change-button {
@@ -178,9 +205,9 @@
   margin-top: -3px;
 
   select { // Replicate .form-control;
-    height: calc(#{$line-height-base} + #{$spacer-y});
+    height: calc(#{$line-height-base} + #{$spacer});
     padding: $input-padding-y $input-padding-x;
-    line-height: $line-height;
+    line-height: $line-height-base;
     color: $input-color;
     border: $input-btn-border-width solid $input-border-color;
     background-color: $input-bg;
@@ -214,11 +241,11 @@ $griddle-button-height: 30px;
     overflow: hidden;
 
     &:hover {
-      background-color: $gray-lighter;
+      background-color: $gray-200;
       border-color: transparent;
 
       &::before {
-        background-color: $gray-lighter;
+        background-color: $gray-200;
       }
     }
 
@@ -231,7 +258,7 @@ $griddle-button-height: 30px;
       position: absolute;
       top: 0;
       left: 0;
-      padding: $btn-padding-y;
+      padding: $input-btn-padding-y;
       transition: all .2s ease-in-out;
       font-size: $font-size-lg;
       -webkit-font-smoothing: antialiased;
@@ -250,5 +277,5 @@ $griddle-button-height: 30px;
 // Pagination end
 
 .gallery__search-message-clear {
-  padding-left: $spacer-x * .5;
+  padding-left: $spacer * .5;
 }

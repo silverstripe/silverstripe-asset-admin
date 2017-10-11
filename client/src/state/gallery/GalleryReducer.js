@@ -4,8 +4,12 @@ import GALLERY from './GalleryActionTypes';
 const initialState = {
   selectedFiles: [],
   errorMessage: null,
+  noticeMessage: null,
   enableDropzone: true,
+  modal: null,
   badges: [],
+  concatenateSelect: false,
+  loading: false,
 };
 
 /**
@@ -17,7 +21,6 @@ const initialState = {
  */
 export default function galleryReducer(state = initialState, { type, payload } = {}) {
   switch (type) {
-
     case GALLERY.SET_FILE_BADGE: {
       return {
         ...state,
@@ -115,6 +118,34 @@ export default function galleryReducer(state = initialState, { type, payload } =
       return deepFreeze({
         ...state,
         selectedFiles,
+      });
+    }
+
+    case GALLERY.ACTIVATE_MODAL: {
+      return deepFreeze({
+        ...state,
+        modal: payload,
+      });
+    }
+
+    case GALLERY.DEACTIVATE_MODAL: {
+      return deepFreeze({
+        ...state,
+        modal: null,
+      });
+    }
+
+    case GALLERY.CONCATENATE_SELECT: {
+      return deepFreeze({
+        ...state,
+        concatenateSelect: payload,
+      });
+    }
+
+    case GALLERY.SET_LOADING: {
+      return deepFreeze({
+        ...state,
+        loading: payload,
       });
     }
 

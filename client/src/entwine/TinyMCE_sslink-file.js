@@ -9,16 +9,20 @@ import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import { provideInjector } from 'lib/Injector';
 
+const commandName = 'sslinkfile';
+
 // Link to external url
-TinyMCEActionRegistrar.addAction('sslink', {
-  text: i18n._t('AssetAdmin.LINKLABEL_FILE', 'Link to a file'),
-  // eslint-disable-next-line no-console
-  onclick: (editor) => editor.execCommand('sslinkfile'),
-});
+TinyMCEActionRegistrar
+  .addAction('sslink', {
+    text: i18n._t('AssetAdmin.LINKLABEL_FILE', 'Link to a file'),
+    // eslint-disable-next-line no-console
+    onclick: (editor) => editor.execCommand(commandName),
+  })
+  .addCommandWithUrlTest(commandName, /^\[file_link/);
 
 const plugin = {
   init(editor) {
-    editor.addCommand('sslinkfile', () => {
+    editor.addCommand(commandName, () => {
       const field = jQuery(`#${editor.id}`).entwine('ss');
 
       field.openLinkFileDialog();
@@ -62,6 +66,10 @@ jQuery.entwine('ss', ($) => {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this.handleInsert(...args);
       const attrs = this.getOriginalAttributes();
+      const selection = tinymce.activeEditor.selection;
+      const selectionContent = selection.getContent() || '';
+      const tagName = selection.getNode().tagName;
+      const requireLinkText = tagName !== 'A' && selectionContent.trim() === '';
 
       // create/update the react component
       ReactDOM.render(
@@ -75,6 +83,7 @@ jQuery.entwine('ss', ($) => {
             bodyClassName="modal__dialog"
             className="insert-link__dialog-wrapper--internal"
             fileAttributes={attrs}
+            requireLinkText={requireLinkText}
           />
         </ApolloProvider>,
         this[0]
@@ -129,6 +138,6 @@ jQuery.entwine('ss', ($) => {
 });
 
 // Adds the plugin class to the list of available TinyMCE plugins
-tinymce.PluginManager.add('sslinkfile', (editor) => plugin.init(editor));
+tinymce.PluginManager.add(commandName, (editor) => plugin.init(editor));
 
 export default plugin;

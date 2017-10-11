@@ -6,27 +6,28 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/open-sausages/silverstripe-asset-admin.git"
+    "url": "git+https://github.com/silverstripe/silverstripe-asset-admin.git"
   },
-  "homepage": "https://github.com/open-sausages/silverstripe-asset-admin",
+  "homepage": "https://github.com/silverstripe/silverstripe-asset-admin",
   "bugs": {
-    "url": "https://github.com/open-sausages/silverstripe-asset-admin/issues"
+    "url": "https://github.com/silverstripe/silverstripe-asset-admin/issues"
   },
   "author": "SilverStripe Ltd",
   "engines": {
     "node": "^6.x"
   },
   "scripts": {
-    "build": "yarn && NODE_ENV=production webpack -p --bail --progress",
+    "build": "yarn && yarn test && NODE_ENV=production webpack -p --bail --progress",
+    "dev": "NODE_ENV=development webpack --progress",
     "watch": "NODE_ENV=development webpack --watch --progress",
     "css": "WEBPACK_CHILD=css npm run build",
     "test": "jest",
     "coverage": "jest --coverage",
     "lock": "npm-shrinkwrap --dev",
-    "lint": "eslint client/src && sass-lint client/src -v",
+    "lint": "eslint client/src && sass-lint client/src",
     "lint-js": "eslint client/src",
     "lint-js-fix": "eslint client/src --fix",
-    "lint-sass": "sass-lint client/src -v"
+    "lint-sass": "sass-lint client/src"
   },
   "jest": {
     "roots": [
@@ -34,10 +35,10 @@
     ],
     "modulePaths": [
       "client/src",
-      "../silverstripe-admin/client/src",
-      "../silverstripe-admin",
-      "silverstripe-admin/client/src",
-      "silverstripe-admin"
+      "../admin/client/src",
+      "../admin/node_modules",
+      "vendor/silverstripe/admin/client/src",
+      "vendor/silverstripe/admin/node_modules"
     ],
     "testMatch": [
       "**/tests/**/*-test.js?(x)"
@@ -47,24 +48,16 @@
     }
   },
   "devDependencies": {
-    "@silverstripe/webpack-config": "^0.2.7",
-    "babel-core": "^6.24.1",
+    "@silverstripe/webpack-config": "^0.4.0",
     "babel-jest": "^19.0.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-es2016": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "deep-freeze-strict": "^1.1.1",
-    "eslint": "^2.5.3",
-    "eslint-config-airbnb": "^6.2.0",
-    "eslint-plugin-react": "^4.2.3",
-    "jest-cli": "^19.0.2",
-    "react-addons-test-utils": "15.3.1",
-    "redux-mock-store": "0.0.6"
+    "jest-cli": "^19.0.2"
   },
   "dependencies": {
     "apollo-client": "^0.5.22",
     "babel-polyfill": "6.7.4",
-    "bootstrap": "4.0.0-alpha.2",
+    "bootstrap": "4.0.0-beta",
+    "classnames": "^2.2.5",
+    "deep-freeze-strict": "^1.1.1",
     "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
     "graphql-fragments": "^0.1.0",
     "graphql-tag": "^0.1.17",
@@ -74,14 +67,16 @@
     "qs": "^6.2.1",
     "react": "15.3.1",
     "react-addons-css-transition-group": "15.3.1",
+    "react-addons-test-utils": "15.3.1",
     "react-apollo": "^0.7.1",
-    "react-bootstrap-ss": "^0.30.6",
+    "react-bootstrap-ss": "^0.30.10",
     "react-dnd": "^2.2.3",
     "react-dnd-html5-backend": "^2.2.3",
     "react-dom": "15.3.1",
     "react-redux": "^4.4.5",
     "react-router": "^2.5.2",
     "react-router-redux": "^4.0.5",
+    "react-selectable": "^1.3.3",
     "redux": "^3.3.1",
     "redux-form": "^6.0.2",
     "redux-logger": "^2.4.0",
@@ -89,8 +84,7 @@
   },
   "babel": {
     "presets": [
-      "es2015",
-      "es2016",
+      "env",
       "react"
     ],
     "plugins": [

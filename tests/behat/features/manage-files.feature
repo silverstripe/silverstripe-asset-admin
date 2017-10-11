@@ -32,6 +32,11 @@ Feature: Manage files
       And I attach the file "testfile.jpg" to dropzone "gallery-container"
     Then I should see the file named "testfile" in the gallery
 
+  Scenario: I am blocked from uploading invalid files
+    When I click on the file named "folder1" in the gallery
+    And I attach the file "file.invalid" to dropzone "gallery-container"
+    Then I should see an error message on the file "file"
+
   Scenario: I can edit a file
     When I click on the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
@@ -91,7 +96,72 @@ Feature: Manage files
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
-      And I should see "successfully archived" in the message box
+      And I should see "3 folders/files were successfully archived" in the message box
+
+  Scenario: I can move multiple files
+    Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
+      And a "folder" "assets/folder1/folder3"
+    When I click on the file named "folder1" in the gallery
+    And I check the file named "file1" in the gallery
+    And I check the file named "file2" in the gallery
+    Then I should see an ".bulk-actions__action[value='move']" element
+    And the ".bulk-actions-counter" element should contain "2"
+    And the ".bulk-actions__action[value='move']" element should contain "Move"
+    When I attach the file "testfile.jpg" to dropzone "gallery-container"
+    And I check the file named "testfile" in the gallery
+    Then the ".bulk-actions-counter" element should contain "3"
+      And I press the "Move" button
+    Then I should see a modal titled "Move 3 item(s) to..."
+    Then I should see the "Form_moveForm" form
+    When I select "folder2/" in the "#Form_moveForm_FolderID_Holder" tree dropdown
+    Given I click "Move" in the "#Form_moveForm_action_move" element
+    Then I should not see the file named "file1" in the gallery
+      And I should not see the file named "file2" in the gallery
+      And I should not see the file named "testfile" in the gallery
+    When I press the "Navigate up a level" button
+      And I click on the file named "folder2" in the gallery
+    Then I should see the file named "file1" in the gallery
+      And I should see the file named "file2" in the gallery
+      And I should see the file named "testfile" in the gallery
+
+  Scenario: I can publish and unpublish multiple files
+    Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
+      And a "image" "assets/folder1/testfile.jpg"
+      And a "folder" "assets/folder1/folder2"
+    When I click on the file named "folder1" in the gallery
+      And I check the file named "file2" in the gallery
+      And I check the file named "testfile" in the gallery
+      And I check the folder named "folder2" in the gallery
+        Then I should not see an "#BulkActions" element
+        And I should not see an ".bulk-actions__action[value='publish']" element
+        And I should not see an ".bulk-actions__action[value='unpublish']" element
+    When I check the folder named "folder2" in the gallery
+    And I press the "BulkActions" button
+      Then I should see an ".bulk-actions__action[value='publish']" element
+        And I should not see an ".bulk-actions__action[value='unpublish']" element
+    When I click "Publish" in the ".bulk-actions" element
+      Then I should see an ".message-box.message-box--success" element
+    When I check the file named "file2" in the gallery
+    And I check the file named "testfile" in the gallery
+    And I press the "BulkActions" button
+      Then I should not see an ".bulk-actions__action[value='publish']" element
+      And I should see an ".bulk-actions__action[value='unpublish']" element
+    When I check the file named "testfile" in the gallery
+    And I press the "BulkActions" button
+    And I press the "Unpublish" button, confirming the dialog
+      Then I should see an ".message-box.message-box--success" element
+    When I check the file named "file2" in the gallery
+    And I check the file named "testfile" in the gallery
+    And I press the "BulkActions" button
+      Then I should see an ".bulk-actions__action[value='publish']" element
+      And I should see an ".bulk-actions__action[value='unpublish']" element
+    When I click on the file named "file2" in the gallery
+      Then I should see an ".font-icon-rocket[name='action_publish']" element
+    When I press the "BulkActions" button
+    And I click "Publish" in the ".bulk-actions" element
+      Then I should not see an ".font-icon-rocket[name='action_publish']" element
+      And I should see an ".font-icon-tick[name='action_publish']" element
+
 
   @modal
   Scenario: I cannot delete a folder containing a file that is in use
@@ -109,22 +179,20 @@ Feature: Manage files
     Then I press the "Delete" button
       And I see the text "file is currently in use" in the alert
       And I confirm the dialog
-    Then I should see "successfully archived" in the message box
+    Then I should see "1 folders/files were successfully archived" in the message box
       And I should not see the file named "file1" in the gallery
 
   Scenario: I can move a file through editing
     When I click on the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileEditForm" form
-    When I click "folder1" in the ".Select-value" element
-      And I click "(root)" in the ".treedropdownfield__menu" element
+    When I select "(Top level)" in the "#Form_fileEditForm_ParentID_Holder" tree dropdown
       And I press the "Save" button
     Then I should see the file named "file1" in the gallery
       And I should see the file named "folder1" in the gallery
       And I should not see "File cannot be found" in the "#Form_fileEditForm" element
     # test moving again to see if Tuple has updated value
-    When I click "(root)" in the ".Select-value" element
-      And I click "folder2" in the ".treedropdownfield__menu" element
+    When I select "folder2" in the "#Form_fileEditForm_ParentID_Holder" tree dropdown
       And I press the "Save" button
     Then I should see the file named "file1" in the gallery
       And I should not see the file named "folder2" in the gallery

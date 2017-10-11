@@ -4,12 +4,11 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use InvalidArgumentException;
 use SilverStripe\Assets\File;
-use SilverStripe\Control\RequestHandler;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormAction;
@@ -23,8 +22,8 @@ use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
-use SilverStripe\Security\Group;
 use SilverStripe\Forms\TreeDropdownField;
+use SilverStripe\Forms\TreeMultiselectField;
 
 /**
  * @skipUpgrade
@@ -150,8 +149,21 @@ abstract class AssetFormFactory implements FormFactory
     protected function getSaveAction($record)
     {
         if ($record && $record->isInDB() && $record->canEdit()) {
-            return FormAction::create('save', _t('SilverStripe\\CMS\\Controllers\\CMSMain.SAVE', 'Save'))
-                ->setIcon('save');
+            /** @var FormAction $action */
+            $action = FormAction::create('save', _t(__CLASS__.'.SAVE', 'Save'))
+                ->setIcon('save')
+                ->setSchemaState([
+                    'data' => [
+                        'pristineTitle' => _t(__CLASS__.'SAVED', 'Saved'),
+                        'pristineIcon' => 'tick',
+                        'dirtyTitle' => _t(__CLASS__.'SAVE', 'Save'),
+                        'dirtyIcon' => 'save',
+                        'pristineClass' => 'btn-outline-primary',
+                        'dirtyClass' => '',
+                    ],
+                ]);
+
+            return $action;
         }
         return null;
     }
@@ -175,7 +187,7 @@ abstract class AssetFormFactory implements FormFactory
 
     /**
      * @param RequestHandler $controller
-     * @param $formName
+     * @param string $formName
      * @param array $context
      * @return FieldList
      */
@@ -279,16 +291,18 @@ abstract class AssetFormFactory implements FormFactory
         /** @var Tab $tab */
         $tab = Tab::create(
             'Details',
-            TextField::create('Name', File::singleton()->fieldLabel('Filename')),
-            $location = TreeDropdownField::create('ParentID', 'FolderLocation', Folder::class),
-            ReadonlyField::create(
-                "Path",
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PATH', 'Path'),
-                $this->getPath($record, $context)
+            TextField::create('Name', _t(__CLASS__.'.FILENAME', 'Filename')),
+            $location = TreeDropdownField::create(
+                'ParentID',
+                _t(__CLASS__.'.FOLDERLOCATION', 'Location'),
+                Folder::class
             )
+                ->setShowSelectedPath(true)
         );
 
-        $location->setEmptyString('(root)');
+        $location
+            ->setEmptyString(_t(__CLASS__.'.ROOTNAME', '(Top level)'))
+            ->setShowSearch(true);
         return $tab;
     }
 
@@ -312,6 +326,7 @@ abstract class AssetFormFactory implements FormFactory
             if ($context['ParentID'] === 0) {
                 return '/';
             }
+            /** @var File $file */
             $file = File::get()->byID($context['ParentID']);
             if ($file) {
                 return $file->getFilename();
@@ -329,19 +344,12 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function getFormFieldSecurityTab($record, $context = [])
     {
-        // Get groups
-        $groupsMap = array();
-        foreach (Group::get() as $group) {
-            $groupsMap[$group->ID] = $group->getBreadcrumbs(' > ');
-        }
-        asort($groupsMap);
-
         // Get permissions
         $viewersOptionsField = [
             'Inherit' => _t(__CLASS__.'.INHERIT', 'Inherit from parent folder'),
             'Anyone' => _t(__CLASS__.'.ANYONE', 'Anyone'),
             'LoggedInUsers' => _t(__CLASS__.'.LOGGED_IN', 'Logged-in users'),
-            'OnlyTheseUsers' => _t(__CLASS__.'.ONLY_GROUPS', 'Only these people (choose from list)')
+            'OnlyTheseUsers' => _t(__CLASS__.'.ONLY_GROUPS', 'Only these groups (choose from list)')
         ];
 
         // No "Anyone" editors option
@@ -355,15 +363,19 @@ abstract class AssetFormFactory implements FormFactory
                 _t(__CLASS__.'.ACCESSHEADER', 'Who can view this file?')
             )
                 ->setSource($viewersOptionsField),
-            CheckboxSetField::create('ViewerGroups', _t(__CLASS__.'.VIEWERGROUPS', 'Viewer Groups'))
-                ->setSource($groupsMap),
+            TreeMultiselectField::create(
+                'ViewerGroups',
+                _t(__CLASS__.'.VIEWERGROUPS', 'Viewer Groups')
+            ),
             OptionsetField::create(
                 "CanEditType",
                 _t(__CLASS__.'.EDITHEADER', 'Who can edit this file?')
             )
                 ->setSource($editorsOptionsField),
-            CheckboxSetField::create('EditorGroups', _t(__CLASS__.'.EDITORGROUPS', 'Editor Groups'))
-                ->setSource($groupsMap)
+            TreeMultiselectField::create(
+                'EditorGroups',
+                _t(__CLASS__.'.EDITORGROUPS', 'Editor Groups')
+            )
         );
     }
 

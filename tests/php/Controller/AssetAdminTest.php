@@ -205,15 +205,21 @@ class AssetAdminTest extends FunctionalTest
         $this->assertTrue($response->isError());
         $this->assertEquals(400, $response->getStatusCode());
         $responseData = json_decode($response->getBody(), true);
-        $this->assertContains(
-            'Extension is not allowed',
-            $responseData['message']['value']
+        $this->assertEquals(
+            [
+                'type' => 'error',
+                'code' => 400,
+                'value' => 'Extension is not allowed',
+            ],
+            $responseData['errors'][0]
         );
     }
 
     public function testItRestrictsUpdateFile()
     {
+        /** @var File $allowedFile */
         $allowedFile = $this->objFromFixture(File::class, 'file1');
+        /** @var File $disallowedFile */
         $disallowedFile = $this->objFromFixture(File::class, 'disallowCanEdit');
 
         $response = Director::test(
@@ -224,6 +230,10 @@ class AssetAdminTest extends FunctionalTest
                 'Name' => 'disallowCanEdit.txt',
                 'Title' => 'new',
                 'SecurityID' => SecurityToken::inst()->getValue(),
+                'CanViewType' => $allowedFile->CanViewType,
+                'ViewerGroups' => 'unchanged',
+                'CanEditType' => $allowedFile->CanEditType,
+                'EditorGroups' => 'unchanged',
             ],
             $this->session
         );
@@ -236,6 +246,10 @@ class AssetAdminTest extends FunctionalTest
                 'ID' => $disallowedFile->ID,
                 'Title' => 'new',
                 'SecurityID' => SecurityToken::inst()->getValue(),
+                'CanViewType' => $disallowedFile->CanViewType,
+                'ViewerGroups' => 'unchanged',
+                'CanEditType' => $disallowedFile->CanEditType,
+                'EditorGroups' => 'unchanged',
             ],
             $this->session
         );
@@ -249,7 +263,7 @@ class AssetAdminTest extends FunctionalTest
      */
     protected function getUploadFile($paramName, $tmpFileName = 'AssetAdminTest.txt')
     {
-        $tmpFilePath = TEMP_FOLDER . '/' . $tmpFileName;
+        $tmpFilePath = TEMP_PATH . DIRECTORY_SEPARATOR . $tmpFileName;
         $tmpFileContent = '';
         for ($i = 0; $i < 10000; $i++) {
             $tmpFileContent .= '0';
@@ -277,6 +291,10 @@ class AssetAdminTest extends FunctionalTest
                 'action_save' => 1,
                 'Name' => 'folder1-renamed',
                 'SecurityID' => SecurityToken::inst()->getValue(),
+                'CanViewType' => 'Inherit',
+                'ViewerGroups' => 'unchanged',
+                'CanEditType' => 'Inherit',
+                'EditorGroups' => 'unchanged',
             ]
         );
         $this->assertFalse($response->isError());

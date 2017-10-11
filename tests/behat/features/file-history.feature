@@ -8,6 +8,7 @@ Feature: View File History
     Given a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
       And I am logged in with "ADMIN" permissions
+      And I have a config file "history.yml"
       And I go to "/admin/assets"
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery

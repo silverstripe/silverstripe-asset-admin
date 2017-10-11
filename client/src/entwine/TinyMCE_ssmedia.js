@@ -1,7 +1,9 @@
-/* global tinymce */
-/* eslint-disable no-cond-assign */
-/* eslint-disable no-param-reassign */
-/* eslint-disable func-names */
+/* global tinymce, window */
+/* eslint-disable
+  no-cond-assign,
+  no-param-reassign,
+  func-names
+*/
 
 import jQuery from 'jquery';
 import i18n from 'i18n';
@@ -10,6 +12,7 @@ import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
+import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 
 const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
 
@@ -24,14 +27,15 @@ const filter = 'img[data-shortcode="image"]';
      * @param {Object} ed
      */
     init(ed) {
+      const title = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
       ed.addButton('ssmedia', {
         icon: 'image',
-        title: 'Insert Media',
+        title,
         cmd: 'ssmedia',
       });
       ed.addMenuItem('ssmedia', {
         icon: 'image',
-        text: 'Insert Media',
+        text: title,
         cmd: 'ssmedia',
       });
 
@@ -174,6 +178,12 @@ jQuery.entwine('ss', ($) => {
       const store = window.ss.store;
       const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
+      const selection = tinymce.activeEditor.selection;
+      const selectionContent = selection.getContent() || '';
+      const tagName = selection.getNode().tagName;
+      // Unsupported media insertion will use insert link form instead
+      // treat image tag selection as blank content
+      const requireLinkText = tagName !== 'A' && (tagName === 'IMG' || selectionContent.trim() === '');
 
       delete attrs.url;
 
@@ -188,6 +198,7 @@ jQuery.entwine('ss', ($) => {
             onHide={handleHide}
             bodyClassName="modal__dialog"
             className="insert-media-react__dialog-wrapper"
+            requireLinkText={requireLinkText}
             fileAttributes={attrs}
           />
         </ApolloProvider>,
@@ -251,6 +262,22 @@ jQuery.entwine('ss', ($) => {
         return {};
       }
       const $node = $(node);
+
+      // Handler for if the selection is a link instead of image media
+      const hrefParts = ($node.attr('href') || '').split('#');
+      if (hrefParts[0]) {
+        // check if file is safe
+        const shortcode = ShortcodeSerialiser.match('file_link', false, hrefParts[0]);
+        if (shortcode) {
+          return {
+            ID: shortcode.properties.id ? parseInt(shortcode.properties.id, 10) : 0,
+            Anchor: hrefParts[1] || '',
+            Description: $node.attr('title'),
+            TargetBlank: !!$node.attr('target'),
+          };
+        }
+      }
+
       const $caption = $node.parent('.captionImage').find('.caption');
 
       const attr = {
@@ -328,12 +355,43 @@ jQuery.entwine('ss', ($) => {
      * @returns {boolean} success
      */
     insertFile() {
-      this.statusMessage(i18n._t(
-        'AssetAdmin.ERROR_OEMBED_REMOTE',
-        'Embed is only compatible with remote files'),
-        'bad');
+      const data = this.getData();
 
-      return false;
+      const editor = this.getElement().getEditor();
+      const $node = $(editor.getSelectedNode());
+
+      const shortcode = ShortcodeSerialiser.serialise({
+        name: 'file_link',
+        properties: { id: data.ID },
+      }, true);
+
+      const selection = tinymce.activeEditor.selection;
+      const selectionContent = selection.getContent() || '';
+      let linkText = selectionContent || data.Text || data.filename;
+
+      // if link was highlighted, then we don't want to place more text inside that text
+      if ($node.is('a') && $node.html()) {
+        linkText = '';
+      }
+
+      const linkAttributes = {
+        href: shortcode,
+        target: data.TargetBlank ? '_blank' : '',
+        title: data.Description,
+      };
+
+      // if the selection is an image, then replace it
+      if ($node.is('img')) {
+        // selectionContent is the image html, so we don't want that
+        linkText = data.Text || data.filename;
+        const newLink = $('<a />').attr(linkAttributes).text(linkText);
+        $node.replaceWith(newLink);
+        editor.addUndo();
+        editor.repaint();
+      } else {
+        this.insertLinkInEditor(linkAttributes, linkText);
+      }
+      return true;
     },
 
     /**
@@ -355,8 +413,9 @@ jQuery.entwine('ss', ($) => {
       const attrs = this.getAttributes();
       const extraData = this.getExtraData();
 
-      // Find the element we are replacing - either the img, it's wrapper parent, or nothing (if creating)
-      let replacee = (node && node.is('img')) ? node : null;
+      // Find the element we are replacing - either the img, it's wrapper parent,
+      // or nothing (if creating)
+      let replacee = (node && node.is('img,a')) ? node : null;
       if (replacee && replacee.parent().is('.captionImage')) replacee = replacee.parent();
 
       // Find the img node - either the existing img or a new one, and update it
@@ -386,7 +445,8 @@ jQuery.entwine('ss', ($) => {
         caption.attr('class', `caption ${attrs.class}`).text(extraData.CaptionText);
       } else {
         // Otherwise forget they exist
-        container = caption = null;
+        container = null;
+        caption = null;
       }
 
       // The element we are replacing the replacee with
@@ -398,7 +458,8 @@ jQuery.entwine('ss', ($) => {
       }
 
       // If we have a wrapper element, make sure the img is the first child - img might be the
-      // replacee, and the wrapper the replacer, and we can't do this till after the replace has happened
+      // replacee, and the wrapper the replacer, and we can't do this till after the replace has
+      // happened
       if (container) {
         container.prepend(img);
       }

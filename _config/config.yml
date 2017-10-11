@@ -8,6 +8,17 @@ SilverStripe\Admin\LeftAndMain:
   extensions:
     - SilverStripe\AssetAdmin\Controller\AssetAdminFieldsExtension
 ---
+Name: assetadminthumbnails
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\AssetAdmin\Model\ThumbnailGenerator.assetadmin:
+    class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
+    properties:
+      Generates: true
+  SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    properties:
+      ThumbnailGenerator: '%$SilverStripe\AssetAdmin\Model\ThumbnailGenerator.assetadmin'
+---
 Name: assetadminfield
 After:
   - '#coreassetfield'

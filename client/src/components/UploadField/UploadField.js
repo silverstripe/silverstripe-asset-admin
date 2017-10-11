@@ -1,9 +1,8 @@
 import i18n from 'i18n';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import CONSTANTS from 'constants/index';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import UploadFieldItem from 'components/UploadField/UploadFieldItem';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
@@ -11,8 +10,7 @@ import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
-class UploadField extends SilverStripeComponent {
-
+class UploadField extends Component {
   constructor(props) {
     super(props);
     this.renderChild = this.renderChild.bind(this);
@@ -25,9 +23,14 @@ class UploadField extends SilverStripeComponent {
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleItemRemove = this.handleItemRemove.bind(this);
+    this.handleReplaceShow = this.handleReplaceShow.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleReplace = this.handleReplace.bind(this);
 
-    this.state = { selecting: false };
+    this.state = {
+      selecting: false,
+      selectingItem: null,
+    };
   }
 
   componentDidMount() {
@@ -67,7 +70,7 @@ class UploadField extends SilverStripeComponent {
   }
 
   handleAddedFile(data) {
-    const file = Object.assign({}, data, { uploaded: true });
+    const file = { ...data, uploaded: true };
     this.props.actions.uploadField.addFile(this.props.id, file);
   }
 
@@ -113,8 +116,27 @@ class UploadField extends SilverStripeComponent {
     this.props.actions.uploadField.failUpload(this.props.id, file._queuedId, response);
   }
 
+  /**
+   * Handler for removing an uploaded item
+   *
+   * @param {Object} event
+   * @param {Object} item
+   */
   handleItemRemove(event, item) {
     this.props.actions.uploadField.removeFile(this.props.id, item);
+  }
+
+  /**
+   * Handler for clicking on the uploaded item
+   *
+   * @param {Object} event
+   * @param {Object} selectingItem
+   */
+  handleReplaceShow(event, selectingItem) {
+    this.setState({
+      selecting: true,
+      selectingItem,
+    });
   }
 
   /**
@@ -149,14 +171,20 @@ class UploadField extends SilverStripeComponent {
    */
   handleAddShow(event) {
     event.preventDefault();
-    this.setState({ selecting: true });
+    this.setState({
+      selecting: true,
+      selectingItem: null,
+    });
   }
 
   /**
    * Close 'add from files' dialog
    */
   handleAddHide() {
-    this.setState({ selecting: false });
+    this.setState({
+      selecting: false,
+      selectingItem: null,
+    });
   }
 
   /**
@@ -172,14 +200,23 @@ class UploadField extends SilverStripeComponent {
     return Promise.resolve({});
   }
 
-  render() {
-    return (
-      <div className="uploadfield">
-        {this.renderDropzone()}
-        {this.props.files.map(this.renderChild)}
-        {this.renderDialog()}
-      </div>
-    );
+  /**
+   * Handle file being replaced from the modal
+   *
+   * @param {Object} data
+   * @param {Object} file
+   */
+  handleReplace(data, file) {
+    const { selectingItem } = this.state;
+    const { id, actions: { uploadField: { addFile, removeFile } } } = this.props;
+    if (!selectingItem) {
+      throw new Error('Tried to replace a file when none was selected.');
+    }
+    removeFile(id, selectingItem);
+    addFile(id, file);
+    this.handleAddHide();
+
+    return Promise.resolve({});
   }
 
   /**
@@ -194,7 +231,7 @@ class UploadField extends SilverStripeComponent {
   /**
    * Render "drop file here" area
    *
-   * @returns {XML}
+   * @returns {object}
    */
   renderDropzone() {
     if (!this.props.data.createFileEndpoint) {
@@ -242,17 +279,17 @@ class UploadField extends SilverStripeComponent {
         uploadButton={false}
         uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"
         folderId={this.props.data.parentid}
-        handleAddedFile={this.handleAddedFile}
-        handleError={this.handleFailedUpload}
-        handleSuccess={this.handleSuccessfulUpload}
-        handleSending={this.handleSending}
-        handleUploadProgress={this.handleUploadProgress}
+        onAddedFile={this.handleAddedFile}
+        onError={this.handleFailedUpload}
+        onSuccess={this.handleSuccessfulUpload}
+        onSending={this.handleSending}
+        onUploadProgress={this.handleUploadProgress}
         preview={dimensions}
         options={dropzoneOptions}
         securityID={securityID}
         className={classNames.join(' ')}
       >
-        <div className="uploadfield__backdrop"></div>
+        <div className="uploadfield__backdrop" />
         <span className="uploadfield__droptext">
           <button onClick={this.handleSelect} className="uploadfield__upload-button">
             {i18n._t('AssetAdmin.BROWSE', 'Browse')}
@@ -269,34 +306,48 @@ class UploadField extends SilverStripeComponent {
   }
 
   renderDialog() {
+    const { selecting, selectingItem } = this.state;
+
     return (
       <InsertMediaModal
         title={false}
-        show={this.state.selecting}
-        onInsert={this.handleAddInsert}
+        show={selecting}
+        onInsert={selectingItem ? this.handleReplace : this.handleAddInsert}
         onHide={this.handleAddHide}
+        type="select"
         bodyClassName="modal__dialog"
         className="insert-media-react__dialog-wrapper"
-        type="select"
+        fileAttributes={selectingItem ? { ID: selectingItem.id } : null}
+        folderId={selectingItem && typeof item === 'object' ? selectingItem.parent.id : 0}
       />
     );
   }
 
   /**
    *
-   * @param {Object} item
-   * @param {Object} extraProps
-   * @returns {XML}
+   * @param {object} item
+   * @returns {object}
    */
-  renderChild(item, index) {
+  renderChild(item) {
     const itemProps = {
-      key: index,
+      key: item.id,
       item,
       name: this.props.name,
-      handleRemove: this.handleItemRemove,
+      onRemove: this.handleItemRemove,
       canEdit: this.canEdit(),
+      onView: this.handleReplaceShow,
     };
     return <UploadFieldItem {...itemProps} />;
+  }
+
+  render() {
+    return (
+      <div className="uploadfield">
+        {this.renderDropzone()}
+        {this.props.files.map(this.renderChild)}
+        {this.renderDialog()}
+      </div>
+    );
   }
 }
 
@@ -352,6 +403,6 @@ function mapDispatchToProps(dispatch) {
 
 const ConnectedUploadField = connect(mapStateToProps, mapDispatchToProps)(UploadField);
 
-export { UploadField, ConnectedUploadField };
+export { UploadField as Component, ConnectedUploadField };
 
 export default fieldHolder(ConnectedUploadField);

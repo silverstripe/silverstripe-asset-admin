@@ -1,8 +1,6 @@
-import React, { PropTypes } from 'react';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
+import React, { PropTypes, Component } from 'react';
 
-class HistoryItem extends SilverStripeComponent {
-
+class HistoryItem extends Component {
   constructor(props) {
     super(props);
 
@@ -26,6 +24,8 @@ class HistoryItem extends SilverStripeComponent {
     }
 
     return (
+      // @todo wrap the contents in an `<a>` tag
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <li
         className="list-group-item history-item"
         onClick={this.handleClick}
@@ -47,7 +47,8 @@ HistoryItem.propTypes = {
   summary: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]).isRequired,
   status: PropTypes.string,
   author: PropTypes.string,
-  date: PropTypes.string,
+  date_formatted: PropTypes.string,
+  date_ago: PropTypes.string,
   onClick: PropTypes.func,
 };
 

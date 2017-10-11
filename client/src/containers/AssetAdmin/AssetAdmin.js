@@ -1,7 +1,6 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import backend from 'lib/Backend';
 import i18n from 'i18n';
 import * as galleryActions from 'state/gallery/GalleryActions';
@@ -14,9 +13,11 @@ import Toolbar from 'components/Toolbar/Toolbar';
 import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
 import readFilesQuery from 'state/files/readFilesQuery';
-import deleteFileMutation from 'state/files/deleteFileMutation';
-import unpublishFileMutation from 'state/files/unpublishFileMutation';
+import deleteFilesMutation from 'state/files/deleteFilesMutation';
+import unpublishFilesMutation from 'state/files/unpublishFilesMutation';
+import publishFilesMutation from 'state/files/publishFilesMutation';
 import CONSTANTS from 'constants/index';
+import configShape from 'lib/configShape';
 
 function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   let schemaUrl = null;
@@ -56,13 +57,14 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   return { schemaUrl, targetId };
 }
 
-class AssetAdmin extends SilverStripeComponent {
-
+class AssetAdmin extends Component {
   constructor(props) {
     super(props);
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.doPublish = this.doPublish.bind(this);
+    this.doUnpublish = this.doUnpublish.bind(this);
     this.handleUnpublish = this.handleUnpublish.bind(this);
     this.handleDoSearch = this.handleDoSearch.bind(this);
     this.handleSubmitEditor = this.handleSubmitEditor.bind(this);
@@ -91,6 +93,10 @@ class AssetAdmin extends SilverStripeComponent {
     };
   }
 
+  componentDidMount() {
+    this.setBreadcrumbs(this.props);
+  }
+
   componentWillReceiveProps(props) {
     const viewChanged = this.compare(this.props.folder, props.folder);
     if (viewChanged || hasFilters(props.query.filter) !== hasFilters(this.props.query.filter)) {
@@ -116,131 +122,10 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   /**
-   * Handles browsing within this section.
-   *
-   * @param {number} [folderId]
-   * @param {number} [fileId]
-   * @param {object|null} [query]
-   */
-  handleBrowse(folderId, fileId, query) {
-    if (typeof this.props.onBrowse === 'function') {
-      // for Higher-order component with a router handler
-      this.props.onBrowse(folderId, fileId, query);
-    }
-    if (folderId !== this.getFolderId()) {
-      this.props.actions.gallery.deselectFiles();
-    }
-  }
-
-  /**
-   * Handles when the pagination page changes
-   *
-   * @param {number} page
-   */
-  handleSetPage(page) {
-    this.handleBrowse(
-      this.getFolderId(),
-      this.props.fileId,
-      Object.assign({}, this.props.query, { page })
-    );
-  }
-
-  /**
-   * Reset to new search results page
-   *
-   * @param {Object} data
-   */
-  handleDoSearch(data) {
-    this.handleBrowse(
-      data.currentFolderOnly ? this.getFolderId() : 0,
-      0,
-      // Reset current query
-      Object.assign({}, this.getBlankQuery(), { filter: data })
-    );
-  }
-
-  /**
-   * Generate a blank query based on current query
-   *
-   * @return {Object}
-   */
-  getBlankQuery() {
-    const query = {};
-    Object.keys(this.props.query).forEach((key) => {
-      query[key] = undefined;
-    });
-    return query;
-  }
-
-  /**
-   * Handles configuring sorting with browsing history.onOpenFolder
-   *
-   * @param {string} sort
-   */
-  handleSort(sort) {
-    this.handleBrowse(
-      this.getFolderId(),
-      this.props.fileId,
-      Object.assign(
-        {},
-        this.props.query,
-        {
-          sort,
-          // clear pagination
-          limit: undefined,
-          page: undefined,
-        }
-      )
-    );
-  }
-
-  /**
-   * Handles when the view for the component changes
-   *
-   * @param {string} view
-   */
-  handleViewChange(view) {
-    this.handleBrowse(
-      this.getFolderId(),
-      this.props.fileId,
-      Object.assign({}, this.props.query, { view })
-    );
-  }
-
-  /**
-   * Create a new endpoint
-   *
-   * @param {Object} endpointConfig
-   * @param {Boolean} includeToken
-   * @returns {Function}
-     */
-  createEndpoint(endpointConfig, includeToken = true) {
-    return backend.createEndpointFetcher(Object.assign(
-      {},
-      endpointConfig,
-      includeToken ? { defaultData: { SecurityID: this.props.securityId } } : {}
-    ));
-  }
-
-  /**
-   * Navigate to parent folder
-   *
-   * @param {Object} event
-   */
-  handleBackButtonClick(event) {
-    event.preventDefault();
-    if (this.props.folder) {
-      this.handleOpenFolder(this.props.folder.parentId || 0);
-    } else {
-      this.handleOpenFolder(0);
-    }
-  }
-
-  /**
    * Assign breadcrumbs from selected folder
    *
-   * @param {Object} folder
-     */
+   * @param {Object} props
+   */
   setBreadcrumbs(props) {
     const folder = props.folder;
     const query = props.query;
@@ -279,7 +164,7 @@ class AssetAdmin extends SilverStripeComponent {
         },
         icon: {
           className: 'icon font-icon-edit-list',
-          action: this.handleFolderIcon,
+          onClick: this.handleFolderIcon,
         },
       });
     }
@@ -294,19 +179,137 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   /**
+   * Handles browsing within this section.
+   *
+   * @param {number} [folderId]
+   * @param {number} [fileId]
+   * @param {object|null} [query]
+   */
+  handleBrowse(folderId, fileId, query) {
+    if (typeof this.props.onBrowse === 'function') {
+      // for Higher-order component with a router handler
+      this.props.onBrowse(folderId, fileId, query);
+    }
+    if (folderId !== this.getFolderId()) {
+      this.props.actions.gallery.deselectFiles();
+    }
+  }
+
+  /**
+   * Handles when the pagination page changes
+   *
+   * @param {number} page
+   */
+  handleSetPage(page) {
+    this.handleBrowse(
+      this.getFolderId(),
+      this.props.fileId,
+      Object.assign({}, this.props.query, { page })
+    );
+  }
+
+  /**
+   * Reset to new search results page
+   *
+   * @param {Object} data
+   */
+  handleDoSearch(data) {
+    this.props.actions.gallery.deselectFiles();
+    this.handleBrowse(
+      data.currentFolderOnly ? this.getFolderId() : 0,
+      null,
+      // Reset current query, retain "view" type
+      { filter: data, view: this.props.query.view }
+    );
+  }
+
+  /**
+   * Handles configuring sorting with browsing history.onOpenFolder
+   *
+   * @param {string} sort
+   */
+  handleSort(sort) {
+    this.handleBrowse(
+      this.getFolderId(),
+      this.props.fileId,
+      {
+        ...this.props.query,
+        sort,
+        // clear pagination
+        limit: undefined,
+        page: undefined,
+      }
+    );
+  }
+
+  /**
+   * Handles when the view for the component changes
+   *
+   * @param {string} view
+   */
+  handleViewChange(view) {
+    this.handleBrowse(
+      this.getFolderId(),
+      this.props.fileId,
+      Object.assign({}, this.props.query, { view })
+    );
+  }
+
+  /**
+   * Create a new endpoint
+   *
+   * @param {Object} endpointConfig
+   * @param {Boolean} includeToken
+   * @returns {Function}
+     */
+  createEndpoint(endpointConfig, includeToken = true) {
+    return backend.createEndpointFetcher(Object.assign(
+      {},
+      endpointConfig,
+      includeToken ? { defaultData: { SecurityID: this.props.securityId } } : {}
+    ));
+  }
+
+  /**
+   * Navigate to parent folder
+   *
+   * @param {Object} event
+   */
+  handleBackButtonClick(event) {
+    event.preventDefault();
+    this.props.actions.gallery.deselectFiles();
+    if (this.props.folder) {
+      this.handleOpenFolder(this.props.folder.parentId || 0);
+    } else {
+      this.handleOpenFolder(0);
+    }
+  }
+
+  /**
    * Check if either of the two objects differ
    *
    * @param {Object} left
    * @param {Object} right
-     */
+   */
   compare(left, right) {
     // Check for falsiness
-    if (left && !right || right && !left) {
+    if ((left && !right) || (right && !left)) {
       return true;
     }
 
     // Fall back to object comparison
     return left && right && (left.id !== right.id || left.name !== right.name);
+  }
+
+  resetFile(file) {
+    if (file.queuedId) {
+      this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
+    }
+    // If the file is currently being edited, refresh that view
+    if (this.props.fileId === file.id) {
+      this.handleCloseFile();
+      this.handleOpenFile(file.id);
+    }
   }
 
   /**
@@ -339,7 +342,6 @@ class AssetAdmin extends SilverStripeComponent {
    */
   handleSubmitEditor(data, action, submitFn) {
     let promise = null;
-
     if (typeof this.props.onSubmitEditor === 'function') {
       // Look for file first in `files`, then `queuedFiles` property
       const file = this.findFile(this.props.fileId);
@@ -365,9 +367,6 @@ class AssetAdmin extends SilverStripeComponent {
             // open the containing folder, since folder edit mode isn't desired
             if (action === 'action_createfolder' && this.props.type !== 'admin') {
               this.handleOpenFolder(this.getFolderId());
-            } else if (action === 'action_publish') {
-              this.handleCloseFile();
-              this.handleOpenFile(response.record.id);
             }
             return response;
           });
@@ -378,7 +377,7 @@ class AssetAdmin extends SilverStripeComponent {
    * Handle for closing the editor
    */
   handleCloseFile() {
-    this.handleOpenFolder(this.getFolderId());
+    this.handleBrowse(this.getFolderId(), null, this.props.query);
   }
 
   /**
@@ -395,71 +394,112 @@ class AssetAdmin extends SilverStripeComponent {
   }
 
   /**
-   * Delete a file or folder
+   * Delete files or folders
    *
-   * @param {number} fileId
+   * @param {array} ids
    */
-  handleDelete(fileId) {
-    let file = this.findFile(fileId);
-    if (!file && this.props.folder && this.props.folder.id === fileId) {
-      file = this.props.folder;
-    }
-
-    if (!file) {
-      throw new Error(`File selected for deletion cannot be found: ${fileId}`);
-    }
-
-    const dataId = this.props.client.dataId({
-      __typename: file.__typename,
-      id: file.id,
+  handleDelete(ids) {
+    const files = ids.map(id => {
+      const result = this.findFile(id);
+      if (!result) {
+        throw new Error(`File selected for deletion cannot be found: ${id}`);
+      }
+      if (result.queuedId) {
+        this.props.actions.queuedFiles.removeQueuedFile(result.queuedId);
+      }
+      return result;
     });
 
-    return this.props.actions.files.deleteFile(file.id, dataId).then(() => {
-      this.props.actions.gallery.deselectFiles([file.id]);
+    const dataIds = files.map(({ __typename, id }) => (
+      this.props.client.dataId({ __typename, id })
+    ));
+    const fileIDs = files.map(file => file.id);
+    const parentId = this.props.folder ? this.props.folder.id : 0;
+    return this.props.actions.files.deleteFiles(fileIDs, dataIds)
+      .then(({ data: { deleteFiles } }) => {
+        this.handleBrowse(parentId, null, this.props.query);
 
-      // If the file was just uploaded, it doesn't exist in the Apollo store,
-      // and has to be removed from the queue instead.
-      if (file.queuedId) {
-        this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
+        return deleteFiles;
+      });
+  }
+
+  /**
+   * Unpublish files
+   *
+   * @param {array} ids
+   * @return {Promise}
+   */
+  doUnpublish(ids) {
+    const files = ids.map(id => {
+      const result = this.findFile(id);
+      if (!result) {
+        throw new Error(`File selected for unpublishing cannot be found: ${id}`);
+      } else if (result.type === 'folder') {
+        throw new Error('Cannot unpublish folders');
       }
 
-      // redirect to open parent folder if the file/folder is open and on screen to close it
-      if (file) {
-        this.handleBrowse((file.parentId) ? file.parentId : 0, null, this.props.query);
-      }
+      return result;
+    });
+
+    const fileIDs = files.map(file => file.id);
+
+    return this.props.actions.files.unpublishFiles(fileIDs)
+      .then(({ data: { unpublishFiles } }) => (
+        unpublishFiles.map(file => {
+          this.resetFile(file);
+          return file;
+        })
+      ));
+  }
+
+  /**
+   * Unpublish files and update the UI
+   *
+   * @param {array} fileIds
+   */
+  handleUnpublish(fileIds) {
+    return this.doUnpublish(fileIds).then((response) => {
+      // TODO Update GraphQL store with new model or update apollo and use new API
+      // see https://github.com/silverstripe/silverstripe-graphql/issues/14
+      // see https://dev-blog.apollodata.com/apollo-clients-new-imperative-store-api-6cb69318a1e3
+      const { fileId } = this.props;
+      this.props.actions.files.readFiles()
+        .then(() => {
+          if (fileId && response.find(file => file.id === fileId)) {
+            this.handleCloseFile();
+            this.handleOpenFile(fileId);
+          }
+        });
     });
   }
 
   /**
-   * Unpublish a file or folder
+   * Publish files
    *
-   * @param {number} fileId
+   * @param {array} ids
+   * @return {Promise}
    */
-  handleUnpublish(fileId) {
-    let file = this.findFile(fileId);
-    if (!file && this.props.folder && this.props.folder.id === fileId) {
-      file = this.props.folder;
-    }
+  doPublish(ids) {
+    const files = ids.map(id => {
+      const result = this.findFile(id);
+      if (!result) {
+        throw new Error(`File selected for publishing cannot be found: ${id}`);
+      } else if (result.type === 'folder') {
+        throw new Error('Cannot publish folders');
+      }
 
-    if (!file) {
-      throw new Error(`File selected for unpublish cannot be found: ${fileId}`);
-    }
-
-    const dataId = this.props.client.dataId({
-      __typename: file.__typename,
-      id: file.id,
+      return result;
     });
 
-    this.props.actions.files.unpublishFile(file.id, dataId).then((response) => {
-      // TODO Update GraphQL store with new model or update apollo and use new API
-      // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-      // see https://dev-blog.apollodata.com/apollo-clients-new-imperative-store-api-6cb69318a1e3
-      this.props.actions.files.readFiles()
-        .then(() => {
-          this.handleCloseFile();
-          this.handleOpenFile(response.data.unpublishFile.id);
-        });
-    });
+    const fileIDs = files.map(file => file.id);
+
+    return this.props.actions.files.publishFiles(fileIDs)
+      .then(({ data: { publishFiles } }) => (
+        publishFiles.map(file => {
+          this.resetFile(file);
+          return file;
+        })
+      ));
   }
 
   /**
@@ -508,7 +548,7 @@ class AssetAdmin extends SilverStripeComponent {
   /**
    * Generates the Gallery react component to render with
    *
-   * @returns {Component}
+   * @returns {object}
    */
   renderGallery() {
     const config = this.props.sectionConfig;
@@ -520,7 +560,7 @@ class AssetAdmin extends SilverStripeComponent {
 
     const sort = this.props.query && this.props.query.sort;
     const view = this.props.query && this.props.query.view;
-    const filters = (this.props.query && this.props.query.filter) || {};
+    const filters = this.props.query.filter || {};
 
     return (
       <Gallery
@@ -534,9 +574,12 @@ class AssetAdmin extends SilverStripeComponent {
         totalCount={this.props.filesTotalCount}
         view={view}
         filters={filters}
+        graphQLErrors={this.props.graphQLErrors}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         onDelete={this.handleDelete}
+        onPublish={this.doPublish}
+        onUnpublish={this.doUnpublish}
         onOpenFile={this.handleOpenFile}
         onOpenFolder={this.handleOpenFolder}
         onSuccessfulUpload={this.handleUpload}
@@ -555,7 +598,7 @@ class AssetAdmin extends SilverStripeComponent {
   /**
    * Generates the Editor react component to render with
    *
-   * @returns {Component}
+   * @returns {object}
    */
   renderEditor() {
     const config = this.props.sectionConfig;
@@ -575,8 +618,10 @@ class AssetAdmin extends SilverStripeComponent {
       <Editor
         className={(this.props.dialog) ? 'editor--dialog' : ''}
         targetId={targetId}
+        file={this.findFile(targetId)}
         onClose={this.handleCloseFile}
         schemaUrl={schemaUrl}
+        schemaUrlQueries={this.props.requireLinkText ? [{ name: 'requireLinkText', value: true }] : []}
         onSubmit={this.handleSubmitEditor}
         onDelete={this.handleDelete}
         onUnpublish={this.handleUnpublish}
@@ -587,7 +632,7 @@ class AssetAdmin extends SilverStripeComponent {
 
   render() {
     const showBackButton = !!(
-      (this.props.folder && this.props.folder.id)
+      (this.props.folderId)
       || hasFilters(this.props.query.filter)
     );
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
@@ -596,12 +641,15 @@ class AssetAdmin extends SilverStripeComponent {
       <div className="fill-height">
         <Toolbar
           showBackButton={showBackButton}
-          handleBackButtonClick={this.handleBackButtonClick}
+          onBackButtonClick={this.handleBackButtonClick}
         >
           <Breadcrumb multiline />
-          <div className="asset-admin__toolbar-extra pull-xs-right fill-width">
-            <Search onSearch={this.handleDoSearch} id="AssetSearchForm"
-              searchFormSchemaUrl={searchFormSchemaUrl} folderId={this.getFolderId()}
+          <div className="asset-admin__toolbar-extra pull-xs-right fill-width vertical-align-items">
+            <Search
+              onSearch={this.handleDoSearch}
+              id="AssetSearchForm"
+              searchFormSchemaUrl={searchFormSchemaUrl}
+              folderId={this.getFolderId()}
               filters={filters}
             />
             {this.props.toolbarChildren}
@@ -611,10 +659,6 @@ class AssetAdmin extends SilverStripeComponent {
           {this.renderGallery()}
           {this.renderEditor()}
         </div>
-        {this.props.type !== 'admin' && this.props.loading &&
-        [<div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light"></div>,
-        <div key="spinner" className="cms-content-loading-spinner"></div>]
-        }
       </div>
     );
   }
@@ -622,15 +666,12 @@ class AssetAdmin extends SilverStripeComponent {
 
 AssetAdmin.propTypes = {
   dialog: PropTypes.bool,
-  sectionConfig: PropTypes.shape({
-    url: PropTypes.string,
-    limit: PropTypes.number,
-    form: PropTypes.object,
-  }),
+  sectionConfig: configShape,
   fileId: PropTypes.number,
   folderId: PropTypes.number,
   onBrowse: PropTypes.func,
   onReplaceUrl: PropTypes.func,
+  graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   getUrl: PropTypes.func,
   query: PropTypes.shape({
     sort: PropTypes.string,
@@ -686,12 +727,13 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { AssetAdmin, getFormSchema };
+export { AssetAdmin as Component, getFormSchema };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   readFilesQuery,
-  deleteFileMutation,
-  unpublishFileMutation,
+  deleteFilesMutation,
+  unpublishFilesMutation,
+  publishFilesMutation,
   (component) => withApollo(component)
 )(AssetAdmin);

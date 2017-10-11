@@ -7,22 +7,39 @@ import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
-class HistoryList extends Component {
+/**
+ * Create a new endpoint
+ *
+ * @todo duplication with assetadmin.
+ *
+ * @param {Object} endpointConfig
+ * @param {Boolean} includeToken
+ * @returns {Function}
+ */
+const createEndpoint = (endpointConfig, includeToken = true) => (
+  backend.createEndpointFetcher(Object.assign(
+    {},
+    endpointConfig,
+    includeToken ? { defaultData: { SecurityID: Config.get('SecurityID') } } : {}
+  ))
+);
 
+class HistoryList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       detailView: null,
       history: [],
-      /* TODO loading */
-      loadedDetails: true,
+      loadedDetails: false,
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.handleBack = this.handleBack.bind(this);
 
-    this.api = this.createEndpoint(props.sectionConfig.historyEndpoint);
+    this.timer = null;
+
+    this.api = createEndpoint(props.sectionConfig.historyEndpoint);
   }
 
   componentDidMount() {
@@ -34,13 +51,9 @@ class HistoryList extends Component {
     this.refreshHistoryIfNeeded(nextProps);
   }
 
-  /**
-   * @returns {string} class
-   */
-  getContainerClassName() {
-    return (this.state.viewDetails && !this.state.loadedDetails)
-      ? 'history-list history-container--loading'
-      : 'history-list';
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+    this.timer = null;
   }
 
   /**
@@ -49,15 +62,31 @@ class HistoryList extends Component {
    * @param {object} nextProps
    */
   refreshHistoryIfNeeded(nextProps) {
-    if (!nextProps
+    if (
+      (!nextProps && !this.state.loadedDetails)
       || (nextProps.data.fileId !== this.props.data.fileId)
       || (nextProps.data.latestVersionId !== this.props.data.latestVersionId)
     ) {
-      this.api({
-        fileId: (nextProps) ? nextProps.data.fileId : this.props.data.fileId,
-      }).then((history) => {
-        this.setState({ history });
-      });
+      this.setState({ loadedDetails: false });
+      const fileId = (nextProps) ? nextProps.data.fileId : this.props.data.fileId;
+      clearTimeout(this.timer);
+
+      /*
+       * This needs a delay/throttle, so this api request tries to be made last in the stack.
+       * We also use this to stop an API call happening if the component is going to
+       * unmount soon.
+       * TODO: This could potentially be solved by using apollo-client's caching and graphql.
+       */
+      this.timer = setTimeout(() => {
+        this.api({
+          fileId,
+        }).then((history) => {
+          // check that timer wasn't nulled out by unmounting
+          if (this.timer) {
+            this.setState({ history, loadedDetails: true });
+          }
+        });
+      }, 250);
     }
   }
 
@@ -83,57 +112,44 @@ class HistoryList extends Component {
     });
   }
 
-  /**
-   * Create a new endpoint
-   *
-   * @todo duplication with assetadmin.
-   *
-   * @param {Object} endpointConfig
-   * @param {Boolean} includeToken
-   * @returns {Function}
-   */
-  createEndpoint(endpointConfig, includeToken = true) {
-    return backend.createEndpointFetcher(Object.assign(
-      {},
-      endpointConfig,
-      includeToken ? { defaultData: { SecurityID: Config.get('SecurityID') } } : {}
-    ));
-  }
-
   render() {
-    const containerClassName = this.getContainerClassName();
-    if (!this.state.history) {
+    if (!this.state.loadedDetails) {
       return (
-        <div className={containerClassName} />
+        <div className="history-list history-list--loading">
+          Loading...
+        </div>
       );
     }
 
     if (this.state.viewDetails) {
-      let schemaUrl = [
+      const schemaUrl = [
         this.props.historySchemaUrl,
         this.props.data.fileId,
         this.state.viewDetails,
       ].join('/');
 
-      let className = [
-        'btn btn-secondary',
-        'btn--icon-xl btn--no-text',
+      const backButtonClasses = [
+        'btn',
+        'btn-secondary',
+        'btn--icon-xl',
+        'btn--no-text',
         'font-icon-left-open-big',
         'history-list__back',
       ].join(' ');
 
       return (
-        <div className={containerClassName}>
-          <a className={className} onClick={this.handleBack} />
+        <div className="history-list">
+          <a href="#" className={backButtonClasses} onClick={this.handleBack} />
           <FormBuilderLoader identifier="AssetAdmin.HistoryList" schemaUrl={schemaUrl} />
         </div>
       );
     }
 
+    const historyList = this.state.history || [];
     return (
-      <div className={containerClassName}>
+      <div className="history-list">
         <ul className="list-group list-group-flush history-list__list">
-          {this.state.history.map((history) => (
+          {historyList.map((history) => (
             <HistoryItem
               key={history.versionid}
               {...history}
@@ -173,6 +189,6 @@ function mapStateToProps(state) {
   };
 }
 
-export { HistoryList };
+export { HistoryList as Component };
 
 export default connect(mapStateToProps)(HistoryList);

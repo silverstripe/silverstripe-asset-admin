@@ -51,7 +51,7 @@ class UploadFieldTest extends SapphireTest
         /** @var Image $image */
         $image = $this->objFromFixture(Image::class, 'image1');
         $field->setItems(new ArrayList([$image]));
-        $admin = new AssetAdmin();
+        $admin = AssetAdmin::create();
         Form::create($admin, 'MyForm', FieldList::create($field), FieldList::create());
 
         $attributes = $field->getAttributes();

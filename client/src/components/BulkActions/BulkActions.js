@@ -1,16 +1,16 @@
 import $ from 'jquery';
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import SilverStripeComponent from 'lib/SilverStripeComponent';
 import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
+import { inject } from 'lib/Injector';
+import classnames from 'classnames';
 
-export class BulkActions extends SilverStripeComponent {
-
+class BulkActions extends Component {
   constructor(props) {
     super(props);
 
-    this.onChangeValue = this.onChangeValue.bind(this);
+    this.handleChangeValue = this.handleChangeValue.bind(this);
   }
 
   componentDidMount() {
@@ -25,44 +25,6 @@ export class BulkActions extends SilverStripeComponent {
     $select.change(() => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
   }
 
-  render() {
-    // eslint-disable-next-line arrow-body-style
-    const children = this.props.actions.map((action, i) => {
-      const canApply = (
-        // At least one item is selected
-        this.props.items.length &&
-        // ... and the action applies to all of the selected items
-        (!action.canApply || action.canApply(this.props.items))
-      );
-      if (!canApply) {
-        return '';
-      }
-
-      const className = [
-        'bulk-actions__action',
-        'ss-ui-button',
-        'ui-corner-all',
-        action.className || 'font-icon-info-circled',
-      ].join(' ');
-      return (<button
-        type="button"
-        className={className}
-        key={i}
-        onClick={this.onChangeValue}
-        value={action.value}
-      >
-        {action.label}
-      </button>);
-    });
-
-    return (
-      <div className="bulk-actions fieldholder-small">
-        <div className="bulk-actions-counter">{this.props.items.length}</div>
-        {children}
-      </div>
-    );
-  }
-
   /**
    * @param {String} value
    * @returns {Object} One of props.actions.
@@ -75,7 +37,7 @@ export class BulkActions extends SilverStripeComponent {
    * @param {Event} event
    * @returns {Promise|null}
    */
-  onChangeValue(event) {
+  handleChangeValue(event) {
     let promise = null;
 
     // Make sure a valid option has been selected.
@@ -106,6 +68,65 @@ export class BulkActions extends SilverStripeComponent {
 
     return promise;
   }
+
+  render() {
+    // eslint-disable-next-line arrow-body-style
+    const children = this.props.actions.map((action, i) => {
+      const canApply = (
+        // At least one item is selected
+        this.props.items.length &&
+        // ... and the action applies to all of the selected items
+        (!action.canApply || action.canApply(this.props.items))
+      );
+      if (!canApply) {
+        return '';
+      }
+
+      const className = classnames(
+        'bulk-actions__action',
+        'ss-ui-button',
+        'ui-corner-all',
+        action.className || 'font-icon-info-circled',
+        {
+          'bulk-actions__action--more': (i > 2),
+        }
+      );
+      return (<button
+        type="button"
+        className={className}
+        key={action.value}
+        onClick={this.handleChangeValue}
+        value={action.value}
+      >
+        {action.label}
+      </button>);
+    }).filter(item => item);
+
+    if (!children.length) {
+      return null;
+    }
+    const { PopoverField } = this.props;
+
+    return (
+      <div className="bulk-actions fieldholder-small btn-group">
+        <div className="bulk-actions-counter">{this.props.items.length}</div>
+        {children.slice(0, 2)}
+        {children.length > 2 && PopoverField
+          ? (
+            <PopoverField
+              id="BulkActions"
+              popoverClassName="bulk-actions__more-actions-menu"
+              container={this}
+              data={{ placement: 'bottom' }}
+            >
+              {children.slice(2)}
+            </PopoverField>
+          )
+          : children.slice(2)
+        }
+      </div>
+    );
+  }
 }
 
 BulkActions.propTypes = {
@@ -119,6 +140,13 @@ BulkActions.propTypes = {
     canApply: React.PropTypes.func,
     confirm: React.PropTypes.func,
   })),
+  PopoverField: React.PropTypes.oneOfType([React.PropTypes.node, React.PropTypes.func]),
+};
+
+BulkActions.defaultProps = {
+  items: [],
+  actions: [],
+  PopoverField: null,
 };
 
 function mapStateToProps(state) {
@@ -127,4 +155,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(BulkActions);
+const BulkActionsWithState = connect(mapStateToProps)(BulkActions);
+
+export { BulkActions as Component };
+
+export default inject(
+  ['PopoverField'],
+  (PopoverField) => ({ PopoverField }),
+  () => 'BulkActions'
+)(BulkActionsWithState);

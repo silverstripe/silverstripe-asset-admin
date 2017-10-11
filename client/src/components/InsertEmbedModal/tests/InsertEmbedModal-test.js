@@ -6,7 +6,7 @@ jest.mock('components/FormBuilderModal/FormBuilderModal', () => () => null);
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { InsertEmbedModal } from '../InsertEmbedModal';
+import { Component as InsertEmbedModal } from '../InsertEmbedModal';
 
 describe('InsertEmbedModal', () => {
   let props = {};

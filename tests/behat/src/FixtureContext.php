@@ -167,6 +167,16 @@ EOS
     }
 
     /**
+     * @Then I should see an error message on the file :file
+     * @param string $file
+     */
+    public function iShouldSeeAnErrorMessageOnTheFile($file)
+    {
+        $fileNode = $this->getGalleryItem($file);
+        assertTrue($fileNode->getParent()->hasClass('gallery-item--error'));
+    }
+
+    /**
      * Checks that the message box contains specified text.
      *
      * @Then /^I should see "(?P<text>(?:[^"]|\\")*)" in the message box$/
@@ -235,5 +245,17 @@ EOS
             ),
         ]);
         $this->fixtureFactory->createObject(Page::class, $page, $fields);
+    }
+
+    /**
+     * @Then I should see a modal titled :title
+     * @param string $title
+     */
+    public function iShouldSeeAModalTitled($title)
+    {
+        $page = $this->getMainContext()->getSession()->getPage();
+        $modalTitle = $page->find('css', '[role=dialog] .modal-header > .modal-title');
+        assertNotNull($modalTitle, 'No modal on the page');
+        assertTrue($modalTitle->getText() == $title);
     }
 }

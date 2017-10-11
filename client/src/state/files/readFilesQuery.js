@@ -1,6 +1,5 @@
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
-import { NetworkStatus } from 'apollo-client/queries/store';
 import { fileInterface, file as fileFragment, folder as folderFragment } from 'lib/fileFragments';
 import { hasFilters } from 'components/Search/Search';
 
@@ -93,9 +92,10 @@ const config = {
   props(
     {
       data: {
-        networkStatus: currentNetworkStatus,
+        error,
         refetch,
         readFiles,
+        loading: networkLoading,
       },
       ownProps: { actions },
     }
@@ -112,19 +112,16 @@ const config = {
       ? folder.children.pageInfo.totalCount
       : 0;
 
-    // Only set to loading if a network request is in progress.
-    // TODO Use built-in 'loading' indicator once it's set to true on setVariables() calls.
-    // TODO Respect optimistic loading results. We can't check for presence of readFiles object,
-    // since Apollo sends through the previous result before optimistically setting the new result.
-    const loading =
-      currentNetworkStatus !== NetworkStatus.ready
-      && currentNetworkStatus !== NetworkStatus.error;
+    const filesLoading = (folder && !folder.children);
 
+    const errors = error && error.graphQLErrors &&
+      error.graphQLErrors.map((graphQLError) => graphQLError.message);
     return {
-      loading,
+      loading: networkLoading || filesLoading,
       folder,
       files,
       filesTotalCount,
+      graphQLErrors: errors,
       actions: Object.assign({}, actions, {
         files: Object.assign({}, actions.files, {
           readFiles: refetch,

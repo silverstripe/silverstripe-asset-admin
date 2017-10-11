@@ -1,9 +1,10 @@
-/* global jest, describe, it, expect, beforeEach */
+/* global jest, describe, it, expect, beforeEach, Event */
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('components/FormAlert/FormAlert');
 jest.mock('components/AssetDropzone/AssetDropzone');
 jest.mock('components/BulkActions/BulkActions');
+jest.mock('../../MoveModal/MoveModal');
 // mock jquery, as leaving it causes more problems than it solves
 jest.mock('jquery', () => {
   const jqueryMock = {
@@ -20,7 +21,7 @@ jest.mock('jquery', () => {
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import { Gallery } from '../Gallery';
+import { Component as Gallery } from '../Gallery';
 
 describe('Gallery', () => {
   let props = null;
@@ -34,6 +35,12 @@ describe('Gallery', () => {
           setPath: () => {},
           setErrorMessage: () => {},
           setNoticeMessage: () => {},
+          setLoading: () => {},
+          onDelete: () => {},
+          onPublish: () => {},
+          onUnpublish: () => {},
+          onPublishComplete: () => {},
+          onUnpublishComplete: () => {},
         },
         queuedFiles: {
           addQueuedFile: () => null,
@@ -71,6 +78,7 @@ describe('Gallery', () => {
       onSetPage: () => {},
       onViewChange: () => {},
       badges: [],
+      sectionConfig: {},
     };
   });
 
@@ -413,12 +421,23 @@ describe('Gallery', () => {
       expect(gallery.renderBulkActions()).toBe(null);
     });
 
-    it('should return a BulkActionsComponent if there are items in the selectedFiles array.', () => {
+    it(`should not return a BulkActionsComponent if there are items in the
+        selectedFiles array that do not resolve to files.`, () => {
       props.selectedFiles = [1];
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
 
+      expect(gallery.renderBulkActions()).toBe(null);
+    });
+
+    it(`should return a BulkActionsComponent if there are items in the
+        selectedFiles array that resolve to files.`, () => {
+      props.files = [{ id: 1 }];
+      props.selectedFiles = [1];
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
       expect(gallery.renderBulkActions()).not.toBe(null);
     });
   });
@@ -520,6 +539,78 @@ describe('Gallery', () => {
       gallery.handleCreateFolder();
 
       expect(props.onCreateFolder).toBeCalled();
+    });
+  });
+
+  describe('bulkActions', () => {
+    let gallery = null;
+
+    beforeEach(() => {
+      props.onPublish = jest.fn((id) => Promise.resolve([{ id }]));
+      props.onUnpublish = jest.fn((id) => Promise.resolve([{ id }]));
+      props.onDelete = jest.fn((id) => Promise.resolve([id]));
+      props.actions.gallery.setLoading = jest.genMockFunction();
+      props.actions.gallery.setNoticeMessage = jest.genMockFunction();
+      props.actions.gallery.setErrorMessage = jest.genMockFunction();
+      props.actions.gallery.deselectFiles = jest.genMockFunction();
+    });
+
+    it('deletes a list of items', () => {
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+      return gallery.handleBulkDelete([{ id: 5 }])
+        .then(() => {
+          expect(props.actions.gallery.setLoading).toBeCalled();
+          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.onDelete).toBeCalledWith([5]);
+          expect(props.actions.gallery.deselectFiles).toBeCalled();
+        })
+        .then(() => {
+          gallery.handleBulkDelete([{ id: 5 }, { id: 6 }]);
+        })
+        .then(() => {
+          expect(props.actions.gallery.setErrorMessage).toBeCalled();
+        });
+    });
+
+    it('publishes a list of items if it was unpublished', () => {
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+      return gallery.handleBulkPublish([{ id: 5, published: false }])
+        .then(() => {
+          expect(props.actions.gallery.setLoading).toBeCalled();
+          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.onPublish).toBeCalledWith([5]);
+          expect(props.actions.gallery.deselectFiles).toBeCalled();
+        });
+    });
+
+    it('unpublishes a list of items if it was published', () => {
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+      return gallery.handleBulkUnpublish([{ id: 5, published: true }])
+        .then(() => {
+          expect(props.actions.gallery.setLoading).toBeCalled();
+          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.onUnpublish).toBeCalledWith([5]);
+          expect(props.actions.gallery.deselectFiles).toBeCalled();
+        });
+    });
+
+    it('does not unpublish an item if it was not published', () => {
+      gallery = ReactTestUtils.renderIntoDocument(
+        <Gallery {...props} />
+      );
+      return gallery.handleBulkUnpublish([{ id: 5, published: false }])
+        .then(() => {
+          expect(props.actions.gallery.setLoading).not.toBeCalled();
+          expect(props.actions.gallery.setNoticeMessage).not.toBeCalled();
+          expect(props.onUnpublish).not.toBeCalled();
+          expect(props.actions.gallery.deselectFiles).toBeCalled();
+        });
     });
   });
 });

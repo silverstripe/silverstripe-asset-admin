@@ -1,13 +1,7 @@
 .asset-dropzone {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-
   &::after {
     position: absolute;
-    top: -70px;
+    top: 0;
     right: #{0 - $grid-gutter-width / 2};
     bottom: 0;
     left: #{0 - $grid-gutter-width / 2};

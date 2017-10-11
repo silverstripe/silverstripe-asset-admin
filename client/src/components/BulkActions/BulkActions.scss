@@ -3,7 +3,7 @@ $bulk-actions-width: 300px;
 
 .bulk-actions {
   width: 100%;
-  padding: $spacer-y * .625 $grid-gutter-width-half;
+  padding: $spacer * .625 $grid-gutter-width-half;
   margin: 0 auto;
   position: fixed;
   height: $toolbar-total-height;
@@ -147,6 +147,47 @@ $bulk-actions-width: 300px;
 
     &:nth-child(1)::before {
       content: "g";
+    }
+  }
+}
+
+.bulk-actions__action--more {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+@include media-breakpoint-down(sm) {
+
+  // Flip the popover so that arrow points downward
+  .popover.bulk-actions__more-actions-menu {
+    top: auto!important;
+    bottom: 42px!important;
+    margin-top: 0;
+    margin-bottom: 10px;
+
+    & > .arrow {
+      top: auto;
+      bottom: 0;
+
+      &:before,
+      &::after {
+        margin-left: -6px;
+        border-top-width: 11px;
+        border-bottom-width: 0;
+      }
+
+      &:before {
+        top: auto;
+        bottom: -11px;
+        border-top-color: rgba(0,0,0,0.15);
+      }
+
+      &:after {
+        top: auto;
+        bottom: -10px;
+        border-top-color: $white;
+      }
     }
   }
 }

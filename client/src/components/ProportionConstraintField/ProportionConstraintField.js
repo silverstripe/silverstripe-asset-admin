@@ -2,7 +2,6 @@ import React, { PropTypes, Component, Children, cloneElement } from 'react';
 import { inject } from 'lib/Injector';
 
 class ProportionConstraintField extends Component {
-
   constructor(props) {
     super(props);
     const childrenArray = Children.toArray(props.children);
@@ -41,7 +40,7 @@ class ProportionConstraintField extends Component {
         {this.props.children.map((child, key) => (
           cloneElement(child, {
             // overload the children change handler
-            onChange: this.handleChange.bind(this, key),
+            onChange: (e) => this.handleChange(key, e),
             key,
           }, child.props.children)
         ))}
@@ -64,8 +63,6 @@ ProportionConstraintField.defaultProps = {
   active: true,
 };
 
-export {
-  ProportionConstraintField,
-};
+export { ProportionConstraintField as Component };
 
 export default inject(['FieldGroup'])(ProportionConstraintField);

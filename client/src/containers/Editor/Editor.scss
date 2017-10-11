@@ -25,11 +25,15 @@
   .editor__details {
     height: calc(100vh - #{$toolbar-total-height}); // Height fix in Safari
     transform: translateZ(0); // Safari fix - form fields are not visible intermittently
+
+    .btn--close-panel {
+      margin-right: 0;
+    }
   }
 }
 
 .editor__heading {
-  margin-right: $spacer-x * 2;
+  margin-right: $spacer * 2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -51,7 +55,11 @@
 .editor__specs {
   color: $text-muted;
   font-size: $font-size-xs;
-  margin-bottom: $spacer-y;
+  margin-bottom: $spacer ;
+}
+
+.editor__top-message {
+    margin: #{-$panel-padding-x} #{-$panel-padding-x} $spacer;
 }
 
 .editor__file-preview {
@@ -70,6 +78,12 @@
   }
 }
 
+.editor__file-preview--folder {
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
+}
+
 .editor__file-preview-link {
 
   &::before {
@@ -84,9 +98,9 @@
     border-radius: 50%;
     background-color: rgba($black, 0.6);
     color: $white;
-    font-size: 24px;
+    font-size: 22px;
     opacity: 0;
-    content: "s";
+    content: "=";
     font-family: silverstripe;
     line-height: 27px;
     z-index: 1;
@@ -111,7 +125,7 @@
 }
 
 .editor__file-preview-message--file-missing {
-  margin: #{$spacer-y * 2} 0 $spacer-y;
+  margin: #{$spacer * 2} 0 $spacer ;
   font-size: $font-size-lg;
   color: $brand-danger;
   text-align: center;
@@ -121,8 +135,8 @@
   .editor__heading,
   .editor__specs {
     text-align: center;
-    margin-right: $spacer-x * 1.5;
-    margin-left: $spacer-x * 1.5;
+    margin-right: $spacer * 1.5;
+    margin-left: $spacer * 1.5;
   }
 
   // Changes a .btn-close-panel into a back arrow for smaller screens

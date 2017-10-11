@@ -1,4 +1,4 @@
-// TODO pull out jQuery library to separate HOC
+/* global window */
 import $ from 'jquery';
 import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
@@ -19,7 +19,10 @@ import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import createFolderMutation from 'state/files/createFolderMutation';
 import moveFilesMutation from 'state/files/moveFilesMutation';
 import { withApollo } from 'react-apollo';
+import { SelectableGroup } from 'react-selectable';
 import GalleryDND from './GalleryDND';
+import configShape from 'lib/configShape';
+import MoveModal from '../MoveModal/MoveModal';
 
 /**
  * List of sorters for tile view, required here because it's rendered outside the tile view
@@ -53,7 +56,6 @@ const sorters = [
 ];
 
 class Gallery extends Component {
-
   constructor(props) {
     super(props);
 
@@ -62,6 +64,7 @@ class Gallery extends Component {
     this.handleSelect = this.handleSelect.bind(this);
     this.handleSelectSort = this.handleSelectSort.bind(this);
     this.handleAddedFile = this.handleAddedFile.bind(this);
+    this.handlePreviewLoaded = this.handlePreviewLoaded.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
     this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
     this.handleUploadProgress = this.handleUploadProgress.bind(this);
@@ -76,12 +79,20 @@ class Gallery extends Component {
     this.handleClearSearch = this.handleClearSearch.bind(this);
     this.handleEnableDropzone = this.handleEnableDropzone.bind(this);
     this.handleMoveFiles = this.handleMoveFiles.bind(this);
-    this.handleBulkDelete = this.handleBulkDelete.bind(this);
     this.handleBulkEdit = this.handleBulkEdit.bind(this);
+    this.handleBulkPublish = this.handleBulkPublish.bind(this);
+    this.handleBulkUnpublish = this.handleBulkUnpublish.bind(this);
+    this.handleBulkDelete = this.handleBulkDelete.bind(this);
+    this.handleBulkMove = this.handleBulkMove.bind(this);
+    this.handleGroupSelect = this.handleGroupSelect.bind(this);
+    this.handleClearSelection = this.handleClearSelection.bind(this);
+    this.toggleSelectConcat = this.toggleSelectConcat.bind(this);
   }
 
   componentDidMount() {
     this.initSortDropdown();
+    window.addEventListener('keydown', this.toggleSelectConcat);
+    window.addEventListener('keyup', this.toggleSelectConcat);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -99,12 +110,15 @@ class Gallery extends Component {
     if (!this.compareFiles(this.props.files, nextProps.files)) {
       nextProps.actions.queuedFiles.purgeUploadQueue();
     }
-
-    this.checkLoadingIndicator(nextProps);
   }
 
   componentDidUpdate() {
     this.initSortDropdown();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.toggleSelectConcat);
+    window.removeEventListener('keyup', this.toggleSelectConcat);
   }
 
   /**
@@ -159,7 +173,8 @@ class Gallery extends Component {
       ));
     }
 
-    if (filters.currentFolderOnly) {
+    // Show folder messagee, except for root folder
+    if (filters.currentFolderOnly && this.props.folder.title) {
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGELIMIT',
         'limited to the folder \'{folder}\''
@@ -190,26 +205,6 @@ class Gallery extends Component {
   }
 
   /**
-   * Required anti-pattern, because `.cms-content` is the container for the React component.
-   *
-   * Adds or removes the load class from `.cms-content` if it is for the AssetAdmin
-   *
-   * @param {Object} props
-   */
-  checkLoadingIndicator(props) {
-    const $sectionWrapper = $('.cms-content.AssetAdmin');
-    if (!$sectionWrapper.length) {
-      return;
-    }
-
-    if (props.loading) {
-      $sectionWrapper.addClass('loading');
-    } else {
-      $sectionWrapper.removeClass('loading');
-    }
-  }
-
-  /**
    * Compare two lists to see if equal
    *
    * @param {Array} left
@@ -229,6 +224,100 @@ class Gallery extends Component {
       }
     }
     return true;
+  }
+
+  /**
+   * Delete a list of items
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  handleBulkDelete(items) {
+    this.props.actions.gallery.setLoading(true);
+    return this.props.onDelete(items.map(item => item.id))
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        const successes = resultItems.filter((result) => result).length;
+        if (successes !== items.length) {
+          this.props.actions.gallery.setErrorMessage(
+            i18n.sprintf(
+              i18n._t(
+                'AssetAdmin.BULK_ACTIONS_DELETE_FAIL',
+                '%s folders/files were successfully deleted, but %s files were not able to be deleted.'
+              ),
+              successes,
+              items.length - successes
+            )
+          );
+          this.props.actions.gallery.setNoticeMessage(null);
+        } else {
+          this.props.actions.gallery.setNoticeMessage(
+            i18n.sprintf(
+              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS', '%s folders/files were successfully deleted.'),
+              successes
+            )
+          );
+          this.props.actions.gallery.setErrorMessage(null);
+          this.props.actions.gallery.deselectFiles();
+        }
+      });
+  }
+
+  /**
+   * Publish a list of items
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  handleBulkPublish(items) {
+    const publishItems = items
+      .map(item => item.id);
+    if (!publishItems.length) {
+      this.props.actions.gallery.deselectFiles();
+
+      return Promise.resolve(true);
+    }
+    this.props.actions.gallery.setLoading(true);
+
+    return this.props.onPublish(publishItems)
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        this.props.actions.gallery.setNoticeMessage(
+          i18n.sprintf(
+            i18n._t('AssetAdmin.BULK_ACTIONS_PUBLISH_SUCCESS', '%s folders/files were successfully published.'),
+            resultItems.length
+          )
+        );
+        this.props.actions.gallery.setErrorMessage(null);
+        this.props.actions.gallery.deselectFiles();
+      });
+  }
+
+  /**
+   * Unpublish a list of items
+   * @param {Array} items
+   * @returns {Promise}
+   */
+  handleBulkUnpublish(items) {
+    const unpublishItems = items.filter(item => item.published)
+      .map(item => item.id);
+    if (!unpublishItems.length) {
+      this.props.actions.gallery.deselectFiles();
+
+      return Promise.resolve(true);
+    }
+    this.props.actions.gallery.setLoading(true);
+
+    return this.props.onUnpublish(unpublishItems)
+      .then((resultItems) => {
+        this.props.actions.gallery.setLoading(false);
+        this.props.actions.gallery.setNoticeMessage(
+          i18n.sprintf(
+            i18n._t('AssetAdmin.BULK_ACTIONS_UNPUBLISH_SUCCESS', '%s folders/files were successfully unpublished.'),
+            resultItems.length
+          )
+        );
+        this.props.actions.gallery.setErrorMessage(null);
+        this.props.actions.gallery.deselectFiles();
+      });
   }
 
   initSortDropdown() {
@@ -304,6 +393,10 @@ class Gallery extends Component {
    */
   handleAddedFile(fileData) {
     this.props.actions.queuedFiles.addQueuedFile(fileData);
+  }
+
+  handlePreviewLoaded(fileData, previewData) {
+    this.props.actions.queuedFiles.updateQueuedFile(fileData.queuedId, previewData);
   }
 
   /**
@@ -382,6 +475,14 @@ class Gallery extends Component {
   }
 
   /**
+   * Toggle concatenating selected items based on the key event
+   * @param e
+   */
+  toggleSelectConcat(e) {
+    this.props.actions.gallery.setConcatenateSelect(e.metaKey || e.ctrlKey);
+  }
+
+  /**
    * Checks if a file or folder is currently highlighted,
    * which typically means its own for viewing or editing.
    *
@@ -402,7 +503,29 @@ class Gallery extends Component {
   }
 
   handleClearSearch(event) {
+    this.props.actions.gallery.deselectFiles();
     this.handleOpenFolder(event, this.props.folder);
+  }
+
+  /**
+   * Handles the lasso selection of items from <SelectionGroup />
+   *
+   * @param items
+   */
+  handleGroupSelect(items) {
+    const { deselectFiles, selectFiles } = this.props.actions.gallery;
+    if (!this.props.concatenateSelect) {
+      deselectFiles(null);
+    }
+
+    selectFiles(items.filter((id, index) => items.indexOf(id) === index));
+  }
+
+  /**
+   * Clears all files from selection
+   */
+  handleClearSelection() {
+    this.props.actions.gallery.deselectFiles(null);
   }
 
   /**
@@ -485,47 +608,20 @@ class Gallery extends Component {
         if (typeof this.props.onMoveFilesSuccess === 'function') {
           this.props.onMoveFilesSuccess(folderId, fileIds);
         }
-      });
-  }
-
-  handleBulkDelete(items) {
-    return Promise.all(items.map(item => {
-      // If the file was just uploaded, it doesn't exist in the files list,
-      // and has to be removed from the queue instead.
-      if (item.queuedId) {
-        this.props.actions.queuedFiles.removeQueuedFile(item.queuedId);
-        return Promise.resolve(true);
-      }
-
-// parent handle the files list
-      return this.props.onDelete(item.id).then(() => true).catch(() => false);
-    }))
-      .then((deletes) => {
-        const successes = deletes.filter((result) => result).length;
-
-        if (successes !== deletes.length) {
-          this.props.actions.gallery.setErrorMessage(
-            i18n.sprintf(
-              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_FAIL'),
-              successes,
-              deletes.length - successes
-            )
-          );
-          this.props.actions.gallery.setNoticeMessage(null);
-        } else {
-          this.props.actions.gallery.setNoticeMessage(
-            i18n.sprintf(
-              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS'),
-              successes
-            )
-          );
-          this.props.actions.gallery.setErrorMessage(null);
-        }
+      })
+      .catch(() => {
+        this.props.actions.gallery.setErrorMessage(
+          i18n._t('AssetAdmin.FAILED_MOVE', 'There was an error moving the selected items.')
+        );
       });
   }
 
   handleBulkEdit(items) {
     this.props.onOpenFile(items[0].id);
+  }
+
+  handleBulkMove() {
+    this.props.actions.gallery.activateModal(CONSTANTS.MODAL_MOVE);
   }
 
   /**
@@ -545,9 +641,9 @@ class Gallery extends Component {
           style={{ width: '160px' }}
           defaultValue={this.props.sort}
         >
-          {sorters.map((sorter, i) => (
+          {sorters.map((sorter) => (
             <option
-              key={i}
+              key={`${sorter.field}-${sorter.direction}`}
               onClick={this.handleSelectSort}
               data-field={sorter.field}
               data-direction={sorter.direction}
@@ -573,26 +669,28 @@ class Gallery extends Component {
       <div className="toolbar--content toolbar--space-save">
         <div className="fill-width">
           <div className="flexbox-area-grow">
-            {this.renderBackButton()}
+            <div className="btn-toolbar">
+              {this.renderBackButton()}
 
-            <button
-              id="upload-button"
-              className="btn btn-secondary font-icon-upload btn--icon-xl"
-              type="button"
-              disabled={!canEdit}
-            >
-              <span className="btn__text">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
-            </button>
+              <button
+                id="upload-button"
+                className="btn btn-secondary font-icon-upload btn--icon-xl"
+                type="button"
+                disabled={!canEdit}
+              >
+                <span className="btn__text btn__title">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
+              </button>
 
-            <button
-              id="add-folder-button"
-              className="btn btn-secondary font-icon-folder-add btn--icon-xl"
-              type="button"
-              onClick={this.handleCreateFolder}
-              disabled={!canEdit}
-            >
-              <span className="btn__text">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
-            </button>
+              <button
+                id="add-folder-button"
+                className="btn btn-secondary font-icon-folder-add btn--icon-xl"
+                type="button"
+                onClick={this.handleCreateFolder}
+                disabled={!canEdit}
+              >
+                <span className="btn__text btn__title">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
+              </button>
+            </div>
           </div>
 
           <div className="gallery__state-buttons">
@@ -645,7 +743,7 @@ class Gallery extends Component {
    */
   renderViewChangeButtons() {
     const views = ['tile', 'table'];
-    return views.map((view, index) => {
+    return views.map((view) => {
       const icon = (view === 'table') ? 'list' : 'thumbnails';
       const classNames = [
         'gallery__view-change-button',
@@ -661,14 +759,13 @@ class Gallery extends Component {
       return (
         <button
           id={`button-view-${view}`}
-          key={index}
+          key={view}
           className={classNames.join(' ')}
           type="button"
           title="Change view gallery/list"
           onClick={this.handleViewChange}
           value={view}
-        >
-        </button>
+        />
       );
     });
   }
@@ -729,10 +826,19 @@ class Gallery extends Component {
       if (!action.callback) {
         switch (action.value) {
           case 'delete': {
-            return Object.assign({}, action, { callback: this.handleBulkDelete });
+            return { ...action, callback: this.handleBulkDelete };
           }
           case 'edit': {
-            return Object.assign({}, action, { callback: this.handleBulkEdit });
+            return { ...action, callback: this.handleBulkEdit };
+          }
+          case 'move': {
+            return { ...action, callback: this.handleBulkMove };
+          }
+          case 'publish': {
+            return { ...action, callback: this.handleBulkPublish };
+          }
+          case 'unpublish': {
+            return { ...action, callback: this.handleBulkUnpublish };
           }
           default: {
             return action;
@@ -746,8 +852,9 @@ class Gallery extends Component {
     // and the actual props.files in the current view.
     // TODO Refactor "queued files" into separate visual area and remove coupling here
     const allFiles = [...this.props.files, ...this.props.queuedFiles.items];
-    const selectedFileObjs = this.props.selectedFiles.map(id => allFiles.find(file => file && id === file.id));
-
+    const selectedFileObjs = this.props.selectedFiles
+      .map(id => allFiles.find(file => file && id === file.id))
+      .filter(item => item);
     if (selectedFileObjs.length > 0 && this.props.type === 'admin') {
       return (<BulkActions
         actions={actions}
@@ -773,9 +880,10 @@ class Gallery extends Component {
         !file.id || !this.props.files.find((next) => (next.id === file.id))
       ))
       .map((file) => Object.assign({}, file, {
-        // Queued files get removed in componentWillReceiveProps when the props.files array has changed identity,
-        // which will also get rid of this flag. But intermediary render calls *after* upload might still
-        // show queued files with successful uploads, hence we determine uploading status by absence of a database id.
+        // Queued files get removed in componentWillReceiveProps when the props.files array has
+        // changed identity, which will also get rid of this flag. But intermediary render calls
+        // *after* upload might still show queued files with successful uploads, hence we determine
+        // uploading status by absence of a database id.
         uploading: !(file.id > 0),
       }));
     const files = [
@@ -817,6 +925,7 @@ class Gallery extends Component {
       onDropFiles: this.handleMoveFiles,
       onRemoveErroredUpload: this.handleRemoveErroredUpload,
       onEnableDropzone: this.handleEnableDropzone,
+      sectionConfig: this.props.sectionConfig,
     };
 
     return <GalleryView {...props} />;
@@ -824,25 +933,34 @@ class Gallery extends Component {
 
   render() {
     if (!this.props.folder) {
-      if (this.props.errorMessage) {
+      if (this.props.errorMessage || this.props.graphQLErrors) {
         return (
           <div className="gallery__error flexbox-area-grow">
             <div className="gallery__error-message">
               <h3>
                 { i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.') }
               </h3>
-              <p>{ this.props.errorMessage }</p>
+              { this.props.errorMessage && <p>{ this.props.errorMessage }</p> }
+              { this.props.graphQLErrors && this.props.graphQLErrors.map((error, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <p key={index}>{error}</p>
+              ))}
             </div>
           </div>
         );
       }
       if (this.props.loading) {
-        return <div className="flexbox-area-grow"></div>;
+        return (
+          <div className="flexbox-area-grow">
+            <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />
+            <div key="spinner" className="cms-content-loading-spinner" />
+          </div>
+        );
       }
       return (
         <div className="flexbox-area-grow">
           <div className="editor__file-preview-message--file-missing m-t-3">
-            {i18n._t('AssetAdmin.FOLDER_MISSING', 'Folder cannot be found')}
+            {i18n._t('Admin.UNKNOWN_ERROR', 'An unknown error has occurred')}
           </div>
         </div>
       );
@@ -869,13 +987,14 @@ class Gallery extends Component {
       method: this.props.createFileApiMethod,
       paramName: 'Upload',
       clickable: '#upload-button',
+      ...this.props.sectionConfig.dropzoneOptions,
     };
 
     const securityID = this.props.securityId;
     const canEdit = this.props.folder.canEdit && this.props.enableDropzone;
 
     const galleryClasses = [
-      'panel', 'panel--padded', 'panel--scrollable', 'gallery__main',
+      'panel', 'panel--padded', 'panel--scrollable', 'gallery__main', 'fill-height',
     ];
     if (this.props.type === 'insert') {
       galleryClasses.push('insert-media-modal__main');
@@ -888,27 +1007,48 @@ class Gallery extends Component {
 
     return (
       <div className="flexbox-area-grow gallery__outer">
-        {this.renderTransitionBulkActions()}
-        <AssetDropzone
-          name="gallery-container"
-          canUpload={canEdit}
-          handleAddedFile={this.handleAddedFile}
-          handleError={this.handleFailedUpload}
-          handleSuccess={this.handleSuccessfulUpload}
-          handleSending={this.handleSending}
-          handleUploadProgress={this.handleUploadProgress}
-          preview={dimensions}
+        <MoveModal
+          sectionConfig={this.props.sectionConfig}
           folderId={this.props.folderId}
-          options={dropzoneOptions}
-          securityID={securityID}
-          uploadButton={false}
-        >
-          <GalleryDND className={galleryClasses.join(' ')}>
+          onSuccess={this.props.onMoveFilesSuccess}
+          onOpenFolder={this.props.onOpenFolder}
+        />
+        {this.renderTransitionBulkActions()}
+        <GalleryDND className={galleryClasses.join(' ')}>
+          <SelectableGroup
+            enabled={this.props.view === 'tile'}
+            className="flexbox-area-grow fill-height gallery__main--selectable"
+            onSelection={this.handleGroupSelect}
+            onNonItemClick={this.handleClearSelection}
+            preventDefault={false}
+            fixedPosition
+          >
             {this.renderToolbar()}
-            {messages}
-            {this.renderGalleryView()}
-          </GalleryDND>
-        </AssetDropzone>
+            <AssetDropzone
+              name="gallery-container"
+              className="flexbox-area-grow"
+              canUpload={canEdit}
+              onAddedFile={this.handleAddedFile}
+              onPreviewLoaded={this.handlePreviewLoaded}
+              onError={this.handleFailedUpload}
+              onSuccess={this.handleSuccessfulUpload}
+              onSending={this.handleSending}
+              onUploadProgress={this.handleUploadProgress}
+              preview={dimensions}
+              folderId={this.props.folderId}
+              options={dropzoneOptions}
+              securityID={securityID}
+              uploadButton={false}
+            >
+              {messages}
+              {this.renderGalleryView()}
+            </AssetDropzone>
+          </SelectableGroup>
+        </GalleryDND>
+        { this.props.loading && [
+          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
+          <div key="spinner" className="cms-content-loading-spinner" />,
+        ]}
       </div>
     );
   }
@@ -921,6 +1061,7 @@ const sharedDefaultProps = {
 };
 
 const sharedPropTypes = {
+  sectionConfig: configShape,
   loading: PropTypes.bool,
   sort: PropTypes.string,
   files: PropTypes.arrayOf(PropTypes.shape({
@@ -968,6 +1109,8 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   onCreateFolder: React.PropTypes.func,
   onMoveFilesSuccess: React.PropTypes.func,
   onDelete: React.PropTypes.func,
+  onPublish: React.PropTypes.func,
+  onUnpublish: React.PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
   dialog: PropTypes.bool,
@@ -984,6 +1127,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
     items: PropTypes.array.isRequired,
   }),
   errorMessage: PropTypes.string,
+  graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   actions: PropTypes.object,
   securityId: PropTypes.string,
   onViewChange: PropTypes.func.isRequired,
@@ -991,15 +1135,18 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   createFileApiMethod: PropTypes.string,
   search: PropTypes.object,
   enableDropzone: PropTypes.bool,
+  concatenateSelect: PropTypes.bool,
 });
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
   const {
     selectedFiles,
     errorMessage,
     noticeMessage,
     enableDropzone,
     badges,
+    concatenateSelect,
+    loading,
   } = state.assetAdmin.gallery;
 
   return {
@@ -1008,6 +1155,8 @@ function mapStateToProps(state) {
     noticeMessage,
     enableDropzone,
     badges,
+    concatenateSelect,
+    loading: ownProps.loading || loading,
     queuedFiles: state.assetAdmin.queuedFiles,
     securityId: state.config.SecurityID,
   };
@@ -1022,7 +1171,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export { Gallery, sorters, galleryViewPropTypes, galleryViewDefaultProps };
+export { Gallery as Component, sorters, galleryViewPropTypes, galleryViewDefaultProps };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

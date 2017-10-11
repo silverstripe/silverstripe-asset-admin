@@ -17,19 +17,37 @@ use SilverStripe\Forms\TextField;
 
 class FileFormFactory extends AssetFormFactory
 {
+    /**
+     * History tab/form to be shown to the user or not
+     *
+     * @var bool
+     */
+    private static $show_history = false;
+
     protected function getFormFieldTabs($record, $context = [])
     {
         // Add extra tab
         $tabs = TabSet::create(
             'Editor',
             $this->getFormFieldDetailsTab($record, $context),
-            $this->getFormFieldSecurityTab($record, $context),
-            $this->getFormFieldUsageTab($record, $context),
-            $this->getFormFieldHistoryTab($record, $context)
+            $this->getFormFieldSecurityTab($record, $context)
         );
 
+        if ($this->config()->get('show_history')) {
+            $tabs->push($this->getFormFieldHistoryTab($record, $context));
+        }
+
+        $type = $this->getFormType($context);
+
+        // Unsupported media insertion will use insert link form instead
+        if ($type === static::TYPE_INSERT_MEDIA) {
+            if ($record->appCategory() !== 'image') {
+                $type = static::TYPE_INSERT_LINK;
+            }
+        }
+
         // All non-admin forms are typically readonly
-        switch ($this->getFormType($context)) {
+        switch ($type) {
             case static::TYPE_INSERT_MEDIA:
                 $tabs->setReadonly(true);
                 $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
@@ -46,45 +64,34 @@ class FileFormFactory extends AssetFormFactory
         return $tabs;
     }
 
-    /**
-     * Build "Usage" tab
-     *
-     * @param File $record
-     * @param array $context
-     * @return Tab
-     */
-    protected function getFormFieldUsageTab($record, $context = [])
-    {
-        // Add new tab for usage
-        return Tab::create(
-            'Usage',
-            DatetimeField::create(
-                "Created",
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CREATED', 'First uploaded')
-            )
-                ->setReadonly(true),
-            DatetimeField::create(
-                "LastEdited",
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LASTEDIT', 'Last changed')
-            )
-                ->setReadonly(true)
-        );
-    }
-
     protected function getFormFieldDetailsTab($record, $context = [])
     {
         // Update details tab
         $tab = parent::getFormFieldDetailsTab($record, $context);
 
         $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
-        
+    
+        $tab->push(
+            DatetimeField::create(
+                "Created",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.CREATED', 'First uploaded')
+            )
+                ->setReadonly(true)
+        );
+        $tab->push(
+            DatetimeField::create(
+                "LastEdited",
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LASTEDIT', 'Last changed')
+            )
+                ->setReadonly(true)
+        );
         if ($this->getFormType($context) !== static::TYPE_ADMIN) {
             $tab->push(LiteralField::create(
                 'EditLink',
                 sprintf(
                     '<a href="%s" class="%s" target="_blank"><i class="%s" />%s</a>',
                     $record->CMSEditLink(),
-                    'btn btn-secondary-outline font-icon-edit editor__edit-link',
+                    'btn btn-outline-secondary font-icon-edit editor__edit-link',
                     '',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.EditLink', 'Edit original file')
                 )
@@ -95,7 +102,7 @@ class FileFormFactory extends AssetFormFactory
 
     protected function getFormFieldLinkOptionsTab($record, $context = [])
     {
-        return Tab::create(
+        $tab = Tab::create(
             'LinkOptions',
             _t(__CLASS__ .'.LINKOPTIONS', 'Link options'),
             TextField::create(
@@ -107,8 +114,14 @@ class FileFormFactory extends AssetFormFactory
                 _t(__CLASS__.'.LINKOPENNEWWIN', 'Open in new window/tab')
             )
         );
+
+        if ($context['RequireLinkText']) {
+            $tab->insertBefore('Description', TextField::create('Text', _t(__CLASS__.'.LINKTEXT', 'Link text')));
+        }
+
+        return $tab;
     }
-    
+
     /**
      * Create tab for file attributes
      *
@@ -146,7 +159,13 @@ class FileFormFactory extends AssetFormFactory
         $record = $context['Record'];
 
         // Add status flag before extensions are triggered
-        $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record) {
+        $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record, $context) {
+            if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
+                if ($record->appCategory() !== 'image') {
+                    $unembedableMsg = _t(__CLASS__.'.UNEMEDABLE_MESSAGE', '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>');
+                    $fields->unshift(LiteralField::create('UnembedableMessage', $unembedableMsg));
+                }
+            }
             // @todo move specs to a component/class, so it can update specs when a File is replaced
             $fields->insertAfter(
                 'TitleHeader',
@@ -177,6 +196,17 @@ class FileFormFactory extends AssetFormFactory
         /** @var FormAction $action */
         $action = FormAction::create('publish', $publishText)
             ->setIcon('rocket')
+            ->setSchemaState([
+                'data' => [
+                    'isPublished' => $record->isPublished(),
+                    'pristineTitle' => _t(__CLASS__.'PUBLISHED', 'Published'),
+                    'pristineIcon' => 'tick',
+                    'dirtyTitle' => _t(__CLASS__.'PUBLISH', 'Publish'),
+                    'dirtyIcon' => 'rocket',
+                    'pristineClass' => 'btn-outline-primary',
+                    'dirtyClass' => '',
+                ],
+            ])
             ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
 
         return $action;
@@ -311,7 +341,7 @@ class FileFormFactory extends AssetFormFactory
         }
         return $action;
     }
-    
+
     /**
      * @param File $record
      * @return FormAction
@@ -325,5 +355,10 @@ class FileFormFactory extends AssetFormFactory
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return $action;
+    }
+
+    public function getRequiredContext()
+    {
+        return parent::getRequiredContext() + [ 'RequireLinkText' ];
     }
 }

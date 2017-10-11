@@ -1,13 +1,7 @@
 /* global jest, describe, it, expect */
 
-jest.mock('i18n');
-jest.unmock('deep-freeze-strict');
-jest.unmock('../GalleryActionTypes.js');
-jest.unmock('../GalleryReducer.js');
-jest.unmock('constants/index');
-
-import galleryReducer from '../GalleryReducer.js';
-import GALLERY from '../GalleryActionTypes.js';
+import galleryReducer from '../GalleryReducer';
+import GALLERY from '../GalleryActionTypes';
 
 describe('galleryReducer', () => {
   describe('SET_NOTICE_MESSAGE', () => {

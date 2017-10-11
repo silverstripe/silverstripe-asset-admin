@@ -1,5 +1,5 @@
 @javascript @assets @retry
-Feature: Manage files
+Feature: Manage file permissions
   As a cms author
   I want to set permissions on files
   So that I can prevent or allow users access
@@ -13,7 +13,6 @@ Feature: Manage files
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/assets"
 
-  @modal
   Scenario: I can limit edit permissions to admins
     When I check the folder named "folder1" in the gallery
     Then I should see an ".bulk-actions__action[value='edit']" element
@@ -21,8 +20,8 @@ Feature: Manage files
     When I press the "Edit" button
     Then I should see the "Form_fileEditForm" form
     When I click "Permissions" in the "#Editor .nav-tabs" element
-      And I select "Only these people (choose from list)" from "Who can edit this file?" input group
-      And I select "ADMIN group" from "Editor Groups" input group
+      And I select "Only these groups (choose from list)" from "Who can edit this file?" input group
+      And I select "ADMIN group" in the "#Form_fileEditForm_EditorGroups_Holder" tree dropdown
       And I press the "Save" button
       And I am not logged in
       And I am logged in with "EDITOR" permissions
@@ -34,8 +33,6 @@ Feature: Manage files
       And I should not see the "Save" button
       And I should not see the "Publish" button
 
-
-  @modal
   Scenario: I can edit permissions if I am in the right group
     When I check the folder named "folder1" in the gallery
     Then I should see an ".bulk-actions__action[value='edit']" element
@@ -43,12 +40,13 @@ Feature: Manage files
     When I press the "Edit" button
     Then I should see the "Form_fileEditForm" form
     When I click "Permissions" in the "#Editor .nav-tabs" element
-      And I select "Only these people (choose from list)" from "Who can edit this file?" input group
-      And I select "EDITOR group" from "Editor Groups" input group
+      And I select "Only these groups (choose from list)" from "Who can edit this file?" input group
+      And I select "EDITOR group" in the "#Form_fileEditForm_EditorGroups_Holder" tree dropdown
       And I press the "Save" button
       And I am not logged in
       And I am logged in with "EDITOR" permissions
       And I go to "/admin/assets"
+      And I wait for 1 second
       And I click on the folder named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileEditForm" form

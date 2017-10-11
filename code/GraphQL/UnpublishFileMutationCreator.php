@@ -4,62 +4,43 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\GraphQL\MutationCreator;
-use SilverStripe\GraphQL\OperationResolver;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Definition\Type;
+use SilverStripe\Security\Member;
 
-class UnpublishFileMutationCreator extends MutationCreator implements OperationResolver
+class UnpublishFileMutationCreator extends PublicationMutationCreator
 {
-    public function attributes()
+    /**
+     * @var string
+     */
+    protected $name = 'unpublishFiles';
+
+    /**
+     * @var string
+     */
+    protected $description = 'Unpublishes a list of files';
+
+    /**
+     * @return string
+     */
+    protected function sourceStage()
     {
-        return [
-            'name '=> 'unpublishFile',
-            'description' => 'Unpublishes a file',
-        ];
+        return Versioned::LIVE;
     }
 
-    public function type()
+    /**
+     * @param File $file
+     * @param Member $member
+     * @return boolean
+     */
+    protected function hasPermission(File $file, Member $member)
     {
-        return $this->manager->getType('FileInterface');
+        return $file->canUnpublish($member);
     }
 
-    public function args()
+    /**
+     * @param File $file
+     */
+    protected function mutateFile(File $file)
     {
-        return [
-            'id' => [
-                'type' => Type::nonNull(Type::id()),
-            ],
-        ];
-    }
-
-    public function resolve($object, array $args, $context, ResolveInfo $info)
-    {
-        if (!isset($args['id']) || !ctype_digit($args['id'])) {
-            throw new \InvalidArgumentException('Invalid id');
-        }
-
-        $file = Versioned::get_by_stage(File::class, Versioned::LIVE)
-            ->byId($args['id']);
-
-        if (!$file) {
-            throw new \InvalidArgumentException(sprintf(
-                '%s#%s not published or doesn\'t exist',
-                File::class,
-                $args['id']
-            ));
-        }
-
-        if (!$file->canUnpublish($context['currentUser'])) {
-            throw new \InvalidArgumentException(sprintf(
-                '%s#%s unpublish not allowed',
-                File::class,
-                $args['id']
-            ));
-        }
-
         $file->doUnpublish();
-
-        return $file;
     }
 }
