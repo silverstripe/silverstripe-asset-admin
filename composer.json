@@ -4,7 +4,7 @@
     "type": "silverstripe-vendormodule",
     "license": "BSD-3-Clause",
     "require": {
-        "silverstripe/admin": "^1.0@dev",
+        "silverstripe/admin": "^1@dev",
         "silverstripe/framework": "^4@dev",
         "silverstripe/graphql": "^0.2@dev",
         "silverstripe/vendor-plugin": "^1.0"
@@ -19,7 +19,7 @@
     },
     "extra": {
         "branch-alias": {
-            "1.x-dev": "1.0.x-dev",
+            "1.x-dev": "1.1.x-dev",
             "dev-master": "2.x-dev"
         },
         "expose": [

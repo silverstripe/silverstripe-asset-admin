@@ -56,7 +56,7 @@ en:
     FOLDERLOCATION: 'Folder location'
     INHERIT: 'Inherit from parent folder'
     LOGGED_IN: 'Logged-in users'
-    ONLY_GROUPS: 'Only these groups (choose from list)'
+    ONLY_GROUPS: 'Only these people (choose from list)'
     ROOTNAME: '(Top level)'
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
