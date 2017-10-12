@@ -301,6 +301,7 @@ $gallery-item-label-height: 40px;
   transform: translateX(-50%) translateY(-50%);
   border-radius: 10px;
   overflow: hidden;
+  background-color: $gray-300;
 
   + .gallery-item__title .gallery-item__checkbox-label::before {
     color: $body-color;
