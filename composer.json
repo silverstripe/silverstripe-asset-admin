@@ -6,7 +6,7 @@
     "require": {
         "silverstripe/admin": "^2@dev",
         "silverstripe/framework": "^5@dev",
-        "silverstripe/graphql": "^0.2@dev",
+        "silverstripe/graphql": "^2@dev",
         "silverstripe/vendor-plugin": "^1.0"
     },
     "require-dev": {
