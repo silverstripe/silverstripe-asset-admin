@@ -333,6 +333,8 @@ class Gallery extends Component {
         disable_search_threshold: 20,
       });
 
+      // remove existing event listener so it doesn't trigger multiple times per change
+      $select.off('change');
       // Chosen stops the change event from reaching React so we have to simulate a click.
       $select.on('change', () => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
     }
