@@ -1113,7 +1113,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $object = array(
             'id' => $file->ID,
             // Slightly more accurate than graphql bulk-usage lookup, but more expensive
-            'inUseCount' => $file->findOwners()->count(),
+            'inUseCount' => ($file->hasMethod('findOwners')) ? $file->findOwners()->count() : 0,
             'created' => $file->Created,
             'lastUpdated' => $file->LastEdited,
             'owner' => null,
@@ -1127,11 +1127,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'extension' => $file->Extension,
             'size' => $file->AbsoluteSize,
             'url' => $file->AbsoluteURL,
-            'published' => $file->isPublished(),
-            'modified' => $file->isModifiedOnDraft(),
-            'draft' => $file->isOnDraftOnly(),
+            'published' => ($file->hasMethod('isPublished')) ? $file->isPublished() : true,
+            'modified' => ($file->hasMethod('isModifiedOnDraft')) ? $file->isModifiedOnDraft() : false,
+            'draft' => ($file->hasMethod('isOnDraftOnly')) ? $file->isOnDraftOnly() : false,
             'canEdit' => $file->canEdit(),
-            'canDelete' => $file->canArchive(),
+            'canDelete' => ($file->hasMethod('canArchive')) ? $file->canArchive() : $file->canDelete(),
         );
 
         /** @var Member $owner */
