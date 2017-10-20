@@ -1018,7 +1018,7 @@ class Gallery extends Component {
         {this.renderTransitionBulkActions()}
         <GalleryDND className={galleryClasses.join(' ')}>
           <SelectableGroup
-            enabled={this.props.view === 'tile'}
+            enabled={this.props.view === 'tile' && this.props.type === 'admin'}
             className="flexbox-area-grow fill-height gallery__main--selectable"
             onSelection={this.handleGroupSelect}
             onNonItemClick={this.handleClearSelection}
