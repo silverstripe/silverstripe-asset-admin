@@ -20,8 +20,10 @@ jQuery.entwine('ss', ($) => {
     getContainer() {
       let container = this.siblings('.uploadfield-holder')[0];
       if (!container) {
-        container = $('<div class="uploadfield-holder"></div>');
-        this.before(container);
+        const newContainer = $('<div class="uploadfield-holder"></div>');
+        this.before(newContainer);
+
+        container = newContainer[0];
       }
       return container;
     },
