@@ -16,16 +16,25 @@ jQuery.entwine('ss', ($) => {
   /**
    * See boot/index.js for `.react-boot` bootstrap
    */
-  $('.js-react-boot input.entwine-uploadfield:visible').entwine({
+  $('.js-react-boot input.entwine-uploadfield').entwine({
+    getContainer() {
+      let container = this.siblings('.uploadfield-holder')[0];
+      if (!container) {
+        container = $('<div class="uploadfield-holder"></div>');
+        this.before(container);
+      }
+      return container;
+    },
 
     onunmatch() {
       this._super();
       // solves errors given by ReactDOM "no matched root found" error.
-      ReactDOM.unmountComponentAtNode(this[0]);
+      ReactDOM.unmountComponentAtNode(this.getContainer());
     },
 
     onmatch() {
       this._super();
+      this.hide();
       this.refresh();
     },
 
@@ -45,7 +54,7 @@ jQuery.entwine('ss', ($) => {
         <ApolloProvider store={store} client={client}>
           <InjectableUploadField {...props} onChange={onChange} />
         </ApolloProvider>,
-        this.parent()[0]
+        this.getContainer()
       );
     },
 
