@@ -199,6 +199,7 @@ class FileFormFactory extends AssetFormFactory
             ->setSchemaState([
                 'data' => [
                     'isPublished' => $record->isPublished(),
+                    'isModified' => $record->isModifiedOnDraft(),
                     'pristineTitle' => _t(__CLASS__.'PUBLISHED', 'Published'),
                     'pristineIcon' => 'tick',
                     'dirtyTitle' => _t(__CLASS__.'PUBLISH', 'Publish'),

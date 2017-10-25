@@ -319,7 +319,7 @@ class GalleryItem extends Component {
    */
   handleActivate(event) {
     event.stopPropagation();
-    if (typeof this.props.onActivate === 'function') {
+    if (typeof this.props.onActivate === 'function' && !this.uploading()) {
       this.props.onActivate(event, this.props.item);
     }
   }
