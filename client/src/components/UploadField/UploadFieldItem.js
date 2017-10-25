@@ -320,7 +320,7 @@ class UploadFieldItem extends Component {
           style={this.getThumbnailStyles()}
           onClick={this.handleItemClick}
           role="button"
-          tabIndex={0}
+          tabIndex={this.props.onItemClick ? 0 : -1}
         />
         {this.renderFileDetails()}
         {this.renderProgressBar()}
