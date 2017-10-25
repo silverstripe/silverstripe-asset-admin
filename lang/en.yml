@@ -1,4 +1,13 @@
 en:
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Saved
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publish
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Published
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Choose a folder'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Move
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Delete folders'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
@@ -25,7 +34,9 @@ en:
     EditLink: 'Edit original file'
     ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
     ErrorNotFound: 'That {Type} couldn''t be found'
+    FILE_NOT_FOUND: 'File not found'
     Filetype: 'File type'
+    INVALID_REQUEST: 'Invalid request'
     ImageHeight: Height
     ImageSpecs: Dimensions
     ImageWidth: Width
@@ -53,11 +64,13 @@ en:
     ANYONE: Anyone
     EDITHEADER: 'Who can edit this file?'
     EDITORGROUPS: 'Editor Groups'
-    FOLDERLOCATION: 'Folder location'
+    FILENAME: Filename
+    FOLDERLOCATION: Location
     INHERIT: 'Inherit from parent folder'
     LOGGED_IN: 'Logged-in users'
-    ONLY_GROUPS: 'Only these people (choose from list)'
+    ONLY_GROUPS: 'Only these groups (choose from list)'
     ROOTNAME: '(Top level)'
+    SAVE: Save
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_FILE: 'Insert file'
@@ -67,11 +80,14 @@ en:
     LINKOPTIONS: 'Link options'
     LINKTEXT: 'Link text'
     OTHER_ACTIONS: 'Other actions'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
     SAVED: Saved
   SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
     CREATE: Create
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Folder name'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Add media'
     Cancel: Cancel
@@ -80,3 +96,5 @@ en:
     ERROR_SCHEME: 'This file scheme is not included in the whitelist'
     InsertMedia: 'Insert media'
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'File or Folder could not be found'

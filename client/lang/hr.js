@@ -8,6 +8,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   ss.i18n.addDictionary('hr', {
     "AssetAdmin.ADD_FOLDER_BUTTON": "Dodaj direktorij",
     "AssetAdmin.BACK": "Nazad",
+    "AssetAdmin.BACK_DESCRIPTION": "Navigate up a level",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Jeste li sugurni da želite %s ove datoteke?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Obriši",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Jeste li sugurni da želite obrisati ove datoteke?",
