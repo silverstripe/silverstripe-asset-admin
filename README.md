@@ -9,7 +9,7 @@
 
 ## Overview
 
-Provides a CMS interface for managing files and images, provided by the 
+Provides a CMS interface for managing files and images, provided by the
 SilverStripe [assets module](https://github.com/silverstripe/silverstripe-assets).
 
 ## Installation
@@ -19,10 +19,6 @@ $ composer require silverstripe/asset-admin
 ```
 
 You'll also need to run `dev/build`.
-
-## Documentation
-
-See the [docs/en](docs/en) folder.
 
 ## Versioning
 
