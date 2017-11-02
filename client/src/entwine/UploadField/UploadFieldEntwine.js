@@ -40,6 +40,11 @@ jQuery.entwine('ss', ($) => {
       this.refresh();
     },
 
+    onclick(e) {
+      // we don't want the native upload dialog to show up
+      e.preventDefault();
+    },
+
     refresh() {
       const store = window.ss.store;
       const client = window.ss.apolloClient;
