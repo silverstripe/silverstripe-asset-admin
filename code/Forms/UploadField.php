@@ -204,14 +204,14 @@ class UploadField extends FormField implements FileHandleField
     }
 
     /**
-     * Set upload type to multi / single
+     * Set upload type to multiple or single
      *
-     * @param $multi
+     * @param bool $bool True for multiple, false for single
      * @return $this
      */
-    public function setIsMultiUpload($multi)
+    public function setIsMultiUpload($bool)
     {
-        $this->multiUpload = $multi;
+        $this->multiUpload = $bool;
         return $this;
     }
 
