@@ -53,7 +53,7 @@
 
     th {
       &:hover {
-        background-color: $background-darker;
+        background-color: $body-bg-dark;
       }
 
       // hide details for smaller screens
@@ -85,7 +85,7 @@
 
   .footer-container,
   .footer-container:hover {
-    background-color: $background-main;
+    background-color: $body-bg;
     border-bottom: 0;
   }
 }

@@ -5,7 +5,7 @@
     right: #{0 - $grid-gutter-width / 2};
     bottom: 0;
     left: #{0 - $grid-gutter-width / 2};
-    background: $page-mask-light url("../../images/drag_drop_opt.svg") center center no-repeat;
+    background: rgba($body-bg, .9) url("../../images/drag_drop_opt.svg") center center no-repeat;
     background-size: 312px 325px;
     z-index: 100;
   }
