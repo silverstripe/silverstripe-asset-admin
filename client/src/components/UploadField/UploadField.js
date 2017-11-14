@@ -275,7 +275,7 @@ class UploadField extends Component {
     return (
       <AssetDropzone
         name={name}
-        canUpload
+        canUpload={this.canEdit()}
         uploadButton={false}
         uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"
         folderId={this.props.data.parentid}
