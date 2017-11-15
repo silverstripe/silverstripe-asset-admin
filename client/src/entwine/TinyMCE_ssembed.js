@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
 import { provideInjector } from 'lib/Injector';
+import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 import InsertEmbedModal from 'components/InsertEmbedModal/InsertEmbedModal';
 import i18n from 'i18n';
 
@@ -47,16 +48,6 @@ const filter = 'div[data-shortcode="embed"]';
 
       editor.on('SaveContent', (o) => {
         const content = jQuery(`<div>${o.content}</div>`);
-        // @todo - replace with `lib/ShortcodeSerialiser` library
-        const attrsFn = (attrs) => (
-          Object.entries(attrs)
-            .map(([name, value]) => ((value)
-              ? `${name}="${value}"`
-              : null
-            ))
-            .filter((attr) => attr !== null)
-            .join(' ')
-        );
 
         // Transform [embed] shortcodes
         content
@@ -65,7 +56,7 @@ const filter = 'div[data-shortcode="embed"]';
             // Note: embed <div> contains placeholder <img>, and potentially caption <p>
             const embed = jQuery(this);
             // If placeholder has been removed, remove data-* properties and
-            // convert to non-shortcode dive
+            // convert to non-shortcode div
             const placeholder = embed.find('img.placeholder');
             if (placeholder.length === 0) {
               embed.removeAttr('data-url');
@@ -78,7 +69,7 @@ const filter = 'div[data-shortcode="embed"]';
             const width = parseInt(placeholder.attr('width'), 10);
             const height = parseInt(placeholder.attr('height'), 10);
             const url = embed.data('url');
-            const attrs = {
+            const properties = {
               url,
               thumbnail: placeholder.prop('src'),
               class: embed.prop('class'),
@@ -86,8 +77,12 @@ const filter = 'div[data-shortcode="embed"]';
               height: isNaN(height) ? null : height,
               caption,
             };
-            // @todo - replace with `lib/ShortcodeSerialiser` library
-            const shortCode = `[embed ${attrsFn(attrs)}]${url}[/embed]`;
+            const shortCode = ShortcodeSerialiser.serialise({
+              name: 'embed',
+              properties,
+              wrapped: true,
+              content: url
+            });
             embed.replaceWith(shortCode);
           });
 
@@ -95,30 +90,16 @@ const filter = 'div[data-shortcode="embed"]';
         o.content = content.html();
       });
       editor.on('BeforeSetContent', (o) => {
-        // @todo - replace with `lib/ShortcodeSerialiser` library
         let content = o.content;
-        const attrFromStrFn = (str) => (
-          str
-          // Split on all attributes, quoted or not
-            .match(/([^\s\/'"=,]+)\s*=\s*(('([^']+)')|("([^"]+)")|([^\s,\]]+))/g)
-            .reduce((coll, val) => {
-              const match
-                = val.match(/^([^\s\/'"=,]+)\s*=\s*(?:(?:'([^']+)')|(?:"([^"]+)")|(?:[^\s,\]]+))$/);
-              const key = match[1];
-              const value = match[2] || match[3] || match[4]; // single, double, or unquoted match
-              return Object.assign({}, coll, { [key]: value });
-            }, {})
-        );
 
         // Transform [embed] tag
-        const shortTagEmbegRegex = /\[embed(.*?)](.+?)\[\/\s*embed\s*]/gi;
-        let matches = shortTagEmbegRegex.exec(content);
-        while (matches) {
-          const data = attrFromStrFn(matches[1]);
+        let match = ShortcodeSerialiser.match('embed', true, content);
+        while (match) {
+          const data = match.properties;
 
           // Add base div
           const base = jQuery('<div/>')
-            .attr('data-url', data.url || matches[2])
+            .attr('data-url', data.url || match.content)
             .attr('data-shortcode', 'embed')
             .addClass(data.class)
             .addClass('ss-htmleditorfield-file embed');
@@ -149,10 +130,10 @@ const filter = 'div[data-shortcode="embed"]';
           }
 
           // Inject into code
-          content = content.replace(matches[0], (jQuery('<div/>').append(base).html()));
+          content = content.replace(match.original, (jQuery('<div/>').append(base).html()));
 
           // Search for next match
-          matches = shortTagEmbegRegex.exec(content);
+          match = ShortcodeSerialiser.match('embed', true, content);
         }
 
         // eslint-disable-next-line no-param-reassign
