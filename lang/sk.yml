@@ -7,7 +7,7 @@ sk:
     SIZE: Veľkosť
     TYPE: Typ
     URL: URL
-    WIDTH: 'Šírka'
+    WIDTH: Šírka
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Rozmery
     EDIT: Editovať

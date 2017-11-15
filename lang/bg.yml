@@ -9,7 +9,7 @@ bg:
     URL: URL
     WIDTH: Широчина
   SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: 'Размери'
+    Dimensions: Размери
     EDITINFO: 'Редактирай този файл'
     FIELDNOTSET: 'Информация за файла не беше намерена'
-    REMOVE: 'Премахни'
+    REMOVE: Премахни

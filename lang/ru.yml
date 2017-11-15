@@ -4,13 +4,13 @@ ru:
     BACKLINKCOUNT: 'Используется на:'
     PAGES: страниц(а)
     HEIGHT: Высота
-    SIZE: 'Размер'
+    SIZE: Размер
     TYPE: Тип
     URL: URL
     WIDTH: Ширина
   SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: 'Размеры'
-    EDIT: 'Редактировать'
+    Dimensions: Размеры
+    EDIT: Редактировать
     EDITINFO: 'Редактировать этот файл'
     FIELDNOTSET: 'Информация о файле не найдена'
     REMOVE: Удалить

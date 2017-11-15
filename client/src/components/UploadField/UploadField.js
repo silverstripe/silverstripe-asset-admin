@@ -275,7 +275,7 @@ class UploadField extends Component {
     return (
       <AssetDropzone
         name={name}
-        canUpload
+        canUpload={this.canEdit()}
         uploadButton={false}
         uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"
         folderId={this.props.data.parentid}
@@ -291,13 +291,13 @@ class UploadField extends Component {
       >
         <div className="uploadfield__backdrop" />
         <span className="uploadfield__droptext">
-          <button onClick={this.handleSelect} className="uploadfield__upload-button">
+          <button type="button" onClick={this.handleSelect} className="uploadfield__upload-button">
             {i18n._t('AssetAdmin.BROWSE', 'Browse')}
           </button>
           {' '}
           {i18n._t('AssetAdmin.OR', 'or')}
           {' '}
-          <button onClick={this.handleAddShow} className="uploadfield__add-button">
+          <button type="button" onClick={this.handleAddShow} className="uploadfield__add-button">
             {i18n._t('AssetAdmin.ADD_FILES', 'Add from files')}
           </button>
         </span>

@@ -3,7 +3,7 @@ uk:
     MENUTITLE: Файли
     BACKLINKCOUNT: 'Використовується в:'
     PAGES: сторінка(и)
-    SIZE: 'Розмір'
+    SIZE: Розмір
     TYPE: Тип
   SilverStripe\AssetAdmin\Forms\UploadField:
     EDITINFO: 'Редагувати цей файл'
