@@ -19,7 +19,7 @@ Feature: Insert an image into a page
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
     When I press the "Insert file" button
-    Then the "Content" HTML field should contain "file1__Resampled.jpg"
+    Then the "Content" HTML field should contain "file1.jpg"
     # Required to avoid "unsaved changed" browser dialog
       And I press the "Save draft" button
 
@@ -31,7 +31,7 @@ Feature: Insert an image into a page
     Then I should see the "Form_fileInsertForm" form
     When I fill in "Alternative text (alt)" with "My alt"
       And I press the "Insert file" button
-    Then the "Content" HTML field should contain "file1__Resampled.jpg"
+    Then the "Content" HTML field should contain "file1.jpg"
       And the "Content" HTML field should contain "My alt"
       # Required to avoid "unsaved changed" browser dialog
       And I press the "Save draft" button
