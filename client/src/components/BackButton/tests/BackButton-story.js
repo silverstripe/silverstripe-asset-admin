@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Component as BackButton } from 'components/BackButton/BackButton';
 
-storiesOf('AssetAdmin/Back button', module)
+storiesOf('AssetAdmin/BackButton', module)
   .add('Default', () => (
     <BackButton />
   ))
