@@ -194,7 +194,7 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertEquals($image->Parent()->ID, $state['data']['parentid']);
         $this->assertContains('testimage.png', $state['data']['url']);
         $this->assertTrue($state['data']['exists']);
-        $this->assertContains('testimage.png', $state['data']['preview']);
+        $this->assertRegexp('#testimage__.*\.png$#', $state['data']['preview']);
         $this->assertEquals('image', $state['data']['category']);
     }
 
