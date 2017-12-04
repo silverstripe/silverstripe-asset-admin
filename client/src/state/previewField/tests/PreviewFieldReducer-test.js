@@ -1,10 +1,5 @@
 /* global jest, describe, it, expect, beforeEach, jasmine */
 
-jest.unmock('react');
-jest.unmock('deep-freeze-strict');
-jest.unmock('../PreviewFieldActionTypes');
-jest.unmock('../PreviewFieldReducer');
-
 import previewFieldReducer from '../PreviewFieldReducer';
 import ACTION_TYPES from '../PreviewFieldActionTypes';
 
