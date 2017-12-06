@@ -1,10 +1,5 @@
 /* global jest, describe, it, expect, beforeEach, jasmine */
 
-jest.unmock('react');
-jest.unmock('deep-freeze-strict');
-jest.unmock('../UploadFieldActionTypes.js');
-jest.unmock('../UploadFieldReducer.js');
-
 import uploadFieldReducer from '../UploadFieldReducer';
 import fileStructure from '../../../lib/fileStructure';
 import ACTION_TYPES from '../UploadFieldActionTypes';

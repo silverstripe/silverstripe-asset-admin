@@ -3,11 +3,10 @@ import i18n from 'i18n';
 import TinyMCEActionRegistrar from 'lib/TinyMCEActionRegistrar';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloProvider } from 'react-apollo';
 import jQuery from 'jquery';
 import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
-import { provideInjector } from 'lib/Injector';
+import { loadComponent } from 'lib/Injector';
 
 const commandName = 'sslinkfile';
 
@@ -31,7 +30,7 @@ const plugin = {
 };
 
 const modalId = 'insert-link__dialog-wrapper--file';
-const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
+const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
 jQuery.entwine('ss', ($) => {
   // this is required because the React version of e.preventDefault() doesn't work
@@ -61,8 +60,6 @@ jQuery.entwine('ss', ($) => {
    */
   $(`#${modalId}`).entwine({
     renderModal(show) {
-      const store = ss.store;
-      const client = ss.apolloClient;
       const handleHide = () => this.close();
       const handleInsert = (...args) => this.handleInsert(...args);
       const attrs = this.getOriginalAttributes();
@@ -73,19 +70,17 @@ jQuery.entwine('ss', ($) => {
 
       // create/update the react component
       ReactDOM.render(
-        <ApolloProvider store={store} client={client}>
-          <InjectableInsertMediaModal
-            show={show}
-            type="insert-link"
-            onInsert={handleInsert}
-            onHide={handleHide}
-            title={false}
-            bodyClassName="modal__dialog"
-            className="insert-link__dialog-wrapper--internal"
-            fileAttributes={attrs}
-            requireLinkText={requireLinkText}
-          />
-        </ApolloProvider>,
+        <InjectableInsertMediaModal
+          show={show}
+          type="insert-link"
+          onInsert={handleInsert}
+          onHide={handleHide}
+          title={false}
+          bodyClassName="modal__dialog"
+          className="insert-link__dialog-wrapper--internal"
+          fileAttributes={attrs}
+          requireLinkText={requireLinkText}
+        />,
         this[0]
       );
     },
