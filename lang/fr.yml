@@ -1,15 +1,82 @@
 fr:
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Sauvegarder
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Sauvegardé
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publier
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Publié
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Choisir un dossier'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Déplacer
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Supprimer les dossiers'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Ajouter à une campagne'
+    Alignment: Alignement
+    AlignmentCenter: Centré
+    AlignmentLeft: 'A gauche du texte'
+    AlignmentLeftAlone: 'A gauche'
+    AlignmentRight: 'A droite du texte'
+    AlignmentRightAlone: 'A droite'
+    AltText: 'Texte alternatif (alt)'
+    AltTextDescription: 'En remplacement de l''image si elle ne peut s''afficher'
+    AppCategoryArchive: Archiver
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Document
+    AppCategoryImage: Image
+    AppCategoryVideo: Vidéo
+    AttributesDescription: 'Ces modifications n''affecteront que cet emplacement spécifique du fichier.'
+    CREATED: 'Premier téléchargement'
+    Caption: Légende
+    CreatePermissionDenied: 'Vous n''avez pas l''autorisation d''ajouter des fichiers'
+    CurrentFolderOnly: 'Limiter au dossier actuel et ses sous-dossiers ?'
+    DELETE_BUTTON: Supprimer
+    EditLink: 'Modifier le fichier original'
+    ErrorItemPermissionDenied: 'Vous n''avez pas les autorisations requises pour modifier {ObjectTitle}'
+    ErrorNotFound: '{Type} introuvable'
+    FILE_NOT_FOUND: 'Fichier introuvable'
+    Filetype: 'Type de fichier'
+    INVALID_REQUEST: 'Requête invalide'
+    ImageHeight: Hauteur
+    ImageSpecs: Dimensions
+    ImageWidth: Largeur
+    LASTEDIT: 'Dernière modification'
+    LoadIntoFileFailed: 'Echec dans le chargement du fichier'
     MENUTITLE: Fichiers
-    BACKLINKCOUNT: "Utilisé dans\_:"
-    PAGES: page(s)
-    HEIGHT: Hauteur
-    SIZE: Taille
-    TYPE: Type
-    URL: URL
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Dimensions
-    EDIT: Modifier
-    EDITINFO: 'Modifier ce fichier'
-    FIELDNOTSET: 'Informations concernant le fichiers non-trouvées'
-    REMOVE: Supprimer
+    NOSUMMARY: 'Aucun résumé disponible'
+    NewFile: 'Nouveau {file}'
+    PATH: 'Chemin d''accès'
+    PUBLISHED: Publié
+    PUBLISH_BUTTON: Publier
+    Placement: Emplacement
+    SAVEDFILE: 'Fichier sauvegardé'
+    TitleTooltip: 'Texte (info-bulle)'
+    TitleTooltipDescription: 'Pour des informations complémentaires sur l''image'
+    UNKNOWN: Inconnu
+    UNPUBLISH_BUTTON: Dépublier
+    UPLOADEDFILE: 'Fichier téléchargé'
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
+    MOVEDFOLDER: 'Fichier déplacé'
+    RENAMEDFILE: 'Fichier remplacé'
+    RENAMEDTITLE: 'Titre changé pour'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Qui peut visualiser ce fichier ?'
+    ANYONE: 'Tout le monde'
+    EDITHEADER: 'Qui peut modifier ce fichier ?'
+    EDITORGROUPS: 'Groupes d''édition'
+    FILENAME: 'Nom de fichier'
+    FOLDERLOCATION: Emplacement
+    INHERIT: 'Hérite du dossier parent'
+    LOGGED_IN: 'Utilisateurs connectés'
+    ONLY_GROUPS: 'Uniquement ces groupes (choisir dans la liste)'
+    ROOTNAME: (Racine)
+    SAVE: Sauvegarder
+    VIEWERGROUPS: 'Groupes de visualisation'
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_FILE: 'Insérer un fichier'
+    INSERT_LINK: 'Lien du fichier'
+    LINKDESCR: 'Description du lien'
+    LINKOPENNEWWIN: 'Ouvrir dans un nouvel onglet'
+    LINKOPTIONS: 'Options du lien'
+    LINKTEXT: 'Texte du lien'
+    OTHER_ACTIONS: 'Autres actions'
