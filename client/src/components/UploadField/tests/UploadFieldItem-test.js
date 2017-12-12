@@ -194,6 +194,7 @@ describe('UploadFieldItem', () => {
   describe('renderViewButton()', () => {
     it('displays view button', () => {
       props.canEdit = true;
+      props.item.id = 25;
       file = ReactTestUtils.renderIntoDocument(
         <UploadFieldItem {...props} />
       );
@@ -202,6 +203,15 @@ describe('UploadFieldItem', () => {
     });
     it('hides view button when disabled', () => {
       props.canEdit = false;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadFieldItem {...props} />
+      );
+      const button = file.renderViewButton();
+      expect(button).toBe(null);
+    });
+    it('hides view button when no item id is defined', () => {
+      props.canEdit = true;
+      delete props.item.id;
       file = ReactTestUtils.renderIntoDocument(
         <UploadFieldItem {...props} />
       );
