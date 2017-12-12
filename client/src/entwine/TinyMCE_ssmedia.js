@@ -8,12 +8,11 @@ import jQuery from 'jquery';
 import i18n from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloProvider } from 'react-apollo';
-import { provideInjector } from 'lib/Injector';
+import { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 
-const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
+const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
 const filter = 'img[data-shortcode="image"]';
 
@@ -161,8 +160,6 @@ jQuery.entwine('ss', ($) => {
     _renderModal(show) {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this._handleInsert(...args);
-      const store = window.ss.store;
-      const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
       const selection = tinymce.activeEditor.selection;
       const selectionContent = selection.getContent() || '';
@@ -175,19 +172,17 @@ jQuery.entwine('ss', ($) => {
 
       // create/update the react component
       ReactDOM.render(
-        <ApolloProvider store={store} client={client}>
-          <InjectableInsertMediaModal
-            title={false}
-            type="insert-media"
-            show={show}
-            onInsert={handleInsert}
-            onHide={handleHide}
-            bodyClassName="modal__dialog"
-            className="insert-media-react__dialog-wrapper"
-            requireLinkText={requireLinkText}
-            fileAttributes={attrs}
-          />
-        </ApolloProvider>,
+        <InjectableInsertMediaModal
+          title={false}
+          type="insert-media"
+          show={show}
+          onInsert={handleInsert}
+          onHide={handleHide}
+          bodyClassName="modal__dialog"
+          className="insert-media-react__dialog-wrapper"
+          requireLinkText={requireLinkText}
+          fileAttributes={attrs}
+        />,
         this[0]
       );
     },

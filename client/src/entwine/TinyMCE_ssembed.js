@@ -2,13 +2,12 @@
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloProvider } from 'react-apollo';
-import { provideInjector } from 'lib/Injector';
+import { loadComponent } from 'lib/Injector';
 import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 import InsertEmbedModal from 'components/InsertEmbedModal/InsertEmbedModal';
 import i18n from 'i18n';
 
-const InjectableInsertEmbedModal = provideInjector(InsertEmbedModal);
+const InjectableInsertEmbedModal = loadComponent(InsertEmbedModal);
 const filter = 'div[data-shortcode="embed"]';
 
 /**
@@ -183,24 +182,20 @@ jQuery.entwine('ss', ($) => {
       // Create edit form from url
       const handleCreate = (...args) => this._handleCreate(...args);
       const handleLoadingError = (...args) => this._handleLoadingError(...args);
-      const store = window.ss.store;
-      const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
 
       // create/update the react component
       ReactDOM.render(
-        <ApolloProvider store={store} client={client}>
-          <InjectableInsertEmbedModal
-            show={show}
-            onCreate={handleCreate}
-            onInsert={handleInsert}
-            onHide={handleHide}
-            onLoadingError={handleLoadingError}
-            bodyClassName="modal__dialog modal__dialog--scrollable"
-            className="insert-embed-react__dialog-wrapper"
-            fileAttributes={attrs}
-          />
-        </ApolloProvider>,
+        <InjectableInsertEmbedModal
+          show={show}
+          onCreate={handleCreate}
+          onInsert={handleInsert}
+          onHide={handleHide}
+          onLoadingError={handleLoadingError}
+          bodyClassName="modal__dialog modal__dialog--scrollable"
+          className="insert-embed-react__dialog-wrapper"
+          fileAttributes={attrs}
+        />,
         this[0]
       );
     },
