@@ -3,10 +3,9 @@ import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { schemaMerge } from 'lib/schemaFieldValues';
-import { ConnectedUploadField } from 'components/UploadField/UploadField';
 import { loadComponent } from 'lib/Injector';
 
-const UploadField = loadComponent(ConnectedUploadField);
+const UploadField = loadComponent('UploadField');
 
 /**
  * Shiv for inserting react UploadField into entwine forms
@@ -54,8 +53,13 @@ jQuery.entwine('ss', ($) => {
         }, 0);
       };
 
+      // TODO: rework entwine so that react has control of holder
       ReactDOM.render(
-        <UploadField {...props} onChange={onChange} />,
+        <UploadField
+          {...props}
+          onChange={onChange}
+          noHolder
+        />,
         this.getContainer()
       );
     },
