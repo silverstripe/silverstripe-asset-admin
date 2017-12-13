@@ -21,6 +21,9 @@ export function addQueuedFile(file) {
 export function failUpload(queuedId, response) {
   return (dispatch) => {
     let message = response.message;
+    if (response.errors && response.errors.length) {
+      message = response.errors[0];
+    }
 
     // if we're given a string, then use it as the error message
     if (typeof response === 'string') {
