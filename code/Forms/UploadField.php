@@ -294,7 +294,6 @@ class UploadField extends FormField implements FileHandleField
     {
         $maxFiles = $this->getAllowedMaxFileNumber();
         $count = count($this->getItems());
-        var_dump($count); die();
 
         if ($maxFiles < 1 || $count <= $maxFiles) {
             return true;
@@ -302,5 +301,4 @@ class UploadField extends FormField implements FileHandleField
         $validator->validationError($this->getName(), _t('', 'Bobby'));
         return false;
     }
-
 }
