@@ -10,7 +10,7 @@ addons:
   apt:
     packages:
       - tidy
-  firefox: "31.0"
+      - google-chrome-stable
 
 env:
   global:
