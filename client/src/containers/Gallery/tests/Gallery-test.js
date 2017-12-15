@@ -4,6 +4,7 @@
 jest.mock('components/FormAlert/FormAlert');
 jest.mock('components/AssetDropzone/AssetDropzone');
 jest.mock('components/BulkActions/BulkActions');
+jest.mock('components/GalleryToolbar/GalleryToolbar');
 jest.mock('../../MoveModal/MoveModal');
 // mock jquery, as leaving it causes more problems than it solves
 jest.mock('jquery', () => {
@@ -79,6 +80,7 @@ describe('Gallery', () => {
       onViewChange: () => {},
       badges: [],
       sectionConfig: {},
+      GalleryToolbar: () => null
     };
   });
 
@@ -214,34 +216,6 @@ describe('Gallery', () => {
     });
   });
 
-  describe('renderBackButton()', () => {
-    it('should not render if parentId is not set', () => {
-      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-      const backButton = gallery.renderBackButton();
-
-      expect(backButton).toBeNull();
-    });
-
-    it('should render a react component if parentId is set', () => {
-      props.folder.parentId = 15;
-      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-      const backButton = gallery.renderBackButton();
-
-      expect(backButton).not.toBeNull();
-    });
-  });
-
-  describe('handleBackClick()', () => {
-    it('should open folder with parentId', () => {
-      props.folder.parentId = 15;
-      props.onOpenFolder = jest.genMockFunction();
-      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-
-      gallery.handleBackClick(new Event('click'));
-      expect(props.onOpenFolder).toBeCalledWith(15);
-    });
-  });
-
   describe('handleSuccessfulUpload()', () => {
     const file = {
       exists: true,
@@ -321,51 +295,6 @@ describe('Gallery', () => {
       gallery.handleSort('title,asc');
       expect(props.actions.queuedFiles.purgeUploadQueue).toBeCalled();
       expect(props.onSort).toBeCalledWith('title,asc');
-    });
-  });
-
-  describe('handleSelectSort()', () => {
-    let gallery = null;
-    const event = {
-      currentTarget: {
-        value: 'title,desc',
-      },
-    };
-
-    beforeEach(() => {
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-      gallery.handleSort = jest.genMockFunction();
-    });
-
-    it('should purge the upload queue', () => {
-      gallery.handleSelectSort(event);
-      expect(gallery.handleSort).toBeCalledWith('title,desc');
-    });
-  });
-
-  describe('getBackButton()', () => {
-    let gallery = null;
-
-    beforeEach(() => {
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-    });
-
-    it('should not return a back button it we\'re at the top level', () => {
-      expect(gallery.renderBackButton()).toBe(null);
-    });
-
-    it('should return a back button if parentId is set.', () => {
-      props.folder = { parentId: 0 };
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-      const button = gallery.renderBackButton();
-
-      expect(button).not.toBe(null);
     });
   });
 
