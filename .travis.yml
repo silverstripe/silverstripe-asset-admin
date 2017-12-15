@@ -2,6 +2,10 @@ language: php
 
 dist: trusty
 
+sudo: required
+
+group: deprecated-2017Q4
+
 cache:
   directories:
     - $HOME/.composer/cache/files
@@ -37,7 +41,6 @@ matrix:
 
 before_script:
 # Init PHP
-  - printf "\n" | pecl install imagick
   - phpenv rehash
   - phpenv config-rm xdebug.ini
   - export PATH=~/.composer/vendor/bin:$PATH
