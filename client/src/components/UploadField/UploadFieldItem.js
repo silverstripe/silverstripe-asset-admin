@@ -264,7 +264,7 @@ class UploadFieldItem extends Component {
    * @returns {object}
    */
   renderViewButton() {
-    if (!this.props.canEdit) {
+    if (!this.props.canEdit || !this.props.item.id) {
       return null;
     }
     const classes = [

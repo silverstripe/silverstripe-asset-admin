@@ -81,6 +81,7 @@ class UploadFieldTest extends SapphireTest
                 ],
                 'multi' => false,
                 'parentid' => 0,
+                'maxFiles' => null,
             ],
             'schemaType' => 'Custom'
         ];

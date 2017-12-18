@@ -31,18 +31,6 @@ class AssetDropzone extends Component {
   componentDidMount() {
     const defaultOptions = this.getDefaultOptions();
 
-    let uploadSelector = this.props.uploadSelector;
-    if (!uploadSelector && this.props.uploadButton) {
-      uploadSelector = '.asset-dropzone__upload-button';
-    }
-
-    if (uploadSelector) {
-      const found = $(ReactDOM.findDOMNode(this)).find(uploadSelector);
-      if (found && found.length) {
-        defaultOptions.clickable = found.toArray();
-      }
-    }
-
     this.dropzone = new DropzoneLib(
       ReactDOM.findDOMNode(this),
       Object.assign({},
@@ -68,6 +56,12 @@ class AssetDropzone extends Component {
     if (nextProps.canUpload) {
       if (this.dropzone) {
         this.dropzone.enable();
+
+        this.dropzone.options = Object.assign({},
+          this.dropzone.options,
+          this.getDefaultOptions(),
+          this.props.options
+        );
       }
     } else {
       // remove dropzone listeners (so it potentially doesn't interrupt other listeners)
@@ -86,6 +80,19 @@ class AssetDropzone extends Component {
    * @return object
    */
   getDefaultOptions() {
+    let clickable = null;
+    let uploadSelector = this.props.uploadSelector;
+    if (!uploadSelector && this.props.uploadButton) {
+      uploadSelector = '.asset-dropzone__upload-button';
+    }
+
+    if (uploadSelector) {
+      const found = $(ReactDOM.findDOMNode(this)).find(uploadSelector);
+      if (found && found.length) {
+        clickable = found.toArray();
+      }
+    }
+
     return {
       // Custom validation handler
       accept: this.handleAccept,
@@ -159,6 +166,8 @@ class AssetDropzone extends Component {
       thumbnailHeight: 150,
 
       thumbnailWidth: 200,
+
+      clickable,
     };
   }
 

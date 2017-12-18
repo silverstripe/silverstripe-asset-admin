@@ -27,10 +27,19 @@ describe('UploadField', () => {
           removeFile: jest.genMockFunction(),
         },
       },
-      data: { files },
+      data: {
+        createFileEndpoint: {
+          url: 'test',
+          method: 'POST',
+          payloadFormat: 'json',
+        },
+        parentid: 0,
+        files,
+      },
       value: {
         Files: [2, 4],
       },
+      securityId: 'TestingBob',
     };
   });
 
@@ -81,6 +90,43 @@ describe('UploadField', () => {
       file.componentWillReceiveProps(newProps);
 
       expect(props.onChange).toBeCalled();
+    });
+  });
+
+  describe('renderDropzone', () => {
+    it('should not render the dropzone when there is not create endpoint', () => {
+      props.data.createFileEndpoint = null;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+
+      const dropzone = file.renderDropzone();
+
+      expect(dropzone).toBe(null);
+    });
+
+    it('should hide the dropzone when maxFiles reached', () => {
+      props.data.multi = true;
+      props.data.maxFiles = 3;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+
+      const dropzone = file.renderDropzone();
+
+      expect(dropzone.props.className.split(' ')).toContain('uploadfield__dropzone--hidden');
+    });
+
+    it('should show the dropzone when maxFiles has not been reached', () => {
+      props.data.multi = true;
+      props.data.maxFiles = 4;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+
+      const dropzone = file.renderDropzone();
+
+      expect(dropzone.props.className.split(' ')).not.toContain('uploadfield__dropzone--hidden');
     });
   });
 });
