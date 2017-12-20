@@ -1017,6 +1017,7 @@ class Gallery extends Component {
         />
         {this.renderTransitionBulkActions()}
         <GalleryDND className={galleryClasses.join(' ')}>
+          {this.renderToolbar()}
           <SelectableGroup
             enabled={this.props.view === 'tile' && this.props.type === 'admin'}
             className="flexbox-area-grow fill-height gallery__main--selectable"
@@ -1025,7 +1026,6 @@ class Gallery extends Component {
             preventDefault={false}
             fixedPosition
           >
-            {this.renderToolbar()}
             <AssetDropzone
               name="gallery-container"
               className="flexbox-area-grow"
