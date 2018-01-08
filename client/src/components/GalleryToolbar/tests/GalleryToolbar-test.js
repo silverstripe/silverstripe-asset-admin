@@ -4,7 +4,7 @@ jest.mock('components/FormAlert/FormAlert');
 jest.mock('components/AssetDropzone/AssetDropzone');
 jest.mock('components/BulkActions/BulkActions');
 jest.mock('containers/MoveModal/MoveModal');
-jest.mock('../Buttons/BackButton');
+
 // mock jquery, as leaving it causes more problems than it solves
 jest.mock('jquery', () => {
   const jqueryMock = {
@@ -36,14 +36,38 @@ describe('GalleryToolbar', () => {
         canEdit: true,
       },
       sort: '',
-      handleMoveFiles: () => {},
+      onMoveFiles: () => {},
       onCreateFolder: () => {},
       onOpenFolder: () => {},
-      handleSort: () => {},
+      onSort: () => {},
       onViewChange: () => {},
       badges: [],
       sectionConfig: {},
-      BackButton: () => null
+      BackButton: () => null,
+      UploadButton: () => null,
+      AddFolderButton: () => null,
+      sorters: [
+        {
+          field: 'title',
+          direction: 'asc',
+          label: 'title a-z',
+        },
+        {
+          field: 'title',
+          direction: 'desc',
+          label: 'title z-a',
+        },
+        {
+          field: 'lastEdited',
+          direction: 'desc',
+          label: 'newest',
+        },
+        {
+          field: 'lastEdited',
+          direction: 'asc',
+          label: 'oldest',
+        },
+      ]
     };
   });
 
@@ -58,7 +82,7 @@ describe('GalleryToolbar', () => {
 
     beforeEach(() => {
       onSort = jest.genMockFunction();
-      const localProps = Object.assign({}, props, { handleSort: onSort });
+      const localProps = Object.assign({}, props, { onSort });
       gallerytoolbar = ReactTestUtils.renderIntoDocument(
         <GalleryToolbar {...localProps} />
       );

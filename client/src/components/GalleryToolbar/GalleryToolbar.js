@@ -1,9 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { sorters } from 'containers/Gallery/Gallery';
-import BackButton from './Buttons/BackButton';
-import UploadButton from './Buttons/UploadButton';
-import AddFolderButton from './Buttons/AddFolderButton';
+import BackButtonDefault from './Buttons/BackButton';
+import UploadButtonDefault from './Buttons/UploadButton';
+import AddFolderButtonDefault from './Buttons/AddFolderButton';
 
 class GalleryToolbar extends Component {
   constructor(props) {
@@ -18,7 +17,7 @@ class GalleryToolbar extends Component {
    * @param {Event} event
    */
   handleSelectSort(event) {
-    this.props.handleSort(event.currentTarget.value);
+    this.props.onSort(event.currentTarget.value);
   }
 
   /**
@@ -49,7 +48,7 @@ class GalleryToolbar extends Component {
           style={{ width: '160px' }}
           defaultValue={this.props.sort}
         >
-          {sorters.map((sorter) => (
+          {this.props.sorters.map((sorter) => (
             <option
               key={`${sorter.field}-${sorter.direction}`}
               onClick={this.handleSelectSort}
@@ -104,13 +103,13 @@ class GalleryToolbar extends Component {
       badges,
       children,
       folder,
-      handleMoveFiles,
+      onMoveFiles,
       onOpenFolder,
       onCreateFolder,
       // Button components
-      BackButton, // eslint-disable-line no-shadow
-      UploadButton, // eslint-disable-line no-shadow
-      AddFolderButton, // eslint-disable-line no-shadow
+      BackButton,
+      UploadButton,
+      AddFolderButton,
     } = this.props;
 
     const { canEdit } = folder;
@@ -124,7 +123,7 @@ class GalleryToolbar extends Component {
                 folder={folder}
                 badges={badges}
                 onOpenFolder={onOpenFolder}
-                handleMoveFiles={handleMoveFiles}
+                onMoveFiles={onMoveFiles}
               />
               <UploadButton
                 canEdit={canEdit}
@@ -150,11 +149,11 @@ class GalleryToolbar extends Component {
 }
 
 GalleryToolbar.propTypes = {
-  handleMoveFiles: PropTypes.func.isRequired,
+  onMoveFiles: PropTypes.func.isRequired,
   onCreateFolder: PropTypes.func.isRequired,
   onViewChange: PropTypes.func.isRequired,
   onOpenFolder: PropTypes.func.isRequired,
-  handleSort: PropTypes.func.isRequired,
+  onSort: PropTypes.func.isRequired,
   folder: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
@@ -176,18 +175,24 @@ GalleryToolbar.propTypes = {
 
 GalleryToolbar.defaultProps = {
   view: 'tile',
-  sort: `${sorters[0].field},${sorters[0].direction}`,
-  BackButton,
-  UploadButton,
-  AddFolderButton,
+  BackButton: BackButtonDefault,
+  UploadButton: UploadButtonDefault,
+  AddFolderButton: AddFolderButtonDefault,
 };
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
+  let { sort } = ownProps;
+
   const {
     badges,
+    sorters,
   } = state.assetAdmin.gallery;
 
-  return { badges };
+  // set default sort
+  if (sort === '') {
+    sort = `${sorters[0].field},${sorters[0].direction}`;
+  }
+  return { badges, sorters, sort };
 }
 
 export {

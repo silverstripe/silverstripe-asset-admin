@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+/* eslint-disable react/prefer-stateless-function */
+import React, { Component, PropTypes } from 'react';
 import i18n from 'i18n';
 
 /**
@@ -6,17 +7,20 @@ import i18n from 'i18n';
  *
  * @returns {XML} button
  */
-function UploadButton({ canEdit }) {
-  return (
-    <button
-      id="upload-button"
-      className="btn btn-secondary font-icon-upload btn--icon-xl"
-      type="button"
-      disabled={!canEdit}
-    >
-      <span className="btn__text btn__title">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
-    </button>
-  );
+class UploadButton extends Component {
+  render() {
+    const { canEdit } = this.props;
+    return (
+      <button
+        id="upload-button"
+        className="btn btn-secondary font-icon-upload btn--icon-xl"
+        type="button"
+        disabled={!canEdit}
+      >
+        <span className="btn__text btn__title">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
+      </button>
+    );
+  }
 }
 
 UploadButton.defaultProps = {

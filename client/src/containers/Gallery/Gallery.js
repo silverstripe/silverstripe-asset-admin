@@ -24,37 +24,6 @@ import configShape from 'lib/configShape';
 import MoveModal from '../MoveModal/MoveModal';
 import { inject } from 'lib/Injector';
 
-/**
- * List of sorters for tile view, required here because it's rendered outside the tile view
- * component
- *
- * @todo Use lowercase identifiers once we can map them in the silverstripe/graphql module
- *
- * @type {array} sorters
- */
-const sorters = [
-  {
-    field: 'title',
-    direction: 'asc',
-    label: i18n._t('AssetAdmin.FILTER_TITLE_ASC', 'title a-z'),
-  },
-  {
-    field: 'title',
-    direction: 'desc',
-    label: i18n._t('AssetAdmin.FILTER_TITLE_DESC', 'title z-a'),
-  },
-  {
-    field: 'lastEdited',
-    direction: 'desc',
-    label: i18n._t('AssetAdmin.FILTER_DATE_DESC', 'newest'),
-  },
-  {
-    field: 'lastEdited',
-    direction: 'asc',
-    label: i18n._t('AssetAdmin.FILTER_DATE_ASC', 'oldest'),
-  },
-];
-
 class Gallery extends Component {
   constructor(props) {
     super(props);
@@ -741,8 +710,8 @@ class Gallery extends Component {
     } = this.props;
 
     const props = {
-      handleMoveFiles: this.handleMoveFiles,
-      handleSort: this.handleSort,
+      onMoveFiles: this.handleMoveFiles,
+      onSort: this.handleSort,
       onCreateFolder,
       onOpenFolder,
       onViewChange,
@@ -751,7 +720,7 @@ class Gallery extends Component {
       folder,
     };
 
-    return (<GalleryToolbar {...props} />);
+    return <GalleryToolbar {...props} />;
   }
 
   render() {
@@ -880,7 +849,6 @@ class Gallery extends Component {
 const sharedDefaultProps = {
   page: 1,
   limit: 15,
-  sort: `${sorters[0].field},${sorters[0].direction}`,
 };
 
 const sharedPropTypes = {
@@ -960,9 +928,15 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   enableDropzone: PropTypes.bool,
   concatenateSelect: PropTypes.bool,
   GalleryToolbar: PropTypes.func,
+  sorters: PropTypes.arrayOf(PropTypes.shape({
+    field: PropTypes.string.isRequired,
+    direction: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    label: PropTypes.string.isRequired,
+  })).isRequired,
 });
 
 function mapStateToProps(state, ownProps) {
+  let { sort } = ownProps;
   const {
     selectedFiles,
     errorMessage,
@@ -971,7 +945,13 @@ function mapStateToProps(state, ownProps) {
     badges,
     concatenateSelect,
     loading,
+    sorters,
   } = state.assetAdmin.gallery;
+
+  // set default sort
+  if (!sort && sorters && sorters[0]) {
+    sort = `${sorters[0].field},${sorters[0].direction}`;
+  }
 
   return {
     selectedFiles,
@@ -983,6 +963,8 @@ function mapStateToProps(state, ownProps) {
     loading: ownProps.loading || loading,
     queuedFiles: state.assetAdmin.queuedFiles,
     securityId: state.config.SecurityID,
+    sorters,
+    sort,
   };
 }
 
@@ -997,7 +979,6 @@ function mapDispatchToProps(dispatch) {
 
 export {
   Gallery as Component,
-  sorters,
   galleryViewPropTypes,
   galleryViewDefaultProps,
 };
@@ -1005,7 +986,7 @@ export {
 export default compose(
   inject(
     ['GalleryToolbar'],
-    GalleryToolbar => ({ GalleryToolbar }),
+    null,
     () => 'AssetAdmin.Gallery',
   ),
   connect(mapStateToProps, mapDispatchToProps),

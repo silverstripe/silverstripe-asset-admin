@@ -80,7 +80,29 @@ describe('Gallery', () => {
       onViewChange: () => {},
       badges: [],
       sectionConfig: {},
-      GalleryToolbar: () => null
+      GalleryToolbar: () => null,
+      sorters: [
+        {
+          field: 'title',
+          direction: 'asc',
+          label: 'title a-z',
+        },
+        {
+          field: 'title',
+          direction: 'desc',
+          label: 'title z-a',
+        },
+        {
+          field: 'lastEdited',
+          direction: 'desc',
+          label: 'newest',
+        },
+        {
+          field: 'lastEdited',
+          direction: 'asc',
+          label: 'oldest',
+        },
+      ]
     };
   });
 

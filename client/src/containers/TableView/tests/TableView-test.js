@@ -20,6 +20,7 @@ describe('TableView', () => {
       onSort: jest.genMockFunction(),
       onSetPage: jest.genMockFunction(),
       renderNoItemsNotice: jest.genMockFunction(),
+      sort: 'title,asc',
     };
   });
 
