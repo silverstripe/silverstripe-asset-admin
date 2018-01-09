@@ -1,22 +1,46 @@
 hr:
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Spremi
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Spremljeno
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Objavi
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Objavljeno
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Odaberi direktorij'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Premjesti
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Obriši direktorije'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Dodaj na kampanju'
+    Alignment: poravnavanje
+    AlignmentCenter: Centar
+    AlignmentLeftAlone: Lijevo
+    AlignmentRightAlone: Desno
+    AltText: 'Alternativni tekst (alt)'
     AppCategoryArchive: Arhiviraj
     AppCategoryAudio: Zvuk
     AppCategoryDocument: Dokument
     AppCategoryImage: Slika
     AppCategoryVideo: Video
+    CREATED: 'Prvi prijenos'
     CreatePermissionDenied: 'Nemate prava za dodavanje datoteka'
     CurrentFolderOnly: 'Ograniči na trenutni direktorij i njegove pod-direktorije?'
     DELETE_BUTTON: Obriši
+    EditLink: 'Uredi originalnu datoteku'
     ErrorItemPermissionDenied: 'Nemate potrebna prava za izmjenu {ObjectTitle}'
     ErrorNotFound: 'Taj {Type} nemoguće pronaći'
+    FILE_NOT_FOUND: 'Datoteka nije pronađena'
     Filetype: 'Vrsta datoteke'
+    ImageHeight: Visina
+    ImageSpecs: Dimenzije
+    ImageWidth: Širina
+    LASTEDIT: 'Zadnja promjena'
     LoadIntoFileFailed: 'Greška pri učitavanju datoteke'
     MENUTITLE: Datoteke
     NOSUMMARY: 'Sažetak nije dostupan'
+    NewFile: 'Nova {file}'
+    PATH: Putanja
+    PUBLISHED: Objavljeno
     PUBLISH_BUTTON: Objavi
     SAVEDFILE: 'Spremljena datoteke'
     UNKNOWN: Nepoznatno
@@ -26,8 +50,24 @@ hr:
     MOVEDFOLDER: 'Premještena datoteka'
     RENAMEDFILE: 'Zamjenjena datoteka'
     RENAMEDTITLE: 'Promjeni naslov u'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ANYONE: 'Bilo tko'
+    EDITHEADER: 'Tko može urediti ovu datoteku?'
+    FILENAME: 'Naziv datoteke'
+    FOLDERLOCATION: Lokacije
+    SAVE: Spremi
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_FILE: 'Dodaj datoteku'
+    INSERT_LINK: 'Poveži s datotekom'
+    LINKOPENNEWWIN: 'Otvori u novom prozoru/tabu'
     OTHER_ACTIONS: 'Druge akcije'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Objavljeno
     SAVED: Spremljeno
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Kreiraj
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Naziv direktorija'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Dodaj mediju'
+    Cancel: Odustani

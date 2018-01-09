@@ -2,12 +2,10 @@
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloProvider } from 'react-apollo';
 import { schemaMerge } from 'lib/schemaFieldValues';
-import { ConnectedUploadField } from 'components/UploadField/UploadField';
-import { provideInjector } from 'lib/Injector';
+import { loadComponent } from 'lib/Injector';
 
-const InjectableUploadField = provideInjector(ConnectedUploadField);
+const UploadField = loadComponent('UploadField');
 
 /**
  * Shiv for inserting react UploadField into entwine forms
@@ -40,9 +38,12 @@ jQuery.entwine('ss', ($) => {
       this.refresh();
     },
 
+    onclick(e) {
+      // we don't want the native upload dialog to show up
+      e.preventDefault();
+    },
+
     refresh() {
-      const store = window.ss.store;
-      const client = window.ss.apolloClient;
       const props = this.getAttributes();
       const form = $(this).closest('form');
       const onChange = () => {
@@ -52,10 +53,13 @@ jQuery.entwine('ss', ($) => {
         }, 0);
       };
 
+      // TODO: rework entwine so that react has control of holder
       ReactDOM.render(
-        <ApolloProvider store={store} client={client}>
-          <InjectableUploadField {...props} onChange={onChange} />
-        </ApolloProvider>,
+        <UploadField
+          {...props}
+          onChange={onChange}
+          noHolder
+        />,
         this.getContainer()
       );
     },

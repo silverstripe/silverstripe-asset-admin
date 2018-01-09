@@ -22,10 +22,11 @@ class CampaignAdminExtension extends Extension
     public function updatePopoverActions(&$actions, $record)
     {
         if ($record && $record->canPublish()) {
-            array_unshift($actions, FormAction::create(
+            $action = FormAction::create(
                 'addtocampaign',
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ADDTOCAMPAIGN', 'Add to campaign')
-            ));
+            )->setIcon('page-multiple');
+            array_unshift($actions, $action);
         }
     }
 }

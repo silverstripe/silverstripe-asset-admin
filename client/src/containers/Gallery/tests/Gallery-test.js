@@ -133,48 +133,6 @@ describe('Gallery', () => {
     });
   });
 
-  describe('compareFiles()', () => {
-    let gallery = null;
-
-    beforeEach(() => {
-      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-    });
-
-    it('should not find differences on identical lists', () => {
-      const left = [
-        { id: 1 },
-      ];
-      const right = [
-        { id: 1 },
-      ];
-
-      expect(gallery.compareFiles(left, right)).toBeTruthy();
-    });
-
-    it('should find differences on array length', () => {
-      const left = [
-        { id: 1 },
-      ];
-      const right = [
-        { id: 1 },
-        { id: 2 },
-      ];
-
-      expect(gallery.compareFiles(left, right)).toBeFalsy();
-    });
-
-    it('should find differences on "id" attribute', () => {
-      const left = [
-        { id: 1 },
-      ];
-      const right = [
-        { id: 2 },
-      ];
-
-      expect(gallery.compareFiles(left, right)).toBeFalsy();
-    });
-  });
-
   describe('componentWillReceiveProps()', () => {
     let gallery = null;
 
@@ -196,11 +154,16 @@ describe('Gallery', () => {
       expect(props.actions.queuedFiles.purgeUploadQueue).not.toBeCalled();
     });
 
-    it('should call purgeUploadQueue when receiving new files', () => {
+    it('should call purgeUploadQueue when changing folder', () => {
       gallery.componentWillReceiveProps(Object.assign({}, props, {
-        files: [
-          { id: 2 },
-        ],
+        folderId: 8,
+        folder: {
+          id: 8,
+          title: 'subfolder',
+          parentId: 1,
+          canView: true,
+          canEdit: true,
+        },
       }));
       expect(props.actions.queuedFiles.purgeUploadQueue).toBeCalled();
     });

@@ -205,8 +205,8 @@
 
   select { // Replicate .form-control;
     height: calc(#{$line-height-base} + #{$spacer});
-    padding: $input-padding-y $input-padding-x;
-    line-height: $line-height-base;
+    padding: $input-btn-padding-y $input-btn-padding-x;
+    line-height: $input-btn-line-height;
     color: $input-color;
     border: $input-btn-border-width solid $input-border-color;
     background-color: $input-bg;
@@ -250,10 +250,10 @@ $griddle-button-height: 30px;
 
     &::before {
       font-family: silverstripe;
-      color: $body-color-light;
+      color: $text-muted;
       width: $griddle-button-width;
       height: $griddle-button-height;
-      background-color: $background-main;
+      background-color: $body-bg;
       position: absolute;
       top: 0;
       left: 0;

@@ -1,6 +1,5 @@
 /* global tinymce, window */
 /* eslint-disable
-  no-cond-assign,
   no-param-reassign,
   func-names
 */
@@ -9,12 +8,11 @@ import jQuery from 'jquery';
 import i18n from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ApolloProvider } from 'react-apollo';
-import { provideInjector } from 'lib/Injector';
+import { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 
-const InjectableInsertMediaModal = provideInjector(InsertMediaModal);
+const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
 const filter = 'img[data-shortcode="image"]';
 
@@ -58,20 +56,13 @@ const filter = 'img[data-shortcode="image"]';
 
       ed.on('SaveContent', (o) => {
         const content = jQuery(o.content);
-        // @todo - replace with `lib/ShortcodeSerialiser` library
-        const attrsFn = (attrs) => (
-          Object.keys(attrs)
-            .map((name) => (attrs[name] ? `${name}="${attrs[name]}"` : null))
-            .filter((el) => el !== null)
-            .join(' ')
-        );
 
         // Transform [image] shortcodes
         content.find(filter)
           .add(content.filter(filter))
           .each(function () {
             const el = jQuery(this);
-            const attrs = {
+            const properties = {
               // Requires server-side preprocessing of HTML+shortcodes in HTMLValue
               src: el.attr('src'),
               id: el.data('id'),
@@ -82,8 +73,11 @@ const filter = 'img[data-shortcode="image"]';
               title: el.attr('title'),
               alt: el.attr('alt'),
             };
-            // @todo - replace with `lib/ShortcodeSerialiser` library
-            const shortCode = `[image ${attrsFn(attrs)}]`;
+            const shortCode = ShortcodeSerialiser.serialise({
+              name: 'image',
+              properties,
+              wrapped: false
+            });
             el.replaceWith(shortCode);
           });
 
@@ -98,32 +92,23 @@ const filter = 'img[data-shortcode="image"]';
         });
       });
       ed.on('BeforeSetContent', (o) => {
-        let matches = null;
-        // @todo - replace with `lib/ShortcodeSerialiser` library
         let content = o.content;
-        const attrFromStrFn = (str) => (
-          str
-          // Split on all attributes, quoted or not
-            .match(/([^\s\/'"=,]+)\s*=\s*(('([^']+)')|("([^"]+)")|([^\s,\]]+))/g)
-            .reduce((coll, val) => {
-              const match
-                = val.match(/^([^\s\/'"=,]+)\s*=\s*(?:(?:'([^']+)')|(?:"([^"]+)")|(?:[^\s,\]]+))$/);
-              const key = match[1];
-              const value = match[2] || match[3] || match[4]; // single, double, or unquoted match
-              return Object.assign({}, coll, { [key]: value });
-            }, {})
-        );
 
         // Transform [image] tag
-        const shortTagImageRegex = /\[image(.*?)]/gi;
-        while ((matches = shortTagImageRegex.exec(content))) {
-          const attrs = attrFromStrFn(matches[1]);
-          const el = jQuery('<img/>').attr(Object.assign({}, attrs, {
-            id: undefined,
-            'data-id': attrs.id,
-            'data-shortcode': 'image',
-          })).addClass('ss-htmleditorfield-file image');
-          content = content.replace(matches[0], (jQuery('<div/>').append(el).html()));
+        let match = ShortcodeSerialiser.match('image', false, content);
+        while (match) {
+          const attrs = match.properties;
+          const el = jQuery('<img/>')
+            .attr(Object.assign({}, attrs, {
+              id: undefined,
+              'data-id': attrs.id,
+              'data-shortcode': 'image',
+            }))
+            .addClass('ss-htmleditorfield-file image');
+          content = content.replace(match.original, (jQuery('<div/>').append(el).html()));
+
+          // Get next match
+          match = ShortcodeSerialiser.match('image', false, content);
         }
 
         o.content = content;
@@ -175,8 +160,6 @@ jQuery.entwine('ss', ($) => {
     _renderModal(show) {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this._handleInsert(...args);
-      const store = window.ss.store;
-      const client = window.ss.apolloClient;
       const attrs = this.getOriginalAttributes();
       const selection = tinymce.activeEditor.selection;
       const selectionContent = selection.getContent() || '';
@@ -189,19 +172,17 @@ jQuery.entwine('ss', ($) => {
 
       // create/update the react component
       ReactDOM.render(
-        <ApolloProvider store={store} client={client}>
-          <InjectableInsertMediaModal
-            title={false}
-            type="insert-media"
-            show={show}
-            onInsert={handleInsert}
-            onHide={handleHide}
-            bodyClassName="modal__dialog"
-            className="insert-media-react__dialog-wrapper"
-            requireLinkText={requireLinkText}
-            fileAttributes={attrs}
-          />
-        </ApolloProvider>,
+        <InjectableInsertMediaModal
+          title={false}
+          type="insert-media"
+          show={show}
+          onInsert={handleInsert}
+          onHide={handleHide}
+          bodyClassName="modal__dialog"
+          className="insert-media-react__dialog-wrapper"
+          requireLinkText={requireLinkText}
+          fileAttributes={attrs}
+        />,
         this[0]
       );
     },

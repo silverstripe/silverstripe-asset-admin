@@ -86,7 +86,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         // public image should have url
         $image->publishSingle();
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
-        $this->assertEquals('/assets/ThumbnailGeneratorTest/906835357d/TestImage__FitWzEwMCwyMDBd.png', $thumbnail);
+        $this->assertEquals('/assets/ThumbnailGeneratorTest/906835357d/TestImage__FitMaxWzEwMCwyMDBd.png', $thumbnail);
 
         // Public assets can be set to inline
         ThumbnailGenerator::config()->merge('thumbnail_links', [
@@ -102,6 +102,6 @@ class ThumbnailGeneratorTest extends SapphireTest
         ]);
         $image->doUnpublish();
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
-        $this->assertEquals('/assets/906835357d/TestImage__FitWzEwMCwyMDBd.png', $thumbnail);
+        $this->assertEquals('/assets/906835357d/TestImage__FitMaxWzEwMCwyMDBd.png', $thumbnail);
     }
 }

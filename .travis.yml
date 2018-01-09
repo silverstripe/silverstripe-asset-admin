@@ -2,6 +2,14 @@ language: php
 
 dist: trusty
 
+sudo: required
+
+group: deprecated-2017Q4
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
 addons:
   apt:
     packages:
@@ -11,7 +19,7 @@ addons:
 env:
   global:
     - DB=MYSQL
-    - COMPOSER_ROOT_VERSION=1.0.x-dev
+    - COMPOSER_ROOT_VERSION=1.1.x-dev
     - DISPLAY=":99"
     - XVFBARGS=":99 -ac -screen 0 1024x768x16"
     - TRAVIS_NODE_VERSION="6"
@@ -22,7 +30,7 @@ matrix:
   include:
     - php: 5.6
       env: PHPUNIT_TEST=1
-    - php: 5.6
+    - php: 7.0
       env: BEHAT_TEST=1
     - php: 7.0
       env: PHPUNIT_TEST=1
@@ -33,7 +41,6 @@ matrix:
 
 before_script:
 # Init PHP
-  - printf "\n" | pecl install imagick
   - phpenv rehash
   - phpenv config-rm xdebug.ini
   - export PATH=~/.composer/vendor/bin:$PATH
@@ -43,12 +50,13 @@ before_script:
 # Install composer
   - composer validate
   - composer install --prefer-dist
-  - composer require silverstripe/recipe-cms 1.0.x-dev  --no-update --prefer-dist
+  - composer require silverstripe/recipe-cms 1.1.x-dev  --no-update --prefer-dist
   - composer update
   - if [[ $PHPCS_TEST ]]; then composer global require squizlabs/php_codesniffer:^3 --prefer-dist --no-interaction --no-progress --no-suggest -o; fi
 
 # Start behat services
   - if [[ $BEHAT_TEST ]]; then mkdir artifacts; fi
+  - if [[ $BEHAT_TEST ]]; then cp composer.lock artifacts/; fi
   - if [[ $BEHAT_TEST ]]; then sh -e /etc/init.d/xvfb start; sleep 3; fi
   - if [[ $BEHAT_TEST ]]; then (vendor/bin/selenium-server-standalone > artifacts/selenium.log 2>&1 &); fi
   - if [[ $BEHAT_TEST ]]; then (vendor/bin/serve --bootstrap-file vendor/silverstripe/cms/tests/behat/serve-bootstrap.php &> artifacts/serve.log &); fi

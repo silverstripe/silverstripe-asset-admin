@@ -1,4 +1,4 @@
-# Asset Gallery Field
+# SilverStripe Asset Admin Module
 
 [![Build Status](http://img.shields.io/travis/silverstripe/silverstripe-asset-admin.svg?style=flat-square)](https://travis-ci.org/silverstripe/silverstripe-asset-admin)
 [![Code Quality](http://img.shields.io/scrutinizer/g/silverstripe/silverstripe-asset-admin.svg?style=flat-square)](https://scrutinizer-ci.com/g/silverstripe/silverstripe-asset-admin)
@@ -7,27 +7,10 @@
 [![License](http://img.shields.io/packagist/l/silverstripe/asset-admin.svg?style=flat-square)](LICENSE.md)
 ![helpfulrobot](https://helpfulrobot.io/silverstripe/asset-admin/badge)
 
-## Example
+## Overview
 
-```php
-/**
- * @return FieldList
- */
-public function getCMSFields() {
-	$fields = parent::getCMSFields();
-
-	$fields->addFieldToTab(
-		'Root.Main',
-		$galleryField = new AssetGalleryField(
-			$name = 'Files'
-		)
-	);
-
-	$galleryField->setCurrentPath("my-image-folder"); // relative to assets
-
-	return $fields;
-}
-```
+Provides a CMS interface for managing files and images, provided by the
+SilverStripe [assets module](https://github.com/silverstripe/silverstripe-assets).
 
 ## Installation
 
@@ -36,10 +19,6 @@ $ composer require silverstripe/asset-admin
 ```
 
 You'll also need to run `dev/build`.
-
-## Documentation
-
-See the [docs/en](docs/en) folder.
 
 ## Versioning
 

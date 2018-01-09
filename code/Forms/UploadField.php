@@ -10,6 +10,7 @@ use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Forms\FileHandleField;
 use SilverStripe\Forms\FileUploadReceiver;
 use SilverStripe\Forms\FormField;
+use SilverStripe\Forms\Validator;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\SS_List;
 
@@ -49,6 +50,13 @@ class UploadField extends FormField implements FileHandleField
      * @var int
      */
     private static $thumbnail_height = 60;
+
+    /**
+     * The number of files allowed for this field
+     *
+     * @var null|int
+     */
+    protected $allowedMaxFileNumber = null;
 
     protected $inputType = 'file';
 
@@ -90,8 +98,10 @@ class UploadField extends FormField implements FileHandleField
             'method' => 'post',
             'payloadFormat' => 'urlencoded',
         ];
+        $defaults['data']['maxFiles'] = $this->getAllowedMaxFileNumber();
         $defaults['data']['multi'] = $this->getIsMultiUpload();
         $defaults['data']['parentid'] = $this->getFolderID();
+
         return $defaults;
     }
 
@@ -204,14 +214,36 @@ class UploadField extends FormField implements FileHandleField
     }
 
     /**
-     * Set upload type to multi / single
+     * Set upload type to multiple or single
      *
-     * @param $multi
+     * @param bool $bool True for multiple, false for single
      * @return $this
      */
-    public function setIsMultiUpload($multi)
+    public function setIsMultiUpload($bool)
     {
-        $this->multiUpload = $multi;
+        $this->multiUpload = $bool;
+        return $this;
+    }
+
+    /**
+     * Gets the number of files allowed for this field
+     *
+     * @return null|int
+     */
+    public function getAllowedMaxFileNumber()
+    {
+        return $this->allowedMaxFileNumber;
+    }
+
+    /**
+     * Sets the number of files allowed for this field
+     * @param $count
+     * @return $this
+     */
+    public function setAllowedMaxFileNumber($count)
+    {
+        $this->allowedMaxFileNumber = $count;
+
         return $this;
     }
 
@@ -250,5 +282,23 @@ class UploadField extends FormField implements FileHandleField
         $clone = clone $this;
         $clone->setDisabled(true);
         return $clone;
+    }
+
+    /**
+     * Checks if the number of files attached adheres to the $allowedMaxFileNumber defined
+     *
+     * @param Validator $validator
+     * @return bool
+     */
+    public function validate($validator)
+    {
+        $maxFiles = $this->getAllowedMaxFileNumber();
+        $count = count($this->getItems());
+
+        if ($maxFiles < 1 || $count <= $maxFiles) {
+            return true;
+        }
+        $validator->validationError($this->getName(), _t('', 'Bobby'));
+        return false;
     }
 }

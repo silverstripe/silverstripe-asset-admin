@@ -264,7 +264,7 @@ class UploadFieldItem extends Component {
    * @returns {object}
    */
   renderViewButton() {
-    if (!this.props.canEdit) {
+    if (!this.props.canEdit || !this.props.item.id) {
       return null;
     }
     const classes = [
@@ -320,7 +320,7 @@ class UploadFieldItem extends Component {
           style={this.getThumbnailStyles()}
           onClick={this.handleItemClick}
           role="button"
-          tabIndex={0}
+          tabIndex={this.props.onItemClick ? 0 : -1}
         />
         {this.renderFileDetails()}
         {this.renderProgressBar()}

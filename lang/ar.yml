@@ -1,9 +1,9 @@
 ar:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: 'الملفات'
+    MENUTITLE: الملفات
     BACKLINKCOUNT: 'مستعمل في:'
     PAGES: 'صفحة (صفحات)'
-    SIZE: 'الحجم'
+    SIZE: الحجم
     TYPE: النوع
     URL: الرابط
   SilverStripe\AssetAdmin\Forms\UploadField:

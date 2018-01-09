@@ -11,7 +11,7 @@
   border-color: $border-color-dark;
   border-radius: 5px;
   padding: 0;
-  background: lighten($background-main, 2%);
+  background: lighten($body-bg, 2%);
   height: 78px;
 
   &::after {
@@ -63,7 +63,7 @@
   display: inline-block;
   text-align: center;
 
-  a {
+  a, button {
     cursor: pointer;
   }
 

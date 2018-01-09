@@ -241,17 +241,17 @@ class UploadField extends Component {
       height: CONSTANTS.SMALL_THUMBNAIL_HEIGHT,
       width: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
     };
-    const name = this.props.name;
+    const maxFiles = this.props.data.multi ? this.props.data.maxFiles : 1;
+    const filesCount = this.props.files.filter(file => !file.message || file.message.type !== 'error').length;
+    const allowed = maxFiles > 0 ? Math.max(maxFiles - filesCount, 0) : null;
     const dropzoneOptions = {
       url: this.props.data.createFileEndpoint.url,
       method: this.props.data.createFileEndpoint.method,
       paramName: 'Upload',
+      maxFiles: allowed,
       thumbnailWidth: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
       thumbnailHeight: CONSTANTS.SMALL_THUMBNAIL_HEIGHT,
     };
-    if (!this.props.data.multi) {
-      dropzoneOptions.maxFiles = 1;
-    }
 
     // Handle readonly field
     if (!this.canEdit()) {
@@ -265,17 +265,16 @@ class UploadField extends Component {
 
     // If single upload and there is a file, don't render dropzone
     const classNames = ['uploadfield__dropzone'];
-    if (this.props.files.length && !this.props.data.multi) {
+    if (allowed === 0) {
       classNames.push('uploadfield__dropzone--hidden');
     }
 
     const securityID = this.props.securityId;
 
-    // @todo add ` or <a>add from files</a>` once we implement file dialog
     return (
       <AssetDropzone
-        name={name}
-        canUpload
+        name={this.props.name}
+        canUpload={this.canEdit()}
         uploadButton={false}
         uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"
         folderId={this.props.data.parentid}
@@ -291,13 +290,13 @@ class UploadField extends Component {
       >
         <div className="uploadfield__backdrop" />
         <span className="uploadfield__droptext">
-          <button onClick={this.handleSelect} className="uploadfield__upload-button">
+          <button type="button" onClick={this.handleSelect} className="uploadfield__upload-button">
             {i18n._t('AssetAdmin.BROWSE', 'Browse')}
           </button>
           {' '}
           {i18n._t('AssetAdmin.OR', 'or')}
           {' '}
-          <button onClick={this.handleAddShow} className="uploadfield__add-button">
+          <button type="button" onClick={this.handleAddShow} className="uploadfield__add-button">
             {i18n._t('AssetAdmin.ADD_FILES', 'Add from files')}
           </button>
         </span>
@@ -330,7 +329,8 @@ class UploadField extends Component {
    */
   renderChild(item) {
     const itemProps = {
-      key: item.id,
+      // otherwise only one error file is shown and the rest are hidden due to having the same `key`
+      key: item.id ? `file-${item.id}` : `queued-${item.queuedId}`,
       item,
       name: this.props.name,
       onRemove: this.handleItemRemove,
