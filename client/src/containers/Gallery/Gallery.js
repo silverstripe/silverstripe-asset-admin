@@ -103,11 +103,8 @@ class Gallery extends Component {
       $select.off('change');
     }
 
-    // If props.files has changed, flush any uploaded files.
-    // The render() logic will merge queuedFiles into the props.files array
-    // until this is called, leaving completed uploads temporarily in the current view,
-    // even if they're technically not part of props.files.
-    if (!this.compareFiles(this.props.files, nextProps.files)) {
+    // Flush uploaded files on folder navigation
+    if (this.props.folderId !== nextProps.folderId) {
       nextProps.actions.queuedFiles.purgeUploadQueue();
     }
   }
@@ -202,28 +199,6 @@ class Gallery extends Component {
       i18n._t('AssetAdmin.SEARCHRESULTSMESSAGE', 'Search results {parts}'),
       searchResults
     );
-  }
-
-  /**
-   * Compare two lists to see if equal
-   *
-   * @param {Array} left
-   * @param {Array} right
-   * @return {Boolean} isEqual
-   */
-  compareFiles(left, right) {
-    if ((left && !right) || (!left && right)) {
-      return false;
-    }
-    if (left.length !== right.length) {
-      return false;
-    }
-    for (let i = 0; i < left.length; i++) {
-      if (left[i].id !== right[i].id) {
-        return false;
-      }
-    }
-    return true;
   }
 
   /**
@@ -1017,6 +992,7 @@ class Gallery extends Component {
         />
         {this.renderTransitionBulkActions()}
         <GalleryDND className={galleryClasses.join(' ')}>
+          {this.renderToolbar()}
           <SelectableGroup
             enabled={this.props.view === 'tile' && this.props.type === 'admin'}
             className="flexbox-area-grow fill-height gallery__main--selectable"
@@ -1025,7 +1001,6 @@ class Gallery extends Component {
             preventDefault={false}
             fixedPosition
           >
-            {this.renderToolbar()}
             <AssetDropzone
               name="gallery-container"
               className="flexbox-area-grow"
