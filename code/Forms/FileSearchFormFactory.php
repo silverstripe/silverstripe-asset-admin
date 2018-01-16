@@ -23,7 +23,6 @@ class FileSearchFormFactory implements FormFactory
 
     public function __construct()
     {
-        $this->constructExtensions();
     }
 
     /**

@@ -56,7 +56,6 @@ abstract class AssetFormFactory implements FormFactory
 
     public function __construct()
     {
-        $this->constructExtensions();
     }
 
     /**
