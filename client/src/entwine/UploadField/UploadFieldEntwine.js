@@ -5,8 +5,6 @@ import ReactDOM from 'react-dom';
 import { schemaMerge } from 'lib/schemaFieldValues';
 import { loadComponent } from 'lib/Injector';
 
-const UploadField = loadComponent('UploadField');
-
 /**
  * Shiv for inserting react UploadField into entwine forms
  */
@@ -15,6 +13,8 @@ jQuery.entwine('ss', ($) => {
    * See boot/index.js for `.react-boot` bootstrap
    */
   $('.js-injector-boot input.entwine-uploadfield').entwine({
+    Component: null,
+
     getContainer() {
       let container = this.siblings('.uploadfield-holder')[0];
       if (!container) {
@@ -33,6 +33,14 @@ jQuery.entwine('ss', ($) => {
     },
 
     onmatch() {
+      const cmsContent = this.closest('.cms-content').attr('id');
+      const context = (cmsContent)
+        ? { context: cmsContent }
+        : {};
+
+      const UploadField = loadComponent('UploadField', context);
+      this.setComponent(UploadField);
+
       this._super();
       this.hide();
       this.refresh();
@@ -52,6 +60,8 @@ jQuery.entwine('ss', ($) => {
           form.trigger('change');
         }, 0);
       };
+
+      const UploadField = this.getComponent();
 
       // TODO: rework entwine so that react has control of holder
       ReactDOM.render(

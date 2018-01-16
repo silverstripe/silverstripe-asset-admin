@@ -1,7 +1,5 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
-jest.mock('containers/InsertMediaModal/InsertMediaModal');
-
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
 import { Component as UploadField } from '../UploadField';
@@ -40,6 +38,9 @@ describe('UploadField', () => {
         Files: [2, 4],
       },
       securityId: 'TestingBob',
+      UploadFieldItem: () => null,
+      AssetDropzone: () => null,
+      InsertMediaModal: () => null,
     };
   });
 
