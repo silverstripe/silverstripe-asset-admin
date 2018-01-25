@@ -423,8 +423,7 @@ class Gallery extends Component {
   }
 
   handleClearSearch(event) {
-    this.props.actions.gallery.deselectFiles();
-    this.handleOpenFolder(event, this.props.folder);
+    this.props.onClearSearch(event);
   }
 
   /**
