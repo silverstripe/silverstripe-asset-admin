@@ -145,7 +145,7 @@ const filter = 'div[data-shortcode="embed"]';
 })();
 
 jQuery.entwine('ss', ($) => {
-  $('#insert-embed-react__dialog-wrapper').entwine({
+  $('.js-injector-boot #insert-embed-react__dialog-wrapper').entwine({
     Element: null,
 
     Data: {},
