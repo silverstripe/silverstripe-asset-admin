@@ -58,7 +58,7 @@ jQuery.entwine('ss', ($) => {
   /**
    * Assumes that $('.insert-link__dialog-wrapper').entwine({}); is defined for shared functions
    */
-  $(`#${modalId}`).entwine({
+  $(`.js-injector-boot #${modalId}`).entwine({
     renderModal(show) {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this.handleInsert(...args);

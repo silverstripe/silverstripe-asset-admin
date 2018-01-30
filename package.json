@@ -14,7 +14,7 @@
   },
   "author": "SilverStripe Ltd",
   "engines": {
-    "node": "^6.x"
+    "node": ">=6.x"
   },
   "scripts": {
     "build": "yarn && yarn test && NODE_ENV=production webpack -p --bail --progress",

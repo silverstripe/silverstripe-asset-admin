@@ -14,7 +14,7 @@ jQuery.entwine('ss', ($) => {
   /**
    * See boot/index.js for `.react-boot` bootstrap
    */
-  $('.js-react-boot input.entwine-uploadfield').entwine({
+  $('.js-injector-boot input.entwine-uploadfield').entwine({
     getContainer() {
       let container = this.siblings('.uploadfield-holder')[0];
       if (!container) {

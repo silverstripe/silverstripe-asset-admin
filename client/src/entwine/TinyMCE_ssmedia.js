@@ -128,7 +128,7 @@ jQuery.entwine('ss', ($) => {
     onclick: (e) => e.preventDefault(),
   });
 
-  $('#insert-media-react__dialog-wrapper').entwine({
+  $('.js-injector-boot #insert-media-react__dialog-wrapper').entwine({
     Element: null,
 
     Data: {},
