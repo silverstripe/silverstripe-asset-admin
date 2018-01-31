@@ -6,3 +6,4 @@ coverage/
 /**/*.js.map
 /**/*.css.map
 artifacts/
+coverage/

@@ -1,12 +1,10 @@
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
+import { inject } from 'lib/Injector';
 import CONSTANTS from 'constants/index';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
-import UploadFieldItem from 'components/UploadField/UploadFieldItem';
-import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
-import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
@@ -234,6 +232,7 @@ class UploadField extends Component {
    * @returns {object}
    */
   renderDropzone() {
+    const { AssetDropzone } = this.props;
     if (!this.props.data.createFileEndpoint) {
       return null;
     }
@@ -305,6 +304,7 @@ class UploadField extends Component {
   }
 
   renderDialog() {
+    const { InsertMediaModal } = this.props;
     const { selecting, selectingItem } = this.state;
 
     return (
@@ -328,6 +328,7 @@ class UploadField extends Component {
    * @returns {object}
    */
   renderChild(item) {
+    const { UploadFieldItem } = this.props;
     const itemProps = {
       // otherwise only one error file is shown and the rest are hidden due to having the same `key`
       key: item.id ? `file-${item.id}` : `queued-${item.queuedId}`,
@@ -352,30 +353,31 @@ class UploadField extends Component {
 }
 
 UploadField.propTypes = {
-  extraClass: React.PropTypes.string,
-  id: React.PropTypes.string.isRequired,
-  name: React.PropTypes.string.isRequired,
-  onChange: React.PropTypes.func,
-  value: React.PropTypes.shape({ // PHP / posted value
-    Files: React.PropTypes.arrayOf(React.PropTypes.number),
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  value: PropTypes.shape({ // PHP / posted value
+    Files: PropTypes.arrayOf(PropTypes.number),
   }),
-  files: React.PropTypes.arrayOf(fileShape), // Authoritative redux state
-  readOnly: React.PropTypes.bool,
-  disabled: React.PropTypes.bool,
-  data: React.PropTypes.shape({
-    createFileEndpoint: React.PropTypes.shape({
-      url: React.PropTypes.string.isRequired,
-      method: React.PropTypes.string.isRequired,
-      payloadFormat: React.PropTypes.string.isRequired,
+  files: PropTypes.arrayOf(fileShape), // Authoritative redux state
+  readOnly: PropTypes.bool,
+  disabled: PropTypes.bool,
+  data: PropTypes.shape({
+    createFileEndpoint: PropTypes.shape({
+      url: PropTypes.string.isRequired,
+      method: PropTypes.string.isRequired,
+      payloadFormat: PropTypes.string.isRequired,
     }),
-    multi: React.PropTypes.bool,
-    parentid: React.PropTypes.number,
+    multi: PropTypes.bool,
+    parentid: PropTypes.number,
   }),
+  UploadFieldItem: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  AssetDropzone: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  InsertMediaModal: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
 };
 
 UploadField.defaultProps = {
   value: { Files: [] },
-  extraClass: '',
   className: '',
 };
 
@@ -405,4 +407,7 @@ const ConnectedUploadField = connect(mapStateToProps, mapDispatchToProps)(Upload
 
 export { UploadField as Component, ConnectedUploadField };
 
-export default fieldHolder(ConnectedUploadField);
+export default compose(
+  inject(['UploadFieldItem', 'AssetDropzone', 'InsertMediaModal']),
+  fieldHolder,
+)(ConnectedUploadField);

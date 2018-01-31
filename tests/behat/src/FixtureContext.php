@@ -66,12 +66,15 @@ class FixtureContext extends BaseFixtureContext
     /**
      * @Then /^I should see the "([^"]*)" form$/
      * @param string $id HTML ID of form
+     * @param integer $timeout
      */
-    public function iShouldSeeTheForm($id)
+    public function iShouldSeeTheForm($id, $timeout = 3)
     {
         /** @var DocumentElement $page */
         $page = $this->getMainContext()->getSession()->getPage();
-        $form = $page->find('css', "form#{$id}");
+        $form = $this->retryThrowable(function () use ($page, $id) {
+            return $page->find('css', "form#{$id}");
+        }, $timeout);
         assertNotNull($form, "form with id $id could not be found");
         assertTrue($form->isVisible(), "form with id $id is not visible");
     }
