@@ -56,7 +56,6 @@ abstract class AssetFormFactory implements FormFactory
 
     public function __construct()
     {
-        $this->constructExtensions();
     }
 
     /**
@@ -88,7 +87,8 @@ abstract class AssetFormFactory implements FormFactory
             $record = $context['Record'];
             $form->loadDataFrom($record);
 
-            if (!$record->canEdit()) {
+            // Mark as readonly for some types
+            if ($this->getFormType($context) === self::TYPE_ADMIN && !$record->canEdit()) {
                 $form->makeReadonly();
             }
         }
