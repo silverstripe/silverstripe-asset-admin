@@ -70,7 +70,7 @@ class FileFormFactory extends AssetFormFactory
         $tab = parent::getFormFieldDetailsTab($record, $context);
 
         $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
-    
+
         $tab->push(
             DatetimeField::create(
                 "Created",
@@ -335,7 +335,7 @@ class FileFormFactory extends AssetFormFactory
     protected function getInsertAction($record)
     {
         $action = null;
-        if ($record && $record->isInDB() && $record->canEdit()) {
+        if ($record && $record->isInDB() && $record->canView()) {
             /** @var FormAction $action */
             $action = FormAction::create('insert', _t(__CLASS__.'.INSERT_FILE', 'Insert file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
@@ -350,7 +350,7 @@ class FileFormFactory extends AssetFormFactory
     protected function getInsertLinkAction($record)
     {
         $action = null;
-        if ($record && $record->isInDB() && $record->canEdit()) {
+        if ($record && $record->isInDB() && $record->canView()) {
             /** @var FormAction $action */
             $action = FormAction::create('insert', _t(__CLASS__.'.INSERT_LINK', 'Link to file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
