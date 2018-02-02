@@ -33,6 +33,8 @@ describe('UploadField', () => {
         },
         parentid: 0,
         files,
+        canAttach: true,
+        canUpload: true,
       },
       value: {
         Files: [2, 4],

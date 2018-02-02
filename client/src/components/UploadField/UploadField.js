@@ -24,6 +24,9 @@ class UploadField extends Component {
     this.handleReplaceShow = this.handleReplaceShow.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleReplace = this.handleReplace.bind(this);
+    this.canEdit = this.canEdit.bind(this);
+    this.canAttach = this.canAttach.bind(this);
+    this.canUpload = this.canUpload.bind(this);
 
     this.state = {
       selecting: false,
@@ -52,7 +55,7 @@ class UploadField extends Component {
    *
    * @param {Array} left
    * @param {Array} right
-     */
+   */
   compareValues(left, right) {
     // Check length
     if (left.length !== right.length) {
@@ -223,7 +226,27 @@ class UploadField extends Component {
    * @return {Boolean}
    */
   canEdit() {
-    return !this.props.disabled && !this.props.readOnly;
+    return !this.props.disabled
+      && !this.props.readOnly
+      && (this.props.data.canUpload || this.props.data.canAttach);
+  }
+
+  /**
+   * Check if this field can upload files
+   *
+   * @return {Boolean}
+   */
+  canUpload() {
+    return this.canEdit() && this.props.data.canUpload;
+  }
+
+  /**
+   * Check if this field can select files
+   *
+   * @return {Boolean}
+   */
+  canAttach() {
+    return this.canEdit() && this.props.data.canAttach;
   }
 
   /**
@@ -269,11 +292,43 @@ class UploadField extends Component {
     }
 
     const securityID = this.props.securityId;
+    const options = [];
+    if (this.canUpload()) {
+      options.push(
+        <button
+          key="uploadbutton"
+          type="button"
+          onClick={this.handleSelect}
+          className="uploadfield__upload-button"
+        >
+          {i18n._t('AssetAdmin.BROWSE', 'Browse')}
+        </button>
+      );
+    }
+    if (this.canAttach()) {
+      if (options.length) {
+        options.push(
+          <span key="uploadjoin" className="uploadfield__join">
+            {i18n._t('AssetAdmin.OR', 'or')}
+          </span>
+        );
+      }
+      options.push(
+        <button
+          key="attachbutton"
+          type="button"
+          onClick={this.handleAddShow}
+          className="uploadfield__add-button"
+        >
+          {i18n._t('AssetAdmin.ADD_FILES', 'Add from files')}
+        </button>
+      );
+    }
 
     return (
       <AssetDropzone
         name={this.props.name}
-        canUpload={this.canEdit()}
+        canUpload={this.canUpload()}
         uploadButton={false}
         uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"
         folderId={this.props.data.parentid}
@@ -288,17 +343,7 @@ class UploadField extends Component {
         className={classNames.join(' ')}
       >
         <div className="uploadfield__backdrop" />
-        <span className="uploadfield__droptext">
-          <button type="button" onClick={this.handleSelect} className="uploadfield__upload-button">
-            {i18n._t('AssetAdmin.BROWSE', 'Browse')}
-          </button>
-          {' '}
-          {i18n._t('AssetAdmin.OR', 'or')}
-          {' '}
-          <button type="button" onClick={this.handleAddShow} className="uploadfield__add-button">
-            {i18n._t('AssetAdmin.ADD_FILES', 'Add from files')}
-          </button>
-        </span>
+        <span className="uploadfield__droptext">{options}</span>
       </AssetDropzone>
     );
   }
@@ -370,6 +415,8 @@ UploadField.propTypes = {
     }),
     multi: PropTypes.bool,
     parentid: PropTypes.number,
+    canUpload: PropTypes.bool,
+    canAttach: PropTypes.bool,
   }),
   UploadFieldItem: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   AssetDropzone: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
