@@ -111,13 +111,11 @@
   padding: $input-btn-padding-y $input-btn-padding-x;
 
   // Override chosen inline width to fit to icon
-  // scss-lint:disable ImportantRule
   .chosen-container {
     @include media-breakpoint-down(sm) {
-      width: auto !important;
+      width: auto !important; // sass-lint:disable-line no-important
     }
   }
-  // scss-lint:enable ImportantRule
 
   .chosen-container-active {
     .chosen-single {
