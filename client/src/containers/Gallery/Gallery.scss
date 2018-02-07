@@ -18,6 +18,10 @@
   }
 }
 
+.gallery__toolbar {
+  flex-wrap: wrap;
+}
+
 .gallery__no-item-notice {
   text-align: center;
   font-size: $font-size-lg;
@@ -177,6 +181,10 @@
 
 .gallery__view-change-button .icon:before {
   vertical-align: middle;
+}
+
+.gallery__action-buttons {
+  flex: 1 0 auto;
 }
 
 .gallery__state-buttons {
