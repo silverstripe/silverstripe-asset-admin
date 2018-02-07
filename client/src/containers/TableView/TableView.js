@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Griddle from 'griddle-react';
 import i18n from 'i18n';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
@@ -362,7 +362,10 @@ class TableView extends Component {
 
 TableView.defaultProps = galleryViewDefaultProps;
 
-TableView.propTypes = galleryViewPropTypes;
+TableView.propTypes = {
+  ...galleryViewPropTypes,
+  sort: PropTypes.string.isRequired,
+};
 
 export { TableView as Component };
 

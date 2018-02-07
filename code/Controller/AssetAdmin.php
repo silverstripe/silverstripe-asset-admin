@@ -28,7 +28,6 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\ORM\ArrayList;
@@ -36,6 +35,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\ValidationResult;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Security\Security;
 use SilverStripe\Security\SecurityToken;
@@ -1393,5 +1393,19 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         $this->thumbnailGenerator = $generator;
         return $this;
+    }
+
+    public function canView($member = null)
+    {
+        // Since admin/assets is used as the endpoint for various other CMS modals,
+        // we need to permit most admin/assets actions
+        $asAjax = $this->getRequest()->isAjax()
+            || in_array('application/json', $this->getRequest()->getAcceptMimetypes(false));
+        if ($asAjax && Permission::checkMember($member, 'CMS_ACCESS')) {
+            return true;
+        }
+
+        // Default permissions
+        return parent::canView($member);
     }
 }

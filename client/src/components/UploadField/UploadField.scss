@@ -40,6 +40,14 @@
   cursor: pointer;
 }
 
+.uploadfield__join {
+  &:before,
+  &:after {
+    content: ' ';
+    display: inline;
+  }
+}
+
 .uploadfield__upload-button,
 .uploadfield__add-button {
   border: 0;

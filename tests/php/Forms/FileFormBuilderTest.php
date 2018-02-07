@@ -200,7 +200,7 @@ class FileFormBuilderTest extends SapphireTest
 
     public function testInsertImageForm()
     {
-        $this->logInWithPermission('ADMIN');
+        $this->logInWithPermission('CMS_ACCESS');
 
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
@@ -211,11 +211,29 @@ class FileFormBuilderTest extends SapphireTest
         // Note: force_resample is turned off for testing
         $altTextField = $form->Fields()->dataFieldByName('AltText');
         $this->assertNotNull($altTextField);
+
+        // Ensure "insert" button exists
+        $this->assertTrue($image->canView());
+        $this->assertNotNull($form->Actions()->fieldByName('action_insert'));
+    }
+
+    public function testInsertImageFormDenied()
+    {
+        $this->logInWithPermission('SOME_PERMISSION');
+
+        $image = $this->objFromFixture(Image::class, 'image1');
+        $controller = new AssetAdmin();
+        $builder = new ImageFormFactory();
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]);
+
+        // Ensure "insert" button does not exist
+        $this->assertFalse($image->canView());
+        $this->assertNull($form->Actions()->fieldByName('action_insert'));
     }
 
     public function testInsertFileForm()
     {
-        $this->logInWithPermission('ADMIN');
+        $this->logInWithPermission('CMS_ACCESS');
 
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();

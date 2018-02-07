@@ -80,3 +80,21 @@ fr:
     LINKOPTIONS: 'Options du lien'
     LINKTEXT: 'Texte du lien'
     OTHER_ACTIONS: 'Autres actions'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ce type de fichier peut uniquement être inséré en tant que lien. Vous pourrez modifier le lien après qu''il aura été inséré.</p>'
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Publié
+    SAVED: Sauvegardé
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Créer
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Nom du dossier'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Ajouter un média'
+    Cancel: Annuler
+    ERROR_ABSOLUTE: 'Seules des url absolues peuvent être intégrées'
+    ERROR_HOSTNAME: 'Ce nom d''hôte ne figure pas parmi ceux autorisés'
+    ERROR_SCHEME: 'Le chemin d''accès n''est pas d''un format autorisé'
+    InsertMedia: 'Insérer le média'
+    UrlDescription: 'Insérer des vidéos Youtube ou Vimeo, des images et d''autres médias directement à partir du web.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Fichier ou dossier introuvable'

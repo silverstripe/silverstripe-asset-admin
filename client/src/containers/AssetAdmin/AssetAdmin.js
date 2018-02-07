@@ -67,6 +67,7 @@ class AssetAdmin extends Component {
     this.doUnpublish = this.doUnpublish.bind(this);
     this.handleUnpublish = this.handleUnpublish.bind(this);
     this.handleDoSearch = this.handleDoSearch.bind(this);
+    this.handleClearSearch = this.handleClearSearch.bind(this);
     this.handleSubmitEditor = this.handleSubmitEditor.bind(this);
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.handleSort = this.handleSort.bind(this);
@@ -215,12 +216,26 @@ class AssetAdmin extends Component {
    */
   handleDoSearch(data) {
     this.props.actions.gallery.deselectFiles();
+    this.props.actions.queuedFiles.purgeUploadQueue();
+    this.props.actions.files.readFiles();
     this.handleBrowse(
       data.currentFolderOnly ? this.getFolderId() : 0,
       null,
       // Reset current query, retain "view" type
       { filter: data, view: this.props.query.view }
     );
+  }
+
+  /**
+   * Reset to non-search page
+   *
+   * @param event
+   */
+  handleClearSearch(event) {
+    this.props.actions.gallery.deselectFiles();
+    this.props.actions.queuedFiles.purgeUploadQueue();
+    this.props.actions.files.readFiles();
+    this.handleOpenFolder(event, this.props.folder);
   }
 
   /**
@@ -585,6 +600,7 @@ class AssetAdmin extends Component {
         onSuccessfulUpload={this.handleUpload}
         onCreateFolder={this.handleCreateFolder}
         onMoveFilesSuccess={this.handleMoveFilesSuccess}
+        onClearSearch={this.handleClearSearch}
         onSort={this.handleSort}
         onSetPage={this.handleSetPage}
         onViewChange={this.handleViewChange}

@@ -1,5 +1,6 @@
 import deepFreeze from 'deep-freeze-strict';
 import GALLERY from './GalleryActionTypes';
+import i18n from 'i18n';
 
 const initialState = {
   selectedFiles: [],
@@ -10,6 +11,33 @@ const initialState = {
   badges: [],
   concatenateSelect: false,
   loading: false,
+  /**
+   * @todo Use lowercase identifiers once we can map them in the silverstripe/graphql module
+   *
+   * @type {array} sorters
+   */
+  sorters: [
+    {
+      field: 'title',
+      direction: 'asc',
+      label: i18n._t('AssetAdmin.FILTER_TITLE_ASC', 'title a-z'),
+    },
+    {
+      field: 'title',
+      direction: 'desc',
+      label: i18n._t('AssetAdmin.FILTER_TITLE_DESC', 'title z-a'),
+    },
+    {
+      field: 'lastEdited',
+      direction: 'desc',
+      label: i18n._t('AssetAdmin.FILTER_DATE_DESC', 'newest'),
+    },
+    {
+      field: 'lastEdited',
+      direction: 'asc',
+      label: i18n._t('AssetAdmin.FILTER_DATE_ASC', 'oldest'),
+    },
+  ]
 };
 
 /**
