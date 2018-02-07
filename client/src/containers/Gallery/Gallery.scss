@@ -19,13 +19,16 @@
 }
 
 .gallery__toolbar {
-  flex-wrap: wrap;
+  @include media-breakpoint-down(xs) {
+    align-items: flex-end;
+    flex-direction: column;
+  }
 }
 
 .gallery__no-item-notice {
   text-align: center;
   font-size: $font-size-lg;
-  margin-top: $spacer ;
+  margin-top: $spacer;
 }
 
 .gallery__back {
@@ -184,11 +187,15 @@
 }
 
 .gallery__action-buttons {
-  flex: 1 0 auto;
+  @include media-breakpoint-down(xs) {
+    order: 2;
+  }
 }
 
 .gallery__state-buttons {
-  margin-right: -$panel-padding-x + $input-btn-padding-x;
+  @include media-breakpoint-up(sm) {
+    margin-right: -$panel-padding-x + $input-btn-padding-x;
+  }
 
   .btn-group:last-child {
     margin-right: 0;

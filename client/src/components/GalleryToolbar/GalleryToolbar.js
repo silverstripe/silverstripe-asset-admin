@@ -117,7 +117,7 @@ class GalleryToolbar extends Component {
     return (
       <div className="toolbar--content toolbar--space-save">
         <div className="gallery__toolbar fill-width">
-          <div className="gallery__action-buttons">
+          <div className="gallery__action-buttons flexbox-area-grow">
             <div className="btn-toolbar">
               <BackButton
                 folder={folder}
