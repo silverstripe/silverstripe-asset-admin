@@ -2,6 +2,8 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
+use SilverStripe\Admin\Forms\UsedOnTable;
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\Assets\File;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\CheckboxField;
@@ -11,6 +13,7 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
@@ -30,7 +33,8 @@ class FileFormFactory extends AssetFormFactory
         $tabs = TabSet::create(
             'Editor',
             $this->getFormFieldDetailsTab($record, $context),
-            $this->getFormFieldSecurityTab($record, $context)
+            $this->getFormFieldSecurityTab($record, $context),
+            $this->getFormFieldUsageTab($record, $context)
         );
 
         if ($this->config()->get('show_history')) {
@@ -100,6 +104,19 @@ class FileFormFactory extends AssetFormFactory
         return $tab;
     }
 
+    protected function getFormFieldUsageTab($record, $context = [])
+    {
+        $usedOnField = UsedOnTable::create('UsedOnTable', $record);
+
+        $tab = Tab::create(
+            'Usage',
+            _t(__CLASS__.'.USAGE', 'Used on'),
+            $usedOnField
+        );
+
+        return $tab;
+    }
+
     protected function getFormFieldLinkOptionsTab($record, $context = [])
     {
         $tab = Tab::create(
@@ -162,7 +179,12 @@ class FileFormFactory extends AssetFormFactory
         $this->beforeExtending('updateFormFields', function (FieldList $fields) use ($record, $context) {
             if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
                 if ($record->appCategory() !== 'image') {
-                    $unembedableMsg = _t(__CLASS__.'.UNEMEDABLE_MESSAGE', '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>');
+                    $unembedableMsg = _t(
+                        __CLASS__.'.UNEMEDABLE_MESSAGE',
+                        '<p class="alert alert-info alert--no-border editor__top-message">'.
+                            'This file type can only be inserted as a link. You can edit the link once it is inserted.'.
+                        '</p>'
+                    );
                     $fields->unshift(LiteralField::create('UnembedableMessage', $unembedableMsg));
                 }
             }
