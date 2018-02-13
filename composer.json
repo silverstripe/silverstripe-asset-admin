@@ -4,18 +4,18 @@
     "type": "silverstripe-vendormodule",
     "license": "BSD-3-Clause",
     "require": {
-        "silverstripe/admin": "^2@dev",
-        "silverstripe/framework": "^5@dev",
-        "silverstripe/graphql": "^2@dev",
+        "silverstripe/admin": "^2",
+        "silverstripe/framework": "^5",
+        "silverstripe/graphql": "^2",
         "silverstripe/vendor-plugin": "^1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^5.7",
-        "silverstripe/behat-extension": "^3@dev",
-        "silverstripe/serve": "^2@dev",
-        "silverstripe/cms": "^5@dev",
-        "silverstripe/versioned": "^2@dev",
-        "silverstripe/campaign-admin": "^2@dev",
+        "phpunit/phpunit": "^7",
+        "silverstripe/behat-extension": "^4",
+        "silverstripe/serve": "^3",
+        "silverstripe/cms": "^5",
+        "silverstripe/versioned": "^2",
+        "silverstripe/campaign-admin": "^2",
         "se/selenium-server-standalone": "2.41.0"
     },
     "extra": {
