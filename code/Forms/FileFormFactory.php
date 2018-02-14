@@ -3,17 +3,15 @@
 namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Admin\Forms\UsedOnTable;
-use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\Assets\File;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\DatetimeField;
+use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
@@ -27,6 +25,11 @@ class FileFormFactory extends AssetFormFactory
      */
     private static $show_history = false;
 
+    /**
+     * @param File $record
+     * @param array $context
+     * @return TabSet
+     */
     protected function getFormFieldTabs($record, $context = [])
     {
         // Add extra tab
@@ -68,6 +71,11 @@ class FileFormFactory extends AssetFormFactory
         return $tabs;
     }
 
+    /**
+     * @param File $record
+     * @param array $context
+     * @return Tab
+     */
     protected function getFormFieldDetailsTab($record, $context = [])
     {
         // Update details tab
@@ -104,9 +112,14 @@ class FileFormFactory extends AssetFormFactory
         return $tab;
     }
 
+    /**
+     * @param File $record
+     * @param array $context
+     * @return Tab
+     */
     protected function getFormFieldUsageTab($record, $context = [])
     {
-        $usedOnField = UsedOnTable::create('UsedOnTable', $record);
+        $usedOnField = UsedOnTable::create('UsedOnTable');
 
         $tab = Tab::create(
             'Usage',
@@ -117,6 +130,11 @@ class FileFormFactory extends AssetFormFactory
         return $tab;
     }
 
+    /**
+     * @param File $record
+     * @param array $context
+     * @return Tab
+     */
     protected function getFormFieldLinkOptionsTab($record, $context = [])
     {
         $tab = Tab::create(
@@ -161,6 +179,11 @@ class FileFormFactory extends AssetFormFactory
         );
     }
 
+    /**
+     * @param File $record
+     * @param array $context
+     * @return Tab
+     */
     protected function getFormFieldHistoryTab($record, $context = [])
     {
         return Tab::create(
@@ -170,6 +193,14 @@ class FileFormFactory extends AssetFormFactory
         );
     }
 
+    /**
+     * Get fields for this form
+     *
+     * @param RequestHandler $controller
+     * @param string $formName
+     * @param array $context
+     * @return FieldList
+     */
     protected function getFormFields(RequestHandler $controller = null, $formName, $context = [])
     {
         /** @var File $record */
@@ -235,6 +266,12 @@ class FileFormFactory extends AssetFormFactory
         return $action;
     }
 
+    /**
+     * @param RequestHandler|null $controller
+     * @param string $formName
+     * @param array $context
+     * @return FieldList
+     */
     protected function getFormActions(RequestHandler $controller = null, $formName, $context = [])
     {
         $record = $context['Record'];
@@ -380,6 +417,9 @@ class FileFormFactory extends AssetFormFactory
         return $action;
     }
 
+    /**
+     * @return array
+     */
     public function getRequiredContext()
     {
         return parent::getRequiredContext() + [ 'RequireLinkText' ];
