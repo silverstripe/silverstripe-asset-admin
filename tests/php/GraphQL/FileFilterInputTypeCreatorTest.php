@@ -7,7 +7,7 @@ use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
-use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
+use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator;
 
 class FileFilterInputTypeCreatorTest extends SapphireTest
