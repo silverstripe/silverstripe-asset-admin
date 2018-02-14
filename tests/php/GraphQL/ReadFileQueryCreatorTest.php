@@ -10,7 +10,7 @@ use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\GraphQL\Manager;
-use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
+use Silverstripe\Assets\Dev\TestAssetStore;
 
 /**
  * Most of the search functionality is covered in {@link FileFilterInputTypeCreatorTest}

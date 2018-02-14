@@ -6,7 +6,7 @@ use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
-use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
+use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Assets\Upload_Validator;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Session;
