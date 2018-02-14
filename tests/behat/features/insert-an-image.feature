@@ -21,7 +21,7 @@ Feature: Insert an image into a page
     When I press the "Insert file" button
     Then the "Content" HTML field should contain "file1.jpg"
     # Required to avoid "unsaved changed" browser dialog
-      And I press the "Save draft" button
+      And I press the "Save" button
 
   @assets
   Scenario: I can edit properties of an image before inserting it
@@ -34,7 +34,7 @@ Feature: Insert an image into a page
     Then the "Content" HTML field should contain "file1.jpg"
       And the "Content" HTML field should contain "My alt"
       # Required to avoid "unsaved changed" browser dialog
-      And I press the "Save draft" button
+      And I press the "Save" button
 
   @assets
   Scenario: I can insert an image from a URL
@@ -48,7 +48,7 @@ Feature: Insert an image into a page
     When I press the "Insert media" button
     Then the "Content" HTML field should contain "ss_logo.png"
     # Required to avoid "unsaved changed" browser dialog
-      And I press the "Save draft" button
+      And I press the "Save" button
 
   Scenario: I can link to a file
     Given I select "awesome" in the "Content" HTML field
@@ -61,7 +61,7 @@ Feature: Insert an image into a page
       And I press the "Insert file" button
     Then the "Content" HTML field should contain "<a title="My file" href="[file_link,id=2]">awesome</a>"
     # Required to avoid "unsaved changes" browser dialog
-      And I press the "Save draft" button
+      And I press the "Save" button
     # Check that the field is reset when adding another new link
     When I select "awesome" in the "Content" HTML field
       And I press the "Insert Link" HTML field button
