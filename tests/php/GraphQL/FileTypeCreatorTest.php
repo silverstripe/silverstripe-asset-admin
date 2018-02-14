@@ -7,7 +7,7 @@ use SilverStripe\AssetAdmin\GraphQL\FileTypeCreator;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Storage\AssetStore;
-use SilverStripe\Assets\Tests\Storage\AssetStoreTest\TestAssetStore;
+use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 
