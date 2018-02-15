@@ -59,7 +59,7 @@ jQuery.entwine('ss', ($) => {
    * Assumes that $('.insert-link__dialog-wrapper').entwine({}); is defined for shared functions
    */
   $(`.js-injector-boot #${modalId}`).entwine({
-    renderModal(show) {
+    renderModal(isOpen) {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this.handleInsert(...args);
       const attrs = this.getOriginalAttributes();
@@ -71,7 +71,7 @@ jQuery.entwine('ss', ($) => {
       // create/update the react component
       ReactDOM.render(
         <InjectableInsertMediaModal
-          show={show}
+          isOpen={isOpen}
           type="insert-link"
           onInsert={handleInsert}
           onHide={handleHide}

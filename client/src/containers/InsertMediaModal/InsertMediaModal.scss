@@ -1,7 +1,7 @@
 .insert-media-modal {
 
   // Additional width for maximum screen size
-  .modal-lg {
+  &.modal-lg {
     width: $modal-xl;
     max-width: 1600px;
     margin-top: 0;

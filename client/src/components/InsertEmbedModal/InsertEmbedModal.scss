@@ -26,11 +26,11 @@ $placement-image-height: 36px;
 .insert-embed-modal--create {
   width: 100%;
   @include media-breakpoint-up(md) {
-    margin-top: 4rem;
+    padding-top: 4rem;
   }
 
   .alert + & {
-    margin-top: 0;
+    padding-top: 0;
   }
 }
 

@@ -203,7 +203,7 @@ class Editor extends Component {
         <FormBuilderModal
           title={campaignTitle}
           identifier="AssetAdmin.AddToCampaign"
-          show={this.state.openModal}
+          isOpen={this.state.openModal}
           onHide={this.closeModal}
           schemaUrl={modalSchemaUrl}
           bodyClassName="modal__dialog"

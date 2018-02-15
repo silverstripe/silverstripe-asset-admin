@@ -154,10 +154,10 @@ jQuery.entwine('ss', ($) => {
     /**
      * Renders the react modal component
      *
-     * @param {boolean} show
+     * @param {boolean} isOpen
      * @private
      */
-    _renderModal(show) {
+    _renderModal(isOpen) {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this._handleInsert(...args);
       const attrs = this.getOriginalAttributes();
@@ -175,7 +175,7 @@ jQuery.entwine('ss', ($) => {
         <InjectableInsertMediaModal
           title={false}
           type="insert-media"
-          show={show}
+          isOpen={isOpen}
           onInsert={handleInsert}
           onHide={handleHide}
           bodyClassName="modal__dialog"
