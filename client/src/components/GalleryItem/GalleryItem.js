@@ -1,5 +1,6 @@
 import i18n from 'i18n';
 import React, { PropTypes, Component } from 'react';
+import classnames from 'classnames';
 import CONSTANTS from 'constants/index';
 import fileShape from 'lib/fileShape';
 import draggable from 'components/GalleryItem/draggable';
@@ -148,33 +149,17 @@ class GalleryItem extends Component {
    */
   getItemClassNames() {
     const category = this.props.item.category || 'false';
-    const itemClassNames = [`gallery-item gallery-item--${category}`];
-
-    if (!this.exists() && !this.uploading()) {
-      itemClassNames.push('gallery-item--missing');
-    }
-
-    if (this.props.selectable) {
-      itemClassNames.push('gallery-item--selectable');
-
-      if (this.props.item.selected) {
-        itemClassNames.push('gallery-item--selected');
-      }
-    }
-
-    if (this.props.enlarged) {
-      itemClassNames.push('gallery-item--enlarged');
-    }
-
-    if (this.props.item.highlighted) {
-      itemClassNames.push('gallery-item--highlighted');
-    }
-
-    if (this.hasError()) {
-      itemClassNames.push('gallery-item--error');
-    }
-
-    return itemClassNames.join(' ');
+    return classnames({
+      'gallery-item': true,
+      [`gallery-item--${category}`]: true,
+      'gallery-item--missing': !this.exists() && !this.uploading(),
+      'gallery-item--selectable': this.props.selectable,
+      'gallery-item--selected': this.props.selectable && (this.props.item.selected || this.props.isDragging),
+      'gallery-item--dropping': this.props.isDropping,
+      'gallery-item--highlighted': this.props.item.highlighted,
+      'gallery-item--error': this.hasError(),
+      'gallery-item--dragging': this.props.isDragging,
+    });
   }
 
   /**
@@ -462,7 +447,8 @@ GalleryItem.propTypes = {
   // Styles according to the checkbox selection state
   selected: PropTypes.bool,
   // Whether the item should be enlarged for more prominence than "highlighted"
-  enlarged: PropTypes.bool,
+  isDropping: PropTypes.bool,
+  isDragging: PropTypes.bool,
   message: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,
@@ -484,6 +470,7 @@ GalleryItem.defaultProps = {
     imageRetry: {},
   },
 };
+
 function mapStateToProps(state, ownprops) {
   // If image is broken, replace with placeholder
   if (shouldLoadImage(ownprops)) {

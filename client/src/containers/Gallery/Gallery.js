@@ -798,12 +798,6 @@ class Gallery extends Component {
 
     return (
       <div className="flexbox-area-grow gallery__outer">
-        <MoveModal
-          sectionConfig={this.props.sectionConfig}
-          folderId={this.props.folderId}
-          onSuccess={this.props.onMoveFilesSuccess}
-          onOpenFolder={this.props.onOpenFolder}
-        />
         {this.renderTransitionBulkActions()}
         <GalleryDND className={galleryClasses.join(' ')}>
           {this.renderToolbar()}
@@ -840,6 +834,12 @@ class Gallery extends Component {
           <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
           <div key="spinner" className="cms-content-loading-spinner" />,
         ]}
+        <MoveModal
+          sectionConfig={this.props.sectionConfig}
+          folderId={this.props.folderId}
+          onSuccess={this.props.onMoveFilesSuccess}
+          onOpenFolder={this.props.onOpenFolder}
+        />
       </div>
     );
   }

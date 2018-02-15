@@ -5,19 +5,21 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 export default function draggable(type) {
   const spec = {
     beginDrag(props) {
+      const { id } = props.item;
       if (typeof props.onDrag === 'function') {
-        props.onDrag(true);
+        props.onDrag(true, id);
       }
       const selected = props.selectedFiles.concat([]);
-      if (selected.length === 0) {
-        selected.push(props.item.id);
+      if (!selected.includes(id)) {
+        selected.push(id);
       }
 
       return { selected, props };
     },
     endDrag(props) {
+      const { id } = props.item;
       if (typeof props.onDrag === 'function') {
-        props.onDrag(false);
+        props.onDrag(false, id);
       }
     },
   };

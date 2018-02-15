@@ -43,18 +43,8 @@
 .gallery__back--droppable-hover {
   background-color: $btn-secondary-bg;
   border-color: transparent;
-  transform: scale(1.1);
-
-  &::after {
-    position: absolute;
-    top: 0;
-    left: 0;
-    content: " ";
-    border: 1px dashed $brand-primary;
-    height: 100%;
-    width: 100%;
-    border-radius: 3px;
-  }
+  transform: scale(1.3);
+  border: 1px solid $brand-primary;
 }
 
 .gallery__main--selectable {

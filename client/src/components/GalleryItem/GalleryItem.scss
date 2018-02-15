@@ -1,6 +1,7 @@
 $gallery-item-label-height: 40px;
 
 .gallery-item {
+  opacity: 1;
   position: relative;
   background-color: $white;
   border: 1px solid;
@@ -9,6 +10,7 @@ $gallery-item-label-height: 40px;
   border-radius: $border-radius-sm;
   transition: box-shadow $transition-speed-fast;
   height: $gallery-item-height;
+  transition: opacity 250ms linear;
 
   &:hover {
     box-shadow: $gallery-item-shadow;
@@ -21,15 +23,9 @@ $gallery-item-label-height: 40px;
   }
 }
 
-.gallery-item--enlarged {
-  transform: scale(1.1);
-  border: 1px dashed $brand-primary;
-  font-size: 1.1em;
-
-  // Prevent hidden input breaking outside of overlay
-  .gallery-item__checkbox {
-    transform: scale(0.9);
-  }
+.gallery-item--dropping {
+  border-color: $component-active-border-color;
+  background-color: $component-active-bg-light;
 };
 
 .gallery-item__draggable,
@@ -124,9 +120,8 @@ $gallery-item-label-height: 40px;
 // ACTIONS
 // Hidden checkbox is controlled via it's label
 .gallery-item__checkbox {
-  margin: 6px 4px;
-  height: 26px;
-  width: 16px;
+  margin: 13px 4px;
+  transform: scale(0.1);
   z-index: -1;
   position: absolute;
 }
@@ -259,6 +254,10 @@ $gallery-item-label-height: 40px;
     background-color: $component-active-border-color;
     color: $white;
   }
+
+  .gallery__main--dragging & {
+    opacity: 0.2;
+  }
 }
 
 .gallery-item--highlighted,
@@ -355,6 +354,17 @@ $gallery-item-label-height: 40px;
   }
 }
 
+.gallery-item--dragging {
+  opacity: 0.2;
+
+  &.gallery-item {
+    cursor: grabbing;
+  }
+
+  .gallery-item__drag-layer-item & {
+    opacity: 1;
+  }
+}
 .gallery-item__drag-layer {
   position: fixed;
   left: 0;
@@ -365,24 +375,43 @@ $gallery-item-label-height: 40px;
   z-index: 100;
 }
 
+.gallery-item__drag-layer-preview {
+  transform: scale(0.4) translate(-100%, -160%);
+  border: 1px solid $component-active-border-color;
+}
+
 .gallery-item__drag-layer-item {
   display: inline-block;
   position: relative;
-  opacity: 0.5;
+  opacity: 1;
 
   .gallery-item {
+    border-width: 2px;
     z-index: 104;
+    height: $gallery-item-height - $gallery-item-label-height;
+  }
+
+  .gallery-item__title {
+    display: none;
   }
 }
 
-.gallery-item__drag-layer-count,
+.gallery-item__drag-layer-count {
+  display: inline-block;
+  position: absolute;
+  font-size: 1rem;
+  top: -45%;
+  left: 25%;
+  z-index: 105;
+}
+
 .gallery-item__badge {
   display: inline-block;
   position: absolute;
   font-size: 1rem;
   top: -0.5rem;
   right: -0.5rem;
-  z-index: 105;
+  z-index: 99;
 }
 
 .gallery-item__drag-shadow {
@@ -392,13 +421,13 @@ $gallery-item-label-height: 40px;
   top: 0;
   right: 0;
   bottom: 0;
-  transform: translate(-0.5rem, -0.5rem);
+  transform: translate(0.75rem, -0.75rem);
   z-index: 103;
-  border-width: 1px;
-  border-style: solid;
+  border: 2px solid $component-active-border-color;
+  background: $white;
 
   &.gallery-item__drag-shadow--second {
-    transform: translate(-1rem, -1rem);
+    transform: translate(1.5rem, -1.5rem);
     z-index: 102;
   }
 }

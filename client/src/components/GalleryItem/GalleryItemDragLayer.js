@@ -5,9 +5,12 @@ import Badge from 'components/Badge/Badge';
 
 class GalleryItemDragLayer extends Component {
   getOffset() {
-    const offset = this.props.offset;
+    const {
+      offset,
+      dragged,
+    } = this.props;
     return {
-      transform: offset && `translate(${offset.x}px, ${offset.y}px)`,
+      transform: offset && `translate(${offset.x + dragged.x}px, ${offset.y + dragged.y}px)`,
     };
   }
 
@@ -19,22 +22,23 @@ class GalleryItemDragLayer extends Component {
     if (!item.selected) {
       return null;
     }
-    const selected = `${item.selected.length}`;
+    const shadows = [
+      <div key="1" className="gallery-item__drag-shadow" />,
+      <div key="2" className="gallery-item__drag-shadow gallery-item__drag-shadow--second" />,
+    ];
 
     return (
       <div className="gallery-item__drag-layer">
         <div className="gallery-item__drag-layer-item" style={this.getOffset()}>
-          {selected > 1 && [
-            <div key="1" className="gallery-item__drag-shadow" />,
-            <div key="2" className="gallery-item__drag-shadow gallery-item__drag-shadow--second" />,
-            <div key="3" className="gallery-item__drag-shadow gallery-item__drag-shadow--third" />,
-          ]}
-          <GalleryItem {...item.props} />
-          {selected > 1 &&
+          <div className="gallery-item__drag-layer-preview">
+            {item.selected.length > 1 && shadows}
+            <GalleryItem {...item.props} isDragging />
+          </div>
+          {item.selected.length > 1 &&
             <Badge
               className="gallery-item__drag-layer-count"
-              status="primary"
-              message={selected}
+              status="info"
+              message={`${item.selected.length}`}
             />
           }
         </div>
@@ -52,10 +56,10 @@ GalleryItemDragLayer.propTypes = {
   isDragging: PropTypes.bool.isRequired,
 };
 
-
 const collect = (monitor) => ({
   item: monitor.getItem(),
-  offset: monitor.getSourceClientOffset(),
+  offset: monitor.getInitialClientOffset(),
+  dragged: monitor.getDifferenceFromInitialOffset(),
   isDragging: monitor.isDragging(),
 });
 
