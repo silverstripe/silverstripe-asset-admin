@@ -7,7 +7,7 @@ Handles creating and inserting an external link embedded item.
 <InsertEmbedModal
     onInsert={this.handleInsert}
     onCreate={this.handleCreate}
-    onHide={this.handleHide}
+    onClosed={this.handleHide}
     onLoadingError={this.handleLoadingError}
     show={true}
     targetUrl={mySchemaUrl}
@@ -23,7 +23,7 @@ Handles creating and inserting an external link embedded item.
  * `show` (boolean): Defines whether the Modal is showing
  * `onCreate` (function): Handler for creating a new embed object
  * `onInsert` (function): Handler for inserting the embed object
- * `onHide` (function): Handler for hiding the modal
+ * `onClosed` (function): Handler for hiding the modal
  * `onLoadingError` (function): Handler for when an error occurs while loading the modal contents
  * `bodyClassName` (string): Classes to apply to the body of the modal
  * `fileAttributes` (object): Data to populate into fields/attributes

@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { bindActionCreators } from 'redux';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
-import { Collapse } from 'react-bootstrap-ss';
+import { Collapse } from 'reactstrap';
 import * as schemaActions from 'state/schema/SchemaActions';
 import { reset, initialize } from 'redux-form';
 import getIn from 'redux-form/lib/structure/plain/getIn';
@@ -328,13 +328,11 @@ class Search extends Component {
               aria-expanded="true"
             />
 
-            <Collapse in={expanded}>
-              <div id={formId} className="search__filter-panel">
-                <FormBuilderLoader
-                  identifier={identifier}
-                  schemaUrl={this.props.searchFormSchemaUrl}
-                />
-              </div>
+            <Collapse id={formId} className="search__filter-panel" isOpen={expanded}>
+              <FormBuilderLoader
+                identifier={identifier}
+                schemaUrl={this.props.searchFormSchemaUrl}
+              />
             </Collapse>
           </div>
         </div>

@@ -72,7 +72,7 @@ class InsertEmbedModal extends Component {
       {
         className: `insert-embed-modal ${this.props.className}`,
         size: 'lg',
-        onHide: this.props.onHide,
+        onClosed: this.props.onClosed,
         title: ((this.props.targetUrl)
           ? i18n._t('AssetAdmin.EditTitle', 'Media from the web')
           : i18n._t('AssetAdmin.CreateTitle', 'Insert new media from the web')),
@@ -121,7 +121,7 @@ class InsertEmbedModal extends Component {
         break;
       }
       case 'action_cancel': {
-        this.props.onHide();
+        this.props.onClosed();
         break;
       }
       default: {
@@ -153,7 +153,7 @@ InsertEmbedModal.propTypes = {
     Width: PropTypes.number,
     Height: PropTypes.number,
   }),
-  onHide: PropTypes.func.isRequired,
+  onClosed: PropTypes.func.isRequired,
   className: PropTypes.string,
   actions: PropTypes.object,
   schemaUrl: PropTypes.string.isRequired,

@@ -204,7 +204,7 @@ class Editor extends Component {
           title={campaignTitle}
           identifier="AssetAdmin.AddToCampaign"
           isOpen={this.state.openModal}
-          onHide={this.closeModal}
+          onClosed={this.closeModal}
           schemaUrl={modalSchemaUrl}
           bodyClassName="modal__dialog"
           responseClassBad="modal__response modal__response--error"

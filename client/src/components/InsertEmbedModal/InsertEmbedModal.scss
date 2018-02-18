@@ -2,14 +2,20 @@ $placement-image-width: 40px;
 $placement-image-height: 36px;
 
 .insert-embed-modal {
+
   .modal-content {
     height: auto;
     max-height: 100%;
   }
 
   .modal-body {
-    min-height: 300px;
-    align-items: center;
+    display: flex;
+    justify-items: stretch;
+    flex-direction: column;
+
+    @include media-breakpoint-up(md) {
+      min-height: 300px;
+    }
   }
 }
 
@@ -24,7 +30,9 @@ $placement-image-height: 36px;
 }
 
 .insert-embed-modal--create {
+  flex: 1;
   width: 100%;
+
   @include media-breakpoint-up(md) {
     padding-top: 4rem;
   }

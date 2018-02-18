@@ -17,5 +17,5 @@ Properties:
     * `TitleTooltip` (string): The title property for the item
     * `Alignment` (string): A class string defining the alignment of the image in content
  * `fileId` (number): The ID for the file to be open
- * `onHide` (function): The callback used when the modal is requesting to be hidden
+ * `onClosed` (function): The callback used when the modal is requesting to be hidden
  * `className` (string): Additional class names for the modal

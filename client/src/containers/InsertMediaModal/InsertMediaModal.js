@@ -69,9 +69,9 @@ class InsertMediaModal extends Component {
       {
         className: `insert-media-modal ${this.props.className}`,
         size: 'lg',
+        showCloseButton: false
       }
     );
-    delete props.onHide;
     delete props.onInsert;
     delete props.sectionConfig;
     delete props.schemaUrl;
@@ -100,7 +100,7 @@ class InsertMediaModal extends Component {
       <button
         type="button"
         className="close insert-media-modal__close-button"
-        onClick={this.props.onHide}
+        onClick={this.props.onClosed}
         aria-label={i18n._t('FormBuilderModal.CLOSE', 'Close')}
       >
         <span aria-hidden="true">×</span>
@@ -147,7 +147,7 @@ InsertMediaModal.propTypes = {
   query: PropTypes.object,
   getUrl: PropTypes.func,
   onBrowse: PropTypes.func.isRequired,
-  onHide: PropTypes.func,
+  onClosed: PropTypes.func,
   className: PropTypes.string,
   actions: PropTypes.object,
 };
