@@ -58,7 +58,7 @@
     "@storybook/react": "^3.2.16",
     "apollo-client": "^0.5.22",
     "babel-polyfill": "6.7.4",
-    "bootstrap": "4.0.0-beta",
+    "bootstrap": "4.0.0",
     "classnames": "^2.2.5",
     "deep-freeze-strict": "^1.1.1",
     "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
