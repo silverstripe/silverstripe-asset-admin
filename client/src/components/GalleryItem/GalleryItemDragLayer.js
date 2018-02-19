@@ -23,23 +23,30 @@ class GalleryItemDragLayer extends Component {
       return null;
     }
     const shadows = [
-      <div key="1" className="gallery-item__drag-shadow" />,
-      <div key="2" className="gallery-item__drag-shadow gallery-item__drag-shadow--second" />,
+      item.selected.length > 1
+        ? <div key="1" className="gallery-item__drag-shadow" />
+        : null,
+      item.selected.length > 2
+        ? <div key="2" className="gallery-item__drag-shadow gallery-item__drag-shadow--second" />
+        : null,
     ];
 
     return (
       <div className="gallery-item__drag-layer">
         <div className="gallery-item__drag-layer-item" style={this.getOffset()}>
           <div className="gallery-item__drag-layer-preview">
-            {item.selected.length > 1 && shadows}
+            {shadows}
             <GalleryItem {...item.props} isDragging />
           </div>
-          {item.selected.length > 1 &&
-            <Badge
-              className="gallery-item__drag-layer-count"
-              status="info"
-              message={`${item.selected.length}`}
-            />
+          {item.selected.length > 1
+            ? (
+              <Badge
+                className="gallery-item__drag-layer-count"
+                status="info"
+                message={`${item.selected.length}`}
+              />
+            )
+            : null
           }
         </div>
       </div>

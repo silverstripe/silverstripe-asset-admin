@@ -31,6 +31,7 @@ describe('Gallery', () => {
     props = {
       actions: {
         gallery: {
+          setLastSelected: () => {},
           selectFiles: () => {},
           deselectFiles: () => {},
           setPath: () => {},

@@ -478,16 +478,60 @@ class Gallery extends Component {
   }
 
   /**
+   * Calculates the items that are selected between two given item ids, this is primarily used when
+   * holding down the shift key while selecting.
+   *
+   * @param firstId
+   * @param lastId
+   * @return {Array}
+   */
+  getSelection(firstId, lastId) {
+    const selection = [firstId, lastId]
+      .filter(id => id);
+    // expect two truthy values
+    if (selection.length !== 2) {
+      return selection;
+    }
+
+    const files = this.props.files;
+    const indexes = selection
+      .map(id => files.findIndex(file => file.id === id))
+      .filter(index => index !== -1)
+      .sort((a, b) => a - b);
+
+    // expect both indexes found
+    if (indexes.length !== 2) {
+      return selection
+        .filter(id => files.find(file => file.id === id));
+    }
+
+    // get the items between the two indexes found, inclusive
+    const [firstIndex, lastIndex] = indexes;
+    return files
+      .filter((file, index) => (
+        index >= firstIndex && index <= lastIndex
+      ))
+      .map(file => file.id);
+  }
+
+  /**
    * Handles the user toggling the selected/deselected state of a file or folder.
+   * Holding shift when selecting multiple items will select items between those multiple items.
    *
    * @param {Object} event - Event object.
    * @param {Object} item - The item being selected/deselected
    */
   handleSelect(event, item) {
     if (this.props.selectedFiles.indexOf(item.id) === -1) {
-      this.props.actions.gallery.selectFiles([item.id]);
+      const selection = (event.shiftKey)
+        ? this.getSelection(this.props.lastSelected, item.id)
+        : [item.id];
+
+      this.props.actions.gallery.selectFiles(selection);
+      this.props.actions.gallery.setLastSelected(item.id);
     } else {
       this.props.actions.gallery.deselectFiles([item.id]);
+      this.props.actions.gallery.setLastSelected(null);
     }
   }
 
@@ -903,6 +947,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   onUnpublish: React.PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
+  lastSelected: PropTypes.number,
   dialog: PropTypes.bool,
   fileId: PropTypes.number,
   folderId: PropTypes.number.isRequired,
@@ -945,6 +990,7 @@ function mapStateToProps(state, ownProps) {
     concatenateSelect,
     loading,
     sorters,
+    lastSelected,
   } = state.assetAdmin.gallery;
 
   // set default sort
@@ -953,6 +999,7 @@ function mapStateToProps(state, ownProps) {
   }
 
   return {
+    lastSelected,
     selectedFiles,
     errorMessage,
     noticeMessage,
