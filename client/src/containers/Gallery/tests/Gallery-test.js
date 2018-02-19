@@ -107,6 +107,42 @@ describe('Gallery', () => {
     };
   });
 
+  describe('getSelection', () => {
+    let gallery = null;
+
+    beforeEach(() => {
+      props.files = [
+        { id: 4 },
+        { id: 10 },
+        { id: 6 },
+        { id: 7 },
+        { id: 16 },
+      ];
+      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+    });
+
+    it('should return just the truthy id if one is falsey', () => {
+      let selection = gallery.getSelection(4, null);
+      expect(selection).toEqual([4]);
+
+      selection = gallery.getSelection(null, 7);
+      expect(selection).toEqual([7]);
+
+      selection = gallery.getSelection();
+      expect(selection).toEqual([]);
+    });
+
+    it('should treat ids not found as falsey', () => {
+      const selection = gallery.getSelection(4, 53);
+      expect(selection).toEqual([4]);
+    });
+
+    it('should return the ids between two given ids in the list', () => {
+      const selection = gallery.getSelection(7, 10);
+      expect(selection).toEqual([10, 6, 7]);
+    });
+  });
+
   describe('renderSearchAlert()', () => {
     let gallery = null;
 

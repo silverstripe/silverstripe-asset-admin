@@ -486,23 +486,16 @@ class Gallery extends Component {
    * @return {Array}
    */
   getSelection(firstId, lastId) {
-    const selection = [firstId, lastId]
-      .filter(id => id);
-    // expect two truthy values
-    if (selection.length !== 2) {
-      return selection;
-    }
-
     const files = this.props.files;
-    const indexes = selection
+    const indexes = [firstId, lastId]
+      .filter(id => id)
       .map(id => files.findIndex(file => file.id === id))
       .filter(index => index !== -1)
       .sort((a, b) => a - b);
 
     // expect both indexes found
     if (indexes.length !== 2) {
-      return selection
-        .filter(id => files.find(file => file.id === id));
+      return indexes.map(index => files[index].id);
     }
 
     // get the items between the two indexes found, inclusive

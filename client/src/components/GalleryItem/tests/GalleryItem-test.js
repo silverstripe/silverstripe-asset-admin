@@ -279,6 +279,16 @@ describe('GalleryItem', () => {
 
       expect(item.getItemClassNames()).not.toContain('item--selected');
     });
+
+    it('should return a "dropping" class when the item is marked as hovered over with an item drop', () => {
+      props.isDropping = true;
+
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem {...props} />
+      );
+
+      expect(item.getItemClassNames()).toContain('item--dropping');
+    });
   });
 
   describe('isImageSmallerThanThumbnail()', () => {
