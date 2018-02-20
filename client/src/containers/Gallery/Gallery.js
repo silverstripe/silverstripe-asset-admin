@@ -167,6 +167,36 @@ class Gallery extends Component {
   }
 
   /**
+   * Calculates the items that are selected between two given item ids, this is primarily used when
+   * holding down the shift key while selecting.
+   *
+   * @param firstId
+   * @param lastId
+   * @return {Array}
+   */
+  getSelection(firstId, lastId) {
+    const files = this.props.files;
+    const indexes = [firstId, lastId]
+      .filter(id => id)
+      .map(id => files.findIndex(file => file.id === id))
+      .filter(index => index !== -1)
+      .sort((a, b) => a - b);
+
+    // expect both indexes found
+    if (indexes.length !== 2) {
+      return indexes.map(index => files[index].id);
+    }
+
+    // get the items between the two indexes found, inclusive
+    const [firstIndex, lastIndex] = indexes;
+    return files
+      .filter((file, index) => (
+        index >= firstIndex && index <= lastIndex
+      ))
+      .map(file => file.id);
+  }
+
+  /**
    * Delete a list of items
    * @param {Array} items
    * @returns {Promise}
@@ -398,8 +428,18 @@ class Gallery extends Component {
    * Toggle concatenating selected items based on the key event
    * @param e
    */
-  toggleSelectConcat(e) {
-    this.props.actions.gallery.setConcatenateSelect(e.metaKey || e.ctrlKey);
+  toggleSelectConcat(event) {
+    this.props.actions.gallery.setConcatenateSelect(this.isConcat(event));
+  }
+
+  /**
+   * Determines whether concat should happen
+   *
+   * @param event Event
+   * @return {boolean}
+   */
+  isConcat(event) {
+    return event.metaKey || event.ctrlKey || event.shiftKey;
   }
 
   /**
@@ -430,10 +470,11 @@ class Gallery extends Component {
    * Handles the lasso selection of items from <SelectionGroup />
    *
    * @param items
+   * @param event Event
    */
-  handleGroupSelect(items) {
+  handleGroupSelect(items, event) {
     const { deselectFiles, selectFiles } = this.props.actions.gallery;
-    if (!this.props.concatenateSelect) {
+    if (!this.props.concatenateSelect && !this.isConcat(event)) {
       deselectFiles(null);
     }
 
@@ -475,36 +516,6 @@ class Gallery extends Component {
     }
 
     this.props.onOpenFile(file.id, file);
-  }
-
-  /**
-   * Calculates the items that are selected between two given item ids, this is primarily used when
-   * holding down the shift key while selecting.
-   *
-   * @param firstId
-   * @param lastId
-   * @return {Array}
-   */
-  getSelection(firstId, lastId) {
-    const files = this.props.files;
-    const indexes = [firstId, lastId]
-      .filter(id => id)
-      .map(id => files.findIndex(file => file.id === id))
-      .filter(index => index !== -1)
-      .sort((a, b) => a - b);
-
-    // expect both indexes found
-    if (indexes.length !== 2) {
-      return indexes.map(index => files[index].id);
-    }
-
-    // get the items between the two indexes found, inclusive
-    const [firstIndex, lastIndex] = indexes;
-    return files
-      .filter((file, index) => (
-        index >= firstIndex && index <= lastIndex
-      ))
-      .map(file => file.id);
   }
 
   /**
