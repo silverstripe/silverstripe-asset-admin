@@ -80,7 +80,7 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
         if ($files->count() < count($idList)) {
             // Find out which files count not be found
             $missingIds = array_diff($idList, $files->column('ID'));
-            foreach($missingIds as $id) {
+            foreach ($missingIds as $id) {
                 $result[] = new OperationError(
                     _t(
                         __CLASS__ . 'NON_EXISTENT_FILE',

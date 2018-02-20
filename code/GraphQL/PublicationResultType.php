@@ -16,7 +16,7 @@ class PublicationResultType extends TypeCreator
                 $this->manager->getType('File'),
                 $this->manager->getType('PublicationError'),
             ],
-            'resolveType' => function($value) {
+            'resolveType' => function ($value) {
                 if ($value instanceof File) {
                     return $this->manager->getType('File');
                 }

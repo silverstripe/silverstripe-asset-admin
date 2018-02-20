@@ -113,5 +113,4 @@ class OperationError
 
         return $this;
     }
-
 }

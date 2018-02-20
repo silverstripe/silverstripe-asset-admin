@@ -60,11 +60,10 @@ class PublicationErrorType extends TypeCreator
             return $value->$method();
         }
 
-       throw new Exception (sprintf(
-           'Invalid field %s on %s',
-           $fieldName,
-           get_class($value)
-       ));
-
+        throw new Exception(sprintf(
+            'Invalid field %s on %s',
+            $fieldName,
+            get_class($value)
+        ));
     }
 }
