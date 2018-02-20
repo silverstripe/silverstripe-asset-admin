@@ -1,3 +1,4 @@
+/* global alert, confirm */
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -461,9 +462,9 @@ class AssetAdmin extends Component {
     return this.props.actions.files.unpublishFiles(fileIDs, force)
 
       .then(({ data: { unpublishFiles } }) => {
-        const files = unpublishFiles.filter(result => result.__typename === 'File');
+        const successes = unpublishFiles.filter(result => result.__typename === 'File');
         const errors = unpublishFiles.filter(result => result.__typename === 'PublicationError');
-        const successful = files.map(file => {
+        const successful = successes.map(file => {
           this.resetFile(file);
           return file;
         });
@@ -478,8 +479,8 @@ class AssetAdmin extends Component {
             ),
             otherFailures.map(failure => failure.Message).join('\n'),
           ];
-
-          window.alert(alertMessage.join('\n\n'));
+          // eslint-disable-next-line no-alert
+          alert(alertMessage.join('\n\n'));
         }
         if (ownedByFailures.length) {
           const alertMessage = [
@@ -498,12 +499,10 @@ class AssetAdmin extends Component {
             )
           ];
 
-          if (window.confirm(alertMessage.join('\n\n'))) {
+          if (confirm(alertMessage.join('\n\n'))) {
             const secondPassIDs = ownedByFailures.reduce((acc, curr) => acc.concat(curr.IDs), []);
             return this.doUnpublish(secondPassIDs, true)
-              .then(secondPassSuccesses => {
-                return successful.concat(secondPassSuccesses);
-              });
+              .then(next => successful.concat(next));
           }
         }
 
@@ -555,10 +554,10 @@ class AssetAdmin extends Component {
 
     return this.props.actions.files.publishFiles(fileIDs)
       .then(({ data: { publishFiles } }) => {
-        const files = publishFiles.filter(result => result.__typename === 'File');
+        const successes = publishFiles.filter(result => result.__typename === 'File');
         const errors = publishFiles.filter(result => result.__typename === 'PublicationError');
 
-        const successful = files.map(file => {
+        const successful = successes.map(file => {
           this.resetFile(file);
           return file;
         });
@@ -568,9 +567,10 @@ class AssetAdmin extends Component {
               'AssetAdmin.PUBLISH_FAILURE',
               'Some of the files you selected could not be published. Details:'
             ),
-            errors.map(error => failure.Message).join('\n')
+            errors.map(error => error.Message).join('\n')
           ];
-          window.alert(alertMessage.join('\n\n'));
+          // eslint-disable-next-line no-alert
+          alert(alertMessage.join('\n\n'));
         }
 
         return successful;

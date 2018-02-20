@@ -1,3 +1,4 @@
+/* global confirm */
 import React from 'react';
 import i18n from 'i18n';
 import Injector from 'lib/Injector';
@@ -59,7 +60,7 @@ const OwnerAwareUnpublish = (FormAction) => (props) => {
     ...props,
     onClick(e, nameOrID) {
       const { owners } = props.data;
-      if (owners && parseInt(owners) > 0) {
+      if (owners && parseInt(owners, 10) > 0) {
         const message = [
           i18n.inject(
             i18n._t(
@@ -77,7 +78,8 @@ const OwnerAwareUnpublish = (FormAction) => (props) => {
             'Do you want to unpublish this file anyway?'
           )
         ];
-        if (!window.confirm(message.join('\n\n'))) {
+        // eslint-disable-next-line no-alert
+        if (confirm(message.join('\n\n'))) {
           e.preventDefault();
           return;
         }
@@ -86,7 +88,7 @@ const OwnerAwareUnpublish = (FormAction) => (props) => {
     }
   };
 
-  return <FormAction {...newProps} />
+  return <FormAction {...newProps} />;
 };
 
 const applyTransform = () => {
