@@ -442,9 +442,10 @@ class AssetAdmin extends Component {
    * Unpublish files
    *
    * @param {array} ids
+   * @param {boolean} force
    * @return {Promise}
    */
-  doUnpublish(ids) {
+  doUnpublish(ids, force = false) {
     const files = ids.map(id => {
       const result = this.findFile(id);
       if (!result) {
@@ -457,15 +458,52 @@ class AssetAdmin extends Component {
     });
 
     const fileIDs = files.map(file => file.id);
+    return this.props.actions.files.unpublishFiles(fileIDs, force)
 
-    return this.props.actions.files.unpublishFiles(fileIDs)
-      .then(({ data: { unpublishFiles } }) => (
-        unpublishFiles.map(file => {
+      .then(({ data: { unpublishFiles } }) => {
+        const files = unpublishFiles.filter(result => result.__typename === 'File');
+        const errors = unpublishFiles.filter(result => result.__typename === 'PublicationError');
+        const successful = files.map(file => {
           this.resetFile(file);
           return file;
-        })
-      ));
+        });
+        const ownedByFailures = errors.filter(error => error.Type === 'HAS_OWNERS');
+        const otherFailures = errors.filter(error => error.Type !== 'HAS_OWNERS');
+
+        if (otherFailures.length) {
+          const alertBody = otherFailures.map(failure => failure.Message).join('\n');
+          const alertMessage = `
+Some of the files you selected could not be unpublished. Details:
+
+${alertBody}
+`;
+          window.alert(alertMessage);
+        }
+        if (ownedByFailures.length) {
+          const alertBody = ownedByFailures.map(failure => failure.Message).join('\n');
+          const alertMessage = `
+Some of the files you selected to unpublish are being used by published content. Details:            
+
+${alertBody}
+
+Ensure files are removed from content areas prior to unpublishing them. Otherwise, they will appear as broken links.
+
+Do you want to unpublish them anyway?
+`;
+
+          if (window.confirm(alertMessage)) {
+            const secondPassIDs = ownedByFailures.reduce((acc, curr) => acc.concat(curr.IDs), []);
+            return this.doUnpublish(secondPassIDs, true)
+              .then(secondPassSuccesses => {
+                return successful.concat(secondPassSuccesses);
+              });
+          }
+        }
+
+        return successful;
+      });
   }
+
 
   /**
    * Unpublish files and update the UI
@@ -509,12 +547,26 @@ class AssetAdmin extends Component {
     const fileIDs = files.map(file => file.id);
 
     return this.props.actions.files.publishFiles(fileIDs)
-      .then(({ data: { publishFiles } }) => (
-        publishFiles.map(file => {
+      .then(({ data: { publishFiles } }) => {
+        const files = publishFiles.filter(result => result.__typename === 'File');
+        const errors = publishFiles.filter(result => result.__typename === 'PublicationError');
+
+        const successful = files.map(file => {
           this.resetFile(file);
           return file;
-        })
-      ));
+        });
+        if (errors.length) {
+          const alertBody = errors.map(error => failure.Message).join('\n');
+          const alertMessage = `
+Some of the files you selected could not be published. Details:
+
+${alertBody}
+`;
+          window.alert(alertMessage);
+        }
+
+        return successful;
+      });
   }
 
   /**

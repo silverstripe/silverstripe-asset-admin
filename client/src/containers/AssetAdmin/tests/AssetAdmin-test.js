@@ -259,7 +259,7 @@ describe('AssetAdmin', () => {
       const id = props.files[0].id;
       component.doUnpublish([id]);
 
-      expect(props.actions.files.unpublishFiles).toBeCalledWith([id]);
+      expect(props.actions.files.unpublishFiles).toBeCalledWith([id], false);
     });
   });
 });
