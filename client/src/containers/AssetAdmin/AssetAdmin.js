@@ -471,27 +471,34 @@ class AssetAdmin extends Component {
         const otherFailures = errors.filter(error => error.Type !== 'HAS_OWNERS');
 
         if (otherFailures.length) {
-          const alertBody = otherFailures.map(failure => failure.Message).join('\n');
-          const alertMessage = `
-Some of the files you selected could not be unpublished. Details:
+          const alertMessage = [
+            i18n._t(
+              'AssetAdmin.UNPUBLISH_FAILURE',
+              'Some of the files you selected could not be unpublished. Details:'
+            ),
+            otherFailures.map(failure => failure.Message).join('\n'),
+          ];
 
-${alertBody}
-`;
-          window.alert(alertMessage);
+          window.alert(alertMessage.join('\n\n'));
         }
         if (ownedByFailures.length) {
-          const alertBody = ownedByFailures.map(failure => failure.Message).join('\n');
-          const alertMessage = `
-Some of the files you selected to unpublish are being used by published content. Details:            
+          const alertMessage = [
+            i18n._t(
+              'AssetAdmin.BULK_OWNED_WARNING_1',
+              'Some of the files you selected to unpublish are being used by published content. Details:'
+            ),
+            ownedByFailures.map(failure => failure.Message).join('\n'),
+            i18n._t(
+              'AssetAdmin.BULK_OWNED_WARNING_2',
+              'Ensure files are removed from content areas prior to unpublishing them. Otherwise, they will appear as broken links.'
+            ),
+            i18n._t(
+              'AssetAdmin.BULK_OWNED_WARNING_3',
+              'Do you want to unpublish them anyway?'
+            )
+          ];
 
-${alertBody}
-
-Ensure files are removed from content areas prior to unpublishing them. Otherwise, they will appear as broken links.
-
-Do you want to unpublish them anyway?
-`;
-
-          if (window.confirm(alertMessage)) {
+          if (window.confirm(alertMessage.join('\n\n'))) {
             const secondPassIDs = ownedByFailures.reduce((acc, curr) => acc.concat(curr.IDs), []);
             return this.doUnpublish(secondPassIDs, true)
               .then(secondPassSuccesses => {
@@ -556,13 +563,14 @@ Do you want to unpublish them anyway?
           return file;
         });
         if (errors.length) {
-          const alertBody = errors.map(error => failure.Message).join('\n');
-          const alertMessage = `
-Some of the files you selected could not be published. Details:
-
-${alertBody}
-`;
-          window.alert(alertMessage);
+          const alertMessage = [
+            i18n._t(
+              'AssetAdmin.PUBLISH_FAILURE',
+              'Some of the files you selected could not be published. Details:'
+            ),
+            errors.map(error => failure.Message).join('\n')
+          ];
+          window.alert(alertMessage.join('\n\n'));
         }
 
         return successful;

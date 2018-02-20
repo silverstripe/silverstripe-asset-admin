@@ -82,10 +82,13 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
             $missingIds = array_diff($idList, $files->column('ID'));
             foreach($missingIds as $id) {
                 $result[] = new OperationError(
-                    sprintf(
-                        'File #%s either does not exist or is not on stage %s',
-                        $id,
-                        $this->sourceStage()
+                    _t(
+                        __CLASS__ . 'NON_EXISTENT_FILE',
+                        'File #{id} either does not exist or is not on stage {stage}.',
+                        [
+                            'id' => $id,
+                            'stage' => $this->sourceStage()
+                        ]
                     ),
                     'NON_EXISTENT',
                     LogLevel::ERROR,
@@ -99,9 +102,12 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
                 $result[] = $this->mutateFile($file, $args);
             } else {
                 $result[] = new OperationError(
-                    sprintf(
-                        'User does not have permission to perform this operation on file "%s"',
-                        $file->Title
+                    _t(
+                        __CLASS__ . 'PERMISSION_FAILURE',
+                        'User does not have permission to perform this operation on file "{file}"',
+                        [
+                            'file' => $file->Title
+                        ]
                     ),
                     'NOT_ALLOWED',
                     LogLevel::WARNING,

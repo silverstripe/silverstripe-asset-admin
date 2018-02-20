@@ -636,6 +636,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         if ($form instanceof Form) {
             $form->setNotifyUnsavedChanges(true);
         }
+
         return $form;
     }
 

@@ -99,3 +99,11 @@ en:
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'File or Folder could not be found'
+  SilverStripe\AssetAdmin\GraphQL\PublicationMutationCreator:
+    NON_EXISTENT_FILE: 'File #{id} either does not exist or is not on stage {stage}.'
+    PERMISSION_FAILURE: 'User does not have permission to perform this operation on file "{file}"'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING: 'File "{file}" is used in {count} place|File {file} is used in {count} places.'
+
+
+

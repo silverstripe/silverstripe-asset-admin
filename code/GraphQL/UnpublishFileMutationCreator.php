@@ -50,7 +50,14 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator
             $owners = $file->findOwners();
             if ($owners->exists()) {
                 return new OperationError(
-                    sprintf('File "%s" is used in %s places.', $file->Title, $owners->count()),
+                    _t(
+                        __CLASS__ . 'OWNER_WARNING',
+                        'File "{file}" is used in {count} place|File {file} is used in {count} places.',
+                        [
+                            'file' => $file->Title,
+                            'count' => $owners->count()
+                        ]
+                    ),
                     'HAS_OWNERS',
                     LogLevel::WARNING,
                     [$file->ID]

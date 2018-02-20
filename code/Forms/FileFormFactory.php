@@ -15,6 +15,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Versioned\RecursivePublishable;
 
 class FileFormFactory extends AssetFormFactory
 {
@@ -367,8 +368,16 @@ class FileFormFactory extends AssetFormFactory
             'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UNPUBLISH_BUTTON',
             'Unpublish'
         );
-        return FormAction::create('unpublish', $unpublishText)
+        $owners = $record->hasExtension(RecursivePublishable::class) ? $record->findOwners()->count() : 0;
+        $action = FormAction::create('unpublish', $unpublishText)
             ->setIcon('cancel-circled');
+        $action->setSchemaData([
+            'data' => [
+                'owners' => $owners
+            ]
+        ]);
+
+        return $action;
     }
 
     /**

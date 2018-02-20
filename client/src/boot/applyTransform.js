@@ -53,6 +53,42 @@ const ConnectedMoveTreeDropdownField = compose(
   DisabledTreeDropdownField
 );
 
+const OwnerAwareUnpublish = (FormAction) => (props) => {
+  const originalOnclick = props.onClick;
+  const newProps = {
+    ...props,
+    onClick(e, nameOrID) {
+      const { owners } = props.data;
+      if (owners && parseInt(owners) > 0) {
+        const message = [
+          i18n.inject(
+            i18n._t(
+              'AssetAdmin.SINGLE_OWNED_WARNING_1',
+              'This file is being used in {count} other published section(s).',
+            ),
+            { count: owners }
+          ),
+          i18n._t(
+            'AssetAdmin.SINGLE_OWNED_WARNING_2',
+            'Ensure files are removed from content areas prior to unpublishing them. Otherwise, they will appear as broken links.'
+          ),
+          i18n._t(
+            'AssetAdmin.SINGLE_OWNED_WARNING_3',
+            'Do you want to unpublish this file anyway?'
+          )
+        ];
+        if (!window.confirm(message.join('\n\n'))) {
+          e.preventDefault();
+          return;
+        }
+      }
+      originalOnclick(e, nameOrID);
+    }
+  };
+
+  return <FormAction {...newProps} />
+};
+
 const applyTransform = () => {
   Injector.transform(
     'insert-media-modal',
@@ -65,6 +101,13 @@ const applyTransform = () => {
     'move-form-disabled',
     (updater) => {
       updater.component('TreeDropdownField.AssetAdmin.MoveForm', ConnectedMoveTreeDropdownField);
+    }
+  );
+
+  Injector.transform(
+    'owner-unpublishing',
+    (updater) => {
+      updater.component('FormAction.AssetAdmin.EditForm.action_unpublish', OwnerAwareUnpublish);
     }
   );
 };
