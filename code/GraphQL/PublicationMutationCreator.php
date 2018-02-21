@@ -2,7 +2,6 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
-use Psr\Log\LogLevel;
 use SilverStripe\Assets\File;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\MutationCreator;
@@ -23,6 +22,11 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
      * @var string The description of the mutation
      */
     protected $description;
+
+    /**
+     * @var array
+     */
+    protected $warningMessages = [];
 
     /**
      * @return array
@@ -54,8 +58,13 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
             ],
             'Force' => [
                 'type' => Type::boolean(),
-                'description' => 'If true, disregard warnings',
+                'description' => 'If true, proceed with the mutation, regardless of notices',
+                'defaultValue' => false
             ],
+            'Quiet' => [
+                'type' => Type::boolean(),
+                'description' => 'If true, suppress warnings'
+            ]
         ];
     }
 
@@ -71,52 +80,54 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
         if (!isset($args['IDs']) || !is_array($args['IDs'])) {
             throw new InvalidArgumentException('IDs must be an array');
         }
-
+        $force = isset($args['Force']) && $args['Force'];
+        $quiet = isset($args['Quiet']) && $args['Quiet'];
         $result = [];
         $idList = $args['IDs'];
         $files = Versioned::get_by_stage(File::class, $this->sourceStage())
             ->byIds($idList);
 
-        if ($files->count() < count($idList)) {
-            // Find out which files count not be found
+        // If warning suppression is not on, bundle up all the warnings into a single exception
+        if (!$quiet && $files->count() < count($idList)) {
             $missingIds = array_diff($idList, $files->column('ID'));
             foreach ($missingIds as $id) {
-                $result[] = new OperationError(
-                    _t(
-                        __CLASS__ . 'NON_EXISTENT_FILE',
-                        'File #{id} either does not exist or is not on stage {stage}.',
-                        [
-                            'id' => $id,
-                            'stage' => $this->sourceStage()
-                        ]
-                    ),
-                    'NON_EXISTENT',
-                    LogLevel::ERROR,
-                    [$id]
-                );
+                $this->addWarningMessage(sprintf(
+                    'File #%s either does not exist or is not on stage %s.',
+                    $id,
+                    $this->sourceStage()
+                ));
+            }
+        }
+        $allowedFiles = [];
+        // Check permissions
+        foreach ($files as $file) {
+            if ($this->hasPermission($file, $context['currentUser'])) {
+                $allowedFiles[] = $file;
+            } elseif (!$quiet) {
+                $this->addWarningMessage(sprintf(
+                    'User does not have permission to perform this operation on file "%s"',
+                    $file->Title
+                ));
             }
         }
 
-        foreach ($files as $file) {
-            if ($this->hasPermission($file, $context['currentUser'])) {
-                $result[] = $this->mutateFile($file, $args);
-            } else {
-                $result[] = new OperationError(
-                    _t(
-                        __CLASS__ . 'PERMISSION_FAILURE',
-                        'User does not have permission to perform this operation on file "{file}"',
-                        [
-                            'file' => $file->Title
-                        ]
-                    ),
-                    'NOT_ALLOWED',
-                    LogLevel::WARNING,
-                    [$file->ID]
-                );
-            }
+        if (!empty($this->warningMessages)) {
+            throw new InvalidArgumentException(implode('\n', $this->warningMessages));
+        }
+
+        foreach ($allowedFiles as $file) {
+            $result[] = $this->mutateFile($file, $args);
         }
 
         return $result;
+    }
+
+    /**
+     * @param $msg
+     */
+    protected function addWarningMessage($msg)
+    {
+        $this->warningMessages[] = $msg;
     }
 
     /**
@@ -130,10 +141,10 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
      * Apply the mutation
      *
      * @param File $file
-     * @param array $args
-     * @return File|OperationError
+     * @param boolean $force
+     * @return File|Notice
      */
-    abstract protected function mutateFile(File $file, $args = []);
+    abstract protected function mutateFile(File $file, $force = false);
 
     /**
      * Return true if the member has permission to do the mutation

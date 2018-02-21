@@ -463,44 +463,51 @@ class AssetAdmin extends Component {
 
       .then(({ data: { unpublishFiles } }) => {
         const successes = unpublishFiles.filter(result => result.__typename === 'File');
-        const errors = unpublishFiles.filter(result => result.__typename === 'PublicationError');
+        const confirmationRequired = unpublishFiles.filter(result => (
+          result.__typename === 'PublicationNotice' && result.Type === 'HAS_OWNERS'
+        ));
         const successful = successes.map(file => {
           this.resetFile(file);
           return file;
         });
-        const ownedByFailures = errors.filter(error => error.Type === 'HAS_OWNERS');
-        const otherFailures = errors.filter(error => error.Type !== 'HAS_OWNERS');
-
-        if (otherFailures.length) {
-          const alertMessage = [
-            i18n._t(
-              'AssetAdmin.UNPUBLISH_FAILURE',
-              'Some of the files you selected could not be unpublished. Details:'
-            ),
-            otherFailures.map(failure => failure.Message).join('\n'),
-          ];
-          // eslint-disable-next-line no-alert
-          alert(alertMessage.join('\n\n'));
+        const displayedMessages = confirmationRequired.slice(0, 4);
+        const rest = confirmationRequired.slice(5);
+        const body = displayedMessages.map(warning => warning.Message);
+        if (rest.length) {
+          body.push(
+            i18n.inject(
+              i18n._t(
+                'AssetAdmin.BULK_OWNED_WARNING_REMAINING',
+                'And {count} other file(s)'
+              ),
+              { count: rest.length },
+            )
+          );
         }
-        if (ownedByFailures.length) {
+        if (displayedMessages.length) {
           const alertMessage = [
-            i18n._t(
-              'AssetAdmin.BULK_OWNED_WARNING_1',
-              'Some of the files you selected to unpublish are being used by published content. Details:'
+            i18n.inject(
+              i18n._t(
+                'AssetAdmin.BULK_OWNED_WARNING_HEADING',
+                '{count} file(s) are being used by other published content.'
+              ),
+              { count: confirmationRequired.length },
             ),
-            ownedByFailures.map(failure => failure.Message).join('\n'),
+
+            body.join('\n'),
+
             i18n._t(
-              'AssetAdmin.BULK_OWNED_WARNING_2',
-              'Ensure files are removed from content areas prior to unpublishing them. Otherwise, they will appear as broken links.'
-            ),
-            i18n._t(
-              'AssetAdmin.BULK_OWNED_WARNING_3',
-              'Do you want to unpublish them anyway?'
+              'AssetAdmin.BULK_OWNED_WARNING_FOOTER',
+              'Unpublishing will only remove files from the published version of the content. They will remain on the draft version. Unpublish anyway?'
             )
           ];
 
           if (confirm(alertMessage.join('\n\n'))) {
-            const secondPassIDs = ownedByFailures.reduce((acc, curr) => acc.concat(curr.IDs), []);
+            const secondPassIDs = confirmationRequired.reduce(
+              (acc, curr) => acc.concat(curr.IDs),
+              []
+            );
+            console.log('second pass', )
             return this.doUnpublish(secondPassIDs, true)
               .then(next => successful.concat(next));
           }
@@ -555,23 +562,11 @@ class AssetAdmin extends Component {
     return this.props.actions.files.publishFiles(fileIDs)
       .then(({ data: { publishFiles } }) => {
         const successes = publishFiles.filter(result => result.__typename === 'File');
-        const errors = publishFiles.filter(result => result.__typename === 'PublicationError');
 
         const successful = successes.map(file => {
           this.resetFile(file);
           return file;
         });
-        if (errors.length) {
-          const alertMessage = [
-            i18n._t(
-              'AssetAdmin.PUBLISH_FAILURE',
-              'Some of the files you selected could not be published. Details:'
-            ),
-            errors.map(error => error.Message).join('\n')
-          ];
-          // eslint-disable-next-line no-alert
-          alert(alertMessage.join('\n\n'));
-        }
 
         return successful;
       });

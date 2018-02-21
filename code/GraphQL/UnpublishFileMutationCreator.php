@@ -2,8 +2,6 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
-use GraphQL\Type\Definition\Type;
-use Psr\Log\LogLevel;
 use SilverStripe\Assets\File;
 use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\Versioned\Versioned;
@@ -41,15 +39,15 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator
 
     /**
      * @param File|RecursivePublishable $file
-     * @param array $args
-     * @return OperationError|File
+     * @param boolean $force
+     * @return Notice|File
      */
-    protected function mutateFile(File $file, $args = [])
+    protected function mutateFile(File $file, $force = false)
     {
-        if (!isset($args['Force']) || !$args['Force'] && $file->hasExtension(RecursivePublishable::class)) {
-            $owners = $file->findOwners();
+        if (!$force && $file->hasExtension(RecursivePublishable::class)) {
+            $owners = $file->findOwners(false);
             if ($owners->exists()) {
-                return new OperationError(
+                return new Notice(
                     _t(
                         __CLASS__ . 'OWNER_WARNING',
                         'File "{file}" is used in {count} place|File {file} is used in {count} places.',
@@ -59,7 +57,6 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator
                         ]
                     ),
                     'HAS_OWNERS',
-                    LogLevel::WARNING,
                     [$file->ID]
                 );
             }

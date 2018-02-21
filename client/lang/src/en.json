@@ -68,12 +68,7 @@
     "AssetAdmin.EditTitle": "Media from the web",
     "AssetAdmin.NEXT": "Next",
     "AssetAdmin.PREVIOUS": "Previous",
-    "AssetAdmin.UNPUBLISH_FAILURE": "Some of the files you selected could not be unpublished. Details:",
-    "AssetAdmin.BULK_OWNED_WARNING_1": "Some of the files you selected to unpublish are being used by published content. Details:",
-    "AssetAdmin.BULK_OWNED_WARNING_2": "Ensure files are removed from content areas prior to unpublishing them. Otherwise, they will appear as broken links.",
-    "AssetAdmin.BULK_OWNED_WARNING_3": "Do you want to unpublish them anyway?",
-    "AssetAdmin.PUBLISH_FAILURE": "Some of the files you selected could not be published. Details:",
-    "AssetAdmin.SINGLE_OWNED_WARNING_1": "This file is being used in {count} other published section(s).",
-    "AssetAdmin.SINGLE_OWNED_WARNING_2": "Ensure files are removed from content areas prior to unpublishing them. Otherwise, they will appear as broken links.",
-    "AssetAdmin.SINGLE_OWNED_WARNING_3": "Do you want to unpublish this file anyway?"
+    "AssetAdmin.BULK_OWNED_WARNING_REMAINING": "And {count} other file(s)",
+    "AssetAdmin.BULK_OWNED_WARNING_HEADING": "{count} file(s) are being used by other published content.",
+    "AssetAdmin.BULK_OWNED_WARNING_FOOTER": "Unpublishing will only remove files from the published version of the content. They will remain on the draft version. Unpublish anyway?"
 }

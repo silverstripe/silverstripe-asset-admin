@@ -39,10 +39,10 @@ class PublishFileMutationCreator extends PublicationMutationCreator implements O
 
     /**
      * @param File $file
-     * @param array $args
-     * @return File|OperationError
+     * @param boolean $force
+     * @return File|Notice
      */
-    protected function mutateFile(File $file, $args = [])
+    protected function mutateFile(File $file, $force = false)
     {
         $file->publishRecursive();
 

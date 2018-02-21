@@ -7,7 +7,7 @@ use SilverStripe\GraphQL\TypeCreator;
 use GraphQL\Type\Definition\ResolveInfo;
 use Exception;
 
-class PublicationErrorType extends TypeCreator
+class PublicationNoticeType extends TypeCreator
 {
     /**
      * @return array
@@ -15,7 +15,7 @@ class PublicationErrorType extends TypeCreator
     public function attributes()
     {
         return [
-            'name' => 'PublicationError',
+            'name' => 'PublicationNotice',
             'description' => 'Describes an error that occurred on a failed publication operation',
         ];
     }
@@ -28,10 +28,7 @@ class PublicationErrorType extends TypeCreator
         return [
             'Type' => [
                 'type' => Type::nonNull(Type::string()),
-                'description' => 'The type of error',
-            ],
-            'Level' => [
-                'type' => Type::nonNull($this->manager->getType('ErrorLevel')),
+                'description' => 'The type of notice',
             ],
             'Message' => [
                 'type' => Type::string(),

@@ -74,6 +74,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CreateTitle": "Insert new media from the web",
     "AssetAdmin.EditTitle": "Media from the web",
     "AssetAdmin.NEXT": "Next",
-    "AssetAdmin.PREVIOUS": "Previous"
+    "AssetAdmin.PREVIOUS": "Previous",
+    "AssetAdmin.BULK_OWNED_WARNING_REMAINING": "And {count} other file(s)",
+    "AssetAdmin.BULK_OWNED_WARNING_HEADING": "{count} file(s) are being used by other published content.",
+    "AssetAdmin.BULK_OWNED_WARNING_FOOTER": "Unpublishing will only remove files from the published version of the content. They will remain on the draft version. Unpublish anyway?"
 });
 }

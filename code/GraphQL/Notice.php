@@ -4,17 +4,12 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 
 use Psr\Log\LogLevel;
 
-class OperationError
+class Notice
 {
     /**
      * @var string
      */
     protected $type;
-
-    /**
-     * @var string
-     */
-    protected $level;
 
     /**
      * @var array
@@ -30,14 +25,12 @@ class OperationError
      * MutationException constructor.
      * @param string $message
      * @param int $type
-     * @param string|\Throwable $level
      * @param array $ids
      */
-    public function __construct($message, $type, $level = LogLevel::ERROR, $ids = [])
+    public function __construct($message, $type, $ids = [])
     {
         $this->message = $message;
         $this->type = $type;
-        $this->level = $level;
         $this->ids = $ids;
     }
 
@@ -61,24 +54,8 @@ class OperationError
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getLevel()
-    {
-        return $this->level;
-    }
-
-    /**
-     * @param $level
-     * @return $this
-     */
-    public function setLevel($level)
-    {
-        $this->level = $level;
-
-        return $this;
-    }
-
     public function getIDs()
     {
         return $this->ids;

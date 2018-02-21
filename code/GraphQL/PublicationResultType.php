@@ -14,14 +14,14 @@ class PublicationResultType extends TypeCreator
             'name' => 'PublicationResult',
             'types' => [
                 $this->manager->getType('File'),
-                $this->manager->getType('PublicationError'),
+                $this->manager->getType('PublicationNotice'),
             ],
             'resolveType' => function ($value) {
                 if ($value instanceof File) {
                     return $this->manager->getType('File');
                 }
-                if ($value instanceof OperationError) {
-                    return $this->manager->getType('PublicationError');
+                if ($value instanceof Notice) {
+                    return $this->manager->getType('PublicationNotice');
                 }
             }
         ]);

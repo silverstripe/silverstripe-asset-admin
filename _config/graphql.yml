@@ -11,8 +11,7 @@ SilverStripe\GraphQL\Controller:
       Folder: 'SilverStripe\AssetAdmin\GraphQL\FolderTypeCreator'
       FolderInput: 'SilverStripe\AssetAdmin\GraphQL\FolderInputTypeCreator'
       FileFilterInput: 'SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator'
-      ErrorLevel: 'SilverStripe\AssetAdmin\GraphQL\ErrorLevelType'
-      PublicationError: 'SilverStripe\AssetAdmin\GraphQL\PublicationErrorType'
+      PublicationNotice: 'SilverStripe\AssetAdmin\GraphQL\PublicationNoticeType'
       PublicationResult: 'SilverStripe\AssetAdmin\GraphQL\PublicationResultType'
     queries:
       readFiles: 'SilverStripe\AssetAdmin\GraphQL\ReadFileQueryCreator'
