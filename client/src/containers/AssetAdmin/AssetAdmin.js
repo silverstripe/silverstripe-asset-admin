@@ -507,7 +507,6 @@ class AssetAdmin extends Component {
               (acc, curr) => acc.concat(curr.IDs),
               []
             );
-            console.log('second pass', )
             return this.doUnpublish(secondPassIDs, true)
               .then(next => successful.concat(next));
           }

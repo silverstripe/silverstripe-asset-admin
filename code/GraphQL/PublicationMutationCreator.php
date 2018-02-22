@@ -116,7 +116,7 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
         }
 
         foreach ($allowedFiles as $file) {
-            $result[] = $this->mutateFile($file, $args);
+            $result[] = $this->mutateFile($file, $force);
         }
 
         return $result;
