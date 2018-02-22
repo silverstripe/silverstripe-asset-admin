@@ -18,15 +18,16 @@ class GalleryItemDragLayer extends Component {
     if (!this.props.isDragging) {
       return null;
     }
-    const item = this.props.item;
+    const { item } = this.props;
     if (!item.selected) {
       return null;
     }
+    const selectionCount = item.selected.length;
     const shadows = [
-      item.selected.length > 1
+      selectionCount > 1
         ? <div key="1" className="gallery-item__drag-shadow" />
         : null,
-      item.selected.length > 2
+      selectionCount > 2
         ? <div key="2" className="gallery-item__drag-shadow gallery-item__drag-shadow--second" />
         : null,
     ];
@@ -38,12 +39,12 @@ class GalleryItemDragLayer extends Component {
             {shadows}
             <GalleryItem {...item.props} isDragging />
           </div>
-          {item.selected.length > 1
+          {selectionCount > 1
             ? (
               <Badge
                 className="gallery-item__drag-layer-count"
                 status="info"
-                message={`${item.selected.length}`}
+                message={`${selectionCount}`}
               />
             )
             : null
