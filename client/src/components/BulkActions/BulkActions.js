@@ -83,6 +83,7 @@ class BulkActions extends Component {
       }
 
       const className = classnames(
+        'btn',
         'bulk-actions__action',
         'ss-ui-button',
         'ui-corner-all',
@@ -116,7 +117,7 @@ class BulkActions extends Component {
             <PopoverField
               id="BulkActions"
               popoverClassName="bulk-actions__more-actions-menu"
-              container={this}
+              container={this.props.container}
               data={{ placement: 'bottom' }}
             >
               {children.slice(2)}

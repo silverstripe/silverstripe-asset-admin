@@ -665,11 +665,14 @@ class Gallery extends Component {
       .map(id => allFiles.find(file => file && id === file.id))
       .filter(item => item);
     if (selectedFileObjs.length > 0 && this.props.type === 'admin') {
-      return (<BulkActions
-        actions={actions}
-        items={selectedFileObjs}
-        key={selectedFileObjs.length > 0}
-      />);
+      return (
+        <BulkActions
+          actions={actions}
+          items={selectedFileObjs}
+          key={selectedFileObjs.length > 0}
+          container={this.gallery}
+        />
+      );
     }
 
     return null;
@@ -845,7 +848,10 @@ class Gallery extends Component {
     }
 
     return (
-      <div className="flexbox-area-grow gallery__outer">
+      <div
+        className="flexbox-area-grow gallery__outer"
+        ref={gallery => { this.gallery = gallery; }}
+      >
         {this.renderTransitionBulkActions()}
         <GalleryDND className={galleryClasses.join(' ')}>
           {this.renderToolbar()}
