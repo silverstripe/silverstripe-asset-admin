@@ -45,7 +45,7 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator
     protected function mutateFile(File $file, $force = false)
     {
         if (!$force && $file->hasExtension(RecursivePublishable::class)) {
-            $owners = $file->findOwners();
+            $owners = $file->findOwners(false);
             if ($owners->exists()) {
                 return new Notice(
                     _t(
