@@ -17,7 +17,7 @@
     "node": ">=6.x"
   },
   "scripts": {
-    "build": "yarn && yarn test && NODE_ENV=production webpack -p --bail --progress",
+    "build": "yarn && yarn lint && yarn test && NODE_ENV=production webpack -p --bail --progress",
     "dev": "NODE_ENV=development webpack --progress",
     "watch": "NODE_ENV=development webpack --watch --progress",
     "css": "WEBPACK_CHILD=css npm run build",
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@silverstripe/eslint-config": "^0.0.2",
-    "@silverstripe/webpack-config": "^0.5.1",
+    "@silverstripe/webpack-config": "^0.6.0",
     "babel-jest": "^19.0.0",
     "jest-cli": "^19.0.2"
   },

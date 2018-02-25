@@ -49,7 +49,7 @@ describe('BackButton', () => {
     });
 
     it('should have extra classes when "enlarged"', () => {
-      props.enlarged = true;
+      props.isDropping = true;
       const item = ReactTestUtils.renderIntoDocument(
         <BackButton {...props} />
       );

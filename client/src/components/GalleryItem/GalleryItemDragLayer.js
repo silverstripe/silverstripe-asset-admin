@@ -5,9 +5,12 @@ import Badge from 'components/Badge/Badge';
 
 class GalleryItemDragLayer extends Component {
   getOffset() {
-    const offset = this.props.offset;
+    const {
+      offset,
+      dragged,
+    } = this.props;
     return {
-      transform: offset && `translate(${offset.x}px, ${offset.y}px)`,
+      transform: offset && `translate(${offset.x + dragged.x}px, ${offset.y + dragged.y}px)`,
     };
   }
 
@@ -15,27 +18,36 @@ class GalleryItemDragLayer extends Component {
     if (!this.props.isDragging) {
       return null;
     }
-    const item = this.props.item;
+    const { item } = this.props;
     if (!item.selected) {
       return null;
     }
-    const selected = `${item.selected.length}`;
+    const selectionCount = item.selected.length;
+    const shadows = [
+      selectionCount > 1
+        ? <div key="1" className="gallery-item__drag-shadow" />
+        : null,
+      selectionCount > 2
+        ? <div key="2" className="gallery-item__drag-shadow gallery-item__drag-shadow--second" />
+        : null,
+    ];
 
     return (
       <div className="gallery-item__drag-layer">
         <div className="gallery-item__drag-layer-item" style={this.getOffset()}>
-          {selected > 1 && [
-            <div key="1" className="gallery-item__drag-shadow" />,
-            <div key="2" className="gallery-item__drag-shadow gallery-item__drag-shadow--second" />,
-            <div key="3" className="gallery-item__drag-shadow gallery-item__drag-shadow--third" />,
-          ]}
-          <GalleryItem {...item.props} />
-          {selected > 1 &&
-            <Badge
-              className="gallery-item__drag-layer-count"
-              status="primary"
-              message={selected}
-            />
+          <div className="gallery-item__drag-layer-preview">
+            {shadows}
+            <GalleryItem {...item.props} isDragging />
+          </div>
+          {selectionCount > 1
+            ? (
+              <Badge
+                className="gallery-item__drag-layer-count"
+                status="info"
+                message={`${selectionCount}`}
+              />
+            )
+            : null
           }
         </div>
       </div>
@@ -52,10 +64,10 @@ GalleryItemDragLayer.propTypes = {
   isDragging: PropTypes.bool.isRequired,
 };
 
-
 const collect = (monitor) => ({
   item: monitor.getItem(),
-  offset: monitor.getSourceClientOffset(),
+  offset: monitor.getInitialClientOffset(),
+  dragged: monitor.getDifferenceFromInitialOffset(),
   isDragging: monitor.isDragging(),
 });
 

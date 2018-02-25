@@ -2,25 +2,34 @@
 import React, { PropTypes, Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import classnames from 'classnames';
 import GalleryItemDragLayer from 'components/GalleryItem/GalleryItemDragLayer';
-
-let capturedManager = null;
 
 // add middleware to capture the manager that is to be used
 // eslint-disable-next-line new-cap
-const context = DragDropContext((manager) => {
-  capturedManager = manager;
-  // eslint-disable-next-line new-cap
-  return HTML5Backend(manager);
-});
+const context = DragDropContext(HTML5Backend);
 
 /**
  * Wrapper stateless component, this is primarily to apply the HOC for drag and drop
  */
 class GalleryDND extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dragging: false,
+    };
+  }
   componentDidMount() {
-    // workaround for dropzone using `e.stopPropagation()` when a file is dropped to be uploaded
     window.addEventListener('drop', this.handleDrop, true);
+  }
+
+  componentWillUpdate() {
+    setTimeout(() => {
+      const manager = this.context.dragDropManager;
+      // isDragging only updates after one render cycle, which makes this throttle necessary
+      this.setState({ dragging: manager.monitor.isDragging() });
+    });
   }
 
   componentWillUnmount() {
@@ -28,7 +37,8 @@ class GalleryDND extends Component {
   }
 
   handleDrop() {
-    const backend = capturedManager && capturedManager.backend;
+    const manager = this.context.dragDropManager;
+    const backend = manager && manager.backend;
 
     if (backend && backend.isDraggingNativeItem()) {
       backend.endDragNativeItem();
@@ -40,14 +50,18 @@ class GalleryDND extends Component {
       className,
       children,
     } = this.props;
+
     return (
-      <div className={className}>
+      <div className={classnames(className, { 'gallery__main--dragging': this.state.dragging })}>
         {children}
         <GalleryItemDragLayer />
       </div>
     );
   }
 }
+GalleryDND.contextTypes = {
+  dragDropManager: PropTypes.object,
+};
 
 GalleryDND.propTypes = {
   className: PropTypes.string,
