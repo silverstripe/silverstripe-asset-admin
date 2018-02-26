@@ -37,7 +37,8 @@ const initialState = {
       direction: 'asc',
       label: i18n._t('AssetAdmin.FILTER_DATE_ASC', 'oldest'),
     },
-  ]
+  ],
+  lastSelected: null,
 };
 
 /**
@@ -49,6 +50,12 @@ const initialState = {
  */
 export default function galleryReducer(state = initialState, { type, payload } = {}) {
   switch (type) {
+    case GALLERY.SET_LAST_SELECTED: {
+      return {
+        ...state,
+        lastSelected: payload.id,
+      };
+    }
     case GALLERY.SET_FILE_BADGE: {
       return {
         ...state,

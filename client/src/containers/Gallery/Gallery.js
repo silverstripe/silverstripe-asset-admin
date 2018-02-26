@@ -167,6 +167,36 @@ class Gallery extends Component {
   }
 
   /**
+   * Calculates the items that are selected between two given item ids, this is primarily used when
+   * holding down the shift key while selecting.
+   *
+   * @param firstId
+   * @param lastId
+   * @return {Array}
+   */
+  getSelection(firstId, lastId) {
+    const files = this.props.files;
+    const indexes = [firstId, lastId]
+      .filter(id => id)
+      .map(id => files.findIndex(file => file.id === id))
+      .filter(index => index !== -1)
+      .sort((a, b) => a - b);
+
+    // expect both indexes found
+    if (indexes.length !== 2) {
+      return indexes.map(index => files[index].id);
+    }
+
+    // get the items between the two indexes found, inclusive
+    const [firstIndex, lastIndex] = indexes;
+    return files
+      .filter((file, index) => (
+        index >= firstIndex && index <= lastIndex
+      ))
+      .map(file => file.id);
+  }
+
+  /**
    * Delete a list of items
    * @param {Array} items
    * @returns {Promise}
@@ -398,8 +428,18 @@ class Gallery extends Component {
    * Toggle concatenating selected items based on the key event
    * @param e
    */
-  toggleSelectConcat(e) {
-    this.props.actions.gallery.setConcatenateSelect(e.metaKey || e.ctrlKey);
+  toggleSelectConcat(event) {
+    this.props.actions.gallery.setConcatenateSelect(this.isConcat(event));
+  }
+
+  /**
+   * Determines whether concat should happen
+   *
+   * @param event Event
+   * @return {boolean}
+   */
+  isConcat(event) {
+    return event.metaKey || event.ctrlKey || event.shiftKey;
   }
 
   /**
@@ -430,10 +470,11 @@ class Gallery extends Component {
    * Handles the lasso selection of items from <SelectionGroup />
    *
    * @param items
+   * @param event Event
    */
-  handleGroupSelect(items) {
+  handleGroupSelect(items, event) {
     const { deselectFiles, selectFiles } = this.props.actions.gallery;
-    if (!this.props.concatenateSelect) {
+    if (!this.props.concatenateSelect && !this.isConcat(event)) {
       deselectFiles(null);
     }
 
@@ -479,15 +520,22 @@ class Gallery extends Component {
 
   /**
    * Handles the user toggling the selected/deselected state of a file or folder.
+   * Holding shift when selecting multiple items will select items between those multiple items.
    *
    * @param {Object} event - Event object.
    * @param {Object} item - The item being selected/deselected
    */
   handleSelect(event, item) {
     if (this.props.selectedFiles.indexOf(item.id) === -1) {
-      this.props.actions.gallery.selectFiles([item.id]);
+      const selection = (event.shiftKey)
+        ? this.getSelection(this.props.lastSelected, item.id)
+        : [item.id];
+
+      this.props.actions.gallery.selectFiles(selection);
+      this.props.actions.gallery.setLastSelected(item.id);
     } else {
       this.props.actions.gallery.deselectFiles([item.id]);
+      this.props.actions.gallery.setLastSelected(null);
     }
   }
 
@@ -798,12 +846,6 @@ class Gallery extends Component {
 
     return (
       <div className="flexbox-area-grow gallery__outer">
-        <MoveModal
-          sectionConfig={this.props.sectionConfig}
-          folderId={this.props.folderId}
-          onSuccess={this.props.onMoveFilesSuccess}
-          onOpenFolder={this.props.onOpenFolder}
-        />
         {this.renderTransitionBulkActions()}
         <GalleryDND className={galleryClasses.join(' ')}>
           {this.renderToolbar()}
@@ -840,6 +882,12 @@ class Gallery extends Component {
           <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
           <div key="spinner" className="cms-content-loading-spinner" />,
         ]}
+        <MoveModal
+          sectionConfig={this.props.sectionConfig}
+          folderId={this.props.folderId}
+          onSuccess={this.props.onMoveFilesSuccess}
+          onOpenFolder={this.props.onOpenFolder}
+        />
       </div>
     );
   }
@@ -903,6 +951,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   onUnpublish: React.PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
+  lastSelected: PropTypes.number,
   dialog: PropTypes.bool,
   fileId: PropTypes.number,
   folderId: PropTypes.number.isRequired,
@@ -945,6 +994,7 @@ function mapStateToProps(state, ownProps) {
     concatenateSelect,
     loading,
     sorters,
+    lastSelected,
   } = state.assetAdmin.gallery;
 
   // set default sort
@@ -953,6 +1003,7 @@ function mapStateToProps(state, ownProps) {
   }
 
   return {
+    lastSelected,
     selectedFiles,
     errorMessage,
     noticeMessage,

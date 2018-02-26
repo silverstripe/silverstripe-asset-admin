@@ -20,7 +20,7 @@ export default function droppable(types) {
   const collect = (connect, monitor) => {
     const over = monitor.isOver();
     return {
-      enlarged: over && monitor.canDrop(),
+      isDropping: over && monitor.canDrop(),
       connectDropTarget: connect.dropTarget(),
       isOver: over,
     };

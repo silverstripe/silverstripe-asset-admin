@@ -1,5 +1,14 @@
 import GALLERY from './GalleryActionTypes';
 
+export function setLastSelected(id) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.SET_LAST_SELECTED,
+      payload: { id },
+    });
+  };
+}
+
 /**
  * Updates a file with new data.
  *

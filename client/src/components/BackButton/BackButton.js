@@ -5,7 +5,7 @@ import i18n from 'i18n';
 
 class BackButton extends Component {
   render() {
-    const { enlarged, badge, onClick } = this.props;
+    const { isDropping, badge, onClick } = this.props;
     const classList = [
       'btn',
       'btn-secondary',
@@ -15,7 +15,7 @@ class BackButton extends Component {
       'gallery__back',
     ];
 
-    if (enlarged) {
+    if (isDropping) {
       classList.push('z-depth-1');
       classList.push('gallery__back--droppable-hover');
     }
@@ -46,7 +46,7 @@ class BackButton extends Component {
 
 BackButton.propTypes = {
   onClick: PropTypes.func,
-  enlarged: PropTypes.bool,
+  isDropping: PropTypes.bool,
   badge: PropTypes.shape(Badge.propTypes),
 };
 
