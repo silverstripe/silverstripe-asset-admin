@@ -1,3 +1,4 @@
+/* global alert, confirm */
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -442,9 +443,10 @@ class AssetAdmin extends Component {
    * Unpublish files
    *
    * @param {array} ids
+   * @param {boolean} force
    * @return {Promise}
    */
-  doUnpublish(ids) {
+  doUnpublish(ids, force = false) {
     const files = ids.map(id => {
       const result = this.findFile(id);
       if (!result) {
@@ -457,15 +459,63 @@ class AssetAdmin extends Component {
     });
 
     const fileIDs = files.map(file => file.id);
+    return this.props.actions.files.unpublishFiles(fileIDs, force)
 
-    return this.props.actions.files.unpublishFiles(fileIDs)
-      .then(({ data: { unpublishFiles } }) => (
-        unpublishFiles.map(file => {
+      .then(({ data: { unpublishFiles } }) => {
+        const successes = unpublishFiles.filter(result => result.__typename === 'File');
+        const confirmationRequired = unpublishFiles.filter(result => (
+          result.__typename === 'PublicationNotice' && result.Type === 'HAS_OWNERS'
+        ));
+        const successful = successes.map(file => {
           this.resetFile(file);
           return file;
-        })
-      ));
+        });
+        const displayedMessages = confirmationRequired.slice(0, 4);
+        const rest = confirmationRequired.slice(5);
+        const body = displayedMessages.map(warning => warning.Message);
+        if (rest.length) {
+          body.push(
+            i18n.inject(
+              i18n._t(
+                'AssetAdmin.BULK_OWNED_WARNING_REMAINING',
+                'And {count} other file(s)'
+              ),
+              { count: rest.length },
+            )
+          );
+        }
+        if (displayedMessages.length) {
+          const alertMessage = [
+            i18n.inject(
+              i18n._t(
+                'AssetAdmin.BULK_OWNED_WARNING_HEADING',
+                '{count} file(s) are being used by other published content.'
+              ),
+              { count: confirmationRequired.length },
+            ),
+
+            body.join('\n'),
+
+            i18n._t(
+              'AssetAdmin.BULK_OWNED_WARNING_FOOTER',
+              'Unpublishing will only remove files from the published version of the content. They will remain on the draft version. Unpublish anyway?'
+            )
+          ];
+
+          if (confirm(alertMessage.join('\n\n'))) {
+            const secondPassIDs = confirmationRequired.reduce(
+              (acc, curr) => acc.concat(curr.IDs),
+              []
+            );
+            return this.doUnpublish(secondPassIDs, true)
+              .then(next => successful.concat(next));
+          }
+        }
+
+        return successful;
+      });
   }
+
 
   /**
    * Unpublish files and update the UI
@@ -509,12 +559,16 @@ class AssetAdmin extends Component {
     const fileIDs = files.map(file => file.id);
 
     return this.props.actions.files.publishFiles(fileIDs)
-      .then(({ data: { publishFiles } }) => (
-        publishFiles.map(file => {
+      .then(({ data: { publishFiles } }) => {
+        const successes = publishFiles.filter(result => result.__typename === 'File');
+
+        const successful = successes.map(file => {
           this.resetFile(file);
           return file;
-        })
-      ));
+        });
+
+        return successful;
+      });
   }
 
   /**

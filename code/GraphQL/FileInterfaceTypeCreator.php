@@ -6,6 +6,7 @@ use SilverStripe\GraphQL\DataObjectInterfaceTypeCreator;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Versioned\RecursivePublishable;
 
 /**
  * @skipUpgrade

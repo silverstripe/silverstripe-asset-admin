@@ -15,3 +15,10 @@ SilverStripe\Assets\Image:
     FileHash: 906835357dbe9118937789e4dd4576a1c17de923
     Name: testimage.jpg
     ParentID: =>SilverStripe\Assets\Folder.parent
+SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest\FileOwner:
+  owner1:
+    Title: 'My banner 1'
+    OwnedFile: =>SilverStripe\Assets\File.file1
+  owner2:
+    Title: 'My banner 2'
+    OwnedFile: =>SilverStripe\Assets\File.file1
