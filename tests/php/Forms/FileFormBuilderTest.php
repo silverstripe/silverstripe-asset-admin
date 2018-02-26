@@ -241,8 +241,11 @@ class FileFormBuilderTest extends SapphireTest
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
-        $form = $builder->getForm($controller, 'EditForm',
-            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]);
+        $form = $builder->getForm(
+            $controller,
+            'EditForm',
+            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]
+        );
 
         // Check thumbnail
         // Note: force_resample is turned off for testing
@@ -261,8 +264,11 @@ class FileFormBuilderTest extends SapphireTest
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
-        $form = $builder->getForm($controller, 'EditForm',
-            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]);
+        $form = $builder->getForm(
+            $controller,
+            'EditForm',
+            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]
+        );
 
         // Ensure "insert" button does not exist
         $this->assertFalse($image->canView());
@@ -276,8 +282,11 @@ class FileFormBuilderTest extends SapphireTest
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
-        $form = $builder->getForm($controller, 'EditForm',
-            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_LINK, 'RequireLinkText' => false]);
+        $form = $builder->getForm(
+            $controller,
+            'EditForm',
+            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_LINK, 'RequireLinkText' => false]
+        );
 
         // Ensure form contains correct fields
         $this->assertNotNull($form->Fields()->dataFieldByName('Description'));
