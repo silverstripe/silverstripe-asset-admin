@@ -148,7 +148,7 @@ Feature: Manage files
       And I should see an ".bulk-actions__action[value='unpublish']" element
     When I check the file named "testfile" in the gallery
     And I press the "BulkActions" button
-    And I press the "Unpublish" button, confirming the dialog
+    And I press the "Unpublish" button
       Then I should see an ".message-box.message-box--success" element
     When I check the file named "file2" in the gallery
     And I check the file named "testfile" in the gallery
