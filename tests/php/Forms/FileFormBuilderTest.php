@@ -15,26 +15,36 @@ use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\RecursivePublishable;
+use SilverStripe\Versioned\Versioned;
 
 class FileFormBuilderTest extends SapphireTest
 {
     protected static $fixture_file = 'FileFormBuilderTest.yml';
 
+    protected static $extra_dataobjects = [
+        FileFormBuilderTest\FileOwner::class,
+    ];
+
     public function setUp()
     {
         parent::setUp();
+
+        // Dynamically assign fileowner as owner (otherwise it pollutes other tests)
+        FileFormBuilderTest\FileOwner::config()->set('owns', ['OwnedFile']);
 
         // Set backend and base url
         TestAssetStore::activate('FileFormBuilderTest');
 
         /** @var File $testfile */
         $testfile = $this->objFromFixture(File::class, 'file1');
-        $testfile->setFromLocalFile(__DIR__ .'/fixtures/testfile.txt', 'files/testfile.txt');
+        $testfile->setFromLocalFile(__DIR__ . '/fixtures/testfile.txt', 'files/testfile.txt');
         $testfile->write();
 
         /** @var Image $testimage */
         $testimage = $this->objFromFixture(Image::class, 'image1');
-        $testimage->setFromLocalFile(__DIR__.'/fixtures/testimage.png', 'files/testimage.png');
+        $testimage->setFromLocalFile(__DIR__ . '/fixtures/testimage.png', 'files/testimage.png');
     }
 
     public function tearDown()
@@ -95,7 +105,7 @@ class FileFormBuilderTest extends SapphireTest
         Config::modify()->merge(
             FileFormFactory::class,
             'extensions',
-            [ CampaignAdminExtension::class ]
+            [CampaignAdminExtension::class]
         );
 
         $builder = new FileFormFactory();
@@ -154,6 +164,32 @@ class FileFormBuilderTest extends SapphireTest
         File::remove_extension(FileExtension::class);
     }
 
+    /**
+     * Ensure unpublish has owner count
+     */
+    public function testUnpublishOwners()
+    {
+        $this->logInWithPermission('ADMIN');
+
+        // Publish one of the owners
+        /** @var FileFormBuilderTest\FileOwner $owner1 */
+        $owner1 = $this->objFromFixture(FileFormBuilderTest\FileOwner::class, 'owner1');
+        $owner1->publishSingle();
+
+        /** @var File $file */
+        $file = $this->objFromFixture(File::class, 'file1');
+        $file->publishSingle();
+
+        // Build new form
+        $controller = new AssetAdmin();
+        $builder = new FileFormFactory();
+
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
+        $unpublishAction = $form->Actions()->fieldByName('PopoverActions.action_unpublish');
+        $this->assertNotNull($unpublishAction);
+        $this->assertEquals(1, $unpublishAction->getSchemaData()['data']['owners']);
+    }
+
     public function testCreateFileForm()
     {
         $this->logInWithPermission('ADMIN');
@@ -205,7 +241,8 @@ class FileFormBuilderTest extends SapphireTest
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]);
+        $form = $builder->getForm($controller, 'EditForm',
+            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]);
 
         // Check thumbnail
         // Note: force_resample is turned off for testing
@@ -224,7 +261,8 @@ class FileFormBuilderTest extends SapphireTest
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]);
+        $form = $builder->getForm($controller, 'EditForm',
+            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_MEDIA]);
 
         // Ensure "insert" button does not exist
         $this->assertFalse($image->canView());
@@ -238,7 +276,8 @@ class FileFormBuilderTest extends SapphireTest
         $image = $this->objFromFixture(Image::class, 'image1');
         $controller = new AssetAdmin();
         $builder = new ImageFormFactory();
-        $form = $builder->getForm($controller, 'EditForm', ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_LINK, 'RequireLinkText' => false]);
+        $form = $builder->getForm($controller, 'EditForm',
+            ['Record' => $image, 'Type' => FileFormFactory::TYPE_INSERT_LINK, 'RequireLinkText' => false]);
 
         // Ensure form contains correct fields
         $this->assertNotNull($form->Fields()->dataFieldByName('Description'));

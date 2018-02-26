@@ -100,7 +100,6 @@ en:
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'File or Folder could not be found'
   SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
-    OWNER_WARNING: 'File "{file}" is used in {count} place|File {file} is used in {count} places.'
-
-
-
+    OWNER_WARNING:
+      one: 'File "{file}" is used in {count} place.'
+      other: 'File "{file}" is used in {count} places.'

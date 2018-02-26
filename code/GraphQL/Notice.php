@@ -2,8 +2,10 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
-use Psr\Log\LogLevel;
-
+/**
+ * Represents a notice related to a graphql Action. This could be a failure,
+ * warning, or recoverable query (e.g. "are you sure you want to publish this item?")
+ */
 class Notice
 {
     /**
@@ -12,6 +14,8 @@ class Notice
     protected $type;
 
     /**
+     * IDs of records this notice relateds to
+     *
      * @var array
      */
     protected $ids = [];
@@ -22,7 +26,8 @@ class Notice
     protected $message;
 
     /**
-     * MutationException constructor.
+     * Notice constructor.
+     *
      * @param string $message
      * @param int $type
      * @param array $ids
@@ -43,7 +48,7 @@ class Notice
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return $this
      */
     public function setType($type)
@@ -62,7 +67,7 @@ class Notice
     }
 
     /**
-     * @param $ids
+     * @param array $ids
      * @return $this
      */
     public function setIDs($ids)
