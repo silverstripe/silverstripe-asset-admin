@@ -8,13 +8,34 @@ import fieldHolder from 'components/FieldHolder/FieldHolder';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 
+/**
+ * Check if two arrays of file objects have different id keys
+ *
+ * @param {Array} left
+ * @param {Array} right
+ */
+function compareValues(left, right) {
+  // Check length
+  if (left.length !== right.length) {
+    return true;
+  }
+  // Check ids appear in the same order
+  for (let i = 0; i < left.length; i++) {
+    if (left[i].id !== right[i].id) {
+      return true;
+    }
+  }
+  return false;
+}
+
 class UploadField extends Component {
   constructor(props) {
     super(props);
     this.renderChild = this.renderChild.bind(this);
     this.handleAddShow = this.handleAddShow.bind(this);
-    this.handleAddHide = this.handleAddHide.bind(this);
+    this.handleHide = this.handleHide.bind(this);
     this.handleAddInsert = this.handleAddInsert.bind(this);
+    this.handleInsertMany = this.handleInsertMany.bind(this);
     this.handleAddedFile = this.handleAddedFile.bind(this);
     this.handleSending = this.handleSending.bind(this);
     this.handleUploadProgress = this.handleUploadProgress.bind(this);
@@ -43,31 +64,19 @@ class UploadField extends Component {
     // Propegate redux state changes to redux-from value for this field
     const existingFiles = this.props.files || [];
     const newFiles = nextProps.files || [];
-    const filesChanged = this.compareValues(existingFiles, newFiles);
+    const filesChanged = compareValues(existingFiles, newFiles);
 
     if (filesChanged) {
       this.handleChange(nextProps);
     }
   }
 
-  /**
-   * Check if two arrays of file objects have different id keys
-   *
-   * @param {Array} left
-   * @param {Array} right
-   */
-  compareValues(left, right) {
-    // Check length
-    if (left.length !== right.length) {
-      return true;
-    }
-    // Check ids appear in the same order
-    for (let i = 0; i < left.length; i++) {
-      if (left[i].id !== right[i].id) {
-        return true;
-      }
-    }
-    return false;
+  getMaxFiles() {
+    const maxFiles = this.props.data.multi ? this.props.data.maxFiles : 1;
+    const filesCount = this.props.files.filter(file => !file.message || file.message.type !== 'error').length;
+    const allowed = maxFiles > 0 ? Math.max(maxFiles - filesCount, 0) : null;
+
+    return allowed;
   }
 
   handleAddedFile(data) {
@@ -161,7 +170,7 @@ class UploadField extends Component {
    *
    * @param {Object} event - Click event
    */
-  handleSelect(event) {
+  handleUploadButton(event) {
     event.preventDefault();
   }
 
@@ -181,7 +190,7 @@ class UploadField extends Component {
   /**
    * Close 'add from files' dialog
    */
-  handleAddHide() {
+  handleHide() {
     this.setState({
       selecting: false,
       selectingItem: null,
@@ -196,9 +205,21 @@ class UploadField extends Component {
    */
   handleAddInsert(data, file) {
     this.props.actions.uploadField.addFile(this.props.id, file);
-    this.handleAddHide();
+    this.handleHide();
 
     return Promise.resolve({});
+  }
+
+  handleInsertMany(files) {
+    const { selectingItem } = this.state;
+    if (selectingItem) {
+      this.handleReplace(null, files[0]);
+      this.handleHide();
+      return;
+    }
+    files.forEach(file => {
+      this.handleAddInsert(null, file);
+    });
   }
 
   /**
@@ -209,13 +230,22 @@ class UploadField extends Component {
    */
   handleReplace(data, file) {
     const { selectingItem } = this.state;
-    const { id, actions: { uploadField: { addFile, removeFile } } } = this.props;
+    const {
+      id,
+      actions: {
+        uploadField: {
+          addFile,
+          removeFile,
+        },
+      },
+    } = this.props;
+
     if (!selectingItem) {
       throw new Error('Tried to replace a file when none was selected.');
     }
     removeFile(id, selectingItem);
     addFile(id, file);
-    this.handleAddHide();
+    this.handleHide();
 
     return Promise.resolve({});
   }
@@ -263,17 +293,22 @@ class UploadField extends Component {
       height: CONSTANTS.SMALL_THUMBNAIL_HEIGHT,
       width: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
     };
-    const maxFiles = this.props.data.multi ? this.props.data.maxFiles : 1;
-    const filesCount = this.props.files.filter(file => !file.message || file.message.type !== 'error').length;
-    const allowed = maxFiles > 0 ? Math.max(maxFiles - filesCount, 0) : null;
+    const maxFiles = this.getMaxFiles();
     const dropzoneOptions = {
       url: this.props.data.createFileEndpoint.url,
       method: this.props.data.createFileEndpoint.method,
       paramName: 'Upload',
-      maxFiles: allowed,
+      maxFiles,
       thumbnailWidth: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
       thumbnailHeight: CONSTANTS.SMALL_THUMBNAIL_HEIGHT,
     };
+
+    // If single upload and there is a file, don't render dropzone
+    const classNames = ['uploadfield__dropzone'];
+    if (maxFiles === 0) {
+      // needs to be hidden instead of removed from the DOM for upload progress on the last item.
+      classNames.push('uploadfield__dropzone--hidden');
+    }
 
     // Handle readonly field
     if (!this.canEdit()) {
@@ -285,12 +320,6 @@ class UploadField extends Component {
       );
     }
 
-    // If single upload and there is a file, don't render dropzone
-    const classNames = ['uploadfield__dropzone'];
-    if (allowed === 0) {
-      classNames.push('uploadfield__dropzone--hidden');
-    }
-
     const securityID = this.props.securityId;
     const options = [];
     if (this.canUpload()) {
@@ -298,7 +327,7 @@ class UploadField extends Component {
         <button
           key="uploadbutton"
           type="button"
-          onClick={this.handleSelect}
+          onClick={this.handleUploadButton}
           className="uploadfield__upload-button"
         >
           {i18n._t('AssetAdmin.BROWSE', 'Browse')}
@@ -351,13 +380,16 @@ class UploadField extends Component {
   renderDialog() {
     const { InsertMediaModal } = this.props;
     const { selecting, selectingItem } = this.state;
+    const maxFiles = this.getMaxFiles();
 
     return (
       <InsertMediaModal
         title={false}
         isOpen={selecting}
         onInsert={selectingItem ? this.handleReplace : this.handleAddInsert}
-        onClosed={this.handleAddHide}
+        onClosed={this.handleHide}
+        onInsertMany={this.handleInsertMany}
+        maxFiles={selectingItem ? 1 : maxFiles}
         type="select"
         bodyClassName="modal__dialog"
         className="insert-media-react__dialog-wrapper"
@@ -408,6 +440,7 @@ UploadField.propTypes = {
   readOnly: PropTypes.bool,
   disabled: PropTypes.bool,
   data: PropTypes.shape({
+    files: PropTypes.arrayOf(fileShape),
     createFileEndpoint: PropTypes.shape({
       url: PropTypes.string.isRequired,
       method: PropTypes.string.isRequired,
@@ -417,6 +450,7 @@ UploadField.propTypes = {
     parentid: PropTypes.number,
     canUpload: PropTypes.bool,
     canAttach: PropTypes.bool,
+    maxFiles: PropTypes.number,
   }),
   UploadFieldItem: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   AssetDropzone: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),

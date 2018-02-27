@@ -49,6 +49,7 @@ class Gallery extends Component {
     this.handleBulkUnpublish = this.handleBulkUnpublish.bind(this);
     this.handleBulkDelete = this.handleBulkDelete.bind(this);
     this.handleBulkMove = this.handleBulkMove.bind(this);
+    this.handleBulkInsert = this.handleBulkInsert.bind(this);
     this.handleGroupSelect = this.handleGroupSelect.bind(this);
     this.handleClearSelection = this.handleClearSelection.bind(this);
     this.toggleSelectConcat = this.toggleSelectConcat.bind(this);
@@ -178,7 +179,10 @@ class Gallery extends Component {
     const files = this.props.files;
     const indexes = [firstId, lastId]
       .filter(id => id)
-      .map(id => files.findIndex(file => file.id === id))
+      .map(id => files.findIndex(file => (
+        file.id === id &&
+        (this.props.type !== 'select' || file.type !== 'folder')
+      )))
       .filter(index => index !== -1)
       .sort((a, b) => a - b);
 
@@ -191,9 +195,14 @@ class Gallery extends Component {
     const [firstIndex, lastIndex] = indexes;
     return files
       .filter((file, index) => (
-        index >= firstIndex && index <= lastIndex
+        index >= firstIndex && index <= lastIndex &&
+        (this.props.type !== 'select' || file.type !== 'folder')
       ))
       .map(file => file.id);
+  }
+
+  handleBulkInsert(items) {
+    this.props.onInsertMany(items);
   }
 
   /**
@@ -474,11 +483,30 @@ class Gallery extends Component {
    */
   handleGroupSelect(items, event) {
     const { deselectFiles, selectFiles } = this.props.actions.gallery;
+    const selectItems = items
+      .filter((id, index) => {
+        if (items.indexOf(id) !== index) {
+          return false;
+        }
+        const item = this.props.files.find(file => file.id === id);
+
+        if (!item) {
+          return false;
+        }
+
+        return (this.props.type !== 'select' || item.type !== 'folder');
+      });
+
     if (!this.props.concatenateSelect && !this.isConcat(event)) {
       deselectFiles(null);
     }
 
-    selectFiles(items.filter((id, index) => items.indexOf(id) === index));
+    // do not select if over the max allowable selection
+    if (selectItems.length >= this.props.maxFilesSelect && this.props.maxFilesSelect !== null) {
+      return;
+    }
+
+    selectFiles(selectItems);
   }
 
   /**
@@ -515,6 +543,10 @@ class Gallery extends Component {
       return;
     }
 
+    if (!this.props.selectedFiles.length && this.props.type === 'select') {
+      this.handleSelect({}, file);
+    }
+
     this.props.onOpenFile(file.id, file);
   }
 
@@ -526,10 +558,29 @@ class Gallery extends Component {
    * @param {Object} item - The item being selected/deselected
    */
   handleSelect(event, item) {
+    const maxFiles = this.props.maxFilesSelect;
+
+    // switch to the new item if it's only one files allowed
+    if (maxFiles === 1) {
+      this.props.actions.gallery.deselectFiles(null);
+      if (this.props.type !== 'select' || item.type !== 'folder') {
+        this.props.actions.gallery.selectFiles([item.id]);
+      }
+      return;
+    }
+
     if (this.props.selectedFiles.indexOf(item.id) === -1) {
       const selection = (event.shiftKey)
         ? this.getSelection(this.props.lastSelected, item.id)
-        : [item.id];
+        : this.getSelection(item.id);
+
+      const totalSelected = this.props.selectedFiles
+        .filter(id => !selection.includes(id))
+        .concat(selection);
+
+      if (totalSelected.length > maxFiles && maxFiles !== null) {
+        return;
+      }
 
       this.props.actions.gallery.selectFiles(selection);
       this.props.actions.gallery.setLastSelected(item.id);
@@ -563,7 +614,7 @@ class Gallery extends Component {
   }
 
   handleBulkEdit(items) {
-    this.props.onOpenFile(items[0].id);
+    this.handleOpenFile(items[0]);
   }
 
   handleBulkMove() {
@@ -609,19 +660,15 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderTransitionBulkActions() {
-    if (this.props.type === 'admin') {
-      return (
-        <ReactCSSTransitionGroup
-          transitionName="bulk-actions"
-          transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-          transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-        >
-          {this.renderBulkActions()}
-        </ReactCSSTransitionGroup>
-      );
-    }
-
-    return null;
+    return (
+      <ReactCSSTransitionGroup
+        transitionName="bulk-actions"
+        transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
+        transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
+      >
+        {this.renderBulkActions()}
+      </ReactCSSTransitionGroup>
+    );
   }
 
   /**
@@ -631,8 +678,16 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderBulkActions() {
-    const actions = CONSTANTS.BULK_ACTIONS.map((action) => {
-      if (!action.callback) {
+    const actionFilter = (this.props.type === 'select')
+      ? action => action.value === 'insert'
+      : action => action.value !== 'insert';
+
+    const actions = CONSTANTS.BULK_ACTIONS
+      .filter(actionFilter)
+      .map((action) => {
+        if (action.callback) {
+          return action;
+        }
         switch (action.value) {
           case 'delete': {
             return { ...action, callback: this.handleBulkDelete };
@@ -649,13 +704,14 @@ class Gallery extends Component {
           case 'unpublish': {
             return { ...action, callback: this.handleBulkUnpublish };
           }
+          case 'insert': {
+            return { ...action, callback: this.handleBulkInsert };
+          }
           default: {
             return action;
           }
         }
-      }
-      return action;
-    });
+      });
 
     // Bulk actions can happen for both queuedFiles (after they've completed the upload),
     // and the actual props.files in the current view.
@@ -664,15 +720,15 @@ class Gallery extends Component {
     const selectedFileObjs = this.props.selectedFiles
       .map(id => allFiles.find(file => file && id === file.id))
       .filter(item => item);
-    if (selectedFileObjs.length > 0 && this.props.type === 'admin') {
-      return (
-        <BulkActions
-          actions={actions}
-          items={selectedFileObjs}
-          key={selectedFileObjs.length > 0}
-          container={this.gallery}
-        />
-      );
+
+    if (selectedFileObjs.length > 0 && ['admin', 'select'].includes(this.props.type)) {
+      return (<BulkActions
+        actions={actions}
+        items={selectedFileObjs}
+        total={this.props.maxFilesSelect}
+        key={selectedFileObjs.length > 0}
+        container={this.gallery}
+      />);
     }
 
     return null;
@@ -719,7 +775,7 @@ class Gallery extends Component {
     } = this.props;
 
     const props = {
-      selectableItems: type === 'admin',
+      selectableItems: ['admin', 'select'].includes(type),
       files,
       loading,
       page,
@@ -738,6 +794,7 @@ class Gallery extends Component {
       onRemoveErroredUpload: this.handleRemoveErroredUpload,
       onEnableDropzone: this.handleEnableDropzone,
       sectionConfig: this.props.sectionConfig,
+      canDrag: this.props.type === 'admin',
     };
 
     return <GalleryView {...props} />;
@@ -927,6 +984,7 @@ const sharedPropTypes = {
   onOpenFolder: PropTypes.func.isRequired,
   onSort: PropTypes.func.isRequired,
   onSetPage: PropTypes.func.isRequired,
+  maxFilesSelect: PropTypes.number,
 };
 
 const galleryViewDefaultProps = Object.assign({}, sharedDefaultProps, {

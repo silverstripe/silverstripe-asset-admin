@@ -27,11 +27,11 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   if (viewAction === CONSTANTS.ACTIONS.CREATE_FOLDER) {
     schemaUrl = config.form.folderCreateForm.schemaUrl;
     targetId = folderId;
-  } else if (viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
-    // Types are:
-    // 'insert' -> Insert into html area with options
-    // 'select' -> Select a file with no editable fields
-    // 'edit' (default) -> edit files
+
+    return { schemaUrl, targetId };
+  }
+
+  if (viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
     switch (type) {
       case 'insert-media':
         schemaUrl = config.form.fileInsertForm.schemaUrl;
@@ -48,15 +48,33 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
         break;
     }
 
-    if (!fileId) {
-      return {};
+    if (fileId) {
+      targetId = fileId;
+
+      return { schemaUrl, targetId };
     }
-    targetId = fileId;
-  } else {
-    return {};
   }
-  return { schemaUrl, targetId };
+
+  return {};
 }
+
+
+/**
+ * Check if either of the two objects differ
+ *
+ * @param {Object} left
+ * @param {Object} right
+ */
+function compare(left, right) {
+  // Check for falsiness
+  if ((left && !right) || (right && !left)) {
+    return true;
+  }
+
+  // Fall back to object comparison
+  return left && right && (left.id !== right.id || left.name !== right.name);
+}
+
 
 class AssetAdmin extends Component {
   constructor(props) {
@@ -81,18 +99,7 @@ class AssetAdmin extends Component {
     this.handleUpload = this.handleUpload.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
-    this.compare = this.compare.bind(this);
     this.setBreadcrumbs = this.setBreadcrumbs.bind(this);
-  }
-
-  componentWillMount() {
-    const config = this.props.sectionConfig;
-
-    // Build API callers from the URLs provided in configuration.
-    // In time, something like a GraphQL endpoint might be a better way to run.
-    this.endpoints = {
-      historyApi: this.createEndpoint(config.historyEndpoint),
-    };
   }
 
   componentDidMount() {
@@ -100,7 +107,7 @@ class AssetAdmin extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const viewChanged = this.compare(this.props.folder, props.folder);
+    const viewChanged = compare(this.props.folder, props.folder);
     if (viewChanged || hasFilters(props.query.filter) !== hasFilters(this.props.query.filter)) {
       this.setBreadcrumbs(props);
     }
@@ -299,22 +306,6 @@ class AssetAdmin extends Component {
     } else {
       this.handleOpenFolder(0);
     }
-  }
-
-  /**
-   * Check if either of the two objects differ
-   *
-   * @param {Object} left
-   * @param {Object} right
-   */
-  compare(left, right) {
-    // Check for falsiness
-    if ((left && !right) || (right && !left)) {
-      return true;
-    }
-
-    // Fall back to object comparison
-    return left && right && (left.id !== right.id || left.name !== right.name);
   }
 
   resetFile(file) {
@@ -647,6 +638,7 @@ class AssetAdmin extends Component {
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         onDelete={this.handleDelete}
+        onInsertMany={this.props.onInsertMany}
         onPublish={this.doPublish}
         onUnpublish={this.doUnpublish}
         onOpenFile={this.handleOpenFile}
@@ -661,6 +653,7 @@ class AssetAdmin extends Component {
         sort={sort}
         sectionConfig={config}
         loading={this.props.loading}
+        maxFilesSelect={this.props.maxFiles}
       />
     );
   }
@@ -701,7 +694,7 @@ class AssetAdmin extends Component {
   }
 
   render() {
-    const showBackButton = !!(
+    const showBackButton = Boolean(
       (this.props.folderId)
       || hasFilters(this.props.query.filter)
     );
@@ -741,6 +734,7 @@ AssetAdmin.propTypes = {
   folderId: PropTypes.number,
   onBrowse: PropTypes.func,
   onReplaceUrl: PropTypes.func,
+  onInsertMany: PropTypes.func,
   graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   getUrl: PropTypes.func,
   query: PropTypes.shape({
@@ -766,6 +760,7 @@ AssetAdmin.propTypes = {
   }),
   loading: PropTypes.bool,
   actions: PropTypes.object,
+  maxFiles: PropTypes.number,
 };
 
 AssetAdmin.defaultProps = {
@@ -776,6 +771,7 @@ AssetAdmin.defaultProps = {
     page: 0,
     filter: {},
   },
+  maxFiles: null,
 };
 
 function mapStateToProps(state) {

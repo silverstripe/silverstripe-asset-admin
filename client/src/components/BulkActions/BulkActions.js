@@ -1,5 +1,6 @@
 import $ from 'jquery';
-import React, { Component } from 'react';
+import i18n from 'i18n';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
@@ -11,11 +12,12 @@ class BulkActions extends Component {
     super(props);
 
     this.handleChangeValue = this.handleChangeValue.bind(this);
+    this.renderChild = this.renderChild.bind(this);
   }
 
   componentDidMount() {
     const $select = $(ReactDOM.findDOMNode(this)).find('.dropdown');
-
+console.log($select);
     $select.chosen({
       allow_single_deselect: true,
       disable_search_threshold: 20,
@@ -69,48 +71,68 @@ class BulkActions extends Component {
     return promise;
   }
 
+  renderChild(action, i) {
+    const canApply = (
+      // At least one item is selected
+      this.props.items.length &&
+      // ... and the action applies to all of the selected items
+      (!action.canApply || action.canApply(this.props.items))
+    );
+    if (!canApply) {
+      return '';
+    }
+
+    const className = classnames(
+      'btn',
+      'bulk-actions__action',
+      'ss-ui-button',
+      'ui-corner-all',
+      action.className || 'font-icon-info-circled',
+      {
+        'bulk-actions__action--more': (i > 2),
+      }
+    );
+    return (<button
+      type="button"
+      className={className}
+      key={action.value}
+      onClick={this.handleChangeValue}
+      value={action.value}
+    >
+      {action.label}
+    </button>);
+  }
+
+  getMessage() {
+    const total = this.props.total;
+    if (total === 1 || total === null) {
+      return null;
+    }
+
+    const count = this.props.items.length;
+
+    return (
+      <span className="bulk-actions__limit-message">
+        {this.props.totalReachedMessage}
+      </span>
+    );
+  }
+
   render() {
     // eslint-disable-next-line arrow-body-style
-    const children = this.props.actions.map((action, i) => {
-      const canApply = (
-        // At least one item is selected
-        this.props.items.length &&
-        // ... and the action applies to all of the selected items
-        (!action.canApply || action.canApply(this.props.items))
-      );
-      if (!canApply) {
-        return '';
-      }
-
-      const className = classnames(
-        'btn',
-        'bulk-actions__action',
-        'ss-ui-button',
-        'ui-corner-all',
-        action.className || 'font-icon-info-circled',
-        {
-          'bulk-actions__action--more': (i > 2),
-        }
-      );
-      return (<button
-        type="button"
-        className={className}
-        key={action.value}
-        onClick={this.handleChangeValue}
-        value={action.value}
-      >
-        {action.label}
-      </button>);
-    }).filter(item => item);
+    const children = this.props.actions.map(this.renderChild).filter(item => item);
 
     if (!children.length) {
       return null;
     }
     const { PopoverField } = this.props;
 
+    const count = this.props.items.length;
+    const message = this.getMessage();
+
     return (
       <div className="bulk-actions fieldholder-small btn-group">
-        <div className="bulk-actions-counter">{this.props.items.length}</div>
+        <div className="bulk-actions-counter">{count}</div>
         {children.slice(0, 2)}
         {children.length > 2 && PopoverField
           ? (
@@ -131,23 +153,27 @@ class BulkActions extends Component {
 }
 
 BulkActions.propTypes = {
-  items: React.PropTypes.array,
-  actions: React.PropTypes.arrayOf(React.PropTypes.shape({
-    value: React.PropTypes.string.isRequired,
-    label: React.PropTypes.string.isRequired,
-    className: React.PropTypes.string,
-    destructive: React.PropTypes.bool,
-    callback: React.PropTypes.func,
-    canApply: React.PropTypes.func,
-    confirm: React.PropTypes.func,
+  items: PropTypes.array,
+  actions: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    destructive: PropTypes.bool,
+    callback: PropTypes.func,
+    canApply: PropTypes.func,
+    confirm: PropTypes.func,
   })),
-  PopoverField: React.PropTypes.oneOfType([React.PropTypes.node, React.PropTypes.func]),
+  PopoverField: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  total: PropTypes.number,
+  totalReachedMessage: PropTypes.string,
 };
 
 BulkActions.defaultProps = {
   items: [],
   actions: [],
   PopoverField: null,
+  total: null,
+  totalReachedMessage: i18n._t(''),
 };
 
 function mapStateToProps(state) {

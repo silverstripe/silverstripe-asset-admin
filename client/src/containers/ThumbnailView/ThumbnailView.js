@@ -115,6 +115,7 @@ class ThumbnailView extends Component {
       selectedFiles: this.props.selectedFiles,
       onDrag: this.handleDrag,
       badge,
+      canDrag: this.props.canDrag,
     };
 
     if (item.uploading) {

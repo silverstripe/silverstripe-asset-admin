@@ -279,7 +279,8 @@ class FileFormFactory extends AssetFormFactory
         $record = $context['Record'];
         $type = $this->getFormType($context);
 
-        if ($type === static::TYPE_SELECT || $type === static::TYPE_INSERT_MEDIA) {
+        $actionItems = [];
+        if ($type === static::TYPE_INSERT_MEDIA) {
             $actionItems = array_filter([
                 $this->getInsertAction($record),
             ]);
@@ -287,7 +288,7 @@ class FileFormFactory extends AssetFormFactory
             $actionItems = array_filter([
                 $this->getInsertLinkAction($record),
             ]);
-        } else {
+        } elseif ($type !== static::TYPE_SELECT) {
             $actionItems = array_filter([
                 $this->getSaveAction($record),
                 $this->getPublishAction($record)

@@ -23,12 +23,19 @@ function uploadFieldReducer(state = initialState, action) {
   // Update state for this field
   switch (action.type) {
     case ACTION_TYPES.UPLOADFIELD_ADD_FILE:
-      return reduceField((field) => ({
-        files: [
-          ...(field.files),
-          Object.assign({}, fileStructure, action.payload.file),
-        ],
-      }));
+      return reduceField((field) => {
+        // don't re-add
+        if (field.files.find(file => file.id === action.payload.file.id)) {
+          return field;
+        }
+        return {
+          ...field,
+          files: [
+            ...field.files,
+            { ...fileStructure, ...action.payload.file },
+          ],
+        };
+      });
 
     case ACTION_TYPES.UPLOADFIELD_SET_FILES:
       return reduceField(() => ({ files: action.payload.files }));

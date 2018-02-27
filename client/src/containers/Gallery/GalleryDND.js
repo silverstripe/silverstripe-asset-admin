@@ -19,13 +19,19 @@ class GalleryDND extends Component {
     this.state = {
       dragging: false,
     };
+    this.mounted = false;
   }
+
   componentDidMount() {
+    this.mounted = true;
     window.addEventListener('drop', this.handleDrop, true);
   }
 
   componentWillUpdate() {
     setTimeout(() => {
+      if (!this.mounted) {
+        return;
+      }
       const manager = this.context.dragDropManager;
       // isDragging only updates after one render cycle, which makes this throttle necessary
       this.setState({ dragging: manager.monitor.isDragging() });
@@ -33,6 +39,7 @@ class GalleryDND extends Component {
   }
 
   componentWillUnmount() {
+    this.mounted = false;
     window.removeEventListener('drop', this.handleDrop, true);
   }
 
