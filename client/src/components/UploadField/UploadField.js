@@ -370,11 +370,12 @@ class UploadField extends Component {
   /**
    *
    * @param {object} item
+   * @param {number} index
    * @returns {object}
    */
-  renderChild(item) {
+  renderChild(item, index) {
     const { UploadFieldItem } = this.props;
-    const itemProps = {
+    const draftProps = {
       // otherwise only one error file is shown and the rest are hidden due to having the same `key`
       key: item.id ? `file-${item.id}` : `queued-${item.queuedId}`,
       item,
@@ -383,6 +384,8 @@ class UploadField extends Component {
       canEdit: this.canEdit(),
       onView: this.handleReplaceShow,
     };
+    const itemProps = this.props.getItemProps(draftProps, index, this.props);
+
     return <UploadFieldItem {...itemProps} />;
   }
 
@@ -421,11 +424,13 @@ UploadField.propTypes = {
   UploadFieldItem: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   AssetDropzone: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   InsertMediaModal: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  getItemProps: PropTypes.func,
 };
 
 UploadField.defaultProps = {
   value: { Files: [] },
   className: '',
+  getItemProps: props => props,
 };
 
 function mapStateToProps(state, ownprops) {
