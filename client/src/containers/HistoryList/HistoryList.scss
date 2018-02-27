@@ -1,5 +1,10 @@
 .history-list {
   position: relative;
+  min-height: 50vh;
+
+  > form {
+    display: block;
+  }
 
   > .list-group {
     margin-top: calc(-#{$panel-padding-y} - 1px);

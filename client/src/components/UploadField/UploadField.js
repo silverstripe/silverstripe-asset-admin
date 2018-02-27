@@ -355,9 +355,9 @@ class UploadField extends Component {
     return (
       <InsertMediaModal
         title={false}
-        show={selecting}
+        isOpen={selecting}
         onInsert={selectingItem ? this.handleReplace : this.handleAddInsert}
-        onHide={this.handleAddHide}
+        onClosed={this.handleAddHide}
         type="select"
         bodyClassName="modal__dialog"
         className="insert-media-react__dialog-wrapper"

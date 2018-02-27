@@ -22,7 +22,7 @@ class MoveModal extends React.Component {
 
   handleSubmit({ FolderID }) {
     const { moveFiles } = this.props.actions.files;
-    const { selectedFiles, onSuccess, onHide, setNotice, setError, setBadge } = this.props;
+    const { selectedFiles, onSuccess, onClosed, setNotice, setError, setBadge } = this.props;
     return moveFiles(FolderID || 0, selectedFiles)
       .then(({ data: { moveFiles: { id, filename } } }) => {
         if (typeof onSuccess === 'function') {
@@ -49,7 +49,7 @@ class MoveModal extends React.Component {
           ),
         });
         this.timeout = setTimeout(() => setNotice(null), CONSTANTS.MOVE_SUCCESS_DURATION);
-        onHide();
+        onClosed();
       })
       .catch(() => {
         setError(i18n._t('AssetAdmin.FAILED_MOVE', 'There was an error moving the selected items.'));
@@ -57,13 +57,13 @@ class MoveModal extends React.Component {
   }
 
   render() {
-    const { show, onHide, title, folderId, sectionConfig } = this.props;
+    const { isOpen, onClosed, title, folderId, sectionConfig } = this.props;
     const { schemaUrl } = sectionConfig.form.moveForm;
     return (
       <FormBuilderModal
         title={title}
-        show={show}
-        onHide={onHide}
+        isOpen={isOpen}
+        onClosed={onClosed}
         onSubmit={this.handleSubmit}
         identifier="AssetAdmin.MoveForm"
         schemaUrl={`${schemaUrl}/${folderId}`}
@@ -75,8 +75,8 @@ class MoveModal extends React.Component {
 MoveModal.propTypes = {
   sectionConfig: configShape,
   folderId: React.PropTypes.number.isRequired,
-  show: React.PropTypes.bool,
-  onHide: React.PropTypes.func,
+  isOpen: React.PropTypes.bool,
+  onClosed: React.PropTypes.func,
   setNotice: React.PropTypes.func,
   setBadge: React.PropTypes.func,
   setError: React.PropTypes.func,
@@ -92,13 +92,13 @@ MoveModal.propTypes = {
 };
 
 MoveModal.defaultProps = {
-  show: false,
+  isOpen: false,
 };
 
 function mapStateToProps(state) {
   const { modal, selectedFiles } = state.assetAdmin.gallery;
   return {
-    show: modal === CONSTANTS.MODAL_MOVE,
+    isOpen: modal === CONSTANTS.MODAL_MOVE,
     selectedFiles,
     title: i18n.sprintf(
       i18n._t('AssetAdmin.MOVE_ITEMS_TO', 'Move %s item(s) to...'),
@@ -109,7 +109,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onHide() {
+    onClosed() {
       dispatch(deactivateModal());
     },
     setNotice(msg) {

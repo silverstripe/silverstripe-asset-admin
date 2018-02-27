@@ -16,13 +16,13 @@ class InsertMediaModal extends Component {
   }
 
   componentDidMount() {
-    const { show, onBrowse, setOverrides, fileAttributes, folderId } = this.props;
+    const { isOpen, onBrowse, setOverrides, fileAttributes, folderId } = this.props;
 
-    if (!show) {
+    if (!isOpen) {
       onBrowse(0);
     }
     if (typeof setOverrides === 'function'
-      && show
+      && isOpen
       && fileAttributes.ID
     ) {
       setOverrides(this.props);
@@ -31,12 +31,12 @@ class InsertMediaModal extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (!props.show && this.props.show) {
+    if (!props.isOpen && this.props.isOpen) {
       props.onBrowse(0);
     }
     if (typeof this.props.setOverrides === 'function' &&
-      props.show &&
-      !this.props.show
+      props.isOpen &&
+      !this.props.isOpen
     ) {
       this.props.setOverrides(props);
       props.onBrowse(props.folderId, props.fileAttributes ? props.fileAttributes.ID : null);
@@ -68,10 +68,10 @@ class InsertMediaModal extends Component {
       this.props,
       {
         className: `insert-media-modal ${this.props.className}`,
-        bsSize: 'lg',
+        size: 'lg',
+        showCloseButton: false
       }
     );
-    delete props.onHide;
     delete props.onInsert;
     delete props.sectionConfig;
     delete props.schemaUrl;
@@ -100,7 +100,7 @@ class InsertMediaModal extends Component {
       <button
         type="button"
         className="close insert-media-modal__close-button"
-        onClick={this.props.onHide}
+        onClick={this.props.onClosed}
         aria-label={i18n._t('FormBuilderModal.CLOSE', 'Close')}
       >
         <span aria-hidden="true">×</span>
@@ -111,7 +111,7 @@ class InsertMediaModal extends Component {
   render() {
     const modalProps = this.getModalProps();
     const sectionProps = this.getSectionProps();
-    const assetAdmin = (this.props.show) ? <AssetAdmin {...sectionProps} /> : null;
+    const assetAdmin = (this.props.isOpen) ? <AssetAdmin {...sectionProps} /> : null;
 
     return (
       <FormBuilderModal {...modalProps} >
@@ -128,7 +128,7 @@ InsertMediaModal.propTypes = {
   }),
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   schemaUrl: PropTypes.string,
-  show: PropTypes.bool,
+  isOpen: PropTypes.bool,
   setOverrides: PropTypes.func,
   onInsert: PropTypes.func.isRequired,
   fileAttributes: PropTypes.shape({
@@ -147,7 +147,7 @@ InsertMediaModal.propTypes = {
   query: PropTypes.object,
   getUrl: PropTypes.func,
   onBrowse: PropTypes.func.isRequired,
-  onHide: PropTypes.func,
+  onClosed: PropTypes.func,
   className: PropTypes.string,
   actions: PropTypes.object,
 };
