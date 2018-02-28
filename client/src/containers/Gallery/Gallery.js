@@ -543,7 +543,9 @@ class Gallery extends Component {
       return;
     }
 
-    if (!this.props.selectedFiles.length && this.props.type === 'select') {
+    if ((!this.props.selectedFiles.length || this.props.maxFilesSelect === 1) &&
+      this.props.type === 'select'
+    ) {
       this.handleSelect({}, file);
     }
 
@@ -561,11 +563,9 @@ class Gallery extends Component {
     const maxFiles = this.props.maxFilesSelect;
 
     // switch to the new item if it's only one files allowed
-    if (maxFiles === 1) {
+    if (maxFiles === 1 && (this.props.type !== 'select' || item.type !== 'folder')) {
       this.props.actions.gallery.deselectFiles(null);
-      if (this.props.type !== 'select' || item.type !== 'folder') {
-        this.props.actions.gallery.selectFiles([item.id]);
-      }
+      this.props.actions.gallery.selectFiles([item.id]);
       return;
     }
 
@@ -776,6 +776,7 @@ class Gallery extends Component {
 
     const props = {
       selectableItems: ['admin', 'select'].includes(type),
+      selectableFolders: this.props.type !== 'select',
       files,
       loading,
       page,
@@ -795,6 +796,7 @@ class Gallery extends Component {
       onEnableDropzone: this.handleEnableDropzone,
       sectionConfig: this.props.sectionConfig,
       canDrag: this.props.type === 'admin',
+      maxFilesSelect: this.props.maxFilesSelect,
     };
 
     return <GalleryView {...props} />;
@@ -993,6 +995,7 @@ const galleryViewDefaultProps = Object.assign({}, sharedDefaultProps, {
 
 const galleryViewPropTypes = Object.assign({}, sharedPropTypes, {
   selectableItems: PropTypes.bool,
+  selectableFolders: PropTypes.bool,
   onSelect: PropTypes.func,
   onCancelUpload: PropTypes.func,
   onDelete: React.PropTypes.func,

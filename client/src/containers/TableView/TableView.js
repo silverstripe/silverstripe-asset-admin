@@ -294,18 +294,30 @@ class TableView extends Component {
    * Renders the checkbox for selecting the row/item in the table view
    *
    * @param {object} props
-   * @returns {Component}
+   * @returns {XML}
    */
   renderSelect(props) {
-    return (
-      <input
-        type="checkbox"
-        title={i18n._t('AssetAdmin.SELECT')}
-        checked={props.data}
-        tabIndex="-1"
-        onMouseDown={this.preventFocus}
-      />
-    );
+    if (this.props.selectableItems && (this.props.selectableFolders || props.rowData.type !== 'folder')) {
+      const checkboxProps = {
+        type: 'checkbox',
+        title: i18n._t('AssetAdmin.SELECT'),
+        checked: props.data,
+        tabIndex: -1,
+        onMouseDown: this.preventFocus,
+      };
+
+      const maxSelected = (
+        ![null, 1].includes(this.props.maxFilesSelect) &&
+        this.props.selectedFiles.length >= this.props.maxFilesSelect
+      );
+
+      if (maxSelected && !props.data) {
+        checkboxProps.disabled = true;
+      }
+
+      return <input {...checkboxProps} />;
+    }
+    return null;
   }
 
   /**

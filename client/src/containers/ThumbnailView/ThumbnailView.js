@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Folder, File } from 'components/GalleryItem/GalleryItem';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import Griddle from 'griddle-react';
+import classnames from 'classnames';
 
 class ThumbnailView extends Component {
   constructor(props) {
@@ -131,10 +132,16 @@ class ThumbnailView extends Component {
       });
     }
 
-    if (this.props.selectableItems) {
+    if (this.props.selectableItems && (this.props.selectableFolders || item.type !== 'folder')) {
+      const maxSelected = (
+        ![null, 1].includes(this.props.maxFilesSelect) &&
+        this.props.selectedFiles.length >= this.props.maxFilesSelect
+      );
+
       Object.assign(props, {
         selectable: true,
-        onSelect: this.props.onSelect,
+        onSelect: (this.props.maxFilesSelect === 1) ? props.onActivate : this.props.onSelect,
+        maxSelected,
       });
     }
 
@@ -148,8 +155,12 @@ class ThumbnailView extends Component {
   }
 
   render() {
+    const className = classnames(
+      'gallery__main-view--tile',
+      { 'gallery__main-view--single-select-mode': this.props.maxFilesSelect === 1 }
+    );
     return (
-      <div className="gallery__main-view--tile">
+      <div className={className}>
         <div className="gallery__folders">
           {this.props.files.filter(this.folderFilter).map(this.renderItem)}
         </div>

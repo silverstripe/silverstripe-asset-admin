@@ -452,6 +452,7 @@ describe('Gallery', () => {
     const event = {};
 
     beforeEach(() => {
+      props.files = [{ id: 2 }, { id: 3 }];
       props.actions.gallery.selectFiles = jest.genMockFunction();
       props.actions.gallery.deselectFiles = jest.genMockFunction();
       props.selectedFiles = [1];

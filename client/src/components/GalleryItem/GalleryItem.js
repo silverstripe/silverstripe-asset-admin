@@ -149,12 +149,15 @@ class GalleryItem extends Component {
    */
   getItemClassNames() {
     const category = this.props.item.category || 'false';
+    const selected = this.props.selectable && (this.props.item.selected || this.props.isDragging);
+
     return classnames({
       'gallery-item': true,
       [`gallery-item--${category}`]: true,
+      'gallery-item--max-selected': this.props.maxSelected && !selected,
       'gallery-item--missing': !this.exists() && !this.uploading(),
       'gallery-item--selectable': this.props.selectable,
-      'gallery-item--selected': this.props.selectable && (this.props.item.selected || this.props.isDragging),
+      'gallery-item--selected': selected,
       'gallery-item--dropping': this.props.isDropping,
       'gallery-item--highlighted': this.props.item.highlighted,
       'gallery-item--error': this.hasError(),

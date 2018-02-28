@@ -1,8 +1,5 @@
-import $ from 'jquery';
 import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import ReactTestUtils from 'react-addons-test-utils';
 import { connect } from 'react-redux';
 import { inject } from 'lib/Injector';
 import classnames from 'classnames';
@@ -13,18 +10,6 @@ class BulkActions extends Component {
 
     this.handleChangeValue = this.handleChangeValue.bind(this);
     this.renderChild = this.renderChild.bind(this);
-  }
-
-  componentDidMount() {
-    const $select = $(ReactDOM.findDOMNode(this)).find('.dropdown');
-console.log($select);
-    $select.chosen({
-      allow_single_deselect: true,
-      disable_search_threshold: 20,
-    });
-
-    // Chosen stops the change event from reaching React so we have to simulate a click.
-    $select.change(() => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
   }
 
   /**
@@ -65,9 +50,6 @@ console.log($select);
       promise = option.callback(this.props.items) || Promise.resolve();
     }
 
-    // Reset the dropdown to it's placeholder value.
-    $(ReactDOM.findDOMNode(this)).find('.dropdown').val('').trigger('liszt:updated');
-
     return promise;
   }
 
@@ -103,21 +85,6 @@ console.log($select);
     </button>);
   }
 
-  getMessage() {
-    const total = this.props.total;
-    if (total === 1 || total === null) {
-      return null;
-    }
-
-    const count = this.props.items.length;
-
-    return (
-      <span className="bulk-actions__limit-message">
-        {this.props.totalReachedMessage}
-      </span>
-    );
-  }
-
   render() {
     // eslint-disable-next-line arrow-body-style
     const children = this.props.actions.map(this.renderChild).filter(item => item);
@@ -128,7 +95,6 @@ console.log($select);
     const { PopoverField } = this.props;
 
     const count = this.props.items.length;
-    const message = this.getMessage();
 
     return (
       <div className="bulk-actions fieldholder-small btn-group">
@@ -164,8 +130,6 @@ BulkActions.propTypes = {
     confirm: PropTypes.func,
   })),
   PopoverField: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  total: PropTypes.number,
-  totalReachedMessage: PropTypes.string,
 };
 
 BulkActions.defaultProps = {
