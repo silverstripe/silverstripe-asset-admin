@@ -97,7 +97,7 @@ class BulkActions extends Component {
     const count = this.props.items.length;
 
     return (
-      <div className="bulk-actions fieldholder-small btn-group">
+      <div className="bulk-actions fieldholder-small">
         <div className="bulk-actions-counter">{count}</div>
         {children.slice(0, 2)}
         {children.length > 2 && PopoverField
@@ -106,7 +106,6 @@ class BulkActions extends Component {
               id="BulkActions"
               popoverClassName="bulk-actions__more-actions-menu"
               container={this.props.container}
-              data={{ placement: 'bottom' }}
             >
               {children.slice(2)}
             </PopoverField>

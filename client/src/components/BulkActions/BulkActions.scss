@@ -9,65 +9,28 @@ $bulk-actions-width: 300px;
   height: $toolbar-total-height;
   z-index: 2;
   bottom: 0;
-  box-shadow: 0 -1px 2px $shadow-light;
   background-color: $body-bg-dark;
   transition: top 0.5s ease-in-out, transform 0.5s ease-in-out;
   transform: scale(1);
   min-width: 160px;
+  border-top: 1px solid $border-color-light;
 
-  @include media-breakpoint-down(md) {
-    &-enter {
-      bottom: -$toolbar-total-height;
-    }
-
-    &-enter-active {
-      bottom: 0;
-      transition: bottom .2s ease-out;
-    }
-
-    &-leave {
-      bottom: 0;
-    }
-
-    &-leave-active {
-      bottom: -$toolbar-total-height;
-      transition: bottom .2s ease-in-out .1s;
-    }
+  &-enter {
+    bottom: -$toolbar-total-height;
   }
 
-  @include media-breakpoint-up(md) {
-    height: 48px;
-    padding: 8px;
-    top: 0;
-    left: 50%;
-    width: auto;
-    transform: translateX(-50%);
-    box-shadow: 0 1px 2px $shadow-light;
-    position: absolute;
+  &-enter-active {
+    bottom: 0;
+    transition: bottom .2s ease-out;
+  }
 
-    &-enter {
-      top: -$toolbar-height;
-      transform: scale(.99) translateX(-50%);
-      box-shadow: 0 0 1px $shadow-light;
-    }
+  &-leave {
+    bottom: 0;
+  }
 
-    &-enter-active {
-      top: 0;
-      transform: scale(1) translateX(-50%);
-      transition: top .2s linear, transform .1s ease-out .15s, box-shadow .1s ease-out .1s;
-    }
-
-    &-leave {
-      top: 0;
-      transform: scale(1) translateX(-50%);
-    }
-
-    &-leave-active {
-      top: -$toolbar-height;
-      transform: scale(.99) translateX(-50%);
-      transition: top .2s linear .1s, transform .1s ease-in, box-shadow .2s ease-in;
-      box-shadow: 0 0 1px $shadow-light;
-    }
+  &-leave-active {
+    bottom: -$toolbar-total-height;
+    transition: bottom .2s ease-in-out .1s;
   }
 
   .bulk-actions-counter {
@@ -155,39 +118,4 @@ $bulk-actions-width: 300px;
   display: block;
   width: 100%;
   text-align: left;
-}
-
-@include media-breakpoint-down(sm) {
-
-  // Flip the popover so that arrow points downward
-  .popover.bulk-actions__more-actions-menu {
-    top: auto!important;
-    bottom: 42px!important;
-    margin-top: 0;
-    margin-bottom: 10px;
-
-    & > .arrow {
-      top: auto;
-      bottom: 0;
-
-      &:before,
-      &::after {
-        margin-left: -6px;
-        border-top-width: 11px;
-        border-bottom-width: 0;
-      }
-
-      &:before {
-        top: auto;
-        bottom: -11px;
-        border-top-color: rgba(0,0,0,0.15);
-      }
-
-      &:after {
-        top: auto;
-        bottom: -10px;
-        border-top-color: $white;
-      }
-    }
-  }
 }
