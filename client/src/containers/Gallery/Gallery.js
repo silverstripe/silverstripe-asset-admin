@@ -497,12 +497,18 @@ class Gallery extends Component {
         return (this.props.type !== 'select' || item.type !== 'folder');
       });
 
+    let totalFiles = selectItems.length;
     if (!this.props.concatenateSelect && !this.isConcat(event)) {
       deselectFiles(null);
+    } else {
+      const newSelectItems = selectItems.filter(id => !this.props.selectedFiles.includes(id));
+
+      // include selected items in total count
+      totalFiles = newSelectItems.length + this.props.selectedFiles.length;
     }
 
     // do not select if over the max allowable selection
-    if (selectItems.length >= this.props.maxFilesSelect && this.props.maxFilesSelect !== null) {
+    if (totalFiles >= this.props.maxFilesSelect && this.props.maxFilesSelect !== null) {
       return;
     }
 

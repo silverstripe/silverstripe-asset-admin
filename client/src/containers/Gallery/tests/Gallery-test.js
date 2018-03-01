@@ -107,14 +107,14 @@ describe('Gallery', () => {
     };
   });
 
-  describe('getSelection', () => {
+  describe('getSelection()', () => {
     let gallery = null;
 
     beforeEach(() => {
       props.files = [
         { id: 4 },
-        { id: 10 },
-        { id: 6 },
+        { id: 10, type: 'folder' },
+        { id: 6, type: 'folder' },
         { id: 7 },
         { id: 16 },
       ];
@@ -140,6 +140,19 @@ describe('Gallery', () => {
     it('should return the ids between two given ids in the list', () => {
       const selection = gallery.getSelection(7, 10);
       expect(selection).toEqual([10, 6, 7]);
+    });
+
+    it('should ignore ids not in the files list', () => {
+      const selection = gallery.getSelection(7, 15);
+      expect(selection).toEqual([7]);
+    });
+
+    it('should ignore folders if type is "select"', () => {
+      props.type = 'select';
+      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      const selection = gallery.getSelection(4, 16);
+      expect(selection).toEqual([4, 7, 16]);
     });
   });
 

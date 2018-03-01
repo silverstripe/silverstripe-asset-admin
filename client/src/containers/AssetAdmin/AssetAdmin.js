@@ -493,6 +493,7 @@ class AssetAdmin extends Component {
             )
           ];
 
+          // eslint-disable-next-line no-alert
           if (confirm(alertMessage.join('\n\n'))) {
             const secondPassIDs = confirmationRequired.reduce(
               (acc, curr) => acc.concat(curr.IDs),

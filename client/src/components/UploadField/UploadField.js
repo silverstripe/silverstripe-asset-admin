@@ -73,8 +73,11 @@ class UploadField extends Component {
 
   getMaxFiles() {
     const maxFiles = this.props.data.multi ? this.props.data.maxFiles : 1;
+    if (maxFiles === null || typeof maxFiles === 'undefined') {
+      return null;
+    }
     const filesCount = this.props.files.filter(file => !file.message || file.message.type !== 'error').length;
-    const allowed = maxFiles > 0 ? Math.max(maxFiles - filesCount, 0) : null;
+    const allowed = Math.max(maxFiles - filesCount, 0);
 
     return allowed;
   }
@@ -214,7 +217,6 @@ class UploadField extends Component {
     const { selectingItem } = this.state;
     if (selectingItem) {
       this.handleReplace(null, files[0]);
-      this.handleHide();
       return;
     }
     files.forEach(file => {
@@ -377,7 +379,7 @@ class UploadField extends Component {
     );
   }
 
-  renderDialog() {
+  renderModal() {
     const { InsertMediaModal } = this.props;
     const { selecting, selectingItem } = this.state;
     const maxFiles = this.getMaxFiles();
@@ -423,7 +425,7 @@ class UploadField extends Component {
       <div className="uploadfield">
         {this.renderDropzone()}
         {this.props.files.map(this.renderChild)}
-        {this.renderDialog()}
+        {this.renderModal()}
       </div>
     );
   }

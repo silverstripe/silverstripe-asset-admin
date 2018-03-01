@@ -68,7 +68,7 @@ class InsertMediaModal extends Component {
     const props = {
       ...this.props,
       className: classnames('insert-media-modal', this.props.className),
-      bsSize: 'lg',
+      size: 'lg',
       showCloseButton: false
     };
     delete props.onHide;
