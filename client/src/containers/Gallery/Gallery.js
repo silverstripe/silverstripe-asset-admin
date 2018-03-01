@@ -482,7 +482,7 @@ class Gallery extends Component {
    * @param event Event
    */
   handleGroupSelect(items, event) {
-    const { deselectFiles, selectFiles } = this.props.actions.gallery;
+    const { setSelectedFiles, selectFiles } = this.props.actions.gallery;
     const selectItems = items
       .filter((id, index) => {
         if (items.indexOf(id) !== index) {
@@ -497,29 +497,35 @@ class Gallery extends Component {
         return (this.props.type !== 'select' || item.type !== 'folder');
       });
 
-    let totalFiles = selectItems.length;
-    if (!this.props.concatenateSelect && !this.isConcat(event)) {
-      deselectFiles(null);
+    const concat = this.props.concatenateSelect || this.isConcat(event);
+
+    if (this.props.maxFilesSelect !== null) {
+      let totalFiles = selectItems.length;
+      if (concat) {
+        const newSelectItems = selectItems.filter(id => !this.props.selectedFiles.includes(id));
+
+        // include selected items in total count
+        totalFiles = newSelectItems.length + this.props.selectedFiles.length;
+      }
+
+      // do not select if over the max allowable selection
+      if (totalFiles >= this.props.maxFilesSelect) {
+        return;
+      }
+    }
+
+    if (concat) {
+      setSelectedFiles(selectItems);
     } else {
-      const newSelectItems = selectItems.filter(id => !this.props.selectedFiles.includes(id));
-
-      // include selected items in total count
-      totalFiles = newSelectItems.length + this.props.selectedFiles.length;
+      selectFiles(selectItems);
     }
-
-    // do not select if over the max allowable selection
-    if (totalFiles >= this.props.maxFilesSelect && this.props.maxFilesSelect !== null) {
-      return;
-    }
-
-    selectFiles(selectItems);
   }
 
   /**
    * Clears all files from selection
    */
   handleClearSelection() {
-    this.props.actions.gallery.deselectFiles(null);
+    this.props.actions.gallery.deselectFiles();
   }
 
   /**
@@ -570,8 +576,7 @@ class Gallery extends Component {
 
     // switch to the new item if it's only one files allowed
     if (maxFiles === 1 && (this.props.type !== 'select' || item.type !== 'folder')) {
-      this.props.actions.gallery.deselectFiles(null);
-      this.props.actions.gallery.selectFiles([item.id]);
+      this.props.actions.gallery.setSelectedFiles([item.id]);
       return;
     }
 

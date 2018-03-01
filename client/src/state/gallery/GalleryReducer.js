@@ -120,6 +120,13 @@ export default function galleryReducer(state = initialState, { type, payload } =
       return state;
     }
 
+    case GALLERY.SET_SELECTED_FILES: {
+      return deepFreeze({
+        ...state,
+        selectedFiles: (Array.isArray(payload.files)) ? payload.files : [],
+      });
+    }
+
     case GALLERY.SELECT_FILES: {
       let selectedFiles = null;
 
