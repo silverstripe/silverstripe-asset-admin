@@ -31,6 +31,7 @@ function compareValues(left, right) {
 class UploadField extends Component {
   constructor(props) {
     super(props);
+    this.getMaxFiles = this.getMaxFiles.bind(this);
     this.renderChild = this.renderChild.bind(this);
     this.handleAddShow = this.handleAddShow.bind(this);
     this.handleHide = this.handleHide.bind(this);
@@ -67,7 +68,8 @@ class UploadField extends Component {
     const filesChanged = compareValues(existingFiles, newFiles);
 
     if (filesChanged) {
-      this.handleChange(nextProps);
+      // @todo fix null event passed on change
+      this.handleChange(null, nextProps);
     }
   }
 
@@ -155,16 +157,17 @@ class UploadField extends Component {
   /**
    * Event called when selected value is updated
    *
+   * @param {Event} event
    * @param {Object} props - new props to get files from
    */
-  handleChange(props) {
+  handleChange(event, props = this.props) {
     if (typeof props.onChange === 'function') {
       // Write back list of files to value
       const fileIds = props.files
         .filter((file) => file.id)
         .map((file) => file.id);
       const newValue = { Files: fileIds };
-      props.onChange(newValue);
+      props.onChange(event, { id: props.id, value: newValue });
     }
   }
 
@@ -203,34 +206,42 @@ class UploadField extends Component {
   /**
    * Handle file being added by 'add from files' dialog
    *
+   * @param {Event} event
    * @param {Object} data - Submitted insert form data
    * @param {Object} file - file record
    */
-  handleAddInsert(data, file) {
+  handleAddInsert(event, data, file) {
     this.props.actions.uploadField.addFile(this.props.id, file);
     this.handleHide();
 
     return Promise.resolve({});
   }
 
-  handleInsertMany(files) {
+  /**
+   * Handle many files being inserted
+   *
+   * @param {Event} event
+   * @param {Array} files
+   */
+  handleInsertMany(event, files) {
     const { selectingItem } = this.state;
     if (selectingItem) {
-      this.handleReplace(null, files[0]);
+      this.handleReplace(event, null, files[0]);
       return;
     }
     files.forEach(file => {
-      this.handleAddInsert(null, file);
+      this.handleAddInsert(event, null, file);
     });
   }
 
   /**
    * Handle file being replaced from the modal
    *
+   * @param {Event} event
    * @param {Object} data
    * @param {Object} file
    */
-  handleReplace(data, file) {
+  handleReplace(event, data, file) {
     const { selectingItem } = this.state;
     const {
       id,

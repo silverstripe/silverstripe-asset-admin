@@ -39,7 +39,7 @@ class BulkActions extends Component {
     // (instead of just waiting for user feedback in a dialog etc.)
     if (typeof option.confirm === 'function') {
       promise = option.confirm(this.props.items)
-        .then(() => option.callback(this.props.items))
+        .then(() => option.callback(event, this.props.items))
         .catch((reason) => {
           // Suppress and catch errors for user-cancelled actions
           if (reason !== 'cancelled') {
@@ -47,7 +47,7 @@ class BulkActions extends Component {
           }
         });
     } else {
-      promise = option.callback(this.props.items) || Promise.resolve();
+      promise = option.callback(event, this.props.items) || Promise.resolve();
     }
 
     return promise;

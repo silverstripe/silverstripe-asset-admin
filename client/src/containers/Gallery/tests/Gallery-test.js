@@ -58,6 +58,7 @@ describe('Gallery', () => {
       },
       selectedFiles: [],
       highlightedFiles: [],
+      combinedFiles: [],
       files: [],
       count: 0,
       folderId: 1,
@@ -111,39 +112,39 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.files = [
-        { id: 4 },
+      props.combinedFiles = [
         { id: 10, type: 'folder' },
         { id: 6, type: 'folder' },
         { id: 7 },
+        { id: 4 },
         { id: 16 },
       ];
       gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
     });
 
     it('should return just the truthy id if one is falsey', () => {
-      let selection = gallery.getSelection(4, null);
+      let selection = gallery.getSelection(4, null, props.combinedFiles);
       expect(selection).toEqual([4]);
 
-      selection = gallery.getSelection(null, 7);
+      selection = gallery.getSelection(null, 7, props.combinedFiles);
       expect(selection).toEqual([7]);
 
-      selection = gallery.getSelection();
+      selection = gallery.getSelection(null, null, props.combinedFiles);
       expect(selection).toEqual([]);
     });
 
     it('should treat ids not found as falsey', () => {
-      const selection = gallery.getSelection(4, 53);
+      const selection = gallery.getSelection(4, 53, props.combinedFiles);
       expect(selection).toEqual([4]);
     });
 
     it('should return the ids between two given ids in the list', () => {
-      const selection = gallery.getSelection(7, 10);
+      const selection = gallery.getSelection(7, 10, props.combinedFiles);
       expect(selection).toEqual([10, 6, 7]);
     });
 
     it('should ignore ids not in the files list', () => {
-      const selection = gallery.getSelection(7, 15);
+      const selection = gallery.getSelection(7, 15, props.combinedFiles);
       expect(selection).toEqual([7]);
     });
 
@@ -151,8 +152,8 @@ describe('Gallery', () => {
       props.type = 'select';
       gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
 
-      const selection = gallery.getSelection(4, 16);
-      expect(selection).toEqual([4, 7, 16]);
+      const selection = gallery.getSelection(10, 16, gallery.getSelectableFiles());
+      expect(selection).toEqual([16]);
     });
   });
 
@@ -211,7 +212,7 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.files = [
+      props.combinedFiles = [
         { id: 1 },
       ];
       gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
@@ -257,7 +258,7 @@ describe('Gallery', () => {
     beforeEach(() => {
       props.type = 'admin';
       props.selectedFiles = [15, 20];
-      props.files = [
+      props.combinedFiles = [
         { id: 15 },
         { id: 20 },
         { id: 45 },
@@ -397,7 +398,7 @@ describe('Gallery', () => {
 
     it(`should return a BulkActionsComponent if there are items in the
         selectedFiles array that resolve to files.`, () => {
-      props.files = [{ id: 1 }];
+      props.combinedFiles = [{ id: 1 }];
       props.selectedFiles = [1];
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
@@ -465,7 +466,7 @@ describe('Gallery', () => {
     const event = {};
 
     beforeEach(() => {
-      props.files = [{ id: 2 }, { id: 3 }];
+      props.combinedFiles = [{ id: 2 }, { id: 3 }];
       props.actions.gallery.selectFiles = jest.genMockFunction();
       props.actions.gallery.deselectFiles = jest.genMockFunction();
       props.selectedFiles = [1];
@@ -524,7 +525,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      return gallery.handleBulkDelete([{ id: 5 }])
+      return gallery.handleBulkDelete({}, [{ id: 5 }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
@@ -532,7 +533,7 @@ describe('Gallery', () => {
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         })
         .then(() => {
-          gallery.handleBulkDelete([{ id: 5 }, { id: 6 }]);
+          gallery.handleBulkDelete({}, [{ id: 5 }, { id: 6 }]);
         })
         .then(() => {
           expect(props.actions.gallery.setErrorMessage).toBeCalled();
@@ -543,7 +544,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      return gallery.handleBulkPublish([{ id: 5, published: false }])
+      return gallery.handleBulkPublish({}, [{ id: 5, published: false }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
@@ -556,7 +557,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      return gallery.handleBulkUnpublish([{ id: 5, published: true }])
+      return gallery.handleBulkUnpublish({}, [{ id: 5, published: true }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
@@ -569,7 +570,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      return gallery.handleBulkUnpublish([{ id: 5, published: false }])
+      return gallery.handleBulkUnpublish({}, [{ id: 5, published: false }])
         .then(() => {
           expect(props.actions.gallery.setLoading).not.toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).not.toBeCalled();
