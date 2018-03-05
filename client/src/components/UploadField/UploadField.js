@@ -68,7 +68,6 @@ class UploadField extends Component {
     const filesChanged = compareValues(existingFiles, newFiles);
 
     if (filesChanged) {
-      // @todo fix null event passed on change
       this.handleChange(null, nextProps);
     }
   }

@@ -177,24 +177,23 @@ class Gallery extends Component {
    * @param {Array} files - Items that can be selected
    * @return {Array}
    */
-  getSelection(firstId, lastId, files) {
+  getSelection(firstId, lastId) {
+    const selectable = this.getSelectableFiles();
     const indexes = [firstId, lastId]
-      .filter(id => id)
-      .map(id => files.findIndex(file => file.id === id))
+      .map(id => selectable.findIndex(file => file.id === id))
       .filter(index => index !== -1)
       .sort((a, b) => a - b);
 
     // expect both indexes found
     if (indexes.length !== 2) {
-      return indexes.map(index => files[index].id);
+      return indexes.map(index => selectable[index].id);
     }
 
     // get the items between the two indexes found, inclusive
     const [firstIndex, lastIndex] = indexes;
-    return files
+    return selectable
       .filter((file, index) => (
-        index >= firstIndex && index <= lastIndex &&
-        (this.props.type !== 'select' || file.type !== 'folder')
+        index >= firstIndex && index <= lastIndex
       ))
       .map(file => file.id);
   }
@@ -205,30 +204,14 @@ class Gallery extends Component {
    * @return {Array}
    */
   getSelectableFiles() {
+    const selectable = this.props.files.filter(file => file.id);
     // When selecting, don't include any folders
     if (this.props.type === 'select') {
-      return this.props.combinedFiles.filter((item) => item.type !== 'folder');
-    }
-
-    // In tile mode, sort by folder first
-    if (this.props.view === 'tile') {
-      // Tile mode sort folders first
-      return this.props.combinedFiles.sort((left, right) => {
-        if (left.type === right.type) {
-          return 0;
-        }
-        if (left.type === 'folder') {
-          return -1;
-        }
-        if (right.type === 'folder') {
-          return 1;
-        }
-        return 0;
-      });
+      return selectable.filter((item) => item.type !== 'folder');
     }
 
     // Files in provided order
-    return this.props.combinedFiles;
+    return selectable;
   }
 
   /**
@@ -525,6 +508,7 @@ class Gallery extends Component {
   handleGroupSelect(items, event) {
     const { setSelectedFiles, selectFiles } = this.props.actions.gallery;
     const selectableFiles = this.getSelectableFiles();
+
     const selectItems = items
       .filter((id, index) => {
         if (items.indexOf(id) !== index) {
@@ -538,10 +522,12 @@ class Gallery extends Component {
     if (this.props.maxFilesSelect !== null) {
       let totalFiles = selectItems.length;
       if (concat) {
-        const newSelectItems = selectItems.filter(id => !this.props.selectedFiles.includes(id));
+        const totalSelected = this.props.selectedFiles
+          .filter(id => !this.props.selectedFiles.includes(id))
+          .concat(this.props.selectedFiles);
 
-        // include selected items in total count
-        totalFiles = newSelectItems.length + this.props.selectedFiles.length;
+        // include existing selected items in total count
+        totalFiles = totalSelected.length;
       }
 
       // do not select if over the max allowable selection
@@ -614,7 +600,7 @@ class Gallery extends Component {
       .filter((file) => file.id === item.id)
       .map((file) => file.id);
 
-    // If only one file is allowed, set this as the selected item
+    // If only one file is allowed, set this as the only selected item
     if (maxFiles === 1) {
       this.props.actions.gallery.setSelectedFiles(selectedItemIDs);
       return;
@@ -623,7 +609,7 @@ class Gallery extends Component {
     if (this.props.selectedFiles.indexOf(item.id) === -1) {
       // If holding down shift, merge with last item selected
       if (event.shiftKey) {
-        selectedItemIDs = this.getSelection(this.props.lastSelected, item.id, selectable);
+        selectedItemIDs = this.getSelection(this.props.lastSelected, item.id);
       }
 
       const totalSelected = this.props.selectedFiles
@@ -769,22 +755,20 @@ class Gallery extends Component {
         }
       });
 
-    // Bulk actions can happen for both queuedFiles (after they've completed the upload),
-    // and the actual props.files in the current view.
-    // TODO Refactor "queued files" into separate visual area and remove coupling here
-    const allFiles = this.props.combinedFiles;
-    const selectedFileObjs = this.props.selectedFiles
-      .map(id => allFiles.find(file => file && id === file.id))
+    const selected = this.props.selectedFiles
+      .map(id => this.props.files.find(file => file && id === file.id))
       .filter(item => item);
 
-    if (selectedFileObjs.length > 0 && ['admin', 'select'].includes(this.props.type)) {
-      return (<BulkActions
-        actions={actions}
-        items={selectedFileObjs}
-        total={this.props.maxFilesSelect}
-        key={selectedFileObjs.length > 0}
-        container={this.gallery}
-      />);
+    if (selected.length > 0 && ['admin', 'select'].includes(this.props.type)) {
+      return (
+        <BulkActions
+          actions={actions}
+          items={selected}
+          total={this.props.maxFilesSelect}
+          key={selected.length > 0}
+          container={this.gallery}
+        />
+      );
     }
 
     return null;
@@ -797,15 +781,10 @@ class Gallery extends Component {
    */
   renderGalleryView() {
     const GalleryView = (this.props.view === 'table') ? TableView : ThumbnailView;
-    const files = this.props.combinedFiles.map((file) => ({
+    const files = this.props.files.map((file) => ({
       ...file,
       selected: this.itemIsSelected(file.id),
       highlighted: this.itemIsHighlighted(file.id),
-      // Queued files get removed in componentWillReceiveProps when the props.files array has
-      // changed identity, which will also get rid of this flag. But intermediary render calls
-      // *after* upload might still show queued files with successful uploads, hence we determine
-      // uploading status by absence of a database id.
-      uploading: !(file.id > 0),
     }));
     const {
       type,
@@ -1075,10 +1054,6 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   }),
   // Combined queuedFiles + files
   files: PropTypes.array,
-  combinedFiles: PropTypes.array,
-  queuedFiles: PropTypes.shape({
-    items: PropTypes.array.isRequired,
-  }),
   errorMessage: PropTypes.string,
   graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   actions: PropTypes.object,
@@ -1096,28 +1071,6 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
     label: PropTypes.string.isRequired,
   })).isRequired,
 });
-
-/**
- * Helper to merge queuedfiles with graphql loaded files
- *
- * @param {Array} queued - Files either being uploaded, or recently completed
- * @param {Array} files - Files retrieved via graphql
- * @return {Array}
- */
-function mergedQueuedFiles(queued, files) {
-  const queuedFiles = queued
-      .filter((file) => (
-        // Exclude uploaded files that have been reloaded via graphql
-        !file.id || !files.find((next) => (next.id === file.id))
-      ));
-
-    return [
-      // Always sort uploaded files first, even if they wouldn't show up in
-      // this pagination page. They'll disappear on the next refetch() or navigation event.
-      ...queuedFiles,
-      ...files,
-    ];
-}
 
 function mapStateToProps(state, ownProps) {
   let { sort } = ownProps;
@@ -1148,7 +1101,6 @@ function mapStateToProps(state, ownProps) {
     concatenateSelect,
     loading: ownProps.loading || loading,
     queuedFiles: state.assetAdmin.queuedFiles,
-    combinedFiles: mergedQueuedFiles(state.assetAdmin.queuedFiles.items, ownProps.files),
     securityId: state.config.SecurityID,
     sorters,
     sort,

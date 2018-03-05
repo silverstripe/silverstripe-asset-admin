@@ -119,7 +119,7 @@ class ThumbnailView extends Component {
       canDrag: this.props.canDrag,
     };
 
-    if (item.uploading) {
+    if (item.queuedId && item.progress > 0) {
       Object.assign(props, {
         onCancelUpload: this.props.onCancelUpload,
         onRemoveErroredUpload: this.props.onRemoveErroredUpload,

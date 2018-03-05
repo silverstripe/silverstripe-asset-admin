@@ -79,6 +79,7 @@ function compare(left, right) {
 class AssetAdmin extends Component {
   constructor(props) {
     super(props);
+
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -185,6 +186,37 @@ class AssetAdmin extends Component {
     }
 
     this.props.actions.breadcrumbsActions.setBreadcrumbs(breadcrumbs);
+  }
+
+  getFiles() {
+    const {
+      files,
+      queuedFiles,
+    } = this.props;
+
+    return [
+      // Exclude uploaded files that have been reloaded via graphql
+      ...queuedFiles.items
+        .filter(item => !item.id || !files.find(file => file.id === item.id)),
+      ...files,
+    ].sort((left, right) => {
+      if (left.type === right.type) {
+        return 0;
+      }
+      if (left.type === 'folder') {
+        return -1;
+      }
+      if (right.type === 'folder') {
+        return 1;
+      }
+      if (left.queuedId) {
+        return -1;
+      }
+      if (right.queuedId) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   /**
@@ -570,7 +602,8 @@ class AssetAdmin extends Component {
    * @return {object}
    */
   findFile(fileId) {
-    const allFiles = [...this.props.files, ...this.props.queuedFiles.items];
+    const allFiles = this.getFiles();
+
     return allFiles.find((item) => item.id === parseInt(fileId, 10));
   }
 
@@ -625,7 +658,7 @@ class AssetAdmin extends Component {
 
     return (
       <Gallery
-        files={this.props.files}
+        files={this.getFiles()}
         fileId={this.props.fileId}
         folderId={this.getFolderId()}
         folder={this.props.folder}

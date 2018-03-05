@@ -22,7 +22,8 @@ function shouldLoadImage(props) {
   return props.item.thumbnail
     && props.item.category === 'image'
     && props.item.exists
-    && !props.item.uploading // Don't load images for uploaded images (retain client thumbnail)
+    // Don't load images for uploaded images (retain client thumbnail)
+    && !(props.item.queuedId && props.item.progress < 100)
     && props.sectionConfig.imageRetry.minRetry
     && props.sectionConfig.imageRetry.maxRetry;
 }
@@ -255,7 +256,7 @@ class GalleryItem extends Component {
    * @returns {boolean}
    */
   uploading() {
-    return this.props.item.uploading;
+    return this.props.item.queuedId && this.props.item.progress > 0;
   }
 
   /**

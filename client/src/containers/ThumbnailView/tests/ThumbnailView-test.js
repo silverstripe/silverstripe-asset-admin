@@ -140,7 +140,8 @@ describe('ThumbnailView', () => {
 
     it('should have cancel callbacks and no activate callback', () => {
       itemProps = Object.assign({}, itemProps, {
-        uploading: true,
+        queuedId: 23,
+        progress: 20,
       });
       const item = ReactTestUtils.renderIntoDocument(view.renderItem(itemProps, 0));
 

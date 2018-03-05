@@ -106,7 +106,7 @@ class UploadFieldItem extends Component {
    * @returns {boolean}
    */
   uploading() {
-    return Boolean(this.props.item.uploaded);
+    return this.props.item.queuedId && this.props.item.progress > 0;
   }
 
   /**

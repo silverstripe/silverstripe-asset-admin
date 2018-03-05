@@ -76,7 +76,8 @@ describe('UploadFieldItem', () => {
 
     it('should give a missing class when it does not exist and not uploading', () => {
       props.item.exists = false;
-      props.item.uploading = false;
+      props.item.queuedId = 23;
+      props.item.progress = 0;
       file = ReactTestUtils.renderIntoDocument(
         <UploadFieldItem {...props} />
       );
@@ -98,13 +99,12 @@ describe('UploadFieldItem', () => {
 
   describe('renderProgressBar()', () => {
     it('displays partial progress correctly', () => {
+      props.item.queuedId = 123;
       props.item.progress = 50;
-      props.item.uploaded = true;
       file = ReactTestUtils.renderIntoDocument(
         <UploadFieldItem {...props} />
       );
       const progress = file.renderProgressBar();
-      expect(progress.type).toBe('div');
       expect(progress.props.className).toBe('uploadfield-item__upload-progress');
       expect(progress.props.children.props.style.width).toBe('50%');
     });
@@ -112,12 +112,11 @@ describe('UploadFieldItem', () => {
     it('displays complete progress correctly', () => {
       props.item.progress = 100;
       props.item.id = 10;
-      props.item.uploaded = true;
+      props.item.queuedId = 123;
       file = ReactTestUtils.renderIntoDocument(
         <UploadFieldItem {...props} />
       );
       const progress = file.renderProgressBar();
-      expect(progress.type).toBe('div');
       expect(progress.props.className).toBe('uploadfield-item__complete-icon');
     });
 
@@ -135,7 +134,6 @@ describe('UploadFieldItem', () => {
     it('does not display progress bar for errors', () => {
       props.item.progress = 100;
       props.item.id = 10;
-      props.item.uploaded = true;
       props.item.message = {
         value: 'Error uploading',
         type: 'error',

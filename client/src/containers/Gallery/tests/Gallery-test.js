@@ -112,7 +112,7 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.combinedFiles = [
+      props.files = [
         { id: 10, type: 'folder' },
         { id: 6, type: 'folder' },
         { id: 7 },
@@ -123,28 +123,28 @@ describe('Gallery', () => {
     });
 
     it('should return just the truthy id if one is falsey', () => {
-      let selection = gallery.getSelection(4, null, props.combinedFiles);
+      let selection = gallery.getSelection(4, null);
       expect(selection).toEqual([4]);
 
-      selection = gallery.getSelection(null, 7, props.combinedFiles);
+      selection = gallery.getSelection(null, 7);
       expect(selection).toEqual([7]);
 
-      selection = gallery.getSelection(null, null, props.combinedFiles);
+      selection = gallery.getSelection(null, null);
       expect(selection).toEqual([]);
     });
 
     it('should treat ids not found as falsey', () => {
-      const selection = gallery.getSelection(4, 53, props.combinedFiles);
+      const selection = gallery.getSelection(4, 53);
       expect(selection).toEqual([4]);
     });
 
     it('should return the ids between two given ids in the list', () => {
-      const selection = gallery.getSelection(7, 10, props.combinedFiles);
+      const selection = gallery.getSelection(7, 10);
       expect(selection).toEqual([10, 6, 7]);
     });
 
     it('should ignore ids not in the files list', () => {
-      const selection = gallery.getSelection(7, 15, props.combinedFiles);
+      const selection = gallery.getSelection(7, 15);
       expect(selection).toEqual([7]);
     });
 
@@ -212,7 +212,7 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.combinedFiles = [
+      props.files = [
         { id: 1 },
       ];
       gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
@@ -258,7 +258,7 @@ describe('Gallery', () => {
     beforeEach(() => {
       props.type = 'admin';
       props.selectedFiles = [15, 20];
-      props.combinedFiles = [
+      props.files = [
         { id: 15 },
         { id: 20 },
         { id: 45 },
@@ -398,7 +398,7 @@ describe('Gallery', () => {
 
     it(`should return a BulkActionsComponent if there are items in the
         selectedFiles array that resolve to files.`, () => {
-      props.combinedFiles = [{ id: 1 }];
+      props.files = [{ id: 1 }];
       props.selectedFiles = [1];
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
@@ -466,7 +466,7 @@ describe('Gallery', () => {
     const event = {};
 
     beforeEach(() => {
-      props.combinedFiles = [{ id: 2 }, { id: 3 }];
+      props.files = [{ id: 2 }, { id: 3 }];
       props.actions.gallery.selectFiles = jest.genMockFunction();
       props.actions.gallery.deselectFiles = jest.genMockFunction();
       props.selectedFiles = [1];
