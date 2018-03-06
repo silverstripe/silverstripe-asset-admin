@@ -78,6 +78,7 @@ describe('UploadFieldItem', () => {
       props.item.exists = false;
       props.item.queuedId = 23;
       props.item.progress = 0;
+      props.item.id = 1;
       file = ReactTestUtils.renderIntoDocument(
         <UploadFieldItem {...props} />
       );
@@ -132,6 +133,7 @@ describe('UploadFieldItem', () => {
 
 
     it('does not display progress bar for errors', () => {
+      props.item.progress = 100;
       props.item.progress = 100;
       props.item.id = 10;
       props.item.message = {

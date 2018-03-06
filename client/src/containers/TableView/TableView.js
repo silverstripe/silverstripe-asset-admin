@@ -251,7 +251,7 @@ class TableView extends Component {
    * @returns {XML|null}
    */
   renderProgressBar(rowData) {
-    if (!(rowData.queuedId && rowData.progress > 0) || (rowData.message && rowData.message.type === 'error')) {
+    if (!rowData.queuedId || (rowData.message && rowData.message.type === 'error')) {
       return null;
     }
     if (rowData.id > 0) {
@@ -344,7 +344,7 @@ class TableView extends Component {
    */
   renderThumbnail(props) {
     const url = props.data || props.rowData.url;
-    const uploading = props.rowData.queuedId && props.rowData.progress > 0;
+    const uploading = props.rowData.queuedId && !props.rowData.id;
     const category = props.rowData.category || 'false';
     const baseClass = 'gallery__table-image';
     const classNames = [baseClass];

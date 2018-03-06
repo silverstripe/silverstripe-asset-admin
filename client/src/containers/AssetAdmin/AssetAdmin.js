@@ -196,26 +196,20 @@ class AssetAdmin extends Component {
 
     return [
       // Exclude uploaded files that have been reloaded via graphql
-      ...queuedFiles.items
+      ...queuedFiles
+        .items
         .filter(item => !item.id || !files.find(file => file.id === item.id)),
       ...files,
     ].sort((left, right) => {
-      if (left.type === right.type) {
-        return 0;
+      if (left.type !== right.type) {
+        if (left.type === 'folder') {
+          return -1;
+        }
+        if (right.type === 'folder') {
+          return 1;
+        }
       }
-      if (left.type === 'folder') {
-        return -1;
-      }
-      if (right.type === 'folder') {
-        return 1;
-      }
-      if (left.queuedId) {
-        return -1;
-      }
-      if (right.queuedId) {
-        return 1;
-      }
-      return 0;
+      return right.queuedId - left.queuedId;
     });
   }
 

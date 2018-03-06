@@ -142,6 +142,7 @@ describe('ThumbnailView', () => {
       itemProps = Object.assign({}, itemProps, {
         queuedId: 23,
         progress: 20,
+        id: 0,
       });
       const item = ReactTestUtils.renderIntoDocument(view.renderItem(itemProps, 0));
 
