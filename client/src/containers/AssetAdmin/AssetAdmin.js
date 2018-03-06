@@ -740,7 +740,10 @@ class AssetAdmin extends Component {
     const filters = this.props.query.filter || {};
     const classNames = classnames(
       'fill-height asset-admin',
-      { 'asset-admin--single-select': this.props.maxFiles === 1 }
+      this.props.type === 'select' && {
+        'asset-admin--single-select': this.props.maxFiles === 1,
+        'asset-admin--multi-select': this.props.maxFiles !== 1,
+      }
     );
 
     return (

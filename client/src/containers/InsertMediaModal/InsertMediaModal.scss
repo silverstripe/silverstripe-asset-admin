@@ -41,9 +41,19 @@
     margin-right: $panel-padding-x;
   }
 
+  .asset-admin--multi-select [name="action_insert"] {
+    display: none;
+  }
+
   @include media-breakpoint-up(lg) {
     .asset-admin--single-select [name="action_insert"] {
       display: none;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    .asset-admin--multi-select [name="action_insert"] {
+      display: block;
     }
   }
 }

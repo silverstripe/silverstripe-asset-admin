@@ -381,7 +381,10 @@ $gallery-item-label-height: 40px;
   opacity: 0.2;
 
   .gallery-item__checkbox-label {
-    cursor: not-allowed;
+
+    &, &:before {
+      cursor: not-allowed;
+    }
   }
 }
 

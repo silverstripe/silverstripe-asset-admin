@@ -73,15 +73,17 @@ class BulkActions extends Component {
         'bulk-actions__action--more': (i > 2),
       }
     );
-    return (<button
-      type="button"
-      className={className}
-      key={action.value}
-      onClick={this.handleChangeValue}
-      value={action.value}
-    >
-      {action.label}
-    </button>);
+    return (
+      <button
+        type="button"
+        className={className}
+        key={action.value}
+        onClick={this.handleChangeValue}
+        value={action.value}
+      >
+        {action.label}
+      </button>
+    );
   }
 
   render() {
