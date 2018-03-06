@@ -75,12 +75,15 @@ $uploadfield-item-label-height: 40px;
   text-overflow: ellipsis;
   white-space: nowrap;
   position: relative;
-  display: block;
   min-width: 30px;
 }
 
 .uploadfield-item__title {
   font-weight: bold;
+  width: 120px; // flexbox uses width for a "minimum"
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .uploadfield-item__meta {

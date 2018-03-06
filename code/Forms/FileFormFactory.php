@@ -280,7 +280,7 @@ class FileFormFactory extends AssetFormFactory
         $type = $this->getFormType($context);
 
         $actionItems = [];
-        if ($type === static::TYPE_INSERT_MEDIA) {
+        if ($type === static::TYPE_INSERT_MEDIA || $type === static::TYPE_SELECT) {
             $actionItems = array_filter([
                 $this->getInsertAction($record),
             ]);
@@ -288,7 +288,7 @@ class FileFormFactory extends AssetFormFactory
             $actionItems = array_filter([
                 $this->getInsertLinkAction($record),
             ]);
-        } elseif ($type !== static::TYPE_SELECT) {
+        } else {
             $actionItems = array_filter([
                 $this->getSaveAction($record),
                 $this->getPublishAction($record)
@@ -407,7 +407,8 @@ class FileFormFactory extends AssetFormFactory
         $action = null;
         if ($record && $record->isInDB() && $record->canView()) {
             /** @var FormAction $action */
-            $action = FormAction::create('insert', _t(__CLASS__ . '.INSERT_FILE', 'Insert file'))
+            $action = FormAction::create('insert', _t(__CLASS__ . '.INSERT_FILE', 'Insert'))
+                ->setIcon('plus-circled')
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return $action;

@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Folder, File } from 'components/GalleryItem/GalleryItem';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import Griddle from 'griddle-react';
-import classnames from 'classnames';
 
 class ThumbnailView extends Component {
   constructor(props) {
@@ -155,10 +154,7 @@ class ThumbnailView extends Component {
   }
 
   render() {
-    const className = classnames(
-      'gallery__main-view--tile',
-      { 'gallery__main-view--single-select-mode': this.props.maxFilesSelect === 1 }
-    );
+    const className = 'gallery__main-view--tile';
     return (
       <div className={className}>
         <div className="gallery__folders">

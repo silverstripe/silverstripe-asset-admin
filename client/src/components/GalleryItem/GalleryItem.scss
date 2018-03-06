@@ -116,7 +116,7 @@ $gallery-item-label-height: 40px;
     padding-right: 32px;
   }
 
-  .gallery__main-view--single-select-mode .gallery-item--selectable:not(.gallery-item--selected) & {
+  .asset-admin--single-select .gallery-item--selectable:not(.gallery-item--selected) & {
     // Make space for the checkbox on the right hand side
     padding-right: 12px;
   }
@@ -142,7 +142,7 @@ $gallery-item-label-height: 40px;
 
   .gallery-item--selectable & {
 
-    .gallery__main-view--single-select-mode & {
+    .asset-admin--single-select & {
       display: none;
     }
 
@@ -161,7 +161,7 @@ $gallery-item-label-height: 40px;
     }
   }
 
-  .gallery__main-view--single-select-mode .gallery-item--selected & {
+  .asset-admin--single-select .gallery-item--selected & {
     display: block;
 
     &::before {

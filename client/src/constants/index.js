@@ -124,7 +124,7 @@ export default {
     {
       value: 'insert',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_INSERT', 'Insert'),
-      className: 'font-icon-trash',
+      className: 'font-icon-plus-circled btn-primary',
       destructive: false,
       callback: null, // defined in <Gallery> for now
       canApply: (items) => items.length,

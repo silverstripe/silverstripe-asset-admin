@@ -40,6 +40,12 @@
   .fieldgroup.fill-width .field.flexbox-area-grow:first-child {
     margin-right: $panel-padding-x;
   }
+
+  @include media-breakpoint-up(lg) {
+    .asset-admin--single-select [name="action_insert"] {
+      display: none;
+    }
+  }
 }
 
 // If gallery is in dialog

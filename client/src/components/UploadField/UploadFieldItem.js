@@ -313,7 +313,10 @@ class UploadFieldItem extends Component {
     }
     return (
       <div className="uploadfield-item__details fill-width flexbox-area-grow">
-        <span className="uploadfield-item__title" ref={(title) => { this.title = title; }}>
+        <span
+          className="uploadfield-item__title flexbox-area-grow"
+          ref={(title) => { this.title = title; }}
+        >
           {this.props.item.title}
         </span>
         <span className="uploadfield-item__meta">

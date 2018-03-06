@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import backend from 'lib/Backend';
 import i18n from 'i18n';
+import classnames from 'classnames';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as breadcrumbsActions from 'state/breadcrumbs/BreadcrumbsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
@@ -375,6 +376,15 @@ class AssetAdmin extends Component {
    */
   handleSubmitEditor(data, action, submitFn) {
     let promise = null;
+
+    if (action === 'action_insert' && this.props.type === 'select') {
+      const files = this.getFiles();
+      const file = files.find(item => item.id === parseInt(data.ID, 10));
+
+      this.props.onInsertMany(null, [file]);
+      return Promise.resolve();
+    }
+
     if (typeof this.props.onSubmitEditor === 'function') {
       // Look for file first in `files`, then `queuedFiles` property
       const file = this.findFile(this.props.fileId);
@@ -728,8 +738,13 @@ class AssetAdmin extends Component {
     );
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
     const filters = this.props.query.filter || {};
+    const classNames = classnames(
+      'fill-height asset-admin',
+      { 'asset-admin--single-select': this.props.maxFiles === 1 }
+    );
+
     return (
-      <div className="fill-height">
+      <div className={classNames}>
         <Toolbar
           showBackButton={showBackButton}
           onBackButtonClick={this.handleBackButtonClick}

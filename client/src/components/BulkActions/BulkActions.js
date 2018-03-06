@@ -67,7 +67,6 @@ class BulkActions extends Component {
     const className = classnames(
       'btn',
       'bulk-actions__action',
-      'ss-ui-button',
       'ui-corner-all',
       action.className || 'font-icon-info-circled',
       {
@@ -92,13 +91,15 @@ class BulkActions extends Component {
     if (!children.length) {
       return null;
     }
-    const { PopoverField } = this.props;
+    const { PopoverField, showCount } = this.props;
 
     const count = this.props.items.length;
 
     return (
       <div className="bulk-actions fieldholder-small">
-        <div className="bulk-actions-counter">{count}</div>
+        {showCount &&
+          <div className="bulk-actions-counter">{count}</div>
+        }
         {children.slice(0, 2)}
         {children.length > 2 && PopoverField
           ? (
@@ -129,6 +130,7 @@ BulkActions.propTypes = {
     confirm: PropTypes.func,
   })),
   PopoverField: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  showCount: PropTypes.bool,
 };
 
 BulkActions.defaultProps = {
@@ -136,6 +138,7 @@ BulkActions.defaultProps = {
   actions: [],
   PopoverField: null,
   total: null,
+  showCount: true,
   totalReachedMessage: i18n._t(''),
 };
 

@@ -134,7 +134,6 @@ describe('UploadFieldItem', () => {
 
     it('does not display progress bar for errors', () => {
       props.item.progress = 100;
-      props.item.progress = 100;
       props.item.id = 10;
       props.item.message = {
         value: 'Error uploading',

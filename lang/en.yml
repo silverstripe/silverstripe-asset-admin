@@ -73,7 +73,7 @@ en:
     SAVE: Save
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: 'Insert file'
+    INSERT_FILE: 'Insert'
     INSERT_LINK: 'Link to file'
     LINKDESCR: 'Link description'
     LINKOPENNEWWIN: 'Open in new window/tab'

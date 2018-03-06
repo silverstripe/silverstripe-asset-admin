@@ -624,7 +624,10 @@ class Gallery extends Component {
       this.props.actions.gallery.setLastSelected(item.id);
     } else {
       this.props.actions.gallery.deselectFiles([item.id]);
-      this.props.actions.gallery.setLastSelected(null);
+      // If holding down shift, don't deselect the last selected
+      if (event.shiftKey) {
+        this.props.actions.gallery.setLastSelected(null);
+      }
     }
   }
 
@@ -767,6 +770,7 @@ class Gallery extends Component {
           total={this.props.maxFilesSelect}
           key={selected.length > 0}
           container={this.gallery}
+          showCount={this.props.maxFilesSelect !== 1}
         />
       );
     }
