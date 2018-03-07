@@ -9,6 +9,15 @@ export function setLastSelected(id) {
   };
 }
 
+export function setSelectedFiles(files) {
+  return (dispatch) => {
+    dispatch({
+      type: GALLERY.SET_SELECTED_FILES,
+      payload: { files },
+    });
+  };
+}
+
 /**
  * Updates a file with new data.
  *

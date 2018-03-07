@@ -1,12 +1,13 @@
 import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
-import { compose } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import AssetAdmin, { getFormSchema } from 'containers/AssetAdmin/AssetAdmin';
 import stateRouter from 'containers/AssetAdmin/stateRouter';
 import fileSchemaModalHandler from 'containers/InsertLinkModal/fileSchemaModalHandler';
+import * as galleryActions from 'state/gallery/GalleryActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
-
+import classnames from 'classnames';
 
 class InsertMediaModal extends Component {
   constructor(props) {
@@ -33,6 +34,7 @@ class InsertMediaModal extends Component {
   componentWillReceiveProps(props) {
     if (!props.isOpen && this.props.isOpen) {
       props.onBrowse(0);
+      props.actions.gallery.deselectFiles();
     }
     if (typeof this.props.setOverrides === 'function' &&
       props.isOpen &&
@@ -63,15 +65,13 @@ class InsertMediaModal extends Component {
    * @returns {object}
    */
   getModalProps() {
-    const props = Object.assign(
-      {},
-      this.props,
-      {
-        className: `insert-media-modal ${this.props.className}`,
-        size: 'lg',
-        showCloseButton: false
-      }
-    );
+    const props = {
+      ...this.props,
+      className: classnames('insert-media-modal', this.props.className),
+      size: 'lg',
+      showCloseButton: false
+    };
+    delete props.onHide;
     delete props.onInsert;
     delete props.sectionConfig;
     delete props.schemaUrl;
@@ -193,10 +193,18 @@ function mapStateToProps(state, ownProps) {
   };
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      gallery: bindActionCreators(galleryActions, dispatch),
+    },
+  };
+}
+
 export { InsertMediaModal as Component };
 
 export default compose(
   stateRouter,
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   fileSchemaModalHandler
 )(InsertMediaModal);

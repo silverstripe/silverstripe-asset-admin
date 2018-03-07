@@ -26,6 +26,8 @@ describe('UploadField', () => {
         },
       },
       data: {
+        multi: true,
+        maxFiles: null,
         createFileEndpoint: {
           url: 'test',
           method: 'POST',
@@ -44,6 +46,66 @@ describe('UploadField', () => {
       AssetDropzone: () => null,
       InsertMediaModal: () => null,
     };
+  });
+
+  describe('getMaxFiles()', () => {
+    it('should be a max one always for single file uploadfields', () => {
+      props.data.multi = false;
+      props.data.maxFiles = 1;
+      props.files = [];
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+      let maxFiles = file.getMaxFiles();
+
+      expect(maxFiles).toBe(1);
+
+      props.data.maxFiles = 3;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+      maxFiles = file.getMaxFiles();
+
+      expect(maxFiles).toBe(1);
+    });
+
+    it('should return null if max files prop was left empty', () => {
+      props.data.multi = true;
+      props.data.maxFiles = null;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+      let maxFiles = file.getMaxFiles();
+
+      expect(maxFiles).toBe(null);
+
+      props.data.maxFiles = undefined;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+      maxFiles = file.getMaxFiles();
+
+      expect(maxFiles).toBe(null);
+    });
+
+    it('should return a positive number or zero', () => {
+      props.data.multi = true;
+      props.data.maxFiles = 2;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+      let maxFiles = file.getMaxFiles();
+
+      expect(maxFiles).toBe(0);
+
+      props.data.maxFiles = 5;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+      maxFiles = file.getMaxFiles();
+
+      expect(maxFiles).toBe(2);
+    });
   });
 
   describe('componentDidMount()', () => {

@@ -18,7 +18,7 @@ Feature: Insert an image into a page
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
-    When I press the "Insert file" button
+    When I press the "Insert" button
     Then the "Content" HTML field should contain "file1.jpg"
     # Required to avoid "unsaved changed" browser dialog
       And I press the "Save" button
@@ -30,7 +30,7 @@ Feature: Insert an image into a page
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
     When I fill in "Alternative text (alt)" with "My alt"
-      And I press the "Insert file" button
+      And I press the "Insert" button
     Then the "Content" HTML field should contain "file1.jpg"
       And the "Content" HTML field should contain "My alt"
       # Required to avoid "unsaved changed" browser dialog
@@ -58,7 +58,7 @@ Feature: Insert an image into a page
       And I click on the file named "file1" in the gallery
     Then I should see an "form#Form_fileInsertForm" element
       And I fill in "Description" with "My file"
-      And I press the "Insert file" button
+      And I press the "Insert" button
     Then the "Content" HTML field should contain "<a title="My file" href="[file_link,id=2]">awesome</a>"
     # Required to avoid "unsaved changes" browser dialog
       And I press the "Save" button

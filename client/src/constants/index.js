@@ -121,6 +121,15 @@ export default {
       ),
       confirm: null,
     },
+    {
+      value: 'insert',
+      label: i18n._t('AssetAdmin.BULK_ACTIONS_INSERT', 'Insert'),
+      className: 'font-icon-plus-circled btn-primary',
+      destructive: false,
+      callback: null, // defined in <Gallery> for now
+      canApply: (items) => items.length,
+      confirm: null,
+    },
   ],
   BULK_ACTIONS_PLACEHOLDER: i18n._t('AssetAdmin.BULK_ACTIONS_PLACEHOLDER'),
   SPACE_KEY_CODE: 32,

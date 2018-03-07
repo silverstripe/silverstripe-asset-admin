@@ -57,7 +57,7 @@ class UploadFieldItem extends Component {
       `uploadfield-item--${category}`,
     ];
 
-    if (!this.exists() && !this.uploading()) {
+    if (this.missing()) {
       itemClassNames.push('uploadfield-item--missing');
     }
 
@@ -106,7 +106,7 @@ class UploadFieldItem extends Component {
    * @returns {boolean}
    */
   uploading() {
-    return Boolean(this.props.item.uploaded);
+    return this.props.item.queuedId && !this.saved();
   }
 
   /**
@@ -117,7 +117,25 @@ class UploadFieldItem extends Component {
    */
   complete() {
     // Uploading is complete if saved with a DB id
-    return this.uploading() && this.props.item.id > 0;
+    return this.props.item.queuedId && this.saved();
+  }
+
+  /**
+   * Check if this item has been saved, either in this request or in a prior one
+   *
+   * @return {Boolean}
+   */
+  saved() {
+    return this.props.item.id > 0;
+  }
+
+  /**
+   * Check if this item should have a file, but is missing.
+   *
+   * @return {Boolean}
+   */
+  missing() {
+    return !this.exists() && this.saved();
   }
 
   /**
@@ -127,7 +145,7 @@ class UploadFieldItem extends Component {
    * @returns {boolean}
    */
   isImageSmallerThanThumbnail() {
-    if (!this.isImage() || (!this.exists() && !this.uploading())) {
+    if (!this.isImage() || this.missing()) {
       return false;
     }
     const width = this.props.item.width;
@@ -188,7 +206,7 @@ class UploadFieldItem extends Component {
 
     if (this.hasError()) {
       message = this.props.item.message.value;
-    } else if (!this.exists() && !this.uploading()) {
+    } else if (this.missing()) {
       message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
     }
 
@@ -216,7 +234,7 @@ class UploadFieldItem extends Component {
       },
     };
 
-    if (!this.hasError() && this.uploading()) {
+    if (!this.hasError() && this.props.item.queuedId) {
       if (this.complete()) {
         return (
           <div className="uploadfield-item__complete-icon" />
@@ -295,7 +313,10 @@ class UploadFieldItem extends Component {
     }
     return (
       <div className="uploadfield-item__details fill-width flexbox-area-grow">
-        <span className="uploadfield-item__title" ref={(title) => { this.title = title; }}>
+        <span
+          className="uploadfield-item__title flexbox-area-grow"
+          ref={(title) => { this.title = title; }}
+        >
           {this.props.item.title}
         </span>
         <span className="uploadfield-item__meta">
