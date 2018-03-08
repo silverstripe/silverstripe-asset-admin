@@ -7,7 +7,14 @@
     margin-top: 0;
     margin-left: auto;
     margin-right: auto;
-    height: calc(100% - #{$toolbar-total-height}); // IE10 fix
+    // IE10 fix
+    height: calc(100% - #{$toolbar-total-height});
+
+    @include media-breakpoint-down(md) {
+      width: calc(100% - 1rem);
+      height: calc(100% - .5rem);
+      margin: 0 auto;
+    }
   }
 
   .modal-content {
@@ -23,7 +30,12 @@
 
   // If the editor is in the dialog
   .editor__details {
-    height: calc(100vh - #{$toolbar-total-height * 2}); // Safari fix for scroll, should be better fix
+    // Safari fix for scroll, should be better fix
+    height: calc(100vh - #{$toolbar-total-height * 2});
+
+    @include media-breakpoint-down(md) {
+      height: 100%;
+    }
   }
 
   @include media-breakpoint-up(lg) {

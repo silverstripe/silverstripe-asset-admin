@@ -192,7 +192,7 @@ jQuery.entwine('ss', ($) => {
           onInsert={handleInsert}
           onClosed={handleHide}
           onLoadingError={handleLoadingError}
-          bodyClassName="modal__dialog modal__dialog--scrollable"
+          bodyClassName="modal__dialog"
           className="insert-embed-react__dialog-wrapper"
           fileAttributes={attrs}
         />,
