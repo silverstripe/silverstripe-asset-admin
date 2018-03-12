@@ -196,6 +196,19 @@ class UploadFieldItem extends Component {
     }
   }
 
+  renderStatus() {
+    if (this.props.item.draft) {
+      return (
+        <span className="uploadfield-item__status">{i18n._t('File.DRAFT', 'Draft')}</span>
+      );
+    } else if (this.props.item.modified) {
+      return (
+        <span className="uploadfield-item__status">{i18n._t('File.MODIFIED', 'Modified')}</span>
+      );
+    }
+    return null;
+  }
+
   /**
    * Returns markup for an error message if one is set.
    *
@@ -271,7 +284,6 @@ class UploadFieldItem extends Component {
       <button
         className={classes}
         onClick={this.handleRemove}
-        ref={(button) => { this.backButton = button; }}
       />
     );
   }
@@ -311,18 +323,33 @@ class UploadFieldItem extends Component {
     if (this.props.item.size) {
       size = `, ${fileSize(this.props.item.size)}`;
     }
+
     return (
-      <div className="uploadfield-item__details fill-width flexbox-area-grow">
-        <span
-          className="uploadfield-item__title flexbox-area-grow"
-          ref={(title) => { this.title = title; }}
-        >
-          {this.props.item.title}
-        </span>
-        <span className="uploadfield-item__meta">
-          {this.props.item.extension}{size}
-        </span>
+      <div className="uploadfield-item__details fill-height flexbox-area-grow">
+        <div className="fill-width">
+          <span className="uploadfield-item__title flexbox-area-grow">
+            {this.props.item.title}
+          </span>
+        </div>
+        <div className="fill-width uploadfield-item__meta">
+          <span className="uploadfield-item__specs">
+            {this.props.item.extension}{size}
+          </span>
+          {this.renderStatus()}
+        </div>
       </div>
+    );
+  }
+
+  renderThumbnail() {
+    return (
+      <div
+        className={this.getThumbnailClassNames()}
+        style={this.getThumbnailStyles()}
+        onClick={this.handleItemClick}
+        role="button"
+        tabIndex={this.props.onItemClick ? 0 : -1}
+      />
     );
   }
 
@@ -335,14 +362,7 @@ class UploadFieldItem extends Component {
     return (
       <div className={this.getItemClassNames()}>
         <input type="hidden" value={this.props.item.id} name={fieldName} />
-        <div
-          ref={(thumbnail) => { this.thumbnail = thumbnail; }}
-          className={this.getThumbnailClassNames()}
-          style={this.getThumbnailStyles()}
-          onClick={this.handleItemClick}
-          role="button"
-          tabIndex={this.props.onItemClick ? 0 : -1}
-        />
+        {this.renderThumbnail()}
         {this.renderFileDetails()}
         {this.renderProgressBar()}
         {this.renderErrorMessage()}
