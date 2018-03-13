@@ -119,37 +119,16 @@ export default {
         items.some(item => item.published) &&
         items.every(item => item.canEdit && item.type !== 'folder')
       ),
-      confirm: (items) => new Promise((resolve, reject) => {
-        const filesInUse = items.filter((item) => item.inUseCount > 0);
-
-        let msg = i18n._t(
-          'AssetAdmin.BULK_ACTIONS_UNPUBLISH_CONFIRM',
-          'Are you sure you want to unpublish these files?'
-        );
-        if (items.length === 1 && filesInUse.length === 1) {
-          msg = i18n.sprintf(
-            i18n._t(
-              'AssetAdmin.BULK_ACTIONS_UNPUBLISH_SINGLE_CONFIRM',
-              'This file is currently used in %s place(s), are you sure you want to unpublish it?'
-            ),
-            items[0].inUseCount
-          );
-        } else if (filesInUse.length > 0) {
-          msg = i18n.sprintf(
-            i18n._t(
-              'AssetAdmin.BULK_ACTIONS_UNPUBLISH_MULTI_CONFIRM',
-              'There are %s files currently in use, are you sure you want to unpublish these files?'
-            ),
-            filesInUse.length
-          );
-        }
-        // eslint-disable-next-line no-alert
-        if (confirm(msg)) {
-          resolve();
-        } else {
-          reject('cancelled');
-        }
-      }),
+      confirm: null,
+    },
+    {
+      value: 'insert',
+      label: i18n._t('AssetAdmin.BULK_ACTIONS_INSERT', 'Insert'),
+      className: 'font-icon-plus-circled btn-primary',
+      destructive: false,
+      callback: null, // defined in <Gallery> for now
+      canApply: (items) => items.length,
+      confirm: null,
     },
   ],
   BULK_ACTIONS_PLACEHOLDER: i18n._t('AssetAdmin.BULK_ACTIONS_PLACEHOLDER'),

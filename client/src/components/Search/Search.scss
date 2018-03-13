@@ -89,7 +89,9 @@
   outline: 0;
   overflow: visible;
 
-  &:hover {
+  &:hover:not(:disabled):not(.disabled) {
+    background-color: transparent;
+
     &:before {
       color: $link-color;
     }

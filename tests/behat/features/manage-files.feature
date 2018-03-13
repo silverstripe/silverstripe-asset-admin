@@ -34,7 +34,7 @@ Feature: Manage files
 
   Scenario: I am blocked from uploading invalid files
     When I click on the file named "folder1" in the gallery
-    And I attach the file "file.invalid" to dropzone "gallery-container"
+      And I attach the file "file.invalid" to dropzone "gallery-container"
     Then I should see an error message on the file "file"
 
   Scenario: I can edit a file
@@ -52,7 +52,7 @@ Feature: Manage files
       And the ".bulk-actions-counter" element should contain "1"
     When I press the "Edit" button
       And I wait for 1 second
-      Then I should see the "Form_fileEditForm" form
+    Then I should see the "Form_fileEditForm" form
     When I fill in "foldernew" for "Name"
       And I press the "Save" button
     Then I should see the file named "foldernew" in the gallery
@@ -102,19 +102,19 @@ Feature: Manage files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
       And a "folder" "assets/folder1/folder3"
     When I click on the file named "folder1" in the gallery
-    And I check the file named "file1" in the gallery
-    And I check the file named "file2" in the gallery
+      And I check the file named "file1" in the gallery
+      And I check the file named "file2" in the gallery
     Then I should see an ".bulk-actions__action[value='move']" element
-    And the ".bulk-actions-counter" element should contain "2"
-    And the ".bulk-actions__action[value='move']" element should contain "Move"
+      And the ".bulk-actions-counter" element should contain "2"
+      And the ".bulk-actions__action[value='move']" element should contain "Move"
     When I attach the file "testfile.jpg" to dropzone "gallery-container"
-    And I check the file named "testfile" in the gallery
+      And I check the file named "testfile" in the gallery
     Then the ".bulk-actions-counter" element should contain "3"
       And I press the "Move" button
     Then I should see a modal titled "Move 3 item(s) to..."
-    Then I should see the "Form_moveForm" form
+      And I should see the "Form_moveForm" form
     When I select "folder2/" in the "#Form_moveForm_FolderID_Holder" tree dropdown
-    Given I click "Move" in the "#Form_moveForm_action_move" element
+      And I click "Move" in the "#Form_moveForm_action_move" element
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
@@ -132,34 +132,34 @@ Feature: Manage files
       And I check the file named "file2" in the gallery
       And I check the file named "testfile" in the gallery
       And I check the folder named "folder2" in the gallery
-        Then I should not see an "#BulkActions" element
-        And I should not see an ".bulk-actions__action[value='publish']" element
-        And I should not see an ".bulk-actions__action[value='unpublish']" element
+    Then I should not see an "#BulkActions" element
+      And I should not see an ".bulk-actions__action[value='publish']" element
+      And I should not see an ".bulk-actions__action[value='unpublish']" element
     When I check the folder named "folder2" in the gallery
-    And I press the "BulkActions" button
-      Then I should see an ".bulk-actions__action[value='publish']" element
-        And I should not see an ".bulk-actions__action[value='unpublish']" element
-    When I click "Publish" in the ".bulk-actions" element
+      And I press the "BulkActions" button
+    Then I should see an ".bulk-actions__action[value='publish']" element
+      And I should not see an ".bulk-actions__action[value='unpublish']" element
+    When I click "Publish" in the "#BulkActions_Popover" element
       Then I should see an ".message-box.message-box--success" element
     When I check the file named "file2" in the gallery
-    And I check the file named "testfile" in the gallery
-    And I press the "BulkActions" button
-      Then I should not see an ".bulk-actions__action[value='publish']" element
+      And I check the file named "testfile" in the gallery
+      And I press the "BulkActions" button
+    Then I should not see an ".bulk-actions__action[value='publish']" element
       And I should see an ".bulk-actions__action[value='unpublish']" element
     When I check the file named "testfile" in the gallery
-    And I press the "BulkActions" button
-    And I press the "Unpublish" button, confirming the dialog
+      And I press the "BulkActions" button
+      And I press the "Unpublish" button
       Then I should see an ".message-box.message-box--success" element
     When I check the file named "file2" in the gallery
-    And I check the file named "testfile" in the gallery
-    And I press the "BulkActions" button
-      Then I should see an ".bulk-actions__action[value='publish']" element
+      And I check the file named "testfile" in the gallery
+      And I press the "BulkActions" button
+    Then I should see an ".bulk-actions__action[value='publish']" element
       And I should see an ".bulk-actions__action[value='unpublish']" element
     When I click on the file named "file2" in the gallery
       Then I should see an ".font-icon-rocket[name='action_publish']" element
     When I press the "BulkActions" button
-    And I click "Publish" in the ".bulk-actions" element
-      Then I should not see an ".font-icon-rocket[name='action_publish']" element
+      And I click "Publish" in the "#BulkActions_Popover" element
+    Then I should not see an ".font-icon-rocket[name='action_publish']" element
       And I should see an ".font-icon-tick[name='action_publish']" element
 
 

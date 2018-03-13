@@ -18,6 +18,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM": "This file is currently in use in %s places, are you sure you want to delete it?",
     "AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS": "%s folders/files were successfully archived.",
     "AssetAdmin.BULK_ACTIONS_PLACEHOLDER": "Select an action...",
+    "AssetAdmin.BULK_ACTIONS_INSERT": "Insert",
     "AssetAdmin.CANCEL": "Cancel",
     "AssetAdmin.CONFIRMDELETE": "Are you sure you want to delete this record?",
     "AssetAdmin.CREATED": "First uploaded",
@@ -74,6 +75,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CreateTitle": "Insert new media from the web",
     "AssetAdmin.EditTitle": "Media from the web",
     "AssetAdmin.NEXT": "Next",
-    "AssetAdmin.PREVIOUS": "Previous"
+    "AssetAdmin.PREVIOUS": "Previous",
+    "AssetAdmin.BULK_OWNED_WARNING_REMAINING": "And {count} other file(s)",
+    "AssetAdmin.BULK_OWNED_WARNING_HEADING": "{count} file(s) are being used by other published content.",
+    "AssetAdmin.BULK_OWNED_WARNING_FOOTER": "Unpublishing will only remove files from the published version of the content. They will remain on the draft version. Unpublish anyway?"
 });
 }

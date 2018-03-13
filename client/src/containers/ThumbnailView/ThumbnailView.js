@@ -115,9 +115,10 @@ class ThumbnailView extends Component {
       selectedFiles: this.props.selectedFiles,
       onDrag: this.handleDrag,
       badge,
+      canDrag: this.props.canDrag,
     };
 
-    if (item.uploading) {
+    if (item.queuedId && !item.id) {
       Object.assign(props, {
         onCancelUpload: this.props.onCancelUpload,
         onRemoveErroredUpload: this.props.onRemoveErroredUpload,
@@ -130,10 +131,16 @@ class ThumbnailView extends Component {
       });
     }
 
-    if (this.props.selectableItems) {
+    if (this.props.selectableItems && (this.props.selectableFolders || item.type !== 'folder')) {
+      const maxSelected = (
+        ![null, 1].includes(this.props.maxFilesSelect) &&
+        this.props.selectedFiles.length >= this.props.maxFilesSelect
+      );
+
       Object.assign(props, {
         selectable: true,
-        onSelect: this.props.onSelect,
+        onSelect: (this.props.maxFilesSelect === 1) ? props.onActivate : this.props.onSelect,
+        maxSelected,
       });
     }
 
@@ -147,8 +154,9 @@ class ThumbnailView extends Component {
   }
 
   render() {
+    const className = 'gallery__main-view--tile';
     return (
-      <div className="gallery__main-view--tile">
+      <div className={className}>
         <div className="gallery__folders">
           {this.props.files.filter(this.folderFilter).map(this.renderItem)}
         </div>

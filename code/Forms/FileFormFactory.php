@@ -15,6 +15,8 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Versioned\RecursivePublishable;
+use SilverStripe\Versioned\Versioned;
 
 class FileFormFactory extends AssetFormFactory
 {
@@ -123,7 +125,7 @@ class FileFormFactory extends AssetFormFactory
 
         $tab = Tab::create(
             'Usage',
-            _t(__CLASS__.'.USAGE', 'Used on'),
+            _t(__CLASS__ . '.USAGE', 'Used on'),
             $usedOnField
         );
 
@@ -139,19 +141,19 @@ class FileFormFactory extends AssetFormFactory
     {
         $tab = Tab::create(
             'LinkOptions',
-            _t(__CLASS__ .'.LINKOPTIONS', 'Link options'),
+            _t(__CLASS__ . '.LINKOPTIONS', 'Link options'),
             TextField::create(
                 'Description',
-                _t(__CLASS__.'.LINKDESCR', 'Link description')
+                _t(__CLASS__ . '.LINKDESCR', 'Link description')
             ),
             CheckboxField::create(
                 'TargetBlank',
-                _t(__CLASS__.'.LINKOPENNEWWIN', 'Open in new window/tab')
+                _t(__CLASS__ . '.LINKOPENNEWWIN', 'Open in new window/tab')
             )
         );
 
         if ($context['RequireLinkText']) {
-            $tab->insertBefore('Description', TextField::create('Text', _t(__CLASS__.'.LINKTEXT', 'Link text')));
+            $tab->insertBefore('Description', TextField::create('Text', _t(__CLASS__ . '.LINKTEXT', 'Link text')));
         }
 
         return $tab;
@@ -170,10 +172,10 @@ class FileFormFactory extends AssetFormFactory
             'Placement',
             LiteralField::create(
                 'AttributesDescription',
-                '<p>'. _t(
+                '<p>' . _t(
                     'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AttributesDescription',
                     'These changes will only affect this particular placement of the file.'
-                ) .'</p>'
+                ) . '</p>'
             ),
             TextField::create('Caption', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Caption', 'Caption'))
         );
@@ -211,9 +213,9 @@ class FileFormFactory extends AssetFormFactory
             if ($this->getFormType($context) === static::TYPE_INSERT_MEDIA) {
                 if ($record->appCategory() !== 'image') {
                     $unembedableMsg = _t(
-                        __CLASS__.'.UNEMEDABLE_MESSAGE',
-                        '<p class="alert alert-info alert--no-border editor__top-message">'.
-                            'This file type can only be inserted as a link. You can edit the link once it is inserted.'.
+                        __CLASS__ . '.UNEMEDABLE_MESSAGE',
+                        '<p class="alert alert-info alert--no-border editor__top-message">' .
+                        'This file type can only be inserted as a link. You can edit the link once it is inserted.' .
                         '</p>'
                     );
                     $fields->unshift(LiteralField::create('UnembedableMessage', $unembedableMsg));
@@ -253,9 +255,9 @@ class FileFormFactory extends AssetFormFactory
                 'data' => [
                     'isPublished' => $record->isPublished(),
                     'isModified' => $record->isModifiedOnDraft(),
-                    'pristineTitle' => _t(__CLASS__.'PUBLISHED', 'Published'),
+                    'pristineTitle' => _t(__CLASS__ . 'PUBLISHED', 'Published'),
                     'pristineIcon' => 'tick',
-                    'dirtyTitle' => _t(__CLASS__.'PUBLISH', 'Publish'),
+                    'dirtyTitle' => _t(__CLASS__ . 'PUBLISH', 'Publish'),
                     'dirtyIcon' => 'rocket',
                     'pristineClass' => 'btn-outline-primary',
                     'dirtyClass' => '',
@@ -277,7 +279,8 @@ class FileFormFactory extends AssetFormFactory
         $record = $context['Record'];
         $type = $this->getFormType($context);
 
-        if ($type === static::TYPE_SELECT || $type === static::TYPE_INSERT_MEDIA) {
+        $actionItems = [];
+        if ($type === static::TYPE_INSERT_MEDIA || $type === static::TYPE_SELECT) {
             $actionItems = array_filter([
                 $this->getInsertAction($record),
             ]);
@@ -358,17 +361,25 @@ class FileFormFactory extends AssetFormFactory
     protected function getUnpublishAction($record)
     {
         // Check if record is unpublishable
-        if (!$record || !$record->isPublished() || !$record->canUnpublish()) {
+        if (!$record || !$record->isInDB() || !$record->isPublished() || !$record->canUnpublish()) {
             return null;
         }
+
+        // Count live owners
+        /** @var Versioned|RecursivePublishable $liveRecord */
+        $liveRecord = Versioned::get_by_stage($record->baseClass(), Versioned::LIVE)
+            ->byID($record->ID);
+        $liveOwners = $liveRecord->findOwners(false)->count();
 
         // Build action
         $unpublishText = _t(
             'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UNPUBLISH_BUTTON',
             'Unpublish'
         );
-        return FormAction::create('unpublish', $unpublishText)
-            ->setIcon('cancel-circled');
+        $action = FormAction::create('unpublish', $unpublishText)
+            ->setIcon('cancel-circled')
+            ->setSchemaData(['data' => ['owners' => $liveOwners]]);
+        return $action;
     }
 
     /**
@@ -396,7 +407,8 @@ class FileFormFactory extends AssetFormFactory
         $action = null;
         if ($record && $record->isInDB() && $record->canView()) {
             /** @var FormAction $action */
-            $action = FormAction::create('insert', _t(__CLASS__.'.INSERT_FILE', 'Insert file'))
+            $action = FormAction::create('insert', _t(__CLASS__ . '.INSERT_FILE', 'Insert'))
+                ->setIcon('plus-circled')
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return $action;
@@ -411,7 +423,7 @@ class FileFormFactory extends AssetFormFactory
         $action = null;
         if ($record && $record->isInDB() && $record->canView()) {
             /** @var FormAction $action */
-            $action = FormAction::create('insert', _t(__CLASS__.'.INSERT_LINK', 'Link to file'))
+            $action = FormAction::create('insert', _t(__CLASS__ . '.INSERT_LINK', 'Link to file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }
         return $action;
@@ -422,6 +434,6 @@ class FileFormFactory extends AssetFormFactory
      */
     public function getRequiredContext()
     {
-        return parent::getRequiredContext() + [ 'RequireLinkText' ];
+        return parent::getRequiredContext() + ['RequireLinkText'];
     }
 }

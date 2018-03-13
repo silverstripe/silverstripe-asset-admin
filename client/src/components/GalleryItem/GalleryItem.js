@@ -22,7 +22,8 @@ function shouldLoadImage(props) {
   return props.item.thumbnail
     && props.item.category === 'image'
     && props.item.exists
-    && !props.item.uploading // Don't load images for uploaded images (retain client thumbnail)
+    // Don't load images for uploaded images (retain client thumbnail)
+    && !props.item.queuedId
     && props.sectionConfig.imageRetry.minRetry
     && props.sectionConfig.imageRetry.maxRetry;
 }
@@ -64,7 +65,7 @@ class GalleryItem extends Component {
   getThumbnailStyles() {
     // Don't fall back to this.props.item.url since it might be huge
     const thumbnail = this.props.item.thumbnail;
-    if (!this.isImage() || !thumbnail || !(this.exists() || this.uploading())) {
+    if (!this.isImage() || !thumbnail || this.missing()) {
       return {};
     }
 
@@ -91,7 +92,7 @@ class GalleryItem extends Component {
 
     if (this.hasError()) {
       message = this.props.item.message.value;
-    } else if (!this.exists() && !this.uploading()) {
+    } else if (this.missing()) {
       message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
     } else if (this.props.loadState === IMAGE_STATUS.FAILED) {
       message = i18n._t('AssetAdmin.FILE_LOAD_ERROR', 'Thumbnail not available');
@@ -149,12 +150,15 @@ class GalleryItem extends Component {
    */
   getItemClassNames() {
     const category = this.props.item.category || 'false';
+    const selected = this.props.selectable && (this.props.item.selected || this.props.isDragging);
+
     return classnames({
       'gallery-item': true,
       [`gallery-item--${category}`]: true,
-      'gallery-item--missing': !this.exists() && !this.uploading(),
+      'gallery-item--max-selected': this.props.maxSelected && !selected,
+      'gallery-item--missing': this.missing(),
       'gallery-item--selectable': this.props.selectable,
-      'gallery-item--selected': this.props.selectable && (this.props.item.selected || this.props.isDragging),
+      'gallery-item--selected': selected,
       'gallery-item--dropping': this.props.isDropping,
       'gallery-item--highlighted': this.props.item.highlighted,
       'gallery-item--error': this.hasError(),
@@ -220,7 +224,7 @@ class GalleryItem extends Component {
    * @returns {boolean}
    */
   isImageSmallerThanThumbnail() {
-    if (!this.isImage() || (!this.exists() && !this.uploading())) {
+    if (!this.isImage() || this.missing()) {
       return false;
     }
     const width = this.props.item.width;
@@ -243,16 +247,34 @@ class GalleryItem extends Component {
    */
   complete() {
     // Uploading is complete if saved with a DB id
-    return this.uploading() && this.props.item.id > 0;
+    return this.props.item.queuedId && this.saved();
   }
 
   /**
-   * Validate that the file is in upload progress
+   * Check if this item has been saved, either in this request or in a prior one
+   *
+   * @return {Boolean}
+   */
+  saved() {
+    return this.props.item.id > 0;
+  }
+
+  /**
+   * Check if this item should have a file, but is missing.
+   *
+   * @return {Boolean}
+   */
+  missing() {
+    return !this.exists() && this.saved();
+  }
+
+  /**
+   * Validate that the file is in upload progress, but not saved yet
    *
    * @returns {boolean}
    */
   uploading() {
-    return this.props.item.uploading;
+    return this.props.item.queuedId && !this.saved();
   }
 
   /**
@@ -304,7 +326,7 @@ class GalleryItem extends Component {
    */
   handleActivate(event) {
     event.stopPropagation();
-    if (typeof this.props.onActivate === 'function' && !this.uploading()) {
+    if (typeof this.props.onActivate === 'function' && this.saved()) {
       this.props.onActivate(event, this.props.item);
     }
   }

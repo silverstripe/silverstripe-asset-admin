@@ -58,6 +58,7 @@ describe('Gallery', () => {
       },
       selectedFiles: [],
       highlightedFiles: [],
+      combinedFiles: [],
       files: [],
       count: 0,
       folderId: 1,
@@ -107,15 +108,15 @@ describe('Gallery', () => {
     };
   });
 
-  describe('getSelection', () => {
+  describe('getSelection()', () => {
     let gallery = null;
 
     beforeEach(() => {
       props.files = [
-        { id: 4 },
-        { id: 10 },
-        { id: 6 },
+        { id: 10, type: 'folder' },
+        { id: 6, type: 'folder' },
         { id: 7 },
+        { id: 4 },
         { id: 16 },
       ];
       gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
@@ -128,7 +129,7 @@ describe('Gallery', () => {
       selection = gallery.getSelection(null, 7);
       expect(selection).toEqual([7]);
 
-      selection = gallery.getSelection();
+      selection = gallery.getSelection(null, null);
       expect(selection).toEqual([]);
     });
 
@@ -140,6 +141,19 @@ describe('Gallery', () => {
     it('should return the ids between two given ids in the list', () => {
       const selection = gallery.getSelection(7, 10);
       expect(selection).toEqual([10, 6, 7]);
+    });
+
+    it('should ignore ids not in the files list', () => {
+      const selection = gallery.getSelection(7, 15);
+      expect(selection).toEqual([7]);
+    });
+
+    it('should ignore folders if type is "select"', () => {
+      props.type = 'select';
+      gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+
+      const selection = gallery.getSelection(10, 16, gallery.getSelectableFiles());
+      expect(selection).toEqual([16]);
     });
   });
 
@@ -452,6 +466,7 @@ describe('Gallery', () => {
     const event = {};
 
     beforeEach(() => {
+      props.files = [{ id: 2 }, { id: 3 }];
       props.actions.gallery.selectFiles = jest.genMockFunction();
       props.actions.gallery.deselectFiles = jest.genMockFunction();
       props.selectedFiles = [1];
@@ -510,7 +525,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      return gallery.handleBulkDelete([{ id: 5 }])
+      return gallery.handleBulkDelete({}, [{ id: 5 }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
@@ -518,7 +533,7 @@ describe('Gallery', () => {
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         })
         .then(() => {
-          gallery.handleBulkDelete([{ id: 5 }, { id: 6 }]);
+          gallery.handleBulkDelete({}, [{ id: 5 }, { id: 6 }]);
         })
         .then(() => {
           expect(props.actions.gallery.setErrorMessage).toBeCalled();
@@ -529,7 +544,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      return gallery.handleBulkPublish([{ id: 5, published: false }])
+      return gallery.handleBulkPublish({}, [{ id: 5, published: false }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
@@ -542,7 +557,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      return gallery.handleBulkUnpublish([{ id: 5, published: true }])
+      return gallery.handleBulkUnpublish({}, [{ id: 5, published: true }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
@@ -555,7 +570,7 @@ describe('Gallery', () => {
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
-      return gallery.handleBulkUnpublish([{ id: 5, published: false }])
+      return gallery.handleBulkUnpublish({}, [{ id: 5, published: false }])
         .then(() => {
           expect(props.actions.gallery.setLoading).not.toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).not.toBeCalled();

@@ -3,6 +3,7 @@
 
 export default [
   'SET_LAST_SELECTED',
+  'SET_SELECTED_FILES',
   'DESELECT_FILES',
   'SELECT_FILES',
   'LOAD_FILE_REQUEST',

@@ -1,8 +1,10 @@
+/* global alert, confirm */
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import backend from 'lib/Backend';
 import i18n from 'i18n';
+import classnames from 'classnames';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as breadcrumbsActions from 'state/breadcrumbs/BreadcrumbsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
@@ -26,11 +28,11 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   if (viewAction === CONSTANTS.ACTIONS.CREATE_FOLDER) {
     schemaUrl = config.form.folderCreateForm.schemaUrl;
     targetId = folderId;
-  } else if (viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
-    // Types are:
-    // 'insert' -> Insert into html area with options
-    // 'select' -> Select a file with no editable fields
-    // 'edit' (default) -> edit files
+
+    return { schemaUrl, targetId };
+  }
+
+  if (viewAction === CONSTANTS.ACTIONS.EDIT_FILE) {
     switch (type) {
       case 'insert-media':
         schemaUrl = config.form.fileInsertForm.schemaUrl;
@@ -47,19 +49,38 @@ function getFormSchema({ config, viewAction, folderId, fileId, type }) {
         break;
     }
 
-    if (!fileId) {
-      return {};
+    if (fileId) {
+      targetId = fileId;
+
+      return { schemaUrl, targetId };
     }
-    targetId = fileId;
-  } else {
-    return {};
   }
-  return { schemaUrl, targetId };
+
+  return {};
 }
+
+
+/**
+ * Check if either of the two objects differ
+ *
+ * @param {Object} left
+ * @param {Object} right
+ */
+function compare(left, right) {
+  // Check for falsiness
+  if ((left && !right) || (right && !left)) {
+    return true;
+  }
+
+  // Fall back to object comparison
+  return left && right && (left.id !== right.id || left.name !== right.name);
+}
+
 
 class AssetAdmin extends Component {
   constructor(props) {
     super(props);
+
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
@@ -80,18 +101,7 @@ class AssetAdmin extends Component {
     this.handleUpload = this.handleUpload.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
-    this.compare = this.compare.bind(this);
     this.setBreadcrumbs = this.setBreadcrumbs.bind(this);
-  }
-
-  componentWillMount() {
-    const config = this.props.sectionConfig;
-
-    // Build API callers from the URLs provided in configuration.
-    // In time, something like a GraphQL endpoint might be a better way to run.
-    this.endpoints = {
-      historyApi: this.createEndpoint(config.historyEndpoint),
-    };
   }
 
   componentDidMount() {
@@ -99,7 +109,7 @@ class AssetAdmin extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const viewChanged = this.compare(this.props.folder, props.folder);
+    const viewChanged = compare(this.props.folder, props.folder);
     if (viewChanged || hasFilters(props.query.filter) !== hasFilters(this.props.query.filter)) {
       this.setBreadcrumbs(props);
     }
@@ -177,6 +187,31 @@ class AssetAdmin extends Component {
     }
 
     this.props.actions.breadcrumbsActions.setBreadcrumbs(breadcrumbs);
+  }
+
+  getFiles() {
+    const {
+      files,
+      queuedFiles,
+    } = this.props;
+
+    return [
+      // Exclude uploaded files that have been reloaded via graphql
+      ...queuedFiles
+        .items
+        .filter(item => !item.id || !files.find(file => file.id === item.id)),
+      ...files,
+    ].sort((left, right) => {
+      if (left.type !== right.type) {
+        if (left.type === 'folder') {
+          return -1;
+        }
+        if (right.type === 'folder') {
+          return 1;
+        }
+      }
+      return right.queuedId - left.queuedId;
+    });
   }
 
   /**
@@ -300,22 +335,6 @@ class AssetAdmin extends Component {
     }
   }
 
-  /**
-   * Check if either of the two objects differ
-   *
-   * @param {Object} left
-   * @param {Object} right
-   */
-  compare(left, right) {
-    // Check for falsiness
-    if ((left && !right) || (right && !left)) {
-      return true;
-    }
-
-    // Fall back to object comparison
-    return left && right && (left.id !== right.id || left.name !== right.name);
-  }
-
   resetFile(file) {
     if (file.queuedId) {
       this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
@@ -357,6 +376,15 @@ class AssetAdmin extends Component {
    */
   handleSubmitEditor(data, action, submitFn) {
     let promise = null;
+
+    if (action === 'action_insert' && this.props.type === 'select') {
+      const files = this.getFiles();
+      const file = files.find(item => item.id === parseInt(data.ID, 10));
+
+      this.props.onInsertMany(null, [file]);
+      return Promise.resolve();
+    }
+
     if (typeof this.props.onSubmitEditor === 'function') {
       // Look for file first in `files`, then `queuedFiles` property
       const file = this.findFile(this.props.fileId);
@@ -442,9 +470,10 @@ class AssetAdmin extends Component {
    * Unpublish files
    *
    * @param {array} ids
+   * @param {boolean} force
    * @return {Promise}
    */
-  doUnpublish(ids) {
+  doUnpublish(ids, force = false) {
     const files = ids.map(id => {
       const result = this.findFile(id);
       if (!result) {
@@ -457,15 +486,64 @@ class AssetAdmin extends Component {
     });
 
     const fileIDs = files.map(file => file.id);
+    return this.props.actions.files.unpublishFiles(fileIDs, force)
 
-    return this.props.actions.files.unpublishFiles(fileIDs)
-      .then(({ data: { unpublishFiles } }) => (
-        unpublishFiles.map(file => {
+      .then(({ data: { unpublishFiles } }) => {
+        const successes = unpublishFiles.filter(result => result.__typename === 'File');
+        const confirmationRequired = unpublishFiles.filter(result => (
+          result.__typename === 'PublicationNotice' && result.Type === 'HAS_OWNERS'
+        ));
+        const successful = successes.map(file => {
           this.resetFile(file);
           return file;
-        })
-      ));
+        });
+        const displayedMessages = confirmationRequired.slice(0, 4);
+        const rest = confirmationRequired.slice(5);
+        const body = displayedMessages.map(warning => warning.Message);
+        if (rest.length) {
+          body.push(
+            i18n.inject(
+              i18n._t(
+                'AssetAdmin.BULK_OWNED_WARNING_REMAINING',
+                'And {count} other file(s)'
+              ),
+              { count: rest.length },
+            )
+          );
+        }
+        if (displayedMessages.length) {
+          const alertMessage = [
+            i18n.inject(
+              i18n._t(
+                'AssetAdmin.BULK_OWNED_WARNING_HEADING',
+                '{count} file(s) are being used by other published content.'
+              ),
+              { count: confirmationRequired.length },
+            ),
+
+            body.join('\n'),
+
+            i18n._t(
+              'AssetAdmin.BULK_OWNED_WARNING_FOOTER',
+              'Unpublishing will only remove files from the published version of the content. They will remain on the draft version. Unpublish anyway?'
+            )
+          ];
+
+          // eslint-disable-next-line no-alert
+          if (confirm(alertMessage.join('\n\n'))) {
+            const secondPassIDs = confirmationRequired.reduce(
+              (acc, curr) => acc.concat(curr.IDs),
+              []
+            );
+            return this.doUnpublish(secondPassIDs, true)
+              .then(next => successful.concat(next));
+          }
+        }
+
+        return successful;
+      });
   }
+
 
   /**
    * Unpublish files and update the UI
@@ -509,12 +587,16 @@ class AssetAdmin extends Component {
     const fileIDs = files.map(file => file.id);
 
     return this.props.actions.files.publishFiles(fileIDs)
-      .then(({ data: { publishFiles } }) => (
-        publishFiles.map(file => {
+      .then(({ data: { publishFiles } }) => {
+        const successes = publishFiles.filter(result => result.__typename === 'File');
+
+        const successful = successes.map(file => {
           this.resetFile(file);
           return file;
-        })
-      ));
+        });
+
+        return successful;
+      });
   }
 
   /**
@@ -524,7 +606,8 @@ class AssetAdmin extends Component {
    * @return {object}
    */
   findFile(fileId) {
-    const allFiles = [...this.props.files, ...this.props.queuedFiles.items];
+    const allFiles = this.getFiles();
+
     return allFiles.find((item) => item.id === parseInt(fileId, 10));
   }
 
@@ -579,7 +662,7 @@ class AssetAdmin extends Component {
 
     return (
       <Gallery
-        files={this.props.files}
+        files={this.getFiles()}
         fileId={this.props.fileId}
         folderId={this.getFolderId()}
         folder={this.props.folder}
@@ -593,6 +676,7 @@ class AssetAdmin extends Component {
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         onDelete={this.handleDelete}
+        onInsertMany={this.props.onInsertMany}
         onPublish={this.doPublish}
         onUnpublish={this.doUnpublish}
         onOpenFile={this.handleOpenFile}
@@ -607,6 +691,7 @@ class AssetAdmin extends Component {
         sort={sort}
         sectionConfig={config}
         loading={this.props.loading}
+        maxFilesSelect={this.props.maxFiles}
       />
     );
   }
@@ -647,14 +732,22 @@ class AssetAdmin extends Component {
   }
 
   render() {
-    const showBackButton = !!(
+    const showBackButton = Boolean(
       (this.props.folderId)
       || hasFilters(this.props.query.filter)
     );
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
     const filters = this.props.query.filter || {};
+    const classNames = classnames(
+      'fill-height asset-admin',
+      this.props.type === 'select' && {
+        'asset-admin--single-select': this.props.maxFiles === 1,
+        'asset-admin--multi-select': this.props.maxFiles !== 1,
+      }
+    );
+
     return (
-      <div className="fill-height">
+      <div className={classNames}>
         <Toolbar
           showBackButton={showBackButton}
           onBackButtonClick={this.handleBackButtonClick}
@@ -687,6 +780,7 @@ AssetAdmin.propTypes = {
   folderId: PropTypes.number,
   onBrowse: PropTypes.func,
   onReplaceUrl: PropTypes.func,
+  onInsertMany: PropTypes.func,
   graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   getUrl: PropTypes.func,
   query: PropTypes.shape({
@@ -712,6 +806,7 @@ AssetAdmin.propTypes = {
   }),
   loading: PropTypes.bool,
   actions: PropTypes.object,
+  maxFiles: PropTypes.number,
 };
 
 AssetAdmin.defaultProps = {
@@ -722,6 +817,7 @@ AssetAdmin.defaultProps = {
     page: 0,
     filter: {},
   },
+  maxFiles: null,
 };
 
 function mapStateToProps(state) {

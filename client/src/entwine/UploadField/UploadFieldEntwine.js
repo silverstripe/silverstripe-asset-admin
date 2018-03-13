@@ -29,7 +29,7 @@ jQuery.entwine('ss', ($) => {
     onunmatch() {
       this._super();
       // solves errors given by ReactDOM "no matched root found" error.
-      ReactDOM.unmountComponentAtNode(this.getContainer());
+      ReactDOM.unmountComponentAtNode(this.siblings('.uploadfield-holder')[0]);
     },
 
     onmatch() {

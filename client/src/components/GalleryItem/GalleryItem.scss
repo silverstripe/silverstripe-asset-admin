@@ -115,6 +115,11 @@ $gallery-item-label-height: 40px;
     // Make space for the checkbox on the right hand side
     padding-right: 32px;
   }
+
+  .asset-admin--single-select .gallery-item--selectable:not(.gallery-item--selected) & {
+    // Make space for the checkbox on the right hand side
+    padding-right: 12px;
+  }
 }
 
 // ACTIONS
@@ -135,19 +140,37 @@ $gallery-item-label-height: 40px;
   top: 0;
   margin-bottom: 0;
 
-  .gallery-item--selectable &::before {
-    cursor: pointer;
-    top: 0;
-    right: 0;
-    margin: 10px;
-    position: absolute;
-    border: 1px solid $border-color;
-    border-radius: $border-radius-sm;
-    font-size: 1.15em;
-    padding: 1px;
-    color: transparent;
-    background-color: $white;
+  .gallery-item--selectable & {
+
+    .asset-admin--single-select & {
+      display: none;
+    }
+
+    &::before {
+      cursor: pointer;
+      top: 0;
+      right: 0;
+      margin: 10px;
+      position: absolute;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      font-size: 1.15em;
+      padding: 1px;
+      color: transparent;
+      background-color: $white;
+    }
   }
+
+  .asset-admin--single-select .gallery-item--selected & {
+    display: block;
+
+    &::before {
+      margin: 8px;
+      border-radius: 100%;
+      font-size: 1.5em;
+    }
+  }
+
 }
 
 .gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled) {
@@ -351,6 +374,17 @@ $gallery-item-label-height: 40px;
 
   &:hover::after {
     content: "MODIFIED";
+  }
+}
+
+.gallery-item--max-selected {
+  opacity: 0.2;
+
+  .gallery-item__checkbox-label {
+
+    &, &:before {
+      cursor: not-allowed;
+    }
   }
 }
 

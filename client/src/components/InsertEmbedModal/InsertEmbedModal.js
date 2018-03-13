@@ -19,7 +19,7 @@ class InsertEmbedModal extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (props.show && !this.props.show) {
+    if (props.isOpen && !this.props.isOpen) {
       this.setOverrides(props);
     }
   }
@@ -71,8 +71,8 @@ class InsertEmbedModal extends Component {
       this.props,
       {
         className: `insert-embed-modal ${this.props.className}`,
-        bsSize: 'lg',
-        onHide: this.props.onHide,
+        size: 'lg',
+        onClosed: this.props.onClosed,
         title: ((this.props.targetUrl)
           ? i18n._t('AssetAdmin.EditTitle', 'Media from the web')
           : i18n._t('AssetAdmin.CreateTitle', 'Insert new media from the web')),
@@ -121,7 +121,7 @@ class InsertEmbedModal extends Component {
         break;
       }
       case 'action_cancel': {
-        this.props.onHide();
+        this.props.onClosed();
         break;
       }
       default: {
@@ -142,7 +142,7 @@ InsertEmbedModal.propTypes = {
     url: PropTypes.string,
     form: PropTypes.object,
   }),
-  show: PropTypes.bool,
+  isOpen: PropTypes.bool,
   onInsert: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
   fileAttributes: PropTypes.shape({
@@ -153,7 +153,7 @@ InsertEmbedModal.propTypes = {
     Width: PropTypes.number,
     Height: PropTypes.number,
   }),
-  onHide: PropTypes.func.isRequired,
+  onClosed: PropTypes.func.isRequired,
   className: PropTypes.string,
   actions: PropTypes.object,
   schemaUrl: PropTypes.string.isRequired,

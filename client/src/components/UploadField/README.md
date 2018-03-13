@@ -43,7 +43,6 @@ Represents a single item in an UploadField
 * `extraClass` (string): Extra classes the component should have.
 * `item` (object): File object this record contains. The shape of this object is equivalent to that
   returned by `AssetAdmin::getObjectFromData` with the following extra considerations:
-   - `item.uploaded` (boolean): A flag which is set to true if this file was recently added by the user
    - `item.queuedId` (string): A GUID assigned to any in-progress uploads which are yet to be saved to the database.
 * `handleRemove` (function): A callback which will be invoked in case the 'remove' button is clicked. This
   callback has these arguments:

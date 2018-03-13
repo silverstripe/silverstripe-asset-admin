@@ -15,7 +15,7 @@ describe('InsertEmbedModal', () => {
     props = {
       onInsert: jest.genMockFunction(),
       onCreate: jest.genMockFunction(),
-      onHide: jest.genMockFunction(),
+      onClosed: jest.genMockFunction(),
       schemaUrl: 'test.com/schema',
       actions: {
         schema: {
@@ -128,7 +128,7 @@ describe('InsertEmbedModal', () => {
 
       component.handleSubmit(data, 'action_cancel', mockSubmit);
 
-      expect(props.onHide).toBeCalled();
+      expect(props.onClosed).toBeCalled();
       expect(mockSubmit).not.toBeCalled();
     });
   });

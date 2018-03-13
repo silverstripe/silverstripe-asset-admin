@@ -28,7 +28,8 @@
         ]
     },
     "scripts": {
-        "lint": "phpcs -s code/ tests/"
+        "lint": "phpcs -s code/ tests/",
+        "lint-clean": "phpcbf code/ tests/"
     },
     "autoload": {
         "psr-4": {

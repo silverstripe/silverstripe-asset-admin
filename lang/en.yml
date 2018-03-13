@@ -73,7 +73,7 @@ en:
     SAVE: Save
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: 'Insert file'
+    INSERT_FILE: 'Insert'
     INSERT_LINK: 'Link to file'
     LINKDESCR: 'Link description'
     LINKOPENNEWWIN: 'Open in new window/tab'
@@ -99,3 +99,7 @@ en:
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'File or Folder could not be found'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'File "{file}" is used in {count} place.'
+      other: 'File "{file}" is used in {count} places.'

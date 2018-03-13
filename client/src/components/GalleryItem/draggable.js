@@ -4,6 +4,9 @@ import { getEmptyImage } from 'react-dnd-html5-backend';
 
 export default function draggable(type) {
   const spec = {
+    canDrag(props) {
+      return props.canDrag;
+    },
     beginDrag(props) {
       const { id } = props.item;
       if (typeof props.onDrag === 'function') {

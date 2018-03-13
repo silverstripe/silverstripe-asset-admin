@@ -172,10 +172,10 @@ jQuery.entwine('ss', ($) => {
     /**
      * Renders the react modal component
      *
-     * @param {boolean} show
+     * @param {boolean} isOpen
      * @private
      */
-    _renderModal(show) {
+    _renderModal(isOpen) {
       const handleHide = () => this.close();
       // Inserts embed into page
       const handleInsert = (...args) => this._handleInsert(...args);
@@ -187,12 +187,12 @@ jQuery.entwine('ss', ($) => {
       // create/update the react component
       ReactDOM.render(
         <InjectableInsertEmbedModal
-          show={show}
+          isOpen={isOpen}
           onCreate={handleCreate}
           onInsert={handleInsert}
-          onHide={handleHide}
+          onClosed={handleHide}
           onLoadingError={handleLoadingError}
-          bodyClassName="modal__dialog modal__dialog--scrollable"
+          bodyClassName="modal__dialog"
           className="insert-embed-react__dialog-wrapper"
           fileAttributes={attrs}
         />,
