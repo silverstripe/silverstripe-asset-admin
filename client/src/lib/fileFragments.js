@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-const fileInterface = gql`
+const fileInterface = `
   fragment FileInterfaceFields on FileInterface {
     canDelete
     canEdit
@@ -18,7 +18,7 @@ const fileInterface = gql`
   }
 `;
 
-const file = gql`
+const file = `
   fragment FileFields on File {
     draft
     extension
@@ -30,7 +30,7 @@ const file = gql`
   }
 `;
 
-const folder = gql`
+const folder = `
   fragment FolderFields on Folder {
     filesInUseCount
   }
