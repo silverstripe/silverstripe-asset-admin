@@ -66,29 +66,28 @@ $uploadfield-item-label-height: 40px;
 }
 
 .uploadfield-item__details {
-  padding: 11px 12px;
+  padding: 11px 0 11px 12px;
   height: 100%;
-  line-height: $file-item-thumb-width - 22;
   margin: 0;
-  overflow: hidden;
   box-sizing: border-box;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   position: relative;
-  min-width: 30px;
+  width: 50px;
+  justify-content: center;
 }
 
 .uploadfield-item__title {
-  font-weight: bold;
-  width: 120px; // flexbox uses width for a "minimum"
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .uploadfield-item__meta {
-  padding-left: 5px;
+  font-size: $font-size-xs;
   text-transform: uppercase;
+}
+
+.uploadfield-item__specs {
+  color: $text-muted;
 }
 
 // ACTIONS
@@ -145,6 +144,10 @@ $uploadfield-item-label-height: 40px;
   color: white;
   background: $brand-danger;
   border-radius: 14px;
+  max-width: 25%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 
@@ -159,4 +162,11 @@ $uploadfield-item-label-height: 40px;
     font-family: silverstripe, sans-serif;
     content: "I";
   }
+}
+
+.uploadfield-item__status {
+  margin: 0 $spacer/2;
+  color: $state-draft;
+  background-color: $state-draft-bg;
+  text-transform: uppercase;
 }
