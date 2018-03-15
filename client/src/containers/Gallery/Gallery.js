@@ -495,6 +495,19 @@ class Gallery extends Component {
     this.props.actions.gallery.setEnableDropzone(enabled);
   }
 
+  renderExtraToolbarButtons() {
+    if (window.assetAdmin && window.assetAdmin.gallery && window.assetAdmin.gallery.extraToolbarButtons) {
+      let extraButtons = window.assetAdmin.gallery.extraToolbarButtons;
+      return (
+        <div>
+          { extraButtons.map(ExtraButton => (
+            <ExtraButton />
+          ))}
+        </div>
+      );
+    }
+  }
+
   handleMoveFiles(folderId, fileIds) {
     this.props.actions.files.moveFiles(folderId, fileIds)
       .then(() => {
@@ -717,6 +730,7 @@ class Gallery extends Component {
       view,
       sort,
       folder,
+      children: this.renderExtraToolbarButtons()
     };
 
     return <GalleryToolbar {...props} />;
