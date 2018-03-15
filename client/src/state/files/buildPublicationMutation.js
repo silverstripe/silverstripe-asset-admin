@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { fileInterface, file } from 'lib/fileFragments';
 
-const createPublicationMutation = (mutationName) => {
+const buildPublicationMutation = (mutationName) => {
   const operationName = mutationName.charAt(0).toUpperCase() + mutationName.slice(1);
   const mutation = gql`
   mutation ${operationName}($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {
@@ -49,4 +49,4 @@ const createPublicationMutation = (mutationName) => {
   return { mutation, config };
 };
 
-export default createPublicationMutation;
+export default buildPublicationMutation;

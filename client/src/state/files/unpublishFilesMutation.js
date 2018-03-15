@@ -1,7 +1,7 @@
 import { graphql } from 'react-apollo';
-import createPublicationMutation from './createPublicationMutation';
+import buildPublicationMutation from './buildPublicationMutation';
 
-const { mutation, config } = createPublicationMutation('unpublishFiles');
+const { mutation, config } = buildPublicationMutation('unpublishFiles');
 
 export { mutation, config };
 export default graphql(mutation, config);
