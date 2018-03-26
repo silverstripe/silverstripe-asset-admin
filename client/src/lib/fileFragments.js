@@ -1,5 +1,3 @@
-import gql from 'graphql-tag';
-
 const fileInterface = `
   fragment FileInterfaceFields on FileInterface {
     canDelete

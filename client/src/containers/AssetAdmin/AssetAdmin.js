@@ -20,7 +20,6 @@ import unpublishFilesMutation from 'state/files/unpublishFilesMutation';
 import publishFilesMutation from 'state/files/publishFilesMutation';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
-import { injectGraphql } from 'lib/Injector';
 
 function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   let schemaUrl = null;
@@ -618,8 +617,6 @@ class AssetAdmin extends Component {
   }
 
   handleCreateFolder() {
-    // @todo remove this POC
-    this.props.actions.files.createFolder(this.getFolderId(), 'bob');
     this.props.onBrowse(
       this.getFolderId(),
       null,
@@ -850,7 +847,5 @@ export default compose(
   deleteFilesMutation,
   unpublishFilesMutation,
   publishFilesMutation,
-  // @todo remove this when POC is done
-  injectGraphql('CreateFolder', 'AssetAdmin.Gallery'),
   (component) => withApollo(component)
 )(AssetAdmin);
