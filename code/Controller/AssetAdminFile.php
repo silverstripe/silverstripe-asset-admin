@@ -4,6 +4,7 @@ namespace SilverStripe\AssetAdmin\Controller;
 
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Shortcodes\FileLink;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\CMS\Model\SiteTreeFileExtension;
 use SilverStripe\Control\Director;
@@ -183,19 +184,17 @@ class AssetAdminFile extends DataExtension
         $list = ArrayList::create();
 
         // Check SiteTreeFileExtension
-        if (File::has_extension(SiteTreeFileExtension::class)
-            && class_exists(SiteTree::class)
-            && $this->owner instanceof Folder
-        ) {
+        if ($this->owner instanceof Folder) {
             // Join on tracking table
             $parents = static::nestedFolderIDs($this->owner->ID);
+            $linkQuery = FileLink::get()->sql($linkParams);
             $list = File::get()->filter('ParentID', $parents)
                 ->innerJoin(
-                    'SiteTree_ImageTracking',
-                    '"File"."ID" = "SiteTree_ImageTracking"."FileID"'
-                )->innerJoin(
-                    'SiteTree',
-                    '"SiteTree"."ID" = "SiteTree_ImageTracking"."SiteTreeID"'
+                    "({$linkQuery})",
+                    '"File"."ID" = "FileLinkTracking"."LinkedID"',
+                    'FileLinkTracking',
+                    20,
+                    $linkParams
                 );
         }
 
