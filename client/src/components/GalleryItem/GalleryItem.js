@@ -89,16 +89,18 @@ class GalleryItem extends Component {
    */
   getErrorMessage() {
     let message = null;
+    const { updateErrorMessage, item, loadState } = this.props;
 
     if (this.hasError()) {
-      message = this.props.item.message.value;
+      message = item.message.value;
     } else if (this.missing()) {
       message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
-    } else if (this.props.loadState === IMAGE_STATUS.FAILED) {
+    } else if (loadState === IMAGE_STATUS.FAILED) {
       message = i18n._t('AssetAdmin.FILE_LOAD_ERROR', 'Thumbnail not available');
     }
 
     if (message !== null) {
+      message = updateErrorMessage(message, this.props);
       return (
         <span className="gallery-item__error-message">
           {message}
@@ -164,7 +166,7 @@ class GalleryItem extends Component {
       'gallery-item--error': this.hasError(),
       'gallery-item--dragging': this.props.isDragging,
     });
-  }
+    }
 
   /**
    * Get flags for statuses that apply to this item
@@ -172,23 +174,27 @@ class GalleryItem extends Component {
    * @returns {Array}
    */
   getStatusFlags() {
-    const flags = [];
-    if (this.props.item.type !== 'folder') {
-      if (this.props.item.draft) {
-        flags.push(<span
-          key="status-draft"
-          title={i18n._t('File.DRAFT', 'Draft')}
-          className="gallery-item--draft"
-        />);
-      } else if (this.props.item.modified) {
-        flags.push(<span
-          key="status-modified"
-          title={i18n._t('File.MODIFIED', 'Modified')}
-          className="gallery-item--modified"
-        />);
+    let flags = [];
+    const { item, updateStatusFlags } = this.props;
+    if (item.type !== 'folder') {
+      if (item.draft) {
+        flags.push({
+          node: 'span',
+          key: 'status-draft',
+          title: i18n._t('File.DRAFT', 'Draft'),
+          className: 'gallery-item--draft',
+        });
+      } else if (item.modified) {
+        flags.push({
+          node: 'span',
+          key: 'status-modified',
+          title: i18n._t('File.MODIFIED', 'Modified'),
+          className: 'gallery-item--modified',
+        });
       }
     }
-    return flags;
+    flags = updateStatusFlags(flags, this.props);
+    return flags.map(({ node: Tag, ...attributes }) => <Tag {...attributes} />);
   }
 
   /**
@@ -198,11 +204,11 @@ class GalleryItem extends Component {
    */
   getProgressBar() {
     let progressBar = null;
-
+    const { updateProgressBar, item } = this.props;
     const progressBarProps = {
       className: 'gallery-item__progress-bar',
       style: {
-        width: `${this.props.item.progress}%`,
+        width: `${item.progress}%`,
       },
     };
 
@@ -213,7 +219,7 @@ class GalleryItem extends Component {
         </div>
       );
     }
-
+    progressBar = updateProgressBar(progressBar, this.props);
     return progressBar;
   }
 
@@ -449,6 +455,7 @@ class GalleryItem extends Component {
         </div>
         {this.getProgressBar()}
         {this.getErrorMessage()}
+        {this.props.children}
         <div className="gallery-item__title" ref={(title) => { this.title = title; }}>
           <label {...inputLabelProps} htmlFor={htmlID}>
             <input {...inputProps} />
@@ -484,6 +491,9 @@ GalleryItem.propTypes = {
     status: PropTypes.string,
     message: PropTypes.string,
   }),
+  updateStatusFlags: PropTypes.func,
+  updateProgressBar: PropTypes.func,
+  updateErrorMessage: PropTypes.func,
 };
 
 GalleryItem.defaultProps = {
@@ -491,6 +501,9 @@ GalleryItem.defaultProps = {
   sectionConfig: {
     imageRetry: {},
   },
+  updateStatusFlags: flags => flags,
+  updateProgressBar: progressBar => progressBar,
+  updateErrorMessage: message => message,
 };
 
 function mapStateToProps(state, ownprops) {
