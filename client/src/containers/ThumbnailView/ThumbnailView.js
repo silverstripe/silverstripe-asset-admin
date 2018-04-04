@@ -1,6 +1,6 @@
 import i18n from 'i18n';
-import React, { Component } from 'react';
-import { Folder, File } from 'components/GalleryItem/GalleryItem';
+import React, { Component, PropTypes } from 'react';
+import { inject } from 'lib/Injector';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import Griddle from 'griddle-react';
 
@@ -106,48 +106,50 @@ class ThumbnailView extends Component {
    * @returns {XML}
    */
   renderItem(item) {
-    const badge = this.props.badges.find((badgeItem) => badgeItem.id === item.id);
-    const props = {
-      sectionConfig: this.props.sectionConfig,
+    const {
+      File,
+      Folder,
+      badges,
+      sectionConfig,
+      selectedFiles,
+      selectableItems,
+      selectableFolders,
+    } = this.props;
+    const badge = badges.find((badgeItem) => badgeItem.id === item.id);
+    let props = {
+      sectionConfig,
       key: item.id,
       selectableKey: item.id,
       item,
-      selectedFiles: this.props.selectedFiles,
+      selectedFiles,
       onDrag: this.handleDrag,
       badge,
       canDrag: this.props.canDrag,
     };
 
     if (item.queuedId && !item.id) {
-      Object.assign(props, {
-        onCancelUpload: this.props.onCancelUpload,
-        onRemoveErroredUpload: this.props.onRemoveErroredUpload,
-      });
+      const { onCancelUpload, onRemoveErroredUpload } = this.props;
+      props = { ...props, onCancelUpload, onRemoveErroredUpload };
     } else {
-      Object.assign(props, {
-        onActivate: (item.type === 'folder')
-          ? this.props.onOpenFolder
-          : this.props.onOpenFile,
-      });
+      const { onOpenFolder, onOpenFile } = this.props;
+      props = {
+        ...props,
+        onActivate: (item.type === 'folder') ? onOpenFolder : onOpenFile,
+      };
     }
 
-    if (this.props.selectableItems && (this.props.selectableFolders || item.type !== 'folder')) {
+    if (selectableItems && (selectableFolders || item.type !== 'folder')) {
       const maxSelected = (
         ![null, 1].includes(this.props.maxFilesSelect) &&
         this.props.selectedFiles.length >= this.props.maxFilesSelect
       );
-
-      Object.assign(props, {
-        selectable: true,
-        onSelect: (this.props.maxFilesSelect === 1) ? props.onActivate : this.props.onSelect,
-        maxSelected,
-      });
+      const onSelect = (this.props.maxFilesSelect === 1) ? props.onActivate : this.props.onSelect;
+      props = { ...props, selectable: true, onSelect, maxSelected };
     }
 
     if (item.type === 'folder') {
-      Object.assign(props, {
-        onDropFiles: this.props.onDropFiles,
-      });
+      const { onDropFiles } = this.props;
+      props = { ...props, onDropFiles };
       return <Folder {...props} />;
     }
     return <File {...props} />;
@@ -179,6 +181,21 @@ class ThumbnailView extends Component {
 
 ThumbnailView.defaultProps = galleryViewDefaultProps;
 
-ThumbnailView.propTypes = galleryViewPropTypes;
+ThumbnailView.propTypes = {
+  ...galleryViewPropTypes,
+  File: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+  Folder: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+};
 
-export default ThumbnailView;
+const injector = inject(
+  ['GalleryItemFile', 'GalleryItemFolder'],
+  (GalleryItemFile, GalleryItemFolder) => ({
+    File: GalleryItemFile,
+    Folder: GalleryItemFolder
+  }),
+  () => 'AssetAdmin.Gallery.ThumbnailView',
+);
+
+export { ThumbnailView as Component };
+
+export default injector(ThumbnailView);

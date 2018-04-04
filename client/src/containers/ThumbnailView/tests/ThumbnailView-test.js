@@ -7,7 +7,9 @@ jest.mock('griddle-react');
 
 import React from 'react';
 import ReactTestUtils from 'react-addons-test-utils';
-import ThumbnailView from '../ThumbnailView';
+import { Component as ThumbnailView } from '../ThumbnailView';
+// import mocks for injector props
+import { File, Folder } from 'components/GalleryItem/GalleryItem';
 
 describe('ThumbnailView', () => {
   let props = null;
@@ -30,6 +32,8 @@ describe('ThumbnailView', () => {
       onSetPage: jest.genMockFunction(),
       renderNoItemsNotice: jest.genMockFunction(),
       badges: [],
+      File,
+      Folder,
     };
   });
 
