@@ -8,8 +8,9 @@ const ownerAwareUnpublish = (FormAction) => (props) => {
     ...props,
     onClick(e, nameOrID) {
       const { owners } = props.data;
+      let message = null;
       if (owners && parseInt(owners, 10) > 0) {
-        const message = [
+        message = [
           i18n.inject(
             i18n._t(
               'AssetAdmin.SINGLE_OWNED_WARNING_1',
@@ -25,14 +26,16 @@ const ownerAwareUnpublish = (FormAction) => (props) => {
             'AssetAdmin.SINGLE_OWNED_WARNING_3',
             'Do you want to unpublish this file anyway?'
           )
-        ];
-        // eslint-disable-next-line no-alert
-        if (confirm(message.join('\n\n'))) {
-          e.preventDefault();
-          return;
-        }
+        ].join('\n\n');
+      } else {
+        message = i18n._t('AssetAdmin.CONFIRMUNPUBLISH', 'Are you sure you want to unpublish this record?');
       }
-      originalOnclick(e, nameOrID);
+      // eslint-disable-next-line no-alert
+      if (confirm(message)) {
+        originalOnclick(e, nameOrID);
+      } else {
+        e.preventDefault();
+      }
     }
   };
 
