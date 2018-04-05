@@ -90,7 +90,6 @@ class UploadField extends Component {
    */
   getFolderId() {
     const { selectingItem } = this.state;
-    const { parentId } = this.props.data.parentid;
 
     if (selectingItem && typeof selectingItem === 'object') {
       // If we are viewing a specific file, return that file's parent folder.
@@ -98,7 +97,7 @@ class UploadField extends Component {
     }
 
     // Otherwise return the default upload folder for the UploadField.
-    return parentId;
+    return this.props.data.parentid;
   }
 
   handleAddedFile(data) {
