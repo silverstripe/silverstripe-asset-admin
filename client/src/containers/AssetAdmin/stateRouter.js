@@ -22,7 +22,7 @@ class AssetAdminStateRouter extends Component {
     this.state = Object.assign(
       {},
       initialState,
-      {folderId: props.folderId}
+      { folderId: props.folderId }
     );
   }
 
