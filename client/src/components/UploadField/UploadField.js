@@ -97,7 +97,7 @@ class UploadField extends Component {
     }
 
     // Otherwise return the default upload folder for the UploadField.
-    return this.props.data.parentid;
+    return this.props.data.parentid || 0;
   }
 
   handleAddedFile(data) {
