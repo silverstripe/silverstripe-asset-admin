@@ -32,6 +32,7 @@ class UploadField extends Component {
   constructor(props) {
     super(props);
     this.getMaxFiles = this.getMaxFiles.bind(this);
+    this.getFolderId = this.getFolderId.bind(this);
     this.renderChild = this.renderChild.bind(this);
     this.handleAddShow = this.handleAddShow.bind(this);
     this.handleHide = this.handleHide.bind(this);
@@ -81,6 +82,23 @@ class UploadField extends Component {
     const allowed = Math.max(maxFiles - filesCount, 0);
 
     return allowed;
+  }
+
+  /**
+   * Find the ID of the folder to start in.
+   * @return {Number}
+   */
+  getFolderId() {
+    const { selectingItem } = this.state;
+    const { parentId } = this.props.data.parentid;
+
+    if (selectingItem && typeof selectingItem === 'object') {
+      // If we are viewing a specific file, return that file's parent folder.
+      return selectingItem.parent.id;
+    }
+
+    // Otherwise return the default upload folder for the UploadField.
+    return parentId;
   }
 
   handleAddedFile(data) {
@@ -393,6 +411,7 @@ class UploadField extends Component {
     const { InsertMediaModal } = this.props;
     const { selecting, selectingItem } = this.state;
     const maxFiles = this.getMaxFiles();
+    const folderId = this.getFolderId();
 
     return (
       <InsertMediaModal
@@ -406,7 +425,7 @@ class UploadField extends Component {
         bodyClassName="modal__dialog"
         className="insert-media-react__dialog-wrapper"
         fileAttributes={selectingItem ? { ID: selectingItem.id } : null}
-        folderId={selectingItem && typeof item === 'object' ? selectingItem.parent.id : 0}
+        folderId={folderId}
       />
     );
   }
