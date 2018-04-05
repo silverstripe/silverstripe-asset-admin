@@ -58,10 +58,7 @@ class AssetAdminStateRouter extends Component {
    * @return {*} Folder ID being viewed, or null if not known
    */
   getFolderId() {
-    if (this.state.folderId === null) {
-      return null;
-    }
-    return parseInt(this.state.folderId || 0, 10);
+    return parseInt(this.state.folderId || this.props.folderId || 0, 10);
   }
 
   /**
