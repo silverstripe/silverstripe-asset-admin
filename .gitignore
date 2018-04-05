@@ -1,5 +1,6 @@
 .sass-cache
 .DS_Store
+*.log
 npm-debug.log
 node_modules/
 coverage/
