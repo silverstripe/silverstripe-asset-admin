@@ -32,7 +32,7 @@ class InsertMediaModal extends Component {
 
   componentWillReceiveProps(props) {
     if (!props.isOpen && this.props.isOpen) {
-      props.onBrowse(0);
+      props.onBrowse(props.folderId);
       props.actions.gallery.deselectFiles();
     }
     if (typeof this.props.setOverrides === 'function' &&
