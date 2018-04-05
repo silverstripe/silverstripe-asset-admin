@@ -19,7 +19,11 @@ class AssetAdminStateRouter extends Component {
     this.handleBrowse = this.handleBrowse.bind(this);
     this.getUrl = this.getUrl.bind(this);
 
-    this.state = Object.assign({}, initialState);
+    this.state = Object.assign(
+      {},
+      initialState,
+      {folderId: props.folderId}
+    );
   }
 
   /**
@@ -58,7 +62,10 @@ class AssetAdminStateRouter extends Component {
    * @return {*} Folder ID being viewed, or null if not known
    */
   getFolderId() {
-    return parseInt(this.state.folderId || this.props.folderId || 0, 10);
+    if (this.state.folderId === null) {
+      return null;
+    }
+    return parseInt(this.state.folderId || 0, 10);
   }
 
   /**
@@ -76,6 +83,7 @@ class AssetAdminStateRouter extends Component {
     const props = Object.assign({},
       this.props,
       {
+        // folderId: this.getFolderId() || this.props.folderId || null,
         folderId: this.getFolderId(),
         fileId: this.getFileId(),
         viewAction: this.getViewAction(),
