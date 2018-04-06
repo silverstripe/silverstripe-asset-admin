@@ -12,9 +12,9 @@ describe('UploadField', () => {
     id: 2,
     name: 'MyFile.jpg',
     parent: {
-      filename: "Folder/SubFolder",
+      filename: 'Folder/SubFolder',
       id: 23,
-      title: "SubFolder",
+      title: 'SubFolder',
     }
   };
 
@@ -137,7 +137,6 @@ describe('UploadField', () => {
   });
 
   describe('getFolderId()', () => {
-
     it('should match the the parentid of a provided file', () => {
       file = ReactTestUtils.renderIntoDocument(
         <UploadField {...props} />
@@ -162,7 +161,7 @@ describe('UploadField', () => {
         <UploadField {...props} />
       );
 
-      let folderId = file.getFolderId();
+      const folderId = file.getFolderId();
 
       expect(folderId).toBe(0);
     });
@@ -174,7 +173,7 @@ describe('UploadField', () => {
         <UploadField {...props} />
       );
 
-      let folderId = file.getFolderId();
+      const folderId = file.getFolderId();
       expect(folderId).toBe(props.data.parentid);
     });
 
@@ -185,10 +184,9 @@ describe('UploadField', () => {
         <UploadField {...props} />
       );
 
-      let folderId = file.getFolderId();
+      const folderId = file.getFolderId();
       expect(folderId).toBe(0);
     });
-
   });
 
   describe('componentDidMount()', () => {
