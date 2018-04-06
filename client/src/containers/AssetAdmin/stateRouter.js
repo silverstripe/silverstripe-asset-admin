@@ -83,7 +83,6 @@ class AssetAdminStateRouter extends Component {
     const props = Object.assign({},
       this.props,
       {
-        // folderId: this.getFolderId() || this.props.folderId || null,
         folderId: this.getFolderId(),
         fileId: this.getFileId(),
         viewAction: this.getViewAction(),
