@@ -15,7 +15,6 @@ import CONSTANTS from 'constants/index';
 import FormAlert from 'components/FormAlert/FormAlert';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
-import createFolderMutation from 'state/files/createFolderMutation';
 import moveFilesMutation from 'state/files/moveFilesMutation';
 import { withApollo } from 'react-apollo';
 import { SelectableGroup } from 'react-selectable';
@@ -1134,6 +1133,5 @@ export default compose(
   ),
   connect(mapStateToProps, mapDispatchToProps),
   moveFilesMutation,
-  createFolderMutation,
   (component) => withApollo(component)
 )(Gallery);
