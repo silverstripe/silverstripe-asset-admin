@@ -9,7 +9,6 @@ use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
-use SilverStripe\CMS\Model\SiteTreeFileExtension;
 use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
@@ -219,18 +218,15 @@ class FileTypeCreator extends TypeCreator
     }
 
     /**
-     * @param File|SiteTreeFileExtension $object
+     * @param File $object
      * @param array $args
-     * @param $context
-     * @param $info
+     * @param array $context
+     * @param ResolveInfo $info
      * @return int
      */
     public function resolveInUseCountField($object, array $args, $context, $info)
     {
-        if (File::has_extension(SiteTreeFileExtension::class)) {
-            return $object->BackLinkTrackingCount();
-        }
-        return 0;
+        return $object->BackLinkTrackingCount();
     }
 
     /**

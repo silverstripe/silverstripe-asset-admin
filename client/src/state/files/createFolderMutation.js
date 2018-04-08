@@ -1,20 +1,6 @@
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
-import { fileInterface, file } from 'lib/fileFragments';
-
-const mutation = gql`
-  mutation CreateFolder($folder:FolderInput!) {
-    createFolder(folder: $folder) {
-      ...FileInterfaceFields
-      ...FileFields
-    }
-  }
-  ${fileInterface}
-  ${file}
-`;
 
 const config = {
-  props: ({ mutate, ownProps: { errors, actions, errorMessage } }) => {
+  props: ({ mutate, ownProps: { errors, actions = {}, errorMessage } }) => {
     const createFolder = (parentId, name) => mutate({
       variables: {
         folder: {
@@ -23,18 +9,37 @@ const config = {
         },
       },
     });
+    const files = actions.files || {};
 
     return {
       errorMessage: errorMessage || (errors && errors[0].message),
-      actions: Object.assign({}, actions, {
-        files: Object.assign({}, actions.files, {
+      actions: {
+        ...actions,
+        files: {
+          ...files,
           createFolder,
-        }),
-      }),
+        },
+      },
     };
   },
 };
 
-export { mutation, config };
+const buildQueryConfig = () => ({
+  apolloConfig: { ...config },
+  templateName: 'scaffoldCreate',
+  singularName: 'Folder',
+  params: {
+    folder: 'FolderInput!',
+  },
+  fields: [
+    '...FileInterfaceFields',
+    '...FileFields',
+  ],
+  fragments: [
+    'FileInterfaceFields',
+    'FileFields',
+  ],
+});
 
-export default graphql(mutation, config);
+export { config, buildQueryConfig };
+
