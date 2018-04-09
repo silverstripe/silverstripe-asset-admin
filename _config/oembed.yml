@@ -1,0 +1,18 @@
+---
+Name: live-assetsoembed
+Except:
+  environment: dev
+---
+SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+  fileurl_domain_blacklist:
+    - 'localhost' # Blacklist this hostname outside of dev environment
+    - '0.0.0.0'
+    - '127.0.0.1'
+    - '[0:0:0:0:0:0:0:1]'
+    - '[::1]'
+---
+Name: assetsoembed
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\AssetAdmin\Model\Embeddable:
+    class: SilverStripe\AssetAdmin\Model\EmbedResource

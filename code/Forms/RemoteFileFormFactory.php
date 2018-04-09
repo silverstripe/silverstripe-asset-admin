@@ -2,14 +2,14 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
-use Embed\Exceptions\EmbedException;
 use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
-use SilverStripe\AssetAdmin\Model\EmbedResource;
+use SilverStripe\AssetAdmin\Model\Embeddable;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CompositeField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
@@ -28,12 +28,20 @@ class RemoteFileFormFactory implements FormFactory
     use Configurable;
 
     /**
-     * Force whitelist for resource protocols to the given list
+     * Force whitelist for resource protocols to the given list.
      *
      * @config
      * @var array
      */
     private static $fileurl_scheme_whitelist = ['http', 'https'];
+
+    /**
+     * Blacklist of resources. Takes priority over whitelists if both are provided.
+     *
+     * @config
+     * @var array
+     */
+    private static $fileurl_scheme_blacklist = [];
 
     /**
      * Force whitelist for resource domains to the given list
@@ -42,6 +50,33 @@ class RemoteFileFormFactory implements FormFactory
      * @var array
      */
     private static $fileurl_domain_whitelist = [];
+
+    /**
+     * Blacklist of domains. For example, live sites should probably
+     * include 'localhost' and other protected urls.
+     * Takes priority over whitelists if both are provided.
+     *
+     * @config
+     * @var array
+     */
+    private static $fileurl_domain_blacklist = [];
+
+    /**
+     * Whitelist of ports allowed.
+     *
+     * @config
+     * @var array
+     */
+    private static $fileurl_port_whitelist = [80, 443];
+
+    /**
+     * Blacklist of ports allowed.
+     * Takes priority over whitelists if both are provided.
+     *
+     * @config
+     * @var array
+     */
+    private static $fileurl_port_blacklist = [];
 
     /**
      * @param RequestHandler $controller
@@ -120,39 +155,22 @@ class RemoteFileFormFactory implements FormFactory
      */
     protected function validateUrl($url)
     {
-        if (!Director::is_absolute_url($url)) {
-            throw new InvalidUrlException(_t(
-                __CLASS__.'.ERROR_ABSOLUTE',
-                'Only absolute urls can be embedded'
-            ));
-        }
-        $scheme = strtolower(parse_url($url, PHP_URL_SCHEME));
-        $allowed_schemes = self::config()->get('fileurl_scheme_whitelist');
-        if (!$scheme || ($allowed_schemes && !in_array($scheme, $allowed_schemes))) {
-            throw new InvalidUrlException(_t(
-                __CLASS__.'.ERROR_SCHEME',
-                'This file scheme is not included in the whitelist'
-            ));
-        }
-        $domain = strtolower(parse_url($url, PHP_URL_HOST));
-        $allowed_domains = self::config()->get('fileurl_domain_whitelist');
-        if (!$domain || ($allowed_domains && !in_array($domain, $allowed_domains))) {
-            throw new InvalidUrlException(_t(
-                __CLASS__.'.ERROR_HOSTNAME',
-                'This file hostname is not included in the whitelist'
-            ));
-        }
+        $this->validateURLAbsolute($url);
+        $this->validateURLScheme($url);
+        $this->validateURLHost($url);
+        $this->validateURLPort($url);
+
         return true;
     }
 
     /**
      * Checks if the embed generated is not just a link
      *
-     * @param EmbedResource $embed
+     * @param Embeddable $embed
      * @return bool
      * @throws InvalidUrlException
      */
-    protected function validateEmbed(EmbedResource $embed)
+    protected function validateEmbed(Embeddable $embed)
     {
         if (!$embed->validate()) {
             throw new InvalidUrlException(_t(
@@ -200,7 +218,9 @@ class RemoteFileFormFactory implements FormFactory
 
         // Get embed
         $this->validateUrl($url);
-        $embed = new EmbedResource($url);
+
+        /** @var Embeddable $embed */
+        $embed = Injector::inst()->create(Embeddable::class, $url);
         $this->validateEmbed($embed);
 
         // Build form
@@ -271,5 +291,81 @@ class RemoteFileFormFactory implements FormFactory
             ]);
         }
         return FieldList::create($fields);
+    }
+
+    /**
+     * @param string $url
+     * @throws InvalidUrlException
+     */
+    protected function validateURLScheme($url)
+    {
+        $scheme = strtolower(parse_url($url, PHP_URL_SCHEME));
+        $allowedSchemes = self::config()->get('fileurl_scheme_whitelist');
+        $disallowedSchemes = self::config()->get('fileurl_scheme_blacklist');
+        if (!$scheme
+            || ($allowedSchemes && !in_array($scheme, $allowedSchemes))
+            || ($disallowedSchemes && in_array($scheme, $disallowedSchemes))
+        ) {
+            throw new InvalidUrlException(_t(
+                __CLASS__ . '.ERROR_SCHEME',
+                'This file scheme is not allowed'
+            ));
+        }
+    }
+
+    /**
+     * @param string $url
+     * @throws InvalidUrlException
+     */
+    protected function validateURLHost($url)
+    {
+        $domain = strtolower(parse_url($url, PHP_URL_HOST));
+        $allowedDomains = self::config()->get('fileurl_domain_whitelist');
+        $disallowedDomains = self::config()->get('fileurl_domain_blacklist');
+        if (!$domain
+            || ($allowedDomains && !in_array($domain, $allowedDomains))
+            || ($disallowedDomains && in_array($domain, $disallowedDomains))
+        ) {
+            throw new InvalidUrlException(_t(
+                __CLASS__ . '.ERROR_HOSTNAME',
+                'This file hostname is not allowed'
+            ));
+        }
+    }
+
+    /**
+     * @param string $url
+     * @throws InvalidUrlException
+     */
+    protected function validateURLPort($url)
+    {
+        $port = (int)parse_url($url, PHP_URL_PORT);
+        if (!$port) {
+            return;
+        }
+        $allowedPorts = self::config()->get('fileurl_port_whitelist');
+        $disallowedPorts = self::config()->get('fileurl_port_blacklist');
+        if (($allowedPorts && !in_array($port, $allowedPorts))
+            || ($disallowedPorts && in_array($port, $disallowedPorts))
+        ) {
+            throw new InvalidUrlException(_t(
+                __CLASS__ . '.ERROR_PORT',
+                'This file port is not allowed'
+            ));
+        }
+    }
+
+    /**
+     * @param string $url
+     * @throws InvalidUrlException
+     */
+    protected function validateURLAbsolute($url)
+    {
+        if (!Director::is_absolute_url($url)) {
+            throw new InvalidUrlException(_t(
+                __CLASS__ . '.ERROR_ABSOLUTE',
+                'Only absolute urls can be embedded'
+            ));
+        }
     }
 }
