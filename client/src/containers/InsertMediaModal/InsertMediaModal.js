@@ -20,10 +20,9 @@ class InsertMediaModal extends Component {
     const { isOpen, onBrowse, setOverrides, fileAttributes, folderId } = this.props;
 
     if (!isOpen) {
-      onBrowse(0);
-    }
-    if (typeof setOverrides === 'function'
-      && isOpen
+      onBrowse(folderId || 0);
+    } else if (
+      typeof setOverrides === 'function'
       && fileAttributes.ID
     ) {
       setOverrides(this.props);
@@ -33,7 +32,7 @@ class InsertMediaModal extends Component {
 
   componentWillReceiveProps(props) {
     if (!props.isOpen && this.props.isOpen) {
-      props.onBrowse(0);
+      props.onBrowse(props.folderId);
       props.actions.gallery.deselectFiles();
     }
     if (typeof this.props.setOverrides === 'function' &&
