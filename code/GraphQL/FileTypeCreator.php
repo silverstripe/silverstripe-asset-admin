@@ -125,6 +125,9 @@ class FileTypeCreator extends TypeCreator
             'published' => [
                 'type' => Type::boolean(),
             ],
+            'modified' => [
+                'type' => Type::boolean(),
+            ],
             'inUseCount' => [
                 'type' => Type::int(),
             ],
@@ -210,6 +213,18 @@ class FileTypeCreator extends TypeCreator
     public function resolvePublishedField($object, array $args, $context, $info)
     {
         return $object->isPublished();
+    }
+
+    /**
+     * @param File $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return string|null`
+     */
+    public function resolveModifiedField($object, array $args, $context, $info)
+    {
+        return $object->isModifiedOnDraft();
     }
 
     public function resolveField($object, array $args, $context, $info)
