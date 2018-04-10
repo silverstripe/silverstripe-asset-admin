@@ -79,6 +79,14 @@ class RemoteFileFormFactory implements FormFactory
     private static $fileurl_port_blacklist = [];
 
     /**
+     * Allow oembed to be disabled
+     *
+     * @config
+     * @var bool
+     */
+    private static $enabled = true;
+
+    /**
      * @param RequestHandler $controller
      * @param string $name
      * @param array $context
@@ -86,6 +94,11 @@ class RemoteFileFormFactory implements FormFactory
      */
     public function getForm(RequestHandler $controller = null, $name = self::DEFAULT_NAME, $context = [])
     {
+        // Allow form to be disabled
+        if (!static::config()->get('enabled')) {
+            return null;
+        }
+
         // Validate context
         foreach ($this->getRequiredContext() as $required) {
             if (!isset($context[$required])) {
