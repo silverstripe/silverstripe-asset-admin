@@ -362,7 +362,7 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item--draft {
-  background-color: $state-draft-bg;
+  background-color: $state-draft;
 
   &:hover::after {
     content: "DRAFT";
@@ -370,7 +370,7 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item--modified {
-  background-color: $state-modified-bg;
+  background-color: $state-draft-bg;
 
   &:hover::after {
     content: "MODIFIED";
