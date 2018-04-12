@@ -10,12 +10,9 @@
         "silverstripe/vendor-plugin": "^1"
     },
     "require-dev": {
-        "phpunit/PHPUnit": "^5.7",
-        "silverstripe/behat-extension": "^3",
-        "silverstripe/serve": "^2",
+        "phpunit/phpunit": "^5.7",
         "silverstripe/cms": "^4",
-        "silverstripe/campaign-admin": "^1",
-        "se/selenium-server-standalone": "2.41.0"
+        "silverstripe/campaign-admin": "^1"
     },
     "extra": {
         "branch-alias": {
