@@ -199,10 +199,6 @@ class Editor extends Component {
           responseClassBad="modal__response modal__response--error"
           responseClassGood="modal__response modal__response--good"
         />
-        { this.state.loadingForm && [
-          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
-          <div key="spinner" className="cms-content-loading-spinner" />,
-        ]}
       </div>
 
     </div>);

@@ -13,6 +13,7 @@ import ThumbnailView from 'containers/ThumbnailView/ThumbnailView';
 import TableView from 'containers/TableView/TableView';
 import CONSTANTS from 'constants/index';
 import FormAlert from 'components/FormAlert/FormAlert';
+import Loading from 'components/Loading/Loading';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import moveFilesMutation from 'state/files/moveFilesMutation';
@@ -859,16 +860,18 @@ class Gallery extends Component {
   }
 
   render() {
-    if (!this.props.folder) {
-      if (this.props.errorMessage || this.props.graphQLErrors) {
+    const { folder, errorMessage, graphQLErrors, noticeMessage, loading } = this.props;
+
+    if (!folder) {
+      if (errorMessage || graphQLErrors) {
         return (
           <div className="gallery__error flexbox-area-grow">
             <div className="gallery__error-message">
               <h3>
                 { i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.') }
               </h3>
-              { this.props.errorMessage && <p>{ this.props.errorMessage }</p> }
-              { this.props.graphQLErrors && this.props.graphQLErrors.map((error, index) => (
+              { errorMessage && <p>{ errorMessage }</p> }
+              { graphQLErrors && graphQLErrors.map((error, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <p key={index}>{error}</p>
               ))}
@@ -876,13 +879,8 @@ class Gallery extends Component {
           </div>
         );
       }
-      if (this.props.loading) {
-        return (
-          <div className="flexbox-area-grow">
-            <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />
-            <div key="spinner" className="cms-content-loading-spinner" />
-          </div>
-        );
+      if (loading) {
+        return <Loading />;
       }
       return (
         <div className="flexbox-area-grow">
@@ -895,11 +893,11 @@ class Gallery extends Component {
 
     const messages = (
       <div className="gallery_messages">
-        { this.props.errorMessage &&
-          <FormAlert value={this.props.errorMessage} type="danger" />
+        { errorMessage &&
+          <FormAlert value={errorMessage} type="danger" />
         }
-        { this.props.noticeMessage &&
-          <FormAlert value={this.props.noticeMessage} type="success" />
+        { noticeMessage &&
+          <FormAlert value={noticeMessage} type="success" />
         }
         {this.renderSearchAlert()}
       </div>
@@ -969,10 +967,7 @@ class Gallery extends Component {
             </AssetDropzone>
           </SelectableGroup>
         </GalleryDND>
-        { this.props.loading && [
-          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
-          <div key="spinner" className="cms-content-loading-spinner" />,
-        ]}
+        { loading && <Loading containerClass="" /> }
         <MoveModal
           sectionConfig={this.props.sectionConfig}
           folderId={this.props.folderId}
