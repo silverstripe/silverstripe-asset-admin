@@ -148,13 +148,13 @@ class RemoteFileFormFactory implements FormFactory
     /**
      * Checks if the embed generated is not just a link
      *
-     * @param string $url
+     * @param EmbedResource $embed
      * @return bool
      * @throws InvalidUrlException
      */
-    protected function validateEmbed($embed)
+    protected function validateEmbed(EmbedResource $embed)
     {
-        if ($embed->getType() === 'link') {
+        if (!$embed->validate()) {
             throw new InvalidUrlException(_t(
                 __CLASS__.'.ERROR_EMBED',
                 'There is currently no embeddable media available from this URL'
