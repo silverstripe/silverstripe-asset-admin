@@ -88,4 +88,14 @@ class EmbedResource
     {
         return $this->embed->type;
     }
+
+    /**
+     * Validate this resource
+     *
+     * @return bool
+     */
+    public function validate()
+    {
+        return !empty($this->embed->code);
+    }
 }

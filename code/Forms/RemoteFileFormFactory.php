@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
+use Embed\Exceptions\EmbedException;
 use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
 use SilverStripe\AssetAdmin\Model\EmbedResource;
@@ -145,6 +146,24 @@ class RemoteFileFormFactory implements FormFactory
     }
 
     /**
+     * Checks if the embed generated is not just a link
+     *
+     * @param EmbedResource $embed
+     * @return bool
+     * @throws InvalidUrlException
+     */
+    protected function validateEmbed(EmbedResource $embed)
+    {
+        if (!$embed->validate()) {
+            throw new InvalidUrlException(_t(
+                __CLASS__.'.ERROR_EMBED',
+                'There is currently no embeddable media available from this URL'
+            ));
+        }
+        return true;
+    }
+
+    /**
      * Get form fields for create new embed
      *
      * @return FieldList
@@ -154,12 +173,13 @@ class RemoteFileFormFactory implements FormFactory
         return FieldList::create([
             TextField::create(
                 'Url',
-                _t(
+                'Embed URL'
+            )
+                ->addExtraClass('insert-embed-modal__url-create')
+                ->setDescription(_t(
                     __CLASS__.'.UrlDescription',
                     'Embed Youtube and Vimeo videos, images and other media directly from the web.'
-                )
-            )
-                ->addExtraClass('insert-embed-modal__url-create'),
+                )),
         ]);
     }
 
@@ -168,6 +188,7 @@ class RemoteFileFormFactory implements FormFactory
      *
      * @param array $context
      * @return FieldList
+     * @throws InvalidUrlException
      */
     protected function getEditFormFields($context)
     {
@@ -180,6 +201,7 @@ class RemoteFileFormFactory implements FormFactory
         // Get embed
         $this->validateUrl($url);
         $embed = new EmbedResource($url);
+        $this->validateEmbed($embed);
 
         // Build form
         $alignments = array(
