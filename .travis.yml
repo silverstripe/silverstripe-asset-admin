@@ -51,7 +51,7 @@ before_script:
 # Install composer
   - composer validate
   - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms 1.2.x-dev --no-update --prefer-dist
-  - composer install --prefer-dist --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
+  - composer update
 
 # Start behat services
   - if [[ $BEHAT_TEST ]]; then mkdir artifacts; fi
