@@ -149,8 +149,11 @@ $gallery-item-label-height: 40px;
     &::before {
       cursor: pointer;
       top: 0;
+      bottom: 0;
       right: 0;
-      margin: 10px;
+      height: 19px;
+      width: 19px;
+      margin: auto 10px;
       position: absolute;
       border: 1px solid $border-color;
       border-radius: $border-radius-sm;
