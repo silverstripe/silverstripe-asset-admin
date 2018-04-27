@@ -24,6 +24,14 @@ const applyTransform = () => {
       updater.component('FormAction.AssetAdmin.EditForm.action_unpublish', ownerAwareUnpublish);
     }
   );
+
+  // Remove the loader in the search form
+  Injector.transform(
+    'asset-searchform',
+    (updater) => {
+      updater.component('Loading.AssetAdmin.SearchForm', () => () => null);
+    }
+  );
 };
 
 export default applyTransform;
