@@ -13,27 +13,16 @@ const config = {
       variables: {
         IDs,
       },
-      update: (store, { data: { deleteFiles } }) => {
+      update: (store) => {
         const variables = readFilesConfig.options(ownProps).variables;
         const data = store.readQuery({ query: readFilesQuery, variables });
-        const newData = {
-          ...data,
-          readFiles: {
-            ...data.readFiles,
-            edges: [
-              {
-                ...data.readFiles.edges[0],
-                node: {
-                  ...data.readFiles.edges[0].node,
-                  children: {
-                    ...data.readFiles.edges[0].node.children,
-                    edges: data.readFiles.edges[0].node.children.edges.filter(edge => !IDs.includes(edge.node.id))
-                  }
-                },
-              },
-            ]
-          }
-        };
+        // Query returns a deeply nested object. Explicit reconstruction via spreads is too verbose.
+        // This is an alternative, relatively efficient way to deep clone
+        const newData = JSON.parse(JSON.stringify(data));
+
+        let { edges } = newData.readFiles.edges[0].node.children;
+        edges = edges.filter(edge => !IDs.includes(edge.node.id));
+        newData.readFiles.edges[0].node.children.edges = edges;
         store.writeQuery({ query: readFilesQuery, data: newData, variables });
       }
     });
