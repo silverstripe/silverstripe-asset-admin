@@ -206,7 +206,6 @@ describe('AssetAdmin', () => {
           .toBeCalledWith(props.queuedFiles.items[0].queuedId);
       });
     });
-
   });
   describe('doPublish', () => {
     let component = null;
