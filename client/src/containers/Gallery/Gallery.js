@@ -229,7 +229,6 @@ class Gallery extends Component {
    * @returns {Promise}
    */
   handleBulkDelete(event, items) {
-    this.props.actions.gallery.setLoading(true);
     return this.props.onDelete(items.map(item => item.id))
       .then((resultItems) => {
         this.props.actions.gallery.setLoading(false);

@@ -6150,7 +6150,6 @@ var Gallery = function (_Component) {
     value: function handleBulkDelete(event, items) {
       var _this2 = this;
 
-      this.props.actions.gallery.setLoading(true);
       return this.props.onDelete(items.map(function (item) {
         return item.id;
       })).then(function (resultItems) {
@@ -8067,9 +8066,6 @@ var ThumbnailView = function (_Component) {
   }, {
     key: 'renderItem',
     value: function renderItem(item) {
-      if (!item.id) {
-        console.log(item);
-      }
       var _props = this.props,
           File = _props.File,
           Folder = _props.Folder,
@@ -8084,7 +8080,7 @@ var ThumbnailView = function (_Component) {
       });
       var props = {
         sectionConfig: sectionConfig,
-        key: item.id,
+        key: item.id || item.queuedId,
         selectableKey: item.id,
         item: item,
         selectedFiles: selectedFiles,
@@ -8506,19 +8502,15 @@ var config = {
 
           var variables = _readFilesQuery.config.options(ownProps).variables;
           var data = store.readQuery({ query: _readFilesQuery.query, variables: variables });
-          var newData = _extends({}, data, {
-            readFiles: _extends({}, data.readFiles, {
-              edges: [_extends({}, data.readFiles.edges[0], {
-                node: _extends({}, data.readFiles.edges[0].node, {
-                  children: _extends({}, data.readFiles.edges[0].node.children, {
-                    edges: data.readFiles.edges[0].node.children.edges.filter(function (edge) {
-                      return !IDs.includes(edge.node.id);
-                    })
-                  })
-                })
-              })]
-            })
+
+          var newData = JSON.parse(JSON.stringify(data));
+
+          var edges = newData.readFiles.edges[0].node.children.edges;
+
+          edges = edges.filter(function (edge) {
+            return !IDs.includes(edge.node.id);
           });
+          newData.readFiles.edges[0].node.children.edges = edges;
           store.writeQuery({ query: _readFilesQuery.query, data: newData, variables: variables });
         }
       });

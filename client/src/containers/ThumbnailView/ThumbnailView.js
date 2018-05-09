@@ -106,9 +106,6 @@ class ThumbnailView extends Component {
    * @returns {XML}
    */
   renderItem(item) {
-    if (!item.id) {
-      console.log(item);
-    }
     const {
       File,
       Folder,
@@ -121,7 +118,7 @@ class ThumbnailView extends Component {
     const badge = badges.find((badgeItem) => badgeItem.id === item.id);
     let props = {
       sectionConfig,
-      key: item.id,
+      key: item.id || item.queuedId,
       selectableKey: item.id,
       item,
       selectedFiles,
