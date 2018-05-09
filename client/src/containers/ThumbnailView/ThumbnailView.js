@@ -106,6 +106,9 @@ class ThumbnailView extends Component {
    * @returns {XML}
    */
   renderItem(item) {
+    if (!item.id) {
+      console.log(item);
+    }
     const {
       File,
       Folder,
