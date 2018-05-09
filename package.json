@@ -56,7 +56,6 @@
   "dependencies": {
     "@storybook/addon-actions": "^3.2.16",
     "@storybook/react": "^3.2.16",
-    "apollo-boost": "^0.1.4",
     "apollo-link-batch-http": "^1.2.1",
     "babel-polyfill": "6.7.4",
     "bootstrap": "4.0.0",
