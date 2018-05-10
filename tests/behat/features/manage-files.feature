@@ -93,6 +93,7 @@ Feature: Manage files
       And I check the file named "testfile" in the gallery
     Then the ".bulk-actions-counter" element should contain "3"
       And I press the "Delete" button, confirming the dialog
+      And I wait for 5 seconds
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
@@ -180,6 +181,7 @@ Feature: Manage files
       And I see the text "file is currently in use" in the alert
       And I confirm the dialog
     Then I should see "1 folders/files were successfully archived" in the message box
+      And I wait for 5 seconds
       And I should not see the file named "file1" in the gallery
 
   Scenario: I can move a file through editing
