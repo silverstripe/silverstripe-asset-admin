@@ -454,8 +454,16 @@ class AssetAdmin extends Component {
     });
 
     const fileIDs = files.map(file => file.id);
+    const parentId = this.props.folder ? this.props.folder.id : 0;
+    
     return this.props.actions.files.deleteFiles(fileIDs)
-      .then(({ data: { deleteFiles } }) => deleteFiles);
+      .then(({ data: { deleteFiles } }) => {
+        this.handleBrowse(parentId, null, this.props.query);
+        
+        return deleteFiles;
+      });
+
+
   }
 
   /**
