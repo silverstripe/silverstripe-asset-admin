@@ -40,7 +40,7 @@ class FixtureContext extends BaseFixtureContext
         assertNotNull($item, "File named $name could not be found");
         $checkboxLabel = $item->find('css', 'label.gallery-item__checkbox-label');
         assertNotNull($checkboxLabel, "Could not find checkbox label for file named {$name}");
-        $checkbox->click();
+        $checkboxLabel->click();
     }
 
     /**
