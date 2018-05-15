@@ -27,7 +27,7 @@ class GalleryDND extends Component {
     window.addEventListener('drop', this.handleDrop, true);
   }
 
-  componentWillUpdate(nextProps, nextState) {
+  componentWillUpdate() {
     setTimeout(() => {
       if (!this.mounted) {
         return;
