@@ -527,7 +527,6 @@ describe('Gallery', () => {
       );
       return gallery.handleBulkDelete({}, [{ id: 5 }])
         .then(() => {
-          expect(props.actions.gallery.setLoading).toBeCalled();
           expect(props.actions.gallery.setNoticeMessage).toBeCalled();
           expect(props.onDelete).toBeCalledWith([5]);
           expect(props.actions.gallery.deselectFiles).toBeCalled();
