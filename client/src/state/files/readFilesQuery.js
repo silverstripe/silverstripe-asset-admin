@@ -77,12 +77,14 @@ const config = {
     // - Display a folder with its direct children and filters (a "search" in the current folder)
     const [sortField, sortDir] = params.sort ? params.sort.split(',') : ['', ''];
     const limit = params.limit || sectionConfig.limit;
+    const cache_buster = params.cache_buster || null;
     return {
       variables: {
         rootFilter,
         childrenFilter,
         limit,
         offset: ((params.page || 1) - 1) * limit,
+        cache_buster,
         sortBy: (sortField && sortDir)
           ? [{ field: sortField, direction: sortDir.toUpperCase() }]
           : undefined,

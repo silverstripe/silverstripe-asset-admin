@@ -213,7 +213,7 @@ describe('AssetAdmin', () => {
       props.onBrowse = jest.genMockFunction();
       component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
       return component.handleDelete([id]).then(() => {
-        expect(props.onBrowse).toBeCalledWith(0, null, { ...props.query, view: 'tile' });
+        expect(props.onBrowse).toBeCalledWith(0, null, { ...props.query, view: 'tile' }, 'edit', false);
       });
     });
   });

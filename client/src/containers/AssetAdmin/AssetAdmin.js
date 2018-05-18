@@ -72,6 +72,7 @@ class AssetAdmin extends Component {
     this.handleOpenFolder = this.handleOpenFolder.bind(this);
     this.handleSort = this.handleSort.bind(this);
     this.handleSetPage = this.handleSetPage.bind(this);
+    this.handleRefreshPage = this.handleRefreshPage.bind(this);
     this.createEndpoint = this.createEndpoint.bind(this);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
     this.handleFolderIcon = this.handleFolderIcon.bind(this);
@@ -186,10 +187,10 @@ class AssetAdmin extends Component {
    * @param {number} [fileId]
    * @param {object|null} [query]
    */
-  handleBrowse(folderId, fileId, query) {
+  handleBrowse(folderId, fileId, query, forceRefresh = false) {
     if (typeof this.props.onBrowse === 'function') {
       // for Higher-order component with a router handler
-      this.props.onBrowse(folderId, fileId, query);
+      this.props.onBrowse(folderId, fileId, query, CONSTANTS.ACTIONS.EDIT_FILE, forceRefresh);
     }
     if (folderId !== this.getFolderId()) {
       this.props.actions.gallery.deselectFiles();
@@ -206,6 +207,18 @@ class AssetAdmin extends Component {
       this.getFolderId(),
       this.props.fileId,
       Object.assign({}, this.props.query, { page })
+    );
+  }
+
+  /**
+   * Passes `true` for `forceReload` so it forces a new request from server
+   */
+  handleRefreshPage() {
+    this.handleBrowse(
+      this.getFolderId(),
+      this.props.fileId,
+      Object.assign({}, this.props.query),
+      true
     );
   }
 
@@ -604,6 +617,7 @@ class AssetAdmin extends Component {
         onSort={this.handleSort}
         onSetPage={this.handleSetPage}
         onViewChange={this.handleViewChange}
+        refreshPage={this.handleRefreshPage}
         sort={sort}
         sectionConfig={config}
         loading={this.props.loading}

@@ -101,17 +101,20 @@ class AssetAdminStateRouter extends Component {
    * @param {object} query
    * @param {string} action
    */
-  handleBrowse(folderId, fileId, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE) {
+  handleBrowse(folderId, fileId, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE, forceReload = false) {
     if (action && Object.values(CONSTANTS.ACTIONS).indexOf(action) === -1) {
       throw new Error(`Invalid action provided: ${action}`);
     }
-
-    this.setState({
+    const newState = {
       folderId,
       fileId,
       query,
       action,
-    });
+    };
+    if (forceReload) {
+      newState.query.cache_buster = Math.random();
+    }
+    this.setState(newState);
   }
 
   render() {

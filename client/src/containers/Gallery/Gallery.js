@@ -706,6 +706,7 @@ class Gallery extends Component {
       onCreateFolder,
       onOpenFolder,
       onViewChange,
+      refreshPage,
     } = this.props;
 
     const props = {
@@ -714,6 +715,7 @@ class Gallery extends Component {
       onCreateFolder,
       onOpenFolder,
       onViewChange,
+      refreshPage,
       view,
       sort,
       folder,
