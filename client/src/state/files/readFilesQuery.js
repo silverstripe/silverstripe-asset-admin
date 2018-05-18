@@ -5,7 +5,7 @@ import { hasFilters } from 'components/Search/Search';
 
 // GraphQL Query
 const query = gql`
-  query ReadFiles($limit:Int!, $offset:Int!, $rootFilter: FileFilterInput, 
+  query ReadFiles($limit:Int!, $offset:Int!, $rootFilter: FileFilterInput,
     $childrenFilter: FileFilterInput, $sortBy:[ChildrenSortInputType]
   ) {
     readFiles(filter: $rootFilter) {
@@ -77,14 +77,14 @@ const config = {
     // - Display a folder with its direct children and filters (a "search" in the current folder)
     const [sortField, sortDir] = params.sort ? params.sort.split(',') : ['', ''];
     const limit = params.limit || sectionConfig.limit;
-    const cache_buster = params.cache_buster || null;
+    const cacheBuster = params.cacheBuster || null;
     return {
       variables: {
         rootFilter,
         childrenFilter,
         limit,
         offset: ((params.page || 1) - 1) * limit,
-        cache_buster,
+        cacheBuster,
         sortBy: (sortField && sortDir)
           ? [{ field: sortField, direction: sortDir.toUpperCase() }]
           : undefined,
