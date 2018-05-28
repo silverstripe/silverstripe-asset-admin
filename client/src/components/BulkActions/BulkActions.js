@@ -2,6 +2,7 @@ import i18n from 'i18n';
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { inject } from 'lib/Injector';
+import { Button, DropdownItem } from 'reactstrap';
 import classnames from 'classnames';
 
 class BulkActions extends Component {
@@ -54,27 +55,28 @@ class BulkActions extends Component {
   }
 
   renderChild(action, i) {
-    const canApply = (
-      // At least one item is selected
-      this.props.items.length &&
-      // ... and the action applies to all of the selected items
-      (!action.canApply || action.canApply(this.props.items))
-    );
-    if (!canApply) {
-      return '';
-    }
-
     const className = classnames(
-      'btn',
       'bulk-actions__action',
-      'ui-corner-all',
       action.className || 'font-icon-info-circled',
       {
+        btn: (i < 2),
         'bulk-actions__action--more': (i > 2),
       }
     );
+    if (i < 2) {
+      return (
+        <Button
+          className={className}
+          key={action.value}
+          onClick={this.handleChangeValue}
+          value={action.value}
+        >
+          {action.label}
+        </Button>
+      );
+    }
     return (
-      <button
+      <DropdownItem
         type="button"
         className={className}
         key={action.value}
@@ -82,18 +84,26 @@ class BulkActions extends Component {
         value={action.value}
       >
         {action.label}
-      </button>
+      </DropdownItem>
     );
   }
 
   render() {
-    // eslint-disable-next-line arrow-body-style
-    const children = this.props.actions.map(this.renderChild).filter(item => item);
+    if (!this.props.items.length) {
+      return null;
+    }
+
+    let children = this.props.actions.filter(action =>
+      (!action.canApply || action.canApply(this.props.items))
+    );
+
+    children = children.map(this.renderChild);
 
     if (!children.length) {
       return null;
     }
-    const { PopoverField, showCount } = this.props;
+
+    const { ActionMenu, showCount } = this.props;
 
     const count = this.props.items.length;
 
@@ -103,15 +113,14 @@ class BulkActions extends Component {
           <div className="bulk-actions-counter">{count}</div>
         }
         {children.slice(0, 2)}
-        {children.length > 2 && PopoverField
+        {children.length > 2 && ActionMenu
           ? (
-            <PopoverField
+            <ActionMenu
               id="BulkActions"
-              popoverClassName="bulk-actions__more-actions-menu"
-              container={this.props.container}
+              className="bulk-actions__more-actions-menu"
             >
               {children.slice(2)}
-            </PopoverField>
+            </ActionMenu>
           )
           : children.slice(2)
         }
@@ -131,14 +140,14 @@ BulkActions.propTypes = {
     canApply: PropTypes.func,
     confirm: PropTypes.func,
   })),
-  PopoverField: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  ActionMenu: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   showCount: PropTypes.bool,
 };
 
 BulkActions.defaultProps = {
   items: [],
   actions: [],
-  PopoverField: null,
+  ActionMenu: null,
   total: null,
   showCount: true,
   totalReachedMessage: i18n._t(''),
@@ -155,7 +164,7 @@ const BulkActionsWithState = connect(mapStateToProps)(BulkActions);
 export { BulkActions as Component };
 
 export default inject(
-  ['PopoverField'],
-  (PopoverField) => ({ PopoverField }),
+  ['ActionMenu'],
+  (ActionMenu) => ({ ActionMenu }),
   () => 'BulkActions'
 )(BulkActionsWithState);
