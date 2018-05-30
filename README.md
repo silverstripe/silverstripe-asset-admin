@@ -9,8 +9,7 @@
 
 ## Overview
 
-Provides a CMS interface for managing files and images, provided by the
-SilverStripe [assets module](https://github.com/silverstripe/silverstripe-assets).
+The Asset Admin module provides a interface for managing files within SilverStripe CMS [assets module](https://github.com/silverstripe/silverstripe-assets). This section shows a library of files available to use on your website and includes images and documents such as PDF files, and can also include javascript files. 
 
 ## Installation
 

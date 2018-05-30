@@ -48,7 +48,7 @@
     }
   },
   "devDependencies": {
-    "@silverstripe/eslint-config": "^0.0.2",
+    "@silverstripe/eslint-config": "^0.0.4",
     "@silverstripe/webpack-config": "^0.7.0",
     "babel-jest": "^19.0.0",
     "jest-cli": "^19.0.2"
