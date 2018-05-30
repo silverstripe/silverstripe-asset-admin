@@ -21,6 +21,7 @@ const file = `
     draft
     extension
     published
+    modified
     size
     smallThumbnail
     thumbnail

@@ -11,12 +11,9 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^7",
-        "silverstripe/behat-extension": "^4",
-        "silverstripe/serve": "^3",
         "silverstripe/cms": "^5",
         "silverstripe/versioned": "^2",
-        "silverstripe/campaign-admin": "^2",
-        "se/selenium-server-standalone": "2.41.0"
+        "silverstripe/campaign-admin": "^2"
     },
     "extra": {
         "branch-alias": {

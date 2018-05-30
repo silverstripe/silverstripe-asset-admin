@@ -1,8 +1,4 @@
-$placement-image-width: 40px;
-$placement-image-height: 36px;
-
 .insert-embed-modal {
-
   .modal-content {
     height: auto;
     max-height: 100%;
@@ -12,10 +8,6 @@ $placement-image-height: 36px;
     display: flex;
     justify-items: stretch;
     flex-direction: column;
-
-    @include media-breakpoint-up(md) {
-      min-height: 300px;
-    }
   }
 }
 
@@ -33,23 +25,12 @@ $placement-image-height: 36px;
   flex: 1;
   width: 100%;
 
-  @include media-breakpoint-up(md) {
-    padding-top: 4rem;
-  }
-
   .alert + & {
     padding-top: 0;
   }
 }
 
 .insert-embed-modal__url-create {
-
-  .form__field-label {
-    text-align: center;
-    display: inline-block;
-    width: 100%;
-  }
-
   .form-control.text {
     padding: $input-padding-y-lg $input-padding-x-lg;
     font-size: $font-size-lg;
@@ -67,7 +48,7 @@ $placement-image-height: 36px;
 }
 
 .insert-embed-modal__preview-container {
-  padding-bottom: $spacer ;
+  padding-bottom: $spacer;
 
   @include media-breakpoint-up(md) {
     padding-right: $spacer;
@@ -82,110 +63,130 @@ $placement-image-height: 36px;
   max-height: $gallery-thumb-height * 1.5;
 }
 
-.insert-embed-modal__placement .radio {
-  display: inline-block;
-  margin: 0;
+.insert-embed-modal__placement {
+  .form__field-holder > div {
+    display: flex;
+    flex-direction: row;
+    justify-items: stretch;
+  }
 
-  label {
-    border: 1px solid $border-color-light;
-    display: block;
-    padding: 0;
-    position: relative;
-    width: 80px;
-    margin-bottom: #{$line-height-base}em;
+  .form-check {
+    flex: 1;
+    margin-bottom: 0;
+    padding-left: 0;
 
-    &:before {
-      background: url("placement.png");
-      content: " ";
+    &:first-of-type .form-check-label span:before {
+      border-top-left-radius: $border-radius;
+      border-bottom-left-radius: $border-radius;
+    }
+
+    &:last-of-type .form-check-label span:before {
+      border-top-right-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+
+    $placement-image-width: 40px;
+    $placement-image-height: 36px;
+
+    &-label {
       display: block;
-      width: $placement-image-width;
-      height: $placement-image-height;
-      margin: 5px auto;
-    }
-  }
+      cursor: pointer;
 
-  span {
-    display: none;
-    position: absolute;
-    top: 100%;
-    text-transform: uppercase;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 100%;
-    text-overflow: ellipsis;
-    font-size: 0.9rem;
-  }
+      span {
+        display: block;
 
-  input {
-    display: none;
-  }
+        color: rgba($body-color, 0);
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        text-align: center;
+        text-transform: uppercase;
 
-  &.checked {
+        transition: color .1s ease-out;
 
-    label {
-      border: 1px solid $component-active-border-color;
-      background-color: $component-active-bg-light;
-    }
+        &:before {
+          content: " ";
+          display: block;
+          box-sizing: content-box;
+          height: $placement-image-height;
+          padding: 5px 0;
+          border: 1px solid $border-color-light;
+          background: url("placement.png") center top no-repeat content-box;
+          transition: background-color .1s ease-out;
+        }
+      }
 
-    span {
-      display: block;
-      color: $component-active-border-color;
-    }
-  }
 
-  &.option-val--leftAlone { // sass-lint:disable-line class-name-format
-
-    label:before {
-      background-position-y: -$placement-image-height;
+      &:hover span,
+      &:focus span {
+        color: $body-color;
+      }
     }
 
-    &.checked label:before {
-      background-position-y: 0;
-    }
-  }
+    &-input {
+      position: absolute;
+      left: -9999px;
 
-  &.option-val--center {
+      &.checked + span {
+        color: $component-active-border-color;
 
-    label:before {
-      background-position-y: 3 * -$placement-image-height;
-    }
-
-    &.checked label:before {
-      background-position-y: 2 * -$placement-image-height;
-    }
-  }
-
-  &.option-val--rightAlone { // sass-lint:disable-line class-name-format
-
-    label:before {
-      background-position-y: 5 * -$placement-image-height;
+        &:before {
+          border: 1px solid $component-active-border-color;
+          background: url("placement.png") center top no-repeat content-box,
+          $component-active-bg-light padding-box;
+        }
+      }
     }
 
-    &.checked label:before {
-      background-position-y: 4 * -$placement-image-height;
-    }
-  }
+    .option-val {
+      &--leftAlone { // sass-lint:disable-line class-name-format
+        + span:before {
+          background-position-y: -$placement-image-height;
+        }
 
-  &.option-val--left {
+        &.checked + span:before {
+          background-position-y: 0;
+        }
+      }
 
-    label:before {
-      background-position-y: 7 * -$placement-image-height;
-    }
+      &--center {
+        + span:before {
+          background-position-y: 3 * -$placement-image-height;
+        }
 
-    &.checked label:before {
-      background-position-y: 6 * -$placement-image-height;
-    }
-  }
+        &.checked + span:before {
+          background-position-y: 2 * -$placement-image-height;
+        }
+      }
 
-  &.option-val--right {
+      &--rightAlone { // sass-lint:disable-line class-name-format
+        + span:before {
+          background-position-y: 5 * -$placement-image-height;
+        }
 
-    label:before {
-      background-position-y: 9 * -$placement-image-height;
-    }
+        &.checked + span:before {
+          background-position-y: 4 * -$placement-image-height;
+        }
+      }
 
-    &.checked label:before {
-      background-position-y: 8 * -$placement-image-height;
+      &--left {
+        + span:before {
+          background-position-y: 7 * -$placement-image-height;
+        }
+
+        &.checked + span:before {
+          background-position-y: 6 * -$placement-image-height;
+        }
+      }
+
+      &--right {
+        + span:before {
+          background-position-y: 9 * -$placement-image-height;
+        }
+
+        &.checked + span:before {
+          background-position-y: 8 * -$placement-image-height;
+        }
+      }
     }
   }
 }

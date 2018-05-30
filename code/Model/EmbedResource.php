@@ -4,7 +4,6 @@ namespace SilverStripe\AssetAdmin\Model;
 
 use Embed\Adapters\Adapter;
 use Embed\Embed;
-use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Core\Manifest\ModuleResourceLoader;
 
 /**
@@ -12,7 +11,7 @@ use SilverStripe\Core\Manifest\ModuleResourceLoader;
  *
  * @see Embed
  */
-class EmbedResource
+class EmbedResource implements Embeddable
 {
     /**
      * Embed result
@@ -26,22 +25,11 @@ class EmbedResource
         $this->embed = Embed::create($url);
     }
 
-
-    /**
-     * Get width of this Embed
-     *
-     * @return int
-     */
     public function getWidth()
     {
         return $this->embed->getWidth() ?: 100;
     }
 
-    /**
-     * Get height of this Embed
-     *
-     * @return int
-     */
     public function getHeight()
     {
         return $this->embed->getHeight() ?: 100;
@@ -79,13 +67,13 @@ class EmbedResource
         return preg_replace('/\?.*/', '', basename($this->embed->getUrl()));
     }
 
-    /**
-     * Get Embed type
-     *
-     * @return string
-     */
     public function getType()
     {
         return $this->embed->type;
+    }
+
+    public function validate()
+    {
+        return !empty($this->embed->code);
     }
 }

@@ -1,3 +1,4 @@
+
 /* global jest, describe, it, expect, beforeEach, Event */
 
 jest.mock('griddle-react');

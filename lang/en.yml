@@ -93,8 +93,10 @@ en:
     AddMedia: 'Add media'
     Cancel: Cancel
     ERROR_ABSOLUTE: 'Only absolute urls can be embedded'
-    ERROR_HOSTNAME: 'This file hostname is not included in the whitelist'
-    ERROR_SCHEME: 'This file scheme is not included in the whitelist'
+    ERROR_HOSTNAME: 'This file hostname is not allowed'
+    ERROR_SCHEME: 'This file scheme is not allowed'
+    ERROR_PORT: 'This file port is not allowed'
+    ERROR_EMBED: 'There is currently no embeddable media available from this URL'
     InsertMedia: 'Insert media'
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:

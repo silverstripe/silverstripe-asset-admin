@@ -229,10 +229,8 @@ class Gallery extends Component {
    * @returns {Promise}
    */
   handleBulkDelete(event, items) {
-    this.props.actions.gallery.setLoading(true);
     return this.props.onDelete(items.map(item => item.id))
       .then((resultItems) => {
-        this.props.actions.gallery.setLoading(false);
         const successes = resultItems.filter((result) => result).length;
         if (successes !== items.length) {
           this.props.actions.gallery.setErrorMessage(
@@ -859,16 +857,19 @@ class Gallery extends Component {
   }
 
   render() {
-    if (!this.props.folder) {
-      if (this.props.errorMessage || this.props.graphQLErrors) {
+    const { folder, loading, errorMessage, graphQLErrors, noticeMessage } = this.props;
+    const hasGraphQLErrors = graphQLErrors && graphQLErrors.length > 0;
+
+    if (!folder) {
+      if (errorMessage || hasGraphQLErrors) {
         return (
           <div className="gallery__error flexbox-area-grow">
             <div className="gallery__error-message">
               <h3>
                 { i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.') }
               </h3>
-              { this.props.errorMessage && <p>{ this.props.errorMessage }</p> }
-              { this.props.graphQLErrors && this.props.graphQLErrors.map((error, index) => (
+              { errorMessage && <p>{ errorMessage }</p> }
+              { hasGraphQLErrors && graphQLErrors.map((error, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <p key={index}>{error}</p>
               ))}
@@ -876,7 +877,7 @@ class Gallery extends Component {
           </div>
         );
       }
-      if (this.props.loading) {
+      if (loading) {
         return (
           <div className="flexbox-area-grow">
             <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />
@@ -895,11 +896,11 @@ class Gallery extends Component {
 
     const messages = (
       <div className="gallery_messages">
-        { this.props.errorMessage &&
-          <FormAlert value={this.props.errorMessage} type="danger" />
+        { errorMessage &&
+          <FormAlert value={errorMessage} type="danger" />
         }
-        { this.props.noticeMessage &&
-          <FormAlert value={this.props.noticeMessage} type="success" />
+        { noticeMessage &&
+          <FormAlert value={noticeMessage} type="success" />
         }
         {this.renderSearchAlert()}
       </div>

@@ -15,11 +15,11 @@ const context = DragDropContext(HTML5Backend);
 class GalleryDND extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       dragging: false,
     };
     this.mounted = false;
+    this.handleDrop = this.handleDrop.bind(this);
   }
 
   componentDidMount() {
@@ -34,7 +34,10 @@ class GalleryDND extends Component {
       }
       const manager = this.context.dragDropManager;
       // isDragging only updates after one render cycle, which makes this throttle necessary
-      this.setState({ dragging: manager.monitor.isDragging() });
+      const dragging = manager.monitor.isDragging();
+      if (this.state.dragging !== dragging) {
+        this.setState({ dragging });
+      }
     });
   }
 

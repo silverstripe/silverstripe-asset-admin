@@ -7,10 +7,38 @@ import { Component as UploadField } from '../UploadField';
 describe('UploadField', () => {
   let props = {};
   let file = null;
+
+  const fileInSubFolder = {
+    id: 2,
+    name: 'MyFile.jpg',
+    parent: {
+      filename: 'Folder/SubFolder',
+      id: 23,
+      title: 'SubFolder',
+    }
+  };
+
+  const fileInRoot = {
+    id: 4,
+    name: 'AnotherFile.jpg',
+    parent: {
+      filename: null,
+      id: 0,
+      title: null
+    }
+  };
+
+  const fileUploadInProgress = {
+    id: 0,
+    queuedId: 'abc',
+    name: 'NewFile.jpg',
+    progress: 20
+  };
+
   const files = [
-    { id: 2, name: 'MyFile.jpg' },
-    { id: 4, name: 'AnotherFile.jpg' },
-    { id: 0, queuedId: 'abc', name: 'NewFile.jpg', progress: 20 },
+    fileInSubFolder,
+    fileInRoot,
+    fileUploadInProgress,
   ];
 
   beforeEach(() => {
@@ -105,6 +133,59 @@ describe('UploadField', () => {
       maxFiles = file.getMaxFiles();
 
       expect(maxFiles).toBe(2);
+    });
+  });
+
+  describe('getFolderId()', () => {
+    it('should match the the parentid of a provided file', () => {
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+      file.handleReplaceShow({}, fileInSubFolder);
+
+      let folderId = file.getFolderId();
+      expect(folderId).toBe(fileInSubFolder.parent.id);
+
+      props.data.parentid = 23;
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+      file.handleReplaceShow({}, fileInSubFolder);
+
+      folderId = file.getFolderId();
+      expect(folderId).toBe(fileInSubFolder.parent.id);
+    });
+
+    it('should match 0 for file in root', () => {
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+
+      const folderId = file.getFolderId();
+
+      expect(folderId).toBe(0);
+    });
+
+    it('should match parentid when not viewing specific file', () => {
+      props.data.parentid = 23;
+
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+
+      const folderId = file.getFolderId();
+      expect(folderId).toBe(props.data.parentid);
+    });
+
+    it('should match 0 (filse system root id) when no parentid specified', () => {
+      delete props.data.parentid;
+
+      file = ReactTestUtils.renderIntoDocument(
+        <UploadField {...props} />
+      );
+
+      const folderId = file.getFolderId();
+      expect(folderId).toBe(0);
     });
   });
 

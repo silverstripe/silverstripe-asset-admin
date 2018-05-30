@@ -19,7 +19,11 @@ class AssetAdminStateRouter extends Component {
     this.handleBrowse = this.handleBrowse.bind(this);
     this.getUrl = this.getUrl.bind(this);
 
-    this.state = Object.assign({}, initialState);
+    this.state = Object.assign(
+      {},
+      initialState,
+      { folderId: props.folderId }
+    );
   }
 
   /**

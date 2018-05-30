@@ -19,7 +19,7 @@ Generates a file upload field
 * `data` List of custom options for this field. Data keys include:
   - `data.createFileEndpoint` (object) Endpoint this field should use to upload new files to
   - `data.multi` (bool) Flag indicating whether this field supports multi-file upload
-  - `data.parentid` (int) Parent ID to upload files to
+  - `data.parentid` (int) Parent ID to upload files to. Also, controls which folder the Dialog will open to.
 
 ## Unsupported properties
 

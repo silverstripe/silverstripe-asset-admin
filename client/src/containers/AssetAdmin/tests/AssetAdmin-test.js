@@ -195,7 +195,7 @@ describe('AssetAdmin', () => {
       const id = props.files[0].id;
       component.handleDelete([id]);
 
-      expect(props.actions.files.deleteFiles).toBeCalledWith([id], [getMockFile(1)]);
+      expect(props.actions.files.deleteFiles).toBeCalledWith([id]);
     });
 
     it('should remove the file from the queued files list', () => {
@@ -204,16 +204,6 @@ describe('AssetAdmin', () => {
       return component.handleDelete([id]).then(() => {
         expect(props.actions.queuedFiles.removeQueuedFile)
           .toBeCalledWith(props.queuedFiles.items[0].queuedId);
-      });
-    });
-
-    it('should retain view type by passing existing type value to props.onBrowse()', () => {
-      const id = props.files[0].id;
-      props.query.view = 'tile';
-      props.onBrowse = jest.genMockFunction();
-      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-      return component.handleDelete([id]).then(() => {
-        expect(props.onBrowse).toBeCalledWith(0, null, { ...props.query, view: 'tile' });
       });
     });
   });
