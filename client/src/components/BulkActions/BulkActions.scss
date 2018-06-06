@@ -2,6 +2,10 @@
 $bulk-actions-width: 300px;
 
 .bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
   width: 100%;
   padding: $spacer * .625 $grid-gutter-width-half;
   margin: 0 auto;
@@ -14,6 +18,10 @@ $bulk-actions-width: 300px;
   transform: scale(1);
   min-width: 160px;
   border-top: 1px solid $border-color-light;
+
+  & > * {
+    flex: 0;
+  }
 
   &-enter {
     bottom: -$toolbar-total-height;
@@ -34,7 +42,6 @@ $bulk-actions-width: 300px;
   }
 
   .bulk-actions-counter {
-    display: inline-block;
     vertical-align: middle;
     min-width: 28px;
     padding: 6px;
@@ -112,17 +119,4 @@ $bulk-actions-width: 300px;
       content: "g";
     }
   }
-}
-
-.bulk-actions__action:not(.btn-primary) {
-  box-shadow: none;
-  border: 0;
-  background: none;
-  color: #43536d;
-}
-
-.bulk-actions__action--more {
-  display: block;
-  width: 100%;
-  text-align: left;
 }
