@@ -12,8 +12,8 @@ default:
         - %paths.modules.asset-admin%/tests/behat/features
       contexts:
         - SilverStripe\AssetAdmin\Tests\Behat\Context\FeatureContext
-        - SilverStripe\Framework\Tests\Behaviour\CmsFormsContext
-        - SilverStripe\Framework\Tests\Behaviour\CmsUiContext
+        - SilverStripe\Admin\Tests\Behaviour\CmsFormsContext
+        - SilverStripe\Admin\Tests\Behaviour\CmsUiContext
         - SilverStripe\BehatExtension\Context\BasicContext
         - SilverStripe\BehatExtension\Context\EmailContext
         - SilverStripe\BehatExtension\Context\LoginContext
@@ -21,7 +21,7 @@ default:
           SilverStripe\AssetAdmin\Tests\Behat\Context\FixtureContext:
             - %paths.modules.asset-admin%/tests/behat/files/
         -
-          SilverStripe\Framework\Tests\Behaviour\ConfigContext:
+          SilverStripe\Admin\Tests\Behaviour\ConfigContext:
             - %paths.modules.asset-admin%/tests/behat/files/
   extensions:
     SilverStripe\BehatExtension\Extension:
