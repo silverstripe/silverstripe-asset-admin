@@ -4,7 +4,8 @@ namespace SilverStripe\AssetAdmin\Model;
 
 use Embed\Adapters\Adapter;
 use Embed\Embed;
-use SilverStripe\Core\Manifest\ModuleLoader;
+use Embed\Http\DispatcherInterface;
+use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Manifest\ModuleResourceLoader;
 
 /**
@@ -14,6 +15,22 @@ use SilverStripe\Core\Manifest\ModuleResourceLoader;
  */
 class EmbedResource
 {
+    use Configurable;
+
+    /**
+     * @config
+     *
+     * @var array Pass any customised options onto embed
+     */
+    private static $embed_options = null;
+
+    /**
+     * @config
+     *
+     * @var DispatcherInterface a preconfigured dispatcher object (GuzzleDispatcher, CurlDispatcher)
+     */
+    private static $dispatcher = null;
+
     /**
      * Embed result
      *
@@ -23,9 +40,17 @@ class EmbedResource
 
     public function __construct($url)
     {
-        $this->embed = Embed::create($url);
+        $this->embed = Embed::create($url, $this->config()->embed_options, self::$dispatcher);
     }
 
+    /**
+     * Set the dispatcher interface to a preconfigured dispatcher object (GuzzleDispatcher, CurlDispatcher etc)
+     *
+     * @param DispatcherInterface $dispatcher
+     */
+    public static function setDispatcher(DispatcherInterface $dispatcher){
+        self::$dispatcher = $dispatcher;
+    }
 
     /**
      * Get width of this Embed
