@@ -15,10 +15,6 @@
         "silverstripe/campaign-admin": "^1"
     },
     "extra": {
-        "branch-alias": {
-            "1.x-dev": "1.2.x-dev",
-            "dev-master": "2.x-dev"
-        },
         "expose": [
             "client/dist",
             "client/lang"
