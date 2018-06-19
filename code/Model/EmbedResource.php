@@ -4,7 +4,8 @@ namespace SilverStripe\AssetAdmin\Model;
 
 use Embed\Adapters\Adapter;
 use Embed\Embed;
-use SilverStripe\Core\Manifest\ModuleLoader;
+use Embed\Http\DispatcherInterface;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleResourceLoader;
 
 /**
@@ -21,11 +22,17 @@ class EmbedResource
      */
     protected $embed;
 
+    /**
+     * @param string $url
+     */
     public function __construct($url)
     {
-        $this->embed = Embed::create($url);
+        $dispatcher = null;
+        if (Injector::inst()->has(DispatcherInterface::class)) {
+            $dispatcher = Injector::inst()->get(DispatcherInterface::class);
+        }
+        $this->embed = Embed::create($url, null, $dispatcher);
     }
-
 
     /**
      * Get width of this Embed
