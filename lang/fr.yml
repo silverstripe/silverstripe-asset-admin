@@ -73,7 +73,6 @@ fr:
     SAVE: Sauvegarder
     VIEWERGROUPS: 'Groupes de visualisation'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: 'Insérer un fichier'
     INSERT_LINK: 'Lien du fichier'
     LINKDESCR: 'Description du lien'
     LINKOPENNEWWIN: 'Ouvrir dans un nouvel onglet'
@@ -92,8 +91,6 @@ fr:
     AddMedia: 'Ajouter un média'
     Cancel: Annuler
     ERROR_ABSOLUTE: 'Seules des url absolues peuvent être intégrées'
-    ERROR_HOSTNAME: 'Ce nom d''hôte ne figure pas parmi ceux autorisés'
-    ERROR_SCHEME: 'Le chemin d''accès n''est pas d''un format autorisé'
     InsertMedia: 'Insérer le média'
     UrlDescription: 'Insérer des vidéos Youtube ou Vimeo, des images et d''autres médias directement à partir du web.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
