@@ -8,19 +8,18 @@ use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
 use SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest\FileExtension;
+use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Image;
-use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Versioned\RecursivePublishable;
-use SilverStripe\Versioned\Versioned;
 
 class FileFormBuilderTest extends SapphireTest
 {
+    protected $usesTransactions = false;
+
     protected static $fixture_file = 'FileFormBuilderTest.yml';
 
     protected static $extra_dataobjects = [
