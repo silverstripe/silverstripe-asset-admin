@@ -4,6 +4,7 @@ namespace SilverStripe\AssetAdmin\Tests\Forms;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest\FileOwner;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image;
 use Silverstripe\Assets\Dev\TestAssetStore;
@@ -19,7 +20,11 @@ class UploadFieldTest extends SapphireTest
 {
     protected static $fixture_file = 'FileFormBuilderTest.yml';
 
-    public function setUp()
+    protected static $extra_dataobjects = [
+        FileOwner::class,
+    ];
+
+    protected function setUp()
     {
         parent::setUp();
 
