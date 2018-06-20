@@ -14,6 +14,7 @@ use SilverStripe\GraphQL\Manager;
  */
 class FolderTypeCreatorTest extends SapphireTest
 {
+    protected $usesTransactions = false;
 
     protected $usesDatabase = true;
 
