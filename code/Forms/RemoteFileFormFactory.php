@@ -206,6 +206,7 @@ class RemoteFileFormFactory implements FormFactory
                 'Url',
                 'Embed URL'
             )
+                ->setInputType('url')
                 ->addExtraClass('insert-embed-modal__url-create')
                 ->setDescription(_t(
                     __CLASS__.'.UrlDescription',
@@ -228,6 +229,8 @@ class RemoteFileFormFactory implements FormFactory
         if (empty($url)) {
             return $this->getCreateFormFields();
         }
+
+        $url = trim($url);
 
         // Get embed
         $this->validateUrl($url);
