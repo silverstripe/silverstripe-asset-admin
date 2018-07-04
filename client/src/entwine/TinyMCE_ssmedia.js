@@ -291,10 +291,13 @@ jQuery.entwine('ss', ($) => {
         'left',
         'right',
       ];
-      return alignments.find((alignment) => {
-        const expr = new RegExp(`\\b${alignment}\\b`);
-        return expr.test(cssClass);
-      });
+      if (typeof cssClass !== 'string') {
+        return '';
+      }
+      const classes = cssClass.split(' ');
+      return alignments.find((alignment) => (
+        classes.indexOf(alignment) > -1
+      ));
     },
 
     /**
