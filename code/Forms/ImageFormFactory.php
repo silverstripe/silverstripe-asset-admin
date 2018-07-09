@@ -56,13 +56,13 @@ class ImageFormFactory extends FileFormFactory
             FieldGroup::create(
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
                 TextField::create(
-                    'InsertWidth',
+                    'Width',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width')
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow'),
                 TextField::create(
-                    'InsertHeight',
+                    'Height',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight', 'Height')
                 )
                     ->setMaxLength(5)
