@@ -264,8 +264,8 @@ jQuery.entwine('ss', ($) => {
       const attr = {
         url: $node.attr('src'),
         AltText: $node.attr('alt'),
-        InsertWidth: $node.attr('width'),
-        InsertHeight: $node.attr('height'),
+        Width: $node.attr('width'),
+        Height: $node.attr('height'),
         TitleTooltip: $node.attr('title'),
         Alignment: this.findPosition($node.attr('class')),
         Caption: $caption.text(),
@@ -273,7 +273,7 @@ jQuery.entwine('ss', ($) => {
       };
 
       // parse certain attributes to integer value
-      ['InsertWidth', 'InsertHeight', 'ID'].forEach((item) => {
+      ['Width', 'Height', 'ID'].forEach((item) => {
         attr[item] = (typeof attr[item] === 'string') ? parseInt(attr[item], 10) : null;
       });
 
@@ -311,8 +311,8 @@ jQuery.entwine('ss', ($) => {
       return {
         src: data.url,
         alt: data.AltText,
-        width: data.InsertWidth,
-        height: data.InsertHeight,
+        width: data.Width,
+        height: data.Height,
         title: data.TitleTooltip,
         class: data.Alignment,
         'data-id': data.ID,
