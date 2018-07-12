@@ -429,10 +429,19 @@ class Gallery extends Component {
       this.props.onSuccessfulUpload(json);
     }
 
-    // redirect to open the last uploaded file for 'insert/select modal' type only
-    if (this.props.type !== 'admin'
-      && !this.props.fileId
-      && this.props.queuedFiles.items.length === 0
+    const filesInProgress = this.props.queuedFiles.items.reduce(
+      (inProgress, file) => {
+        if (file.progress !== 100) {
+          return inProgress + 1;
+        }
+        return inProgress;
+      }, 0
+    );
+
+    // redirect to open the last uploaded files
+    if (
+      !this.props.fileId
+      && filesInProgress === 0
     ) {
       const lastFile = json.pop();
       this.props.onOpenFile(lastFile.id);
