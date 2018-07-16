@@ -309,26 +309,6 @@ describe('Gallery', () => {
       expect(props.actions.queuedFiles.removeQueuedFile).not.toBeCalled();
     });
 
-    it('should openFile if type is "insert-media"', () => {
-      props.type = 'insert-media';
-      props.onOpenFile = jest.genMockFunction();
-
-      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-
-      gallery.handleSuccessfulUpload(file);
-      expect(props.onOpenFile).toBeCalled();
-    });
-
-    it('should not openFile if type is not "insert-media"', () => {
-      props.type = 'admin';
-      props.onOpenFile = jest.genMockFunction();
-
-      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
-
-      gallery.handleSuccessfulUpload(file);
-      expect(props.onOpenFile).not.toBeCalled();
-    });
-
     it('should not openFile if a file is open', () => {
       props.type = 'insert-media';
       props.fileId = 10;
