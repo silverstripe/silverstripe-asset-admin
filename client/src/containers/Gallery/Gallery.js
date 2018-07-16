@@ -440,8 +440,9 @@ class Gallery extends Component {
 
     // redirect to open the last uploaded files
     if (
-      !this.props.fileId
-      && filesInProgress === 0
+      !this.props.fileId &&
+      !this.props.selectedFiles.length &&
+      filesInProgress === 0
     ) {
       const lastFile = json.pop();
       this.props.onOpenFile(lastFile.id);
