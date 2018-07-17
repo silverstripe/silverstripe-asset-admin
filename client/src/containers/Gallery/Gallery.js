@@ -674,38 +674,6 @@ class Gallery extends Component {
   }
 
   /**
-   * Render the form search notification
-   *
-   * @return {XML}
-   */
-  renderSearchAlert() {
-    const filters = this.props.filters;
-    if (!filters || Object.keys(filters).length === 0) {
-      return null;
-    }
-
-    const message = this.getSearchMessage(filters);
-
-    if (message === '') {
-      return null;
-    }
-
-    const body = (
-      <div>
-        <button
-          onClick={this.handleClearSearch}
-          className="btn btn-info font-icon-cancel form-alert__btn--right"
-        >
-          {i18n._t('AssetAdmin.SEARCHCLEARRESULTS', 'Clear results')}
-        </button>
-        {message}
-      </div>
-    );
-
-    return <FormAlert value={{ react: body }} type="warning" />;
-  }
-
-  /**
    * Generates the react component that wraps around the actual bulk actions
    * and provides transition effect.
    *
@@ -912,7 +880,6 @@ class Gallery extends Component {
         { noticeMessage &&
           <FormAlert value={noticeMessage} type="success" />
         }
-        {this.renderSearchAlert()}
       </div>
     );
 
