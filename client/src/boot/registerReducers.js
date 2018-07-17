@@ -5,6 +5,7 @@ import queuedFilesReducer from 'state/queuedFiles/QueuedFilesReducer';
 import uploadFieldReducer from 'state/uploadField/UploadFieldReducer';
 import previewFieldReducer from 'state/previewField/PreviewFieldReducer';
 import imageLoadReducer from 'state/imageLoad/ImageLoadReducer';
+import displaySearchReducer from 'state/displaySearch/DisplaySearchReducer';
 
 const registerReducers = () => {
   Injector.reducer.register('assetAdmin', combineReducers({
@@ -13,6 +14,7 @@ const registerReducers = () => {
     uploadField: uploadFieldReducer,
     previewField: previewFieldReducer,
     imageLoad: imageLoadReducer,
+    displaySearch: displaySearchReducer,
   }));
 };
 
