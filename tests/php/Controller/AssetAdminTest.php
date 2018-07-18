@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Controller;
 
+use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
@@ -11,6 +12,7 @@ use SilverStripe\Assets\Upload_Validator;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\Session;
 use SilverStripe\Dev\FunctionalTest;
+use SilverStripe\Subsites\Extensions\FolderFormFactoryExtension;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\SecurityToken;
 
@@ -27,6 +29,10 @@ class AssetAdminTest extends FunctionalTest
      * @var Session
      */
     protected $session = null;
+
+    protected static $illegal_extensions = [
+        FolderFormFactory::class => [FolderFormFactoryExtension::class],
+    ];
 
     public function setUp()
     {

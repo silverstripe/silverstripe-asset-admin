@@ -4,7 +4,6 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
-use SilverStripe\AssetAdmin\Model\Embeddable;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
@@ -21,6 +20,7 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\TextField;
+use SilverStripe\View\Embed\Embeddable;
 
 class RemoteFileFormFactory implements FormFactory
 {
@@ -206,6 +206,7 @@ class RemoteFileFormFactory implements FormFactory
                 'Url',
                 'Embed URL'
             )
+                ->setInputType('url')
                 ->addExtraClass('insert-embed-modal__url-create')
                 ->setDescription(_t(
                     __CLASS__.'.UrlDescription',
@@ -228,6 +229,8 @@ class RemoteFileFormFactory implements FormFactory
         if (empty($url)) {
             return $this->getCreateFormFields();
         }
+
+        $url = trim($url);
 
         // Get embed
         $this->validateUrl($url);
