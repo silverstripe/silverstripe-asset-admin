@@ -14,5 +14,6 @@ SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
 Name: assetsoembed
 ---
 SilverStripe\Core\Injector\Injector:
+  # Backwards compatible configuration for loading Embeddable. Use Embeddable instead
   SilverStripe\AssetAdmin\Model\Embeddable:
-    class: SilverStripe\AssetAdmin\Model\EmbedResource
+    class: SilverStripe\View\Embed\Embeddable

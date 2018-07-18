@@ -4,11 +4,11 @@ namespace SilverStripe\AssetAdmin\Tests\Forms;
 
 use Embed\Exceptions\InvalidUrlException;
 use SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory;
-use SilverStripe\AssetAdmin\Model\Embeddable;
 use SilverStripe\AssetAdmin\Tests\Forms\RemoteFileFormFactoryTest\MockEmbed;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\Form;
+use SilverStripe\View\Embed\Embeddable;
 
 class RemoteFileFormFactoryTest extends SapphireTest
 {

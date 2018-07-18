@@ -2,8 +2,8 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Forms\RemoteFileFormFactoryTest;
 
-use SilverStripe\AssetAdmin\Model\Embeddable;
 use SilverStripe\Dev\TestOnly;
+use SilverStripe\View\Embed\Embeddable;
 
 class MockEmbed implements Embeddable, TestOnly
 {
