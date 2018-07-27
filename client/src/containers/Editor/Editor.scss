@@ -29,6 +29,12 @@
       margin-right: 0;
     }
   }
+
+  &--asset-dropzone--disable {
+    .asset-dropzone {
+      pointer-events: none;
+    }
+  }
 }
 
 .editor__heading {
