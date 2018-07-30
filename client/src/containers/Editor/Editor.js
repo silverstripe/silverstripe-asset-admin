@@ -160,6 +160,9 @@ class Editor extends Component {
     if (this.props.className) {
       editorClasses.push(this.props.className);
     }
+    if (!this.props.enableDropzone) {
+      editorClasses.push('editor--asset-dropzone--disable');
+    }
 
     let error = null;
     if (this.state.loadingError) {
@@ -213,6 +216,7 @@ Editor.propTypes = {
   file: fileShape,
   className: PropTypes.string,
   targetId: PropTypes.number.isRequired,
+  enableDropzone: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
@@ -234,6 +238,12 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
+function mapStateToProps(state) {
+  return {
+    enableDropzone: state.assetAdmin.gallery.enableDropzone,
+  };
+}
+
 export { Editor as Component };
 
-export default connect(() => ({}), mapDispatchToProps)(Editor);
+export default connect(mapStateToProps, mapDispatchToProps)(Editor);
