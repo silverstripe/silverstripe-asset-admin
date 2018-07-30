@@ -228,13 +228,16 @@ abstract class AssetFormFactory implements FormFactory
             $this->getFormFieldTabs($record, $context)
         );
         if ($record) {
+            $previewField = PreviewImageField::create('PreviewImage')
+                ->setRecordID($record->ID)
+                ->addExtraClass('editor__file-preview');
+
+            if ($this->getFormType($context) !== self::TYPE_ADMIN) {
+                $previewField->performReadonlyTransformation();
+            }
+
             $fields->push(HiddenField::create('ID', $record->ID));
-            $fields->insertAfter(
-                'TitleHeader',
-                PreviewImageField::create('PreviewImage')
-                    ->setRecordID($record->ID)
-                    ->addExtraClass('editor__file-preview')
-            );
+            $fields->insertAfter('TitleHeader', $previewField);
         }
 
         $this->invokeWithExtensions('updateFormFields', $fields, $controller, $formName, $context);
