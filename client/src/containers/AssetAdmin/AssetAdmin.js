@@ -770,6 +770,7 @@ class AssetAdmin extends Component {
           onHide={this.handleClearSearch}
           displayBehavior="HIDEABLE"
           filters={filters}
+          name="name"
         />}
         <div className="flexbox-area-grow fill-width fill-height gallery">
           {this.renderGallery()}
