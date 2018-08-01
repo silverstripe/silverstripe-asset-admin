@@ -8,12 +8,14 @@ import classnames from 'classnames';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as breadcrumbsActions from 'state/breadcrumbs/BreadcrumbsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
+import * as displaySearchActions from 'state/displaySearch/DisplaySearchActions';
 import Editor from 'containers/Editor/Editor';
 import Gallery from 'containers/Gallery/Gallery';
 import Breadcrumb from 'components/Breadcrumb/Breadcrumb';
 import Toolbar from 'components/Toolbar/Toolbar';
 import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
+import SearchToggle from 'components/Search/SearchToggle';
 import readFilesQuery from 'state/files/readFilesQuery';
 import deleteFilesMutation from 'state/files/deleteFilesMutation';
 import unpublishFilesMutation from 'state/files/unpublishFilesMutation';
@@ -267,6 +269,7 @@ class AssetAdmin extends Component {
    * @param event
    */
   handleClearSearch(event) {
+    this.props.actions.displaySearch.closeSearch();
     this.props.actions.gallery.deselectFiles();
     this.props.actions.queuedFiles.purgeUploadQueue();
     this.props.actions.files.readFiles();
@@ -743,6 +746,10 @@ class AssetAdmin extends Component {
         'asset-admin--multi-select': this.props.maxFiles !== 1,
       }
     );
+    const showSearch = hasFilters(this.props.query.filter) || this.props.showSearch;
+    const onSearchToggle = this.props.actions.displaySearch ?
+      this.props.actions.displaySearch.toggleSearch :
+      undefined;
 
     return (
       <div className={classNames}>
@@ -752,16 +759,19 @@ class AssetAdmin extends Component {
         >
           <Breadcrumb multiline />
           <div className="asset-admin__toolbar-extra pull-xs-right fill-width vertical-align-items">
-            <Search
-              onSearch={this.handleDoSearch}
-              id="AssetSearchForm"
-              searchFormSchemaUrl={searchFormSchemaUrl}
-              folderId={this.getFolderId()}
-              filters={filters}
-            />
+            <SearchToggle toggled={showSearch} onToggle={onSearchToggle} />
             {this.props.toolbarChildren}
           </div>
         </Toolbar>
+        {showSearch && <Search
+          onSearch={this.handleDoSearch}
+          id="AssetSearchForm"
+          formSchemaUrl={searchFormSchemaUrl}
+          onHide={this.handleClearSearch}
+          displayBehavior="HIDEABLE"
+          filters={filters}
+          name="name"
+        />}
         <div className="flexbox-area-grow fill-width fill-height gallery">
           {this.renderGallery()}
           {this.renderEditor()}
@@ -823,6 +833,7 @@ function mapStateToProps(state) {
     securityId: state.config.SecurityID,
     // TODO Refactor "queued files" into separate visual area and remove coupling here
     queuedFiles: state.assetAdmin.queuedFiles,
+    showSearch: state.assetAdmin.displaySearch.isOpen
   };
 }
 
@@ -831,6 +842,7 @@ function mapDispatchToProps(dispatch) {
     actions: {
       gallery: bindActionCreators(galleryActions, dispatch),
       breadcrumbsActions: bindActionCreators(breadcrumbsActions, dispatch),
+      displaySearch: bindActionCreators(displaySearchActions, dispatch),
       // TODO Refactor "queued files" into separate visual area and remove coupling here
       queuedFiles: bindActionCreators(queuedFilesActions, dispatch),
     },
