@@ -17,9 +17,11 @@ class ProportionConstraintField extends Component {
    * @param {Number} childIndex
    * @param {Event} e
    */
-  handleChange(childIndex, e) {
+  handleChange(childIndex, e, newValue) {
     const { children, active, onAutofill, data: { ratio } } = this.props;
-    const value = e.target.value;
+    // value depends on whether onChange triggered on a basic input
+    // or a redux form input
+    const value = newValue || e.target.value;
     const peerIndex = (childIndex === 0) ? 1 : 0;
     const currentName = children[childIndex].props.name;
     const peerName = children[peerIndex].props.name;
@@ -40,7 +42,7 @@ class ProportionConstraintField extends Component {
         {this.props.children.map((child, key) => (
           cloneElement(child, {
             // overload the children change handler
-            onChange: (e) => this.handleChange(key, e),
+            onChange: (e, newValue) => this.handleChange(key, e, newValue),
             key,
           }, child.props.children)
         ))}

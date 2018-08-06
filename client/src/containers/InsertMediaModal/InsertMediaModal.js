@@ -141,6 +141,7 @@ InsertMediaModal.propTypes = {
     Description: PropTypes.string,
     TargetBlank: PropTypes.bool,
   }),
+  requireLinkText: PropTypes.bool,
   folderId: PropTypes.number,
   fileId: PropTypes.number,
   viewAction: PropTypes.string,
@@ -187,9 +188,11 @@ function mapStateToProps(state, ownProps) {
     return {};
   }
 
+  const requireTextFieldUrl = ownProps.requireLinkText ? '?requireLinkText=true' : '';
+
   // set schemaUrl for `fileSchemaModalHandler` to load the default form values properly
   return {
-    schemaUrl: `${schemaUrl}/${targetId}`,
+    schemaUrl: `${schemaUrl}/${targetId}${requireTextFieldUrl}`,
   };
 }
 
