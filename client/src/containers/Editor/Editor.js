@@ -147,12 +147,22 @@ class Editor extends Component {
   }
 
   render() {
-    let urlQueryString = this.props.schemaUrlQueries
+    const { targetId, schemaUrlQueries } = this.props;
+    let { schemaUrl } = this.props;
+    let urlQueryString = schemaUrlQueries
       .map(query => `${query.name}=${query.value}`)
       .join('&')
       .trim();
+
+    if (schemaUrl.indexOf('?') !== false) {
+      const questionMarkIndex = schemaUrl.indexOf('?');
+      urlQueryString = schemaUrl.substring(questionMarkIndex + 1) +
+        (urlQueryString.length ? `&${urlQueryString}` : '');
+      schemaUrl = schemaUrl.substring(0, questionMarkIndex);
+    }
+
     urlQueryString = urlQueryString ? `?${urlQueryString}` : '';
-    const formSchemaUrl = `${this.props.schemaUrl}/${this.props.targetId}${urlQueryString}`;
+    const formSchemaUrl = `${schemaUrl}/${targetId}${urlQueryString}`;
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.targetId}`;
     const editorClasses = [
       'panel', 'form--no-dividers', 'editor',
