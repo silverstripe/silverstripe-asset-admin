@@ -29,3 +29,17 @@ All methods, with `public` visibility, are part of the public API. All other met
 ## Reporting Issues
 
 Please [create an issue](http://github.com/silverstripe/silverstripe-asset-admin/issues) for any bugs you've found, or features you're missing.
+
+## Contributing
+
+### Translations
+
+Translations of the natural language strings are managed through a
+third party translation interface, transifex.com.
+Newly added strings will be periodically uploaded there for translation,
+and any new translations will be merged back to the project source code.
+
+Please use [https://www.transifex.com/silverstripe/silverstripe-asset-admin/](https://www.transifex.com/silverstripe/silverstripe-asset-admin/) to contribute translations,
+rather than sending pull requests with YAML files.
+
+See the ["i18n" topic](https://docs.silverstripe.org/en/4/developer_guides/i18n/) on doc.silverstripe.org for more details.
