@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Controller;
 
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
@@ -300,5 +301,126 @@ class AssetAdminTest extends FunctionalTest
         $this->assertFalse($response->isError());
         $folder1 = Folder::get()->byID($folder1ID);
         $this->assertEquals('folder1-renamed', $folder1->Name);
+    }
+    
+    public function testGetMinimalistObjectFromData()
+    {
+        $assetAdmin = AssetAdmin::singleton();
+        $file = $this->objFromFixture(File::class, 'file1');
+
+        $data = $assetAdmin->getMinimalistObjectFromData($file);
+
+        // Thumbnail value is hard to predit, so we'll just check that it's there before unseting it.
+        $this->assertNotEmpty($data['thumbnail']);
+        unset($data['thumbnail']);
+
+        $expected = [
+            "id" => $file->ID,
+            "parent" => [
+                "id" => $file->Parent()->ID,
+                "title" => $file->Parent()->Title,
+                "filename" => $file->Parent()->Filename,
+            ],
+            "title" => "The First File",
+            "exists" => $file->exists(),
+            "category" => $file->appCategory(),
+            "extension" => $file->Extension,
+            "size" => $file->AbsoluteSize,
+            "published" => $file->isPublished(),
+            "modified" => $file->isModifiedOnDraft(),
+            "draft" => $file->isOnDraftOnly(),
+        ];
+
+        $this->assertEquals($expected, $data);
+    }
+
+    public function testGetObjectFromDataFile()
+    {
+        $assetAdmin = AssetAdmin::singleton();
+        $file = $this->objFromFixture(File::class, 'file1');
+
+
+        $data = $assetAdmin->getObjectFromData($file);
+
+        // Thumbnail value is hard to predit, so we'll just check that it's there before unseting it.
+        $this->assertNotEmpty($data['thumbnail']);
+        unset($data['thumbnail']);
+
+        $expected = [
+            "id" => $file->ID,
+            "parent" => [
+                "id" => $file->Parent()->ID,
+                "title" => $file->Parent()->Title,
+                "filename" => $file->Parent()->Filename,
+            ],
+            "title" => $file->Title,
+            "exists" => $file->exists(),
+            "category" => $file->appCategory(),
+            "extension" => $file->Extension,
+            "size" => $file->AbsoluteSize,
+            "published" => $file->isPublished(),
+            "modified" => $file->isModifiedOnDraft(),
+            "draft" => $file->isOnDraftOnly(),
+            "inUseCount" => 0,
+            "created" => $file->Created,
+            "lastUpdated" => $file->LastEdited,
+            "owner" => [
+                "id" => $file->Owner()->ID,
+                "title" => $file->Owner()->Name
+            ],
+            "type" => $file->FileType,
+            "name" => $file->Name,
+            "filename" => $file->Filename,
+            "url" => $file->AbsoluteURL,
+            "canEdit" => $file->canEdit(),
+            "canDelete" => $file->canDelete(),
+        ];
+
+        $this->assertEquals($expected, $data);
+    }
+
+    public function testGetObjectFromDataFileWithFolder()
+    {
+        $assetAdmin = AssetAdmin::singleton();
+        $file = $this->objFromFixture(Folder::class, 'folder1');
+
+
+        $data = $assetAdmin->getObjectFromData($file);
+
+        // Thumbnail value is hard to predit, so we'll just check that it's there before unseting it.
+        $this->assertNotEmpty($data['thumbnail']);
+        unset($data['thumbnail']);
+
+        $expected = [
+            "id" => $file->ID,
+            "parent" => [
+                "id" => $file->Parent()->ID,
+                "title" => $file->Parent()->Title,
+                "filename" => $file->Parent()->Filename,
+            ],
+            "title" => $file->Title,
+            "exists" => $file->exists(),
+            "category" => 'folder',
+            "extension" => $file->Extension,
+            "size" => $file->AbsoluteSize,
+            "published" => $file->isPublished(),
+            "modified" => $file->isModifiedOnDraft(),
+            "draft" => $file->isOnDraftOnly(),
+            "inUseCount" => 0,
+            "created" => $file->Created,
+            "lastUpdated" => $file->LastEdited,
+            "owner" => [
+                "id" => $file->Owner()->ID,
+                "title" => $file->Owner()->Name
+            ],
+            "type" => 'folder',
+            "name" => $file->Name,
+            "filename" => $file->Filename,
+            "url" => $file->AbsoluteURL,
+            "canEdit" => $file->canEdit(),
+            "canDelete" => $file->canDelete(),
+        ];
+
+        $this->assertEquals($expected, $data);
     }
 }

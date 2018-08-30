@@ -1101,6 +1101,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
+     * Build the array containing the all attributes the AssetAdmin client interact with.
      * @param File $file
      * @param bool $thumbnailLinks Set to true if thumbnail links should be included.
      * Set to false to skip thumbnail link generation.
@@ -1110,29 +1111,19 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getObjectFromData(File $file, $thumbnailLinks = true)
     {
-        $object = array(
-            'id' => (int) $file->ID,
-            // Slightly more accurate than graphql bulk-usage lookup, but more expensive
-            'inUseCount' => ($file->hasMethod('findOwners')) ? $file->findOwners()->count() : 0,
-            'created' => $file->Created,
-            'lastUpdated' => $file->LastEdited,
-            'owner' => null,
-            'parent' => null,
-            'title' => $file->Title,
-            'exists' => $file->exists(), // Broken file check
-            'type' => $file instanceof Folder ? 'folder' : $file->FileType,
-            'category' => $file instanceof Folder ? 'folder' : $file->appCategory(),
-            'name' => $file->Name,
-            'filename' => $file->Filename,
-            'extension' => $file->Extension,
-            'size' => $file->AbsoluteSize,
-            'url' => $file->AbsoluteURL,
-            'published' => ($file->hasMethod('isPublished')) ? $file->isPublished() : true,
-            'modified' => ($file->hasMethod('isModifiedOnDraft')) ? $file->isModifiedOnDraft() : false,
-            'draft' => ($file->hasMethod('isOnDraftOnly')) ? $file->isOnDraftOnly() : false,
-            'canEdit' => $file->canEdit(),
-            'canDelete' => ($file->hasMethod('canArchive')) ? $file->canArchive() : $file->canDelete(),
-        );
+        $object = $this->getMinimalistObjectFromData($file, $thumbnailLinks);
+
+        // Slightly more accurate than graphql bulk-usage lookup, but more expensive
+        $object['inUseCount'] = ($file->hasMethod('findOwners')) ? $file->findOwners()->count() : 0;
+        $object['created'] = $file->Created;
+        $object['lastUpdated'] = $file->LastEdited;
+        $object['owner'] = null;
+        $object['type'] = $file instanceof Folder ? 'folder' : $file->FileType;
+        $object['name'] = $file->Name;
+        $object['filename'] = $file->Filename;
+        $object['url'] = $file->AbsoluteURL;
+        $object['canEdit'] = $file->canEdit();
+        $object['canDelete'] = ($file->hasMethod('canArchive')) ? $file->canArchive() : $file->canDelete();
 
         /** @var Member $owner */
         $owner = $file->Owner();
@@ -1140,9 +1131,37 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         if ($owner) {
             $object['owner'] = array(
                 'id' => $owner->ID,
-                'title' => trim($owner->FirstName . ' ' . $owner->Surname),
+                'title' => $owner->Name,
             );
         }
+
+        return $object;
+    }
+
+    /**
+     * Build the array containing the minimal attributes needed to render an UploadFieldItem.
+     *
+     * @param File $file
+     * @param bool $thumbnailLinks Set to true if thumbnail links should be included.
+     * Set to false to skip thumbnail link generation.
+     * Note: Thumbnail content is always generated to pre-optimise for future use, even if
+     * links are not generated.
+     * @return array
+     */
+    public function getMinimalistObjectFromData(File $file, $thumbnailLinks = true)
+    {
+        $object = array(
+            'id' => (int) $file->ID,
+            'parent' => null,
+            'title' => $file->Title,
+            'exists' => $file->exists(), // Broken file check
+            'category' => $file instanceof Folder ? 'folder' : $file->appCategory(),
+            'extension' => $file->Extension,
+            'size' => $file->AbsoluteSize,
+            'published' => ($file->hasMethod('isPublished')) ? $file->isPublished() : true,
+            'modified' => true || ($file->hasMethod('isModifiedOnDraft')) ? $file->isModifiedOnDraft() : false,
+            'draft' => ($file->hasMethod('isOnDraftOnly')) ? $file->isOnDraftOnly() : false,
+        );
 
         /** @var Folder $parent */
         $parent = $file->Parent();
