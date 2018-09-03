@@ -48,12 +48,12 @@
     }
   },
   "devDependencies": {
-    "@silverstripe/eslint-config": "^0.0.4",
-    "@silverstripe/webpack-config": "^0.10.0",
+    "@silverstripe/eslint-config": "0.0.5",
+    "@silverstripe/webpack-config": "0.11.0",
     "babel-jest": "^19.0.0",
     "expose-loader": "^0.7.5",
-    "sass-loader": "^7.0.3",
-    "jest-cli": "^19.0.2"
+    "jest-cli": "^19.0.2",
+    "sass-loader": "^7.0.3"
   },
   "dependencies": {
     "@storybook/addon-actions": "^3.2.16",
