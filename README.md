@@ -42,4 +42,4 @@ and any new translations will be merged back to the project source code.
 Please use [https://www.transifex.com/silverstripe/silverstripe-asset-admin/](https://www.transifex.com/silverstripe/silverstripe-asset-admin/) to contribute translations,
 rather than sending pull requests with YAML files.
 
-See the ["i18n" topic](https://docs.silverstripe.org/en/4/developer_guides/i18n/) on doc.silverstripe.org for more details.
+See the ["i18n" topic](https://docs.silverstripe.org/en/4/developer_guides/i18n/) on docs.silverstripe.org for more details.
