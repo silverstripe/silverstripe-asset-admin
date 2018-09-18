@@ -51,7 +51,8 @@
   padding-bottom: $spacer;
 
   @include media-breakpoint-up(md) {
-    padding-right: $spacer;
+    order: 2;
+    padding-left: $spacer;
     width: 30%;
   }
 }
