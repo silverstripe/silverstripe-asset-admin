@@ -1,7 +1,7 @@
 /* global window */
 import $ from 'jquery';
 import i18n from 'i18n';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactTestUtils from 'react-addons-test-utils';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -22,6 +22,7 @@ import GalleryDND from './GalleryDND';
 import configShape from 'lib/configShape';
 import MoveModal from '../MoveModal/MoveModal';
 import { inject } from 'lib/Injector';
+import PropTypes from 'prop-types';
 
 class Gallery extends Component {
   constructor(props) {
@@ -1002,7 +1003,7 @@ const galleryViewPropTypes = Object.assign({}, sharedPropTypes, {
   selectableFolders: PropTypes.bool,
   onSelect: PropTypes.func,
   onCancelUpload: PropTypes.func,
-  onDelete: React.PropTypes.func,
+  onDelete: PropTypes.func,
   onRemoveErroredUpload: PropTypes.func,
   onEnableDropzone: PropTypes.func,
 });
@@ -1014,12 +1015,12 @@ Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
-  onUploadSuccess: React.PropTypes.func,
-  onCreateFolder: React.PropTypes.func,
-  onMoveFilesSuccess: React.PropTypes.func,
-  onDelete: React.PropTypes.func,
-  onPublish: React.PropTypes.func,
-  onUnpublish: React.PropTypes.func,
+  onUploadSuccess: PropTypes.func,
+  onCreateFolder: PropTypes.func,
+  onMoveFilesSuccess: PropTypes.func,
+  onDelete: PropTypes.func,
+  onPublish: PropTypes.func,
+  onUnpublish: PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
   view: PropTypes.oneOf(['tile', 'table']),
   lastSelected: PropTypes.number,

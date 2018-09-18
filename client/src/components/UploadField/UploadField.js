@@ -1,5 +1,5 @@
 import i18n from 'i18n';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { inject } from 'lib/Injector';
@@ -7,6 +7,7 @@ import CONSTANTS from 'constants/index';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
+import PropTypes from 'prop-types';
 
 /**
  * Check if two arrays of file objects have different id keys

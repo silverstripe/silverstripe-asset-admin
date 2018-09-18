@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import CONSTANTS from 'constants';
 import fileShape from 'lib/fileShape';
 import { fileSize } from 'lib/DataFormat';
+import PropTypes from 'prop-types';
 
 class UploadFieldItem extends Component {
   constructor(props) {
@@ -374,12 +375,12 @@ class UploadFieldItem extends Component {
 }
 
 UploadFieldItem.propTypes = {
-  canEdit: React.PropTypes.bool,
-  name: React.PropTypes.string.isRequired,
+  canEdit: PropTypes.bool,
+  name: PropTypes.string.isRequired,
   item: fileShape,
-  onRemove: React.PropTypes.func,
-  onItemClick: React.PropTypes.func,
-  onView: React.PropTypes.func,
+  onRemove: PropTypes.func,
+  onItemClick: PropTypes.func,
+  onView: PropTypes.func,
 };
 
 export default UploadFieldItem;
