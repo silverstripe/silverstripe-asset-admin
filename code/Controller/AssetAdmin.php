@@ -1159,7 +1159,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'extension' => $file->Extension,
             'size' => $file->AbsoluteSize,
             'published' => ($file->hasMethod('isPublished')) ? $file->isPublished() : true,
-            'modified' => true || ($file->hasMethod('isModifiedOnDraft')) ? $file->isModifiedOnDraft() : false,
+            'modified' => ($file->hasMethod('isModifiedOnDraft')) ? $file->isModifiedOnDraft() : false,
             'draft' => ($file->hasMethod('isOnDraftOnly')) ? $file->isOnDraftOnly() : false,
         );
 
