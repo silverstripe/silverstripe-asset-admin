@@ -177,7 +177,7 @@ class UploadField extends FormField implements FileHandleField
         $assetAdmin = AssetAdmin::singleton();
         $fileData = [];
         foreach ($this->getItems() as $file) {
-            $fileData[] = $assetAdmin->getObjectFromData($file);
+            $fileData[] = $assetAdmin->getMinimalistObjectFromData($file);
         }
         return $fileData;
     }
