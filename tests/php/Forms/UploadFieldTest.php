@@ -98,7 +98,7 @@ class UploadFieldTest extends SapphireTest
             'value' => [ 'Files' => [$image->ID] ],
             'message' => null,
             'data' => [
-                'files' => [ $admin->getObjectFromData($image) ],
+                'files' => [ $admin->getMinimalistObjectFromData($image) ],
             ],
         ];
         $this->assertArraySubset(
