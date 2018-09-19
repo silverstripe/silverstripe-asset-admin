@@ -4,7 +4,7 @@
 jest.mock('containers/AssetAdmin/AssetAdmin');
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as AssetAdminRouter } from '../AssetAdminRouter';
 
 describe('AssetAdminRouter', () => {
@@ -22,11 +22,13 @@ describe('AssetAdminRouter', () => {
         query: {},
         search: '',
       },
-      params: {
-        fileId: '0',
-        folderId: '0',
+      match: {
+        params: {
+          fileId: '0',
+          folderId: '0',
+        },
       },
-      router: {
+      history: {
         push: jest.fn(),
       },
     };
@@ -40,7 +42,7 @@ describe('AssetAdminRouter', () => {
     });
 
     it('should retain page query parameter when not changing folders', () => {
-      const newUrl = component.getUrl(props.params.folderId, null, { page: 2 });
+      const newUrl = component.getUrl(props.match.params.folderId, null, { page: 2 });
       expect(newUrl).toContain('page=2');
     });
 

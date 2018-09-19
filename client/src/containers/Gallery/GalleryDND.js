@@ -25,7 +25,7 @@ class GalleryDND extends Component {
 
   componentWillUpdate() {
     setTimeout(() => {
-      if (!this.mounted) {
+      if (!this.mounted || !this.context.dragDropManager) {
         return;
       }
       const manager = this.context.dragDropManager;

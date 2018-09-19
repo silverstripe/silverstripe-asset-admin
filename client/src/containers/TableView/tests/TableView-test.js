@@ -4,7 +4,7 @@
 jest.mock('griddle-react');
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as TableView } from '../TableView';
 
 describe('TableView', () => {
@@ -16,11 +16,11 @@ describe('TableView', () => {
         { id: 12, parent: { id: 0 } },
         { id: 15, parent: { id: 6 } },
       ],
-      onOpenFile: jest.genMockFunction(),
-      onOpenFolder: jest.genMockFunction(),
-      onSort: jest.genMockFunction(),
-      onSetPage: jest.genMockFunction(),
-      renderNoItemsNotice: jest.genMockFunction(),
+      onOpenFile: jest.fn(),
+      onOpenFolder: jest.fn(),
+      onSort: jest.fn(),
+      onSetPage: jest.fn(),
+      renderNoItemsNotice: jest.fn(),
       sort: 'title,asc',
     };
   });
@@ -69,7 +69,7 @@ describe('TableView', () => {
 
     it('should call handleActivate', () => {
       const view = ReactTestUtils.renderIntoDocument(<TableView {...props} />);
-      view.handleActivate = jest.genMockFunction();
+      view.handleActivate = jest.fn();
 
       view.handleRowClick(row, event);
 
@@ -78,7 +78,7 @@ describe('TableView', () => {
 
     it('should call the select callback if target contains a particular class', () => {
       event.currentTarget.classList.contains = () => true;
-      props.onSelect = jest.genMockFunction();
+      props.onSelect = jest.fn();
       const view = ReactTestUtils.renderIntoDocument(<TableView {...props} />);
 
       view.handleRowClick(row, event);

@@ -14,7 +14,7 @@ jest.mock('jquery', () => {
 });
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as BulkActions } from '../BulkActions';
 
 describe('BulkActions', () => {
@@ -107,8 +107,8 @@ describe('BulkActions', () => {
         },
       };
 
-      bulkActions.getOptionByValue = jest.genMockFunction();
-      bulkActions.applyAction = jest.genMockFunction();
+      bulkActions.getOptionByValue = jest.fn();
+      bulkActions.applyAction = jest.fn();
     });
 
     it('should return undefined if no valid option is selected', () => {
@@ -119,7 +119,7 @@ describe('BulkActions', () => {
 
 
     it('should use callback if no confirm callback is configured', () => {
-      const callbackMockFn = jest.genMockFunction();
+      const callbackMockFn = jest.fn();
 
       bulkActions.getOptionByValue.mockReturnValueOnce({ confirm: null, callback: callbackMockFn });
       return bulkActions.handleChangeValue(event).then(() => {
@@ -128,7 +128,7 @@ describe('BulkActions', () => {
     });
 
     it('should use callback if confirm is configured and resolved', () => {
-      const callbackMockFn = jest.genMockFunction();
+      const callbackMockFn = jest.fn();
 
       bulkActions.getOptionByValue
         .mockReturnValueOnce({ confirm: Promise.resolve(), callback: callbackMockFn });
@@ -138,7 +138,7 @@ describe('BulkActions', () => {
     });
 
     it('should not use callback if confirm is configured and rejected', () => {
-      const callbackMockFn = jest.genMockFunction();
+      const callbackMockFn = jest.fn();
 
       bulkActions.getOptionByValue
         .mockReturnValueOnce({ confirm: Promise.reject(), callback: callbackMockFn });
