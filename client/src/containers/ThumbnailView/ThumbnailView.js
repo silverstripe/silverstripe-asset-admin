@@ -1,8 +1,9 @@
 import i18n from 'i18n';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { inject } from 'lib/Injector';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import Griddle from 'griddle-react';
+import PropTypes from 'prop-types';
 
 class ThumbnailView extends Component {
   constructor(props) {

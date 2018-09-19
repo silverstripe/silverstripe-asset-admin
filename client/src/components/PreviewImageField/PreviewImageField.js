@@ -1,6 +1,6 @@
 /* global window, FormData */
 import i18n from 'i18n';
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
 import CONSTANTS from 'constants/index';
 import { connect } from 'react-redux';
@@ -10,6 +10,7 @@ import * as previewFieldActions from 'state/previewField/PreviewFieldActions';
 import { getFileExtension } from 'lib/DataFormat';
 import getFormState from 'lib/getFormState';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 
 class PreviewImageField extends Component {
   constructor(props) {
@@ -242,7 +243,12 @@ class PreviewImageField extends Component {
     const image = <img alt="preview" src={preview} className="editor__thumbnail" />;
     const progress = this.props.upload.progress;
     const linkedImage = (data.url && !progress) ? (
-      <a className="editor__file-preview-link" href={data.url} target="_blank">
+      <a
+        className="editor__file-preview-link"
+        href={data.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {image}
       </a>
     ) : null;
@@ -291,6 +297,7 @@ class PreviewImageField extends Component {
           <a
             href={this.props.data.url}
             target="_blank"
+            rel="noopener noreferrer"
             className={this.getButtonClasses('link')}
           >Open</a>
         )

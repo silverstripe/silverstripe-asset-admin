@@ -1,5 +1,5 @@
 import i18n from 'i18n';
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import classnames from 'classnames';
 import CONSTANTS from 'constants/index';
 import fileShape from 'lib/fileShape';
@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux';
 import { createSelectable } from 'react-selectable';
 import * as imageLoadActions from 'state/imageLoad/ImageLoadActions';
 import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
+import PropTypes from 'prop-types';
 
 /**
  * Determine if image loading should be performed

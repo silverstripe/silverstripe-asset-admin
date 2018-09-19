@@ -1,9 +1,10 @@
 import i18n from 'i18n';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { inject } from 'lib/Injector';
 import { Button, DropdownItem } from 'reactstrap';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 
 class BulkActions extends Component {
   constructor(props) {

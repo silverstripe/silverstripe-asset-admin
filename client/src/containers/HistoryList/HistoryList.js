@@ -4,6 +4,7 @@ import backend from 'lib/Backend';
 import Config from 'lib/Config';
 import HistoryItem from 'containers/HistoryList/HistoryItem';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
+import PropTypes from 'prop-types';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -163,16 +164,16 @@ class HistoryList extends Component {
 }
 
 HistoryList.propTypes = {
-  sectionConfig: React.PropTypes.shape({
-    form: React.PropTypes.object,
-    historyEndpoint: React.PropTypes.shape({
-      url: React.PropTypes.string,
-      method: React.PropTypes.string,
-      responseFormat: React.PropTypes.string,
+  sectionConfig: PropTypes.shape({
+    form: PropTypes.object,
+    historyEndpoint: PropTypes.shape({
+      url: PropTypes.string,
+      method: PropTypes.string,
+      responseFormat: PropTypes.string,
     }),
   }),
-  historySchemaUrl: React.PropTypes.string,
-  data: React.PropTypes.object,
+  historySchemaUrl: PropTypes.string,
+  data: PropTypes.object,
 };
 
 HistoryList.defaultProps = {

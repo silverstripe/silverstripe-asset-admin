@@ -1,9 +1,10 @@
 /* global window */
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import classnames from 'classnames';
 import GalleryItemDragLayer from 'components/GalleryItem/GalleryItemDragLayer';
+import PropTypes from 'prop-types';
 
 // add middleware to capture the manager that is to be used
 // eslint-disable-next-line new-cap
@@ -75,9 +76,9 @@ GalleryDND.contextTypes = {
 
 GalleryDND.propTypes = {
   className: PropTypes.string,
-  children: React.PropTypes.oneOfType([
-    React.PropTypes.arrayOf(React.PropTypes.node),
-    React.PropTypes.node,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
   ]),
 };
 

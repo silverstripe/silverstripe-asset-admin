@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import droppable from 'components/GalleryItem/droppable';
 import Badge from 'components/Badge/Badge';
 import i18n from 'i18n';

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import i18n from 'i18n';
 import CONSTANTS from 'constants/index';
+import PropTypes from 'prop-types';
 import {
   deactivateModal,
   setNoticeMessage,
@@ -74,19 +75,19 @@ class MoveModal extends React.Component {
 
 MoveModal.propTypes = {
   sectionConfig: configShape,
-  folderId: React.PropTypes.number.isRequired,
-  isOpen: React.PropTypes.bool,
-  onClosed: React.PropTypes.func,
-  setNotice: React.PropTypes.func,
-  setBadge: React.PropTypes.func,
-  setError: React.PropTypes.func,
-  title: React.PropTypes.string,
-  onSuccess: React.PropTypes.func,
-  onOpenFolder: React.PropTypes.func.isRequired,
-  selectedFiles: React.PropTypes.array.isRequired,
-  actions: React.PropTypes.shape({
-    files: React.PropTypes.shape({
-      moveFiles: React.PropTypes.func,
+  folderId: PropTypes.number.isRequired,
+  isOpen: PropTypes.bool,
+  onClosed: PropTypes.func,
+  setNotice: PropTypes.func,
+  setBadge: PropTypes.func,
+  setError: PropTypes.func,
+  title: PropTypes.string,
+  onSuccess: PropTypes.func,
+  onOpenFolder: PropTypes.func.isRequired,
+  selectedFiles: PropTypes.array.isRequired,
+  actions: PropTypes.shape({
+    files: PropTypes.shape({
+      moveFiles: PropTypes.func,
     }),
   }).isRequired,
 };
