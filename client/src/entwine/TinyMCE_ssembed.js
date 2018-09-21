@@ -17,17 +17,29 @@ const filter = 'div[data-shortcode="embed"]';
 (() => {
   const ssembed = {
     init: (editor) => {
-      const title = i18n._t('AssetAdmin.INSERT_VIA_URL', 'Insert media via URL');
+      const insertTitle = i18n._t('AssetAdmin.INSERT_VIA_URL', 'Insert media via URL');
+      const editTitle = i18n._t('AssetAdmin.EDIT_MEDIA', 'Edit media');
+      const contextTitle = i18n._t('AssetAdmin.MEDIA', 'Media');
       editor.addButton('ssembed', {
+        title: insertTitle,
         icon: 'media',
-        title,
         cmd: 'ssembed',
+        stateSelector: filter
       });
       editor.addMenuItem('ssembed', {
+        text: contextTitle,
         icon: 'media',
-        text: title,
         cmd: 'ssembed',
       });
+      editor.addButton('ssembededit', {
+        title: editTitle,
+        icon: 'editimage',
+        cmd: 'ssembed'
+      });
+      editor.addContextToolbar(
+        (embed) => editor.dom.is(embed, filter),
+        'alignleft aligncenter alignright | ssembededit'
+      );
 
       editor.addCommand('ssembed', () => {
         // See HtmlEditorField.js
@@ -110,11 +122,9 @@ const filter = 'div[data-shortcode="embed"]';
 
           // Set dimensions
           if (data.width) {
-            base.width(data.width);
             placeholder.attr('width', data.width);
           }
           if (data.height) {
-            // base.height(data.height);
             placeholder.attr('height', data.height);
           }
 
@@ -312,11 +322,9 @@ jQuery.entwine('ss', ($) => {
 
       // Set dimensions
       if (data.Width) {
-        base.width(data.Width);
         placeholder.attr('width', data.Width);
       }
       if (data.Height) {
-        // Note: Leave height auto sizing on parent, but set height on inner placeholder
         placeholder.attr('height', data.Height);
       }
 
