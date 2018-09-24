@@ -159,7 +159,7 @@ class UploadField extends FormField implements FileHandleField
         }
         
         // We need an ID for getObjectFromData
-        if(!$file->ID) {
+        if (!$file->ID) {
             $file->write();
         }
 
