@@ -1,6 +1,7 @@
 /* eslint-disable react/prefer-stateless-function */
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import i18n from 'i18n';
+import PropTypes from 'prop-types';
 
 /**
  * Gallery Toolbar upload button.

@@ -5,6 +5,7 @@ import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
 import $ from 'jquery';
 import { getFileExtension } from 'lib/DataFormat';
+import PropTypes from 'prop-types';
 
 let idCounter = 0;
 
@@ -527,32 +528,32 @@ class AssetDropzone extends Component {
 }
 
 AssetDropzone.propTypes = {
-  folderId: React.PropTypes.number.isRequired,
-  onAccept: React.PropTypes.func,
-  onAddedFile: React.PropTypes.func.isRequired,
-  onDragEnter: React.PropTypes.func,
-  onDragLeave: React.PropTypes.func,
-  onDrop: React.PropTypes.func,
-  onError: React.PropTypes.func.isRequired,
-  onPreviewLoaded: React.PropTypes.func,
-  onSending: React.PropTypes.func,
-  onSuccess: React.PropTypes.func.isRequired,
-  onMaxFilesExceeded: React.PropTypes.func,
-  updateFormData: React.PropTypes.func,
-  canFileUpload: React.PropTypes.func,
-  options: React.PropTypes.shape({
-    url: React.PropTypes.string.isRequired,
+  folderId: PropTypes.number.isRequired,
+  onAccept: PropTypes.func,
+  onAddedFile: PropTypes.func.isRequired,
+  onDragEnter: PropTypes.func,
+  onDragLeave: PropTypes.func,
+  onDrop: PropTypes.func,
+  onError: PropTypes.func.isRequired,
+  onPreviewLoaded: PropTypes.func,
+  onSending: PropTypes.func,
+  onSuccess: PropTypes.func.isRequired,
+  onMaxFilesExceeded: PropTypes.func,
+  updateFormData: PropTypes.func,
+  canFileUpload: PropTypes.func,
+  options: PropTypes.shape({
+    url: PropTypes.string.isRequired,
   }),
-  promptOnRemove: React.PropTypes.string,
-  securityID: React.PropTypes.string.isRequired,
-  uploadButton: React.PropTypes.bool,
-  uploadSelector: React.PropTypes.string,
-  canUpload: React.PropTypes.bool.isRequired,
-  preview: React.PropTypes.shape({
-    width: React.PropTypes.number,
-    height: React.PropTypes.number,
+  promptOnRemove: PropTypes.string,
+  securityID: PropTypes.string.isRequired,
+  uploadButton: PropTypes.bool,
+  uploadSelector: PropTypes.string,
+  canUpload: PropTypes.bool.isRequired,
+  preview: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
   }),
-  className: React.PropTypes.string,
+  className: PropTypes.string,
 };
 
 AssetDropzone.defaultProps = {

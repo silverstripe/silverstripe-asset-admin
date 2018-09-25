@@ -1,5 +1,5 @@
 import i18n from 'i18n';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import AssetAdmin, { getFormSchema } from 'containers/AssetAdmin/AssetAdmin';
@@ -8,6 +8,7 @@ import fileSchemaModalHandler from 'containers/InsertLinkModal/fileSchemaModalHa
 import * as galleryActions from 'state/gallery/GalleryActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 
 class InsertMediaModal extends Component {
   constructor(props) {
@@ -98,7 +99,7 @@ class InsertMediaModal extends Component {
     return (
       <button
         type="button"
-        className="close insert-media-modal__close-button"
+        className="close modal__close-button insert-media-modal__close-button"
         onClick={this.props.onClosed}
         aria-label={i18n._t('FormBuilderModal.CLOSE', 'Close')}
       >

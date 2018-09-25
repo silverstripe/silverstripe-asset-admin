@@ -2,12 +2,13 @@
 import i18n from 'i18n';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import CONSTANTS from 'constants/index';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
 import fileShape from 'lib/fileShape';
+import PropTypes from 'prop-types';
 
 class Editor extends Component {
   constructor(props) {

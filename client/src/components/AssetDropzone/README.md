@@ -28,6 +28,7 @@ __container.js__
 
 ```js
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import SilverStripeComponent from 'lib/SilverStripeComponent';
@@ -62,8 +63,8 @@ class Container extends SilverStripeComponent {
 }
 
 Container.propTypes = {
-    actions: React.PropTypes.object.isRequired,
-    files: React.PropTypes.array.isRequired
+    actions: PropTypes.object.isRequired,
+    files: PropTypes.array.isRequired
 };
 
 function mapStateToProps(state) {

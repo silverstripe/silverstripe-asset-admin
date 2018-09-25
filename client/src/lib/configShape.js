@@ -1,4 +1,4 @@
-import { PropTypes } from 'react';
+import PropTypes from 'prop-types';
 
 const configShape = PropTypes.shape({
   url: PropTypes.string,

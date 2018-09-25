@@ -25,18 +25,29 @@ const filter = 'img[data-shortcode="image"]';
      * @param {Object} ed
      */
     init(ed) {
-      const title = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
+      const insertTitle = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
+      const editTitle = i18n._t('AssetAdmin.EDIT_IMAGE', 'Edit image');
+      const contextTitle = i18n._t('AssetAdmin.FILE', 'File');
       ed.addButton('ssmedia', {
+        title: insertTitle,
         icon: 'image',
-        title,
         cmd: 'ssmedia',
+        stateSelector: filter
       });
       ed.addMenuItem('ssmedia', {
+        text: contextTitle,
         icon: 'image',
-        text: title,
-        cmd: 'ssmedia',
+        cmd: 'ssmedia'
       });
-
+      ed.addButton('ssmediaedit', {
+        title: editTitle,
+        icon: 'editimage',
+        cmd: 'ssmedia'
+      });
+      ed.addContextToolbar(
+        (img) => ed.dom.is(img, filter),
+        'alignleft aligncenter alignright | ssmediaedit'
+      );
 
       ed.addCommand('ssmedia', () => {
         // See HtmlEditorField.js
