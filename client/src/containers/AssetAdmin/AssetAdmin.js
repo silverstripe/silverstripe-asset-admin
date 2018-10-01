@@ -195,23 +195,19 @@ class AssetAdmin extends Component {
       queuedFiles,
     } = this.props;
 
-    return [
+    const combinedFilesList = [
       // Exclude uploaded files that have been reloaded via graphql
       ...queuedFiles
         .items
         .filter(item => !item.id || !files.find(file => file.id === item.id)),
       ...files,
-    ].sort((left, right) => {
-      if (left.type !== right.type) {
-        if (left.type === 'folder') {
-          return -1;
-        }
-        if (right.type === 'folder') {
-          return 1;
-        }
-      }
-      return right.queuedId - left.queuedId;
-    });
+    ];
+
+    // Seperate folder and files then return an array with folders at the top (for table view)
+    const foldersList = combinedFilesList.filter((file) => file.type === 'folder');
+    const filesList = combinedFilesList.filter((file) => file.type !== 'folder');
+
+    return foldersList.concat(filesList);
   }
 
   /**
