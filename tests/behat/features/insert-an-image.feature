@@ -51,7 +51,7 @@ Feature: Insert an image into a page
 
   Scenario: I can link to a file
     Given I select "awesome" in the "Content" HTML field
-    When I press the "Insert Link" HTML field button
+    When I press the "Insert link" HTML field button
       And I click "Link to a file" in the ".mce-menu" element
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
@@ -63,7 +63,7 @@ Feature: Insert an image into a page
       And I press the "Save" button
     # Check that the field is reset when adding another new link
     When I select "awesome" in the "Content" HTML field
-      And I press the "Insert Link" HTML field button
+      And I press the "Insert link" HTML field button
       And I click "Link to a file" in the ".mce-menu" element
     Then I should see an "form#Form_fileInsertForm" element
       And the "Description" field should contain "My file"
