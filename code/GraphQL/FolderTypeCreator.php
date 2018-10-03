@@ -157,19 +157,6 @@ class FolderTypeCreator extends FileTypeCreator
         $filter['parentId'] = $object->ID;
         $list = $filterInputType->filterList($list, $filter);
 
-        // Sort folders first
-        $list = $list->alterDataQuery(function (DataQuery $query, DataList $list) {
-            $existingOrderBys = $query->query()->getOrderBy();
-            $query->sort(
-                '(CASE WHEN "ClassName"=\'SilverStripe\\\\Assets\\\\Folder\' THEN 1 ELSE 0 END)',
-                'DESC',
-                true
-            );
-            foreach ($existingOrderBys as $field => $dir) {
-                $query->sort($field, $dir, false);
-            }
-        });
-
         // Filter by permission
         $ids = $list->column('ID');
         $permissionChecker = File::singleton()->getPermissionChecker();
