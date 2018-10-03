@@ -22,6 +22,13 @@ const config = {
             folderId,
             fileIds,
           },
+          update: () => {
+            // todo:
+            // Refactor this once Apollo GraphQL adds support
+            // for invalidating specific queries in the cache.
+            // Context: https://github.com/silverstripe/silverstripe-asset-admin/issues/809
+            window.ss.apolloClient.resetStore();
+          }
         }),
       }),
     }),

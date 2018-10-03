@@ -195,7 +195,7 @@ describe('AssetAdmin', () => {
       const id = props.files[0].id;
       component.handleDelete([id]);
 
-      expect(props.actions.files.deleteFiles).toBeCalledWith([id]);
+      expect(props.actions.files.deleteFiles).toBeCalledWith([id], 0);
     });
 
     it('should remove the file from the queued files list', () => {

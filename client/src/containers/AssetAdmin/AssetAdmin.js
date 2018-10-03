@@ -198,23 +198,19 @@ class AssetAdmin extends Component {
       queuedFiles,
     } = this.props;
 
-    return [
+    const combinedFilesList = [
       // Exclude uploaded files that have been reloaded via graphql
       ...queuedFiles
         .items
         .filter(item => !item.id || !files.find(file => file.id === item.id)),
       ...files,
-    ].sort((left, right) => {
-      if (left.type !== right.type) {
-        if (left.type === 'folder') {
-          return -1;
-        }
-        if (right.type === 'folder') {
-          return 1;
-        }
-      }
-      return right.queuedId - left.queuedId;
-    });
+    ];
+
+    // Seperate folder and files then return an array with folders at the top (for table view)
+    const foldersList = combinedFilesList.filter((file) => file.type === 'folder');
+    const filesList = combinedFilesList.filter((file) => file.type !== 'folder');
+
+    return foldersList.concat(filesList);
   }
 
   /**
@@ -460,9 +456,21 @@ class AssetAdmin extends Component {
     const fileIDs = files.map(file => file.id);
     const parentId = this.props.folder ? this.props.folder.id : 0;
 
-    return this.props.actions.files.deleteFiles(fileIDs)
+    return this.props.actions.files.deleteFiles(fileIDs, parentId)
       .then(({ data: { deleteFiles } }) => {
         this.handleBrowse(parentId, null, this.props.query);
+
+        const queuedFiles = this.props.queuedFiles.items.filter((file) => (
+          fileIDs.includes(file.id)
+        ));
+
+        queuedFiles.forEach((file) => {
+          if (file.queuedId) {
+            this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
+          }
+        });
+
+        this.props.actions.files.readFiles();
 
         return deleteFiles;
       });

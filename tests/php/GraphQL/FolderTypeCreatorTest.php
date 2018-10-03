@@ -18,29 +18,6 @@ class FolderTypeCreatorTest extends SapphireTest
 
     protected $usesDatabase = true;
 
-    public function testItSortsChildrenOnTypeByDefault()
-    {
-        $rootFolder = Folder::singleton();
-
-        $file = File::create(['Name' => 'aaa file']);
-        $file->write();
-
-        $folder = Folder::create(['Name' => 'bbb folder']);
-        $folder->write();
-
-        $list = $this->resolveChildrenConnection(
-            $rootFolder,
-            []
-        );
-        $this->assertEquals(
-            [
-                $folder->Name,
-                $file->Name,
-            ],
-            $list['edges']->column('Name')
-        );
-    }
-
     public function testItDoesNotFilterByParentIdWithRecursiveFlag()
     {
         $rootFolder = Folder::singleton();
