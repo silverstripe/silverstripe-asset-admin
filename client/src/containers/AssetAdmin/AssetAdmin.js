@@ -23,6 +23,7 @@ import unpublishFilesMutation from 'state/files/unpublishFilesMutation';
 import publishFilesMutation from 'state/files/publishFilesMutation';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
+import { injectGraphql } from 'lib/Injector';
 
 function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   let schemaUrl = null;
@@ -862,7 +863,7 @@ export { AssetAdmin as Component, getFormSchema };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  readFilesQuery,
+  injectGraphql('ReadFilesQuery'),
   deleteFilesMutation,
   unpublishFilesMutation,
   publishFilesMutation,
