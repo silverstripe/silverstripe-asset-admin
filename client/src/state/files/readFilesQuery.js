@@ -4,46 +4,6 @@ import { fileInterface, file as fileFragment, folder as folderFragment } from 'l
 import { hasFilters } from 'components/Search/Search';
 import { graphqlTemplates} from 'lib/Injector';
 
-// // GraphQL Query
-// const query = gql`
-//   query ReadFiles($limit:Int!, $offset:Int!, $rootFilter: FileFilterInput,
-//     $childrenFilter: FileFilterInput, $sortBy:[ChildrenSortInputType]
-//   ) {
-//     readFiles(filter: $rootFilter) {
-//       pageInfo {
-//         totalCount
-//       }
-//       edges {
-//         node {
-//           ...FileInterfaceFields
-//           ...FileFields
-//           ...on Folder {
-//             children(limit:$limit, offset:$offset, filter: $childrenFilter, sortBy:$sortBy) {
-//               pageInfo {
-//                 totalCount
-//               }
-//               edges {
-//                 node {
-//                   ...FileInterfaceFields
-//                   ...FileFields
-//                   ...FolderFields
-//                 }
-//               }
-//             }
-//             parents {
-//               id
-//               title
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-//   ${fileInterface}
-//   ${fileFragment}
-//   ${folderFragment}
-// `;
-
 const apolloConfig = {
   options({ sectionConfig, folderId, fileId, query: params }) {
     const filter = Object.assign({}, params.filter);
