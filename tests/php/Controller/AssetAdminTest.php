@@ -216,7 +216,7 @@ class AssetAdminTest extends FunctionalTest
             [
                 'type' => 'error',
                 'code' => 400,
-                'value' => 'Extension is not allowed',
+                'value' => "Extension 'php' is not allowed",
             ],
             $responseData['errors'][0]
         );
