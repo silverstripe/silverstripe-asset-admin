@@ -60,7 +60,7 @@
     "@storybook/react": "^3.2.16",
     "apollo-link-batch-http": "^1.2.1",
     "babel-polyfill": "6.7.4",
-    "bootstrap": "4.0.0",
+    "bootstrap": "4.1.2",
     "classnames": "^2.2.5",
     "deep-freeze-strict": "^1.1.1",
     "dropzone": "https://registry.npmjs.org/dropzone/-/dropzone-4.3.0.tgz",
