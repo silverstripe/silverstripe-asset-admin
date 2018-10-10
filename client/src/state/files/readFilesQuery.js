@@ -1,8 +1,5 @@
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
-import { fileInterface, file as fileFragment, folder as folderFragment } from 'lib/fileFragments';
 import { hasFilters } from 'components/Search/Search';
-import { graphqlTemplates} from 'lib/Injector';
+import { graphqlTemplates } from 'lib/Injector';
 
 const apolloConfig = {
   options({ sectionConfig, folderId, fileId, query: params }) {
@@ -106,7 +103,7 @@ const query = {
     sortBy: '[ChildrenSortInputType]',
   },
   args: {
-    'root': {
+    root: {
       filter: 'rootFilter'
     },
     'root/edges/node/...on Folder/children': {
