@@ -383,6 +383,25 @@ class FileFormFactory extends AssetFormFactory
     }
 
     /**
+     * Get Replace file action
+     *
+     * @param File $record
+     * @return FormAction
+     */
+    protected function getReplaceFileAction($record)
+    {
+        // Check if record exists and user has correct permissions
+        if (!$record || !$record->isInDB() || !$record->canEdit()) {
+            return null;
+        }
+
+        $action = FormAction::create('replacefile', _t(__CLASS__ . '.REPLACE_FILE', 'Replace file'))
+            ->setIcon('upload');
+
+        return $action;
+    }
+
+    /**
      * Get actions that go into the Popover menu
      *
      * @param $record
@@ -391,8 +410,9 @@ class FileFormFactory extends AssetFormFactory
     protected function getPopoverActions($record)
     {
         $this->beforeExtending('updatePopoverActions', function (&$actions, $record) {
-            // add the unpublish action to the start of the array
+            // add the unpublish and replace file actions to the start of the array
             array_unshift($actions, $this->getUnpublishAction($record));
+            array_unshift($actions, $this->getReplaceFileAction($record));
         });
 
         return parent::getPopoverActions($record);

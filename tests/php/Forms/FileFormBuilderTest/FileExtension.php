@@ -15,6 +15,7 @@ class FileExtension extends DataExtension implements TestOnly
     public static $canDelete = false;
     public static $canPublish = true;
     public static $canUnpublish = true;
+    public static $canEdit = true;
 
     public function canDelete($member)
     {
@@ -29,5 +30,10 @@ class FileExtension extends DataExtension implements TestOnly
     public function canUnpublish($member = null)
     {
         return self::$canUnpublish;
+    }
+
+    public function canEdit($member = null)
+    {
+        return self::$canEdit;
     }
 }

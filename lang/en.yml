@@ -80,6 +80,7 @@ en:
     LINKOPTIONS: 'Link options'
     LINKTEXT: 'Link text'
     OTHER_ACTIONS: 'Other actions'
+    REPLACE_FILE: 'Replace file'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>'
     USAGE: 'Used on'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:

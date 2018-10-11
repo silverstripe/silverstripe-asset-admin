@@ -48,7 +48,7 @@ class PreviewImageField extends Component {
       url: endpoint && endpoint.url,
       method: endpoint && endpoint.method,
       paramName: 'Upload',
-      clickable: '#preview-replace-button',
+      clickable: true,
       maxFiles: 1,
     };
     const preview = {
@@ -293,24 +293,6 @@ class PreviewImageField extends Component {
     }
     return (
       <div className="preview-image-field__toolbar fill-height">
-        { (this.props.data.url) ? (
-          <a
-            href={this.props.data.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={this.getButtonClasses('link')}
-          >Open</a>
-        )
-        : null }
-        { (canEdit) ? (
-          <button
-            id="preview-replace-button"
-            onClick={this.preventDefault}
-            className={this.getButtonClasses('replace')}
-            type="button"
-          >Replace</button>
-        )
-        : null }
         { (this.props.upload.progress || this.props.upload.message) ? (
           <button
             onClick={this.handleCancelUpload}
