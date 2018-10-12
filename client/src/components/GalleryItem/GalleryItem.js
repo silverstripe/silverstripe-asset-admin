@@ -90,7 +90,7 @@ class GalleryItem extends Component {
    */
   getErrorMessage() {
     let message = null;
-    const { updateErrorMessage, item, loadState } = this.props;
+    const { item, loadState } = this.props;
 
     if (this.hasError()) {
       message = item.message.value;
@@ -101,6 +101,7 @@ class GalleryItem extends Component {
     }
 
     if (message !== null) {
+      const updateErrorMessage = this.getItemFunction('updateErrorMessage');
       message = updateErrorMessage(message, this.props);
       return (
         <span className="gallery-item__error-message">
@@ -170,13 +171,26 @@ class GalleryItem extends Component {
     }
 
   /**
+   * Gets a function that may be overloaded at the item level
+   * @param functionName
+   * @returns {Function}
+   */
+  getItemFunction(functionName) {
+      const { item } = this.props;
+
+      return (typeof item[functionName] === 'function')
+        ? item[functionName]
+        : this.props[functionName];
+    }
+
+  /**
    * Get flags for statuses that apply to this item
    *
    * @returns {Array}
    */
   getStatusFlags() {
     let flags = [];
-    const { item, updateStatusFlags } = this.props;
+    const { item } = this.props;
     if (item.type !== 'folder') {
       if (item.draft) {
         flags.push({
@@ -194,6 +208,7 @@ class GalleryItem extends Component {
         });
       }
     }
+    const updateStatusFlags = this.getItemFunction('updateStatusFlags');
     flags = updateStatusFlags(flags, this.props);
     return flags.map(({ node: Tag, ...attributes }) => <Tag {...attributes} />);
   }
@@ -205,7 +220,7 @@ class GalleryItem extends Component {
    */
   getProgressBar() {
     let progressBar = null;
-    const { updateProgressBar, item } = this.props;
+    const { item } = this.props;
     const progressBarProps = {
       className: 'gallery-item__progress-bar',
       style: {
@@ -220,6 +235,7 @@ class GalleryItem extends Component {
         </div>
       );
     }
+    const updateProgressBar = this.getItemFunction('updateProgressBar');
     progressBar = updateProgressBar(progressBar, this.props);
     return progressBar;
   }
