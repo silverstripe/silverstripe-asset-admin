@@ -172,7 +172,7 @@ class GalleryItem extends Component {
 
   /**
    * Gets a function that may be overloaded at the item level
-   * @param functionName
+   * @param {string} functionName
    * @returns {Function}
    */
   getItemFunction(functionName) {
