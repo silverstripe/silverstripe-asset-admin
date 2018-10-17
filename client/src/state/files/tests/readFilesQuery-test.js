@@ -1,8 +1,9 @@
 /* global jest, describe, it, pit, expect, beforeEach, jasmine */
 
-import { config } from '../readFilesQuery';
+import query from '../readFilesQuery';
 
 describe('readFilesQuery', () => {
+  const config = query.apolloConfig;
   let graphqlData = null;
   let child1 = null;
   let child2 = null;
