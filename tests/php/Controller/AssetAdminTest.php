@@ -327,7 +327,7 @@ class AssetAdminTest extends FunctionalTest
                 "title" => $file->Parent()->Title,
                 "filename" => $file->Parent()->Filename,
             ],
-            "title" => "The First File",
+            "title" => $file->Title,
             "exists" => $file->exists(),
             "category" => $file->appCategory(),
             "extension" => $file->Extension,
