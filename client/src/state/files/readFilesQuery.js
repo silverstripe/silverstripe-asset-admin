@@ -1,49 +1,7 @@
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
-import { fileInterface, file as fileFragment, folder as folderFragment } from 'lib/fileFragments';
 import { hasFilters } from 'components/Search/Search';
+import { graphqlTemplates } from 'lib/Injector';
 
-// GraphQL Query
-const query = gql`
-  query ReadFiles($limit:Int!, $offset:Int!, $rootFilter: FileFilterInput, 
-    $childrenFilter: FileFilterInput, $sortBy:[ChildrenSortInputType]
-  ) {
-    readFiles(filter: $rootFilter) {
-      pageInfo {
-        totalCount
-      }
-      edges {
-        node {
-          ...FileInterfaceFields
-          ...FileFields
-          ...on Folder {
-            children(limit:$limit, offset:$offset, filter: $childrenFilter, sortBy:$sortBy) {
-              pageInfo {
-                totalCount
-              }
-              edges {
-                node {
-                  ...FileInterfaceFields
-                  ...FileFields
-                  ...FolderFields
-                }
-              }
-            }
-            parents {
-              id
-              title
-            }
-          }
-        }
-      }
-    }
-  }
-  ${fileInterface}
-  ${fileFragment}
-  ${folderFragment}
-`;
-
-const config = {
+const apolloConfig = {
   options({ sectionConfig, folderId, fileId, query: params }) {
     const filter = Object.assign({}, params.filter);
     const childrenFilter = Object.assign(
@@ -131,6 +89,63 @@ const config = {
   },
 };
 
-export { query, config };
-
-export default graphql(query, config);
+const { READ } = graphqlTemplates;
+const query = {
+  apolloConfig,
+  templateName: READ,
+  pluralName: 'Files',
+  pagination: false,
+  params: {
+    limit: 'Int!',
+    offset: 'Int!',
+    rootFilter: 'FileFilterInput',
+    childrenFilter: 'FileFilterInput',
+    sortBy: '[ChildrenSortInputType]',
+  },
+  args: {
+    root: {
+      filter: 'rootFilter'
+    },
+    'root/edges/node/...on Folder/children': {
+      limit: 'limit',
+      offset: 'offset',
+      filter: 'childrenFilter',
+      sortBy: 'sortBy',
+    },
+  },
+  fragments: [
+    'FileInterfaceFields',
+    'FileFields',
+    'FolderFields',
+  ],
+  fields: [
+    'pageInfo', [
+      'totalCount',
+    ],
+    'edges', [
+      'node', [
+        '...FileInterfaceFields',
+        '...FileFields',
+        '...on Folder', [
+          'children', [
+            'pageInfo', [
+              'totalCount',
+            ],
+            'edges', [
+              'node', [
+                '...FileInterfaceFields',
+                '...FileFields',
+                '...FolderFields',
+              ]
+            ]
+          ],
+          'parents', [
+            'id',
+            'title',
+          ]
+        ]
+      ]
+    ],
+  ],
+};
+export default query;
