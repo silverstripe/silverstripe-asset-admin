@@ -17,12 +17,12 @@ import Toolbar from 'components/Toolbar/Toolbar';
 import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
 import SearchToggle from 'components/Search/SearchToggle';
-import readFilesQuery from 'state/files/readFilesQuery';
 import deleteFilesMutation from 'state/files/deleteFilesMutation';
 import unpublishFilesMutation from 'state/files/unpublishFilesMutation';
 import publishFilesMutation from 'state/files/publishFilesMutation';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
+import { injectGraphql } from 'lib/Injector';
 
 function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   let schemaUrl = null;
@@ -862,7 +862,7 @@ export { AssetAdmin as Component, getFormSchema };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  readFilesQuery,
+  injectGraphql('ReadFilesQuery'),
   deleteFilesMutation,
   unpublishFilesMutation,
   publishFilesMutation,

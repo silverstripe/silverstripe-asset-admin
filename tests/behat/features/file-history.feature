@@ -18,7 +18,7 @@ Feature: View File History
     When I click "History" in the "#Editor .nav-tabs" element
     Then I should see an ".history-list__list" element
     When I click on the latest history item
-    Then I should see the "Form_fileHistoryForm" form
+    Then I should see an "#Form_fileHistoryForm" element
 
   Scenario: Editing a file adds history
     When I click "Details" in the "#Editor .nav-tabs" element

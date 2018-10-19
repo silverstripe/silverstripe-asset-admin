@@ -141,7 +141,11 @@ class HistoryList extends Component {
       return (
         <div className="history-list">
           <a href="#" className={backButtonClasses} onClick={this.handleBack} />
-          <FormBuilderLoader identifier="AssetAdmin.HistoryList" schemaUrl={schemaUrl} />
+          <FormBuilderLoader
+            identifier="AssetAdmin.HistoryList"
+            schemaUrl={schemaUrl}
+            formTag="div"
+          />
         </div>
       );
     }
