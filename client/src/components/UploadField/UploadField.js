@@ -408,7 +408,7 @@ class UploadField extends Component {
   }
 
   renderModal() {
-    const { InsertMediaModal } = this.props;
+    const { InsertMediaModal, data: { enableDrag } } = this.props;
     const { selecting, selectingItem } = this.state;
     const maxFiles = this.getMaxFiles();
     const folderId = this.getFolderId();
@@ -426,6 +426,7 @@ class UploadField extends Component {
         className="insert-media-react__dialog-wrapper"
         fileAttributes={selectingItem ? { ID: selectingItem.id } : null}
         folderId={folderId}
+        enableDrag={enableDrag}
       />
     );
   }
@@ -485,6 +486,7 @@ UploadField.propTypes = {
     canUpload: PropTypes.bool,
     canAttach: PropTypes.bool,
     maxFiles: PropTypes.number,
+    enableDrag: PropTypes.bool,
   }),
   UploadFieldItem: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   AssetDropzone: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),

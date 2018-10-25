@@ -68,6 +68,13 @@ class UploadField extends FormField implements FileHandleField
     protected $attachEnabled = true;
 
     /**
+     * Set to false if you want to disable dragging on the modal that is presented for selecting files
+     *
+     * @var bool
+     */
+    protected $dragEnabled = true;
+
+    /**
      * The number of files allowed for this field
      *
      * @var null|int
@@ -119,6 +126,8 @@ class UploadField extends FormField implements FileHandleField
         $defaults['data']['parentid'] = $this->getFolderID();
         $defaults['data']['canUpload'] = $this->getUploadEnabled();
         $defaults['data']['canAttach'] = $this->getAttachEnabled();
+        $defaults['data']['canAttach'] = $this->getAttachEnabled();
+        $defaults['data']['enableDrag'] = $this->getDragEnabled();
 
         return $defaults;
     }
@@ -366,6 +375,28 @@ class UploadField extends FormField implements FileHandleField
     public function setAttachEnabled($attachEnabled)
     {
         $this->attachEnabled = $attachEnabled;
+        return $this;
+    }
+
+    /**
+     * Check if dragging files in the given modal is enabled
+     *
+     * @return bool
+     */
+    public function getDragEnabled()
+    {
+        return $this->dragEnabled;
+    }
+
+    /**
+     * Set if dragging files in the given modal is enabled
+     *
+     * @param bool $dragEnabled
+     * @return $this
+     */
+    public function setDragEnabled($dragEnabled)
+    {
+        $this->dragEnabled = $dragEnabled;
         return $this;
     }
 }

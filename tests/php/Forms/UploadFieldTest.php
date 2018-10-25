@@ -89,6 +89,7 @@ class UploadFieldTest extends SapphireTest
                 'maxFiles' => null,
                 'canUpload' => true,
                 'canAttach' => true,
+                'enableDrag' => true,
             ],
             'schemaType' => 'Custom'
         ];

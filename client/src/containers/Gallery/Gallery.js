@@ -836,7 +836,7 @@ class Gallery extends Component {
   }
 
   render() {
-    const { folder, loading, errorMessage, graphQLErrors, noticeMessage } = this.props;
+    const { folder, loading, errorMessage, graphQLErrors, noticeMessage, enableDrag } = this.props;
     const hasGraphQLErrors = graphQLErrors && graphQLErrors.length > 0;
 
     if (!folder) {
@@ -911,13 +911,15 @@ class Gallery extends Component {
       cssClasses.push('gallery__main--has-opened-item');
     }
 
+    const GalleryInnerTag = enableDrag ? GalleryDND : 'div';
+
     return (
       <div
         className="flexbox-area-grow gallery__outer"
         ref={gallery => { this.gallery = gallery; }}
       >
         {this.renderTransitionBulkActions()}
-        <GalleryDND className={galleryClasses.join(' ')}>
+        <GalleryInnerTag className={galleryClasses.join(' ')}>
           {this.renderToolbar()}
           <SelectableGroup
             enabled={this.props.view === 'tile' && this.props.type === 'admin'}
@@ -947,7 +949,7 @@ class Gallery extends Component {
               {this.renderGalleryView()}
             </AssetDropzone>
           </SelectableGroup>
-        </GalleryDND>
+        </GalleryInnerTag>
         { this.props.loading && [
           <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
           <div key="spinner" className="cms-content-loading-spinner" />,
@@ -1012,6 +1014,7 @@ Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
   type: 'admin',
   view: 'tile',
   enableDropzone: true,
+  enableDrag: true,
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
@@ -1045,6 +1048,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   createFileApiMethod: PropTypes.string,
   search: PropTypes.object,
   enableDropzone: PropTypes.bool,
+  enableDrag: PropTypes.bool,
   concatenateSelect: PropTypes.bool,
   GalleryToolbar: PropTypes.func,
   sorters: PropTypes.arrayOf(PropTypes.shape({

@@ -659,16 +659,17 @@ class AssetAdmin extends Component {
    * @returns {object}
    */
   renderGallery() {
-    const config = this.props.sectionConfig;
+    const { sectionConfig: config, query, enableDrag } = this.props;
+
     const createFileApiUrl = config.createFileEndpoint.url;
     const createFileApiMethod = config.createFileEndpoint.method;
 
-    const limit = this.props.query && parseInt(this.props.query.limit || config.limit, 10);
-    const page = this.props.query && parseInt(this.props.query.page || 1, 10);
+    const limit = query && parseInt(query.limit || config.limit, 10);
+    const page = query && parseInt(query.page || 1, 10);
 
-    const sort = this.props.query && this.props.query.sort;
-    const view = this.props.query && this.props.query.view;
-    const filters = this.props.query.filter || {};
+    const sort = query && query.sort;
+    const view = query && query.view;
+    const filters = query.filter || {};
 
     return (
       <Gallery
@@ -702,6 +703,7 @@ class AssetAdmin extends Component {
         sectionConfig={config}
         loading={this.props.loading}
         maxFilesSelect={this.props.maxFiles}
+        enableDrag={enableDrag}
       />
     );
   }
@@ -824,6 +826,7 @@ AssetAdmin.propTypes = {
   loading: PropTypes.bool,
   actions: PropTypes.object,
   maxFiles: PropTypes.number,
+  enableDrag: PropTypes.bool,
 };
 
 AssetAdmin.defaultProps = {
