@@ -139,7 +139,7 @@ class RemoteFileModalExtension extends Extension
             $data = array_merge($data, $extraData);
         }
 
-        $response = new HTTPResponse(Convert::raw2json($data));
+        $response = new HTTPResponse(json_encode($data));
         $response->addHeader('Content-Type', 'application/json');
         return $response;
     }
