@@ -94,6 +94,7 @@ class FileFormBuilderTest extends SapphireTest
         // Test actions exist
         $this->assertNotNull($form->Actions()->fieldByName('Actions.action_save'));
         $this->assertNotNull($form->Actions()->fieldByName('Actions.action_publish'));
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_replacefile'));
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
 
@@ -130,32 +131,50 @@ class FileFormBuilderTest extends SapphireTest
 
         FileExtension::$canDelete = false;
         FileExtension::$canPublish = false;
+        FileExtension::$canEdit = false;
         $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
         $this->assertNull($form->Actions()->fieldByName('PopoverActions'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_replacefile'));
+
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
 
         FileExtension::$canDelete = false;
         FileExtension::$canPublish = true;
+        FileExtension::$canEdit = false;
         $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_replacefile'));
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
 
         FileExtension::$canDelete = true;
         FileExtension::$canPublish = false;
+        FileExtension::$canEdit = false;
         $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_replacefile'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
+
+        FileExtension::$canDelete = false;
+        FileExtension::$canPublish = false;
+        FileExtension::$canEdit = true;
+        $form = $builder->getForm($controller, 'EditForm', ['Record' => $file]);
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_replacefile'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
 
         FileExtension::$canDelete = true;
         FileExtension::$canPublish = true;
         FileExtension::$canUnpublish = true;
+        FileExtension::$canEdit = true;
         $file->publishSingle();
         $form = $builder->getForm($controller, 'EditForm', ['Record' => $file, 'RequireLinkText' => false]);
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
+        $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_replacefile'));
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_addtocampaign'));
         $this->assertNotNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
 
@@ -323,6 +342,7 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertNull($form->Actions()->fieldByName('action_publish'));
         $this->assertNull($form->Actions()->dataFieldByName('action_publish'));
         $this->assertNull($form->Actions()->dataFieldByName('action_unpublish'));
+        $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_replacefile'));
     }
 
     public function testScaffolderFactory()

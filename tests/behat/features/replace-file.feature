@@ -22,6 +22,8 @@ Feature: Replace a file with a new file
     When I press the "Save" button
     Then I should not see a ".preview-image-field__message--success" element
       And I should not see a ".preview-image-field__toolbar-button--remove" element
+    When I press the "Other actions" button
+      Then I should see a "Replace file" button
 
   @javascript
   Scenario: Replacing a file with the same file detects and avoids duplication

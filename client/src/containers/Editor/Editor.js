@@ -41,6 +41,12 @@ class Editor extends Component {
       return;
     }
 
+    if (name === 'action_replacefile') {
+      this.replaceFile();
+      event.preventDefault();
+      return;
+    }
+
     if (name === 'action_delete') {
       // Customise message based on usage
       let message = i18n._t('AssetAdmin.CONFIRMDELETE', 'Are you sure you want to delete this record?');
@@ -113,6 +119,15 @@ class Editor extends Component {
     this.setState({
       openModal: false,
     });
+  }
+
+  replaceFile() {
+    const hiddenFileInput = document.querySelector('.dz-input-PreviewImage');
+
+    // Trigger a click on Dropzone's hidden file input in order to upload an image
+    if (hiddenFileInput) {
+      hiddenFileInput.click();
+    }
   }
 
   handleLoadingError(exception) {

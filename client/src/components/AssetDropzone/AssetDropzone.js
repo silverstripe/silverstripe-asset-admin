@@ -40,7 +40,7 @@ class AssetDropzone extends Component {
       ));
 
     // attach the name as a class to the hidden input for easier identification
-    const name = this.props.name;
+    const { name } = this.props;
     if (name) {
       this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
     }
@@ -67,6 +67,15 @@ class AssetDropzone extends Component {
     } else {
       // remove dropzone listeners (so it potentially doesn't interrupt other listeners)
       this.dropzone.disable();
+    }
+  }
+
+  componentDidUpdate() {
+    // Reattach name to hiddenFileInput as dropzone recreates this element after each upload
+    const { name } = this.props;
+
+    if (name) {
+      this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
     }
   }
 
