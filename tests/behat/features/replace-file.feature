@@ -16,25 +16,25 @@ Feature: Replace a file with a new file
   @javascript
   Scenario: I upload a new file into the file I have open
     When I attach the file "testfile.jpg" to dropzone "PreviewImage"
-    Then I should see a ".preview-image-field__toolbar-button--remove" element
+    Then I should see a ".preview-image-field__message-button" element
       And I should see a ".preview-image-field__message--success" element
       And the "Name" field should contain "file1.jpg"
     When I press the "Save" button
     Then I should not see a ".preview-image-field__message--success" element
-      And I should not see a ".preview-image-field__toolbar-button--remove" element
+      And I should not see a ".preview-image-field__message-button" element
     When I press the "Other actions" button
       Then I should see a "Replace file" button
 
   @javascript
   Scenario: Replacing a file with the same file detects and avoids duplication
     When I attach the file "file1.jpg" to dropzone "PreviewImage"
-    Then I should see a ".preview-image-field__toolbar-button--remove" element
+    Then I should see a ".preview-image-field__message-button" element
       And I should see a ".preview-image-field__message--success" element
       And the "Name" field should contain "file1.jpg"
     When I press the "Save" button
     Then the "Name" field should contain "file1.jpg"
       And I should not see a ".preview-image-field__message--success" element
-      And I should not see a ".preview-image-field__toolbar-button--remove" element
+      And I should not see a ".preview-image-field__message-button" element
 
   @javascript @modal
   Scenario: I upload a pdf file to replace an image file
