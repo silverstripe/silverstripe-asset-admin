@@ -225,10 +225,10 @@ class PreviewImageField extends Component {
    * @returns {object}
    */
   renderImage() {
-    const data = this.props.data;
+    const { data, upload } = this.props;
 
     // if not mocking the preview image (with icon), doesn't exist and no upload url...
-    if (!data.mock && !data.exists && !this.props.upload.url) {
+    if (!data.mock && !data.exists && !upload.url) {
       return (
         <div className="editor__file-preview-message--file-missing">
           {i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found')}
@@ -236,12 +236,11 @@ class PreviewImageField extends Component {
       );
     }
 
-    const category = this.props.upload.category;
+    const { category, progress, message } = upload;
     const preview = (category && category !== 'image')
       ? CONSTANTS.DEFAULT_PREVIEW
-      : this.props.upload.url || data.preview || data.url;
+      : upload.url || data.preview || data.url;
     const image = <img alt="preview" src={preview} className="editor__thumbnail" />;
-    const progress = this.props.upload.progress;
     const linkedImage = (data.url && !progress) ? (
       <a
         className="editor__file-preview-link"
@@ -257,7 +256,6 @@ class PreviewImageField extends Component {
         <div className="preview-image-field__progress-bar" style={{ width: `${progress}%` }} />
       </div>
     ) : null;
-    const message = this.props.upload.message;
     let messageBox = null;
 
     if (message) {
@@ -273,13 +271,13 @@ class PreviewImageField extends Component {
             'AssetAdmin.REPlACE_FILE_SUCCESS',
             'Upload successful, the file will be replaced when you Save.'
           )}
-          { (this.props.upload.progress || this.props.upload.message) ? (
+          {(progress || message) && (
             <button
               onClick={this.handleCancelUpload}
               className="preview-image-field__message-button btn btn-outline-light"
               type="button"
             >{i18n._t('AssetAdmin.REPLACE_FILE_UNDO', 'Undo')}</button>
-          ) : null }
+          )}
         </div>
       );
     }
