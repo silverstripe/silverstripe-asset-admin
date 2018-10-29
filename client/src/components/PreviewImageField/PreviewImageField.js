@@ -273,6 +273,13 @@ class PreviewImageField extends Component {
             'AssetAdmin.REPlACE_FILE_SUCCESS',
             'Upload successful, the file will be replaced when you Save.'
           )}
+          { (this.props.upload.progress || this.props.upload.message) ? (
+            <button
+              onClick={this.handleCancelUpload}
+              className="preview-image-field__message-button btn btn-outline-light"
+              type="button"
+            >{i18n._t('AssetAdmin.REPLACE_FILE_UNDO', 'Undo')}</button>
+          ) : null }
         </div>
       );
     }
@@ -286,24 +293,6 @@ class PreviewImageField extends Component {
     );
   }
 
-  renderToolbar() {
-    const canEdit = this.canEdit();
-    if (!this.props.data.url && !canEdit) {
-      return null;
-    }
-    return (
-      <div className="preview-image-field__toolbar fill-height">
-        { (this.props.upload.progress || this.props.upload.message) ? (
-          <button
-            onClick={this.handleCancelUpload}
-            className={this.getButtonClasses('remove')}
-            type="button"
-          >Remove</button>
-        ) : null }
-      </div>
-    );
-  }
-
   render() {
     const dropzoneProps = this.getDropzoneProps();
 
@@ -311,7 +300,6 @@ class PreviewImageField extends Component {
       return (
         <AssetDropzone {...dropzoneProps}>
           {this.renderImage()}
-          {this.renderToolbar()}
         </AssetDropzone>
       );
     }
@@ -324,7 +312,6 @@ class PreviewImageField extends Component {
     return (
       <div className={classNames.join(' ')}>
         {this.renderImage()}
-        {this.renderToolbar()}
       </div>
     );
   }

@@ -57,6 +57,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.NOITEMSFOUND": "No items found",
     "AssetAdmin.PROMPTFOLDERNAME": "Please enter a folder name (or blank to cancel)",
     "AssetAdmin.REPlACE_FILE_SUCCESS": "Upload successful, the file will be replaced when you Save.",
+    "AssetAdmin.REPLACE_FILE_UNDO": "Undo",
     "AssetAdmin.SAVE": "Save",
     "AssetAdmin.SEARCHCLEARRESULTS": "Clear search",
     "AssetAdmin.SEARCHRESULTS": "Search results",
