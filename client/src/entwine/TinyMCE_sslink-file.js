@@ -1,4 +1,4 @@
-/* global tinymce, ss */
+/* global tinymce, editorIdentifier, ss */
 import i18n from 'i18n';
 import TinyMCEActionRegistrar from 'lib/TinyMCEActionRegistrar';
 import React from 'react';
@@ -11,13 +11,15 @@ import { loadComponent } from 'lib/Injector';
 const commandName = 'sslinkfile';
 
 // Link to external url
-TinyMCEActionRegistrar
-  .addAction('sslink', {
+TinyMCEActionRegistrar.addAction(
+  'sslink',
+  {
     text: i18n._t('AssetAdmin.LINKLABEL_FILE', 'Link to a file'),
     // eslint-disable-next-line no-console
-    onclick: (editor) => editor.execCommand(commandName),
-  })
-  .addCommandWithUrlTest(commandName, /^\[file_link/);
+    onclick: (activeEditor) => activeEditor.execCommand(commandName),
+  },
+  editorIdentifier,
+).addCommandWithUrlTest(commandName, /^\[file_link/);
 
 const plugin = {
   init(editor) {
