@@ -53,7 +53,7 @@ da:
     TitleTooltip: 'Titel tekst (tooltip)'
     TitleTooltipDescription: 'For yderligere information om billedet'
     UNKNOWN: Ukendt
-    UNPUBLISH_BUTTON: Fjern udgivelse
+    UNPUBLISH_BUTTON: 'Fjern udgivelse'
     UPLOADEDFILE: 'Overførte fil'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Flyttede fil'
@@ -71,7 +71,7 @@ da:
     ONLY_GROUPS: 'Kun disse grupper (vælg fra listen)'
     ROOTNAME: '(Top niveau)'
     SAVE: Gem
-    VIEWERGROUPS: 'Visningsgrupper'
+    VIEWERGROUPS: Visningsgrupper
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_FILE: Indsæt
     INSERT_LINK: 'Link til fil'

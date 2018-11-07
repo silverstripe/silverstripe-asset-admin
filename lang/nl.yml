@@ -14,10 +14,10 @@ nl:
     ADDTOCAMPAIGN: 'Aan campagne toevoegen'
     Alignment: Uitlijning
     AlignmentCenter: Gecentreerd
-    AlignmentLeft: 'Links'
-    AlignmentLeftAlone: Links (zonder tekst ernaast)
-    AlignmentRight: 'Rechts'
-    AlignmentRightAlone: Rechts (zonder tekst ernaast)
+    AlignmentLeft: Links
+    AlignmentLeftAlone: 'Links (zonder tekst ernaast)'
+    AlignmentRight: Rechts
+    AlignmentRightAlone: 'Rechts (zonder tekst ernaast)'
     AltText: 'Alternatieve tekst (als)'
     AltTextDescription: 'Wordt gebruikt voor slechtzienden (screenreader) of als het beeld niet ingeladen kan worden.'
     AppCategoryArchive: Archief
@@ -35,7 +35,7 @@ nl:
     ErrorItemPermissionDenied: 'U heeft niet genoeg rechten om {ObjectTitle} aan te passen'
     ErrorNotFound: '{Type} niet gevonden'
     FILE_NOT_FOUND: 'Bestand niet gevonden'
-    Filetype: 'Bestandstype'
+    Filetype: Bestandstype
     INVALID_REQUEST: 'Ongeldige aanroep'
     ImageHeight: Hoogte
     ImageSpecs: Afmetingen
@@ -53,7 +53,7 @@ nl:
     TitleTooltip: 'Titel (bij mouse over)'
     TitleTooltipDescription: 'Voor meer informatie over het beeld'
     UNKNOWN: Onbekend
-    UNPUBLISH_BUTTON: Publicatie intrekken
+    UNPUBLISH_BUTTON: 'Publicatie intrekken'
     UPLOADEDFILE: 'Bestand opgeslagen'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Bestand verplaatst'
@@ -77,7 +77,7 @@ nl:
     INSERT_LINK: 'Link naar bestand'
     LINKDESCR: 'Link omschrijving'
     LINKOPENNEWWIN: 'Openen in nieuw venster of tabblad'
-    LINKOPTIONS: 'Linkinstellingen'
+    LINKOPTIONS: Linkinstellingen
     LINKTEXT: 'Link tekst'
     OTHER_ACTIONS: 'Andere acties'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dit bestandstype kan alleen als link ingevoegd worden. Na het invoegen kan het bewerkt worden.</p>'
