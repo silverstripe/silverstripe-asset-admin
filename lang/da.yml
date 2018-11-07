@@ -1,10 +1,107 @@
 da:
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Gem
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Gemt
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Udgiv
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Udgivet
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Vælg en mappe'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Flyt
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Slet mapper'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Filer
-    BACKLINKCOUNT: 'Brugt på:'
-    PAGES: side(r)
+    ADDTOCAMPAIGN: 'Tilføj til kampagne'
+    Alignment: Justering
+    AlignmentCenter: Centreret
+    AlignmentLeft: 'Venstre med ombrydning'
+    AlignmentLeftAlone: Venstre
+    AlignmentRight: 'Højre med ombrydning'
+    AlignmentRightAlone: Højre
+    AltText: 'Alternativ tekst (alt)'
+    AltTextDescription: 'Vises til skærmlæsere hvis billedet ikke kan vises'
+    AppCategoryArchive: Arkiv
+    AppCategoryAudio: Lyd
+    AppCategoryDocument: Dokument
+    AppCategoryImage: Billede
+    AppCategoryVideo: Video
+    AttributesDescription: 'Disse ændringer har kun effekt på denne specifikke placering af filen.'
     CREATED: 'Først uploadet'
+    Caption: Billedtekst
+    CreatePermissionDenied: 'Du har ikke tilladelse til at tilføje filer'
+    CurrentFolderOnly: 'Begræns til nuværende mappe og dens undermapper?'
+    DELETE_BUTTON: Slet
+    EditLink: 'Rediger original fil'
+    ErrorItemPermissionDenied: 'Du har ikke de nødvendige tilladelser til at administrere {ObjectTitle}'
+    ErrorNotFound: 'Typen {Type} kunne ikke findes'
+    FILE_NOT_FOUND: 'Filen kunne ikke findes'
+    Filetype: 'Fil type'
+    INVALID_REQUEST: 'Ugyldig forespørgsel'
+    ImageHeight: Højde
+    ImageSpecs: Dimensioner
+    ImageWidth: Bredde
     LASTEDIT: 'Sidst ændret'
-    SIZE: Størrelse
-    TYPE: Type
-    URL: 'URL Adresse'
+    LoadIntoFileFailed: 'Indlæsning af filen fejlede'
+    MENUTITLE: Filer
+    NOSUMMARY: 'Intet resumé tilgængeligt'
+    NewFile: 'Ny {file}'
+    PATH: Sti
+    PUBLISHED: Udgivet
+    PUBLISH_BUTTON: Udgiv
+    Placement: Placering
+    SAVEDFILE: 'Gemte fil'
+    TitleTooltip: 'Titel tekst (tooltip)'
+    TitleTooltipDescription: 'For yderligere information om billedet'
+    UNKNOWN: Ukendt
+    UNPUBLISH_BUTTON: 'Fjern udgivelse'
+    UPLOADEDFILE: 'Overførte fil'
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
+    MOVEDFOLDER: 'Flyttede fil'
+    RENAMEDFILE: 'Erstattede fil'
+    RENAMEDTITLE: 'Opdaterede titlen til'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Hvem kan se denne fil?'
+    ANYONE: Alle
+    EDITHEADER: 'Hvem kan redigere denne fil?'
+    EDITORGROUPS: 'Redaktør grupper'
+    FILENAME: Filnavn
+    FOLDERLOCATION: Lokation
+    INHERIT: 'Nedarv fra overliggende mappe'
+    LOGGED_IN: 'Brugere der er logget ind'
+    ONLY_GROUPS: 'Kun disse grupper (vælg fra listen)'
+    ROOTNAME: '(Top niveau)'
+    SAVE: Gem
+    VIEWERGROUPS: Visningsgrupper
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_FILE: Indsæt
+    INSERT_LINK: 'Link til fil'
+    LINKDESCR: 'Link beskrivelse'
+    LINKOPENNEWWIN: 'Åben i et nyt vindue/fane'
+    LINKOPTIONS: 'Link muligheder'
+    LINKTEXT: 'Link tekst'
+    OTHER_ACTIONS: 'Andre handlinger'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Denne filtype kan kun indsættes som et link. Du kan redigere linket når det er sat ind.</p>'
+    USAGE: 'Brugt på'
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Udgivet
+    SAVED: Gemt
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Opret
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Mappe navn'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Tilføj medie'
+    Cancel: Annuller
+    ERROR_ABSOLUTE: 'Kun absolutte URLer kan blive indlejret'
+    ERROR_EMBED: 'Pt. intet indhold på denne URL der kan indlejres'
+    ERROR_HOSTNAME: 'Filens værtsnavn er ikke tilladt'
+    ERROR_PORT: 'Filens portnummer er ikke tilladt'
+    ERROR_SCHEME: 'Denne filtype (file scheme) er ikke tilladt'
+    InsertMedia: 'Indsæt medie'
+    UrlDescription: 'Indlejr Youtube og Vimeo videoer, billeder og andre medier direkte fra nettet.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Filen eller mappen kunne ikke findes'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'File "{file}" is used in {count} place.'
+      other: 'Filen "{file}" er brugt {count} steder.'
