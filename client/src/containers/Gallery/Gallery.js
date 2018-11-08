@@ -837,6 +837,7 @@ class Gallery extends Component {
 
   render() {
     const { folder, loading, errorMessage, graphQLErrors, noticeMessage } = this.props;
+    const Loading = this.props.LoadingComponent;
     const hasGraphQLErrors = graphQLErrors && graphQLErrors.length > 0;
 
     if (!folder) {
@@ -859,8 +860,7 @@ class Gallery extends Component {
       if (loading) {
         return (
           <div className="flexbox-area-grow">
-            <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />
-            <div key="spinner" className="cms-content-loading-spinner" />
+            <Loading />
           </div>
         );
       }
@@ -948,10 +948,7 @@ class Gallery extends Component {
             </AssetDropzone>
           </SelectableGroup>
         </GalleryDND>
-        { this.props.loading && [
-          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
-          <div key="spinner" className="cms-content-loading-spinner" />,
-        ]}
+        { this.props.loading && <Loading /> }
         <MoveModal
           sectionConfig={this.props.sectionConfig}
           folderId={this.props.folderId}
@@ -1106,8 +1103,11 @@ export {
 
 export default compose(
   inject(
-    ['GalleryToolbar'],
-    null,
+    ['GalleryToolbar', 'Loading'],
+    (GalleryToolbar, Loading) => ({
+      GalleryToolbar,
+      LoadingComponent: Loading
+    }),
     () => 'AssetAdmin.Gallery',
   ),
   connect(mapStateToProps, mapDispatchToProps),

@@ -1,14 +1,9 @@
 /* global window */
 import React, { Component } from 'react';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import classnames from 'classnames';
 import GalleryItemDragLayer from 'components/GalleryItem/GalleryItemDragLayer';
 import PropTypes from 'prop-types';
-
-// add middleware to capture the manager that is to be used
-// eslint-disable-next-line new-cap
-const context = DragDropContext(HTML5Backend);
+import context from 'lib/withDragDropContext';
 
 /**
  * Wrapper stateless component, this is primarily to apply the HOC for drag and drop
