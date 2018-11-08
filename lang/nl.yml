@@ -1,16 +1,97 @@
 nl:
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Opslaan
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Opgeslagen
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publiceer
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Gepubliceerd
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Kies een map'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Verplaats
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Verwijder mappen'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Aan campagne toevoegen'
+    Alignment: Uitlijning
+    AlignmentCenter: Gecentreerd
+    AlignmentLeft: Links
+    AlignmentLeftAlone: 'Links (zonder tekst ernaast)'
+    AlignmentRight: Rechts
+    AlignmentRightAlone: 'Rechts (zonder tekst ernaast)'
+    AltText: 'Alternatieve tekst (als)'
+    AltTextDescription: 'Wordt gebruikt voor slechtzienden (screenreader) of als het beeld niet ingeladen kan worden.'
+    AppCategoryArchive: Archief
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Document
+    AppCategoryImage: Afbeelding
+    AppCategoryVideo: Video
+    AttributesDescription: 'Deze instellingen worden alleen gebruikt voor de plaatsing van het bestand.'
+    CREATED: 'Voor het eerst opslagen op'
+    Caption: Onderschrift
+    CreatePermissionDenied: 'U heeft geen rechten om bestanden toe te voegen'
+    CurrentFolderOnly: 'Alleen toepassen op huidige map en de onderliggende mappen?'
+    DELETE_BUTTON: Verwijderen
+    EditLink: 'Bewerk het bron-bestand'
+    ErrorItemPermissionDenied: 'U heeft niet genoeg rechten om {ObjectTitle} aan te passen'
+    ErrorNotFound: '{Type} niet gevonden'
+    FILE_NOT_FOUND: 'Bestand niet gevonden'
+    Filetype: Bestandstype
+    INVALID_REQUEST: 'Ongeldige aanroep'
+    ImageHeight: Hoogte
+    ImageSpecs: Afmetingen
+    ImageWidth: Breedte
+    LASTEDIT: 'Laatste wijziging'
+    LoadIntoFileFailed: 'Laden mislukt'
     MENUTITLE: Bestanden
-    BACKLINKCOUNT: 'Gebruikt op:'
-    PAGES: pagina(s)
-    HEIGHT: Hoogte
-    SIZE: Grootte
-    TYPE: Type
-    URL: URL
-    WIDTH: Breedte
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Afmetingen
-    EDIT: Bewerken
-    EDITINFO: 'Bewerk dit bestand'
-    FIELDNOTSET: 'Bestandsinformatie niet gevonden'
-    REMOVE: Verwijder
+    NOSUMMARY: 'Geen samenvatting beschikbaar'
+    NewFile: 'Nieuw {file}'
+    PATH: Pad
+    PUBLISHED: Gepubliceerd
+    PUBLISH_BUTTON: Publiceer
+    Placement: Plaatsing
+    SAVEDFILE: 'Bestand opgeslagen'
+    TitleTooltip: 'Titel (bij mouse over)'
+    TitleTooltipDescription: 'Voor meer informatie over het beeld'
+    UNKNOWN: Onbekend
+    UNPUBLISH_BUTTON: 'Publicatie intrekken'
+    UPLOADEDFILE: 'Bestand opgeslagen'
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
+    MOVEDFOLDER: 'Bestand verplaatst'
+    RENAMEDFILE: 'Bestand is vervangen'
+    RENAMEDTITLE: 'Titel is aangepast naar'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Wie kan het bestand bekijken?'
+    ANYONE: Iedereen
+    EDITHEADER: 'Wie kan het bestand bewerken?'
+    EDITORGROUPS: 'Groepen met bewerkrechten'
+    FILENAME: Bestandsnaam
+    FOLDERLOCATION: Locatie
+    INHERIT: 'Overnemen van bovenliggende map'
+    LOGGED_IN: 'Ingelogde bezoekers'
+    ONLY_GROUPS: 'Alleen deze groepen (selecteer)'
+    ROOTNAME: '(Bovenste niveau)'
+    SAVE: Opslaan
+    VIEWERGROUPS: 'Groepen met bekijkrechten'
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_LINK: 'Link naar bestand'
+    LINKDESCR: 'Link omschrijving'
+    LINKOPENNEWWIN: 'Openen in nieuw venster of tabblad'
+    LINKOPTIONS: Linkinstellingen
+    LINKTEXT: 'Link tekst'
+    OTHER_ACTIONS: 'Andere acties'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dit bestandstype kan alleen als link ingevoegd worden. Na het invoegen kan het bewerkt worden.</p>'
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Gepubliceerd
+    SAVED: Opgeslagen
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Aanmaken
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Naam van map'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Media toevoegen'
+    Cancel: Annuleren
+    ERROR_ABSOLUTE: 'Alleen volledige URL''s kunnen worden gebruikt'
+    InsertMedia: 'Media invoegen'
+    UrlDescription: 'Gebuik een URL van een Youtube-video, Vimeo-video of Twitter-bericht om deze op de pagina weer te geven.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Bestand of map kon niet gevonden worden'

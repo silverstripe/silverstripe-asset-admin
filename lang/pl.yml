@@ -1,14 +1,97 @@
 pl:
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Zapisz
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Zapisano
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Opublikuj
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Opublikowano
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Wybierz folder'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Przenieś
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Usuń folder'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Przypisz do kampanii'
+    Alignment: Wyrównanie
+    AlignmentCenter: 'Na środku'
+    AlignmentLeft: 'Przyciągnij do lewej'
+    AlignmentLeftAlone: 'Samo, po lewej.'
+    AlignmentRight: 'Przyciągnij do prawej'
+    AlignmentRightAlone: 'Samo, po prawej'
+    AltText: 'Tekst alternatywny (alt)'
+    AltTextDescription: 'Wyświetl na ekranie czytników lub gdy nie można wyświetlić obrazu'
+    AppCategoryArchive: Archiwum
+    AppCategoryAudio: 'Dźwięki audio'
+    AppCategoryDocument: Dokument
+    AppCategoryImage: Obraz
+    AppCategoryVideo: Wideo
+    AttributesDescription: 'Zmiany te będą miały wpływ tylko na to konkretne położenie pliku.'
+    CREATED: 'Pierwsze wgranie'
+    Caption: Podpis
+    CreatePermissionDenied: 'Nie masz uprawnień do dodawania plików'
+    CurrentFolderOnly: 'Ogranicz do bieżącego folderu i jego podfolderów?'
+    DELETE_BUTTON: Usuń
+    EditLink: 'Edytuj oryginalny plik'
+    ErrorItemPermissionDenied: 'Nie masz wymaganych uprawnień do modyfikowania {ObjectTitle}'
+    ErrorNotFound: 'Ten {Type} nie został odnaleziony'
+    FILE_NOT_FOUND: 'Nie znaleziono pliku'
+    Filetype: 'Typ pliku'
+    INVALID_REQUEST: 'Nieprawidłowe żądanie'
+    ImageHeight: Wysokość
+    ImageSpecs: Wymiary
+    ImageWidth: Szerokość
+    LASTEDIT: 'Ostatnia zmiana'
+    LoadIntoFileFailed: 'Nie udało się wczytać pliku'
     MENUTITLE: Pliki
-    BACKLINKCOUNT: 'Używany na:'
-    PAGES: stron(y)
-    SIZE: 'Rozmiar pliku'
-    TYPE: 'Typ pliku'
-    URL: 'Adres URL'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Rozmiar
-    EDIT: Edytuj
-    EDITINFO: 'Edytuj plik'
-    FIELDNOTSET: 'Nie znaleziono informacji o pliku'
-    REMOVE: Usuń
+    NOSUMMARY: 'Brak dostępnych podsumowań'
+    NewFile: 'Nowy {file}'
+    PATH: Ścieżka
+    PUBLISHED: Opublikowany
+    PUBLISH_BUTTON: Opublikuj
+    Placement: Umieszczenie
+    SAVEDFILE: 'Zapisano plik'
+    TitleTooltip: 'Tytuł (tooltip)'
+    TitleTooltipDescription: 'Aby uzyskać dodatkowe informacje o obrazie'
+    UNKNOWN: Nieznany
+    UNPUBLISH_BUTTON: 'Cofnij publikację'
+    UPLOADEDFILE: 'Przesłano plik'
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
+    MOVEDFOLDER: 'Przeniesiono plik'
+    RENAMEDFILE: 'Zastąpiono plik'
+    RENAMEDTITLE: 'Zaktualizowano tytuł na'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Kto może zobaczyć ten plik?'
+    ANYONE: Każdy
+    EDITHEADER: 'Kto może edytować ten plik?'
+    EDITORGROUPS: 'Kto może edytować (grupy)'
+    FILENAME: 'Nazwa pliku'
+    FOLDERLOCATION: Lokalizacja
+    INHERIT: 'Dziedzicz po folderze nadrzędnym'
+    LOGGED_IN: 'Zalogowani użytkownicy'
+    ONLY_GROUPS: 'Tylko ci z grupy (wybierz z listy)'
+    ROOTNAME: '(Najwyższy poziom)'
+    SAVE: Zapisz
+    VIEWERGROUPS: 'Kto może zobaczyć (grupy)'
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_LINK: 'Link do pliku'
+    LINKDESCR: 'Opis linku'
+    LINKOPENNEWWIN: 'Otwórz w nowym oknie/zakładce'
+    LINKOPTIONS: 'Opcje linku'
+    LINKTEXT: 'Tekst linku'
+    OTHER_ACTIONS: 'Inne akcje'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ten typ pliku można wstawić tylko jako łącze. Możesz edytować link, gdy zostanie wstawiony.</p>'
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Opublikowano
+    SAVED: Zapisano
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Utwórz
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Nazwa folderu'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Dodaj media'
+    Cancel: Anuluj
+    ERROR_ABSOLUTE: 'Tylko bezwzględne adresy URL mogą być osadzone'
+    InsertMedia: 'Wstaw media'
+    UrlDescription: 'Umieszczaj filmy, zdjęcia i inne materiały wideo z serwisu Youtube i Vimeo bezpośrednio z internetu.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Nie można znaleźć pliku lub folderu'
