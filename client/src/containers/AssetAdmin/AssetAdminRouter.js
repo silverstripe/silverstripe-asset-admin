@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { withRouter } from 'react-router-dom';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import { decodeQuery } from 'lib/DataFormat';
 import qs from 'qs';
@@ -78,7 +78,7 @@ class AssetAdminRouter extends Component {
     }
 
     return buildUrl({
-      base: this.props.sectionConfig.url,
+      base: `/${this.props.sectionConfig.url}`,
       folderId: newFolderId,
       fileId: newFileId,
       query: newQuery,
@@ -90,8 +90,8 @@ class AssetAdminRouter extends Component {
    * @return {Number} Folder ID being viewed
    */
   getFolderId() {
-    if (this.props.params && this.props.params.folderId) {
-      return parseInt(this.props.params.folderId, 10);
+    if (this.props.match.params && this.props.match.params.folderId) {
+      return parseInt(this.props.match.params.folderId, 10);
     }
     return 0;
   }
@@ -100,15 +100,15 @@ class AssetAdminRouter extends Component {
    * @return {Number} File ID being viewed
    */
   getFileId() {
-    if (this.props.params && this.props.params.fileId) {
-      return parseInt(this.props.params.fileId, 10);
+    if (this.props.match.params && this.props.match.params.fileId) {
+      return parseInt(this.props.match.params.fileId, 10);
     }
     return 0;
   }
 
   getViewAction() {
-    if (this.props.params && this.props.params.viewAction) {
-      return this.props.params.viewAction;
+    if (this.props.match.params && this.props.match.params.viewAction) {
+      return this.props.match.params.viewAction;
     }
     return CONSTANTS.ACTIONS.EDIT_FILE;
   }
@@ -152,7 +152,7 @@ class AssetAdminRouter extends Component {
   handleBrowse(folderId, fileId, query, action) {
     const pathname = this.getUrl(folderId, fileId, query, action);
 
-    this.props.router.push(pathname);
+    this.props.history.push(pathname);
   }
 
   /**
@@ -167,7 +167,7 @@ class AssetAdminRouter extends Component {
   handleReplaceUrl(folderId, fileId, query, action) {
     const pathname = this.getUrl(folderId, fileId, query, action);
 
-    this.props.router.replace(pathname);
+    this.props.history.replace(pathname);
   }
 
   render() {

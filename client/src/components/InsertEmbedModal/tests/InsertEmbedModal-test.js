@@ -5,7 +5,7 @@
 jest.mock('components/FormBuilderModal/FormBuilderModal', () => () => null);
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as InsertEmbedModal } from '../InsertEmbedModal';
 
 describe('InsertEmbedModal', () => {
@@ -13,13 +13,13 @@ describe('InsertEmbedModal', () => {
 
   beforeEach(() => {
     props = {
-      onInsert: jest.genMockFunction(),
-      onCreate: jest.genMockFunction(),
-      onClosed: jest.genMockFunction(),
+      onInsert: jest.fn(),
+      onCreate: jest.fn(),
+      onClosed: jest.fn(),
       schemaUrl: 'test.com/schema',
       actions: {
         schema: {
-          setSchemaStateOverrides: jest.genMockFunction(),
+          setSchemaStateOverrides: jest.fn(),
         },
       },
     };
@@ -50,7 +50,7 @@ describe('InsertEmbedModal', () => {
         },
       };
 
-      component.clearOverrides = jest.genMockFunction();
+      component.clearOverrides = jest.fn();
       component.setOverrides(nextProps);
 
       expect(component.clearOverrides).toBeCalled();
@@ -98,7 +98,7 @@ describe('InsertEmbedModal', () => {
         <InsertEmbedModal {...props} />
       );
       const data = { Name: 'Bob' };
-      const mockSubmit = jest.genMockFunction();
+      const mockSubmit = jest.fn();
 
       component.handleSubmit(data, 'action_addmedia', mockSubmit);
 
@@ -111,7 +111,7 @@ describe('InsertEmbedModal', () => {
         <InsertEmbedModal {...props} />
       );
       const data = { Name: 'Bob' };
-      const mockSubmit = jest.genMockFunction();
+      const mockSubmit = jest.fn();
 
       component.handleSubmit(data, 'action_insertmedia', mockSubmit);
 
@@ -124,7 +124,7 @@ describe('InsertEmbedModal', () => {
         <InsertEmbedModal {...props} />
       );
       const data = { Name: 'Bob' };
-      const mockSubmit = jest.genMockFunction();
+      const mockSubmit = jest.fn();
 
       component.handleSubmit(data, 'action_cancel', mockSubmit);
 

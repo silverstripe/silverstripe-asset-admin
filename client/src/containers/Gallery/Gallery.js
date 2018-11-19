@@ -1,10 +1,8 @@
 /* global window */
 import $ from 'jquery';
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import React, { ReactTestUtils, Component } from 'react';
 import ReactDOM from 'react-dom';
-import ReactTestUtils from 'react-addons-test-utils';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
@@ -681,15 +679,7 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderTransitionBulkActions() {
-    return (
-      <ReactCSSTransitionGroup
-        transitionName="bulk-actions"
-        transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-        transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-      >
-        {this.renderBulkActions()}
-      </ReactCSSTransitionGroup>
-    );
+    return this.renderBulkActions();
   }
 
   /**

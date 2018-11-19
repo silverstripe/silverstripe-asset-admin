@@ -7,7 +7,7 @@ jest.mock('components/Search/Search');
 jest.mock('containers/Gallery/Gallery');
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as AssetAdmin } from '../AssetAdmin';
 
 function getMockFile(id) {
@@ -23,7 +23,7 @@ describe('AssetAdmin', () => {
   beforeEach(() => {
     props = {
       client: {
-        dataId: jest.genMockFunction()
+        dataId: jest.fn()
           .mockReturnValue(getMockFile(1)),
       },
       dialog: true,
@@ -159,7 +159,7 @@ describe('AssetAdmin', () => {
 
     beforeEach(() => {
       props.folderId = 2;
-      props.actions.gallery.deselectFiles = jest.genMockFunction();
+      props.actions.gallery.deselectFiles = jest.fn();
       component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
     });
 
@@ -200,7 +200,7 @@ describe('AssetAdmin', () => {
 
     it('should remove the file from the queued files list', () => {
       const id = props.queuedFiles.items[0].id;
-      props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
+      props.actions.queuedFiles.removeQueuedFile = jest.fn();
       return component.handleDelete([id]).then(() => {
         expect(props.actions.queuedFiles.removeQueuedFile)
           .toBeCalledWith(props.queuedFiles.items[0].queuedId);

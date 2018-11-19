@@ -21,7 +21,7 @@ describe('readFilesQuery', () => {
     };
     graphqlData = {
       data: {
-        refetch: jest.genMockFunction(),
+        refetch: jest.fn(),
         readFiles: {
           pageInfo: { totalCount: 1 },
           edges: [

@@ -1,7 +1,7 @@
 /* global jest, jasmine, describe, it, expect, beforeEach, FormData */
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import AssetDropzone from '../AssetDropzone';
 
 describe('AssetDropzone', () => {
@@ -43,7 +43,7 @@ describe('AssetDropzone', () => {
         <AssetDropzone {...props} />
       );
       item.dropzone = {
-        removeFile: jest.genMockFunction(),
+        removeFile: jest.fn(),
       };
       const file = {};
 
@@ -59,7 +59,7 @@ describe('AssetDropzone', () => {
         <AssetDropzone {...props} />
       );
       item.dropzone = {
-        removeFile: jest.genMockFunction(),
+        removeFile: jest.fn(),
       };
       const file = {};
 
@@ -73,7 +73,7 @@ describe('AssetDropzone', () => {
     let item = null;
 
     beforeEach(() => {
-      props.onMaxFilesExceeded = jest.genMockFunction();
+      props.onMaxFilesExceeded = jest.fn();
       props.options.maxFiles = 2;
       item = ReactTestUtils.renderIntoDocument(
         <AssetDropzone {...props} />
@@ -108,7 +108,7 @@ describe('AssetDropzone', () => {
         <AssetDropzone {...props} />
       );
       item.dropzone = {
-        cancelUpload: jest.genMockFunction(),
+        cancelUpload: jest.fn(),
       };
 
       item.handleSending({}, { abort: () => null }, new FormData());
@@ -147,7 +147,7 @@ describe('AssetDropzone', () => {
     });
 
     it('should remove all dropzone listeners', () => {
-      item.dropzone.disable = jest.genMockFunction();
+      item.dropzone.disable = jest.fn();
       item.componentWillUnmount();
 
       expect(item.dropzone.disable).toBeCalled();
@@ -171,8 +171,8 @@ describe('AssetDropzone', () => {
       item = ReactTestUtils.renderIntoDocument(
         <AssetDropzone {...uploadProps} />
       );
-      item.dropzone._errorProcessing = jest.genMockFunction();
-      item.dropzone.addFile({ name: 'test', size: 100, type: 'text/plain' });
+      item.dropzone._errorProcessing = jest.fn();
+      item.dropzone.addFile(new File(['test contents'], 'test.txt', { type: 'text/plain' }));
       // The error gets called asynchronously
       return new Promise(resolve => {
         setTimeout(() => {
