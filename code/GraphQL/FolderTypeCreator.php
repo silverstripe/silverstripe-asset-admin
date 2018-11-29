@@ -152,6 +152,8 @@ class FolderTypeCreator extends FileTypeCreator
 
         /** @var DataList $list */
         $list = Versioned::get_by_stage(File::class, 'Stage');
+        $result = $childrenConnection->resolveList($list, $args, $context, $info);
+        $list = $result['edges'];
         $filterInputType = new FileFilterInputTypeCreator($this->manager);
 
         $filter['parentId'] = $object->ID;
