@@ -152,12 +152,14 @@ class FolderTypeCreator extends FileTypeCreator
 
         /** @var DataList $list */
         $list = Versioned::get_by_stage(File::class, 'Stage');
-        $result = $childrenConnection->resolveList($list, $args, $context, $info);
-        $list = $result['edges'];
         $filterInputType = new FileFilterInputTypeCreator($this->manager);
 
         $filter['parentId'] = $object->ID;
         $list = $filterInputType->filterList($list, $filter);
+
+        // Ensure that we're looking at a subset of relevant data.
+        $result = $childrenConnection->resolveList($list, $args);
+        $list = $result['edges'];
 
         // Filter by permission
         $ids = $list->column('ID');
@@ -166,16 +168,12 @@ class FolderTypeCreator extends FileTypeCreator
             $ids,
             $context['currentUser']
         )));
-        // Filter by visible IDs (or force empty set if none are visible)
-        $list = $list->filter('ID', $canViewIDs ?: 0);
 
-        // Apply pagination
-        $return = $childrenConnection->resolveList(
-            $list,
-            $args
-        );
+        $canViewList = File::get()->byIDs($canViewIDs);
 
-        return $return;
+        $response['edges'] = $canViewList;
+
+        return $response;
     }
 
     /**
