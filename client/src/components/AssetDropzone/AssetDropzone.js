@@ -59,9 +59,9 @@ class AssetDropzone extends Component {
         this.dropzone.enable();
 
         this.dropzone.options = Object.assign({},
+          this.props.options,
           this.dropzone.options,
-          this.getDefaultOptions(),
-          this.props.options
+          this.getDefaultOptions()
         );
       }
     } else {
