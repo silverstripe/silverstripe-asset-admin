@@ -30,12 +30,10 @@ class AssetDropzone extends Component {
   }
 
   componentDidMount() {
-    const defaultOptions = this.getDefaultOptions();
-
     this.dropzone = new DropzoneLib(
       ReactDOM.findDOMNode(this),
       Object.assign({},
-        defaultOptions,
+        this.getDefaultOptions(),
         this.props.options
       ));
 
@@ -59,9 +57,9 @@ class AssetDropzone extends Component {
         this.dropzone.enable();
 
         this.dropzone.options = Object.assign({},
-          this.props.options,
+          this.getDefaultOptions(),
           this.dropzone.options,
-          this.getDefaultOptions()
+          this.props.options
         );
       }
     } else {
