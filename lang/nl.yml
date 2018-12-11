@@ -81,7 +81,6 @@ nl:
     LINKTEXT: 'Link tekst'
     OTHER_ACTIONS: 'Andere acties'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dit bestandstype kan alleen als link ingevoegd worden. Na het invoegen kan het bewerkt worden.</p>'
-    USAGE: 'In gebruik op'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Gepubliceerd
     SAVED: Opgeslagen
@@ -93,15 +92,9 @@ nl:
     AddMedia: 'Media toevoegen'
     Cancel: Annuleren
     ERROR_ABSOLUTE: 'Alleen volledige URL''s kunnen worden gebruikt'
-    ERROR_EMBED: 'Helaas, de opgegeven URL geeft geen goede informatie terug.'
     ERROR_HOSTNAME: 'Deze website (hostname) is niet toegestaan'
-    ERROR_PORT: 'Deze poort is niet toegestaan'
     ERROR_SCHEME: 'Dit bestandsschema is niet toegestaan'
     InsertMedia: 'Media invoegen'
     UrlDescription: 'Gebuik een URL van een Youtube-video, Vimeo-video of Twitter-bericht om deze op de pagina weer te geven.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Bestand of map kon niet gevonden worden'
-  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
-    OWNER_WARNING:
-      one: 'Bestand "{file}" is op {count} plek gebruikt.'
-      other: 'Bestand "{file}" is op {count} plekken gebruikt.'
