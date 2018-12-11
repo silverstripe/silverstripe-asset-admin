@@ -1,16 +1,32 @@
 de:
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Speichern
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Verschieben
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    AlignmentCenter: Mittig
+    AlignmentRightAlone: Rechts
+    AppCategoryArchive: Archiv
+    AppCategoryDocument: Dokument
+    AppCategoryImage: Bild
+    AppCategoryVideo: Video
+    DELETE_BUTTON: Löschen
+    Filetype: Dateityp
+    ImageHeight: Höhe
+    ImageWidth: Breite
     MENUTITLE: Dateien
-    BACKLINKCOUNT: 'Verwendet auf:'
-    PAGES: Seite(n)
-    HEIGHT: Höhe
-    SIZE: Größe
-    TYPE: Typ
-    URL: URL
-    WIDTH: Breite
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Dimensionen
-    EDIT: Bearbeiten
-    EDITINFO: 'Diese Datei bearbeiten'
-    FIELDNOTSET: 'Dateiinformationen nicht gefunden'
-    REMOVE: Entfernen
+    NewFile: 'Neu {file}'
+    PATH: Pfad
+    SAVEDFILE: 'Datei gespeichert'
+    UNKNOWN: Unbekannt
+    UNPUBLISH_BUTTON: Unveröffentlicht
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    SAVE: Speichern
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Veröffentlicht
+    SAVED: Gespeichert
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    Cancel: Abbrechen
+    InsertMedia: 'Medium einfügen'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Datei oder Verzeichnis konnte nicht gefunden werden'
