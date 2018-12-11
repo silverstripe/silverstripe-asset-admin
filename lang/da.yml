@@ -73,6 +73,7 @@ da:
     SAVE: Gem
     VIEWERGROUPS: Visningsgrupper
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_FILE: 'Indsæt fil'
     INSERT_LINK: 'Link til fil'
     LINKDESCR: 'Link beskrivelse'
     LINKOPENNEWWIN: 'Åben i et nyt vindue/fane'
@@ -91,6 +92,8 @@ da:
     AddMedia: 'Tilføj medie'
     Cancel: Annuller
     ERROR_ABSOLUTE: 'Kun absolutte URLer kan blive indlejret'
+    ERROR_HOSTNAME: 'Filens hostnavn er ikke "whitelistet"'
+    ERROR_SCHEME: 'Filens filtype er ikke "whitelistet"'
     InsertMedia: 'Indsæt medie'
     UrlDescription: 'Indlejr Youtube og Vimeo videoer, billeder og andre medier direkte fra nettet.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
