@@ -139,6 +139,8 @@ class FolderTypeCreator extends FileTypeCreator
         Connection $childrenConnection
     ) {
         // canView() checks on parent folder are implied by the query returning $object
+        // Note: The inability to query permissions against the entire set means pagination
+        // is inaccurate when any item in the list returns false on canView()
 
         $filter = (!empty($args['filter'])) ? $args['filter'] : [];
 
@@ -157,6 +159,10 @@ class FolderTypeCreator extends FileTypeCreator
         $filter['parentId'] = $object->ID;
         $list = $filterInputType->filterList($list, $filter);
 
+        // Ensure that we're looking at a subset of relevant data.
+        $result = $childrenConnection->resolveList($list, $args);
+        $list = $result['edges'];
+
         // Filter by permission
         $ids = $list->column('ID');
         $permissionChecker = File::singleton()->getPermissionChecker();
@@ -165,15 +171,14 @@ class FolderTypeCreator extends FileTypeCreator
             $context['currentUser']
         )));
         // Filter by visible IDs (or force empty set if none are visible)
-        $list = $list->filter('ID', $canViewIDs ?: 0);
+        // Remove the limit as it no longer applies. We've already filtered down to the exact
+        // IDs we need.
+        $canViewList = $list->filter('ID', $canViewIDs ?: 0)
+            ->limit(null);
 
-        // Apply pagination
-        $return = $childrenConnection->resolveList(
-            $list,
-            $args
-        );
+        $result['edges'] = $canViewList;
 
-        return $return;
+        return $result;
     }
 
     /**

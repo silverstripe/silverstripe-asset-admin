@@ -28,6 +28,11 @@
     .btn--close-panel {
       margin-right: 0;
     }
+
+    // This is an internal form so needs to be told to overflow with scrollbars
+    fieldset {
+      overflow-y: auto;
+    }
   }
 
   &--asset-dropzone--disable {
