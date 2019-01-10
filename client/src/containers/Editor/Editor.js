@@ -1,7 +1,7 @@
 /* global confirm */
 import i18n from 'i18n';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { bindActionCreators, compose } from 'redux';
 import React, { Component } from 'react';
 import CONSTANTS from 'constants/index';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
@@ -9,6 +9,7 @@ import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
 import fileShape from 'lib/fileShape';
 import PropTypes from 'prop-types';
+import { inject } from 'lib/Injector';
 
 class Editor extends Component {
   constructor(props) {
@@ -37,6 +38,12 @@ class Editor extends Component {
     // intercept the Add to Campaign submit and open the modal dialog instead
     if (name === 'action_addtocampaign') {
       this.openModal();
+      event.preventDefault();
+      return;
+    }
+
+    if (name === 'action_replacefile') {
+      this.replaceFile();
       event.preventDefault();
       return;
     }
@@ -115,6 +122,15 @@ class Editor extends Component {
     });
   }
 
+  replaceFile() {
+    const hiddenFileInput = document.querySelector('.dz-input-PreviewImage');
+
+    // Trigger a click on Dropzone's hidden file input in order to upload an image
+    if (hiddenFileInput) {
+      hiddenFileInput.click();
+    }
+  }
+
   handleLoadingError(exception) {
     this.setState({
       loadingForm: false,
@@ -179,6 +195,7 @@ class Editor extends Component {
       );
     }
     const campaignTitle = i18n._t('Admin.ADD_TO_CAMPAIGN', 'Add to campaign');
+    const Loading = this.props.loadingComponent;
 
     return (<div className={editorClasses.join(' ')}>
       <div className="editor__details fill-height">
@@ -203,10 +220,7 @@ class Editor extends Component {
           responseClassBad="modal__response modal__response--error"
           responseClassGood="modal__response modal__response--good"
         />
-        { this.state.loadingForm && [
-          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
-          <div key="spinner" className="cms-content-loading-spinner" />,
-        ]}
+        { this.state.loadingForm && <Loading />}
       </div>
 
     </div>);
@@ -247,4 +261,13 @@ function mapStateToProps(state) {
 
 export { Editor as Component };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Editor);
+export default compose(
+  inject(
+    ['Loading'],
+    (Loading) => ({
+      loadingComponent: Loading
+    }),
+    () => 'AssetAdmin.Editor',
+  ),
+  connect(mapStateToProps, mapDispatchToProps)
+)(Editor);

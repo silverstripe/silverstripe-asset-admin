@@ -1,7 +1,7 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as UploadField } from '../UploadField';
 
 describe('UploadField', () => {
@@ -49,8 +49,8 @@ describe('UploadField', () => {
       onChange: jest.fn(),
       actions: {
         uploadField: {
-          setFiles: jest.genMockFunction(),
-          removeFile: jest.genMockFunction(),
+          setFiles: jest.fn(),
+          removeFile: jest.fn(),
         },
       },
       data: {

@@ -53,7 +53,7 @@ da:
     TitleTooltip: 'Titel tekst (tooltip)'
     TitleTooltipDescription: 'For yderligere information om billedet'
     UNKNOWN: Ukendt
-    UNPUBLISH_BUTTON: Fjern udgivelse
+    UNPUBLISH_BUTTON: 'Fjern udgivelse'
     UPLOADEDFILE: 'Overførte fil'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Flyttede fil'
@@ -71,9 +71,9 @@ da:
     ONLY_GROUPS: 'Kun disse grupper (vælg fra listen)'
     ROOTNAME: '(Top niveau)'
     SAVE: Gem
-    VIEWERGROUPS: 'Visningsgrupper'
+    VIEWERGROUPS: Visningsgrupper
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: Indsæt
+    INSERT_FILE: 'Indsæt fil'
     INSERT_LINK: 'Link til fil'
     LINKDESCR: 'Link beskrivelse'
     LINKOPENNEWWIN: 'Åben i et nyt vindue/fane'
@@ -81,7 +81,6 @@ da:
     LINKTEXT: 'Link tekst'
     OTHER_ACTIONS: 'Andre handlinger'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Denne filtype kan kun indsættes som et link. Du kan redigere linket når det er sat ind.</p>'
-    USAGE: 'Brugt på'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Udgivet
     SAVED: Gemt
@@ -93,15 +92,9 @@ da:
     AddMedia: 'Tilføj medie'
     Cancel: Annuller
     ERROR_ABSOLUTE: 'Kun absolutte URLer kan blive indlejret'
-    ERROR_EMBED: 'Pt. intet indhold på denne URL der kan indlejres'
-    ERROR_HOSTNAME: 'Filens værtsnavn er ikke tilladt'
-    ERROR_PORT: 'Filens portnummer er ikke tilladt'
-    ERROR_SCHEME: 'Denne filtype (file scheme) er ikke tilladt'
+    ERROR_HOSTNAME: 'Filens hostnavn er ikke "whitelistet"'
+    ERROR_SCHEME: 'Filens filtype er ikke "whitelistet"'
     InsertMedia: 'Indsæt medie'
     UrlDescription: 'Indlejr Youtube og Vimeo videoer, billeder og andre medier direkte fra nettet.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Filen eller mappen kunne ikke findes'
-  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
-    OWNER_WARNING:
-      one: 'File "{file}" is used in {count} place.'
-      other: 'Filen "{file}" er brugt {count} steder.'

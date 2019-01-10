@@ -1,7 +1,7 @@
 /* global jest, jasmine, describe, it, expect, beforeEach, Event */
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as GalleryItem } from '../GalleryItem';
 import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
 
@@ -41,8 +41,8 @@ describe('GalleryItem', () => {
     const event = new Event('test');
 
     beforeEach(() => {
-      props.onRemoveErroredUpload = jest.genMockFunction();
-      props.onCancelUpload = jest.genMockFunction();
+      props.onRemoveErroredUpload = jest.fn();
+      props.onCancelUpload = jest.fn();
 
       item = ReactTestUtils.renderIntoDocument(
         <GalleryItem {...props} />
@@ -98,8 +98,8 @@ describe('GalleryItem', () => {
       );
 
       event = {
-        stopPropagation: jest.genMockFunction(),
-        preventDefault: jest.genMockFunction(),
+        stopPropagation: jest.fn(),
+        preventDefault: jest.fn(),
       };
     });
 
@@ -128,8 +128,8 @@ describe('GalleryItem', () => {
       );
 
       event = {
-        stopPropagation: jest.genMockFunction(),
-        preventDefault: jest.genMockFunction(),
+        stopPropagation: jest.fn(),
+        preventDefault: jest.fn(),
       };
     });
 
@@ -230,7 +230,7 @@ describe('GalleryItem', () => {
         <GalleryItem {...props} />
       );
 
-      item.isImageSmallerThanThumbnail = jest.genMockFunction();
+      item.isImageSmallerThanThumbnail = jest.fn();
     });
 
     it('should return not return small classes by default', () => {
@@ -325,12 +325,12 @@ describe('GalleryItem', () => {
       );
 
       event = {
-        stopPropagation: jest.genMockFunction(),
-        preventDefault: jest.genMockFunction(),
+        stopPropagation: jest.fn(),
+        preventDefault: jest.fn(),
       };
 
-      item.handleSelect = jest.genMockFunction();
-      item.handleActivate = jest.genMockFunction();
+      item.handleSelect = jest.fn();
+      item.handleActivate = jest.fn();
     });
 
     it('should trigger handleSelect when the space key is pressed', () => {

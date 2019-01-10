@@ -21,7 +21,7 @@ jest.mock('jquery', () => {
 });
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as Gallery } from '../Gallery';
 
 describe('Gallery', () => {
@@ -217,7 +217,7 @@ describe('Gallery', () => {
       ];
       gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
       // these are called on componentDidMount()...
-      props.actions.queuedFiles.purgeUploadQueue = jest.genMockFunction();
+      props.actions.queuedFiles.purgeUploadQueue = jest.fn();
     });
 
     it('should not call purgeUploadQueue when receiving same files', () => {
@@ -246,7 +246,7 @@ describe('Gallery', () => {
 
   describe('handleSetPage', () => {
     it('should return the set page for callback', () => {
-      props.onSetPage = jest.genMockFunction();
+      props.onSetPage = jest.fn();
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
 
       gallery.handleSetPage(5);
@@ -301,7 +301,7 @@ describe('Gallery', () => {
     };
 
     it('should not call an action to remove the file from the `queuedFiles` state', () => {
-      props.actions.queuedFiles.removeQueuedFile = jest.genMockFunction();
+      props.actions.queuedFiles.removeQueuedFile = jest.fn();
 
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
 
@@ -312,7 +312,7 @@ describe('Gallery', () => {
     it('should not openFile if a file is open', () => {
       props.type = 'insert-media';
       props.fileId = 10;
-      props.onOpenFile = jest.genMockFunction();
+      props.onOpenFile = jest.fn();
 
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
 
@@ -323,7 +323,7 @@ describe('Gallery', () => {
     it('should not openFile if items are still in the queue', () => {
       props.type = 'insert-media';
       props.queuedFiles.items.push({ _queuedAtTime: 35 });
-      props.onOpenFile = jest.genMockFunction();
+      props.onOpenFile = jest.fn();
 
       const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
 
@@ -336,8 +336,8 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.actions.queuedFiles.purgeUploadQueue = jest.genMockFunction();
-      props.onSort = jest.genMockFunction();
+      props.actions.queuedFiles.purgeUploadQueue = jest.fn();
+      props.onSort = jest.fn();
 
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
@@ -411,10 +411,10 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.onOpenFolder = jest.genMockFunction();
-      props.onOpenFile = jest.genMockFunction();
-      props.actions.gallery.setErrorMessage = jest.genMockFunction();
-      props.actions.gallery.setNoticeMessage = jest.genMockFunction();
+      props.onOpenFolder = jest.fn();
+      props.onOpenFile = jest.fn();
+      props.actions.gallery.setErrorMessage = jest.fn();
+      props.actions.gallery.setNoticeMessage = jest.fn();
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
@@ -447,8 +447,8 @@ describe('Gallery', () => {
 
     beforeEach(() => {
       props.files = [{ id: 2 }, { id: 3 }];
-      props.actions.gallery.selectFiles = jest.genMockFunction();
-      props.actions.gallery.deselectFiles = jest.genMockFunction();
+      props.actions.gallery.selectFiles = jest.fn();
+      props.actions.gallery.deselectFiles = jest.fn();
       props.selectedFiles = [1];
 
       gallery = ReactTestUtils.renderIntoDocument(
@@ -477,7 +477,7 @@ describe('Gallery', () => {
     let gallery = null;
 
     beforeEach(() => {
-      props.onCreateFolder = jest.genMockFunction();
+      props.onCreateFolder = jest.fn();
 
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
@@ -495,10 +495,10 @@ describe('Gallery', () => {
       props.onPublish = jest.fn((id) => Promise.resolve([{ id }]));
       props.onUnpublish = jest.fn((id) => Promise.resolve([{ id }]));
       props.onDelete = jest.fn((id) => Promise.resolve([id]));
-      props.actions.gallery.setLoading = jest.genMockFunction();
-      props.actions.gallery.setNoticeMessage = jest.genMockFunction();
-      props.actions.gallery.setErrorMessage = jest.genMockFunction();
-      props.actions.gallery.deselectFiles = jest.genMockFunction();
+      props.actions.gallery.setLoading = jest.fn();
+      props.actions.gallery.setNoticeMessage = jest.fn();
+      props.actions.gallery.setErrorMessage = jest.fn();
+      props.actions.gallery.deselectFiles = jest.fn();
     });
 
     it('deletes a list of items', () => {

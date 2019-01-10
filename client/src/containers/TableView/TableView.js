@@ -302,7 +302,7 @@ class TableView extends Component {
       const checkboxProps = {
         type: 'checkbox',
         title: i18n._t('AssetAdmin.SELECT'),
-        checked: props.data,
+        defaultChecked: props.data,
         tabIndex: -1,
         onMouseDown: this.preventFocus,
       };

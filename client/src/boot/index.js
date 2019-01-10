@@ -15,20 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
 
   reactRouteRegister.add({
-    path: sectionConfig.url,
-    component: AssetAdminRouter,
-    indexRoute: { component: AssetAdminRouter },
-    childRoutes: [
+    path: '/',
+    routes: [
       {
-        path: 'show/:folderId/:viewAction/:fileId',
+        path: `/${sectionConfig.url}/show/:folderId/:viewAction/:fileId`,
         component: AssetAdminRouter,
       },
       {
-        path: 'show/:folderId/:viewAction',
+        path: `/${sectionConfig.url}/show/:folderId/:viewAction`,
         component: AssetAdminRouter,
       },
       {
-        path: 'show/:folderId',
+        path: `/${sectionConfig.url}/show/:folderId`,
+        component: AssetAdminRouter,
+      },
+      {
+        path: `/${sectionConfig.url}`,
         component: AssetAdminRouter,
       },
     ],

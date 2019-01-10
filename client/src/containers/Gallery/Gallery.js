@@ -1,10 +1,8 @@
 /* global window */
 import $ from 'jquery';
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import React, { ReactTestUtils, Component } from 'react';
 import ReactDOM from 'react-dom';
-import ReactTestUtils from 'react-addons-test-utils';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
@@ -681,15 +679,7 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderTransitionBulkActions() {
-    return (
-      <ReactCSSTransitionGroup
-        transitionName="bulk-actions"
-        transitionEnterTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-        transitionLeaveTimeout={CONSTANTS.CSS_TRANSITION_TIME}
-      >
-        {this.renderBulkActions()}
-      </ReactCSSTransitionGroup>
-    );
+    return this.renderBulkActions();
   }
 
   /**
@@ -837,6 +827,7 @@ class Gallery extends Component {
 
   render() {
     const { folder, loading, errorMessage, graphQLErrors, noticeMessage } = this.props;
+    const Loading = this.props.LoadingComponent;
     const hasGraphQLErrors = graphQLErrors && graphQLErrors.length > 0;
 
     if (!folder) {
@@ -859,8 +850,7 @@ class Gallery extends Component {
       if (loading) {
         return (
           <div className="flexbox-area-grow">
-            <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />
-            <div key="spinner" className="cms-content-loading-spinner" />
+            <Loading />
           </div>
         );
       }
@@ -948,10 +938,7 @@ class Gallery extends Component {
             </AssetDropzone>
           </SelectableGroup>
         </GalleryDND>
-        { this.props.loading && [
-          <div key="overlay" className="cms-content-loading-overlay ui-widget-overlay-light" />,
-          <div key="spinner" className="cms-content-loading-spinner" />,
-        ]}
+        { this.props.loading && <Loading /> }
         <MoveModal
           sectionConfig={this.props.sectionConfig}
           folderId={this.props.folderId}
@@ -1106,8 +1093,11 @@ export {
 
 export default compose(
   inject(
-    ['GalleryToolbar'],
-    null,
+    ['GalleryToolbar', 'Loading'],
+    (GalleryToolbar, Loading) => ({
+      GalleryToolbar,
+      LoadingComponent: Loading
+    }),
     () => 'AssetAdmin.Gallery',
   ),
   connect(mapStateToProps, mapDispatchToProps),

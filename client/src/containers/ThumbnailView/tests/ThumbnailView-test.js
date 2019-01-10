@@ -6,7 +6,7 @@ jest.mock('components/GalleryItem/GalleryItem');
 jest.mock('griddle-react');
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as ThumbnailView } from '../ThumbnailView';
 // import mocks for injector props
 import { File, Folder } from 'components/GalleryItem/GalleryItem';
@@ -26,11 +26,11 @@ describe('ThumbnailView', () => {
         Object.assign({}, itemProps, { id: 12, parent: { id: 0 } }),
         Object.assign({}, itemProps, { id: 15, parent: { id: 6 } }),
       ],
-      onOpenFile: jest.genMockFunction(),
-      onOpenFolder: jest.genMockFunction(),
-      onSort: jest.genMockFunction(),
-      onSetPage: jest.genMockFunction(),
-      renderNoItemsNotice: jest.genMockFunction(),
+      onOpenFile: jest.fn(),
+      onOpenFolder: jest.fn(),
+      onSort: jest.fn(),
+      onSetPage: jest.fn(),
+      renderNoItemsNotice: jest.fn(),
       badges: [],
       File,
       Folder,

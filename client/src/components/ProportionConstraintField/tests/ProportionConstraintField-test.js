@@ -1,7 +1,7 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import { Component as ProportionConstraintField } from '../ProportionConstraintField';
 
 // eslint-disable-next-line react/prop-types
@@ -12,13 +12,13 @@ describe('ProportionConstraintField', () => {
     it('should throw if two children are not given', () => {
       let error = null;
       try {
-        ReactTestUtils.renderIntoDocument(
+        ReactTestUtils.ShallowRenderer(
           <ProportionConstraintField ratio={1} FieldGroup={FieldGroup} />
         );
       } catch (e) {
         error = e;
       }
-      expect(error).toBeTruthy();
+      expect(error).toBeInstanceOf(Error);
     });
 
     it('should call autofill with the correct values', () => {

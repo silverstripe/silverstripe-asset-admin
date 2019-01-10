@@ -3,7 +3,7 @@ import React from 'react';
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('components/BackButton/BackButton');
 
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import Component from '../BackButton';
 
 describe('BackButton', () => {
@@ -42,7 +42,7 @@ describe('BackButton', () => {
   describe('handleBackClick()', () => {
     it('should open folder with parentId', () => {
       props.folder.parentId = 15;
-      props.onOpenFolder = jest.genMockFunction();
+      props.onOpenFolder = jest.fn();
       const backbutton = ReactTestUtils.renderIntoDocument(<Component {...props} />);
       backbutton.handleBackClick(new Event('click'));
       expect(props.onOpenFolder).toBeCalledWith(15);

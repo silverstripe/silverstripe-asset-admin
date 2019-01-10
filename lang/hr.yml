@@ -51,9 +51,9 @@ hr:
     RENAMEDFILE: 'Zamjenjena datoteka'
     RENAMEDTITLE: 'Promjeni naslov u'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
-    ANYONE: Bilo tko
+    ANYONE: 'Bilo tko'
     EDITHEADER: 'Tko može urediti ovu datoteku?'
-    FILENAME: Naziv datoteke
+    FILENAME: 'Naziv datoteke'
     FOLDERLOCATION: Lokacije
     SAVE: Spremi
   SilverStripe\AssetAdmin\Forms\FileFormFactory:

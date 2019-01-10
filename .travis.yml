@@ -21,7 +21,7 @@ env:
     - COMPOSER_ROOT_VERSION=2.x-dev
     - DISPLAY=":99"
     - XVFBARGS=":99 -ac -screen 0 1024x768x16"
-    - TRAVIS_NODE_VERSION="6"
+    - TRAVIS_NODE_VERSION="10"
     - SS_BASE_URL="http://localhost:8080/"
     - SS_ENVIRONMENT_TYPE="dev"
 

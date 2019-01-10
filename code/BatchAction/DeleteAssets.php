@@ -38,6 +38,6 @@ class DeleteAssets extends CMSBatchAction
             unset($record);
         }
 
-        return Convert::raw2json($status);
+        return json_encode($status);
     }
 }

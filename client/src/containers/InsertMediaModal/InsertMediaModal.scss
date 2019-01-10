@@ -30,9 +30,6 @@
 
   // If the editor is in the dialog
   .editor__details {
-    // Safari fix for scroll, should be better fix
-    height: calc(100vh - #{$toolbar-total-height * 2});
-
     @include media-breakpoint-down(md) {
       height: 100%;
     }

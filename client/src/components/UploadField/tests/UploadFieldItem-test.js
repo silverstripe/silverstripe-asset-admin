@@ -1,7 +1,7 @@
 /* global jest, jasmine, describe, it, expect, beforeEach */
 
 import React from 'react';
-import ReactTestUtils from 'react-addons-test-utils';
+import ReactTestUtils from 'react-dom/test-utils';
 import UploadFieldItem from '../UploadFieldItem';
 
 describe('UploadFieldItem', () => {

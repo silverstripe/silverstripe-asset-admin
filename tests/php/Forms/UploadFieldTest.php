@@ -66,7 +66,7 @@ class UploadFieldTest extends SapphireTest
             'type' => 'file',
             'component' => 'UploadField',
             'holderId' => 'Form_MyForm_MyField_Holder',
-            'title' => 'My Field',
+            'title' => 'My field',
             'source' => null,
             'extraClass' => 'entwine-uploadfield uploadfield myfield',
             'description' => null,
