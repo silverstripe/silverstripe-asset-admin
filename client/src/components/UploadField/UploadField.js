@@ -83,7 +83,12 @@ class UploadField extends Component {
     if (maxFiles === null || typeof maxFiles === 'undefined') {
       return null;
     }
-    const filesCount = this.props.files.filter(file => !file.message || file.message.type !== 'error').length;
+
+    const filesCount = this.props.files.filter(file =>
+      file.id > 0
+      && (!file.message || file.message.type !== 'error')
+    ).length;
+
     const allowed = Math.max(maxFiles - filesCount, 0);
 
     return allowed;
