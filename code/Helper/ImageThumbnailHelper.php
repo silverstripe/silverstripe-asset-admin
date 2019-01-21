@@ -15,11 +15,6 @@ class ImageThumbnailHelper
     public function run()
     {
         $assetAdmin = AssetAdmin::singleton();
-        $creator = new InjectionCreator();
-        Injector::inst()->registerService(
-            $creator,
-            ImageBackendFactory::class
-        );
         $files = File::get();
 
         set_time_limit(0);
