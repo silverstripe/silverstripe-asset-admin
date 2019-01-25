@@ -37,6 +37,10 @@ matrix:
       env: NPM_TEST=1
     - php: 5.6
       env: PHPCS_TEST=1
+    - php: 5.6
+      env:
+        - DB=PGSQL
+        - PHPUNIT_TEST=1
 
 before_script:
 # Extra $PATH
@@ -50,8 +54,9 @@ before_script:
 
 # Install composer
   - composer validate
-  - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms 1.0.x-dev --no-update --prefer-dist
-  - composer install --prefer-dist --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
+  - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:2.0.x-dev; fi
+  - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms 1.0.x-dev --no-update
+  - composer install --prefer-source --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
 
 # Start behat services
   - if [[ $BEHAT_TEST ]]; then mkdir artifacts; fi
