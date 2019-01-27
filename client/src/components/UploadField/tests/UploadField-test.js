@@ -132,7 +132,7 @@ describe('UploadField', () => {
       );
       maxFiles = file.getMaxFiles();
 
-      expect(maxFiles).toBe(2);
+      expect(maxFiles).toBe(3);
     });
   });
 
@@ -253,7 +253,7 @@ describe('UploadField', () => {
 
     it('should hide the dropzone when maxFiles reached', () => {
       props.data.multi = true;
-      props.data.maxFiles = 3;
+      props.data.maxFiles = 2;
       file = ReactTestUtils.renderIntoDocument(
         <UploadField {...props} />
       );
