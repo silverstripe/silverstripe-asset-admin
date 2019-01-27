@@ -13,6 +13,7 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DB;
 
 /**
  * @skipUpgrade
@@ -161,7 +162,10 @@ class FolderTypeCreator extends FileTypeCreator
         $list = $list->alterDataQuery(function (DataQuery $query, DataList $list) {
             $existingOrderBys = $query->query()->getOrderBy();
             $query->sort(
-                '(CASE WHEN "ClassName"=\'SilverStripe\\\\Assets\\\\Folder\' THEN 1 ELSE 0 END)',
+                sprintf(
+                    '(CASE WHEN "ClassName"=%s THEN 1 ELSE 0 END)',
+                    DB::get_conn()->quoteString('SilverStripe\Assets\Folder')
+                ),
                 'DESC',
                 true
             );
