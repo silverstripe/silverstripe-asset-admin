@@ -13,6 +13,7 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DB;
 
 /**
  * @skipUpgrade
