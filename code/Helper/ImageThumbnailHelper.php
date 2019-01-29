@@ -17,7 +17,8 @@ class ImageThumbnailHelper
     private $maxImageFileSize;
 
     /**
-     * @param mixed $maxImageSize Maximum file size for which thumbnails will be generated
+     * @param mixed $maxImageSize Maximum file size for which thumbnails will be generated. Set to `0` to disable the
+     * limit.
      */
     public function __construct($maxImageFileSize = '9M')
     {
@@ -25,6 +26,7 @@ class ImageThumbnailHelper
     }
 
     /**
+     * Get the maximum file size for which thumbnails will be generated. Set to `0` to disable the limit.
      * @return int
      */
     public function getMaxImageFileSize()
@@ -33,6 +35,7 @@ class ImageThumbnailHelper
     }
 
     /**
+     * Set the maximum file size for which thumbnails will be generated. Set to `0` to disable the limit.
      * @param mixed $size
      * @return $this
      */
