@@ -6,6 +6,7 @@ use SilverStripe\Assets\File;
 use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\SS_List;
 
 class ImageThumbnailHelper
 {
@@ -17,7 +18,7 @@ class ImageThumbnailHelper
     private $maxImageFileSize;
 
     /**
-     * @param mixed $maxImageSize Maximum file size for which thumbnails will be generated. Set to `0` to disable the
+     * @param int|string $maxImageSize Maximum file size for which thumbnails will be generated. Set to `0` to disable the
      * limit.
      */
     public function __construct($maxImageFileSize = '9M')
@@ -36,7 +37,7 @@ class ImageThumbnailHelper
 
     /**
      * Set the maximum file size for which thumbnails will be generated. Set to `0` to disable the limit.
-     * @param mixed $size
+     * @param int|string $size
      * @return $this
      */
     public function setMaxImageFileSize($size)
@@ -48,7 +49,7 @@ class ImageThumbnailHelper
     public function run()
     {
         $assetAdmin = AssetAdmin::singleton();
-        /** @var File[] $files */
+        /** @var File[]|SS_List $files */
         $files = File::get();
 
         set_time_limit(0);
