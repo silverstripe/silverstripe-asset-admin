@@ -73,7 +73,7 @@ en:
     SAVE: Save
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: 'Insert file'
+    INSERT_FILE: Insert
     INSERT_LINK: 'Link to file'
     LINKDESCR: 'Link description'
     LINKOPENNEWWIN: 'Open in new window/tab'
@@ -81,6 +81,7 @@ en:
     LINKTEXT: 'Link text'
     OTHER_ACTIONS: 'Other actions'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>'
+    USAGE: 'Used on'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
     SAVED: Saved
@@ -92,9 +93,15 @@ en:
     AddMedia: 'Add media'
     Cancel: Cancel
     ERROR_ABSOLUTE: 'Only absolute urls can be embedded'
+    ERROR_EMBED: 'There is currently no embeddable media available from this URL'
     ERROR_HOSTNAME: 'This file hostname is not allowed'
+    ERROR_PORT: 'This file port is not allowed'
     ERROR_SCHEME: 'This file scheme is not allowed'
     InsertMedia: 'Insert media'
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'File or Folder could not be found'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'File "{file}" is used in {count} place.'
+      other: 'File "{file}" is used in {count} places.'

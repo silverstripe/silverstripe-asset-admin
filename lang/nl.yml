@@ -73,7 +73,6 @@ nl:
     SAVE: Opslaan
     VIEWERGROUPS: 'Groepen met bekijkrechten'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: Invoegen
     INSERT_LINK: 'Link naar bestand'
     LINKDESCR: 'Link omschrijving'
     LINKOPENNEWWIN: 'Openen in nieuw venster of tabblad'
@@ -92,8 +91,6 @@ nl:
     AddMedia: 'Media toevoegen'
     Cancel: Annuleren
     ERROR_ABSOLUTE: 'Alleen volledige URL''s kunnen worden gebruikt'
-    ERROR_HOSTNAME: 'Deze website (hostname) is niet toegestaan'
-    ERROR_SCHEME: 'Dit bestandsschema is niet toegestaan'
     InsertMedia: 'Media invoegen'
     UrlDescription: 'Gebuik een URL van een Youtube-video, Vimeo-video of Twitter-bericht om deze op de pagina weer te geven.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
