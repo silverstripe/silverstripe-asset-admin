@@ -60,11 +60,9 @@ class UploadField extends Component {
 
   componentDidMount() {
     // Copy form schema data into redux and then ignore it
-    const { id, files, data, actions, value } = this.props;
+    const { id, data, actions } = this.props;
 
-    if (!files || !value.Files || files.length !== value.Files.length) {
-      actions.uploadField.setFiles(id, data.files);
-    }
+    actions.uploadField.setFiles(id, data.files);
   }
 
   componentWillReceiveProps(nextProps) {
