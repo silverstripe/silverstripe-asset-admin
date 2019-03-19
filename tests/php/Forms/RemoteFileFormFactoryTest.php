@@ -98,34 +98,34 @@ class RemoteFileFormFactoryTest extends SapphireTest
         return [
             [
                 ['fileurl_scheme_blacklist' => ['https']],
-                'https://www.google.com', 'This file scheme is not allowed',
+                'https://www.google.com', 'This file scheme is not included in the whitelist',
             ],
             [
                 ['fileurl_scheme_whitelist' => ['http']],
-                'https://www.google.com', 'This file scheme is not allowed',
+                'https://www.google.com', 'This file scheme is not included in the whitelist',
             ],
             [
                 ['fileurl_domain_blacklist' => ['www.amazon.com']],
-                'http://www.amazon.com', 'This file hostname is not allowed',
+                'http://www.amazon.com', 'This file hostname is not included in the whitelist',
             ],
             [
                 ['fileurl_domain_whitelist' => ['www.google.com']],
-                'http://www.amazon.com', 'This file hostname is not allowed',
+                'http://www.amazon.com', 'This file hostname is not included in the whitelist',
             ],
             [
                 # ipv4 blacklist
                 ['fileurl_domain_blacklist' => ['127.0.0.1']],
-                'http://127.0.0.1/', 'This file hostname is not allowed',
+                'http://127.0.0.1/', 'This file hostname is not included in the whitelist',
             ],
             [
                 # ipv6 blacklist
                 ['fileurl_domain_blacklist' => ['[0:0:0:0:0:0:0:1]']],
-                'http://[0:0:0:0:0:0:0:1]/', 'This file hostname is not allowed',
+                'http://[0:0:0:0:0:0:0:1]/', 'This file hostname is not included in the whitelist',
             ],
             [
                 # ipv6 blacklist
                 ['fileurl_domain_blacklist' => ['[::1]']],
-                'http://[::1]/', 'This file hostname is not allowed',
+                'http://[::1]/', 'This file hostname is not included in the whitelist',
             ],
             [
                 ['fileurl_port_blacklist' => [80]],
