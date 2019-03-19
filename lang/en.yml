@@ -80,7 +80,6 @@ en:
     LINKOPTIONS: 'Link options'
     LINKTEXT: 'Link text'
     OTHER_ACTIONS: 'Other actions'
-    REPLACE_FILE: 'Replace file'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Published
@@ -93,8 +92,8 @@ en:
     AddMedia: 'Add media'
     Cancel: Cancel
     ERROR_ABSOLUTE: 'Only absolute urls can be embedded'
-    ERROR_HOSTNAME: 'This file hostname is not allowed'
-    ERROR_SCHEME: 'This file scheme is not allowed'
+    ERROR_HOSTNAME: 'This file hostname is not included in the whitelist'
+    ERROR_SCHEME: 'This file scheme is not included in the whitelist'
     InsertMedia: 'Insert media'
     UrlDescription: 'Embed Youtube and Vimeo videos, images and other media directly from the web.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
