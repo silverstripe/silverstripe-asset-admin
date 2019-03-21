@@ -76,6 +76,44 @@ class UploadField extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    // If the value updates but there's no files entry for the value then we need to perform a "set
+    // files" action... This can happen when the value (stored with redux-form) is updated
+    const { value: { Files: prevValue } } = prevProps;
+    const {
+      id,
+      data,
+      files,
+      value: { Files: value },
+      actions: { uploadField: { setFiles } }
+    } = this.props;
+
+    if (
+      // If the lengths match
+      value.length === prevValue.length
+      // AND there's no difference in the values
+      && value.filter(item => !prevValue.includes(item)).length === 0
+    ) {
+      // Then nothing to do
+      return;
+    }
+
+    // Now we need to check if the files array that we currently have suits the value
+    const fileIds = files.map(file => file.id);
+
+    // This is a similar condition to above, just checking the files array rather than the previous
+    // value
+    if (
+      fileIds.length === value.length
+      && fileIds.filter(fileId => !value.includes(fileId)).length === 0
+    ) {
+      return;
+    }
+
+    // Run the redux action...
+    setFiles(id, data.files);
+  }
+
   getMaxFiles() {
     const maxFiles = this.props.data.multi ? this.props.data.maxFiles : 1;
     if (maxFiles === null || typeof maxFiles === 'undefined') {
