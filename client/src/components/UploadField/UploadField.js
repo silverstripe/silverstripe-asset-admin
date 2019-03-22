@@ -101,7 +101,7 @@ class UploadField extends Component {
     // Now we need to check if the files array that we currently have suits the value
     const fileIds = files.map(file => file.id);
 
-    // This is a similar condition to above, just checking the files array rather than the previous
+    // This is a similar condition to above, just check the files array rather than the previous
     // value
     if (
       fileIds.length === value.length
