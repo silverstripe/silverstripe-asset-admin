@@ -158,8 +158,52 @@ class FolderTypeCreator extends FileTypeCreator
         $filter['parentId'] = $object->ID;
         $list = $filterInputType->filterList($list, $filter);
 
+        if (!isset($args['sortBy'])) {
+            // only show folders first if no manual ordering is set
+
+            $list = $list->alterDataQuery(static function (DataQuery $dataQuery) {
+                $query = $dataQuery->query();
+                $existingOrderBys = [];
+                foreach ($query->getOrderBy() as $field => $direction) {
+                    if (strpos($field, '.') === false) {
+                        // some fields may be surrogates added by extending augmentSQL (e.g. fluent)
+                        // we have to preserve those expressions rather than auto-generated names
+                        // that SQLSelect::addOrderBy leaves for them (usually that's alike _SortColumn0)
+                        //
+                        // see related issues for more details:
+                        //  - https://github.com/silverstripe/silverstripe-asset-admin/issues/820
+                        //  - https://github.com/silverstripe/silverstripe-asset-admin/issues/893
+                        $field = $query->expressionForField(trim($field, '"')) ?: $field;
+                    }
+
+                    $existingOrderBys[$field] = $direction;
+                }
+
+                // Folders should always go first due to backwards compatibility
+                // See https://github.com/silverstripe/silverstripe-asset-admin/issues/893
+                $dataQuery->sort(
+                    sprintf(
+                        '(CASE WHEN "ClassName"=%s THEN 1 ELSE 0 END)',
+                        DB::get_conn()->quoteString(Folder::class)
+                    ),
+                    'DESC',
+                    true
+                );
+
+                foreach ($existingOrderBys as $field => $dir) {
+                    $dataQuery->sort($field, $dir, false);
+                }
+
+                return $dataQuery;
+            });
+        }
+
         // Filter by permission
-        $ids = $list->column('ID');
+        // DataQuery::column ignores surrogate sorting fields
+        // see https://github.com/silverstripe/silverstripe-framework/issues/8926
+        // the following line is a workaround for `$ids = $list->column('ID');`
+        $ids = $list->dataQuery()->execute()->column('ID');
+
         $permissionChecker = File::singleton()->getPermissionChecker();
         $canViewIDs = array_keys(array_filter($permissionChecker->canViewMultiple(
             $ids,
