@@ -71,6 +71,7 @@ class BulkActions extends Component {
           key={action.value}
           onClick={this.handleChangeValue}
           value={action.value}
+          color={action.color}
         >
           {action.label}
         </Button>
