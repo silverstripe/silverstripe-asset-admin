@@ -166,21 +166,16 @@ class FolderTypeCreator extends FileTypeCreator
                 $existingOrderBys = [];
                 foreach ($query->getOrderBy() as $field => $direction) {
                     if (strpos($field, '.') === false) {
-                        // some fields may be surrogates added by extending augmentSQL (e.g. fluent)
+                        // some fields may be surrogates added by extending augmentSQL
                         // we have to preserve those expressions rather than auto-generated names
-                        // that SQLSelect::addOrderBy leaves for them (usually that's alike _SortColumn0)
-                        //
-                        // see related issues for more details:
-                        //  - https://github.com/silverstripe/silverstripe-asset-admin/issues/820
-                        //  - https://github.com/silverstripe/silverstripe-asset-admin/issues/893
+                        // that SQLSelect::addOrderBy leaves for them (e.g. _SortColumn0)
                         $field = $query->expressionForField(trim($field, '"')) ?: $field;
                     }
 
                     $existingOrderBys[$field] = $direction;
                 }
 
-                // Folders should always go first due to backwards compatibility
-                // See https://github.com/silverstripe/silverstripe-asset-admin/issues/893
+                // Folders should always go first
                 $dataQuery->sort(
                     sprintf(
                         '(CASE WHEN "ClassName"=%s THEN 1 ELSE 0 END)',
