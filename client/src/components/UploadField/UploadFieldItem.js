@@ -225,7 +225,7 @@ class UploadFieldItem extends Component {
 
     if (message !== null) {
       return (
-        <div className="uploadfield-item__error-message">
+        <div className="uploadfield-item__error-message" title={message}>
           {message}
         </div>
       );
