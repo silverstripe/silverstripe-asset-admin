@@ -21,7 +21,6 @@ env:
     - COMPOSER_ROOT_VERSION=2.x-dev
     - DISPLAY=":99"
     - XVFBARGS=":99 -ac -screen 0 1024x768x16"
-    - TRAVIS_NODE_VERSION="10"
     - SS_BASE_URL="http://localhost:8080/"
     - SS_ENVIRONMENT_TYPE="dev"
 
@@ -33,6 +32,10 @@ matrix:
       env: BEHAT_TEST=1
     - php: 7.1
       env: NPM_TEST=1
+    - php: 7.3
+      env:
+        - DB=PGSQL
+        - PHPUNIT_TEST=1
 
 before_script:
 # Extra $PATH
@@ -47,6 +50,7 @@ before_script:
 # Install composer
   - composer validate
   - composer require silverstripe/recipe-testing:^2 silverstripe/recipe-cms 5.x-dev --no-update --prefer-dist
+  - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:3.x-dev --prefer-dist; fi
   - composer update
 
 # Start behat services
@@ -57,7 +61,7 @@ before_script:
   - if [[ $BEHAT_TEST ]]; then (vendor/bin/serve --bootstrap-file vendor/silverstripe/cms/tests/behat/serve-bootstrap.php &> artifacts/serve.log &); fi
 
 # Install NPM dependencies
-  - if [[ $NPM_TEST ]]; then nvm install $TRAVIS_NODE_VERSION && nvm use $TRAVIS_NODE_VERSION && npm install -g yarn && yarn install --network-concurrency 1 && (cd vendor/silverstripe/admin && yarn install --network-concurrency 1) && yarn run build; fi
+  - if [[ $NPM_TEST ]]; then nvm install && nvm use && npm install -g yarn && yarn install --network-concurrency 1 && (cd vendor/silverstripe/admin && yarn install --network-concurrency 1) && yarn run build; fi
 
 script:
   - if [[ $PHPUNIT_TEST ]]; then vendor/bin/phpunit tests/php; fi

@@ -157,7 +157,7 @@ class UploadField extends FormField implements FileHandleField
             return (new HTTPResponse(json_encode($result), 400))
                 ->addHeader('Content-Type', 'application/json');
         }
-        
+
         // We need an ID for getObjectFromData
         if (!$file->isInDB()) {
             $file->write();
@@ -321,7 +321,15 @@ class UploadField extends FormField implements FileHandleField
         if ($maxFiles < 1 || $count <= $maxFiles) {
             return true;
         }
-        $validator->validationError($this->getName(), _t('', 'Bobby'));
+
+        $validator->validationError($this->getName(), _t(
+            __CLASS__ . '.ErrorMaxFilesReached',
+            'You can only upload {count} file.|You can only upload {count} files.',
+            [
+                'count' => $maxFiles,
+            ]
+        ));
+
         return false;
     }
 
