@@ -716,7 +716,7 @@ class Gallery extends Component {
             return { ...action, callback: this.handleBulkUnpublish };
           }
           case 'insert': {
-            return { ...action, callback: this.handleBulkInsert };
+            return { ...action, callback: this.handleBulkInsert, color: 'primary' };
           }
           default: {
             return action;
