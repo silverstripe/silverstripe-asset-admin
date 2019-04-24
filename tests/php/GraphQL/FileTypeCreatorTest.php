@@ -60,7 +60,7 @@ class FileTypeCreatorTest extends SapphireTest
         // public image should have url
         $image->publishSingle();
         $thumbnail = $type->resolveThumbnailField($image, [], [], null);
-        $this->assertEquals('/assets/FileTypeCreatorTest/8cf6c65fa7/TestImage__FitMaxWzM1MiwyNjRd.png', $thumbnail);
+        $this->assertEquals('/assets/FileTypeCreatorTest/TestImage__FitMaxWzM1MiwyNjRd.png', $thumbnail);
 
         // Public assets can be set to inline
         ThumbnailGenerator::config()->merge('thumbnail_links', [
