@@ -17,7 +17,9 @@ class ImageThumbnailHelper
         'logger' => '%$' . LoggerInterface::class . '.quiet',
     ];
 
-    /** @var LoggerInterface|null */
+    /**
+     * @var LoggerInterface|null
+     */
     private $logger;
 
     /**
