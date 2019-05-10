@@ -260,10 +260,9 @@ class FileFormFactory extends AssetFormFactory
                     'dirtyTitle' => _t(__CLASS__ . 'PUBLISH', 'Publish'),
                     'dirtyIcon' => 'rocket',
                     'pristineClass' => 'btn-outline-primary',
-                    'dirtyClass' => '',
+                    'dirtyClass' => 'btn-primary',
                 ],
-            ])
-            ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
+            ]);
 
         return $action;
     }
