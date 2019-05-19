@@ -98,43 +98,43 @@ class RemoteFileFormFactoryTest extends SapphireTest
         return [
             [
                 ['fileurl_scheme_blacklist' => ['https']],
-                'https://www.google.com', 'This file scheme is not included in the whitelist',
+                'https://www.google.com'
             ],
             [
                 ['fileurl_scheme_whitelist' => ['http']],
-                'https://www.google.com', 'This file scheme is not included in the whitelist',
+                'https://www.google.com'
             ],
             [
                 ['fileurl_domain_blacklist' => ['www.amazon.com']],
-                'http://www.amazon.com', 'This file hostname is not included in the whitelist',
+                'http://www.amazon.com'
             ],
             [
                 ['fileurl_domain_whitelist' => ['www.google.com']],
-                'http://www.amazon.com', 'This file hostname is not included in the whitelist',
+                'http://www.amazon.com'
             ],
             [
                 # ipv4 blacklist
                 ['fileurl_domain_blacklist' => ['127.0.0.1']],
-                'http://127.0.0.1/', 'This file hostname is not included in the whitelist',
+                'http://127.0.0.1/'
             ],
             [
                 # ipv6 blacklist
                 ['fileurl_domain_blacklist' => ['[0:0:0:0:0:0:0:1]']],
-                'http://[0:0:0:0:0:0:0:1]/', 'This file hostname is not included in the whitelist',
+                'http://[0:0:0:0:0:0:0:1]/'
             ],
             [
                 # ipv6 blacklist
                 ['fileurl_domain_blacklist' => ['[::1]']],
-                'http://[::1]/', 'This file hostname is not included in the whitelist',
+                'http://[::1]/'
             ],
             [
                 ['fileurl_port_blacklist' => [80]],
-                'http://www.google.com:80', 'This file port is not allowed',
+                'http://www.google.com:80'
             ],
             [
                 # port-ommitted urls ignored
                 ['fileurl_port_whitelist' => [80]],
-                'http://www.google.com:443', 'This file port is not allowed',
+                'http://www.google.com:443'
             ],
         ];
     }
@@ -145,10 +145,9 @@ class RemoteFileFormFactoryTest extends SapphireTest
      * @param string $rejectedURL rejected url
      * @param string $rejectedMessage
      */
-    public function testRejectedURLS($config, $rejectedURL, $rejectedMessage)
+    public function testRejectedURLS($config, $rejectedURL)
     {
         $this->expectException(InvalidUrlException::class);
-        $this->expectExceptionMessage($rejectedMessage);
 
         // Set config
         foreach ($config as $key => $value) {
