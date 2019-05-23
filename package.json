@@ -41,15 +41,27 @@
       "vendor/silverstripe/admin/node_modules"
     ],
     "testMatch": [
-      "**/tests/**/*-test.js?(x)"
+      "**/tests/**/*-test.(j|t)s?(x)"
     ],
     "transform": {
-      ".*": "babel-jest"
-    }
+        "^.+\\.(ts|tsx)$": "ts-jest",
+        "^.+\\.(js|jsx)$": "babel-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "node_modules/@silverstripe/webpack-config/tsconfig.json"
+      }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx"
+    ]
   },
   "devDependencies": {
-    "@silverstripe/eslint-config": "0.0.5",
-    "@silverstripe/webpack-config": "^1.0.0",
+    "@silverstripe/eslint-config": "ssh://git@github.com:open-sausages/eslint-config.git#pulls/typescript-boom-boom-pow",
+    "@silverstripe/webpack-config": "ssh://git@github.com:open-sausages/webpack-config.git#pulls/typescript-boom-boom-pow",
     "@storybook/addon-actions": "^3.4.11",
     "@storybook/addons": "^3.4.11",
     "@storybook/react": "^3.4.11",

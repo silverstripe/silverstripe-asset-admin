@@ -14,9 +14,11 @@ export function openSearch() {
   };
 }
 
-export function closeSearch() {
+export function closeSearch(): any {
   return {
     type: ACTION_TYPES.CLOSE_SEARCH,
     payload: null,
   };
 }
+
+console.dir('this is running Typescript');

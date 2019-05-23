@@ -1,7 +1,7 @@
 import i18n from 'i18n';
 import React, { Component } from 'react';
 import { inject } from 'lib/Injector';
-import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
+import { galleryViewPropTypes, galleryViewDefaultProps } from '../Gallery/Gallery';
 import Griddle from 'griddle-react';
 import PropTypes from 'prop-types';
 
