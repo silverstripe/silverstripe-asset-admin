@@ -415,6 +415,10 @@ $gallery-item-label-height: 40px;
 .gallery-item__drag-layer-preview {
   transform: scale(0.4) translate(-100%, -160%);
   border: 1px solid $component-active-border-color;
+
+  .gallery-item__thumbnail {
+    transform: scale(2.5) translate(22px, 16px);
+  }
 }
 
 .gallery-item__drag-layer-item {
