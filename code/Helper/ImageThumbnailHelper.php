@@ -94,6 +94,10 @@ class ImageThumbnailHelper
         foreach ($files as $file) {
             // Skip if file is too large
             if ($maxSize > 0 && $file->getAbsoluteSize() > $maxSize) {
+                $this->logger->warning(sprintf(
+                    'File too large for thumbnail for generating thumbnail: %s',
+                    $file->Filename
+                ));
                 continue;
             }
 
