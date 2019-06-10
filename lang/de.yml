@@ -71,7 +71,6 @@ de:
     SAVE: Speichern
     VIEWERGROUPS: Betrachtergruppen
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: Einfügen
     INSERT_LINK: 'Link zur Datei'
     LINKDESCR: 'Beschreibung des Links'
     LINKOPENNEWWIN: 'In neuem Fenster oder Reiter öffnen'
@@ -79,7 +78,6 @@ de:
     LINKTEXT: Linktext
     OTHER_ACTIONS: 'Andere Aktionen'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dieser Dateityp kann nur als Link eingefügt werden. Sie können den Link nach dem Einfügen bearbeiten.</p>'
-    USAGE: 'Benutzt in'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Veröffentlicht
     SAVED: Gespeichert
@@ -95,7 +93,3 @@ de:
     UrlDescription: 'Betten Sie YouTube und Vimeo Videos, Bilder und andere Medien direkt aus dem Internet ein.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Datei oder Verzeichnis konnte nicht gefunden werden'
-  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
-    OWNER_WARNING:
-      one: 'Datei "{file}" ist in {count} Ort benutzt.'
-      other: 'Datei "{file}" ist in {count} Orten benutzt.'
