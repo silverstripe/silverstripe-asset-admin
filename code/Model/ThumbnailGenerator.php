@@ -60,6 +60,12 @@ class ThumbnailGenerator
     ];
 
     /**
+     * @var string
+     * @config
+     */
+    private static $method = 'FitMax';
+
+    /**
      * Generate thumbnail and return the "src" property for this thumbnail
      *
      * @param AssetContainer|DBFile|File $file
@@ -94,9 +100,10 @@ class ThumbnailGenerator
         }
 
         // Make large thumbnail
-        return $file->FitMax($width, $height);
+        $method = $this->config()->get('method');
+        return $file->$method($width, $height);
     }
-
+    
     /**
      * Generate "src" property for this thumbnail.
      * This can be either a url or base64 encoded data
