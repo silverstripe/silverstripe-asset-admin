@@ -1,12 +1,14 @@
+// @ts-ignore
 import i18n from 'i18n';
 import React, { Component } from 'react';
+// @ts-ignore
 import { inject } from 'lib/Injector';
 import { galleryViewPropTypes, galleryViewDefaultProps } from '../Gallery/Gallery';
 import Griddle from 'griddle-react';
 import PropTypes from 'prop-types';
 
 class ThumbnailView extends Component {
-  constructor(props) {
+  constructor(private props) {
     super(props);
 
     this.renderItem = this.renderItem.bind(this);
@@ -117,7 +119,7 @@ class ThumbnailView extends Component {
       selectableFolders,
     } = this.props;
     const badge = badges.find((badgeItem) => badgeItem.id === item.id);
-    let props = {
+    let props:any = {
       sectionConfig,
       key: `${item.id}__${item.queuedId}`,
       selectableKey: item.id,
@@ -178,15 +180,16 @@ class ThumbnailView extends Component {
       </div>
     );
   }
+
+  public static defaultProps = galleryViewDefaultProps;
+
+  public static propTypes = {
+      ...galleryViewPropTypes,
+      File: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+      Folder: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+  };
+  
 }
-
-ThumbnailView.defaultProps = galleryViewDefaultProps;
-
-ThumbnailView.propTypes = {
-  ...galleryViewPropTypes,
-  File: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-  Folder: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-};
 
 const injector = inject(
   ['GalleryItemFile', 'GalleryItemFolder'],
