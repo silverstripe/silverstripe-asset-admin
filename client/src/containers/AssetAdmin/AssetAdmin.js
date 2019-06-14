@@ -102,6 +102,7 @@ class AssetAdmin extends Component {
     this.handleBrowse = this.handleBrowse.bind(this);
     this.handleViewChange = this.handleViewChange.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
+    this.handleUploadQueue = this.handleUploadQueue.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
     this.setBreadcrumbs = this.setBreadcrumbs.bind(this);
@@ -626,6 +627,14 @@ class AssetAdmin extends Component {
     // see https://github.com/silverstripe/silverstripe-graphql/issues/14
   }
 
+  handleUploadQueue() {
+    // A bit of coupling. If the editor isn't open, the gallery will automatically
+    // open a file and force a refresh, so we have to guard against a double refresh.
+    if (this.props.fileId) {
+      this.props.actions.files.readFiles();
+    }
+  }
+
   handleCreateFolder() {
     this.props.onBrowse(
       this.getFolderId(),
@@ -692,6 +701,7 @@ class AssetAdmin extends Component {
         onOpenFile={this.handleOpenFile}
         onOpenFolder={this.handleOpenFolder}
         onSuccessfulUpload={this.handleUpload}
+        onSuccessfulUploadQueue={this.handleUploadQueue}
         onCreateFolder={this.handleCreateFolder}
         onMoveFilesSuccess={this.handleMoveFilesSuccess}
         onClearSearch={this.handleClearSearch}

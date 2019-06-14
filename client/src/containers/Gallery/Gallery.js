@@ -38,6 +38,7 @@ class Gallery extends Component {
     this.handleSort = this.handleSort.bind(this);
     this.handleSetPage = this.handleSetPage.bind(this);
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
+    this.handleQueueComplete = this.handleQueueComplete.bind(this);
     this.handleFailedUpload = this.handleFailedUpload.bind(this);
     this.handleClearSearch = this.handleClearSearch.bind(this);
     this.handleEnableDropzone = this.handleEnableDropzone.bind(this);
@@ -445,6 +446,12 @@ class Gallery extends Component {
     ) {
       const lastFile = json.pop();
       this.props.onOpenFile(lastFile.id);
+    }
+  }
+
+  handleQueueComplete() {
+    if (this.props.onSuccessfulUploadQueue) {
+      this.props.onSuccessfulUploadQueue();
     }
   }
 
@@ -925,6 +932,7 @@ class Gallery extends Component {
               onPreviewLoaded={this.handlePreviewLoaded}
               onError={this.handleFailedUpload}
               onSuccess={this.handleSuccessfulUpload}
+              onQueueComplete={this.handleQueueComplete}
               onSending={this.handleSending}
               onUploadProgress={this.handleUploadProgress}
               preview={dimensions}
@@ -1002,7 +1010,8 @@ Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
-  onUploadSuccess: PropTypes.func,
+  onSuccessfulUpload: PropTypes.func,
+  onSuccessfulUploadQueue: PropTypes.func,
   onCreateFolder: PropTypes.func,
   onMoveFilesSuccess: PropTypes.func,
   onDelete: PropTypes.func,
