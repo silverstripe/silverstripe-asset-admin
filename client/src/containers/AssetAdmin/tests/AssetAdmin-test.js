@@ -252,4 +252,20 @@ describe('AssetAdmin', () => {
       expect(props.actions.files.unpublishFiles).toBeCalledWith([id], false);
     });
   });
+
+  describe('handleUploadQueue', () => {
+    let component = null;
+    it('should refresh if a file is open', () => {
+      props.fileId = 123;
+      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
+      component.handleUploadQueue();
+      expect(props.actions.files.readFiles).toBeCalled();
+    });
+    it('should not refresh if no file is open', () => {
+      props.fileId = 0;
+      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
+      component.handleUploadQueue();
+      expect(props.actions.files.readFiles).not.toBeCalled();
+    });
+  });
 });

@@ -25,6 +25,7 @@ class AssetDropzone extends Component {
     this.handleError = this.handleError.bind(this);
     this.handleSending = this.handleSending.bind(this);
     this.handleSuccess = this.handleSuccess.bind(this);
+    this.handleQueueComplete = this.handleQueueComplete.bind(this);
     this.loadImage = this.loadImage.bind(this);
     this.handleMaxFilesExceeded = this.handleMaxFilesExceeded.bind(this);
   }
@@ -170,6 +171,8 @@ class AssetDropzone extends Component {
 
       // When a file upload succeeds.
       success: this.handleSuccess,
+
+      queuecomplete: this.handleQueueComplete,
 
       thumbnailHeight: 150,
 
@@ -501,6 +504,15 @@ class AssetDropzone extends Component {
     this.props.onSuccess(file);
   }
 
+  /**
+   * Called when the entire queue is done uploading
+   */
+  handleQueueComplete() {
+    if (this.props.onQueueComplete) {
+      this.props.onQueueComplete();
+    }
+  }
+
   render() {
     const className = ['asset-dropzone'];
 
@@ -548,6 +560,7 @@ AssetDropzone.propTypes = {
   onMaxFilesExceeded: PropTypes.func,
   updateFormData: PropTypes.func,
   canFileUpload: PropTypes.func,
+  onQueueComplete: PropTypes.func,
   options: PropTypes.shape({
     url: PropTypes.string.isRequired,
   }),
