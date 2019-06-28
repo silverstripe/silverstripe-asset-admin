@@ -89,7 +89,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         Config::modify()->set(ThumbnailGenerator::class, 'max_thumbnail_bytes', 1);
         // Too big should come back as a URL
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
-        $this->assertEquals('/assets/ThumbnailGeneratorTest/TestImage__FitMaxWzEwMCwyMDBd.png', $thumbnail);
+        $this->assertRegExp('#/assets/[A-Za-z0-9]+/TestImage__FitMaxWzEwMCwyMDBd\.png$#', $thumbnail);
         Config::unnest();
 
         // public image should have url
