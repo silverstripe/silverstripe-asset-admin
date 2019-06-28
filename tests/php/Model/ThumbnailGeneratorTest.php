@@ -92,7 +92,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         $this->assertNull($thumbnail);
         // With graceful thumbnails, it should come back as a URL
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200, true);
-        $this->assertEquals('/assets/ThumbnailGeneratorTest/TestImage__FitMaxWzEwMCwyMDBd.png', $thumbnail);
+        $this->assertRegExp('#/assets/[A-Za-z0-9]+/TestImage__FitMaxWzEwMCwyMDBd\.png$#', $thumbnail);
         Config::unnest();
 
         // public image should have url
