@@ -268,13 +268,13 @@ class FileTypeCreator extends TypeCreator
 
     /**
      * @param AssetContainer $object
-     * @param $args
-     * @param $context
-     * @param $info
-     * @return string
-     * @deprecated 2.0
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return string|null
+     * @deprecated 2.0:2.1
      */
-    public static function resolveThumbnailFieldGraceful(AssetContainer $object, $args, $context, $info): string
+    public static function resolveThumbnailFieldGraceful(AssetContainer $object, $args, $context, $info): ?string
     {
         Deprecation::notice('2.0', 'Use resolveThumbnailField');
         $width = AssetAdmin::config()->uninherited('thumbnail_width');
@@ -287,13 +287,13 @@ class FileTypeCreator extends TypeCreator
 
     /**
      * @param AssetContainer $object
-     * @param $args
-     * @param $context
-     * @param $info
-     * @return string
-     * @deprecated 2.0
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return string|null
+     * @deprecated 2.0:2.1
      */
-    public static function resolveSmallThumbnailFieldGraceful(AssetContainer $object, $args, $context, $info): string
+    public static function resolveSmallThumbnailFieldGraceful(AssetContainer $object, $args, $context, $info): ?string
     {
         Deprecation::notice('2.0', 'Use resolveSmallThumbnailField');
         $width = UploadField::config()->uninherited('thumbnail_width');

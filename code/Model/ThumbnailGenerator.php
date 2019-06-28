@@ -72,7 +72,7 @@ class ThumbnailGenerator
      * @param int $width
      * @param int $height
      * @param bool $graceful If true, null result will fallback on URL
-     * @return string
+     * @return string|null
      */
     public function generateThumbnailLink(AssetContainer $file, $width, $height, $graceful = false)
     {
