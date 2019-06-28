@@ -9,6 +9,8 @@ use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Storage\AssetContainer;
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
