@@ -263,4 +263,43 @@ class FileTypeCreator extends TypeCreator
         $this->thumbnailGenerator = $generator;
         return $this;
     }
+
+    /**
+     * @param AssetContainer $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return string|null
+     * @deprecated 2.0.0
+     */
+    public static function resolveThumbnailFieldGraceful(AssetContainer $object, $args, $context, $info): ?string
+    {
+        Deprecation::notice('2.0.0', 'Use resolveThumbnailField');
+        $width = AssetAdmin::config()->uninherited('thumbnail_width');
+        $height = AssetAdmin::config()->uninherited('thumbnail_height');
+        return static::singleton()
+            ->getThumbnailGenerator()
+            ->generateThumbnailLink($object, $width, $height, true);
+
+    }
+
+    /**
+     * @param AssetContainer $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return string|null
+     * @deprecated 2.0.0
+     */
+    public static function resolveSmallThumbnailFieldGraceful(AssetContainer $object, $args, $context, $info): ?string
+    {
+        Deprecation::notice('2.0.0', 'Use resolveSmallThumbnailField');
+        $width = UploadField::config()->uninherited('thumbnail_width');
+        $height = UploadField::config()->uninherited('thumbnail_height');
+        return static::singleton()
+            ->getThumbnailGenerator()
+            ->generateThumbnailLink($object, $width, $height, true);
+
+    }
+
 }
