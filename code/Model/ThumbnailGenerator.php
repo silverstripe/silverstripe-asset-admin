@@ -77,7 +77,9 @@ class ThumbnailGenerator
     public function generateThumbnailLink(AssetContainer $file, $width, $height, $graceful = false)
     {
         $thumbnail = $this->generateThumbnail($file, $width, $height);
-
+        if (!$thumbnail) {
+            return null;
+        }
         $result = $this->generateLink($thumbnail);
         if ($graceful && $result === null && $thumbnail->exists() && $thumbnail->getIsImage()) {
             return $thumbnail->getURL();
