@@ -117,11 +117,10 @@ class ThumbnailGenerator
         if (!$thumbnail || !$thumbnail->exists() || !$thumbnail->getIsImage()) {
             return null;
         }
-
         // Ensure thumbnail doesn't exceed safe bounds
         $maxSize = $this->config()->get('max_thumbnail_bytes');
-        if (!$thumbnail->getAbsoluteSize() > $maxSize) {
-            return null;
+        if ($thumbnail->getAbsoluteSize() > $maxSize) {
+            return $thumbnail->getURL();
         }
 
         // Determine best method to encode this thumbnail
