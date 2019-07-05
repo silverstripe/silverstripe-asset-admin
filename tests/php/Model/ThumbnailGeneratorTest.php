@@ -7,6 +7,7 @@ use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Storage\AssetStore;
 use Silverstripe\Assets\Dev\TestAssetStore;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 
 class ThumbnailGeneratorTest extends SapphireTest
@@ -82,6 +83,17 @@ class ThumbnailGeneratorTest extends SapphireTest
         // protected image should have inline thumbnail
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
         $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAy', $thumbnail);
+
+        // but not if it's too big
+        Config::nest();
+        Config::modify()->set(ThumbnailGenerator::class, 'max_thumbnail_bytes', 1);
+        // Without graceful thumbnails, it should come back null
+        $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
+        $this->assertNull($thumbnail);
+        // With graceful thumbnails, it should come back as a URL
+        $thumbnail = $generator->generateThumbnailLink($image, 100, 200, true);
+        $this->assertRegExp('#/assets/[A-Za-z0-9]+/TestImage__FitMaxWzEwMCwyMDBd\.png$#', $thumbnail);
+        Config::unnest();
 
         // public image should have url
         $image->publishSingle();

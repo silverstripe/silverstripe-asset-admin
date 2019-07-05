@@ -71,13 +71,21 @@ class ThumbnailGenerator
      * @param AssetContainer|DBFile|File $file
      * @param int $width
      * @param int $height
-     * @return string
+     * @param bool $graceful If true, null result will fallback on URL
+     * @return string|null
      */
-    public function generateThumbnailLink(AssetContainer $file, $width, $height)
+    public function generateThumbnailLink(AssetContainer $file, $width, $height, $graceful = false)
     {
         $thumbnail = $this->generateThumbnail($file, $width, $height);
+        if (!$thumbnail) {
+            return null;
+        }
+        $result = $this->generateLink($thumbnail);
+        if ($graceful && $result === null && $thumbnail->exists() && $thumbnail->getIsImage()) {
+            return $thumbnail->getURL();
+        }
 
-        return $this->generateLink($thumbnail);
+        return $result;
     }
 
     /**
@@ -117,10 +125,9 @@ class ThumbnailGenerator
         if (!$thumbnail || !$thumbnail->exists() || !$thumbnail->getIsImage()) {
             return null;
         }
-
         // Ensure thumbnail doesn't exceed safe bounds
         $maxSize = $this->config()->get('max_thumbnail_bytes');
-        if (!$thumbnail->getAbsoluteSize() > $maxSize) {
+        if ($thumbnail->getAbsoluteSize() > $maxSize) {
             return null;
         }
 
