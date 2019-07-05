@@ -86,7 +86,7 @@
     "react-dom": "^16.6.1",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.4.0-beta.6",
-    "react-selectable": "^2.0.1",
+    "react-selectable": "^2.0.2",
     "reactstrap": "^6.4.0",
     "redux": "^4.0.0",
     "redux-form": "^7.4.2",

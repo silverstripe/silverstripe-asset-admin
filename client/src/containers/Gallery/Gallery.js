@@ -549,7 +549,7 @@ class Gallery extends Component {
       }
     }
 
-    if (concat) {
+    if (!concat) {
       setSelectedFiles(selectItems);
     } else {
       selectFiles(selectItems);
