@@ -280,7 +280,6 @@ class FileTypeCreator extends TypeCreator
         return static::singleton()
             ->getThumbnailGenerator()
             ->generateThumbnailLink($object, $width, $height, true);
-
     }
 
     /**
@@ -297,7 +296,5 @@ class FileTypeCreator extends TypeCreator
         return static::singleton()
             ->getThumbnailGenerator()
             ->generateThumbnailLink($object, $width, $height, true);
-
     }
-
 }
