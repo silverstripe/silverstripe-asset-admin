@@ -225,6 +225,36 @@ EOS
     }
 
     /**
+     * Helper for finding items in the visible gallery view by its order
+     *
+     * @param string $rank index of the item to get starting at 1
+     * @param int $timeout
+     * @return NodeElement
+     */
+    protected function getGalleryItemByRank($rank, $timeout = 3)
+    {
+        /** @var DocumentElement $page */
+        $page = $this->getMainContext()->getSession()->getPage();
+        // Find by cell
+        $cell = $page->find(
+            'xpath',
+            "//div[contains(@class, 'gallery__files')]/div[$rank]"
+        );
+        if ($cell) {
+            return $cell;
+        }
+        // Find by row
+        $row = $page->find(
+            'xpath',
+            "//tr[contains(@class, 'gallery__table-row')][$rank]"
+        );
+        if ($row) {
+            return $row;
+        }
+        return null;
+    }
+
+    /**
      * @Given /^a page "([^"]*)" containing an image "([^"]*)"$/
      * @param string $page
      * @param string $image
@@ -260,5 +290,36 @@ EOS
         $modalTitle = $page->find('css', '[role=dialog] .modal-header > .modal-title');
         assertNotNull($modalTitle, 'No modal on the page');
         assertTrue($modalTitle->getText() == $title);
+    }
+
+    /**
+     * @Then /^I should see the gallery item "([^"]+)" in position "([^"]+)"$/
+     * @param string $name
+     * @param string $position
+     */
+    public function iShouldSeeTheGalleryItemInPosition($name, $position)
+    {
+        $itemByPosition = $this->getGalleryItemByRank($position);
+        assertNotNull($itemByPosition, 'Should have found a fallery item at position ' . $position);
+        $title = $itemByPosition->find(
+            'xpath',
+            "//div[contains(text(), '{$name}')]"
+        );
+        assertNotNull($title, sprintf('File at position %s should be named %s', $position, $name));
+    }
+
+    /**
+     * @When /^I click the "([^"]+)" element$/
+     * @param $selector
+     */
+    public function iClickTheElement($selector)
+    {
+        /** @var DocumentElement $page */
+        $page = $this->getMainContext()->getSession()->getPage();
+        $element = $page->find('css', $selector);
+
+        assertNotNull($element, sprintf('Element %s not found', $selector));
+
+        $element->click();
     }
 }
