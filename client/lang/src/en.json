@@ -58,6 +58,8 @@
     "AssetAdmin.SIZE": "Size",
     "AssetAdmin.TITLE": "Title",
     "AssetAdmin.TYPE": "File type",
+    "AssetAdmin.UPLOADFIELD_UPLOAD_NEW": "Upload new",
+    "AssetAdmin.UPLOADFIELD_CHOOSE_EXISTING": "Choose existing",
     "AssetAdmin.URL": "URL",
     "AssetAdmin.ADD_FILES": "Add from files",
     "AssetAdmin.BROWSE": "Browse",

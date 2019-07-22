@@ -414,7 +414,7 @@ class UploadField extends Component {
           onClick={this.handleUploadButton}
           className="uploadfield__upload-button"
         >
-          {i18n._t('AssetAdmin.BROWSE', 'Browse')}
+          {i18n._t('AssetAdmin.UPLOADFIELD_UPLOAD_NEW', 'Upload new')}
         </button>
       );
     }
@@ -433,7 +433,7 @@ class UploadField extends Component {
           onClick={this.handleAddShow}
           className="uploadfield__add-button"
         >
-          {i18n._t('AssetAdmin.ADD_FILES', 'Add from files')}
+          {i18n._t('AssetAdmin.UPLOADFIELD_CHOOSE_EXISTING', 'Choose existing')}
         </button>
       );
     }
