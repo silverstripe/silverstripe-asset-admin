@@ -1,7 +1,7 @@
 /* global window */
 import $ from 'jquery';
 import i18n from 'i18n';
-import React, { ReactTestUtils, Component } from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -335,7 +335,7 @@ class Gallery extends Component {
       // remove existing event listener so it doesn't trigger multiple times per change
       $select.off('change');
       // Chosen stops the change event from reaching React so we have to simulate a click.
-      $select.on('change', () => ReactTestUtils.Simulate.click($select.find(':selected')[0]));
+      $select.on('change', () => $select.find(':selected')[0].click());
     }
   }
 
