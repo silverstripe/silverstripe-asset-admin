@@ -20,13 +20,13 @@ class AssetAdminFileTest extends SapphireTest
         $this->assertCount(8, $names); // 7 children but the original ID is included
         $this->assertCount(8, array_intersect([
             'folder1',
-            'folder1.1',
-            'folder1.2',
-            'folder1.1.1',
-            'folder1.2.1',
-            'folder1.2.2',
-            'folder1.1.1.1',
-            'folder1.2.2.1',
-        ], $names));
+            'folder1-1',
+            'folder1-2',
+            'folder1-1-1',
+            'folder1-2-1',
+            'folder1-2-2',
+            'folder1-1-1-1',
+            'folder1-2-2-1',
+        ], $names), 'Names match those saved to the database (' . implode(', ', $names) . ')');
     }
 }
