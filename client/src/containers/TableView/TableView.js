@@ -4,7 +4,8 @@ import Griddle from 'griddle-react';
 import i18n from 'i18n';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import { fileSize } from 'lib/DataFormat';
-import VersionedBadge from 'components/VersionedBadge/VersionedBadge';
+import { inject } from 'lib/Injector';
+import { compose } from 'redux';
 
 class TableView extends Component {
   constructor(props) {
@@ -265,6 +266,7 @@ class TableView extends Component {
   renderStatus(props) {
     let flags = [];
     const item = props.rowData;
+    const { VersionedBadge } = this.props;
 
     if (item.type !== 'folder') {
       if (item.draft) {
@@ -282,7 +284,7 @@ class TableView extends Component {
 
     flags = flags.map(({ ...attributes }) => <VersionedBadge {...attributes} />);
 
-    return <span>{flags}</span>;
+    return flags ? <span>{flags}</span> : null;
   }
 
   /**
@@ -418,8 +420,14 @@ TableView.defaultProps = galleryViewDefaultProps;
 TableView.propTypes = {
   ...galleryViewPropTypes,
   sort: PropTypes.string.isRequired,
+  VersionedBadge: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
 };
 
 export { TableView as Component };
 
-export default TableView;
+export default compose(
+  inject(
+    ['VersionedBadge'],
+    VersionedBadge => ({ VersionedBadge })
+  )
+)(TableView);
