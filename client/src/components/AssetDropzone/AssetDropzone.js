@@ -167,6 +167,13 @@ class AssetDropzone extends Component {
 
       thumbnailWidth: 200,
 
+      /**
+       * The (client-side) timeout for the XHR requests in milliseconds. Note that
+       * 0 = unlimited, so should ensure we only ever encounter a server-side timeout
+       * See - {@link https://www.dropzonejs.com/#config-timeout}
+       */
+      timeout: 0,
+
       clickable,
     };
   }
