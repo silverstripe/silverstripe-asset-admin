@@ -220,6 +220,26 @@ class PreviewImageField extends Component {
   }
 
   /**
+   * Build the preview URL
+   * @param {string} category
+   * @param {object} upload
+   * @param {object} data
+   * @returns {string}
+   */
+  preview(category, upload, data) {
+    if (category && category !== 'image') {
+      return CONSTANTS.DEFAULT_PREVIEW;
+    }
+    const url = upload.url || data.preview || data.url;
+    if (url) {
+      return (!data.version || url.startsWith('data:image/')) ?
+        url : `${url}?vid=${data.version}`;
+    }
+
+    return null;
+  }
+
+  /**
    * Renders the image markup as normal by LiteralField
    *
    * @returns {object}
@@ -237,14 +257,12 @@ class PreviewImageField extends Component {
     }
 
     const { category, progress, message } = upload;
-    const preview = (category && category !== 'image')
-      ? CONSTANTS.DEFAULT_PREVIEW
-      : upload.url || data.preview || data.url;
+    const preview = this.preview(category, upload, data);
     const image = <img alt="preview" src={preview} className="editor__thumbnail" />;
     const linkedImage = (data.url && !progress) ? (
       <a
         className="editor__file-preview-link"
-        href={data.url}
+        href={`${data.url}?vid=${data.version}`}
         target="_blank"
         rel="noopener noreferrer"
       >

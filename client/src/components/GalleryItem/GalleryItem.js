@@ -65,10 +65,15 @@ class GalleryItem extends Component {
    */
   getThumbnailStyles() {
     // Don't fall back to this.props.item.url since it might be huge
-    const thumbnail = this.props.item.thumbnail;
+    const { thumbnail, version } = this.props.item;
     if (!this.isImage() || !thumbnail || this.missing()) {
       return {};
     }
+
+    // When the thumbnail is a link, add version id to bust the cache
+    const url = (!version || thumbnail.startsWith('data:image/')) ?
+      thumbnail :
+      `${thumbnail}?vid=${version}`;
 
     // Check loading status of thumbnail
     switch (this.props.loadState) {
@@ -76,7 +81,7 @@ class GalleryItem extends Component {
       case IMAGE_STATUS.SUCCESS:
       case IMAGE_STATUS.DISABLED:
         return {
-          backgroundImage: `url(${thumbnail})`,
+          backgroundImage: `url(${url})`,
         };
       default:
         return {};
