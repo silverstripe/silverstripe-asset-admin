@@ -79,6 +79,12 @@ class UploadField extends FormField implements FileHandleField
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
 
     protected $schemaComponent = 'UploadField';
+    
+    /**
+    Dropzone (since v 4.4.0) defines 30 seconds as the default timeout limit.
+    */
+    
+    protected $timeout = 30000;
 
     /**
      * @var bool|null
@@ -119,7 +125,8 @@ class UploadField extends FormField implements FileHandleField
         $defaults['data']['parentid'] = $this->getFolderID();
         $defaults['data']['canUpload'] = $this->getUploadEnabled();
         $defaults['data']['canAttach'] = $this->getAttachEnabled();
-
+        $defaults['data']['timeout'] = $this->getTimeOut();
+        
         return $defaults;
     }
 
@@ -374,6 +381,28 @@ class UploadField extends FormField implements FileHandleField
     public function setAttachEnabled($attachEnabled)
     {
         $this->attachEnabled = $attachEnabled;
+        return $this;
+    }
+    
+     /**
+     * get timeout value
+     *
+     * @return int
+     */
+    public function getTimeOut()
+    {
+        return $this->timeout;
+    }
+    
+     /**
+     * Set timeout value
+     *
+     * @param int timeout
+     * @return UploadField
+     */
+    public function setTimeOut($timeout)
+    {
+        $this->timeout = $timeout;
         return $this;
     }
 }
