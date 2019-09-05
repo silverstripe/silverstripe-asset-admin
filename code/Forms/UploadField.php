@@ -80,9 +80,9 @@ class UploadField extends FormField implements FileHandleField
 
     protected $schemaComponent = 'UploadField';
     
-   /**
-    * Dropzone (since v 4.4.0) defines 30 seconds as the default timeout limit.
-    */
+    /**
+     * Dropzone (since v 4.4.0) defines 30 seconds as the default timeout limit.
+     */
     
     protected $timeout = 30000;
 
