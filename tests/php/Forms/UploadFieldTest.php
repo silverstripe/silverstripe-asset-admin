@@ -89,6 +89,7 @@ class UploadFieldTest extends SapphireTest
                 'maxFiles' => null,
                 'canUpload' => true,
                 'canAttach' => true,
+                'timeout' => 30000,
             ],
             'schemaType' => 'Custom'
         ];
