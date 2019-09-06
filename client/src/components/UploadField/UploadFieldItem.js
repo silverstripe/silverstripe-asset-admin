@@ -21,7 +21,7 @@ class UploadFieldItem extends Component {
    */
   getThumbnailStyles() {
     if (this.isImage() && (this.exists() || this.uploading())) {
-      const thumbnail = this.props.item.smallThumbnail || this.props.item.url;
+      const thumbnail = this.props.item.smallThumbnail || this.props.item.url || '';
       return {
         backgroundImage: `url(${thumbnail})`,
       };
