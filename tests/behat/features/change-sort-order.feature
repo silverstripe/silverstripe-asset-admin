@@ -28,6 +28,6 @@ Feature: Change view for asset admin
       And I wait until I see the ".gallery__table-row" element
     Then I should see the gallery item "file1" in position "1"
       And I should see the gallery item "file2" in position "2"
-    When I click "title" in the ".gallery__table thead" element
+    When I click "Title" in the ".gallery__table thead" element
     Then I should see the gallery item "file2" in position "1"
       And I should see the gallery item "file1" in position "2"
