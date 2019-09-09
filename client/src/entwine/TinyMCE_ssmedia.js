@@ -84,11 +84,12 @@ const filter = 'img[data-shortcode="image"]';
               title: el.attr('title'),
               alt: el.attr('alt'),
             };
+            console.log(properties);
             const shortCode = ShortcodeSerialiser.serialise({
               name: 'image',
               properties,
               wrapped: false
-            });
+            }, true);
             el.replaceWith(shortCode);
           });
 
