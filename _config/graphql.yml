@@ -9,6 +9,7 @@ SilverStripe\GraphQL\Manager:
         File: 'SilverStripe\AssetAdmin\GraphQL\FileTypeCreator'
         FileInterface: 'SilverStripe\AssetAdmin\GraphQL\FileInterfaceTypeCreator'
         FileInput: 'SilverStripe\AssetAdmin\GraphQL\FileInputTypeCreator'
+        FileUsage: 'SilverStripe\AssetAdmin\GraphQL\FileUsageType'
         Folder: 'SilverStripe\AssetAdmin\GraphQL\FolderTypeCreator'
         FolderInput: 'SilverStripe\AssetAdmin\GraphQL\FolderInputTypeCreator'
         FileFilterInput: 'SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator'
@@ -16,6 +17,7 @@ SilverStripe\GraphQL\Manager:
         PublicationResult: 'SilverStripe\AssetAdmin\GraphQL\PublicationResultType'
       queries:
         readFiles: 'SilverStripe\AssetAdmin\GraphQL\ReadFileQueryCreator'
+        readFileUsage: 'SilverStripe\AssetAdmin\GraphQL\ReadFileUsageQueryCreator'
       mutations:
         createFile: 'SilverStripe\AssetAdmin\GraphQL\CreateFileMutationCreator'
         updateFile: 'SilverStripe\AssetAdmin\GraphQL\UpdateFileMutationCreator'
