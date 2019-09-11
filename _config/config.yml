@@ -7,6 +7,9 @@ SilverStripe\Assets\File:
 SilverStripe\Admin\LeftAndMain:
   extensions:
     - SilverStripe\AssetAdmin\Controller\AssetAdminFieldsExtension
+SilverStripe\Admin\Forms\UsedOnTable:
+  extensions:
+  - SilverStripe\AssetAdmin\Extensions\UsedOnTableExtension
 ---
 Name: assetadminthumbnails
 ---
