@@ -18,7 +18,7 @@ export function confirm(files) {
  *
  * @param {Object[]} List of files we want to delete
  */
-export function ok() {
+export function deleting() {
   return (dispatch) =>
     dispatch({
       type: ACTION_TYPES.CONFIRM_DELETION_CONFIRM,
@@ -35,6 +35,19 @@ export function cancel() {
   return (dispatch) =>
     dispatch({
       type: ACTION_TYPES.CONFIRM_DELETION_CANCEL,
+      payload: { },
+    });
+}
+
+/**
+ * Ask for permission to delete
+ *
+ * @param {Object[]} List of files we want to delete
+ */
+export function reset() {
+  return (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.CONFIRM_DELETION_RESET,
       payload: { },
     });
 }

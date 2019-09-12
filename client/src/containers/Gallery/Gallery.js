@@ -20,7 +20,7 @@ import { SelectableGroup } from 'react-selectable';
 import GalleryDND from './GalleryDND';
 import configShape from 'lib/configShape';
 import MoveModal from '../MoveModal/MoveModal';
-import DeletionModal from '../../components/DeletionModal/DeletionModal';
+import BulkDeleteConfirmation from '../BulkDeleteConfirmation/BulkDeleteConfirmation';
 import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
 
@@ -231,7 +231,7 @@ class Gallery extends Component {
    * @returns {Promise}
    */
   handleBulkDelete(event, items) {
-    return this.props.actions.confirmDeletion.confirm(items);
+    this.props.actions.confirmDeletion.deleting();
     return this.props.onDelete(items.map(item => item.id))
       .then((resultItems) => {
         const successes = resultItems.filter((result) => result).length;
@@ -257,7 +257,8 @@ class Gallery extends Component {
           this.props.actions.gallery.setErrorMessage(null);
           this.props.actions.gallery.deselectFiles();
         }
-      });
+      })
+    .finally(this.props.actions.confirmDeletion.reset);
   }
 
   /**
@@ -711,7 +712,13 @@ class Gallery extends Component {
         }
         switch (action.value) {
           case 'delete': {
-            return { ...action, callback: this.handleBulkDelete, confirm: undefined };
+            return {
+              ...action,
+              callback: (event, items) => {
+                this.props.actions.confirmDeletion.confirm(items)
+              },
+              confirm: undefined
+            };
           }
           case 'edit': {
             return { ...action, callback: this.handleBulkEdit };
@@ -956,7 +963,7 @@ class Gallery extends Component {
           onSuccess={this.props.onMoveFilesSuccess}
           onOpenFolder={this.props.onOpenFolder}
         />
-          <DeletionModal />
+          <BulkDeleteConfirmation onConfirm={(items) => this.handleBulkDelete(undefined, items)} />
       </div>
     );
   }
