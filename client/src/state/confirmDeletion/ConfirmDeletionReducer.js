@@ -4,32 +4,39 @@ import ACTION_TYPES from './ConfirmDeletionActionTypes';
  * Initial base state
  * @type {{fields: {}}}
  */
-const initialState = {
+export const initialState = {
   showConfirmation: false,
   files: [],
   transition: false,
 };
 
 function confirmDeletionReducer(state = initialState, action) {
-  // Update state for this field
   switch (action.type) {
     case ACTION_TYPES.CONFIRM_DELETION_ASK:
-      return {showConfirmation: true, files: action.payload.files};
+      return { ...initialState, showConfirmation: true, files: action.payload.files };
 
     case ACTION_TYPES.CONFIRM_DELETION_CANCEL:
-      return {...state, transition: 'canceling'};
+      if (state.showConfirmation) {
+        return { ...state, transition: 'canceling' };
+      }
+      break;
 
     case ACTION_TYPES.CONFIRM_DELETION_CONFIRM:
-      return {...state, transition: 'deleting'};
+      if (state.showConfirmation) {
+        return { ...state, transition: 'deleting' };
+      }
+      break;
+
+    case ACTION_TYPES.CONFIRM_DELETION_MODAL_CLOSE:
+      return { ...state, showConfirmation: false, transition: false };
 
     case ACTION_TYPES.CONFIRM_DELETION_RESET:
-      return state.transition === 'deleting' ?
-        {...state, transition: false, showConfirmation: false} :
-        initialState;
+      return initialState;
 
     default:
-      return state;
   }
+
+  return state;
 }
 
 export default confirmDeletionReducer;

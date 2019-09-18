@@ -24,7 +24,7 @@ const apolloConfig = {
       error.graphQLErrors.map((graphQLError) => graphQLError.message);
 
     const fileUsage = readFileUsage ?
-      readFileUsage.reduce((accumulator, {id, inUseCount}) => {
+      readFileUsage.reduce((accumulator, { id, inUseCount }) => {
         accumulator[id] = inUseCount;
         return accumulator;
       }, {}) :

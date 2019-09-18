@@ -6,11 +6,10 @@ import ACTION_TYPES from './ConfirmDeletionActionTypes';
  * @param {Object[]} List of files we want to delete
  */
 export function confirm(files) {
-  return (dispatch) =>
-    dispatch({
-      type: ACTION_TYPES.CONFIRM_DELETION_ASK,
-      payload: { files },
-    });
+  return {
+    type: ACTION_TYPES.CONFIRM_DELETION_ASK,
+    payload: { files },
+  };
 }
 
 /**
@@ -19,11 +18,10 @@ export function confirm(files) {
  * @param {Object[]} List of files we want to delete
  */
 export function deleting() {
-  return (dispatch) =>
-    dispatch({
-      type: ACTION_TYPES.CONFIRM_DELETION_CONFIRM,
-      payload: { },
-    });
+  return {
+    type: ACTION_TYPES.CONFIRM_DELETION_CONFIRM,
+    payload: { },
+  };
 }
 
 /**
@@ -32,11 +30,10 @@ export function deleting() {
  * @param {Object[]} List of files we want to delete
  */
 export function cancel() {
-  return (dispatch) =>
-    dispatch({
-      type: ACTION_TYPES.CONFIRM_DELETION_CANCEL,
-      payload: { },
-    });
+  return {
+    type: ACTION_TYPES.CONFIRM_DELETION_CANCEL,
+    payload: { },
+  };
 }
 
 /**
@@ -45,9 +42,20 @@ export function cancel() {
  * @param {Object[]} List of files we want to delete
  */
 export function reset() {
-  return (dispatch) =>
-    dispatch({
-      type: ACTION_TYPES.CONFIRM_DELETION_RESET,
-      payload: { },
-    });
+  return {
+    type: ACTION_TYPES.CONFIRM_DELETION_RESET,
+    payload: { },
+  };
+}
+
+/**
+ * Ask for permission to delete
+ *
+ * @param {Object[]} List of files we want to delete
+ */
+export function modalClose() {
+  return {
+    type: ACTION_TYPES.CONFIRM_DELETION_MODAL_CLOSE,
+    payload: { },
+  };
 }
