@@ -1,28 +1,30 @@
 import React from 'react';
-import classnames from 'classnames';
-import { bindActionCreators, compose } from 'redux';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withApollo } from "react-apollo";
+import { withApollo } from 'react-apollo';
 import { inject, injectGraphql } from 'lib/Injector';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import DeletionModal from 'components/DeletionModal/DeletionModal';
 import BulkDeleteMessage from './BulkDeleteMessage';
 import { getFileInUseCount, getFolderInUse } from './helpers';
 import fileShape from 'lib/fileShape';
+import i18n from 'i18n';
 
 /**
  * Wires the Redux store and Apollo result set with the DeletionModal.
- *
- * @todo Translate the action labels
  */
 const BulkDeleteConfirmation = ({
   loading, LoadingComponent, transition,
   files, fileUsage,
-  onCancel, reset, onConfirm
+  onModalClose, onCancel, onConfirm
 }) => {
   let body = null;
-  let actions = [{label: 'Dismiss', handler: onCancel, color: 'primary'}]
+  let actions = [{
+    label: i18n._t('AssetAdmin.DISMISS', 'Dismiss'),
+    handler: onCancel,
+    color: 'primary'
+  }];
 
   // Decide what message and action to show users
   if (loading) {
@@ -30,15 +32,22 @@ const BulkDeleteConfirmation = ({
     body = <LoadingComponent />;
   } else {
     const folderInUse = getFolderInUse(files, fileUsage);
-    const fileUsageCount = getFileInUseCount(files, fileUsage)
+    const fileUsageCount = getFileInUseCount(files, fileUsage);
 
-    const bodyProps = {folderInUse, fileCount: files.length, ...fileUsageCount};
+    const bodyProps = { folderInUse, fileCount: files.length, ...fileUsageCount };
     body = <BulkDeleteMessage {...bodyProps} />;
 
     if (folderInUse) {
       actions = [
-        {label: 'Delete', handler: () => onConfirm(files), color: 'danger'},
-        {label: 'Cancel', handler: onCancel},
+        {
+          label: i18n._t('AssetAdmin.DELETE', 'Delete'),
+          handler: () => onConfirm(files),
+          color: 'danger'
+        },
+        {
+          label: i18n._t('AssetAdmin.CANCEL', 'Cancel'),
+          handler: onCancel
+        },
       ];
     }
   }
@@ -48,14 +57,14 @@ const BulkDeleteConfirmation = ({
   // When tell the modal to call the `reset` action when it's done closing.
   const isOpen = !['canceling', 'deleting'].includes(transition);
 
-  return <DeletionModal
-      body={ body }
-      isOpen={ isOpen }
-      actions={ actions }
-      onCancel={ onCancel }
-      onClosed={ reset }
-    />
-}
+  return (<DeletionModal
+    body={body}
+    isOpen={isOpen}
+    actions={actions}
+    onCancel={onCancel}
+    onClosed={onModalClose}
+  />);
+};
 
 BulkDeleteConfirmation.propTypes = {
   loading: PropTypes.bool.isRequired,
@@ -64,14 +73,15 @@ BulkDeleteConfirmation.propTypes = {
   files: PropTypes.arrayOf(fileShape),
   fileUsage: PropTypes.object,
   onCancel: PropTypes.func.isRequired,
-  reset: PropTypes.func.isRequired,
+  onModalClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
 };
 
 /**
- * Wires the Modal with the the GraphQL File Usage Query. Results will be provided via a `fileUsage` prop containing a
- * map of file/folder IDs to the number of location where the file/folder is in use.
- * e.g.: If you're trying to delete file ID 1234 and it's use in 10 pages you will get `['1234': 10]`.
+ * Wires the Modal with the the GraphQL File Usage Query. Results will be provided via a
+ * `fileUsage` prop containing a map of file/folder IDs to the number of location where the
+ * file/folder is in use. e.g.: If you're trying to delete file ID 1234 and it's use in 10 pages
+ * you will get `['1234': 10]`.
  */
 const ConnectedModal = compose(
   inject(
@@ -83,21 +93,21 @@ const ConnectedModal = compose(
 )(BulkDeleteConfirmation);
 
 /**
- * Decide whether to render the Deletion Modal based on the information in the redux store. This avoid firing off a
- * GraphQL query for nothing.
+ * Decide whether to render the Deletion Modal based on the information in the redux store.
+ * This avoid firing off a GraphQL query for nothing.
  */
-const ConditionalModal = ({showConfirmation, files, ...props}) => (
+const ConditionalModal = ({ showConfirmation, files, ...props }) => (
   showConfirmation && files.length > 0 ? <ConnectedModal {...props} files={files} /> : null
 );
 
-const mapStateToProps = ({assetAdmin: {confirmDeletion}}) => confirmDeletion;
+const mapStateToProps = ({ assetAdmin: { confirmDeletion } }) => confirmDeletion;
 const mapDispatchToProps = {
   onCancel: confirmDeletionActions.cancel,
-  reset: confirmDeletionActions.reset()
+  onModalClose: confirmDeletionActions.modalClose
 };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
 )(ConditionalModal);
 
-export {BulkDeleteConfirmation as Component};
+export { BulkDeleteConfirmation as Component };
