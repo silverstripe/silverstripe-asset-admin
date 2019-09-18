@@ -92,7 +92,7 @@ const filter = 'div[data-shortcode="embed"]';
               name: 'embed',
               properties,
               wrapped: true,
-              content: url
+              content: properties.url
             });
             embed.replaceWith(shortCode);
           });
