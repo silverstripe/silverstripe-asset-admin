@@ -44,7 +44,8 @@ class ImageFormFactory extends FileFormFactory
             'right' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AlignmentRight', 'Right wrap'),
         ];
 
-        $tab->push(
+        $tab->insertBefore(
+            'Caption',
             OptionsetField::create(
                 'Alignment',
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Alignment', 'Alignment'),
@@ -52,7 +53,9 @@ class ImageFormFactory extends FileFormFactory
             )
                 ->addExtraClass('insert-embed-modal__placement')
         );
-        $tab->push(
+
+        $tab->insertAfter(
+            'Alignment',
             FieldGroup::create(
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
                 TextField::create(
@@ -72,7 +75,7 @@ class ImageFormFactory extends FileFormFactory
             ->setName('Dimensions')
         );
 
-        $tab->insertBefore(
+        $tab->insertAfter(
             'Caption',
             TextField::create('AltText', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltText', 'Alternative text (alt)'))
                 ->setDescription(_t(
@@ -80,6 +83,7 @@ class ImageFormFactory extends FileFormFactory
                     'Shown to screen readers or if image can\'t be displayed'
                 ))
         );
+
         $tab->insertAfter(
             'AltText',
             TextField::create('TitleTooltip', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltip', 'Title text (tooltip)'))
