@@ -1,12 +1,9 @@
-import i18n from 'i18n';
-import React from 'react';
-
 /**
  * Check if the provided file entry is a folder
  * @param {Object} file
  * @return {boolean}
  */
-const isFolder = ( ({type}) => (type === 'folder'));
+const isFolder = (({ type }) => (type === 'folder'));
 
 /**
  * Check if the provided file entry is a file
@@ -16,14 +13,15 @@ const isFolder = ( ({type}) => (type === 'folder'));
 const isFile = (file => (!isFolder(file)));
 
 /**
- * Given a fileUsage map, create a suitable reduce callback that count the sums up the usage for a list of files.
+ * Given a fileUsage map, create a suitable reduce callback that count the sums up the usage for
+ * a list of files.
  * @param {Object}fileUsage
  */
 const fileUsageReducer = (fileUsage) =>
-  (accumulator, {id}) => (
+  (accumulator, { id }) => (
     fileUsage[id] ?
       {
-        fileInUseCount: accumulator.fileInUseCount+1,
+        fileInUseCount: accumulator.fileInUseCount + 1,
         inUseCount: accumulator.inUseCount + fileUsage[id]
       } : accumulator
   );
@@ -32,7 +30,7 @@ const fileUsageReducer = (fileUsage) =>
  * Initial accumulator to use with `fileUsageReducer`.
  * @type {{fileInUseCount: number, inUseCount: number}}
  */
-const fileUsageInitAccumulator = {fileInUseCount: 0, inUseCount: 0};
+const fileUsageInitAccumulator = { fileInUseCount: 0, inUseCount: 0 };
 
 /**
  * Detect if there's any folder in-use in our current selection
@@ -46,10 +44,11 @@ export const getFolderInUse = (files, fileUsage) => {
     .filter(isFolder)
     .reduce(fileUsageReducer(fileUsage), fileUsageInitAccumulator);
   return folderUsage.fileInUseCount > 0;
-}
+};
 
 /**
- * Count the number of files that are currently in use and the number of places where they are in use.
+ * Count the number of files that are currently in use and the number of places where they are
+ * in use.
  * @param {Object[]} files
  * @param {Object} fileUsageData
  * @return {Object}

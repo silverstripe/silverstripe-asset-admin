@@ -40,12 +40,12 @@ const confirmationMessage = (folderInUse, fileCount, fileInUseCount, inUseCount)
     ),
     fileInUseCount
   );
-}
+};
 
 /**
  * Display a context dependent confirmation message.
  */
-const BulkDeleteMessage = ({folderInUse, fileCount, fileInUseCount, inUseCount}) => (
+const BulkDeleteMessage = ({ folderInUse, fileCount, fileInUseCount, inUseCount }) => (
   <Fragment>
     <p>{confirmationMessage(folderInUse, fileCount, fileInUseCount, inUseCount)}</p>
     {!folderInUse && fileInUseCount > 0 && <p>{i18n._t(
@@ -67,6 +67,6 @@ BulkDeleteMessage.defaultProps = {
   fileCount: 0,
   fileInUseCount: 0,
   inUseCount: 0
-}
+};
 
 export default BulkDeleteMessage;
