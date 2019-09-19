@@ -37,7 +37,7 @@ const BulkDeleteConfirmation = ({
     const bodyProps = { folderInUse, fileCount: files.length, ...fileUsageCount };
     body = <BulkDeleteMessage {...bodyProps} />;
 
-    if (folderInUse) {
+    if (!folderInUse) {
       actions = [
         {
           label: i18n._t('AssetAdmin.DELETE', 'Delete'),
