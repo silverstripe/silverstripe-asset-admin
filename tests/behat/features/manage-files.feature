@@ -71,14 +71,19 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
       And I should see the file status flag
 
+  @delete
   Scenario: I can delete a file
     When I click on the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileEditForm" form
     When I press the "Other actions" button
-      And I press the "Delete" button, confirming the dialog
+      And I press the "Delete" button
+      And I wait for 1 second
+    Then I should see a modal titled "Confirm file deletion"
+      And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
 
+  @delete
   Scenario: I can delete multiple files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
     When I click on the file named "folder1" in the gallery
@@ -92,7 +97,10 @@ Feature: Manage files
     When I attach the file "testfile.jpg" to dropzone "gallery-container"
       And I check the file named "testfile" in the gallery
     Then the ".bulk-actions-counter" element should contain "3"
-      And I press the "Delete" button, confirming the dialog
+      And I press the "Delete" button
+      And I wait for 1 second
+    Then I should see a modal titled "Confirm file deletion"
+      And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery

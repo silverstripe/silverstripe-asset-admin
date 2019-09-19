@@ -293,6 +293,24 @@ EOS
     }
 
     /**
+     * @Then I press the :buttonName button inside the modal
+     * @param string $buttonName
+     */
+    public function iPressButtonInModal($buttonName)
+    {
+        $page = $this->getMainContext()->getSession()->getPage();
+        $modal = $page->find('css', '[role=dialog] .modal-dialog');
+        assertNotNull($modal, 'No modal on the page');
+
+        // Check if the popover is open for the block
+        $button = $modal->find('xpath', "//button[contains(text(), '$buttonName')]");
+
+        assertNotNull($button, sprintf('Could not find button labelled "%s"', $buttonName));
+
+        $button->click();
+    }
+
+    /**
      * @Then /^I should see the gallery item "([^"]+)" in position "([^"]+)"$/
      * @param string $name
      * @param string $position
