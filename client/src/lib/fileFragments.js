@@ -26,6 +26,7 @@ const file = `
     smallThumbnail
     thumbnail
     inUseCount
+    version
   }
 `;
 
