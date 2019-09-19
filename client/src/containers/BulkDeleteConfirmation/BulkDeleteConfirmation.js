@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withApollo } from 'react-apollo';
 import { inject, injectGraphql } from 'lib/Injector';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
-import DeletionModal from 'components/DeletionModal/DeletionModal';
+import DeletionModal from './DeletionModal';
 import BulkDeleteMessage from './BulkDeleteMessage';
 import { getFileInUseCount, getFolderInUse } from './helpers';
 import fileShape from 'lib/fileShape';

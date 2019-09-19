@@ -715,7 +715,7 @@ class Gallery extends Component {
             return {
               ...action,
               callback: (event, items) => {
-                this.props.actions.confirmDeletion.confirm(items)
+                this.props.actions.confirmDeletion.confirm(items);
               },
               confirm: undefined
             };
@@ -963,7 +963,7 @@ class Gallery extends Component {
           onSuccess={this.props.onMoveFilesSuccess}
           onOpenFolder={this.props.onOpenFolder}
         />
-          <BulkDeleteConfirmation onConfirm={(items) => this.handleBulkDelete(undefined, items)} />
+        <BulkDeleteConfirmation onConfirm={(items) => this.handleBulkDelete(undefined, items)} />
       </div>
     );
   }

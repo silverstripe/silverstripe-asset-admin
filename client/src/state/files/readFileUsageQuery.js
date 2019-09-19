@@ -14,20 +14,17 @@ const apolloConfig = {
     const {
       data: {
         error,
-        refetch,
         readFileUsage,
         loading: networkLoading,
       },
-      ownProps: { actions },
     } = props;
     const errors = error && error.graphQLErrors &&
       error.graphQLErrors.map((graphQLError) => graphQLError.message);
 
     const fileUsage = readFileUsage ?
-      readFileUsage.reduce((accumulator, { id, inUseCount }) => {
-        accumulator[id] = inUseCount;
-        return accumulator;
-      }, {}) :
+      readFileUsage.reduce((accumulator, { id, inUseCount }) => (
+        { ...accumulator, [id]: inUseCount }
+      ), {}) :
       {};
 
     return {
