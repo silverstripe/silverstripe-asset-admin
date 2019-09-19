@@ -20,7 +20,6 @@ import { SelectableGroup } from 'react-selectable';
 import GalleryDND from './GalleryDND';
 import configShape from 'lib/configShape';
 import MoveModal from '../MoveModal/MoveModal';
-import BulkDeleteConfirmation from '../BulkDeleteConfirmation/BulkDeleteConfirmation';
 import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
 
@@ -48,7 +47,6 @@ class Gallery extends Component {
     this.handleBulkEdit = this.handleBulkEdit.bind(this);
     this.handleBulkPublish = this.handleBulkPublish.bind(this);
     this.handleBulkUnpublish = this.handleBulkUnpublish.bind(this);
-    this.handleBulkDelete = this.handleBulkDelete.bind(this);
     this.handleBulkMove = this.handleBulkMove.bind(this);
     this.handleBulkInsert = this.handleBulkInsert.bind(this);
     this.handleGroupSelect = this.handleGroupSelect.bind(this);
@@ -221,44 +219,6 @@ class Gallery extends Component {
    */
   handleBulkInsert(event, items) {
     this.props.onInsertMany(event, items);
-  }
-
-  /**
-   * Delete a list of items
-   *
-   * @param {Event} event
-   * @param {Array} items
-   * @returns {Promise}
-   */
-  handleBulkDelete(event, items) {
-    this.props.actions.confirmDeletion.deleting();
-    return this.props.onDelete(items.map(item => item.id))
-      .then((resultItems) => {
-        const successes = resultItems.filter((result) => result).length;
-        if (successes !== items.length) {
-          this.props.actions.gallery.setErrorMessage(
-            i18n.sprintf(
-              i18n._t(
-                'AssetAdmin.BULK_ACTIONS_DELETE_FAIL',
-                '%s folders/files were successfully deleted, but %s files were not able to be deleted.'
-              ),
-              successes,
-              items.length - successes
-            )
-          );
-          this.props.actions.gallery.setNoticeMessage(null);
-        } else {
-          this.props.actions.gallery.setNoticeMessage(
-            i18n.sprintf(
-              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS', '%s folders/files were successfully deleted.'),
-              successes
-            )
-          );
-          this.props.actions.gallery.setErrorMessage(null);
-          this.props.actions.gallery.deselectFiles();
-        }
-      })
-    .finally(this.props.actions.confirmDeletion.reset);
   }
 
   /**
@@ -963,7 +923,6 @@ class Gallery extends Component {
           onSuccess={this.props.onMoveFilesSuccess}
           onOpenFolder={this.props.onOpenFolder}
         />
-        <BulkDeleteConfirmation onConfirm={(items) => this.handleBulkDelete(undefined, items)} />
       </div>
     );
   }
@@ -1009,7 +968,6 @@ const galleryViewPropTypes = Object.assign({}, sharedPropTypes, {
   selectableFolders: PropTypes.bool,
   onSelect: PropTypes.func,
   onCancelUpload: PropTypes.func,
-  onDelete: PropTypes.func,
   onRemoveErroredUpload: PropTypes.func,
   onEnableDropzone: PropTypes.func,
 });
@@ -1025,7 +983,6 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   onSuccessfulUploadQueue: PropTypes.func,
   onCreateFolder: PropTypes.func,
   onMoveFilesSuccess: PropTypes.func,
-  onDelete: PropTypes.func,
   onPublish: PropTypes.func,
   onUnpublish: PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),

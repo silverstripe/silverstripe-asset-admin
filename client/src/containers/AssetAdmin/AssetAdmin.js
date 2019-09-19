@@ -23,6 +23,8 @@ import publishFilesMutation from 'state/files/publishFilesMutation';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
 import { injectGraphql } from 'lib/Injector';
+import BulkDeleteConfirmation from '../BulkDeleteConfirmation/BulkDeleteConfirmation';
+import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 
 function getFormSchema({ config, viewAction, folderId, fileId, type }) {
   let schemaUrl = null;
@@ -443,6 +445,8 @@ class AssetAdmin extends Component {
    * @param {array} ids
    */
   handleDelete(ids) {
+    this.props.actions.confirmDeletion.deleting();
+
     const files = ids.map(id => {
       const result = this.findFile(id);
       if (!result) {
@@ -474,7 +478,33 @@ class AssetAdmin extends Component {
         this.props.actions.files.readFiles();
 
         return deleteFiles;
-      });
+      })
+      .then((resultItems) => {
+        const successes = resultItems.filter((result) => result).length;
+        if (successes !== ids.length) {
+          this.props.actions.gallery.setErrorMessage(
+            i18n.sprintf(
+              i18n._t(
+                'AssetAdmin.BULK_ACTIONS_DELETE_FAIL',
+                '%s folders/files were successfully deleted, but %s files were not able to be deleted.'
+              ),
+              successes,
+              ids.length - successes
+            )
+          );
+          this.props.actions.gallery.setNoticeMessage(null);
+        } else {
+          this.props.actions.gallery.setNoticeMessage(
+            i18n.sprintf(
+              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS', '%s folders/files were successfully deleted.'),
+              successes
+            )
+          );
+          this.props.actions.gallery.setErrorMessage(null);
+          this.props.actions.gallery.deselectFiles();
+        }
+      })
+      .finally(this.props.actions.confirmDeletion.reset);
   }
 
   /**
@@ -694,7 +724,6 @@ class AssetAdmin extends Component {
         graphQLErrors={this.props.graphQLErrors}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
-        onDelete={this.handleDelete}
         onInsertMany={this.props.onInsertMany}
         onPublish={this.doPublish}
         onUnpublish={this.doUnpublish}
@@ -744,7 +773,6 @@ class AssetAdmin extends Component {
         schemaUrl={schemaUrl}
         schemaUrlQueries={this.props.requireLinkText ? [{ name: 'requireLinkText', value: true }] : []}
         onSubmit={this.handleSubmitEditor}
-        onDelete={this.handleDelete}
         onUnpublish={this.handleUnpublish}
         addToCampaignSchemaUrl={config.form.addToCampaignForm.schemaUrl}
       />
@@ -795,6 +823,7 @@ class AssetAdmin extends Component {
           {this.renderGallery()}
           {this.renderEditor()}
         </div>
+        <BulkDeleteConfirmation onConfirm={(items) => this.handleDelete(items.map(({ id }) => id))} />
       </div>
     );
   }
@@ -864,6 +893,7 @@ function mapDispatchToProps(dispatch) {
       displaySearch: bindActionCreators(displaySearchActions, dispatch),
       // TODO Refactor "queued files" into separate visual area and remove coupling here
       queuedFiles: bindActionCreators(queuedFilesActions, dispatch),
+      confirmDeletion: bindActionCreators(confirmDeletionActions, dispatch)
     },
   };
 }
