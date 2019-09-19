@@ -1,16 +1,6 @@
 /* global jest, describe, it, pit, expect, beforeEach, jasmine */
 import { getFolderInUse, getFileInUseCount } from '../helpers';
-
-const FOLDER = 'folder';
-const FILE = 'file';
-
-const files = [
-  { id: 1, title: 'A folder', type: FOLDER },
-  { id: 2, title: 'Another folder', type: FOLDER },
-  { id: 3, title: 'image.jpg', type: FILE },
-  { id: 4, title: 'document.pdf', type: FILE },
-];
-
+import { mockfiles as files } from './mockfiles';
 
 describe('BulkDeleteConfirmation Helper methods', () => {
   describe('getFolderInUse', () => {
