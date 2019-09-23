@@ -49,3 +49,12 @@ SilverStripe\Assets\File:
   disallowCanDelete:
     Parent: =>SilverStripe\Assets\Folder.folder1
     Name: disallowCanDelete.txt
+SilverStripe\Assets\Shortcodes\FileLink:
+  usingrootfileonce:
+    Linked: =>SilverStripe\Assets\File.rootfile
+  usingrootfiletwice:
+    Linked: =>SilverStripe\Assets\File.rootfile
+  usingfile1:
+    Linked: =>SilverStripe\Assets\File.file1
+  usingreadonlyfile:
+    Linked: =>SilverStripe\Assets\File.disallowCanView
