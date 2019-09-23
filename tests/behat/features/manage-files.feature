@@ -71,7 +71,6 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
       And I should see the file status flag
 
-  @delete
   Scenario: I can delete a file
     When I click on the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
@@ -83,7 +82,6 @@ Feature: Manage files
       And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
 
-  @delete
   Scenario: I can delete multiple files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
     When I click on the file named "folder1" in the gallery
@@ -175,9 +173,11 @@ Feature: Manage files
   Scenario: I cannot delete a folder containing a file that is in use
     When I check the file named "folder3" in the gallery
     Then I press the "Delete" button
-      And I see the text "currently in use" in the alert
-      And I see the text "before you can delete the folder" in the alert
-      And I confirm the dialog
+      And I wait for 1 second
+    Then I should see a modal titled "Confirm file deletion"
+      And I should see "currently in use" in the ".modal-body" region
+      And I should see "before you can delete the folder" in the ".modal-body" region
+      And I press the Dismiss button inside the modal
     Then I should see the file named "folder3" in the gallery
 
   @modal
@@ -185,8 +185,10 @@ Feature: Manage files
     When I click on the file named "folder3" in the gallery
       And I check the file named "file1" in the gallery
     Then I press the "Delete" button
-      And I see the text "file is currently in use" in the alert
-      And I confirm the dialog
+      And I wait for 1 second
+    Then I should see a modal titled "Confirm file deletion"
+      And I should see "file is currently in use" in the ".modal-body" region
+      And I press the Delete button inside the modal
     Then I should see "1 folders/files were successfully archived" in the message box
       And I should not see the file named "file1" in the gallery
 
