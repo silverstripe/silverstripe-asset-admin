@@ -89,10 +89,12 @@ class InsertMediaModal extends Component {
    * @param {object} file
    */
   handleSubmit(data, action, submitFn, file) {
-    if (action === 'action_createfolder') {
-      return submitFn();
+    if (action === 'action_insert') {
+      return this.props.onInsert(data, file);
     }
-    return this.props.onInsert(data, file);
+
+    // Standard form actions (e.g. publish)
+    return submitFn();
   }
 
   renderToolbarChildren() {
