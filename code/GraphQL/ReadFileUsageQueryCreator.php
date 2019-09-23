@@ -12,7 +12,7 @@ use SilverStripe\GraphQL\QueryCreator;
 use SilverStripe\Versioned\Versioned;
 
 /**
- * GraphQL Queyr to retrieve usage count for files and folders on GraphQL request.
+ * GraphQL Query to retrieve usage count for files and folders on GraphQL request.
  */
 class ReadFileUsageQueryCreator extends QueryCreator
 {

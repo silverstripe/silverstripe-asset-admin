@@ -42,29 +42,28 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
         parent::tearDown();
     }
 
-    public function testUsageCountForRegularFile()
+    public function fileUsageDataProvider()
     {
-        $this->assertUsageCountForFixture(File::class, 'rootfile', 2, 'rootfile file is used twice');
+        return [
+            [File::class, 'rootfile', 2, 'rootfile file is used twice'],
+            [File::class, 'file2', 0, 'file2 is not used'],
+            [File::class, 'disallowCanView', false, 'disallowCanView should provide file usage data'],
+            [Folder::class, 'folder1', 2, 'folder1 contains files used 2 times'],
+            [Folder::class, 'folder1.1', 0, 'folder1.1 does not contained any used files'],
+        ];
     }
 
-    public function testUsageCountForUnusedFile()
+    /**
+     * @dataProvider fileUsageDataProvider
+     * @param string $class
+     * @param string $fixture
+     * @param int|false $expectedCount
+     * @param $message
+     */
+    public function testUsageCount(string $class, string $fixture, $expectedCount, $message)
     {
-        $this->assertUsageCountForFixture(File::class, 'file2', 0, 'file2 is not used');
-    }
-
-    public function testUsageCountForFileWithoutReadAccess()
-    {
-        $this->assertUsageCountForFixture(File::class, 'disallowCanView', false, 'file2 is not used');
-    }
-
-    public function testUsageCountForRegularFolder()
-    {
-        $this->assertUsageCountForFixture(Folder::class, 'folder1', 2, 'folder1 contains files used 3 times');
-    }
-
-    public function testUsageCountForUnusedFolder()
-    {
-        $this->assertUsageCountForFixture(Folder::class, 'folder1.1', 0, 'folder1.1 does not contained any used files');
+        $id = $this->idFromFixture($class, $fixture);
+        $this->assertUsageCount($id, $expectedCount, $message);
     }
 
     public function testUsageCountForNonExistentFile()
@@ -83,17 +82,6 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
         $context = $context ? $context : ['currentUser' => null];
         $creator = new ReadFileUsageQueryCreator(new Manager());
         return $creator->resolve(null, $args, $context, new ResolveInfo([]));
-    }
-
-    /**
-     * Assert the file usage of the provided fixture.
-     * @param string $fixture
-     * @param int|false $expectedCount $expectedCount or false, if no result should be returned
-     */
-    private function assertUsageCountForFixture(string $class, string $fixture, $expectedCount, $message)
-    {
-        $id = $this->idFromFixture($class, $fixture);
-        $this->assertUsageCount($id, $expectedCount, $message);
     }
 
     /**
