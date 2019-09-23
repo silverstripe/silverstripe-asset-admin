@@ -13,9 +13,8 @@ export function confirm(files) {
 }
 
 /**
- * Ask for permission to delete
+ * The GraphQL request for deleting files has started.
  *
- * @param {Object[]} List of files we want to delete
  */
 export function deleting() {
   return {
@@ -25,9 +24,8 @@ export function deleting() {
 }
 
 /**
- * Ask for permission to delete
+ * User has changed their mind and doesn't want to delete files any more.
  *
- * @param {Object[]} List of files we want to delete
  */
 export function cancel() {
   return {
@@ -37,9 +35,8 @@ export function cancel() {
 }
 
 /**
- * Ask for permission to delete
+ * Deletion workflow was completed and we're returning to our regular state.
  *
- * @param {Object[]} List of files we want to delete
  */
 export function reset() {
   return {
@@ -49,9 +46,8 @@ export function reset() {
 }
 
 /**
- * Ask for permission to delete
+ * Modal has closed, we can stop rendering it.
  *
- * @param {Object[]} List of files we want to delete
  */
 export function modalClose() {
   return {
