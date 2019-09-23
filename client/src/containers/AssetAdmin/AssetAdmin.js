@@ -503,6 +503,8 @@ class AssetAdmin extends Component {
           this.props.actions.gallery.setErrorMessage(null);
           this.props.actions.gallery.deselectFiles();
         }
+
+        return resultItems;
       })
       .finally(this.props.actions.confirmDeletion.reset);
   }
@@ -823,7 +825,7 @@ class AssetAdmin extends Component {
           {this.renderGallery()}
           {this.renderEditor()}
         </div>
-        <BulkDeleteConfirmation onConfirm={(items) => this.handleDelete(items.map(({ id }) => id))} />
+        <BulkDeleteConfirmation onConfirm={this.handleDelete} />
       </div>
     );
   }

@@ -41,7 +41,7 @@ const BulkDeleteConfirmation = ({
       actions = [
         {
           label: i18n._t('AssetAdmin.DELETE', 'Delete'),
-          handler: () => onConfirm(files),
+          handler: () => onConfirm(files.map(({ id }) => id)),
           color: 'danger'
         },
         {

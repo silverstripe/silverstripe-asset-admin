@@ -499,24 +499,7 @@ describe('Gallery', () => {
       props.actions.gallery.setNoticeMessage = jest.fn();
       props.actions.gallery.setErrorMessage = jest.fn();
       props.actions.gallery.deselectFiles = jest.fn();
-    });
-
-    it('deletes a list of items', () => {
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-      return gallery.handleBulkDelete({}, [{ id: 5 }])
-        .then(() => {
-          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
-          expect(props.onDelete).toBeCalledWith([5]);
-          expect(props.actions.gallery.deselectFiles).toBeCalled();
-        })
-        .then(() => {
-          gallery.handleBulkDelete({}, [{ id: 5 }, { id: 6 }]);
-        })
-        .then(() => {
-          expect(props.actions.gallery.setErrorMessage).toBeCalled();
-        });
+      props.actions.confirmDeletion = { confirm: jest.fn() };
     });
 
     it('publishes a list of items if it was unpublished', () => {
