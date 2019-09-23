@@ -116,7 +116,6 @@ const query = {
   fragments: [
     'FileInterfaceFields',
     'FileFields',
-    'FolderFields',
   ],
   fields: [
     'pageInfo', [
@@ -135,7 +134,6 @@ const query = {
               'node', [
                 '...FileInterfaceFields',
                 '...FileFields',
-                '...FolderFields',
               ]
             ]
           ],
