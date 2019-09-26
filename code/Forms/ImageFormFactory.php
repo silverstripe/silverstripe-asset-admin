@@ -8,6 +8,7 @@ use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormFactory;
+use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TextField;
@@ -58,13 +59,13 @@ class ImageFormFactory extends FileFormFactory
             'Alignment',
             FieldGroup::create(
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
-                TextField::create(
+                NumericField::create(
                     'Width',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width')
                 )
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow'),
-                TextField::create(
+                NumericField::create(
                     'Height',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight', 'Height')
                 )
@@ -83,7 +84,6 @@ class ImageFormFactory extends FileFormFactory
                     'Shown to screen readers or if image can\'t be displayed'
                 ))
         );
-
         $tab->insertAfter(
             'AltText',
             TextField::create('TitleTooltip', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltip', 'Title text (tooltip)'))
@@ -95,6 +95,26 @@ class ImageFormFactory extends FileFormFactory
     }
 
     /**
+     * Retrieve the approprite insert dimension for the image, if available.
+     * @param Image $context
+     * @return array|false
+     */
+    private function getInsertDimensions($context)
+    {
+        if ($context &&
+            $context->hasMethod('getInsertWidth') &&
+            $context->hasMethod('getInsertHeight')
+        ) {
+            return [
+                'Width' => $context->getInsertWidth(),
+                'Height' => $context->getInsertHeight(),
+            ];
+        }
+
+        return false;
+    }
+
+    /**
      * @param RequestHandler $controller
      * @param string $name
      * @param array $context
@@ -102,7 +122,7 @@ class ImageFormFactory extends FileFormFactory
      */
     public function getForm(RequestHandler $controller = null, $name = FormFactory::DEFAULT_NAME, $context = [])
     {
-        $this->beforeExtending('updateForm', function ($form) use ($context) {
+        $this->beforeExtending('updateForm', function (Form $form) use ($context) {
             $record = null;
             if (isset($context['Record'])) {
                 $record = $context['Record'];
@@ -135,6 +155,13 @@ class ImageFormFactory extends FileFormFactory
             }
         });
 
-        return parent::getForm($controller, $name, $context);
+        $form = parent::getForm($controller, $name, $context);
+
+        // Set Width and Height to Insert dimensions if available.
+        if ($context['Record'] && $dimensions = $this->getInsertDimensions($context['Record'])) {
+            $form->loadDataFrom($dimensions);
+        }
+
+        return $form;
     }
 }
