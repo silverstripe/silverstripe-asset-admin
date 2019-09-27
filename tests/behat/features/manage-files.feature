@@ -77,7 +77,6 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
     When I press the "Other actions" button
       And I press the "Delete" button
-      And I wait for 1 second
     Then I should see a modal titled "Confirm file deletion"
       And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
@@ -96,7 +95,6 @@ Feature: Manage files
       And I check the file named "testfile" in the gallery
     Then the ".bulk-actions-counter" element should contain "3"
       And I press the "Delete" button
-      And I wait for 1 second
     Then I should see a modal titled "Confirm file deletion"
       And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
