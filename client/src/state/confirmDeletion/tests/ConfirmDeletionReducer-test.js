@@ -1,6 +1,7 @@
 /* global jest, describe, it, pit, expect, beforeEach, jasmine */
 import reducer, { initialState } from '../ConfirmDeletionReducer';
 import ACTION_TYPES from '../ConfirmDeletionActionTypes';
+import * as TRANSITIONS from '../ConfirmDeletionTransitions';
 
 const FOLDER = 'folder';
 const FILE = 'file';
@@ -21,7 +22,7 @@ describe('Confirm Deletion State Reducers', () => {
         { type: ACTION_TYPES.CONFIRM_DELETION_ASK, payload: { files } }
       );
       expect(actualNewState.showConfirmation).toBe(true);
-      expect(actualNewState.transition).toBe(false);
+      expect(actualNewState.transition).toBe(TRANSITIONS.NO_TRANSITION);
       expect(actualNewState.files).toBe(files);
     });
 
@@ -29,13 +30,13 @@ describe('Confirm Deletion State Reducers', () => {
       const actualNewState = reducer(
         {
           showConfirmation: true,
-          transition: 'canceling',
+          transition: TRANSITIONS.CANCELING,
           files: [{ id: 5, title: 'monkey.jpg', type: FILE }]
         },
         { type: ACTION_TYPES.CONFIRM_DELETION_ASK, payload: { files } }
       );
       expect(actualNewState.showConfirmation).toBe(true);
-      expect(actualNewState.transition).toBe(false);
+      expect(actualNewState.transition).toBe(TRANSITIONS.NO_TRANSITION);
       expect(actualNewState.files).toBe(files);
     });
   });
@@ -43,21 +44,21 @@ describe('Confirm Deletion State Reducers', () => {
   describe(ACTION_TYPES.CONFIRM_DELETION_CONFIRM, () => {
     it('User as confirm deletion', () => {
       const actualNewState = reducer(
-        { showConfirmation: true, transition: false, files },
+        { showConfirmation: true, transition: TRANSITIONS.NO_TRANSITION, files },
         { type: ACTION_TYPES.CONFIRM_DELETION_CONFIRM, payload: { } }
       );
       expect(actualNewState.showConfirmation).toBe(true);
-      expect(actualNewState.transition).toBe('deleting');
+      expect(actualNewState.transition).toBe(TRANSITIONS.DELETING);
       expect(actualNewState.files).toBe(files);
     });
 
     it('User confirm deletion, but the modal is already gone', () => {
       const actualNewState = reducer(
-        { showConfirmation: false, transition: false, files },
+        { showConfirmation: false, transition: TRANSITIONS.NO_TRANSITION, files },
         { type: ACTION_TYPES.CONFIRM_DELETION_CONFIRM, payload: { } }
       );
       expect(actualNewState.showConfirmation).toBe(false);
-      expect(actualNewState.transition).toBe(false);
+      expect(actualNewState.transition).toBe(TRANSITIONS.NO_TRANSITION);
       expect(actualNewState.files).toBe(files);
     });
   });
@@ -65,11 +66,11 @@ describe('Confirm Deletion State Reducers', () => {
   describe(ACTION_TYPES.CONFIRM_DELETION_CANCEL, () => {
     it('User doesn\'t want to delete anymore', () => {
       const actualNewState = reducer(
-        { showConfirmation: true, transition: false, files },
+        { showConfirmation: true, transition: TRANSITIONS.NO_TRANSITION, files },
         { type: ACTION_TYPES.CONFIRM_DELETION_CANCEL, payload: { } }
       );
       expect(actualNewState.showConfirmation).toBe(true);
-      expect(actualNewState.transition).toBe('canceling');
+      expect(actualNewState.transition).toBe(TRANSITIONS.CANCELING);
       expect(actualNewState.files).toBe(files);
     });
 
@@ -79,7 +80,7 @@ describe('Confirm Deletion State Reducers', () => {
         { type: ACTION_TYPES.CONFIRM_DELETION_CANCEL, payload: { } }
       );
       expect(actualNewState.showConfirmation).toBe(false);
-      expect(actualNewState.transition).toBe(false);
+      expect(actualNewState.transition).toBe(TRANSITIONS.NO_TRANSITION);
       expect(actualNewState.files).toEqual([]);
     });
   });
@@ -87,11 +88,11 @@ describe('Confirm Deletion State Reducers', () => {
   describe(ACTION_TYPES.CONFIRM_DELETION_CANCEL, () => {
     it('User doesn\'t want to delete anymore', () => {
       const actualNewState = reducer(
-        { showConfirmation: true, transition: false, files },
+        { showConfirmation: true, transition: TRANSITIONS.NO_TRANSITION, files },
         { type: ACTION_TYPES.CONFIRM_DELETION_CANCEL, payload: { } }
       );
       expect(actualNewState.showConfirmation).toBe(true);
-      expect(actualNewState.transition).toBe('canceling');
+      expect(actualNewState.transition).toBe(TRANSITIONS.CANCELING);
       expect(actualNewState.files).toBe(files);
     });
 
@@ -101,7 +102,7 @@ describe('Confirm Deletion State Reducers', () => {
         { type: ACTION_TYPES.CONFIRM_DELETION_CANCEL, payload: { } }
       );
       expect(actualNewState.showConfirmation).toBe(false);
-      expect(actualNewState.transition).toBe(false);
+      expect(actualNewState.transition).toBe(TRANSITIONS.NO_TRANSITION);
       expect(actualNewState.files).toEqual([]);
     });
   });
@@ -117,7 +118,7 @@ describe('Confirm Deletion State Reducers', () => {
 
     it('Reset udpates unset files as well', () => {
       const actualNewState = reducer(
-        { showConfirmation: true, transition: 'deleting', files },
+        { showConfirmation: true, transition: TRANSITIONS.DELETING, files },
         { type: ACTION_TYPES.CONFIRM_DELETION_RESET, payload: { } }
       );
       expect(actualNewState).toBe(initialState);
@@ -131,17 +132,17 @@ describe('Confirm Deletion State Reducers', () => {
         { type: ACTION_TYPES.CONFIRM_DELETION_MODAL_CLOSE, payload: { } }
       );
       expect(actualNewState.showConfirmation).toBe(false);
-      expect(actualNewState.transition).toBe(false);
+      expect(actualNewState.transition).toBe(TRANSITIONS.NO_TRANSITION);
       expect(actualNewState.files).toEqual([]);
     });
 
     it('Modal close before delete request is done', () => {
       const actualNewState = reducer(
-        { showConfirmation: true, transition: 'deleting', files },
+        { showConfirmation: true, transition: TRANSITIONS.DELETING, files },
         { type: ACTION_TYPES.CONFIRM_DELETION_MODAL_CLOSE, payload: { } }
       );
       expect(actualNewState.showConfirmation).toBe(false);
-      expect(actualNewState.transition).toBe(false);
+      expect(actualNewState.transition).toBe(TRANSITIONS.NO_TRANSITION);
       expect(actualNewState.files).toBe(files);
     });
   });

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { withApollo } from 'react-apollo';
 import { inject, injectGraphql } from 'lib/Injector';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
+import * as TRANSITIONS from 'state/confirmDeletion/ConfirmDeletionTransitions';
 import DeletionModal from './DeletionModal';
 import BulkDeleteMessage from './BulkDeleteMessage';
 import { getFileInUseCount, getFolderInUse } from './helpers';
@@ -55,7 +56,7 @@ const BulkDeleteConfirmation = ({
   // If we're in the process of canceling/deleting results, we set isOpen to false.
   // This is just a way to get the nice modal out transtion.
   // When tell the modal to call the `reset` action when it's done closing.
-  const isOpen = !['canceling', 'deleting'].includes(transition);
+  const isOpen = ![TRANSITIONS.CANCELING, TRANSITIONS.DELETING].includes(transition);
 
   return (<DeletionModal
     body={body}

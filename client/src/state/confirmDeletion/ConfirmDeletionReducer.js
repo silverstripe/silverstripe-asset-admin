@@ -1,13 +1,14 @@
 import ACTION_TYPES from './ConfirmDeletionActionTypes';
+import * as TRANSITIONS from './ConfirmDeletionTransitions';
 
 /**
  * Initial base state
- * @type {{fields: {}}}
+ * @type { Object }
  */
 export const initialState = {
   showConfirmation: false,
   files: [],
-  transition: false,
+  transition: TRANSITIONS.NO_TRANSITION,
 };
 
 function confirmDeletionReducer(state = initialState, action) {
@@ -17,18 +18,18 @@ function confirmDeletionReducer(state = initialState, action) {
 
     case ACTION_TYPES.CONFIRM_DELETION_CANCEL:
       if (state.showConfirmation) {
-        return { ...state, transition: 'canceling' };
+        return { ...state, transition: TRANSITIONS.CANCELING };
       }
       break;
 
     case ACTION_TYPES.CONFIRM_DELETION_CONFIRM:
       if (state.showConfirmation) {
-        return { ...state, transition: 'deleting' };
+        return { ...state, transition: TRANSITIONS.DELETING };
       }
       break;
 
     case ACTION_TYPES.CONFIRM_DELETION_MODAL_CLOSE:
-      return { ...state, showConfirmation: false, transition: false };
+      return { ...state, showConfirmation: false, transition: TRANSITIONS.NO_TRANSITION };
 
     case ACTION_TYPES.CONFIRM_DELETION_RESET:
       return initialState;
