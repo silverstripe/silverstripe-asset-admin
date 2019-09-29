@@ -141,9 +141,9 @@ class ImageFormFactory extends FileFormFactory
     }
 
     /**
-     * Retrieve the approprite insert dimension for the image, if available.
+     * Retrieve the appropriate insert dimension for the image, if available.
      * @param Image $context
-     * @return array|false
+     * @return array|null
      */
     private function getInsertDimensions($context)
     {
@@ -156,6 +156,6 @@ class ImageFormFactory extends FileFormFactory
                 'Height' => $context->getInsertHeight(),
             ];
         }
-        return false;
+        return null;
     }
 }
