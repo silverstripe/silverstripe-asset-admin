@@ -171,7 +171,6 @@ Feature: Manage files
   Scenario: I cannot delete a folder containing a file that is in use
     When I check the file named "folder3" in the gallery
     Then I press the "Delete" button
-      And I wait for 1 second
     Then I should see a modal titled "Confirm file deletion"
       And I should see "currently in use" in the ".modal-body" region
       And I should see "before you can delete the folder" in the ".modal-body" region
@@ -183,7 +182,6 @@ Feature: Manage files
     When I click on the file named "folder3" in the gallery
       And I check the file named "file1" in the gallery
     Then I press the "Delete" button
-      And I wait for 1 second
     Then I should see a modal titled "Confirm file deletion"
       And I should see "file is currently in use" in the ".modal-body" region
       And I press the Delete button inside the modal
