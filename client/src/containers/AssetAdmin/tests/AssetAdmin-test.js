@@ -5,6 +5,7 @@ jest.mock('containers/Editor/Editor');
 jest.mock('components/Breadcrumb/Breadcrumb');
 jest.mock('components/Search/Search');
 jest.mock('containers/Gallery/Gallery');
+jest.mock('containers/BulkDeleteConfirmation/BulkDeleteConfirmation');
 
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
@@ -67,6 +68,8 @@ describe('AssetAdmin', () => {
       actions: {
         gallery: {
           deselectFiles: jest.fn(),
+          setErrorMessage: jest.fn(),
+          setNoticeMessage: jest.fn(),
         },
         breadcrumbsActions: {
           setBreadcrumbs: jest.fn(),
@@ -84,6 +87,9 @@ describe('AssetAdmin', () => {
           publishFiles: jest.fn(() => Promise.resolve({ data: { publishFiles: [] } })),
           unpublishFiles: jest.fn(() => Promise.resolve({ data: { unpublishFiles: [] } })),
         },
+        confirmDeletion: {
+          deleting: jest.fn(),
+        }
       },
     };
   });

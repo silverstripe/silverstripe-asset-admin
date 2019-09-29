@@ -348,7 +348,7 @@ class AssetAdminTest extends FunctionalTest
 
         $data = $assetAdmin->getObjectFromData($file);
 
-        // Thumbnail value is hard to predit, so we'll just check that it's there before unseting it.
+        // Thumbnail value is hard to predict, so we'll just check that it's there before unseting it.
         $this->assertNotEmpty($data['thumbnail']);
         unset($data['thumbnail']);
 
@@ -367,7 +367,7 @@ class AssetAdminTest extends FunctionalTest
             "published" => $file->isPublished(),
             "modified" => $file->isModifiedOnDraft(),
             "draft" => $file->isOnDraftOnly(),
-            "inUseCount" => 0,
+            "inUseCount" => 1,
             "created" => $file->Created,
             "lastUpdated" => $file->LastEdited,
             "owner" => [
