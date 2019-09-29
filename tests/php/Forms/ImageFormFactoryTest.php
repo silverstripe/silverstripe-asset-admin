@@ -25,6 +25,8 @@ class ImageFormFactoryTest extends SapphireTest
     /** @var Image */
     private $img;
 
+    protected $usesDatabase = true;
+
     protected function setUp()
     {
         parent::setUp();
