@@ -108,7 +108,7 @@ describe('Confirm Deletion State Reducers', () => {
   });
 
   describe(ACTION_TYPES.CONFIRM_DELETION_RESET, () => {
-    it('Reset brign evertythign back to initial state', () => {
+    it('Reset bring evertything back to initial state', () => {
       const actualNewState = reducer(
         initialState,
         { type: ACTION_TYPES.CONFIRM_DELETION_RESET, payload: { } }
