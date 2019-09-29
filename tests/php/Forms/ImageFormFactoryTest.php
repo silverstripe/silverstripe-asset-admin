@@ -54,7 +54,7 @@ class ImageFormFactoryTest extends SapphireTest
      */
     public function testInsertImageSize($insertWidth, $insertHeight, $expectedWidth, $expectedHeight)
     {
-        $config = $this->img::config();
+        $config = Image::config();
         $config->set('insert_width', $insertWidth);
         $config->set('insert_height', $insertHeight);
 
