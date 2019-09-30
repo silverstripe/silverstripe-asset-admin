@@ -10,7 +10,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
-import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
+import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
 
 const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
@@ -73,7 +73,7 @@ const filter = 'img[data-shortcode="image"]';
           .add(content.filter(filter))
           .each(function () {
             const el = jQuery(this);
-            const properties = {
+            const properties = sanitiseShortCodeProperties({
               // Requires server-side preprocessing of HTML+shortcodes in HTMLValue
               src: el.attr('src'),
               id: el.data('id'),
@@ -83,7 +83,8 @@ const filter = 'img[data-shortcode="image"]';
               // don't save caption, since that's in the containing element
               title: el.attr('title'),
               alt: el.attr('alt'),
-            };
+            });
+
             const shortCode = ShortcodeSerialiser.serialise({
               name: 'image',
               properties,
