@@ -88,7 +88,7 @@ const filter = 'img[data-shortcode="image"]';
             const shortCode = ShortcodeSerialiser.serialise({
               name: 'image',
               properties,
-              wrapped: false
+              wrapped: false,
             });
             el.replaceWith(shortCode);
           });
@@ -244,7 +244,7 @@ jQuery.entwine('ss', ($) => {
     /**
      * Get default upload folder
      *
-     * @returns {number}
+     * @returns {(number|null)}
      */
     getFolderId() {
       const $field = this.getElement();
@@ -252,12 +252,9 @@ jQuery.entwine('ss', ($) => {
         return null;
       }
 
-      const config = jQuery($field).data('config');
-      if (typeof config.upload_folder_id === 'number') {
-        return config.upload_folder_id;
-      }
-
-      return null;
+      // Check type safely
+      const folderId = Number($field.data('config').upload_folder_id);
+      return isNaN(folderId) ? null : folderId;
     },
 
     /**
