@@ -88,7 +88,7 @@ const filter = 'img[data-shortcode="image"]';
             const shortCode = ShortcodeSerialiser.serialise({
               name: 'image',
               properties,
-              wrapped: false
+              wrapped: false,
             });
             el.replaceWith(shortCode);
           });
@@ -173,6 +173,7 @@ jQuery.entwine('ss', ($) => {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this._handleInsert(...args);
       const attrs = this.getOriginalAttributes();
+      const folderId = this.getFolderId();
       const selection = tinymce.activeEditor.selection;
       const selectionContent = selection.getContent() || '';
       const tagName = selection.getNode().tagName;
@@ -188,6 +189,7 @@ jQuery.entwine('ss', ($) => {
           title={false}
           type="insert-media"
           isOpen={isOpen}
+          folderId={folderId}
           onInsert={handleInsert}
           onClosed={handleHide}
           bodyClassName="modal__dialog"
@@ -237,6 +239,22 @@ jQuery.entwine('ss', ($) => {
         this.close();
       }
       return Promise.resolve();
+    },
+
+    /**
+     * Get default upload folder
+     *
+     * @returns {(number|null)}
+     */
+    getFolderId() {
+      const $field = this.getElement();
+      if (!$field) {
+        return null;
+      }
+
+      // Check type safely
+      const folderId = Number($field.data('config').upload_folder_id);
+      return isNaN(folderId) ? null : folderId;
     },
 
     /**
