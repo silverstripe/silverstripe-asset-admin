@@ -11,6 +11,7 @@ import ReactDOM from 'react-dom';
 import { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
+import { imageSizePresetButtons } from './TinyMCE_ssmedia_sizepressets';
 
 const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
@@ -44,9 +45,16 @@ const filter = 'img[data-shortcode="image"]';
         icon: 'editimage',
         cmd: 'ssmedia'
       });
+
+      const sizePresets = ed.getParam('image_size_presets');
+      let buttonList = [];
+      if (sizePresets) {
+        buttonList = imageSizePresetButtons(ed, sizePresets);
+      }
+
       ed.addContextToolbar(
         (img) => ed.dom.is(img, filter),
-        'alignleft aligncenter alignright | ssmediaedit'
+        `${buttonList.join(' ')} | ssmediaedit`
       );
 
       ed.addCommand('ssmedia', () => {
