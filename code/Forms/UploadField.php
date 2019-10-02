@@ -114,6 +114,8 @@ class UploadField extends FormField implements FileHandleField
             'method' => 'post',
             'payloadFormat' => 'urlencoded',
         ];
+
+        $defaults['data']['maxFilesize'] = $this->getAllowedMaxFileSize() / 1024 / 1024;
         $defaults['data']['maxFiles'] = $this->getAllowedMaxFileNumber();
         $defaults['data']['multi'] = $this->getIsMultiUpload();
         $defaults['data']['parentid'] = $this->getFolderID();
@@ -256,6 +258,16 @@ class UploadField extends FormField implements FileHandleField
     public function getAllowedMaxFileNumber()
     {
         return $this->allowedMaxFileNumber;
+    }
+
+    /**
+     * Returns the max allowed filesize
+     *
+     * @return null|int
+     */
+    public function getAllowedMaxFileSize()
+    {
+        return $this->getValidator()->getLargestAllowedMaxFileSize();
     }
 
     /**

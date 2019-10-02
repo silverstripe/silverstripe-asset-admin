@@ -123,6 +123,11 @@ class UploadField extends Component {
     setFiles(id, data.files);
   }
 
+  /**
+   * Returns the max number of files allowed for uploading
+   *
+   * @return {?Number}
+   */
   getMaxFiles() {
     const maxFiles = this.props.data.multi ? this.props.data.maxFiles : 1;
     if (maxFiles === null || typeof maxFiles === 'undefined') {
@@ -137,6 +142,15 @@ class UploadField extends Component {
     const allowed = Math.max(maxFiles - filesCount, 0);
 
     return allowed;
+  }
+
+  /**
+   * Returns the max allowed filesize (if set)
+   *
+   * @return {?Number}
+   */
+  getMaxFilesize() {
+    return this.props.data.maxFilesize || null;
   }
 
   /**
@@ -378,11 +392,14 @@ class UploadField extends Component {
       width: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
     };
     const maxFiles = this.getMaxFiles();
+    const maxFilesize = this.getMaxFilesize();
+
     const dropzoneOptions = {
       url: this.props.data.createFileEndpoint.url,
       method: this.props.data.createFileEndpoint.method,
       paramName: 'Upload',
       maxFiles,
+      maxFilesize,
       thumbnailWidth: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
       thumbnailHeight: CONSTANTS.SMALL_THUMBNAIL_HEIGHT,
     };
