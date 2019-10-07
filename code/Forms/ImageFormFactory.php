@@ -130,7 +130,9 @@ class ImageFormFactory extends FileFormFactory
                 $dimensions->setSchemaComponent('ProportionConstraintField');
                 $dimensions->setSchemaState([
                     'data' => [
-                        'ratio' => $ratio
+                        'ratio' => $ratio,
+                        'originalWidth' => $record->getWidth(),
+                        'originalHeight' => $record->getHeight(),
                     ]
                 ]);
             }

@@ -15,19 +15,51 @@ class InsertMediaModal extends Component {
     super(props);
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.setOverrides = this.setOverrides.bind(this);
   }
 
   componentDidMount() {
-    const { isOpen, onBrowse, setOverrides, fileAttributes, folderId } = this.props;
+    const { isOpen, onBrowse, fileAttributes, folderId } = this.props;
 
     if (!isOpen) {
       onBrowse(folderId || 0);
-    } else if (
-      typeof setOverrides === 'function'
-      && fileAttributes.ID
-    ) {
-      setOverrides(this.props);
+    } else if (fileAttributes.ID) {
+      // debugger;
+      this.setOverrides(this.props);
+      // const { schemaUrl, imageSizePresets } = this.props;
+      // this.props.actions.schema.setSchemaStateOverrides(
+      //   schemaUrl,
+      //   {fields: [{name: 'Dimensions', data: {imageSizePresets}}]}
+      // );
+
       onBrowse(folderId, fileAttributes.ID);
+    }
+  }
+
+  /**
+   * Compares the current properties with received properties and determines if overrides need to be
+   * cleared or added.
+   *
+   * @param {object} props
+   */
+  setOverrides() {
+    const {schemaUrl, fileAttributes, imageSizePresets} = this.props;
+    if (schemaUrl) {
+      const attrs = Object.assign({}, fileAttributes);
+
+      delete attrs.ID;
+
+      const overrides = {
+        fields: Object.entries(attrs).map((field) => {
+          const [name, value] = field;
+          return { name, value };
+        }),
+      };
+
+      overrides.fields.push({name: 'Dimensions', data: { imageSizePresets } })
+      // set overrides into redux store, so that it can be accessed by FormBuilder with the same
+      // schemaUrl.
+      this.props.actions.schema.setSchemaStateOverrides(schemaUrl, overrides);
     }
   }
 
@@ -113,6 +145,7 @@ class InsertMediaModal extends Component {
   render() {
     const modalProps = this.getModalProps();
     const sectionProps = this.getSectionProps();
+
     const assetAdmin = (this.props.isOpen) ? <AssetAdmin {...sectionProps} /> : null;
 
     return (
@@ -153,6 +186,10 @@ InsertMediaModal.propTypes = {
   onClosed: PropTypes.func,
   className: PropTypes.string,
   actions: PropTypes.object,
+  imageSizePresets: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    width: PropTypes.number,
+  }))
 };
 
 InsertMediaModal.defaultProps = {

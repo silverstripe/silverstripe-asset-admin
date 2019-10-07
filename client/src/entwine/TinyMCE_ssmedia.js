@@ -23,7 +23,7 @@ const filter = 'img[data-shortcode="image"]';
     /**
      * Initilise this plugin
      *
-     * @param {Object} ed
+     * @param {Object} ed TinyMCE editor object
      */
     init(ed) {
       const insertTitle = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
@@ -183,6 +183,9 @@ jQuery.entwine('ss', ($) => {
       const attrs = this.getOriginalAttributes();
       const folderId = this.getFolderId();
       const selection = tinymce.activeEditor.selection;
+      const imageSizePresets = tinymce.activeEditor.getParam('image_size_presets');
+
+
       const selectionContent = selection.getContent() || '';
       const tagName = selection.getNode().tagName;
       // Unsupported media insertion will use insert link form instead
@@ -204,6 +207,7 @@ jQuery.entwine('ss', ($) => {
           className="insert-media-react__dialog-wrapper"
           requireLinkText={requireLinkText}
           fileAttributes={attrs}
+          imageSizePresets={imageSizePresets}
         />,
         this[0]
       );
