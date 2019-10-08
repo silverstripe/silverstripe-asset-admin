@@ -34,24 +34,30 @@ class Editor extends Component {
   }
 
   handleAction(event) {
-    const name = event.currentTarget.name;
+    switch (event.currentTarget.name) {
+      // intercept the Add to Campaign submit and open the modal dialog instead
+      case 'action_addtocampaign':
+        this.openModal();
+        event.preventDefault();
 
-    // intercept the Add to Campaign submit and open the modal dialog instead
-    if (name === 'action_addtocampaign') {
-      this.openModal();
-      event.preventDefault();
-      return;
-    }
+        break;
+      case 'action_replacefile':
+        this.replaceFile();
+        event.preventDefault();
 
-    if (name === 'action_replacefile') {
-      this.replaceFile();
-      event.preventDefault();
-      return;
-    }
+        break;
+      case 'action_downloadfile':
+        this.downloadFile();
+        event.preventDefault();
 
-    if (name === 'action_delete') {
-      this.props.actions.confirmDeletion.confirm([this.props.file]);
-      event.preventDefault();
+        break;
+      case 'action_delete':
+        this.props.actions.confirmDeletion.confirm([this.props.file]);
+        event.preventDefault();
+
+        break;
+      default:
+        break;
     }
   }
 
@@ -109,6 +115,20 @@ class Editor extends Component {
     if (hiddenFileInput) {
       hiddenFileInput.click();
     }
+  }
+
+  downloadFile() {
+    function downloadURI(uri, name) {
+      const link = document.createElement('a');
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    downloadURI(this.props.file.url, this.props.file.name);
+    document.getElementById('Form_fileEditForm_PopoverActions').focus();
   }
 
   handleLoadingError(exception) {
