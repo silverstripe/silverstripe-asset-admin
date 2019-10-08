@@ -58,7 +58,7 @@ class ImageFormFactory extends FileFormFactory
         $tab->insertAfter(
             'Alignment',
             FieldGroup::create(
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
+//                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
                 NumericField::create(
                     'Width',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width')

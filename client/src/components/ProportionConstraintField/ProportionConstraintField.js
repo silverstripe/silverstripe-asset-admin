@@ -2,10 +2,7 @@ import React, { Component, Children, cloneElement, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { inject } from 'lib/Injector';
 import ImageSizePresetList from './ImageSizePresetList'
-import { formValueSelector } from 'redux-form';
-import getFormState from 'lib/getFormState';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
+
 
 class ProportionConstraintField extends Component {
   constructor(props) {
@@ -15,6 +12,8 @@ class ProportionConstraintField extends Component {
     if (childrenArray.length !== 2) {
       throw new Error('ProportionConstraintField must be passed two children -- one field for each value');
     }
+
+    this.handlePresetSelect = this.handlePresetSelect.bind(this);
   }
 
   /**
@@ -42,13 +41,18 @@ class ProportionConstraintField extends Component {
     }
   }
 
+  handlePresetSelect(newWidth) {
+    this.handleChange(0, {}, newWidth);
+    const {key} = this.props.children[0];
+    document.getElementById(key).focus();
+  }
+
   render() {
-    console.dir(this.props);
-    const { FieldGroup, data: {imageSizePresets, originalWidth}, currentWidth } = this.props;
+    const { FieldGroup, data: {originalWidth}, formid } = this.props;
 
     return (
       <Fragment>
-        <FieldGroup {...this.props}>
+        <FieldGroup smallholder={false} {...this.props}>
           {this.props.children.map((child, key) => (
             cloneElement(child, {
               // overload the children change handler
@@ -58,9 +62,11 @@ class ProportionConstraintField extends Component {
           ))}
         </FieldGroup>
 
-        <ImageSizePresetList
-          imageSizePresets={imageSizePresets} originalWidth={originalWidth} currentWidth={currentWidth}
-          onSelect={(value) => this.handleChange(0, {}, value)} />
+        {<ImageSizePresetList
+            formid={formid}
+            originalWidth={parseInt(originalWidth)}
+            onSelect={ this.handlePresetSelect } />
+        }
       </Fragment>
     );
   }
@@ -82,18 +88,6 @@ ProportionConstraintField.defaultProps = {
   active: true,
 };
 
-
-function mapStateToProps(state,{formid}) {
-  const selector = formValueSelector(formid, getFormState);
-
-  return {
-    currentWidth: selector(state, 'Width'),
-  };
-}
-
 export { ProportionConstraintField as Component };
 
-export default compose(
-  connect(mapStateToProps),
-  inject(['FieldGroup'])
-)(ProportionConstraintField);
+export default inject(['FieldGroup'])(ProportionConstraintField);

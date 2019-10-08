@@ -6,6 +6,7 @@ import AssetAdmin, { getFormSchema } from 'containers/AssetAdmin/AssetAdmin';
 import stateRouter from 'containers/AssetAdmin/stateRouter';
 import fileSchemaModalHandler from 'containers/InsertLinkModal/fileSchemaModalHandler';
 import * as galleryActions from 'state/gallery/GalleryActions';
+import * as modalActions from 'state/modal/ModalActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -13,57 +14,37 @@ import PropTypes from 'prop-types';
 class InsertMediaModal extends Component {
   constructor(props) {
     super(props);
-
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.setOverrides = this.setOverrides.bind(this);
   }
 
   componentDidMount() {
-    const { isOpen, onBrowse, fileAttributes, folderId } = this.props;
+    const {
+      isOpen,
+      onBrowse, setOverrides,
+      fileAttributes, folderId, imageSizePresets,
+      actions } = this.props;
+
+    actions.modal.defineImageSizePresets(imageSizePresets);
 
     if (!isOpen) {
       onBrowse(folderId || 0);
-    } else if (fileAttributes.ID) {
-      // debugger;
-      this.setOverrides(this.props);
-      // const { schemaUrl, imageSizePresets } = this.props;
-      // this.props.actions.schema.setSchemaStateOverrides(
-      //   schemaUrl,
-      //   {fields: [{name: 'Dimensions', data: {imageSizePresets}}]}
-      // );
-
+    } else if (
+      typeof setOverrides === 'function'
+      && fileAttributes.ID
+    ) {
+      setOverrides(this.props);
       onBrowse(folderId, fileAttributes.ID);
     }
   }
 
-  /**
-   * Compares the current properties with received properties and determines if overrides need to be
-   * cleared or added.
-   *
-   * @param {object} props
-   */
-  setOverrides() {
-    const {schemaUrl, fileAttributes, imageSizePresets} = this.props;
-    if (schemaUrl) {
-      const attrs = Object.assign({}, fileAttributes);
-
-      delete attrs.ID;
-
-      const overrides = {
-        fields: Object.entries(attrs).map((field) => {
-          const [name, value] = field;
-          return { name, value };
-        }),
-      };
-
-      overrides.fields.push({name: 'Dimensions', data: { imageSizePresets } })
-      // set overrides into redux store, so that it can be accessed by FormBuilder with the same
-      // schemaUrl.
-      this.props.actions.schema.setSchemaStateOverrides(schemaUrl, overrides);
-    }
-  }
-
   componentWillReceiveProps(props) {
+
+    const { imageSizePresets, actions } = this.props;
+
+    if (imageSizePresets) {
+      actions.modal.defineImageSizePresets(imageSizePresets);
+    }
+
     if (!props.isOpen && this.props.isOpen) {
       props.onBrowse(props.folderId);
       props.actions.gallery.deselectFiles();
@@ -239,6 +220,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       gallery: bindActionCreators(galleryActions, dispatch),
+      modal: bindActionCreators(modalActions, dispatch),
     },
   };
 }

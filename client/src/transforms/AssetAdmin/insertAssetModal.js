@@ -1,8 +1,6 @@
 import i18n from 'i18n';
 
 const insertAssetModal = (form) => {
-  console.dir(form);
-
   const schema = form.getState();
   const overrides = schema.stateOverride && schema.stateOverride.fields;
   const customTitle = (overrides && overrides.length > 0)

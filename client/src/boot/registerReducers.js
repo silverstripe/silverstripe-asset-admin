@@ -7,6 +7,7 @@ import previewField from 'state/previewField/PreviewFieldReducer';
 import imageLoad from 'state/imageLoad/ImageLoadReducer';
 import displaySearch from 'state/displaySearch/DisplaySearchReducer';
 import confirmDeletion from 'state/confirmDeletion/ConfirmDeletionReducer';
+import modal from 'state/modal/ModalReducer';
 
 const registerReducers = () => {
   Injector.reducer.register('assetAdmin', combineReducers({
@@ -17,6 +18,7 @@ const registerReducers = () => {
     imageLoad,
     displaySearch,
     confirmDeletion,
+    modal
   }));
 };
 
