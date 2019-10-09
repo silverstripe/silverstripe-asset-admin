@@ -140,9 +140,7 @@ class ImageFormFactory extends FileFormFactory
 
         $form = parent::getForm($controller, $name, $context);
         // Set Width and Height to Insert dimensions if available.
-        if ($context['Record'] && $dimensions = $this->getInsertDimensions($context['Record'])) {
-            $form->loadDataFrom($dimensions);
-        }
+        $form->loadDataFrom($this->getInsertDimensions());
         return $form;
     }
 
@@ -151,17 +149,11 @@ class ImageFormFactory extends FileFormFactory
      * @param Image $context
      * @return array|null
      */
-    private function getInsertDimensions($context)
+    private function getInsertDimensions()
     {
-        if ($context &&
-            $context->hasMethod('getInsertWidth') &&
-            $context->hasMethod('getInsertHeight')
-        ) {
-            return [
-                'Width' => $context->getInsertWidth(),
-                'Height' => $context->getInsertHeight(),
-            ];
-        }
-        return null;
+        return [
+            'Width' => '',
+            'Height' => '',
+        ];
     }
 }

@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
-import { formValueSelector } from 'redux-form';
-import getFormState from 'lib/getFormState';
-import { connect } from 'react-redux';
-import { compose } from 'redux';
 
 /**
  *
@@ -37,16 +33,4 @@ ImageSizePresetList.propTypes = {
   originalWidth: PropTypes.number,
 };
 
-
-function mapStateToProps(state, { formid }) {
-  const selector = formValueSelector(formid, getFormState);
-
-  const currentWidth = selector(state, 'Width');
-
-  return {
-    currentWidth: currentWidth ? parseInt(currentWidth) : undefined,
-    imageSizePresets: state.assetAdmin.modal.imageSizePresets
-  };
-}
-
-export default compose(connect(mapStateToProps))(ImageSizePresetList);
+export default ImageSizePresetList;
