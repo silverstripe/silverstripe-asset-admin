@@ -1,14 +1,15 @@
 import React, { Component, Children, cloneElement, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { inject } from 'lib/Injector';
-import ImageSizePresetList from './ImageSizePresetList'
+import ImageSizePresetList from './ImageSizePresetList';
 import { formValueSelector } from 'redux-form';
 import getFormState from 'lib/getFormState';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 /**
- * Component that displays a width and height field, syncing them up so that the ratio between them remain unchanged.
+ * Component that displays a width and height field, syncing them up so that the ratio between
+ * them remain unchanged.
  */
 class ProportionConstraintField extends Component {
   constructor(props) {
@@ -23,14 +24,14 @@ class ProportionConstraintField extends Component {
     this.handleBlur = this.handleBlur.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
 
-    this.state = {hasFocus: false};
+    this.state = { hasFocus: false };
   }
 
   componentDidUpdate() {
     // Let invalid values stand if the user is currently editing the fields
     if (!this.state.hasFocus) {
       // Make sure our initial dimensions are initialised to something sensible
-      const {current: {width}} = this.props;
+      const { current: { width } } = this.props;
       this.forceValidWidth(width);
     }
   }
@@ -42,9 +43,9 @@ class ProportionConstraintField extends Component {
    */
   handleChange(childIndex, newValue) {
     // If the new value can be converted to something sensible
-    const value = parseInt(newValue);
+    const value = parseInt(newValue, 10);
     if (value && value > 0) {
-      this.syncFields(childIndex, value)
+      this.syncFields(childIndex, value);
     }
   }
 
@@ -54,7 +55,7 @@ class ProportionConstraintField extends Component {
    * @param {Number} newValue
    */
   syncFields(childIndex, newValue) {
-    const {children, active, onAutofill, data: {ratio} } = this.props;
+    const { children, active, onAutofill, data: { ratio } } = this.props;
 
     // value depends on whether onChange triggered on a basic input
     // or a redux form input
@@ -79,7 +80,7 @@ class ProportionConstraintField extends Component {
     this.syncFields(0, newWidth);
 
     // Reset the focus on the Width field
-    const {key} = this.props.children[0];
+    const { key } = this.props.children[0];
     document.getElementById(key).focus();
   }
 
@@ -89,9 +90,9 @@ class ProportionConstraintField extends Component {
    * @param {Event} e
    */
   handleBlur(key, e) {
-    this.setState({hasFocus: false})
+    this.setState({ hasFocus: false });
 
-    const newValue = parseInt(e.target.value)
+    const newValue = parseInt(e.target.value, 10);
     if (!newValue || newValue <= 0) {
       // If the user leave the field in an invalid state, reset dimensions to their default
       e.preventDefault();
@@ -103,16 +104,15 @@ class ProportionConstraintField extends Component {
    * Handle the focus on a field
    */
   handleFocus() {
-    this.setState({hasFocus: true})
+    this.setState({ hasFocus: true });
   }
 
   /**
    * Get the default width for images who don't have a valid one yet.
    * @returns {number}
    */
-  defaultWidth()
-  {
-    const {imageSizePresets, data: {originalWidth}} = this.props;
+  defaultWidth() {
+    const { imageSizePresets, data: { originalWidth } } = this.props;
 
     // Default to the default image size preset first. Then to the original width of the image.
     // If all else fail, default to 600
@@ -127,7 +127,7 @@ class ProportionConstraintField extends Component {
    * Make sure we have a sensible width entered
    */
   forceValidWidth(width) {
-    const newValue = parseInt(width);
+    const newValue = parseInt(width, 10);
     if (!newValue || newValue <= 0) {
       this.resetDimensions();
     }
@@ -142,7 +142,11 @@ class ProportionConstraintField extends Component {
   }
 
   render() {
-    const { FieldGroup, data: {originalWidth}, current: {width: currentWidth}, imageSizePresets } = this.props;
+    const {
+      FieldGroup,
+      data: { originalWidth },
+      current: { width: currentWidth },
+      imageSizePresets } = this.props;
 
     return (
       <Fragment>
@@ -152,17 +156,18 @@ class ProportionConstraintField extends Component {
               // overload the children change handler
               onChange: (e, newValue) => this.handleChange(key, newValue),
               onBlur: (e) => this.handleBlur(key, e),
-              onFocus: (e) => this.handleFocus(),
+              onFocus: () => this.handleFocus(),
               key,
             }, child.props.children)
           ))}
         </FieldGroup>
 
         {<ImageSizePresetList
-          originalWidth={parseInt(originalWidth)}
+          originalWidth={parseInt(originalWidth, 10)}
           currentWidth={currentWidth}
           imageSizePresets={imageSizePresets}
-          onSelect={ this.handlePresetSelect } />
+          onSelect={this.handlePresetSelect}
+        />
         }
       </Fragment>
     );
@@ -202,8 +207,8 @@ function mapStateToProps(state, { formid }) {
 
   return {
     current: {
-      width: currentWidth ? parseInt(currentWidth) : undefined,
-      heigth: currentHeight ? parseInt(currentHeight) : undefined
+      width: currentWidth ? parseInt(currentWidth, 10) : undefined,
+      heigth: currentHeight ? parseInt(currentHeight, 10) : undefined
     },
     imageSizePresets: state.assetAdmin.modal.imageSizePresets
   };

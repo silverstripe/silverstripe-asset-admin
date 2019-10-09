@@ -6,13 +6,15 @@ import { Button } from 'reactstrap';
  *
  * @param {{text: String, width: Number}[]} imageSizePresets
  */
-const ImageSizePresetList = ({ imageSizePresets, onSelect, currentWidth, originalWidth }) => (imageSizePresets ? (
-  <ul className="image-size-preset-list">
-    {imageSizePresets.map(
+const ImageSizePresetList =
+  ({ imageSizePresets, onSelect, currentWidth, originalWidth }) => (imageSizePresets ? (
+    <ul className="image-size-preset-list">
+      {imageSizePresets.map(
     ({ width, text }) => (
       <li key={text} className="image-size-preset-list__list-item">
         <Button
-          color="link" size="sm"
+          color="link"
+          size="sm"
           onClick={() => onSelect(width || originalWidth)}
           disabled={(originalWidth < width) || currentWidth === (width || originalWidth)}
         >
@@ -20,7 +22,7 @@ const ImageSizePresetList = ({ imageSizePresets, onSelect, currentWidth, origina
         </Button>
       </li>)
   )}
-  </ul>
+    </ul>
 ) : null);
 
 ImageSizePresetList.propTypes = {

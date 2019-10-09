@@ -38,7 +38,6 @@ class InsertMediaModal extends Component {
   }
 
   componentWillReceiveProps(props) {
-
     const { imageSizePresets, actions } = this.props;
 
     if (imageSizePresets) {
