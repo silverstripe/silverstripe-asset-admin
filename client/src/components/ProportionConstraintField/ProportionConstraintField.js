@@ -27,12 +27,19 @@ class ProportionConstraintField extends Component {
     this.state = { hasFocus: false };
   }
 
-  componentDidUpdate() {
+  componentDidMount() {
+    this.componentDidUpdate(this.props);
+  }
+
+  componentDidUpdate(newProps) {
     // Let invalid values stand if the user is currently editing the fields
     if (!this.state.hasFocus) {
       // Make sure our initial dimensions are initialised to something sensible
-      const { current: { width } } = this.props;
-      this.forceValidWidth(width);
+      const { current: { width } } = newProps;
+      const value = parseInt(width, 10);
+      if (!value || value <= 0) {
+        this.resetDimensions();
+      }
     }
   }
 
@@ -41,9 +48,9 @@ class ProportionConstraintField extends Component {
    * @param {Number} childIndex Index of the field that has been changed
    * @param {String} newValue
    */
-  handleChange(childIndex, newValue) {
+  handleChange(childIndex, e, newValue) {
     // If the new value can be converted to something sensible
-    const value = parseInt(newValue, 10);
+    const value = parseInt((newValue || (e.target && e.target.value)), 10);
     if (value && value > 0) {
       this.syncFields(childIndex, value);
     }
@@ -81,7 +88,10 @@ class ProportionConstraintField extends Component {
 
     // Reset the focus on the Width field
     const { key } = this.props.children[0];
-    document.getElementById(key).focus();
+    const fieldEl = document.getElementById(key);
+    if (fieldEl) {
+      fieldEl.focus();
+    }
   }
 
   /**
@@ -92,7 +102,7 @@ class ProportionConstraintField extends Component {
   handleBlur(key, e) {
     this.setState({ hasFocus: false });
 
-    const newValue = parseInt(e.target.value, 10);
+    const newValue = parseInt(e && e.target && e.target.value, 10);
     if (!newValue || newValue <= 0) {
       // If the user leave the field in an invalid state, reset dimensions to their default
       e.preventDefault();
@@ -124,16 +134,6 @@ class ProportionConstraintField extends Component {
   }
 
   /**
-   * Make sure we have a sensible width entered
-   */
-  forceValidWidth(width) {
-    const newValue = parseInt(width, 10);
-    if (!newValue || newValue <= 0) {
-      this.resetDimensions();
-    }
-  }
-
-  /**
    * Reset the dimensions to a sensible dimensions.
    */
   resetDimensions() {
@@ -154,7 +154,7 @@ class ProportionConstraintField extends Component {
           {this.props.children.map((child, key) => (
             cloneElement(child, {
               // overload the children change handler
-              onChange: (e, newValue) => this.handleChange(key, newValue),
+              onChange: (e, newValue) => this.handleChange(key, e, newValue),
               onBlur: (e) => this.handleBlur(key, e),
               onFocus: () => this.handleFocus(),
               key,
@@ -184,9 +184,9 @@ ProportionConstraintField.propTypes = {
     originalHeight: PropTypes.number,
   }),
   current: PropTypes.shape({
-    width: PropTypes.number,
-    height: PropTypes.number,
-  }),
+    width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  }).isRequired,
   FieldGroup: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired,
   imageSizePresets: PropTypes.arrayOf(PropTypes.shape({
     width: PropTypes.number,
