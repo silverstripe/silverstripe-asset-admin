@@ -52,32 +52,16 @@ class ImageFormFactoryTest extends SapphireTest
      * @param int $insertHeight
      * @param int $expectedWidth
      * @param int $expectedHeight
-     * @dataProvider insertSizeDataProvider
      */
-    public function testInsertImageSize($insertWidth, $insertHeight, $expectedWidth, $expectedHeight)
+    public function testInsertImageSize()
     {
-        $config = Image::config();
-        $config->set('insert_width', $insertWidth);
-        $config->set('insert_height', $insertHeight);
-
         $form = ImageFormFactory::create()->getForm(
             null,
             'fileInsertForm',
             ['Type' => AssetFormFactory::TYPE_INSERT_MEDIA , 'Record' => $this->img, 'RequireLinkText' => true]
         );
         $data = $form->getData();
-        $this->assertEquals($expectedWidth, $data['Width']);
-        $this->assertEquals($expectedHeight, $data['Height']);
-    }
-
-    public function insertSizeDataProvider()
-    {
-        // The image we're using for testing is 600x400
-        return [
-            'Default setting' => [600, 400, 600, 400],
-            'Insert height smaller than image' => [600, 398, 597, 398],
-            'Insert width half of image' => [597, 400, 597, 398],
-            'Insert dimensions greater than image' => [603, 402, 600, 400],
-        ];
+        $this->assertEmpty($data['Width']);
+        $this->assertEmpty($data['Height']);
     }
 }
