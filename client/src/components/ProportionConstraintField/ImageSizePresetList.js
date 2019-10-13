@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 
 /**
- *
+ * Display a list of possible image size presets that the user can click to quicky set the width and height of the image in the placement form.
  * @param {{text: String, width: Number}[]} imageSizePresets
  */
 const ImageSizePresetList =
