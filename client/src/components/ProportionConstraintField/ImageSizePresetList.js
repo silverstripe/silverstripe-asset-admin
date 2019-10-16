@@ -1,9 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
+import i18n from 'i18n';
+
+const srText = (text) => (
+  i18n.inject(
+    i18n._t(
+      'AssetAdmin.SET_IMAGE_SIZE_TO',
+      'Set image size to "{preset}"'
+    ),
+    { preset: text }
+  )
+);
+
 
 /**
- * Display a list of possible image size presets that the user can click to quicky set the width and height of the image in the placement form.
+ * Display a list of possible image size presets that the user can click to quicky set the width
+ * and height of the image in the placement form.
  * @param {{text: String, width: Number}[]} imageSizePresets
  */
 const ImageSizePresetList =
@@ -18,7 +31,8 @@ const ImageSizePresetList =
           onClick={() => onSelect(width || originalWidth)}
           disabled={(originalWidth < width) || currentWidth === (width || originalWidth)}
         >
-          {text}
+          <span className="sr-only">{srText(text)}</span>
+          <span aria-hidden="true">{text}</span>
         </Button>
       </li>)
   )}

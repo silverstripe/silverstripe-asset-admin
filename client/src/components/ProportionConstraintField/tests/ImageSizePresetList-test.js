@@ -42,9 +42,12 @@ describe('ImageSizePresetList', () => {
   describe('render()', () => {
     it('presets are displayed', () => {
       const { buttons } = render();
-      expect(buttons.get(0).props.children).toBe('default');
-      expect(buttons.get(1).props.children).toBe('super large');
-      expect(buttons.get(2).props.children).toBe('super small');
+      expect(buttons.get(0).props.children[0].props.children).toContain('Set image size to');
+      expect(buttons.get(0).props.children[1].props.children).toContain('default');
+      expect(buttons.get(1).props.children[0].props.children).toContain('Set image size to');
+      expect(buttons.get(1).props.children[1].props.children).toContain('super large');
+      expect(buttons.get(2).props.children[0].props.children).toContain('Set image size to');
+      expect(buttons.get(2).props.children[1].props.children).toContain('super small');
     });
 
     it('preset bigger than image are disabled', () => {
