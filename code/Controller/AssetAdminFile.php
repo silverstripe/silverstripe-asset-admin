@@ -206,20 +206,22 @@ class AssetAdminFile extends DataExtension
     /**
      * Get recursive parent IDs
      *
-     * @param int $parentID
+     * @param int|int[] $parentIDorIDs
      * @param int $maxDepth Hard limit of max depth
      * @return array List of parent IDs, including $parentID
      */
-    public static function nestedFolderIDs($parentID, $maxDepth = 5)
+    public static function nestedFolderIDs($parentIDorIDs, $maxDepth = 5)
     {
-        $ids = [$parentID];
+        $ids = is_array($parentIDorIDs) ? $parentIDorIDs : [$parentIDorIDs];
         if ($maxDepth === 0) {
             return $ids;
         }
-        $childIDs = Folder::get()->filter('ParentID', $parentID)->column('ID');
-        foreach ($childIDs as $childID) {
-            $ids = array_merge($ids, static::nestedFolderIDs($childID, $maxDepth - 1));
+        $childIDs = Folder::get()->filter('ParentID', $parentIDorIDs)->column('ID');
+
+        if (empty($childIDs)) {
+            return $ids;
         }
-        return $ids;
+
+        return array_merge($ids, static::nestedFolderIDs($childIDs, $maxDepth - 1));
     }
 }
