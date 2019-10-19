@@ -58,7 +58,6 @@ class ImageFormFactory extends FileFormFactory
         $tab->insertAfter(
             'Alignment',
             FieldGroup::create(
-                //                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
                 NumericField::create(
                     'Width',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width')
@@ -139,21 +138,9 @@ class ImageFormFactory extends FileFormFactory
         });
 
         $form = parent::getForm($controller, $name, $context);
-        // Set Width and Height to Insert dimensions if available.
-        $form->loadDataFrom($this->getInsertDimensions());
-        return $form;
-    }
+        // Unset the width and height value and let the front end decide the default insert size.
+        $form->loadDataFrom([ 'Width' => '', 'Height' => '']);
 
-    /**
-     * Retrieve the appropriate insert dimension for the image, if available.
-     * @param Image $context
-     * @return array|null
-     */
-    private function getInsertDimensions()
-    {
-        return [
-            'Width' => '',
-            'Height' => '',
-        ];
+        return $form;
     }
 }
