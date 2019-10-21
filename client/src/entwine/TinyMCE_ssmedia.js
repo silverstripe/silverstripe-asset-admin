@@ -11,6 +11,7 @@ import ReactDOM from 'react-dom';
 import { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
+import { imageSizePresetButtons } from './TinyMCE_ssmedia_sizepressets';
 
 const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
@@ -22,7 +23,7 @@ const filter = 'img[data-shortcode="image"]';
     /**
      * Initilise this plugin
      *
-     * @param {Object} ed
+     * @param {Object} ed TinyMCE editor object
      */
     init(ed) {
       const insertTitle = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
@@ -44,9 +45,16 @@ const filter = 'img[data-shortcode="image"]';
         icon: 'editimage',
         cmd: 'ssmedia'
       });
+
+      const sizePresets = ed.getParam('image_size_presets');
+      let buttonList = [];
+      if (sizePresets) {
+        buttonList = imageSizePresetButtons(ed, sizePresets);
+      }
+
       ed.addContextToolbar(
         (img) => ed.dom.is(img, filter),
-        'alignleft aligncenter alignright | ssmediaedit'
+        `${buttonList.join(' ')} | ssmediaedit`
       );
 
       ed.addCommand('ssmedia', () => {
@@ -175,6 +183,9 @@ jQuery.entwine('ss', ($) => {
       const attrs = this.getOriginalAttributes();
       const folderId = this.getFolderId();
       const selection = tinymce.activeEditor.selection;
+      const imageSizePresets = tinymce.activeEditor.getParam('image_size_presets');
+
+
       const selectionContent = selection.getContent() || '';
       const tagName = selection.getNode().tagName;
       // Unsupported media insertion will use insert link form instead
@@ -196,6 +207,7 @@ jQuery.entwine('ss', ($) => {
           className="insert-media-react__dialog-wrapper"
           requireLinkText={requireLinkText}
           fileAttributes={attrs}
+          imageSizePresets={imageSizePresets}
         />,
         this[0]
       );

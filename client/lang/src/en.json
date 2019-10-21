@@ -73,4 +73,5 @@
     "AssetAdmin.NEXT": "Next",
     "AssetAdmin.MODIFIED": "Modified",
     "AssetAdmin.STATUS": "Status",
+    "AssetAdmin.SET_IMAGE_SIZE_TO": "Set image size to \"{preset}\"",
 }

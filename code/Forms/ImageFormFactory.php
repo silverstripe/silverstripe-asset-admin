@@ -58,7 +58,6 @@ class ImageFormFactory extends FileFormFactory
         $tab->insertAfter(
             'Alignment',
             FieldGroup::create(
-                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageSpecs', 'Dimensions'),
                 NumericField::create(
                     'Width',
                     _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width')
@@ -130,36 +129,18 @@ class ImageFormFactory extends FileFormFactory
                 $dimensions->setSchemaComponent('ProportionConstraintField');
                 $dimensions->setSchemaState([
                     'data' => [
-                        'ratio' => $ratio
+                        'ratio' => $ratio,
+                        'originalWidth' => $record->getWidth(),
+                        'originalHeight' => $record->getHeight(),
                     ]
                 ]);
             }
         });
 
         $form = parent::getForm($controller, $name, $context);
-        // Set Width and Height to Insert dimensions if available.
-        if ($context['Record'] && $dimensions = $this->getInsertDimensions($context['Record'])) {
-            $form->loadDataFrom($dimensions);
-        }
-        return $form;
-    }
+        // Unset the width and height value and let the front end decide the default insert size.
+        $form->loadDataFrom([ 'Width' => '', 'Height' => '']);
 
-    /**
-     * Retrieve the appropriate insert dimension for the image, if available.
-     * @param Image $context
-     * @return array|null
-     */
-    private function getInsertDimensions($context)
-    {
-        if ($context &&
-            $context->hasMethod('getInsertWidth') &&
-            $context->hasMethod('getInsertHeight')
-        ) {
-            return [
-                'Width' => $context->getInsertWidth(),
-                'Height' => $context->getInsertHeight(),
-            ];
-        }
-        return null;
+        return $form;
     }
 }

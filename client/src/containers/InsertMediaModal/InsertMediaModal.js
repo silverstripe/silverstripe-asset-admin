@@ -6,6 +6,7 @@ import AssetAdmin, { getFormSchema } from 'containers/AssetAdmin/AssetAdmin';
 import stateRouter from 'containers/AssetAdmin/stateRouter';
 import fileSchemaModalHandler from 'containers/InsertLinkModal/fileSchemaModalHandler';
 import * as galleryActions from 'state/gallery/GalleryActions';
+import * as modalActions from 'state/modal/ModalActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
@@ -13,12 +14,17 @@ import PropTypes from 'prop-types';
 class InsertMediaModal extends Component {
   constructor(props) {
     super(props);
-
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-    const { isOpen, onBrowse, setOverrides, fileAttributes, folderId } = this.props;
+    const {
+      isOpen,
+      onBrowse, setOverrides,
+      fileAttributes, folderId, imageSizePresets,
+      actions } = this.props;
+
+    actions.modal.defineImageSizePresets(imageSizePresets);
 
     if (!isOpen) {
       onBrowse(folderId || 0);
@@ -32,6 +38,12 @@ class InsertMediaModal extends Component {
   }
 
   componentWillReceiveProps(props) {
+    const { imageSizePresets, actions } = this.props;
+
+    if (imageSizePresets) {
+      actions.modal.defineImageSizePresets(imageSizePresets);
+    }
+
     if (!props.isOpen && this.props.isOpen) {
       props.onBrowse(props.folderId);
       props.actions.gallery.deselectFiles();
@@ -113,6 +125,7 @@ class InsertMediaModal extends Component {
   render() {
     const modalProps = this.getModalProps();
     const sectionProps = this.getSectionProps();
+
     const assetAdmin = (this.props.isOpen) ? <AssetAdmin {...sectionProps} /> : null;
 
     return (
@@ -153,6 +166,10 @@ InsertMediaModal.propTypes = {
   onClosed: PropTypes.func,
   className: PropTypes.string,
   actions: PropTypes.object,
+  imageSizePresets: PropTypes.arrayOf(PropTypes.shape({
+    text: PropTypes.string.isRequired,
+    width: PropTypes.number,
+  }))
 };
 
 InsertMediaModal.defaultProps = {
@@ -202,6 +219,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       gallery: bindActionCreators(galleryActions, dispatch),
+      modal: bindActionCreators(modalActions, dispatch),
     },
   };
 }
