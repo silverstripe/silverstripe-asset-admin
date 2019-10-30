@@ -19,7 +19,7 @@ en:
     AlignmentRight: 'Right wrap'
     AlignmentRightAlone: Right
     AltText: 'Alternative text (alt)'
-    AltTextDescription: 'Description for visitors who are unable to view the image (using screenreaders or image blockers). Recommended for images which provide unique context to the content.'
+    AltTextTip: 'Description for visitors who are unable to view the image (using screenreaders or image blockers). Recommended for images which provide unique context to the content.'
     AppCategoryArchive: Archive
     AppCategoryAudio: Audio
     AppCategoryDocument: Document
@@ -51,7 +51,7 @@ en:
     Placement: Placement
     SAVEDFILE: 'Saved file'
     TitleTooltip: 'Title text (tooltip)'
-    TitleTooltipDescription: 'Provides a long form explanation if required. Shown on hover.'
+    TitleTooltipTip: 'Provides a long form explanation if required. Shown on hover.'
     UNKNOWN: Unknown
     UNPUBLISH_BUTTON: Unpublish
     UPLOADEDFILE: 'Uploaded file'

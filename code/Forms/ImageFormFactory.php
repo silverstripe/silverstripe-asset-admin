@@ -86,24 +86,23 @@ class ImageFormFactory extends FileFormFactory
         );
 
         $altTextDescription = _t(
-            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltTextDescription',
-            implode(
-                ' ',
-                [
-                    'Description for visitors who are unable to view the image (using screenreaders or',
-                    'image blockers). Recommended for images which provide unique context to the content.'
-                ]
-            )
+            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltTextTip',
+            implode([
+                'Description for visitors who are unable to view the image (using screenreaders or ',
+                'image blockers). Recommended for images which provide unique context to the content.',
+            ])
         );
 
         $tab->insertAfter(
             'AltText',
-            $titleField = TextField::create('TitleTooltip', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltip', 'Title text (tooltip)'))
-                ->setValue($record->Title)
+            $titleField = TextField::create(
+                'TitleTooltip',
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltip', 'Title text (tooltip)')
+            )->setValue($record->Title)
         );
 
         $titleDescription = _t(
-            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltipDescription',
+            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltipTip',
             'Provides a long form explanation if required. Shown on hover.'
         );
 
