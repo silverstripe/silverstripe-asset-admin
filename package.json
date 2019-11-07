@@ -55,9 +55,7 @@
     "@storybook/react": "^3.4.11",
     "babel-jest": "^23.6.0",
     "jest-cli": "^23.6.0",
-    "node-sass": "^4.0.0",
-    "sass-loader": "^6.0.7",
-    "webpack": "^2.0.0"
+    "webpack": "^2.6.1"
   },
   "dependencies": {
     "apollo-client": "^2.4.2",
