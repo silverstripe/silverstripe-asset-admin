@@ -12,6 +12,8 @@ use SilverStripe\Forms\NumericField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\Tip;
+use SilverStripe\Forms\TippableFieldInterface;
 
 class ImageFormFactory extends FileFormFactory
 {
@@ -77,19 +79,40 @@ class ImageFormFactory extends FileFormFactory
 
         $tab->insertAfter(
             'Caption',
-            TextField::create('AltText', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltText', 'Alternative text (alt)'))
-                ->setDescription(_t(
-                    'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltTextDescription',
-                    'Shown to screen readers or if image can\'t be displayed'
-                ))
+            $altTextField = TextField::create(
+                'AltText',
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltText', 'Alternative text (alt)')
+            )
+        );
+
+        $altTextDescription = _t(
+            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltTextTip',
+            implode([
+                'Description for visitors who are unable to view the image (using screenreaders or ',
+                'image blockers). Recommended for images which provide unique context to the content.',
+            ])
         );
 
         $tab->insertAfter(
             'AltText',
-            TextField::create('TitleTooltip', _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltip', 'Title text (tooltip)'))
-                ->setDescription(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltipDescription', 'For additional information about the image'))
-                ->setValue($record->Title)
+            $titleField = TextField::create(
+                'TitleTooltip',
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltip', 'Title text (tooltip)')
+            )->setValue($record->Title)
         );
+
+        $titleDescription = _t(
+            'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltipTip',
+            'Provides a long form explanation if required. Shown on hover.'
+        );
+
+        if ($altTextField instanceof TippableFieldInterface) {
+            $altTextField->setTip(new Tip($altTextDescription, Tip::IMPORTANCE_LEVELS['HIGH']));
+            $titleField->setTip(new Tip($titleDescription, Tip::IMPORTANCE_LEVELS['NORMAL']));
+        } else {
+            $altTextField->setDescription($altTextDescription);
+            $titleField->setDescription($titleDescription);
+        }
 
         return $tab;
     }
