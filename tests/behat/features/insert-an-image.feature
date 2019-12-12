@@ -36,19 +36,6 @@ Feature: Insert an image into a page
       # Required to avoid "unsaved changed" browser dialog
       And I press the "Save" button
 
-  @assets
-  Scenario: I can insert a video from a URL
-    Given I press the "Insert media via URL" HTML field button
-      And I wait for 2 seconds until I see the ".insert-embed-modal--create" element
-    When I fill in "Url" with "https://www.youtube.com/watch?v=9bZkp7q19f0"
-      And I press the "Add media" button
-      And I wait for 2 seconds until I see the ".insert-embed-modal--edit" element
-    Then the "UrlPreview" field should contain "https://www.youtube.com/watch?v=9bZkp7q19f0"
-    When I press the "Insert media" button
-    Then the "Content" HTML field should contain "hqdefault.jpg"
-    # Required to avoid "unsaved changed" browser dialog
-      And I press the "Save" button
-
   Scenario: I can link to a file
     Given I select "awesome" in the "Content" HTML field
     When I press the "Insert link" HTML field button
