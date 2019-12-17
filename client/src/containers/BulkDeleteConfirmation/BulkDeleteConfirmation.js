@@ -8,7 +8,7 @@ import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionAc
 import * as TRANSITIONS from 'state/confirmDeletion/ConfirmDeletionTransitions';
 import DeletionModal from './DeletionModal';
 import BulkDeleteMessage from './BulkDeleteMessage';
-import { getFileInUseCount, getFolderInUse } from './helpers';
+import { getFileInUseCounts, getFolderInUseCounts } from './helpers';
 import fileShape from 'lib/fileShape';
 import i18n from 'i18n';
 
@@ -21,41 +21,48 @@ const BulkDeleteConfirmation = ({
   onModalClose, onCancel, onConfirm
 }) => {
   let body = null;
-  let actions = [{
-    label: i18n._t('AssetAdmin.DISMISS', 'Dismiss'),
-    handler: onCancel,
-    color: 'primary'
-  }];
+  let actions = [
+    {
+      label: i18n._t('AssetAdmin.DELETE', 'Delete'),
+      handler: () => onConfirm(files.map(({ id }) => id)),
+      color: 'danger'
+    },
+    {
+      label: i18n._t('AssetAdmin.CANCEL', 'Cancel'),
+      handler: onCancel,
+    }
+  ];
 
   // Decide what message and action to show users
   if (loading) {
     // We're still waiting for results from GraphQL
     body = <LoadingComponent />;
   } else {
-    const folderInUse = getFolderInUse(files, fileUsage);
-    const fileUsageCount = getFileInUseCount(files, fileUsage);
+    const foldersInUse = getFolderInUseCounts(files, fileUsage);
+    const filesInUse = getFileInUseCounts(files, fileUsage);
 
-    const bodyProps = { folderInUse, fileCount: files.length, ...fileUsageCount };
+    const bodyProps = { foldersInUse, filesInUse, itemCount: files.length };
     body = <BulkDeleteMessage {...bodyProps} />;
 
-    if (!folderInUse) {
+    if (foldersInUse.totalItems || filesInUse.totalItems) {
       actions = [
+        {
+          label: i18n._t('AssetAdmin.CANCEL', 'Cancel'),
+          handler: onCancel,
+          color: 'primary'
+        },
         {
           label: i18n._t('AssetAdmin.DELETE', 'Delete'),
           handler: () => onConfirm(files.map(({ id }) => id)),
-          color: 'danger'
-        },
-        {
-          label: i18n._t('AssetAdmin.CANCEL', 'Cancel'),
-          handler: onCancel
+          color: 'danger',
         },
       ];
     }
   }
 
   // If we're in the process of canceling/deleting results, we set isOpen to false.
-  // This is just a way to get the nice modal out transtion.
-  // When tell the modal to call the `reset` action when it's done closing.
+  // This allows the modal to smoothly transition out.
+  // We tell the modal to call the `reset` action when it's done closing.
   const isOpen = ![TRANSITIONS.CANCELING, TRANSITIONS.DELETING].includes(transition);
 
   return (<DeletionModal

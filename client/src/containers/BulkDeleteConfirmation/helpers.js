@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 /**
  * Check if the provided file entry is a folder
  * @param {Object} file
@@ -13,47 +15,54 @@ const isFolder = (({ type }) => (type === 'folder'));
 const isFile = (file => (!isFolder(file)));
 
 /**
- * Given a fileUsage map, create a suitable reduce callback that count the sums up the usage for
- * a list of files.
- * @param {Object}fileUsage
+ * Given a fileUsage map, creates a reducer callback that produces an object containing:
+ * - totalItems, how many files are in use
+ * - totalUsages, a sum of usages across all files
+ * @param {Object} fileUsage
  */
 const fileUsageReducer = (fileUsage) =>
   (accumulator, { id }) => (
-    fileUsage[id] ?
+    (fileUsage[id] > 0) ?
       {
-        fileInUseCount: accumulator.fileInUseCount + 1,
-        inUseCount: accumulator.inUseCount + fileUsage[id]
+        totalItems: accumulator.totalItems + 1,
+        totalUsages: accumulator.totalUsages + fileUsage[id]
       } : accumulator
   );
 
 /**
  * Initial accumulator to use with `fileUsageReducer`.
- * @type {{fileInUseCount: number, inUseCount: number}}
+ * @type {{totalItems: number, totalUsages: number}}
  */
-const fileUsageInitAccumulator = { fileInUseCount: 0, inUseCount: 0 };
+const fileUsageInitAccumulator = { totalItems: 0, totalUsages: 0 };
 
 /**
- * Detect if there's any folder in-use in our current selection
+ * PropType shape for the file usage object
+ */
+export const fileUsageShape = PropTypes.shape({
+  totalItems: PropTypes.number,
+  totalUsages: PropTypes.number,
+});
+
+/**
+ * Count the number of folders that are currently in use and the number of places where they are
+ * in use.
  * @param {Object[]} files
- * @param {Object} fileUsageData
- * @return {boolean}
+ * @param {Object} fileUsage
+ * @return {Object}
  * @note Not part of the public API
  */
-export const getFolderInUse = (files, fileUsage) => {
-  const folderUsage = files
-    .filter(isFolder)
-    .reduce(fileUsageReducer(fileUsage), fileUsageInitAccumulator);
-  return folderUsage.fileInUseCount > 0;
-};
+export const getFolderInUseCounts = (files, fileUsage) => (
+  files.filter(isFolder).reduce(fileUsageReducer(fileUsage), fileUsageInitAccumulator)
+);
 
 /**
  * Count the number of files that are currently in use and the number of places where they are
  * in use.
  * @param {Object[]} files
- * @param {Object} fileUsageData
+ * @param {Object} fileUsage
  * @return {Object}
  * @note Not part of the public API
  */
-export const getFileInUseCount = (files, fileUsage) => (
+export const getFileInUseCounts = (files, fileUsage) => (
   files.filter(isFile).reduce(fileUsageReducer(fileUsage), fileUsageInitAccumulator)
 );
