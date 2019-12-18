@@ -1,17 +1,12 @@
 /**
- * @typedef SizePreset
- * @type {object}
- * @property {number|undefined} width Preset size or undefined for original size.
- * @property {string} name Underlying system name. Never displayed to the user.
- * @property {string} text Button text.
+ * @typedef {import('types/ImageSizePreset').ImageSizePreset} ImageSizePreset
  */
-
 
 /**
  * Set up one button
  * @note There's a bit of split logic to handle the original size button based on the width.
  * @param {Object} editor
- * @param {SizePreset} preset
+ * @param {ImageSizePreset} preset
  * @return {string} Button name
  */
 function presetButton(editor, preset) {

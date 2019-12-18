@@ -160,6 +160,7 @@ class ImageFormFactory extends FileFormFactory
 
         $form = parent::getForm($controller, $name, $context);
         // Unset the width and height value and let the front end decide the default insert size.
+
         $form->loadDataFrom([ 'Width' => '', 'Height' => '']);
 
         return $form;

@@ -252,7 +252,9 @@ $gallery-item-label-height: 40px;
   text-align: center;
 
   &::before {
-    margin-right: 5px;
+    margin-right: .385rem;
+    position: relative;
+    top: .2rem;
   }
 }
 

@@ -11,11 +11,19 @@ import fileShape from 'lib/fileShape';
 import PropTypes from 'prop-types';
 import { inject } from 'lib/Injector';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
+import * as modalActions from 'state/modal/ModalActions';
+import EditorHeader, { buttonStates } from './EditorHeader';
+import classnames from 'classnames';
+import url from 'url';
+import qs from 'qs';
+
+const formIdentifier = 'AssetAdmin.EditForm';
 
 class Editor extends Component {
   constructor(props) {
     super(props);
 
+    this.getFormSchemaUrl = this.getFormSchemaUrl.bind(this);
     this.handleCancelKeyDown = this.handleCancelKeyDown.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -25,12 +33,35 @@ class Editor extends Component {
     this.handleFetchingSchema = this.handleFetchingSchema.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
+    this.createFn = this.createFn.bind(this);
+    this.editorHeader = this.editorHeader.bind(this);
 
     this.state = {
       openModal: false,
       loadingForm: false,
       loadingError: null,
     };
+  }
+
+  /**
+   * Build the form schema URL to pass to the Form Builder Loader
+   * @returns {string}
+   */
+  getFormSchemaUrl() {
+    const { schemaUrlQueries, schemaUrl, targetId } = this.props;
+
+    const parsedURL = url.parse(schemaUrl);
+    const parsedQs =
+      schemaUrlQueries.reduce(
+        (accumulator, { name, value }) => ({ ...accumulator, [name]: value }),
+        {}
+      );
+
+    return url.format({
+      ...parsedURL,
+      pathname: `${parsedURL.path}/${targetId}`,
+      search: qs.stringify(parsedQs)
+    });
   }
 
   handleAction(event) {
@@ -80,16 +111,34 @@ class Editor extends Component {
    * @returns {Promise}
    */
   handleSubmit(data, action, submitFn) {
+    const { showingSubForm, actions } = this.props;
     if (typeof this.props.onSubmit === 'function') {
-      return this.props.onSubmit(data, action, submitFn);
+      return this.props.onSubmit(data, action, submitFn).finally(() => {
+        // When performing a primary action on a subform, pop to the previous form
+        if (showingSubForm && ['action_save', 'action_publish'].indexOf(action) !== -1) {
+          actions.modal.popFormStackEntry();
+        }
+      });
     }
 
     return submitFn();
   }
 
+  /**
+   * Handle the click on the Back or Cancel button on the EditorHeader component.
+   * @param {Event|undefined} event
+   */
   handleClose(event) {
-    this.props.onClose();
-    this.closeModal();
+    const { showingSubForm, onClose, actions } = this.props;
+
+    if (showingSubForm) {
+      // When we're showing a sub form, pop back to the parent form
+      actions.modal.popFormStackEntry();
+    } else {
+      // If we're already at the top of the form stack, close the editor form
+      onClose();
+      this.closeModal();
+    }
 
     if (event) {
       event.preventDefault();
@@ -97,15 +146,11 @@ class Editor extends Component {
   }
 
   openModal() {
-    this.setState({
-      openModal: true,
-    });
+    this.setState({ openModal: true });
   }
 
   closeModal() {
-    this.setState({
-      openModal: false,
-    });
+    this.setState({ openModal: false });
   }
 
   replaceFile() {
@@ -151,35 +196,76 @@ class Editor extends Component {
     });
   }
 
-  renderCancelButton() {
-    return (<a
-      role="button"
-      tabIndex={0}
-      className="btn btn--close-panel btn--no-text font-icon-cancel btn--icon-xl"
-      onClick={this.handleClose}
-      onKeyDown={this.handleCancelKeyDown}
-      type="button"
-      aria-label={i18n._t('AssetAdmin.CANCEL')}
-    />);
+  /**
+   * Wrap the the Header field into an EditorHeader component.
+   * @param {Component} SchemaComponent
+   * @param {Object} fieldProps
+   */
+  editorHeader({ SchemaComponent, ...fieldProps }) {
+    const { dialog, nextType, showingSubForm, actions, file } = this.props;
+    const schemaUrl = this.getFormSchemaUrl();
+
+    let showButton = buttonStates.SWITCH;
+    if (dialog && file && file.type !== 'folder') {
+      // When editing the details of a file from inside the modal, we always show the back button
+      // Otherwise, we only show theb ack button in mobile view to allow deselection of file
+      showButton = showingSubForm ? buttonStates.ALWAYS_BACK : buttonStates.ONLY_BACK;
+    }
+
+    // If we have a nextType available, wire the Detail button
+    const { formid } = fieldProps;
+    // When inserting a regular file, we add a Details button to edit the file metadata
+    const onDetails = nextType && file && file.type !== 'folder' ?
+      () => {
+        actions.modal.stashFormValues(formid, schemaUrl);
+        actions.modal.pushFormStackEntry(nextType);
+      } :
+      undefined;
+
+    const props = {
+      onCancel: this.handleClose,
+      showButton,
+      onDetails
+    };
+
+    return (
+      <EditorHeader {...props}>
+        <SchemaComponent {...fieldProps} />
+      </EditorHeader>
+    );
+  }
+
+  /**
+   * Overrides the regular FormBuilder logic that creates the fields so we can decorate the
+   * Header field with some extra buttons.
+   * @param {Component} SchemaComponent Default component use to render the field.
+   * @param {Object} componentProps Props to pass to the field component.
+   */
+  createFn(SchemaComponent, componentProps) {
+    if (componentProps.name === 'AssetEditorHeaderFieldGroup') {
+      // If we're building the field for our Header Field group.
+      const EditorHeaderComponent = this.editorHeader;
+      const editorHeaderProps = {
+        key: componentProps.id,
+        SchemaComponent,
+        ...componentProps
+      };
+      return <EditorHeaderComponent {...editorHeaderProps} />;
+    }
+
+    // Fallback to the regular field creation logic
+    return <SchemaComponent key={componentProps.id} {...componentProps} />;
   }
 
   render() {
-    let urlQueryString = this.props.schemaUrlQueries
-      .map(query => `${query.name}=${query.value}`)
-      .join('&')
-      .trim();
-    urlQueryString = urlQueryString ? `?${urlQueryString}` : '';
-    const formSchemaUrl = `${this.props.schemaUrl}/${this.props.targetId}${urlQueryString}`;
+    const formSchemaUrl = this.getFormSchemaUrl();
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.targetId}`;
-    const editorClasses = [
-      'panel', 'form--no-dividers', 'editor',
-    ];
-    if (this.props.className) {
-      editorClasses.push(this.props.className);
-    }
-    if (!this.props.enableDropzone) {
-      editorClasses.push('editor--asset-dropzone--disable');
-    }
+    const editorClasses = classnames(
+      'panel', 'form--no-dividers', 'editor', {
+        'editor--asset-dropzone--disable': !this.props.enableDropzone
+      },
+      this.props.className
+    );
 
     let error = null;
     if (this.state.loadingError) {
@@ -197,17 +283,22 @@ class Editor extends Component {
     const campaignTitle = i18n._t('Admin.ADD_TO_CAMPAIGN', 'Add to campaign');
     const Loading = this.props.loadingComponent;
 
-    return (<div className={editorClasses.join(' ')}>
+    // FormBuilderLoader doesn't do anything with the file props, but passing it along forces
+    // React to re-render the EditorHeader component when file gets populated by GraphQL data
+    const file = this.props.file;
+
+    return (<div className={editorClasses}>
       <div className="editor__details fill-height">
         <FormBuilderLoader
-          identifier="AssetAdmin.EditForm"
+          identifier={formIdentifier}
           schemaUrl={formSchemaUrl}
-          afterMessages={this.renderCancelButton()}
           onSubmit={this.handleSubmit}
           onAction={this.handleAction}
           onLoadingSuccess={this.handleLoadingSuccess}
           onLoadingError={this.handleLoadingError}
           onFetchingSchema={this.handleFetchingSchema}
+          createFn={this.createFn}
+          file={file}
         />
         {error}
         <FormBuilderModal
@@ -231,6 +322,7 @@ Editor.propTypes = {
   className: PropTypes.string,
   targetId: PropTypes.number.isRequired,
   enableDropzone: PropTypes.bool,
+  dialog: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   // onUnpublish: PropTypes.func.isRequired,
@@ -241,20 +333,25 @@ Editor.propTypes = {
   })),
   addToCampaignSchemaUrl: PropTypes.string,
   actions: PropTypes.object,
+  showingSubForm: PropTypes.bool,
+  nextType: PropTypes.string
 };
 
 function mapDispatchToProps(dispatch) {
   return {
     actions: {
       unsavedForms: bindActionCreators(UnsavedFormsActions, dispatch),
-      confirmDeletion: bindActionCreators(confirmDeletionActions, dispatch)
+      confirmDeletion: bindActionCreators(confirmDeletionActions, dispatch),
+      modal: bindActionCreators(modalActions, dispatch),
     },
   };
 }
 
-function mapStateToProps(state) {
+function mapStateToProps({ assetAdmin: { gallery, modal } }) {
   return {
-    enableDropzone: state.assetAdmin.gallery.enableDropzone,
+    enableDropzone: gallery.enableDropzone,
+    nextType: modal.formSchema && modal.formSchema.nextType,
+    showingSubForm: modal.formSchemaStack && modal.formSchemaStack.length > 1
   };
 }
 

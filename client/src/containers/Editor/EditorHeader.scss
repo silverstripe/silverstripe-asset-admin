@@ -1,0 +1,51 @@
+.editor-header {
+
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin-bottom: $spacer * .625 ;
+
+
+  &__back-button {
+    flex: 0 0 auto;
+    align-self: center;
+
+    &--md-below {
+      display: none;
+      @include media-breakpoint-down(md) {
+        display: block;
+        margin-left: 0;
+      }
+    }
+  }
+
+  &__edit {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  &__field {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+
+    .field {
+      margin-bottom: 0;
+    }
+  }
+
+  &__cancel-button {
+    align-self: center;
+    flex: 0 0 auto;
+    margin: 0;
+
+    &--lg-above {
+      display: none;
+      @include media-breakpoint-up(lg) {
+        display: block;
+      }
+    }
+  }
+
+}

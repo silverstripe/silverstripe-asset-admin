@@ -7,6 +7,7 @@ import CONSTANTS from 'constants/index';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import fileShape from 'lib/fileShape';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
+import * as modalActions from 'state/modal/ModalActions';
 import PropTypes from 'prop-types';
 
 /**
@@ -233,6 +234,7 @@ class UploadField extends Component {
    * @param {Object} selectingItem
    */
   handleReplaceShow(event, selectingItem) {
+    this.props.actions.modal.initFormStack('select', 'admin');
     this.setState({
       selecting: true,
       selectingItem,
@@ -272,6 +274,7 @@ class UploadField extends Component {
    */
   handleAddShow(event) {
     event.preventDefault();
+    this.props.actions.modal.initFormStack('select', 'admin');
     this.setState({
       selecting: true,
       selectingItem: null,
@@ -282,6 +285,7 @@ class UploadField extends Component {
    * Close 'add from files' dialog
    */
   handleHide() {
+    this.props.actions.modal.reset();
     this.setState({
       selecting: false,
       selectingItem: null,
@@ -587,6 +591,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       uploadField: bindActionCreators(uploadFieldActions, dispatch),
+      modal: bindActionCreators(modalActions, dispatch)
     },
   };
 }

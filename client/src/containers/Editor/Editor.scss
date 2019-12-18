@@ -1,3 +1,5 @@
+@import "./EditorHeader";
+
 .editor {
   background-color: $body-bg;
   z-index: 2;
@@ -25,10 +27,6 @@
   .editor__details {
     transform: translateZ(0); // Safari fix - form fields are not visible intermittently
 
-    .btn--close-panel {
-      margin-right: 0;
-    }
-
     // This is an internal form so needs to be told to overflow with scrollbars
     fieldset {
       overflow-y: auto;
@@ -40,9 +38,16 @@
       pointer-events: none;
     }
   }
+
+  h2 {
+    margin-bottom: 0;
+    margin-top: $spacer;
+  }
 }
 
 .editor__heading {
+  font-size: $h2-font-size;
+  line-height: 2rem;
   margin-right: $spacer * 2;
   white-space: nowrap;
   overflow: hidden;
@@ -64,8 +69,7 @@
 
 .editor__specs {
   color: $text-muted;
-  font-size: $font-size-xs;
-  margin-bottom: $spacer ;
+  font-size: $font-size-xxs;
 }
 
 .editor__top-message {
@@ -147,19 +151,6 @@
     text-align: center;
     margin-right: $spacer * 1.5;
     margin-left: $spacer * 1.5;
-  }
-
-  // Changes a .btn-close-panel into a back arrow for smaller screens
-  .btn--close-panel {
-    float: left;
-    right: auto;
-    margin-right: 0;
-    margin-left: -15px;
-    color: $text-muted;
-
-    &::before {
-      content: "5";
-    }
   }
 }
 

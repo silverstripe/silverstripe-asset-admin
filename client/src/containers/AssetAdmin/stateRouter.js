@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { buildUrl } from 'containers/AssetAdmin/AssetAdminRouter';
 import CONSTANTS from 'constants/index';
+import { resetFormStack } from 'state/modal/ModalActions';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -111,6 +112,12 @@ class AssetAdminStateRouter extends Component {
       throw new Error(`Invalid action provided: ${action}`);
     }
 
+    if (this.state.fileId !== fileId) {
+      // When AssetAdmin is displayed in Modal, the insert media and admin form can be displayed.
+      // When a different file is selected, we should switch back to displaying the main form.
+      this.props.actions.resetFormStack();
+    }
+
     this.setState({
       folderId,
       fileId,
@@ -135,6 +142,14 @@ AssetAdminStateRouter.propTypes = {
   fileId: PropTypes.number,
 };
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: {
+      resetFormStack: () => dispatch(resetFormStack())
+    },
+  };
+}
+
 function stateRouter(AssetAdmin) {
   function mapStateToProps(state) {
     const sectionConfig = state.config.sections
@@ -146,7 +161,7 @@ function stateRouter(AssetAdmin) {
     };
   }
 
-  return connect(mapStateToProps)(AssetAdminStateRouter);
+  return connect(mapStateToProps, mapDispatchToProps)(AssetAdminStateRouter);
 }
 
 export { AssetAdminStateRouter };

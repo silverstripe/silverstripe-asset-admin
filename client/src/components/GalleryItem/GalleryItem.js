@@ -424,8 +424,8 @@ class GalleryItem extends Component {
       action = this.handleCancelUpload;
       actionIcon = 'font-icon-cancel';
     } else if (this.exists()) {
-      const label = i18n._t('AssetAdmin.DETAILS', 'Details');
-      overlay = <div className="gallery-item--overlay font-icon-edit">{label}</div>;
+      const label = i18n._t('AssetAdmin.VIEW', 'View');
+      overlay = <div className="gallery-item--overlay font-icon-eye">{label}</div>;
     }
 
     const badge = this.props.badge;

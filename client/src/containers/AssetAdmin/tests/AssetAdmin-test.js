@@ -2,7 +2,6 @@
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('containers/Editor/Editor');
-jest.mock('components/Breadcrumb/Breadcrumb');
 jest.mock('components/Search/Search');
 jest.mock('containers/Gallery/Gallery');
 jest.mock('containers/BulkDeleteConfirmation/BulkDeleteConfirmation');
@@ -70,9 +69,6 @@ describe('AssetAdmin', () => {
           deselectFiles: jest.fn(),
           setErrorMessage: jest.fn(),
           setNoticeMessage: jest.fn(),
-        },
-        breadcrumbsActions: {
-          setBreadcrumbs: jest.fn(),
         },
         queuedFiles: {
           addQueuedFile: jest.fn(),

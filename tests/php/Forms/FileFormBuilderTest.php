@@ -18,8 +18,6 @@ use SilverStripe\Forms\LiteralField;
 
 class FileFormBuilderTest extends SapphireTest
 {
-    protected $usesTransactions = false;
-
     protected static $fixture_file = 'FileFormBuilderTest.yml';
 
     protected static $extra_dataobjects = [
@@ -69,7 +67,7 @@ class FileFormBuilderTest extends SapphireTest
 
         // Test fields exist
         /** @var LiteralField $fileSpecsField */
-        $fileSpecsField = $form->Fields()->fieldByName('FileSpecs');
+        $fileSpecsField = $form->Fields()->fieldByName('AssetEditorHeaderFieldGroup.FileSpecs');
         $fileSpecs = $fileSpecsField->getContent();
         $this->assertEquals(
             '<div class="editor__specs">11 bytes <span class="editor__status-flag">Draft</span></div>',
@@ -219,7 +217,7 @@ class FileFormBuilderTest extends SapphireTest
 
         // Test fields
         /** @var LiteralField $fileSpecsField */
-        $fileSpecsField = $form->Fields()->fieldByName('FileSpecs');
+        $fileSpecsField = $form->Fields()->fieldByName('AssetEditorHeaderFieldGroup.FileSpecs');
         $this->assertEquals(
             '<div class="editor__specs">11 bytes <span class="editor__status-flag">Draft</span></div>',
             $fileSpecsField->getContent()
