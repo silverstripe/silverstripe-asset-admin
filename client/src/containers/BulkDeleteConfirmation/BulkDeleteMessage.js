@@ -20,7 +20,7 @@ const confirmationMessage = (foldersInUse, filesInUse, itemCount) => {
     return i18n.sprintf(
       i18n._t(
         'AssetAdmin.BULK_ACTIONS_DELETE_MULTIPLE_ITEMS_IN_USE_CONFIRM',
-        '%s item(s) are currently in use in %s place(s), are you sure you want to delete them?'
+        '%s item(s) are currently in use in %s place(s). Are you sure you want to delete them?'
       ),
       filesInUse.totalItems + foldersInUse.totalItems,
       filesInUse.totalUsages + foldersInUse.totalUsages,
@@ -33,7 +33,7 @@ const confirmationMessage = (foldersInUse, filesInUse, itemCount) => {
       return i18n.sprintf(
         i18n._t(
           'AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_FILE_IN_USE_CONFIRM',
-          'This file is currently in use in %s place(s), are you sure you want to delete it?'
+          'This file is currently in use in %s place(s). Are you sure you want to delete it?'
         ),
         filesInUse.totalUsages
       );
@@ -42,7 +42,7 @@ const confirmationMessage = (foldersInUse, filesInUse, itemCount) => {
     return i18n.sprintf(
       i18n._t(
         'AssetAdmin.BULK_ACTIONS_DELETE_MULTIPLE_FILES_IN_USE_CONFIRM',
-        '%s of these files are currently used in %s place(s), are you sure you want to delete them?'
+        '%s of these files are currently used in %s place(s). Are you sure you want to delete them?'
       ),
       filesInUse.totalItems,
       filesInUse.totalUsages,
@@ -55,7 +55,7 @@ const confirmationMessage = (foldersInUse, filesInUse, itemCount) => {
       return i18n.sprintf(
         i18n._t(
           'AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_FOLDER_IN_USE_CONFIRM',
-          'This folder contains file(s) that are currently used in %s place(s), are you sure you want to delete it?'
+          'This folder contains file(s) that are currently used in %s place(s). Are you sure you want to delete it?'
         ),
         foldersInUse.totalUsages
       );
@@ -64,7 +64,7 @@ const confirmationMessage = (foldersInUse, filesInUse, itemCount) => {
     return i18n.sprintf(
       i18n._t(
         'AssetAdmin.BULK_ACTIONS_DELETE_MULTIPLE_FOLDERS_IN_USE_CONFIRM',
-        '%s of these folders contain file(s) that are currently used in %s place(s), are you sure you want to delete them?'
+        '%s of these folders contain file(s) that are currently used in %s place(s). Are you sure you want to delete them?'
       ),
       foldersInUse.totalItems,
       foldersInUse.totalUsages

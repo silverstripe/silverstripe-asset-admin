@@ -38,17 +38,17 @@ describe('BulkDeleteMessage', () => {
       [
         'file in use',
         { ...noFoldersInUseProps, ...oneFileInUseProps, itemCount: 2 },
-        '1 item(s) are currently in use in 2 place(s), are you sure you want to delete them?',
+        '1 item(s) are currently in use in 2 place(s). Are you sure you want to delete them?',
       ],
       [
         'folder in use',
         { ...noFilesInUseProps, ...oneFolderInUseProps, itemCount: 2 },
-        '1 item(s) are currently in use in 1 place(s), are you sure you want to delete them?',
+        '1 item(s) are currently in use in 1 place(s). Are you sure you want to delete them?',
       ],
       [
         'file and folder in use',
         { ...oneFileInUseProps, ...oneFolderInUseProps, itemCount: 2 },
-        '2 item(s) are currently in use in 3 place(s), are you sure you want to delete them?',
+        '2 item(s) are currently in use in 3 place(s). Are you sure you want to delete them?',
       ],
     ];
 
@@ -69,12 +69,12 @@ describe('BulkDeleteMessage', () => {
       [
         'one folder in use',
         { ...noFilesInUseProps, ...oneFolderInUseProps, itemCount: 1 },
-        'This folder contains file(s) that are currently used in 1 place(s), are you sure you want to delete it?'
+        'This folder contains file(s) that are currently used in 1 place(s). Are you sure you want to delete it?'
       ],
       [
         'multiple folders in use',
         { ...noFilesInUseProps, ...manyFoldersInUseProps, itemCount: 2 },
-        '2 of these folders contain file(s) that are currently used in 2 place(s), are you sure you want to delete them?'
+        '2 of these folders contain file(s) that are currently used in 2 place(s). Are you sure you want to delete them?'
       ],
     ];
 
@@ -95,12 +95,12 @@ describe('BulkDeleteMessage', () => {
       [
         'one file in use',
         { ...noFoldersInUseProps, ...oneFileInUseProps, itemCount: 1 },
-        'This file is currently in use in 2 place(s), are you sure you want to delete it?',
+        'This file is currently in use in 2 place(s). Are you sure you want to delete it?',
       ],
       [
         'many files in use',
         { ...noFoldersInUseProps, ...manyFilesInUseProps, itemCount: 2 },
-        '2 of these files are currently used in 3 place(s), are you sure you want to delete them?',
+        '2 of these files are currently used in 3 place(s). Are you sure you want to delete them?',
       ]
     ];
 
