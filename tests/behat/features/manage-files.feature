@@ -168,14 +168,15 @@ Feature: Manage files
 
 
   @modal
-  Scenario: I cannot delete a folder containing a file that is in use
+  Scenario: I can delete a folder containing a file that is in use with a warning
     When I check the file named "folder3" in the gallery
     Then I press the "Delete" button
     Then I should see a modal titled "Confirm file deletion"
-      And I should see "currently in use" in the ".modal-body" region
-      And I should see "before you can delete the folder" in the ".modal-body" region
-      And I press the Dismiss button inside the modal
-    Then I should see the file named "folder3" in the gallery
+      And I should see "This folder contains file(s) that are currently used" in the ".modal-body" region
+      And I should see "Ensure files are removed from content areas" in the ".modal-body" region
+      And I press the Delete button inside the modal
+    Then I should see "1 folders/files were successfully archived" in the message box
+      And I should not see the file named "folder3" in the gallery
 
   @modal
   Scenario: I can delete a file that is in use with a warning

@@ -52,8 +52,8 @@ describe('BulkDeleteMessage', () => {
     const { props: { isOpen, actions } } = renderer.getRenderOutput();
 
     expect(isOpen).toBe(true);
-    expect(actions.length).toBe(1);
-    expect(actions[0].label).toBe('Dismiss');
+    expect(actions.length).toBe(2);
+    expect(actions[0].label).toBe('Cancel');
 
     actions[0].handler();
     expect(props.onConfirm.mock.calls.length).toBe(0);
@@ -66,10 +66,10 @@ describe('BulkDeleteMessage', () => {
 
     expect(isOpen).toBe(true);
     expect(actions.length).toBe(2);
-    expect(actions[0].label).toBe('Delete');
-    expect(actions[1].label).toBe('Cancel');
+    expect(actions[0].label).toBe('Cancel');
+    expect(actions[1].label).toBe('Delete');
 
-    actions[1].handler();
+    actions[0].handler();
     expect(props.onConfirm.mock.calls.length).toBe(0);
     expect(props.onCancel.mock.calls.length).toBe(1);
   });
