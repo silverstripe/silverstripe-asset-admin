@@ -23,7 +23,7 @@ class MoveFormFactory implements FormFactory
             FieldList::create(
                 TreeDropdownField::create(
                     'FolderID',
-                    _t(__CLASS__.'CHOOSEFOLDER', 'Choose a folder'),
+                    _t(__CLASS__.'.CHOOSEFOLDER', 'Choose a folder'),
                     Folder::class
                 )->setValue((int) $context['FolderID'])
                 ->setTitleField('Filename')

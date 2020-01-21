@@ -154,9 +154,9 @@ abstract class AssetFormFactory implements FormFactory
                 ->setIcon('save')
                 ->setSchemaState([
                     'data' => [
-                        'pristineTitle' => _t(__CLASS__.'SAVED', 'Saved'),
+                        'pristineTitle' => _t(__CLASS__.'.SAVED', 'Saved'),
                         'pristineIcon' => 'tick',
-                        'dirtyTitle' => _t(__CLASS__.'SAVE', 'Save'),
+                        'dirtyTitle' => _t(__CLASS__.'.SAVE', 'Save'),
                         'dirtyIcon' => 'save',
                         'pristineClass' => 'btn-outline-primary',
                         'dirtyClass' => '',
@@ -360,7 +360,7 @@ abstract class AssetFormFactory implements FormFactory
         unset($editorsOptionsField['Anyone']);
 
         return Tab::create(
-            'Permissions',
+            'Permissions', _t(__CLASS__ . '.PERMISSIONS', 'Permissions'),
             OptionsetField::create(
                 'CanViewType',
                 _t(__CLASS__.'.ACCESSHEADER', 'Who can view this file?')
