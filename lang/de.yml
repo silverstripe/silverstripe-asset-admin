@@ -11,6 +11,7 @@ de:
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Ordner löschen'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Zur Kampagne hinzufügen'
     Alignment: Ausrichtung
     AlignmentCenter: Mittig
     AlignmentLeft: 'Links umfließend'
@@ -24,6 +25,7 @@ de:
     AppCategoryDocument: Dokument
     AppCategoryImage: Bild
     AppCategoryVideo: Video
+    AttributesDescription: 'These changes will only affect this particular placement of the file.'
     CREATED: 'Zuerst hochgeladen'
     Caption: Bildunterschrift
     CreatePermissionDenied: 'Sie haben keine Berechtigungen, Dateien hinzuzufügen'
@@ -48,6 +50,7 @@ de:
     PUBLISH_BUTTON: Veröffentlichen
     Placement: Platzierung
     SAVEDFILE: 'Datei gespeichert'
+    TITLE: Titel
     TitleTooltip: 'Titel Text (Tooltip)'
     TitleTooltipDescription: 'Für weitergehende Informationen über das Bild'
     UNKNOWN: Unbekannt
@@ -67,17 +70,24 @@ de:
     INHERIT: 'Von übergeordnetem Ordner übernehmen'
     LOGGED_IN: 'Eingeloggte Benutzer'
     ONLY_GROUPS: 'Nur diese Gruppen (bitte auswählen)'
+    PERMISSIONS: Berechtigungen
     ROOTNAME: (Hauptebene)
     SAVE: Speichern
+    SAVED: Gespeichert    
     VIEWERGROUPS: Betrachtergruppen
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_FILE: Einfügen
     INSERT_LINK: 'Link zur Datei'
     LINKDESCR: 'Beschreibung des Links'
     LINKOPENNEWWIN: 'In neuem Fenster oder Reiter öffnen'
     LINKOPTIONS: Linkoptionen
     LINKTEXT: Linktext
     OTHER_ACTIONS: 'Andere Aktionen'
+    PUBLISHED: Veröffentlicht
+    PUBLISH: Veröffentlichen
+    REPLACE_FILE: 'Datei ersetzen'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dieser Dateityp kann nur als Link eingefügt werden. Sie können den Link nach dem Einfügen bearbeiten.</p>'
+    USAGE: 'Verwendet auf'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Veröffentlicht
     SAVED: Gespeichert
@@ -89,7 +99,19 @@ de:
     AddMedia: 'Medien hinzufügen'
     Cancel: Abbrechen
     ERROR_ABSOLUTE: 'Nur absolute URLs können eingebettet werden'
+    ERROR_EMBED: 'Zur Zeit sind von dieser URL keine einbettbaren Medien verfügbar'
+    ERROR_HOSTNAME: 'Der Rechnername dieser Datei ist nicht erlaubt'
+    ERROR_PORT: 'Der Port dieser Datei ist nicht erlaubt'
+    ERROR_SCHEME: 'Das Schema dieser Datei ist nicht erlaubt'
     InsertMedia: 'Medium einfügen'
     UrlDescription: 'Betten Sie YouTube und Vimeo Videos, Bilder und andere Medien direkt aus dem Internet ein.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    ErrorMaxFilesReached:
+      one: 'You can only upload {count} file.'
+      other: 'You can only upload {count} files.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Datei oder Verzeichnis konnte nicht gefunden werden'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'Die Datei "{file}" wird an {count} anderen Stelle verwendet.'
+      other: 'Die Datei "{file}" wird an {count} anderen Stellen verwendet.'
