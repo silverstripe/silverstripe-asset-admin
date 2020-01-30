@@ -87,10 +87,8 @@ class ImageFormFactory extends FileFormFactory
 
         $altTextDescription = _t(
             'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.AltTextTip',
-            implode([
-                'Description for visitors who are unable to view the image (using screenreaders or ',
-                'image blockers). Recommended for images which provide unique context to the content.',
-            ])
+            'Description for visitors who are unable to view the image (using screenreaders or ' .
+            'image blockers). Recommended for images which provide unique context to the content.'
         );
 
         $tab->insertAfter(
