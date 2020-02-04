@@ -1,4 +1,5 @@
 const Path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpackConfig = require('@silverstripe/webpack-config');
 const {
   resolveJS,
@@ -45,7 +46,12 @@ const config = [
       }
     ),
     module: moduleJS(ENV, PATHS),
-    plugins: pluginJS(ENV, PATHS),
+    plugins: [
+      ...pluginJS(ENV, PATHS),
+      new CopyWebpackPlugin([
+        { from: 'client/src/images', to: 'images' },
+      ])
+    ],
   },
   {
     name: 'css',
@@ -59,7 +65,7 @@ const config = [
     devtool: (ENV !== 'production') ? 'source-map' : '',
     module: moduleCSS(ENV, PATHS),
     plugins: pluginCSS(ENV, PATHS),
-  },
+  }
 ];
 
 // Use WEBPACK_CHILD=js or WEBPACK_CHILD=css env var to run a single config
