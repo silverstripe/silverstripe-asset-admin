@@ -144,7 +144,7 @@ class ProportionConstraintField extends Component {
   render() {
     const {
       FieldGroup,
-      data: { originalWidth },
+      data: { originalWidth, isRemoteFile },
       current: { width: currentWidth },
       imageSizePresets } = this.props;
 
@@ -162,7 +162,7 @@ class ProportionConstraintField extends Component {
           ))}
         </FieldGroup>
 
-        {<ImageSizePresetList
+        {!isRemoteFile && <ImageSizePresetList
           originalWidth={parseInt(originalWidth, 10)}
           currentWidth={currentWidth}
           imageSizePresets={imageSizePresets}
@@ -180,6 +180,7 @@ ProportionConstraintField.propTypes = {
   active: PropTypes.bool,
   data: PropTypes.shape({
     ratio: PropTypes.number.isRequired,
+    isRemoteFile: PropTypes.bool,
     originalWidth: PropTypes.number,
     originalHeight: PropTypes.number,
   }),
