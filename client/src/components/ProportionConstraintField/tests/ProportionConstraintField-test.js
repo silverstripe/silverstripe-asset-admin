@@ -185,4 +185,25 @@ describe('ProportionConstraintField', () => {
       expectDimensions(calls, { one: 1234, two: 823 });
     });
   });
+
+  describe('data.isRemoteFile', () => {
+    const defaultProps = { ratio: 1.5, originalWidth: 123 };
+    const hasRenderedImageSizePresetList = item =>
+      ReactTestUtils.scryRenderedDOMComponentsWithClass(item, 'image-size-preset-list').length > 0;
+    it('has rendered <ImageSizePresetList> when false', () => {
+      const props = { data: { isRemoteFile: false, ...defaultProps } };
+      const { item } = render(props);
+      expect(hasRenderedImageSizePresetList(item)).toBe(true);
+    });
+    it('has rendered <ImageSizePresetList> when missing', () => {
+      const props = { data: { isRemoteFile: false, ...defaultProps } };
+      const { item } = render(props);
+      expect(hasRenderedImageSizePresetList(item)).toBe(true);
+    });
+    it('has not rendered <ImageSizePresetList> when true', () => {
+      const props = { data: { isRemoteFile: true, ...defaultProps } };
+      const { item } = render(props);
+      expect(hasRenderedImageSizePresetList(item)).toBe(false);
+    });
+  });
 });
