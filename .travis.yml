@@ -65,7 +65,7 @@ before_script:
   - if [[ $BEHAT_TEST ]]; then (vendor/bin/serve --bootstrap-file vendor/silverstripe/cms/tests/behat/serve-bootstrap.php &> artifacts/serve.log &); fi
 
 # Install NPM dependencies
-  - if [[ $NPM_TEST ]]; then nvm install && nvm use && npm install -g yarn && yarn install --network-concurrency 1 && (cd vendor/silverstripe/admin && yarn install --network-concurrency 1) && yarn run build; fi
+  - if [[ $NPM_TEST ]]; then rm -rf client/dist && nvm install && nvm use && npm install -g yarn && yarn install --network-concurrency 1 && (cd vendor/silverstripe/admin && yarn install --network-concurrency 1) && yarn run build; fi
 
 script:
   - if [[ $PHPUNIT_TEST ]]; then vendor/bin/phpunit tests/php; fi

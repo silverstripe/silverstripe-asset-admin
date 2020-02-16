@@ -54,6 +54,7 @@
     "@storybook/addons": "^3.4.11",
     "@storybook/react": "^3.4.11",
     "babel-jest": "^23.6.0",
+    "copy-webpack-plugin": "^4",
     "jest-cli": "^23.6.0",
     "webpack": "^2.6.1"
   },
