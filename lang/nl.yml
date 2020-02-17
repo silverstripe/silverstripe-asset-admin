@@ -18,8 +18,7 @@ nl:
     AlignmentLeftAlone: 'Links (zonder tekst ernaast)'
     AlignmentRight: Rechts
     AlignmentRightAlone: 'Rechts (zonder tekst ernaast)'
-    AltText: 'Alternatieve tekst (als)'
-    AltTextDescription: 'Wordt gebruikt voor slechtzienden (screenreader) of als het beeld niet ingeladen kan worden.'
+    AltText: 'Alternatieve tekst (alt)'
     AppCategoryArchive: Archief
     AppCategoryAudio: Audio
     AppCategoryDocument: Document
@@ -51,7 +50,6 @@ nl:
     Placement: Plaatsing
     SAVEDFILE: 'Bestand opgeslagen'
     TitleTooltip: 'Titel (bij mouse over)'
-    TitleTooltipDescription: 'Voor meer informatie over het beeld'
     UNKNOWN: Onbekend
     UNPUBLISH_BUTTON: 'Publicatie intrekken'
     UPLOADEDFILE: 'Bestand opgeslagen'
@@ -73,13 +71,16 @@ nl:
     SAVE: Opslaan
     VIEWERGROUPS: 'Groepen met bekijkrechten'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_FILE: Invoegen
     INSERT_LINK: 'Link naar bestand'
     LINKDESCR: 'Link omschrijving'
     LINKOPENNEWWIN: 'Openen in nieuw venster of tabblad'
     LINKOPTIONS: Linkinstellingen
     LINKTEXT: 'Link tekst'
     OTHER_ACTIONS: 'Andere acties'
+    REPLACE_FILE: 'Vervang bestand'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dit bestandstype kan alleen als link ingevoegd worden. Na het invoegen kan het bewerkt worden.</p>'
+    USAGE: 'In gebruik op'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Gepubliceerd
     SAVED: Opgeslagen
@@ -91,7 +92,19 @@ nl:
     AddMedia: 'Media toevoegen'
     Cancel: Annuleren
     ERROR_ABSOLUTE: 'Alleen volledige URL''s kunnen worden gebruikt'
+    ERROR_EMBED: 'Met deze URL is geen embed te genereren'
+    ERROR_HOSTNAME: 'Deze hostnaam is niet toegestaan'
+    ERROR_PORT: 'Deze poort is niet toegestaan'
+    ERROR_SCHEME: 'Deze bestandsindeling is niet toegestaan'
     InsertMedia: 'Media invoegen'
     UrlDescription: 'Gebuik een URL van een Youtube-video, Vimeo-video of Twitter-bericht om deze op de pagina weer te geven.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    ErrorMaxFilesReached:
+      one: 'Hier kan maar {count} bestand opgeslagen worden.'
+      other: 'Hier kunnen max {count} bestanden opgeslagen worden.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Bestand of map kon niet gevonden worden'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'Bestand "{file}" wordt op {count} plek gebruikt.'
+      other: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
