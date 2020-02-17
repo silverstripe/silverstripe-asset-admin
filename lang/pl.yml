@@ -19,7 +19,6 @@ pl:
     AlignmentRight: 'Przyciągnij do prawej'
     AlignmentRightAlone: 'Samo, po prawej'
     AltText: 'Tekst alternatywny (alt)'
-    AltTextDescription: 'Wyświetl na ekranie czytników lub gdy nie można wyświetlić obrazu'
     AppCategoryArchive: Archiwum
     AppCategoryAudio: 'Dźwięki audio'
     AppCategoryDocument: Dokument
@@ -51,7 +50,6 @@ pl:
     Placement: Umieszczenie
     SAVEDFILE: 'Zapisano plik'
     TitleTooltip: 'Tytuł (tooltip)'
-    TitleTooltipDescription: 'Aby uzyskać dodatkowe informacje o obrazie'
     UNKNOWN: Nieznany
     UNPUBLISH_BUTTON: 'Cofnij publikację'
     UPLOADEDFILE: 'Przesłano plik'
@@ -73,13 +71,16 @@ pl:
     SAVE: Zapisz
     VIEWERGROUPS: 'Kto może zobaczyć (grupy)'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    INSERT_FILE: Wstaw
     INSERT_LINK: 'Link do pliku'
     LINKDESCR: 'Opis linku'
     LINKOPENNEWWIN: 'Otwórz w nowym oknie/zakładce'
     LINKOPTIONS: 'Opcje linku'
     LINKTEXT: 'Tekst linku'
     OTHER_ACTIONS: 'Inne akcje'
+    REPLACE_FILE: 'Zastąp plik'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ten typ pliku można wstawić tylko jako łącze. Możesz edytować link, gdy zostanie wstawiony.</p>'
+    USAGE: 'Użyty na'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Opublikowano
     SAVED: Zapisano
@@ -91,7 +92,17 @@ pl:
     AddMedia: 'Dodaj media'
     Cancel: Anuluj
     ERROR_ABSOLUTE: 'Tylko bezwzględne adresy URL mogą być osadzone'
+    ERROR_EMBED: 'Obecnie pod tym adresem URL nie ma dostępnych mediów do osadzenia'
+    ERROR_HOSTNAME: 'Ta nazwa hosta pliku jest niedozwolona'
+    ERROR_PORT: 'Ten port pliku jest niedozwolony'
+    ERROR_SCHEME: 'Ten schemat plików jest niedozwolony'
     InsertMedia: 'Wstaw media'
     UrlDescription: 'Umieszczaj filmy, zdjęcia i inne materiały wideo z serwisu Youtube i Vimeo bezpośrednio z internetu.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    ErrorMaxFilesReached:
+      one: 'Możesz przesyłać tylko {count} plików.'
+      few: 'Możesz przesyłać tylko {count} plików.'
+      many: 'Możesz przesyłać tylko {count} plików.'
+      other: 'Możesz przesyłać tylko {count} plików.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Nie można znaleźć pliku lub folderu'
