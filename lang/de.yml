@@ -19,7 +19,6 @@ de:
     AlignmentRight: 'Rechts umfließend'
     AlignmentRightAlone: Rechts
     AltText: 'Alternativtext (alt)'
-    AltTextDescription: 'Wird von Screen-Readern vorgelesen oder falls das Bild nicht angezeigt werden kann.'
     AppCategoryArchive: Archiv
     AppCategoryAudio: Audio
     AppCategoryDocument: Dokument
@@ -51,7 +50,6 @@ de:
     Placement: Platzierung
     SAVEDFILE: 'Datei gespeichert'
     TitleTooltip: 'Titel Text (Tooltip)'
-    TitleTooltipDescription: 'Für weitergehende Informationen über das Bild'
     UNKNOWN: Unbekannt
     UNPUBLISH_BUTTON: Unveröffentlicht
     UPLOADEDFILE: 'Datei hochgeladen'

@@ -69,7 +69,7 @@ class CreateFolderMutationCreator extends MutationCreator implements OperationRe
         foreach ($args['folder'] as $name => $val) {
             $canCreateContext[$this->accessor->getObjectFieldName(Folder::singleton(), $name)] = $val;
         }
-        if (!Folder::singleton()->canCreate($context['currentUser'], $canCreateContext)) {
+        if (!Folder::singleton()->canCreate($context['currentUser'] ?? null, $canCreateContext)) {
             throw new \InvalidArgumentException(sprintf(
                 '%s create not allowed',
                 Folder::class

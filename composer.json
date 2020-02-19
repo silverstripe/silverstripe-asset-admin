@@ -4,15 +4,15 @@
     "type": "silverstripe-vendormodule",
     "license": "BSD-3-Clause",
     "require": {
-        "silverstripe/admin": "^1",
-        "silverstripe/framework": "^4",
+        "silverstripe/admin": "^1.5",
+        "silverstripe/framework": "^4.5",
         "silverstripe/graphql": "^3",
         "silverstripe/vendor-plugin": "^1"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
-        "silverstripe/cms": "^4",
-        "silverstripe/campaign-admin": "^1"
+        "silverstripe/cms": "^4.5",
+        "silverstripe/campaign-admin": "^1.5"
     },
     "extra": {
         "expose": [
