@@ -80,11 +80,12 @@ class AssetDropzone extends Component {
 
   componentWillUnmount() {
     // Remove all dropzone event listeners.
+    this.dropzone.files = [];
     this.dropzone.destroy();
   }
 
   /**
-   * Gets the default optiions to instanciate dropzone with.
+   * Gets the default options to instantiate dropzone with.
    *
    * @return object
    */
