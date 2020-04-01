@@ -1,0 +1,51 @@
+SilverStripe\Security\Member:
+  member1:
+    FirstName: Christopher
+    Surname: Pitt
+  member2:
+    FirstName: Damian
+    Surname: Mooyman
+SilverStripe\Assets\Folder:
+  folder1:
+    Title: folder1
+  folder2:
+    Title: folder2
+  folder1.1:
+    Title: folder1.1
+    Parent: =>SilverStripe\Assets\Folder.folder1
+  disallowCanAddChildren:
+    Title: disallowCanAddChildren
+SilverStripe\Assets\File:
+  rootfile:
+    Name: rootfile.jpg
+    Title: rootfile
+  file1:
+    Created: '2015-08-19 00:00:00'
+    LastUpdated: '2015-08-27 00:00:00'
+    Owner: =>SilverStripe\Security\Member.member1
+    Parent: =>SilverStripe\Assets\Folder.folder1
+    Name: file1.jpg
+    Title: The First File
+  file2:
+    Created: '2015-08-20 00:00:00'
+    LastUpdated: '2015-08-28 00:00:00'
+    Owner: =>SilverStripe\Security\Member.member2
+    Parent: =>SilverStripe\Assets\Folder.folder2
+    Name: file2.jpg
+    Title: The Second File
+  file3:
+    Created: '2015-08-21 00:00:00'
+    LastUpdated: '2015-08-29 00:00:00'
+    Owner: =>SilverStripe\Security\Member.member2
+    Parent: =>SilverStripe\Assets\Folder.folder2
+    Name: file3.jpg
+    Title: The Third File
+  disallowCanView:
+    Parent: =>SilverStripe\Assets\Folder.folder1
+    Name: disallowCanView.txt
+  disallowCanEdit:
+    Parent: =>SilverStripe\Assets\Folder.folder1
+    Name: disallowCanEdit.txt
+  disallowCanDelete:
+    Parent: =>SilverStripe\Assets\Folder.folder1
+    Name: disallowCanDelete.txt

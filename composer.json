@@ -10,7 +10,7 @@
         "silverstripe/vendor-plugin": "^1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7",
+        "phpunit/phpunit": "^8 || ^9",
         "silverstripe/cms": "^5",
         "silverstripe/versioned": "^2",
         "silverstripe/campaign-admin": "^2"

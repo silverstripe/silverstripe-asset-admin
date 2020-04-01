@@ -16,13 +16,13 @@ class FileTypeCreatorTest extends SapphireTest
 
     protected $usesDatabase = true;
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         TestAssetStore::activate('FileTypeCreatorTest');
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         TestAssetStore::reset();
         parent::tearDown();

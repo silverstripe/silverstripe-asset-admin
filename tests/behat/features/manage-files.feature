@@ -76,7 +76,9 @@ Feature: Manage files
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileEditForm" form
     When I press the "Other actions" button
-      And I press the "Delete" button, confirming the dialog
+      And I press the "Delete" button
+    Then I should see a modal titled "Confirm file deletion"
+      And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
 
   Scenario: I can delete multiple files
@@ -92,7 +94,9 @@ Feature: Manage files
     When I attach the file "testfile.jpg" to dropzone "gallery-container"
       And I check the file named "testfile" in the gallery
     Then the ".bulk-actions-counter" element should contain "3"
-      And I press the "Delete" button, confirming the dialog
+      And I press the "Delete" button
+    Then I should see a modal titled "Confirm file deletion"
+      And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
@@ -164,21 +168,24 @@ Feature: Manage files
 
 
   @modal
-  Scenario: I cannot delete a folder containing a file that is in use
+  Scenario: I can delete a folder containing a file that is in use with a warning
     When I check the file named "folder3" in the gallery
     Then I press the "Delete" button
-      And I see the text "currently in use" in the alert
-      And I see the text "before you can delete the folder" in the alert
-      And I confirm the dialog
-    Then I should see the file named "folder3" in the gallery
+    Then I should see a modal titled "Confirm file deletion"
+      And I should see "This folder contains file(s) that are currently used" in the ".modal-body" region
+      And I should see "Ensure files are removed from content areas" in the ".modal-body" region
+      And I press the Delete button inside the modal
+    Then I should see "1 folders/files were successfully archived" in the message box
+      And I should not see the file named "folder3" in the gallery
 
   @modal
   Scenario: I can delete a file that is in use with a warning
     When I click on the file named "folder3" in the gallery
       And I check the file named "file1" in the gallery
     Then I press the "Delete" button
-      And I see the text "file is currently in use" in the alert
-      And I confirm the dialog
+    Then I should see a modal titled "Confirm file deletion"
+      And I should see "file is currently in use" in the ".modal-body" region
+      And I press the Delete button inside the modal
     Then I should see "1 folders/files were successfully archived" in the message box
       And I should not see the file named "file1" in the gallery
 

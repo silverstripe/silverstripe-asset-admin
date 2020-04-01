@@ -1,10 +1,11 @@
 language: php
 
-dist: trusty
+dist: xenial
 
-before_install:
- - sudo apt-get update
- - sudo apt-get install chromium-chromedriver
+services:
+  - mysql
+  - postgresql
+  - xvfb
 
 cache:
   directories:
@@ -14,6 +15,8 @@ addons:
   apt:
     packages:
       - tidy
+      - chromium-chromedriver
+      - chromium-browser
 
 env:
   global:
@@ -26,11 +29,15 @@ env:
 
 matrix:
   include:
-    - php: 7.1
+    - php: 7.2
       env: PHPUNIT_TEST=1 PHPCS_TEST=1
-    - php: 7.1
+    - php: 7.2
       env: BEHAT_TEST=1
-    - php: 7.1
+    - php: 7.3
+      env: PHPUNIT_TEST=1
+    - php: 7.4
+      env: PHPUNIT_TEST=1
+    - php: 7.2
       env: NPM_TEST=1
     - php: 7.3
       env:
@@ -49,9 +56,14 @@ before_script:
 
 # Install composer
   - composer validate
-  - composer require silverstripe/recipe-testing:^2 silverstripe/recipe-cms 5.x-dev --no-update --prefer-dist
-  - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:3.x-dev --prefer-dist; fi
-  - composer update
+  - composer require silverstripe/recipe-testing:^2 silverstripe/recipe-cms 5.x-dev --no-update
+  - if [[ $DB == PGSQL ]]; then composer require silverstripe/postgresql:3.x-dev --no-update; fi
+  - composer install --prefer-source --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
+
+# Remove preinstalled Chrome (google-chrome)
+# this would conflict with our chromium-browser installation
+# and its version is incompatible with chromium-chromedriver
+  - sudo apt-get remove -y --purge google-chrome-stable || true
 
 # Start behat services
   - if [[ $BEHAT_TEST ]]; then mkdir artifacts; fi
@@ -61,7 +73,7 @@ before_script:
   - if [[ $BEHAT_TEST ]]; then (vendor/bin/serve --bootstrap-file vendor/silverstripe/cms/tests/behat/serve-bootstrap.php &> artifacts/serve.log &); fi
 
 # Install NPM dependencies
-  - if [[ $NPM_TEST ]]; then nvm install && nvm use && npm install -g yarn && yarn install --network-concurrency 1 && (cd vendor/silverstripe/admin && yarn install --network-concurrency 1) && yarn run build; fi
+  - if [[ $NPM_TEST ]]; then rm -rf client/dist && nvm install && nvm use && npm install -g yarn && yarn install --network-concurrency 1 && (cd vendor/silverstripe/admin && yarn install --network-concurrency 1) && yarn run build; fi
 
 script:
   - if [[ $PHPUNIT_TEST ]]; then vendor/bin/phpunit tests/php; fi

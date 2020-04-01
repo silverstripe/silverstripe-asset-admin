@@ -25,14 +25,8 @@ const file = `
     size
     smallThumbnail
     thumbnail
-    inUseCount
+    version
   }
 `;
 
-const folder = `
-  fragment FolderFields on Folder {
-    filesInUseCount
-  }
-`;
-
-export { fileInterface, file, folder };
+export { fileInterface, file };

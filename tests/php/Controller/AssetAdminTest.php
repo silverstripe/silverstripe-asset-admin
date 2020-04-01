@@ -35,7 +35,7 @@ class AssetAdminTest extends FunctionalTest
         FolderFormFactory::class => [FolderFormFactoryExtension::class],
     ];
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -68,7 +68,7 @@ class AssetAdminTest extends FunctionalTest
         Upload_Validator::config()->set('use_is_uploaded_file', false);
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         File::remove_extension(FileExtension::class);
         Folder::remove_extension(FolderExtension::class);
@@ -348,7 +348,7 @@ class AssetAdminTest extends FunctionalTest
 
         $data = $assetAdmin->getObjectFromData($file);
 
-        // Thumbnail value is hard to predit, so we'll just check that it's there before unseting it.
+        // Thumbnail value is hard to predict, so we'll just check that it's there before unseting it.
         $this->assertNotEmpty($data['thumbnail']);
         unset($data['thumbnail']);
 
@@ -367,7 +367,7 @@ class AssetAdminTest extends FunctionalTest
             "published" => $file->isPublished(),
             "modified" => $file->isModifiedOnDraft(),
             "draft" => $file->isOnDraftOnly(),
-            "inUseCount" => 0,
+            "inUseCount" => 1,
             "created" => $file->Created,
             "lastUpdated" => $file->LastEdited,
             "owner" => [

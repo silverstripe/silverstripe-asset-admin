@@ -264,7 +264,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'acceptedFiles' => implode(',', array_map(function ($ext) {
                     return $ext[0] != '.' ? ".$ext" : $ext;
                 }, $validator->getAllowedExtensions()))
-
             ]
         ]);
     }

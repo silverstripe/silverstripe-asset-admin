@@ -1,20 +1,24 @@
 import Injector from 'lib/Injector';
 import { combineReducers } from 'redux';
-import galleryReducer from 'state/gallery/GalleryReducer';
-import queuedFilesReducer from 'state/queuedFiles/QueuedFilesReducer';
-import uploadFieldReducer from 'state/uploadField/UploadFieldReducer';
-import previewFieldReducer from 'state/previewField/PreviewFieldReducer';
-import imageLoadReducer from 'state/imageLoad/ImageLoadReducer';
-import displaySearchReducer from 'state/displaySearch/DisplaySearchReducer';
+import gallery from 'state/gallery/GalleryReducer';
+import queuedFiles from 'state/queuedFiles/QueuedFilesReducer';
+import uploadField from 'state/uploadField/UploadFieldReducer';
+import previewField from 'state/previewField/PreviewFieldReducer';
+import imageLoad from 'state/imageLoad/ImageLoadReducer';
+import displaySearch from 'state/displaySearch/DisplaySearchReducer';
+import confirmDeletion from 'state/confirmDeletion/ConfirmDeletionReducer';
+import modal from 'state/modal/ModalReducer';
 
 const registerReducers = () => {
   Injector.reducer.register('assetAdmin', combineReducers({
-    gallery: galleryReducer,
-    queuedFiles: queuedFilesReducer,
-    uploadField: uploadFieldReducer,
-    previewField: previewFieldReducer,
-    imageLoad: imageLoadReducer,
-    displaySearch: displaySearchReducer,
+    gallery,
+    queuedFiles,
+    uploadField,
+    previewField,
+    imageLoad,
+    displaySearch,
+    confirmDeletion,
+    modal
   }));
 };
 
