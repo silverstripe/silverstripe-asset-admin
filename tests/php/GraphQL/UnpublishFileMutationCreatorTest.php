@@ -17,7 +17,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         UnpublishFileMutationCreatorTest\FileOwner::class,
     ];
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 

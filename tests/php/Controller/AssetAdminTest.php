@@ -35,7 +35,7 @@ class AssetAdminTest extends FunctionalTest
         FolderFormFactory::class => [FolderFormFactoryExtension::class],
     ];
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -68,7 +68,7 @@ class AssetAdminTest extends FunctionalTest
         Upload_Validator::config()->set('use_is_uploaded_file', false);
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         File::remove_extension(FileExtension::class);
         Folder::remove_extension(FolderExtension::class);

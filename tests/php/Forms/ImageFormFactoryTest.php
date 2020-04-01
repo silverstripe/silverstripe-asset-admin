@@ -27,7 +27,7 @@ class ImageFormFactoryTest extends SapphireTest
 
     protected $usesDatabase = true;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -41,7 +41,7 @@ class ImageFormFactoryTest extends SapphireTest
         $this->img = $img;
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         TestAssetStore::reset();
         parent::tearDown();

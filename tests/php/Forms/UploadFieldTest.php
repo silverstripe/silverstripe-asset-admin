@@ -24,7 +24,7 @@ class UploadFieldTest extends SapphireTest
         FileOwner::class,
     ];
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -41,7 +41,7 @@ class UploadFieldTest extends SapphireTest
         $testimage->setFromLocalFile(__DIR__ . '/fixtures/testimage.png', 'files/testimage.png');
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         TestAssetStore::reset();
         parent::tearDown();

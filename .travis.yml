@@ -29,15 +29,15 @@ env:
 
 matrix:
   include:
-    - php: 7.1
+    - php: 7.2
       env: PHPUNIT_TEST=1 PHPCS_TEST=1
-    - php: 7.1
+    - php: 7.2
       env: BEHAT_TEST=1
     - php: 7.3
       env: PHPUNIT_TEST=1
     - php: 7.4
       env: PHPUNIT_TEST=1
-    - php: 7.1
+    - php: 7.2
       env: NPM_TEST=1
     - php: 7.3
       env:
@@ -56,9 +56,9 @@ before_script:
 
 # Install composer
   - composer validate
-  - composer require silverstripe/recipe-testing:^2 silverstripe/recipe-cms 5.x-dev --no-update --prefer-dist
-  - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:3.x-dev --prefer-dist; fi
-  - composer update
+  - composer require silverstripe/recipe-testing:^2 silverstripe/recipe-cms 5.x-dev --no-update
+  - if [[ $DB == PGSQL ]]; then composer require silverstripe/postgresql:3.x-dev --no-update; fi
+  - composer install --prefer-source --no-interaction --no-progress --no-suggest --optimize-autoloader --verbose --profile
 
 # Remove preinstalled Chrome (google-chrome)
 # this would conflict with our chromium-browser installation

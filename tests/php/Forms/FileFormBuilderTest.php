@@ -26,7 +26,7 @@ class FileFormBuilderTest extends SapphireTest
         FileFormBuilderTest\FileOwner::class,
     ];
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -46,7 +46,7 @@ class FileFormBuilderTest extends SapphireTest
         $testimage->setFromLocalFile(__DIR__ . '/fixtures/testimage.png', 'files/testimage.png');
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         TestAssetStore::reset();
         parent::tearDown();
@@ -80,9 +80,9 @@ class FileFormBuilderTest extends SapphireTest
         $iconFullField = $form->Fields()->fieldByName('PreviewImage');
         $state = $iconFullField->getSchemaStateDefaults();
         $this->assertEquals($file->Parent()->ID, $state['data']['parentid']);
-        $this->assertContains('testfile.txt', $state['data']['url']);
+        $this->assertStringContainsString('testfile.txt', $state['data']['url']);
         $this->assertTrue($state['data']['exists']);
-        $this->assertContains('document_92.png', $state['data']['preview']);
+        $this->assertStringContainsString('document_92.png', $state['data']['preview']);
         $this->assertEquals('document', $state['data']['category']);
 
         $uploaded = $form->Fields()->fieldByName('Editor.Details.Created');
@@ -246,7 +246,7 @@ class FileFormBuilderTest extends SapphireTest
         $iconFullField = $form->Fields()->fieldByName('PreviewImage');
         $state = $iconFullField->getSchemaStateDefaults();
         $this->assertEquals($image->Parent()->ID, $state['data']['parentid']);
-        $this->assertContains('testimage.png', $state['data']['url']);
+        $this->assertStringContainsString('testimage.png', $state['data']['url']);
         $this->assertTrue($state['data']['exists']);
         $this->assertRegexp('#testimage__.*\.png$#', $state['data']['preview']);
         $this->assertEquals('image', $state['data']['category']);
@@ -333,7 +333,7 @@ class FileFormBuilderTest extends SapphireTest
         $state = $iconFullField->getSchemaStateDefaults();
         $this->assertEquals($folder->Parent()->ID, $state['data']['parentid']);
         $this->assertTrue($state['data']['exists']);
-        $this->assertContains('folder_icon_large.png', $state['data']['preview']);
+        $this->assertStringContainsString('folder_icon_large.png', $state['data']['preview']);
         $this->assertEquals('folder', $state['data']['category']);
 
         // Check actions

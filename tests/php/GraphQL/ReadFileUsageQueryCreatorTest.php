@@ -23,7 +23,7 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
 
     protected static $fixture_file = '../fixtures.yml';
 
-    public function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
@@ -33,7 +33,7 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
         Folder::add_extension(FolderExtension::class);
     }
 
-    public function tearDown()
+    protected function tearDown() : void
     {
         File::remove_extension(FileExtension::class);
         Folder::remove_extension(FolderExtension::class);
