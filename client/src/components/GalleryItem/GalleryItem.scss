@@ -115,11 +115,6 @@ $gallery-item-label-height: 40px;
     // Make space for the checkbox on the right hand side
     padding-right: 32px;
   }
-
-  .asset-admin--single-select .gallery-item--selectable:not(.gallery-item--selected) & {
-    // Make space for the checkbox on the right hand side
-    padding-right: 12px;
-  }
 }
 
 // ACTIONS
@@ -163,17 +158,6 @@ $gallery-item-label-height: 40px;
       background-color: $white;
     }
   }
-
-  .asset-admin--single-select .gallery-item--selected & {
-    display: block;
-
-    &::before {
-      margin: 8px;
-      border-radius: 100%;
-      font-size: 1.5em;
-    }
-  }
-
 }
 
 .gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled) {

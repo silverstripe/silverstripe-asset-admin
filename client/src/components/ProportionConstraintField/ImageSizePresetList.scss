@@ -1,0 +1,15 @@
+.image-size-preset-list {
+  margin-top: -25px;
+  display: block;
+  padding-left: 0;
+
+  &__list-item {
+    display: inline-block;
+    list-style: none;
+
+    .btn {
+      padding-left: 0;
+    }
+
+  }
+}

@@ -12,6 +12,7 @@ const insertAssetModal = (form) => {
     title: customTitle || field.title,
   }));
 
+
   return form.getState();
 };
 

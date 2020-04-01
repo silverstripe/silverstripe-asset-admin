@@ -4,6 +4,8 @@ import Griddle from 'griddle-react';
 import i18n from 'i18n';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import { fileSize } from 'lib/DataFormat';
+import { inject } from 'lib/Injector';
+import { compose } from 'redux';
 
 class TableView extends Component {
   constructor(props) {
@@ -15,6 +17,7 @@ class TableView extends Component {
     this.handleRowClick = this.handleRowClick.bind(this);
     this.renderSelect = this.renderSelect.bind(this);
     this.renderTitle = this.renderTitle.bind(this);
+    this.renderStatus = this.renderStatus.bind(this);
     this.renderNoItemsNotice = this.renderNoItemsNotice.bind(this);
 
     this.state = {
@@ -45,6 +48,7 @@ class TableView extends Component {
     const columns = [
       'thumbnail',
       'title',
+      'status',
       'size',
       'lastEdited',
     ];
@@ -80,18 +84,26 @@ class TableView extends Component {
       {
         columnName: 'title',
         customCompareFn: () => (0), // Suppress griddle re-sorting
+        displayName: i18n._t('File.TITLE', 'Title'),
         cssClassName: 'gallery__table-column--title',
         customComponent: this.renderTitle,
       },
       {
+        columnName: 'status',
+        sortable: false,
+        cssClassName: 'sort--disabled',
+        customComponent: this.renderStatus,
+        displayName: i18n._t('File.STATUS', 'Status'),
+      },
+      {
         columnName: 'lastEdited',
-        displayName: 'Modified',
+        displayName: i18n._t('File.MODIFIED', 'Modified'),
         customComponent: this.renderDate,
       },
       {
         columnName: 'size',
         sortable: false,
-        displayName: 'Size',
+        displayName: i18n._t('File.SIZE', 'Size'),
         cssClassName: 'sort--disabled',
         customComponent: this.renderSize,
       },
@@ -246,6 +258,36 @@ class TableView extends Component {
   }
 
   /**
+   * Renders the content for the status column
+   *
+   * @param {object} props
+   * @returns {Component|null}
+   */
+  renderStatus(props) {
+    let flags = [];
+    const item = props.rowData;
+    const { VersionedBadge } = this.props;
+
+    if (item.type !== 'folder') {
+      if (item.draft) {
+        flags.push({
+          key: 'status-draft',
+          status: 'draft'
+        });
+      } else if (item.modified) {
+        flags.push({
+          key: 'status-modified',
+          status: 'modified'
+        });
+      }
+    }
+
+    flags = flags.map(({ ...attributes }) => <VersionedBadge {...attributes} />);
+
+    return flags ? <span>{flags}</span> : null;
+  }
+
+  /**
    * Renders the progressbar for a given row
    *
    * @param rowData
@@ -378,8 +420,14 @@ TableView.defaultProps = galleryViewDefaultProps;
 TableView.propTypes = {
   ...galleryViewPropTypes,
   sort: PropTypes.string.isRequired,
+  VersionedBadge: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
 };
 
 export { TableView as Component };
 
-export default TableView;
+export default compose(
+  inject(
+    ['VersionedBadge'],
+    VersionedBadge => ({ VersionedBadge })
+  )
+)(TableView);

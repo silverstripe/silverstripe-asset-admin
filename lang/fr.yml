@@ -19,7 +19,6 @@ fr:
     AlignmentRight: 'A droite du texte'
     AlignmentRightAlone: 'A droite'
     AltText: 'Texte alternatif (alt)'
-    AltTextDescription: 'En remplacement de l''image si elle ne peut s''afficher'
     AppCategoryArchive: Archiver
     AppCategoryAudio: Audio
     AppCategoryDocument: Document
@@ -51,7 +50,6 @@ fr:
     Placement: Emplacement
     SAVEDFILE: 'Fichier sauvegardé'
     TitleTooltip: 'Texte (info-bulle)'
-    TitleTooltipDescription: 'Pour des informations complémentaires sur l''image'
     UNKNOWN: Inconnu
     UNPUBLISH_BUTTON: Dépublier
     UPLOADEDFILE: 'Fichier téléchargé'

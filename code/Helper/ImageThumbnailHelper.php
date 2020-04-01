@@ -92,10 +92,15 @@ class ImageThumbnailHelper
         $inspectedCount = 0;
         $generatedCount = 0;
         foreach ($files as $file) {
+            // Skip if file is not an image
+            if (!$file->getIsImage()) {
+                $this->logger->debug(sprintf('File is not an image: %s', $file->Filename));
+                continue;
+            }
             // Skip if file is too large
             if ($maxSize > 0 && $file->getAbsoluteSize() > $maxSize) {
                 $this->logger->warning(sprintf(
-                    'File too large for thumbnail for generating thumbnail: %s',
+                    'File too large for generating its thumbnail: %s',
                     $file->Filename
                 ));
                 continue;

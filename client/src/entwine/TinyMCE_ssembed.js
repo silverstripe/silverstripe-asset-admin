@@ -3,7 +3,7 @@ import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { loadComponent } from 'lib/Injector';
-import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
+import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
 import InsertEmbedModal from 'components/InsertEmbedModal/InsertEmbedModal';
 import i18n from 'i18n';
 
@@ -80,19 +80,19 @@ const filter = 'div[data-shortcode="embed"]';
             const width = parseInt(placeholder.attr('width'), 10);
             const height = parseInt(placeholder.attr('height'), 10);
             const url = embed.data('url');
-            const properties = {
+            const properties = sanitiseShortCodeProperties({
               url,
               thumbnail: placeholder.prop('src'),
               class: embed.prop('class'),
               width: isNaN(width) ? null : width,
               height: isNaN(height) ? null : height,
               caption,
-            };
+            });
             const shortCode = ShortcodeSerialiser.serialise({
               name: 'embed',
               properties,
               wrapped: true,
-              content: url
+              content: properties.url
             });
             embed.replaceWith(shortCode);
           });

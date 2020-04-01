@@ -49,15 +49,14 @@
   },
   "devDependencies": {
     "@silverstripe/eslint-config": "0.0.5",
-    "@silverstripe/webpack-config": "^1.0.0",
+    "@silverstripe/webpack-config": "^1.2.0",
     "@storybook/addon-actions": "^3.4.11",
     "@storybook/addons": "^3.4.11",
     "@storybook/react": "^3.4.11",
     "babel-jest": "^23.6.0",
+    "copy-webpack-plugin": "^4",
     "jest-cli": "^23.6.0",
-    "node-sass": "^4.0.0",
-    "sass-loader": "^6.0.7",
-    "webpack": "^2.0.0"
+    "webpack": "^2.6.1"
   },
   "dependencies": {
     "apollo-client": "^2.4.2",

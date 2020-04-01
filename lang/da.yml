@@ -19,7 +19,6 @@ da:
     AlignmentRight: 'Højre med ombrydning'
     AlignmentRightAlone: Højre
     AltText: 'Alternativ tekst (alt)'
-    AltTextDescription: 'Vises til skærmlæsere hvis billedet ikke kan vises'
     AppCategoryArchive: Arkiv
     AppCategoryAudio: Lyd
     AppCategoryDocument: Dokument
@@ -51,7 +50,6 @@ da:
     Placement: Placering
     SAVEDFILE: 'Gemte fil'
     TitleTooltip: 'Titel tekst (tooltip)'
-    TitleTooltipDescription: 'For yderligere information om billedet'
     UNKNOWN: Ukendt
     UNPUBLISH_BUTTON: 'Fjern udgivelse'
     UPLOADEDFILE: 'Overførte fil'

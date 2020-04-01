@@ -1,0 +1,26 @@
+SilverStripe\Assets\Folder:
+  folder1:
+    Title: folder1
+  folder2:
+    Title: folder2
+  folder11:
+    Title: folder1-1
+    Parent: =>SilverStripe\Assets\Folder.folder1
+  folder12:
+    Title: folder1-2
+    Parent: =>SilverStripe\Assets\Folder.folder1
+  folder111:
+    Title: folder1-1-1
+    Parent: =>SilverStripe\Assets\Folder.folder11
+  folder121:
+    Title: folder1-2-1
+    Parent: =>SilverStripe\Assets\Folder.folder12
+  folder122:
+    Title: folder1-2-2
+    Parent: =>SilverStripe\Assets\Folder.folder12
+  folder1111:
+    Title: folder1-1-1-1
+    Parent: =>SilverStripe\Assets\Folder.folder111
+  folder1221:
+    Title: folder1-2-2-1
+    Parent: =>SilverStripe\Assets\Folder.folder122

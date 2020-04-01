@@ -22,63 +22,6 @@ export default {
       canApply: (items) => (
         items.every(item => item && item.canDelete)
       ),
-      confirm: (items) => new Promise((resolve, reject) => {
-        const foldersInUse = items.filter((item) =>
-          item.type === 'folder' && item.filesInUseCount > 0
-        );
-
-        if (foldersInUse.length) {
-          // eslint-disable-next-line no-alert
-          alert(i18n._t(
-            'AssetAdmin.BULK_ACTIONS_DELETE_FOLDER',
-            'These folders contain files which are currently in use, you must move or '
-              + 'delete their contents before you can delete the folder.'
-          ));
-
-          reject('cancelled');
-          return;
-        }
-        const filesInUse = items.filter((item) =>
-          item.type !== 'folder' && item.inUseCount > 0
-        );
-
-        let msg = i18n._t(
-          'AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM',
-          'Are you sure you want to delete these files?'
-        );
-        if (items.length === 1 && filesInUse.length === 1) {
-          msg = i18n.sprintf(
-            i18n._t(
-              'AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM',
-              'This file is currently used in %s place(s), are you sure you want to delete it?'
-            ),
-            items[0].inUseCount
-          );
-        } else if (filesInUse.length > 0) {
-          msg = i18n.sprintf(
-            i18n._t(
-              'AssetAdmin.BULK_ACTIONS_DELETE_MULTI_CONFIRM',
-              'There are %s files currently in use, are you sure you want to delete these files?'
-            ),
-            filesInUse.length
-          );
-        }
-        if (filesInUse.length > 0) {
-          msg += '\n\n';
-          msg += i18n._t(
-            'AssetAdmin.BULK_ACTIONS_DELETE_WARNING',
-            'Ensure files are removed from content areas prior to deleting them,'
-            + ' otherwise they will appear as broken links.'
-          );
-        }
-
-        // eslint-disable-next-line no-alert
-        if (confirm(msg)) {
-          resolve();
-        } else {
-          reject('cancelled');
-        }
-      }),
     },
     {
       value: 'edit',

@@ -56,6 +56,7 @@ describe('UploadField', () => {
       data: {
         multi: true,
         maxFiles: null,
+        maxFilesize: null,
         createFileEndpoint: {
           url: 'test',
           method: 'POST',

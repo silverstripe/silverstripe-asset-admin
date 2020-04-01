@@ -401,6 +401,25 @@ class FileFormFactory extends AssetFormFactory
     }
 
     /**
+     * Get Download file action
+     *
+     * @param File $record
+     * @return FormAction
+     */
+    protected function getDownloadFileAction($record)
+    {
+        // Check if record exists and user has correct permissions
+        if (!$record || !$record->isInDB() || !$record->canEdit()) {
+            return null;
+        }
+
+        $action = FormAction::create('downloadfile', _t(__CLASS__ . '.DOWNLOAD_FILE', 'Download file'))
+            ->setIcon('down-circled');
+
+        return $action;
+    }
+
+    /**
      * Get actions that go into the Popover menu
      *
      * @param $record
@@ -411,6 +430,7 @@ class FileFormFactory extends AssetFormFactory
         $this->beforeExtending('updatePopoverActions', function (&$actions, $record) {
             // add the unpublish and replace file actions to the start of the array
             array_unshift($actions, $this->getUnpublishAction($record));
+            array_unshift($actions, $this->getDownloadFileAction($record));
             array_unshift($actions, $this->getReplaceFileAction($record));
         });
 

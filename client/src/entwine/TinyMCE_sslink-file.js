@@ -17,6 +17,7 @@ TinyMCEActionRegistrar.addAction(
     text: i18n._t('AssetAdmin.LINKLABEL_FILE', 'Link to a file'),
     // eslint-disable-next-line no-console
     onclick: (activeEditor) => activeEditor.execCommand(commandName),
+    priority: 80
   },
   editorIdentifier,
 ).addCommandWithUrlTest(commandName, /^\[file_link/);

@@ -10,7 +10,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
-import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
+import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
+import { imageSizePresetButtons } from './TinyMCE_ssmedia_sizepressets';
 
 const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
@@ -22,7 +23,7 @@ const filter = 'img[data-shortcode="image"]';
     /**
      * Initilise this plugin
      *
-     * @param {Object} ed
+     * @param {Object} ed TinyMCE editor object
      */
     init(ed) {
       const insertTitle = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
@@ -44,9 +45,16 @@ const filter = 'img[data-shortcode="image"]';
         icon: 'editimage',
         cmd: 'ssmedia'
       });
+
+      const sizePresets = ed.getParam('image_size_presets');
+      let buttonList = [];
+      if (sizePresets) {
+        buttonList = imageSizePresetButtons(ed, sizePresets);
+      }
+
       ed.addContextToolbar(
         (img) => ed.dom.is(img, filter),
-        'alignleft aligncenter alignright | ssmediaedit'
+        `${buttonList.join(' ')} | ssmediaedit`
       );
 
       ed.addCommand('ssmedia', () => {
@@ -73,7 +81,7 @@ const filter = 'img[data-shortcode="image"]';
           .add(content.filter(filter))
           .each(function () {
             const el = jQuery(this);
-            const properties = {
+            const properties = sanitiseShortCodeProperties({
               // Requires server-side preprocessing of HTML+shortcodes in HTMLValue
               src: el.attr('src'),
               id: el.data('id'),
@@ -83,11 +91,12 @@ const filter = 'img[data-shortcode="image"]';
               // don't save caption, since that's in the containing element
               title: el.attr('title'),
               alt: el.attr('alt'),
-            };
+            });
+
             const shortCode = ShortcodeSerialiser.serialise({
               name: 'image',
               properties,
-              wrapped: false
+              wrapped: false,
             });
             el.replaceWith(shortCode);
           });
@@ -172,7 +181,11 @@ jQuery.entwine('ss', ($) => {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this._handleInsert(...args);
       const attrs = this.getOriginalAttributes();
+      const folderId = this.getFolderId();
       const selection = tinymce.activeEditor.selection;
+      const imageSizePresets = tinymce.activeEditor.getParam('image_size_presets');
+
+
       const selectionContent = selection.getContent() || '';
       const tagName = selection.getNode().tagName;
       // Unsupported media insertion will use insert link form instead
@@ -187,12 +200,14 @@ jQuery.entwine('ss', ($) => {
           title={false}
           type="insert-media"
           isOpen={isOpen}
+          folderId={folderId}
           onInsert={handleInsert}
           onClosed={handleHide}
           bodyClassName="modal__dialog"
           className="insert-media-react__dialog-wrapper"
           requireLinkText={requireLinkText}
           fileAttributes={attrs}
+          imageSizePresets={imageSizePresets}
         />,
         this[0]
       );
@@ -236,6 +251,22 @@ jQuery.entwine('ss', ($) => {
         this.close();
       }
       return Promise.resolve();
+    },
+
+    /**
+     * Get default upload folder
+     *
+     * @returns {(number|null)}
+     */
+    getFolderId() {
+      const $field = this.getElement();
+      if (!$field) {
+        return null;
+      }
+
+      // Check type safely
+      const folderId = Number($field.data('config').upload_folder_id);
+      return isNaN(folderId) ? null : folderId;
     },
 
     /**

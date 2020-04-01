@@ -10,6 +10,7 @@ import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
 import fileShape from 'lib/fileShape';
 import PropTypes from 'prop-types';
 import { inject } from 'lib/Injector';
+import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 
 class Editor extends Component {
   constructor(props) {
@@ -32,46 +33,31 @@ class Editor extends Component {
     };
   }
 
-  handleAction(event, data) {
-    const name = event.currentTarget.name;
+  handleAction(event) {
+    switch (event.currentTarget.name) {
+      // intercept the Add to Campaign submit and open the modal dialog instead
+      case 'action_addtocampaign':
+        this.openModal();
+        event.preventDefault();
 
-    // intercept the Add to Campaign submit and open the modal dialog instead
-    if (name === 'action_addtocampaign') {
-      this.openModal();
-      event.preventDefault();
-      return;
-    }
+        break;
+      case 'action_replacefile':
+        this.replaceFile();
+        event.preventDefault();
 
-    if (name === 'action_replacefile') {
-      this.replaceFile();
-      event.preventDefault();
-      return;
-    }
+        break;
+      case 'action_downloadfile':
+        this.downloadFile();
+        event.preventDefault();
 
-    if (name === 'action_delete') {
-      // Customise message based on usage
-      let message = i18n._t('AssetAdmin.CONFIRMDELETE', 'Are you sure you want to delete this record?');
-      if (this.props.file && this.props.file.inUseCount > 0) {
-        message = i18n.sprintf(
-          i18n._t(
-            'AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM',
-            'This file is currently used in %s place(s), are you sure you want to delete it?'
-          ),
-          this.props.file.inUseCount
-        );
-        message += '\n\n';
-        message += i18n._t(
-          'AssetAdmin.BULK_ACTIONS_DELETE_WARNING',
-          'Ensure files are removed from content areas prior to deleting them,'
-          + ' otherwise they will appear as broken links.'
-        );
-      }
-      // eslint-disable-next-line no-alert
-      if (confirm(message)) {
-        this.props.actions.unsavedForms.removeFormChanged('AssetAdmin.EditForm');
-        this.props.onDelete([data.ID]);
-      }
-      event.preventDefault();
+        break;
+      case 'action_delete':
+        this.props.actions.confirmDeletion.confirm([this.props.file]);
+        event.preventDefault();
+
+        break;
+      default:
+        break;
     }
   }
 
@@ -129,6 +115,20 @@ class Editor extends Component {
     if (hiddenFileInput) {
       hiddenFileInput.click();
     }
+  }
+
+  downloadFile() {
+    function downloadURI(uri, name) {
+      const link = document.createElement('a');
+      link.download = name;
+      link.href = uri;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    downloadURI(this.props.file.url, this.props.file.name);
+    document.getElementById('Form_fileEditForm_PopoverActions').focus();
   }
 
   handleLoadingError(exception) {
@@ -222,7 +222,6 @@ class Editor extends Component {
         />
         { this.state.loadingForm && <Loading />}
       </div>
-
     </div>);
   }
 }
@@ -234,7 +233,6 @@ Editor.propTypes = {
   enableDropzone: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
   // onUnpublish: PropTypes.func.isRequired,
   schemaUrl: PropTypes.string.isRequired,
   schemaUrlQueries: PropTypes.arrayOf(PropTypes.shape({
@@ -249,6 +247,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       unsavedForms: bindActionCreators(UnsavedFormsActions, dispatch),
+      confirmDeletion: bindActionCreators(confirmDeletionActions, dispatch)
     },
   };
 }

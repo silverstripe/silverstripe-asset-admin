@@ -11,7 +11,7 @@ use SilverStripe\Security\Security;
 
 class UnpublishFileMutationCreatorTest extends SapphireTest
 {
-    protected static $fixture_file = '../fixtures.yml';
+    protected static $fixture_file = 'UnpublishFileMutationCreatorTest.yml';
 
     protected static $extra_dataobjects = [
         UnpublishFileMutationCreatorTest\FileOwner::class,

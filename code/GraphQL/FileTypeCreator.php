@@ -135,6 +135,9 @@ class FileTypeCreator extends TypeCreator
             'inUseCount' => [
                 'type' => Type::int(),
             ],
+            'version' => [
+                'type' => Type::nonNull(Type::int()),
+            ],
         ];
     }
 

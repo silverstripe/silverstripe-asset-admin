@@ -302,7 +302,8 @@ class RemoteFileFormFactory implements FormFactory
             $dimensions->setSchemaComponent('ProportionConstraintField');
             $dimensions->setSchemaState([
                 'data' => [
-                    'ratio' => $ratio
+                    'ratio' => $ratio,
+                    'isRemoteFile' => true
                 ]
             ]);
         }
