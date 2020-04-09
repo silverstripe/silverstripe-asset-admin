@@ -8382,9 +8382,20 @@ var TableView = function (_Component) {
       );
     }
   }, {
+    key: 'renderVisibility',
+    value: function renderVisibility(rowData) {
+      var isProtected = rowData.type === 'folder' && !rowData.canViewAnonymous || rowData.type !== 'folder' && rowData.visibility == 'protected';
+      var myTitle = isProtected ? 'Protected' : 'Public';
+      var myClassName = 'gallery-item--' + (isProtected ? 'protected' : 'public');
+      var myStyles = { display: 'inline-block' };
+      return _react2.default.createElement('span', { title: myTitle, className: myClassName, style: myStyles });
+    }
+  }, {
     key: 'renderTitle',
     value: function renderTitle(props) {
       var progress = this.renderProgressBar(props.rowData);
+
+      var visibility = this.renderVisibility(props.rowData);
 
       return _react2.default.createElement(
         'div',
@@ -8394,6 +8405,7 @@ var TableView = function (_Component) {
           { className: 'flexbox-area-grow' },
           props.data
         ),
+        visibility,
         progress
       );
     }

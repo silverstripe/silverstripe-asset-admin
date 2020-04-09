@@ -315,7 +315,25 @@ class TableView extends Component {
       </div>
     );
   }
-
+  
+  /**
+   * Renders the visibility for a given row
+   *
+   * @param rowData
+   * @returns {XML|null}
+   */
+  renderVisibility(rowData) {
+    const isProtected =
+      rowData.type === 'folder' && !rowData.canViewAnonymous ||
+      rowData.type !== 'folder' && rowData.visibility == 'protected';
+    const myTitle = isProtected ? 'Protected' : 'Public';
+    const myClassName = 'gallery-item--' + (isProtected ? 'protected' : 'public');
+    const myStyles = { display: 'inline-block' };
+    return (
+      <span title={myTitle} className={myClassName} style={myStyles}></span>
+    );
+  }
+  
   /**
    * Renders the title for the row/item, includes a progress bar if appropriate for uploading
    *
@@ -324,10 +342,15 @@ class TableView extends Component {
    */
   renderTitle(props) {
     const progress = this.renderProgressBar(props.rowData);
+    
+    // rendering this in the title column because the status column is in the admin module
+    // this will do for demo purposes
+    const visibility = this.renderVisibility(props.rowData);
 
     return (
       <div className="fill-width">
         <div className="flexbox-area-grow">{props.data}</div>
+        {visibility}
         {progress}
       </div>
     );
