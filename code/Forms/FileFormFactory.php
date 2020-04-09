@@ -345,10 +345,16 @@ class FileFormFactory extends AssetFormFactory
      */
     protected function getStatusFlagMarkup($record)
     {
-        if ($record && ($statusTitle = $record->getStatusTitle())) {
-            return "<span class=\"editor__status-flag\">{$statusTitle}</span>";
+        if (is_null($record)) {
+            return null;
         }
-        return null;
+        $store = $record->getVisibility();
+        $title = ucfirst($store);
+        $icon = '<span title="' . $title . '" class="gallery-item--' . $store . '" style="display:inline-block"></span>';
+        if ($statusTitle = $record->getStatusTitle()) {
+            return $icon . "<span class=\"editor__status-flag\">{$statusTitle}</span>";
+        }
+        return $icon;
     }
 
     /**
