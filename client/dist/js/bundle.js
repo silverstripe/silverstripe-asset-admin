@@ -4643,8 +4643,21 @@ var AssetAdmin = function (_Component) {
           });
         }
 
+        var visibility = '[' + (folder.canViewAnonymous ? 'public' : 'protected') + ']';
+        var interval = window.setInterval(function () {
+          var el = document.querySelector('.breadcrumb__item--last .breadcrumb__item-title');
+          if (!el) {
+            return;
+          }
+          window.clearInterval(interval);
+          var rx = / \[(.+?)\]/;
+          var store = el.innerHTML.match(rx)[1];
+          var title = store.charAt(0).toUpperCase() + store.slice(1);
+          el.innerHTML = el.innerHTML.replace(rx, '<span title="' + title + '" class="gallery-item--' + store + '" style="display:inline-block"></span>');
+        }, 250);
+
         breadcrumbs.push({
-          text: folder.title,
+          text: folder.title + ' ' + visibility,
           href: this.props.getUrl && this.props.getUrl(folder.id),
           onClick: function onClick(event) {
             event.preventDefault();

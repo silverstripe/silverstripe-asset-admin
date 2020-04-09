@@ -171,9 +171,25 @@ class AssetAdmin extends Component {
         });
       }
 
+      // cannot put an icon on this module as the component lives in the admin module
+      // client/src/components/Breadcrumb/Breadcrumb.js
+      // for now will just do this hack for demo purposes
+      let visibility = '[' + (folder.canViewAnonymous ? 'public' : 'protected') + ']';
+      let interval = window.setInterval(() => {
+        let el = document.querySelector('.breadcrumb__item--last .breadcrumb__item-title');
+        if (!el) {
+          return;
+        }
+        window.clearInterval(interval);
+        let rx = / \[(.+?)\]/;
+        let store = el.innerHTML.match(rx)[1];
+        let title = store.charAt(0).toUpperCase() + store.slice(1);
+        el.innerHTML = el.innerHTML.replace(rx, '<span title="' + title + '" class="gallery-item--' + store + '" style="display:inline-block"></span>');
+      }, 250);
+      
       // Add current folder
       breadcrumbs.push({
-        text: folder.title,
+        text: folder.title + ' ' + visibility,
         href: this.props.getUrl && this.props.getUrl(folder.id),
         onClick: (event) => {
           event.preventDefault();
