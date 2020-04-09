@@ -4650,11 +4650,27 @@ var AssetAdmin = function (_Component) {
             return;
           }
           window.clearInterval(interval);
+
+          var hackEl = document.querySelector('.breadcrumb-hack');
+          if (hackEl) {
+            hackEl.parentNode.removeChild(hackEl);
+          }
           var rx = / \[(.+?)\]/;
-          var store = el.innerHTML.match(rx)[1];
+          var textNode = el.firstChild;
+          var match = textNode.nodeValue.match(rx);
+          if (!match) {
+            return;
+          }
+          textNode.nodeValue = textNode.nodeValue.replace(rx, '');
+          var store = match[1];
           var title = store.charAt(0).toUpperCase() + store.slice(1);
-          el.innerHTML = el.innerHTML.replace(rx, '<span title="' + title + '" class="gallery-item--' + store + '" style="display:inline-block"></span>');
-        }, 250);
+
+          var span = document.createElement('span');
+          span.title = title;
+          span.className = 'gallery-item--' + store + ' breadcrumb-hack';
+          span.style.display = 'inline-block';
+          el.insertBefore(span, el.lastChild);
+        }, 125);
 
         breadcrumbs.push({
           text: folder.title + ' ' + visibility,

@@ -181,11 +181,27 @@ class AssetAdmin extends Component {
           return;
         }
         window.clearInterval(interval);
+        // delete any previous breadcrumb-hack's, not auto deleted when react changes i.e. change folder
+        let hackEl = document.querySelector('.breadcrumb-hack');
+        if (hackEl) {
+          hackEl.parentNode.removeChild(hackEl);
+        }
         let rx = / \[(.+?)\]/;
-        let store = el.innerHTML.match(rx)[1];
+        let textNode = el.firstChild;
+        let match = textNode.nodeValue.match(rx);
+        if (!match) {
+          return;
+        }
+        textNode.nodeValue = textNode.nodeValue.replace(rx, '');
+        let store = match[1];
         let title = store.charAt(0).toUpperCase() + store.slice(1);
-        el.innerHTML = el.innerHTML.replace(rx, '<span title="' + title + '" class="gallery-item--' + store + '" style="display:inline-block"></span>');
-      }, 250);
+        // uses createElement instead of modifying innerHTML cos that'll mess react up
+        let span = document.createElement('span');
+        span.title = title;
+        span.className = 'gallery-item--' + store + ' breadcrumb-hack';
+        span.style.display = 'inline-block';
+        el.insertBefore(span, el.lastChild);
+      }, 125);
       
       // Add current folder
       breadcrumbs.push({
