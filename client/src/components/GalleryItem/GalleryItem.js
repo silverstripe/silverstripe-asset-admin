@@ -197,6 +197,28 @@ class GalleryItem extends Component {
     let flags = [];
     const { item } = this.props;
     if (item.type !== 'folder') {
+      if (item.visibility == 'public') {
+        flags.push({
+          node: 'span',
+          key: 'status-visibility',
+          title: i18n._t('File.VISIBILITY', 'Public'),
+          className: 'gallery-item--public',
+        });
+      } else if (item.visibility == 'protected') {
+        flags.push({
+          node: 'span',
+          key: 'status-visibility',
+          title: i18n._t('File.VISIBILITY', 'Protected'),
+          className: 'gallery-item--protected',
+        });
+      } else {
+        flags.push({
+          node: 'span',
+          key: 'status-visibility',
+          title: i18n._t('File.VISIBILITY', 'Wrong'),
+          className: 'gallery-item--wrong',
+        });
+      }
       if (item.draft) {
         flags.push({
           node: 'span',
@@ -212,6 +234,7 @@ class GalleryItem extends Component {
           className: 'gallery-item--modified',
         });
       }
+      // console.log('item.canViewAnonymous: ' + (item.canViewAnonymous ? 'yes' : 'no'));
     }
     const updateStatusFlags = this.getItemFunction('updateStatusFlags');
     flags = updateStatusFlags(flags, this.props);

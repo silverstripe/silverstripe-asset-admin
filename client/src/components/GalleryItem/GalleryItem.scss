@@ -326,17 +326,16 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item--draft,
-.gallery-item--modified {
-  position: absolute;
-  top: $spacer-xs;
-  left: $spacer-xs;
+.gallery-item--modified,
+.gallery-item--public,
+.gallery-item--protected {
   display: block;
   width: 8px;
   height: 8px;
-  border: 1px solid $state-draft;
   box-shadow: 0 0 1px .5px $white;
   border-radius: 100%;
   z-index: 1;
+  margin: 5px 0 0 5px;
 
   &:hover::after {
     top: -4px;
@@ -350,6 +349,7 @@ $gallery-item-label-height: 40px;
 
 .gallery-item--draft {
   background-color: $state-draft;
+  border: 1px solid $state-draft;
 
   &:hover::after {
     content: "DRAFT";
@@ -358,10 +358,29 @@ $gallery-item-label-height: 40px;
 
 .gallery-item--modified {
   background-color: $state-draft-bg;
+  border: 1px solid $state-modified;
 
   &:hover::after {
     content: "MODIFIED";
   }
+}
+
+.gallery-item--public {
+    background-color: $state-public-bg;
+    border: 1px solid $state-public;
+
+    &:hover::after {
+        content: "PUBLIC";
+    }
+}
+
+.gallery-item--protected {
+    background-color: $state-protected-bg;
+    border: 1px solid $state-protected;
+
+    &:hover::after {
+        content: "PROTECTED";
+    }
 }
 
 .gallery-item--max-selected {

@@ -15,6 +15,8 @@ const fileShape = PropTypes.shape({
   url: PropTypes.string,
   title: PropTypes.string,
   progress: PropTypes.number,
+  visibility: PropTypes.string,
+  canViewAnonymous: PropTypes.bool,
 });
 
 export default fileShape;

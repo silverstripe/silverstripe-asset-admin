@@ -1391,6 +1391,28 @@ var GalleryItem = function (_Component) {
       var item = this.props.item;
 
       if (item.type !== 'folder') {
+        if (item.visibility == 'public') {
+          flags.push({
+            node: 'span',
+            key: 'status-visibility',
+            title: _i18n2.default._t('File.VISIBILITY', 'Public'),
+            className: 'gallery-item--public'
+          });
+        } else if (item.visibility == 'protected') {
+          flags.push({
+            node: 'span',
+            key: 'status-visibility',
+            title: _i18n2.default._t('File.VISIBILITY', 'Protected'),
+            className: 'gallery-item--protected'
+          });
+        } else {
+          flags.push({
+            node: 'span',
+            key: 'status-visibility',
+            title: _i18n2.default._t('File.VISIBILITY', 'Wrong'),
+            className: 'gallery-item--wrong'
+          });
+        }
         if (item.draft) {
           flags.push({
             node: 'span',
@@ -8811,7 +8833,9 @@ var fileShape = _propTypes2.default.shape({
   id: _propTypes2.default.number,
   url: _propTypes2.default.string,
   title: _propTypes2.default.string,
-  progress: _propTypes2.default.number
+  progress: _propTypes2.default.number,
+  visibility: _propTypes2.default.string,
+  canViewAnonymous: _propTypes2.default.bool
 });
 
 exports.default = fileShape;
