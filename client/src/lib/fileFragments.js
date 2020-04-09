@@ -13,6 +13,8 @@ const fileInterface = `
     title
     type
     url
+    visibility
+    canViewAnonymous
   }
 `;
 

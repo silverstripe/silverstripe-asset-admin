@@ -123,6 +123,12 @@ class FileTypeCreator extends TypeCreator
             'canDelete' => [
                 'type' => Type::boolean(),
             ],
+            'canViewAnonymous' => [
+                'type' => Type::boolean(),
+            ],
+            'visibility' => [
+                'type' => Type::string(),
+            ],
             'draft' => [
                 'type' => Type::boolean(),
             ],
