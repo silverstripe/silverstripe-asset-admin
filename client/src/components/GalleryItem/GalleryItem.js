@@ -196,7 +196,23 @@ class GalleryItem extends Component {
   getStatusFlags() {
     let flags = [];
     const { item } = this.props;
-    if (item.type !== 'folder') {
+    if (item.type === 'folder') {
+      if (item.canViewAnonymous) {
+        flags.push({
+          node: 'span',
+          key: 'status-visibility',
+          title: i18n._t('File.VISIBILITY', 'Public'),
+          className: 'gallery-item--public',
+        });
+      } else {
+        flags.push({
+          node: 'span',
+          key: 'status-visibility',
+          title: i18n._t('File.VISIBILITY', 'Protected'),
+          className: 'gallery-item--protected',
+        });
+      }
+    } else {
       if (item.visibility == 'public') {
         flags.push({
           node: 'span',
@@ -210,13 +226,6 @@ class GalleryItem extends Component {
           key: 'status-visibility',
           title: i18n._t('File.VISIBILITY', 'Protected'),
           className: 'gallery-item--protected',
-        });
-      } else {
-        flags.push({
-          node: 'span',
-          key: 'status-visibility',
-          title: i18n._t('File.VISIBILITY', 'Wrong'),
-          className: 'gallery-item--wrong',
         });
       }
       if (item.draft) {

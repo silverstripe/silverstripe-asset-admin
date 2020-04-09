@@ -1390,7 +1390,23 @@ var GalleryItem = function (_Component) {
       var flags = [];
       var item = this.props.item;
 
-      if (item.type !== 'folder') {
+      if (item.type === 'folder') {
+        if (item.canViewAnonymous) {
+          flags.push({
+            node: 'span',
+            key: 'status-visibility',
+            title: _i18n2.default._t('File.VISIBILITY', 'Public'),
+            className: 'gallery-item--public'
+          });
+        } else {
+          flags.push({
+            node: 'span',
+            key: 'status-visibility',
+            title: _i18n2.default._t('File.VISIBILITY', 'Protected'),
+            className: 'gallery-item--protected'
+          });
+        }
+      } else {
         if (item.visibility == 'public') {
           flags.push({
             node: 'span',
@@ -1404,13 +1420,6 @@ var GalleryItem = function (_Component) {
             key: 'status-visibility',
             title: _i18n2.default._t('File.VISIBILITY', 'Protected'),
             className: 'gallery-item--protected'
-          });
-        } else {
-          flags.push({
-            node: 'span',
-            key: 'status-visibility',
-            title: _i18n2.default._t('File.VISIBILITY', 'Wrong'),
-            className: 'gallery-item--wrong'
           });
         }
         if (item.draft) {
