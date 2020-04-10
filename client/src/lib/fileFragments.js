@@ -28,6 +28,7 @@ const file = `
     smallThumbnail
     thumbnail
     version
+    isUserDefinedFormUpload
   }
 `;
 

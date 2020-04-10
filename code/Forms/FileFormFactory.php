@@ -348,13 +348,20 @@ class FileFormFactory extends AssetFormFactory
         if (is_null($record)) {
             return null;
         }
+
         $store = $record->getVisibility();
         $title = ucfirst($store);
-        $icon = '<span title="' . $title . '" class="gallery-item--' . $store . '" style="display:inline-block"></span>';
-        if ($statusTitle = $record->getStatusTitle()) {
-            return $icon . "<span class=\"editor__status-flag\">{$statusTitle}</span>";
+        $html = '<span title="' . $title . '" class="gallery-item--' . $store . '" style="display:inline-block"></span>';
+
+        if ($record->isUserDefinedFormUpload()) {
+            $html .= '<span title="UserDefinedForm upload" class="gallery-item--userdefinedform-upload" style="display:inline-block"></span>';
         }
-        return $icon;
+
+        if ($statusTitle = $record->getStatusTitle()) {
+            $html .= "<span class=\"editor__status-flag\">{$statusTitle}</span>";
+        }
+
+        return $html;
     }
 
     /**

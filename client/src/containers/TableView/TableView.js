@@ -335,6 +335,23 @@ class TableView extends Component {
   }
   
   /**
+   * Renders if the file was uploaded via a userform
+   *
+   * @param rowData
+   * @returns {XML|null}
+   */
+  renderIsUserDefinedFormUpload(rowData) {
+    console.log(rowData);
+    if (!rowData.isUserDefinedFormUpload) {
+      return '';
+    }
+    const myStyles = { display: 'inline-block' };
+    return (
+      <span title="UserDefinedForm upload" className="gallery-item--userdefinedform-upload" style={myStyles}></span>
+    );
+  }
+  
+  /**
    * Renders the title for the row/item, includes a progress bar if appropriate for uploading
    *
    * @param {object} props
@@ -343,14 +360,15 @@ class TableView extends Component {
   renderTitle(props) {
     const progress = this.renderProgressBar(props.rowData);
     
-    // rendering this in the title column because the status column is in the admin module
-    // this will do for demo purposes
+    // rendering this in the title column, this will do for demo purposes
     const visibility = this.renderVisibility(props.rowData);
+    const isUserDefinedFormUpload = this.renderIsUserDefinedFormUpload(props.rowData);
 
     return (
       <div className="fill-width">
         <div className="flexbox-area-grow">{props.data}</div>
         {visibility}
+        {isUserDefinedFormUpload}
         {progress}
       </div>
     );

@@ -228,6 +228,14 @@ class GalleryItem extends Component {
           className: 'gallery-item--protected',
         });
       }
+      if (item.isUserDefinedFormUpload) {
+        flags.push({
+          node: 'span',
+          key: 'status-userdefinedform-upload',
+          title: i18n._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
+          className: 'gallery-item--userdefinedform-upload',
+        });
+      }
       if (item.draft) {
         flags.push({
           node: 'span',
@@ -243,7 +251,6 @@ class GalleryItem extends Component {
           className: 'gallery-item--modified',
         });
       }
-      // console.log('item.canViewAnonymous: ' + (item.canViewAnonymous ? 'yes' : 'no'));
     }
     const updateStatusFlags = this.getItemFunction('updateStatusFlags');
     flags = updateStatusFlags(flags, this.props);

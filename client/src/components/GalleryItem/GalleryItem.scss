@@ -328,7 +328,8 @@ $gallery-item-label-height: 40px;
 .gallery-item--draft,
 .gallery-item--modified,
 .gallery-item--public,
-.gallery-item--protected {
+.gallery-item--protected,
+.gallery-item--userdefinedform-upload {
   display: block;
   width: 8px;
   height: 8px;
@@ -381,6 +382,15 @@ $gallery-item-label-height: 40px;
   &:hover::after {
     content: "PROTECTED";
   }
+}
+
+.gallery-item--userdefinedform-upload {
+    background-color: $state-userdefinedform-upload-bg;
+    border: 1px solid $state-userdefinedform-upload;
+
+    &:hover::after {
+        content: "USER-DEFINED-FORM UPLOAD";
+    }
 }
 
 .gallery-item--max-selected {

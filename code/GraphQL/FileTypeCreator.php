@@ -129,6 +129,9 @@ class FileTypeCreator extends TypeCreator
             'visibility' => [
                 'type' => Type::string(),
             ],
+            'isUserDefinedFormUpload' => [
+                'type' => Type::boolean(),
+            ],
             'draft' => [
                 'type' => Type::boolean(),
             ],

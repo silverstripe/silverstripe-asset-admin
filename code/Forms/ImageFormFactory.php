@@ -26,7 +26,6 @@ class ImageFormFactory extends FileFormFactory
         $width = $record->getWidth();
         $height = $record->getHeight();
         $dimensions = $width && $height ? sprintf('%dx%dpx', $width, $height) : '';
-
         return sprintf(
             '<div class="editor__specs">%s %s %s</div>',
             $dimensions,

@@ -1395,14 +1395,14 @@ var GalleryItem = function (_Component) {
           flags.push({
             node: 'span',
             key: 'status-visibility',
-            title: _i18n2.default._t('File.VISIBILITY', 'Public'),
+            title: _i18n2.default._t('File.PUBLIC', 'Public'),
             className: 'gallery-item--public'
           });
         } else {
           flags.push({
             node: 'span',
             key: 'status-visibility',
-            title: _i18n2.default._t('File.VISIBILITY', 'Protected'),
+            title: _i18n2.default._t('File.PROTECTED', 'Protected'),
             className: 'gallery-item--protected'
           });
         }
@@ -1411,15 +1411,23 @@ var GalleryItem = function (_Component) {
           flags.push({
             node: 'span',
             key: 'status-visibility',
-            title: _i18n2.default._t('File.VISIBILITY', 'Public'),
+            title: _i18n2.default._t('File.PUBLIC', 'Public'),
             className: 'gallery-item--public'
           });
         } else if (item.visibility == 'protected') {
           flags.push({
             node: 'span',
             key: 'status-visibility',
-            title: _i18n2.default._t('File.VISIBILITY', 'Protected'),
+            title: _i18n2.default._t('File.PROTECTED', 'Protected'),
             className: 'gallery-item--protected'
+          });
+        }
+        if (item.isUserDefinedFormUpload) {
+          flags.push({
+            node: 'span',
+            key: 'status-userdefinedform-upload',
+            title: _i18n2.default._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
+            className: 'gallery-item--userdefinedform-upload'
           });
         }
         if (item.draft) {
@@ -8363,11 +8371,22 @@ var TableView = function (_Component) {
       return _react2.default.createElement('span', { title: myTitle, className: myClassName, style: myStyles });
     }
   }, {
+    key: 'renderIsUserDefinedFormUpload',
+    value: function renderIsUserDefinedFormUpload(rowData) {
+      console.log(rowData);
+      if (!rowData.isUserDefinedFormUpload) {
+        return '';
+      }
+      var myStyles = { display: 'inline-block' };
+      return _react2.default.createElement('span', { title: 'UserDefinedForm upload', className: 'gallery-item--userdefinedform-upload', style: myStyles });
+    }
+  }, {
     key: 'renderTitle',
     value: function renderTitle(props) {
       var progress = this.renderProgressBar(props.rowData);
 
       var visibility = this.renderVisibility(props.rowData);
+      var isUserDefinedFormUpload = this.renderIsUserDefinedFormUpload(props.rowData);
 
       return _react2.default.createElement(
         'div',
@@ -8378,6 +8397,7 @@ var TableView = function (_Component) {
           props.data
         ),
         visibility,
+        isUserDefinedFormUpload,
         progress
       );
     }
@@ -8818,7 +8838,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 var fileInterface = "\n  fragment FileInterfaceFields on FileInterface {\n    canDelete\n    canEdit\n    canView\n    category\n    exists\n    filename\n    id\n    lastEdited\n    name\n    parentId\n    title\n    type\n    url\n    visibility\n    canViewAnonymous\n  }\n";
 
-var file = "\n  fragment FileFields on File {\n    draft\n    extension\n    published\n    modified\n    size\n    smallThumbnail\n    thumbnail\n    version\n  }\n";
+var file = "\n  fragment FileFields on File {\n    draft\n    extension\n    published\n    modified\n    size\n    smallThumbnail\n    thumbnail\n    version\n    isUserDefinedFormUpload\n  }\n";
 
 exports.fileInterface = fileInterface;
 exports.file = file;
