@@ -201,14 +201,14 @@ class GalleryItem extends Component {
         flags.push({
           node: 'span',
           key: 'status-visibility',
-          title: i18n._t('File.VISIBILITY', 'Public'),
+          title: i18n._t('File.PUBLIC', 'Public'),
           className: 'gallery-item--public',
         });
       } else {
         flags.push({
           node: 'span',
           key: 'status-visibility',
-          title: i18n._t('File.VISIBILITY', 'Protected'),
+          title: i18n._t('File.PROTECTED', 'Protected'),
           className: 'gallery-item--protected',
         });
       }
@@ -217,14 +217,14 @@ class GalleryItem extends Component {
         flags.push({
           node: 'span',
           key: 'status-visibility',
-          title: i18n._t('File.VISIBILITY', 'Public'),
+          title: i18n._t('File.PUBLIC', 'Public'),
           className: 'gallery-item--public',
         });
       } else if (item.visibility == 'protected') {
         flags.push({
           node: 'span',
           key: 'status-visibility',
-          title: i18n._t('File.VISIBILITY', 'Protected'),
+          title: i18n._t('File.PROTECTED', 'Protected'),
           className: 'gallery-item--protected',
         });
       }
