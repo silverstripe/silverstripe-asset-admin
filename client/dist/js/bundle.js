@@ -4643,37 +4643,8 @@ var AssetAdmin = function (_Component) {
           });
         }
 
-        var visibility = '[' + (folder.canViewAnonymous ? 'public' : 'protected') + ']';
-        var interval = window.setInterval(function () {
-          var el = document.querySelector('.breadcrumb__item--last .breadcrumb__item-title');
-          if (!el) {
-            return;
-          }
-          window.clearInterval(interval);
-
-          var hackEl = document.querySelector('.breadcrumb-hack');
-          if (hackEl) {
-            hackEl.parentNode.removeChild(hackEl);
-          }
-          var rx = / \[(.+?)\]/;
-          var textNode = el.firstChild;
-          var match = textNode.nodeValue.match(rx);
-          if (!match) {
-            return;
-          }
-          textNode.nodeValue = textNode.nodeValue.replace(rx, '');
-          var store = match[1];
-          var title = store.charAt(0).toUpperCase() + store.slice(1);
-
-          var span = document.createElement('span');
-          span.title = title;
-          span.className = 'gallery-item--' + store + ' breadcrumb-hack';
-          span.style.display = 'inline-block';
-          el.insertBefore(span, el.lastChild);
-        }, 125);
-
         breadcrumbs.push({
-          text: folder.title + ' ' + visibility,
+          text: folder.title,
           href: this.props.getUrl && this.props.getUrl(folder.id),
           onClick: function onClick(event) {
             event.preventDefault();
@@ -4682,7 +4653,8 @@ var AssetAdmin = function (_Component) {
           icon: {
             className: 'icon font-icon-edit-list',
             onClick: this.handleFolderIcon
-          }
+          },
+          isProtected: !folder.canViewAnonymous
         });
       }
 

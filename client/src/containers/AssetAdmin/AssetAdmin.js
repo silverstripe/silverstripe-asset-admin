@@ -170,42 +170,10 @@ class AssetAdmin extends Component {
           });
         });
       }
-
-      // cannot put an icon on this module as the component lives in the admin module
-      // client/src/components/Breadcrumb/Breadcrumb.js
-      // for now will just do this hack for demo purposes
-      let visibility = '[' + (folder.canViewAnonymous ? 'public' : 'protected') + ']';
-      let interval = window.setInterval(() => {
-        let el = document.querySelector('.breadcrumb__item--last .breadcrumb__item-title');
-        if (!el) {
-          return;
-        }
-        window.clearInterval(interval);
-        // delete any previous breadcrumb-hack's, not auto deleted when react changes i.e. change folder
-        let hackEl = document.querySelector('.breadcrumb-hack');
-        if (hackEl) {
-          hackEl.parentNode.removeChild(hackEl);
-        }
-        let rx = / \[(.+?)\]/;
-        let textNode = el.firstChild;
-        let match = textNode.nodeValue.match(rx);
-        if (!match) {
-          return;
-        }
-        textNode.nodeValue = textNode.nodeValue.replace(rx, '');
-        let store = match[1];
-        let title = store.charAt(0).toUpperCase() + store.slice(1);
-        // uses createElement instead of modifying innerHTML cos that'll mess react up
-        let span = document.createElement('span');
-        span.title = title;
-        span.className = 'gallery-item--' + store + ' breadcrumb-hack';
-        span.style.display = 'inline-block';
-        el.insertBefore(span, el.lastChild);
-      }, 125);
       
       // Add current folder
       breadcrumbs.push({
-        text: folder.title + ' ' + visibility,
+        text: folder.title,
         href: this.props.getUrl && this.props.getUrl(folder.id),
         onClick: (event) => {
           event.preventDefault();
@@ -215,6 +183,7 @@ class AssetAdmin extends Component {
           className: 'icon font-icon-edit-list',
           onClick: this.handleFolderIcon,
         },
+        isProtected: !folder.canViewAnonymous,
       });
     }
     // Search leaf if there was a search entered
