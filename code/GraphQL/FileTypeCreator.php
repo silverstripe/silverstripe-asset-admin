@@ -132,6 +132,9 @@ class FileTypeCreator extends TypeCreator
             'isUserDefinedFormUpload' => [
                 'type' => Type::boolean(),
             ],
+            'hasChildUserDefinedFormUploads' => [
+                'type' => Type::boolean(),
+            ],
             'draft' => [
                 'type' => Type::boolean(),
             ],

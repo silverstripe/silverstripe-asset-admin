@@ -341,8 +341,7 @@ class TableView extends Component {
    * @returns {XML|null}
    */
   renderIsUserDefinedFormUpload(rowData) {
-    console.log(rowData);
-    if (!rowData.isUserDefinedFormUpload) {
+    if (!rowData.isUserDefinedFormUpload && !rowData.hasChildUserDefinedFormUploads) {
       return '';
     }
     const myStyles = { display: 'inline-block' };

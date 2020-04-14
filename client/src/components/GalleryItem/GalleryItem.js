@@ -212,6 +212,14 @@ class GalleryItem extends Component {
           className: 'gallery-item--protected',
         });
       }
+      if (item.hasChildUserDefinedFormUploads) {
+        flags.push({
+          node: 'span',
+          key: 'status-userdefinedform-upload',
+          title: i18n._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
+          className: 'gallery-item--userdefinedform-upload',
+        });
+      }
     } else {
       if (item.visibility == 'public') {
         flags.push({

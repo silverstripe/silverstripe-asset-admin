@@ -184,6 +184,7 @@ class AssetAdmin extends Component {
           onClick: this.handleFolderIcon,
         },
         isProtected: !folder.canViewAnonymous,
+        hasChildUserDefinedFormUploads: folder.hasChildUserDefinedFormUploads
       });
     }
     // Search leaf if there was a search entered

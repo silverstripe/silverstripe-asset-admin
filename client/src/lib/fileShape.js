@@ -17,6 +17,7 @@ const fileShape = PropTypes.shape({
   progress: PropTypes.number,
   visibility: PropTypes.string,
   canViewAnonymous: PropTypes.bool,
+  hasChildUserDefinedFormUploads: PropTypes.bool,
 });
 
 export default fileShape;

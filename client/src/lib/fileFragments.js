@@ -15,6 +15,7 @@ const fileInterface = `
     url
     visibility
     canViewAnonymous
+    hasChildUserDefinedFormUploads
   }
 `;
 

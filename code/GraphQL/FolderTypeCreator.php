@@ -88,6 +88,9 @@ class FolderTypeCreator extends FileTypeCreator
             'visibility' => [
                 'type' => Type::string(),
             ],
+            'hasChildUserDefinedFormUploads' => [
+                'type' => Type::boolean(),
+            ],
             'children' => [
                 'type' => $childrenConnection->toType(),
                 'args' => $childrenConnection->args(),

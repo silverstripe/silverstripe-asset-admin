@@ -75,7 +75,10 @@ class FileInterfaceTypeCreator extends DataObjectInterfaceTypeCreator
             ],
             'visibility' => [
                 'type' => Type::string(),
-            ]
+            ],
+            'hasChildUserDefinedFormUploads' => [
+                'type' => Type::boolean(),
+            ],
         ];
     }
 

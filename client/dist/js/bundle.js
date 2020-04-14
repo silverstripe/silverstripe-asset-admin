@@ -1406,6 +1406,14 @@ var GalleryItem = function (_Component) {
             className: 'gallery-item--protected'
           });
         }
+        if (item.hasChildUserDefinedFormUploads) {
+          flags.push({
+            node: 'span',
+            key: 'status-userdefinedform-upload',
+            title: _i18n2.default._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
+            className: 'gallery-item--userdefinedform-upload'
+          });
+        }
       } else {
         if (item.visibility == 'public') {
           flags.push({
@@ -4662,7 +4670,8 @@ var AssetAdmin = function (_Component) {
             className: 'icon font-icon-edit-list',
             onClick: this.handleFolderIcon
           },
-          isProtected: !folder.canViewAnonymous
+          isProtected: !folder.canViewAnonymous,
+          hasChildUserDefinedFormUploads: folder.hasChildUserDefinedFormUploads
         });
       }
 
@@ -8373,8 +8382,7 @@ var TableView = function (_Component) {
   }, {
     key: 'renderIsUserDefinedFormUpload',
     value: function renderIsUserDefinedFormUpload(rowData) {
-      console.log(rowData);
-      if (!rowData.isUserDefinedFormUpload) {
+      if (!rowData.isUserDefinedFormUpload && !rowData.hasChildUserDefinedFormUploads) {
         return '';
       }
       var myStyles = { display: 'inline-block' };
@@ -8836,7 +8844,7 @@ exports.default = configShape;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var fileInterface = "\n  fragment FileInterfaceFields on FileInterface {\n    canDelete\n    canEdit\n    canView\n    category\n    exists\n    filename\n    id\n    lastEdited\n    name\n    parentId\n    title\n    type\n    url\n    visibility\n    canViewAnonymous\n  }\n";
+var fileInterface = "\n  fragment FileInterfaceFields on FileInterface {\n    canDelete\n    canEdit\n    canView\n    category\n    exists\n    filename\n    id\n    lastEdited\n    name\n    parentId\n    title\n    type\n    url\n    visibility\n    canViewAnonymous\n    hasChildUserDefinedFormUploads\n  }\n";
 
 var file = "\n  fragment FileFields on File {\n    draft\n    extension\n    published\n    modified\n    size\n    smallThumbnail\n    thumbnail\n    version\n    isUserDefinedFormUpload\n  }\n";
 
@@ -8877,7 +8885,8 @@ var fileShape = _propTypes2.default.shape({
   title: _propTypes2.default.string,
   progress: _propTypes2.default.number,
   visibility: _propTypes2.default.string,
-  canViewAnonymous: _propTypes2.default.bool
+  canViewAnonymous: _propTypes2.default.bool,
+  hasChildUserDefinedFormUploads: _propTypes2.default.bool
 });
 
 exports.default = fileShape;
