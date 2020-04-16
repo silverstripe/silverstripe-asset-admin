@@ -87,13 +87,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     /**
      * @config
-     * @see Upload->allowedMaxFileSize
-     * @var int
-     */
-    private static $allowed_max_file_size;
-
-    /**
-     * @config
      *
      * @var int
      */
@@ -102,7 +95,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * @config
      *
-     * @var int The max file size, in megabytes
+     * @var int The max file size, in bytes or INI format
      */
     private static $max_upload_size;
 
