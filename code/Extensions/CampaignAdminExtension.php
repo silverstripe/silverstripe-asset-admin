@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\Extensions;
 use SilverStripe\Assets\File;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FormAction;
+use SilverStripe\Security\Permission;
 
 /**
  * Extension that updates the Popover menu of `FileFormFactory`.
@@ -21,6 +22,10 @@ class CampaignAdminExtension extends Extension
      */
     public function updatePopoverActions(&$actions, $record)
     {
+        if (!Permission::check('CMS_ACCESS_CampaignAdmin')) {
+            return;
+        }
+
         if ($record && $record->canPublish()) {
             $action = FormAction::create(
                 'addtocampaign',
