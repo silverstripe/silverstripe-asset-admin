@@ -348,6 +348,28 @@ $gallery-item-label-height: 40px;
   }
 }
 
+.gallery-item--userdefinedform-upload {
+    display: inline-block;
+}
+
+.gallery-item--public,
+.gallery-item--protected {
+    // easy way to switch off for demo
+    display: none !important;
+}
+
+.gallery-item--alert {
+    display: inline-block;
+    margin: 5px 0 0 5px;
+    padding: 0 7px;
+    background-color: $state-userdefinedform-alert-bg;
+    border: 1px solid $state-userdefinedform-alert;
+    color: $state-userdefinedform-alert;
+    font-weight: bold;
+    font-size: 13px;
+    border-radius: 100%;
+}
+
 .gallery-item--draft {
   background-color: $state-draft;
   border: 1px solid $state-draft;

@@ -197,21 +197,21 @@ class GalleryItem extends Component {
     let flags = [];
     const { item } = this.props;
     if (item.type === 'folder') {
-      if (item.canViewAnonymous) {
-        flags.push({
-          node: 'span',
-          key: 'status-visibility',
-          title: i18n._t('File.PUBLIC', 'Public'),
-          className: 'gallery-item--public',
-        });
-      } else {
-        flags.push({
-          node: 'span',
-          key: 'status-visibility',
-          title: i18n._t('File.PROTECTED', 'Protected'),
-          className: 'gallery-item--protected',
-        });
-      }
+      // if (item.canViewAnonymous) {
+      //   flags.push({
+      //     node: 'span',
+      //     key: 'status-visibility',
+      //     title: i18n._t('File.PUBLIC', 'Public'),
+      //     className: 'gallery-item--public',
+      //   });
+      // } else {
+      //   flags.push({
+      //     node: 'span',
+      //     key: 'status-visibility',
+      //     title: i18n._t('File.PROTECTED', 'Protected'),
+      //     className: 'gallery-item--protected',
+      //   });
+      // }
       if (item.hasChildUserDefinedFormUploads) {
         flags.push({
           node: 'span',
@@ -221,29 +221,21 @@ class GalleryItem extends Component {
         });
       }
     } else {
-      if (item.visibility == 'public') {
-        flags.push({
-          node: 'span',
-          key: 'status-visibility',
-          title: i18n._t('File.PUBLIC', 'Public'),
-          className: 'gallery-item--public',
-        });
-      } else if (item.visibility == 'protected') {
-        flags.push({
-          node: 'span',
-          key: 'status-visibility',
-          title: i18n._t('File.PROTECTED', 'Protected'),
-          className: 'gallery-item--protected',
-        });
-      }
-      if (item.isUserDefinedFormUpload) {
-        flags.push({
-          node: 'span',
-          key: 'status-userdefinedform-upload',
-          title: i18n._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
-          className: 'gallery-item--userdefinedform-upload',
-        });
-      }
+      // if (item.visibility == 'public') {
+      //   flags.push({
+      //     node: 'span',
+      //     key: 'status-visibility',
+      //     title: i18n._t('File.PUBLIC', 'Public'),
+      //     className: 'gallery-item--public',
+      //   });
+      // } else if (item.visibility == 'protected') {
+      //   flags.push({
+      //     node: 'span',
+      //     key: 'status-visibility',
+      //     title: i18n._t('File.PROTECTED', 'Protected'),
+      //     className: 'gallery-item--protected',
+      //   });
+      // }
       if (item.draft) {
         flags.push({
           node: 'span',
@@ -259,10 +251,33 @@ class GalleryItem extends Component {
           className: 'gallery-item--modified',
         });
       }
+      if (item.isUserDefinedFormUpload) {
+        flags.push({
+          node: 'span',
+          key: 'status-userdefinedform-upload',
+          title: i18n._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
+          className: 'gallery-item--userdefinedform-upload',
+          alert: (item.visibility == 'public') ? true : false,
+        });
+      }
     }
     const updateStatusFlags = this.getItemFunction('updateStatusFlags');
     flags = updateStatusFlags(flags, this.props);
-    return flags.map(({ node: Tag, ...attributes }) => <Tag {...attributes} />);
+    return flags.map(({ node: Tag, alert, ...attributes }) => {
+      // temp code for demo
+      if (alert) {
+        return (
+          <div>
+            <Tag {...attributes} />
+            <span class="gallery-item--alert">!</span>
+          </div>
+        )
+      } else {
+        return (
+          <Tag {...attributes} />
+        )
+      }
+    });
   }
 
   /**

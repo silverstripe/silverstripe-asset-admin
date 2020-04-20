@@ -345,9 +345,18 @@ class TableView extends Component {
       return '';
     }
     const myStyles = { display: 'inline-block' };
-    return (
-      <span title="UserDefinedForm upload" className="gallery-item--userdefinedform-upload" style={myStyles}></span>
-    );
+    if (rowData.type !== 'folder' && rowData.visibility === 'public') {
+      return (
+        <div>
+          <span title="UserDefinedForm upload" className="gallery-item--userdefinedform-upload" style={myStyles}></span>
+          <span className="gallery-item--alert" style={myStyles}>!</span>
+        </div>
+      );
+    } else {
+      return (
+        <span title="UserDefinedForm upload" className="gallery-item--userdefinedform-upload" style={myStyles}></span>
+      );
+    }
   }
   
   /**

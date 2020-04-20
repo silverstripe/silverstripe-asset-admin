@@ -1391,21 +1391,6 @@ var GalleryItem = function (_Component) {
       var item = this.props.item;
 
       if (item.type === 'folder') {
-        if (item.canViewAnonymous) {
-          flags.push({
-            node: 'span',
-            key: 'status-visibility',
-            title: _i18n2.default._t('File.PUBLIC', 'Public'),
-            className: 'gallery-item--public'
-          });
-        } else {
-          flags.push({
-            node: 'span',
-            key: 'status-visibility',
-            title: _i18n2.default._t('File.PROTECTED', 'Protected'),
-            className: 'gallery-item--protected'
-          });
-        }
         if (item.hasChildUserDefinedFormUploads) {
           flags.push({
             node: 'span',
@@ -1415,29 +1400,6 @@ var GalleryItem = function (_Component) {
           });
         }
       } else {
-        if (item.visibility == 'public') {
-          flags.push({
-            node: 'span',
-            key: 'status-visibility',
-            title: _i18n2.default._t('File.PUBLIC', 'Public'),
-            className: 'gallery-item--public'
-          });
-        } else if (item.visibility == 'protected') {
-          flags.push({
-            node: 'span',
-            key: 'status-visibility',
-            title: _i18n2.default._t('File.PROTECTED', 'Protected'),
-            className: 'gallery-item--protected'
-          });
-        }
-        if (item.isUserDefinedFormUpload) {
-          flags.push({
-            node: 'span',
-            key: 'status-userdefinedform-upload',
-            title: _i18n2.default._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
-            className: 'gallery-item--userdefinedform-upload'
-          });
-        }
         if (item.draft) {
           flags.push({
             node: 'span',
@@ -1453,14 +1415,37 @@ var GalleryItem = function (_Component) {
             className: 'gallery-item--modified'
           });
         }
+        if (item.isUserDefinedFormUpload) {
+          flags.push({
+            node: 'span',
+            key: 'status-userdefinedform-upload',
+            title: _i18n2.default._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
+            className: 'gallery-item--userdefinedform-upload',
+            alert: item.visibility == 'public' ? true : false
+          });
+        }
       }
       var updateStatusFlags = this.getItemFunction('updateStatusFlags');
       flags = updateStatusFlags(flags, this.props);
       return flags.map(function (_ref) {
         var Tag = _ref.node,
-            attributes = _objectWithoutProperties(_ref, ['node']);
+            alert = _ref.alert,
+            attributes = _objectWithoutProperties(_ref, ['node', 'alert']);
 
-        return _react2.default.createElement(Tag, attributes);
+        if (alert) {
+          return _react2.default.createElement(
+            'div',
+            null,
+            _react2.default.createElement(Tag, attributes),
+            _react2.default.createElement(
+              'span',
+              { 'class': 'gallery-item--alert' },
+              '!'
+            )
+          );
+        } else {
+          return _react2.default.createElement(Tag, attributes);
+        }
       });
     }
   }, {
@@ -8386,7 +8371,20 @@ var TableView = function (_Component) {
         return '';
       }
       var myStyles = { display: 'inline-block' };
-      return _react2.default.createElement('span', { title: 'UserDefinedForm upload', className: 'gallery-item--userdefinedform-upload', style: myStyles });
+      if (rowData.type !== 'folder' && rowData.visibility === 'public') {
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement('span', { title: 'UserDefinedForm upload', className: 'gallery-item--userdefinedform-upload', style: myStyles }),
+          _react2.default.createElement(
+            'span',
+            { className: 'gallery-item--alert', style: myStyles },
+            '!'
+          )
+        );
+      } else {
+        return _react2.default.createElement('span', { title: 'UserDefinedForm upload', className: 'gallery-item--userdefinedform-upload', style: myStyles });
+      }
     }
   }, {
     key: 'renderTitle',

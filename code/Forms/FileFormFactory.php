@@ -354,7 +354,12 @@ class FileFormFactory extends AssetFormFactory
         $html = '<span title="' . $title . '" class="gallery-item--' . $store . '" style="display:inline-block"></span>';
 
         if ($record->isUserDefinedFormUpload()) {
-            $html .= '<span title="UserDefinedForm upload" class="gallery-item--userdefinedform-upload" style="display:inline-block"></span>';
+            if ($store == 'public') {
+                $html .= '<span title="UserDefinedForm upload" class="gallery-item--userdefinedform-upload" style="display:inline-block"></span>';
+                $html .= '<span class="gallery-item--alert" style="display:inline-block">!</span>';
+            } else {
+                $html .= '<span title="UserDefinedForm upload" class="gallery-item--userdefinedform-upload" style="display:inline-block"></span>';
+            }
         }
 
         if ($statusTitle = $record->getStatusTitle()) {
