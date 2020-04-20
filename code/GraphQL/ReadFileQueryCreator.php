@@ -4,6 +4,7 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use GraphQL\Type\Definition\UnionType;
+use SilverStripe\Assets\Services\ReadOnlyCacheService;
 use SilverStripe\GraphQL\Pagination\PaginatedQueryCreator;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\Versioned\Versioned;
@@ -23,6 +24,10 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
 
     public function createConnection()
     {
+        // class_exists check can be removed when assets 1.6 is released and required by framework 4.6
+        if (class_exists(ReadOnlyCacheService::class)) {
+            ReadOnlyCacheService::singleton()->setEnabled(true);
+        }
         return Connection::create('readFiles')
             ->setConnectionType(function () {
                 return new UnionType([
