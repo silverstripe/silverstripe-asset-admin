@@ -96,7 +96,7 @@ class ImageFormFactory extends FileFormFactory
             $titleField = TextField::create(
                 'TitleTooltip',
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TitleTooltip', 'Title text (tooltip)')
-            )->setValue($record->Title)
+            )
         );
 
         $titleDescription = _t(
