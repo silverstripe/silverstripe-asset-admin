@@ -349,16 +349,14 @@ class FileFormFactory extends AssetFormFactory
             return null;
         }
 
-        $store = $record->getVisibility();
-        $title = ucfirst($store);
-        $html = '<span title="' . $title . '" class="gallery-item--' . $store . '" style="display:inline-block"></span>';
+        $restricted = $record->canViewAnonymous() ? 'unrestricted' : 'restricted';
+        $title = ucfirst($restricted);
+        $html = '<span title="' . $title . '" class="gallery-item-icon gallery-item-icon--' . $restricted . '" style="display: inline-block"></span>';
 
         if ($record->isUserDefinedFormUpload()) {
-            if ($store == 'public') {
-                $html .= '<span title="UserDefinedForm upload" class="gallery-item--userdefinedform-upload" style="display:inline-block"></span>';
-                $html .= '<span class="gallery-item--alert" style="display:inline-block">!</span>';
-            } else {
-                $html .= '<span title="UserDefinedForm upload" class="gallery-item--userdefinedform-upload" style="display:inline-block"></span>';
+            $html .= '<span title="UserDefinedForm upload" class="gallery-item-icon gallery-item-icon--userdefinedform-upload" style="display: inline-block"></span>';
+            if ($record->getVisibility() == 'public') {
+                $html .= '<span title="UserDefinedForm alert" class="gallery-item-icon gallery-item-icon--userdefinedform-alert" style="display: inline-block"></span>';
             }
         }
 

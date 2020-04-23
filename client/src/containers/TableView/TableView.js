@@ -323,10 +323,11 @@ class TableView extends Component {
    * @returns {XML|null}
    */
   renderVisibility(rowData) {
-    const isProtected =
+    // TODO: this is currently incorrect while we iterate, thats ok, fix once GalleryItem is finalised
+    const isRestricted =
       rowData.type === 'folder' && !rowData.canViewAnonymous ||
       rowData.type !== 'folder' && rowData.visibility == 'protected';
-    const myTitle = isProtected ? 'Protected' : 'Public';
+    const myTitle = isRestricted ? 'Restricted' : 'Public';
     const myClassName = 'gallery-item--' + (isProtected ? 'protected' : 'public');
     const myStyles = { display: 'inline-block' };
     return (
@@ -341,6 +342,7 @@ class TableView extends Component {
    * @returns {XML|null}
    */
   renderIsUserDefinedFormUpload(rowData) {
+    // TODO: this is currently incorrect while we iterate, thats ok, fix once GalleryItem is finalised
     if (!rowData.isUserDefinedFormUpload && !rowData.hasChildUserDefinedFormUploads) {
       return '';
     }

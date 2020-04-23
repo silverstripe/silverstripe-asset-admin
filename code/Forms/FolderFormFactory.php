@@ -47,12 +47,12 @@ class FolderFormFactory extends AssetFormFactory
             return '';
         }
 
-        $store = $record->canViewAnonymous() ? 'public' : 'protected';
-        $title = ucfirst($store);
-        $html = '<span title="' . $title . '" class="gallery-item--' . $store . '" style="display:inline-block"></span>';
+        $restricted = $record->canViewAnonymous() ? 'unrestricted' : 'restricted';
+        $title = ucfirst($restricted);
+        $html = '<span title="' . $title . '" class="gallery-item-icon gallery-item-icon--' . $restricted . '" style="display: inline-block"></span>';
 
         if ($record->hasChildUserDefinedFormUploads()) {
-            $html .= '<span title="UserDefinedForm upload" class="gallery-item--userdefinedform-upload" style="display:inline-block"></span>';
+            $html .= '<span title="UserDefinedForm upload" class="gallery-item-icon gallery-item-icon--userdefinedform-upload" style="display: inline-block"></span>';
         }
 
         return $html;

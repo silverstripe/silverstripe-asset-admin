@@ -183,7 +183,7 @@ class AssetAdmin extends Component {
           className: 'icon font-icon-edit-list',
           onClick: this.handleFolderIcon,
         },
-        isProtected: !folder.canViewAnonymous,
+        isRestricted: !folder.canViewAnonymous,
         hasChildUserDefinedFormUploads: folder.hasChildUserDefinedFormUploads
       });
     }
