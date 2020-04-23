@@ -1391,15 +1391,54 @@ var GalleryItem = function (_Component) {
       var item = this.props.item;
 
       if (item.type === 'folder') {
+        if (item.canViewAnonymous) {
+          flags.push({
+            node: 'span',
+            key: 'status-restricted',
+            title: _i18n2.default._t('File.PUBLIC', 'Public'),
+            className: 'gallery-item-icon gallery-item-icon--unrestricted'
+          });
+        } else {
+          flags.push({
+            node: 'span',
+            key: 'status-restricted',
+            title: _i18n2.default._t('File.RESTRICTED', 'Resticted access'),
+            className: 'gallery-item-icon gallery-item-icon--restricted'
+          });
+        }
         if (item.hasChildUserDefinedFormUploads) {
           flags.push({
             node: 'span',
             key: 'status-userdefinedform-upload',
             title: _i18n2.default._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
-            className: 'gallery-item--userdefinedform-upload'
+            className: 'gallery-item-icon gallery-item-icon--userdefinedform-upload'
           });
         }
       } else {
+        if (item.canViewAnonymous) {
+          flags.push({
+            node: 'span',
+            key: 'status-restricted',
+            title: _i18n2.default._t('File.PUBLIC', 'Public'),
+            className: 'gallery-item-icon gallery-item-icon--unrestricted'
+          });
+        } else {
+          flags.push({
+            node: 'span',
+            key: 'status-restricted',
+            title: _i18n2.default._t('File.RESTRICTED', 'Resticted access'),
+            className: 'gallery-item-icon gallery-item-icon--restricted'
+          });
+        }
+        if (item.isUserDefinedFormUpload) {
+          flags.push({
+            node: 'span',
+            key: 'status-userdefinedform-upload',
+            title: _i18n2.default._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
+            className: 'gallery-item-icon gallery-item-icon--userdefinedform-upload',
+            alert: item.visibility == 'public' ? true : false
+          });
+        }
         if (item.draft) {
           flags.push({
             node: 'span',
@@ -1415,33 +1454,22 @@ var GalleryItem = function (_Component) {
             className: 'gallery-item--modified'
           });
         }
-        if (item.isUserDefinedFormUpload) {
-          flags.push({
-            node: 'span',
-            key: 'status-userdefinedform-upload',
-            title: _i18n2.default._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
-            className: 'gallery-item--userdefinedform-upload',
-            alert: item.visibility == 'public' ? true : false
-          });
-        }
       }
       var updateStatusFlags = this.getItemFunction('updateStatusFlags');
       flags = updateStatusFlags(flags, this.props);
+      var n = 0;
       return flags.map(function (_ref) {
         var Tag = _ref.node,
             alert = _ref.alert,
             attributes = _objectWithoutProperties(_ref, ['node', 'alert']);
 
         if (alert) {
+          var key = 'udfwa-' + ++n;
           return _react2.default.createElement(
             'div',
-            null,
+            { key: key },
             _react2.default.createElement(Tag, attributes),
-            _react2.default.createElement(
-              'span',
-              { 'class': 'gallery-item--alert' },
-              '!'
-            )
+            _react2.default.createElement('span', { className: 'gallery-item-icon gallery-item-icon--userdefinedform-alert' })
           );
         } else {
           return _react2.default.createElement(Tag, attributes);

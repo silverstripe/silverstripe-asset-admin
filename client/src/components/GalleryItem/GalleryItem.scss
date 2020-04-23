@@ -326,10 +326,7 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item--draft,
-.gallery-item--modified,
-.gallery-item--public,
-.gallery-item--protected,
-.gallery-item--userdefinedform-upload {
+.gallery-item--modified {
   display: block;
   width: 8px;
   height: 8px;
@@ -348,26 +345,32 @@ $gallery-item-label-height: 40px;
   }
 }
 
-.gallery-item--userdefinedform-upload {
-    display: inline-block;
+.gallery-item-icon {
+    display: block;
+    height: 20px;
+    width: 20px;
+    margin: 2px 0 0 2px;
+    background-size: 20px auto;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
-.gallery-item--public,
-.gallery-item--protected {
-    // easy way to switch off for demo
-    display: none !important;
+.gallery-item-icon--restricted {
+    background-image: url("../../images/demo_icon_restricted_eyeball.png");
 }
 
-.gallery-item--alert {
+.gallery-item-icon--unrestricted {
+    background-image: url("../../images/demo_icon_unrestricted_eyeball.png");
+}
+
+.gallery-item-icon--userdefinedform-upload {
     display: inline-block;
-    margin: 5px 0 0 5px;
-    padding: 0 7px;
-    background-color: $state-userdefinedform-alert-bg;
-    border: 1px solid $state-userdefinedform-alert;
-    color: $state-userdefinedform-alert;
-    font-weight: bold;
-    font-size: 13px;
-    border-radius: 100%;
+    background-image: url("../../images/demo_icon_userdefinedform_submission.png");
+}
+
+.gallery-item-icon--userdefinedform-alert {
+    display: inline-block;
+    background-image: url("../../images/demo_icon_userdefinedform_alert.png");
 }
 
 .gallery-item--draft {
@@ -386,33 +389,6 @@ $gallery-item-label-height: 40px;
   &:hover::after {
     content: "MODIFIED";
   }
-}
-
-.gallery-item--public {
-  background-color: $state-public-bg;
-  border: 1px solid $state-public;
-
-  &:hover::after {
-    content: "PUBLIC";
-  }
-}
-
-.gallery-item--protected {
-  background-color: $state-protected-bg;
-  border: 1px solid $state-protected;
-
-  &:hover::after {
-    content: "PROTECTED";
-  }
-}
-
-.gallery-item--userdefinedform-upload {
-    background-color: $state-userdefinedform-upload-bg;
-    border: 1px solid $state-userdefinedform-upload;
-
-    &:hover::after {
-        content: "USER-DEFINED-FORM UPLOAD";
-    }
 }
 
 .gallery-item--max-selected {
