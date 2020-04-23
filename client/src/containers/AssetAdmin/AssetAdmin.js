@@ -783,6 +783,71 @@ class AssetAdmin extends Component {
     );
   }
 
+  hackInDemoIconSwitcher() {
+    if (document.getElementById('demo-icon-switcher')) {
+      return;
+    }
+    let interval = setInterval(() => {
+      let container = document.querySelector('.cms-panel-content')
+      if (!container) {
+        return;
+      }
+      clearInterval(interval);
+      container.innerHTML = [
+        '<div id="demo-icon-switcher">',
+        '  <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom: 10px;">',
+        '    <button class="demo-icon-switch-ico" data-value="person_line" style="font-size:10px;padding:5px;">person_line</button>',
+        '    <button class="demo-icon-switch-ico" data-value="person_lock" style="font-size:10px;padding:5px;">person_lock</button>',
+        '    <button class="demo-icon-switch-ico" data-value="shield" style="font-size:10px;padding:5px;">shield</button>',
+        '    <button class="demo-icon-switch-ico" data-value="lock" style="font-size:10px;padding:5px;">lock</button>',
+        '  </div>',
+        '  <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom: 10px;">',
+        '    <button class="demo-icon-switch-ico" data-value="eyeball" style="font-size:10px;padding:5px;">eyeball</button>',
+        '    <button class="demo-icon-switch-ico" data-value="3people" style="font-size:10px;padding:5px;">3people</button>',
+        '    <button class="demo-icon-switch-ico" data-value="globe" style="font-size:10px;padding:5px;">globe</button>',
+        '  </div>',
+        '  <div style="padding-bottom:10px;">',
+        '    <button class="demo-icon-switch-color" data-value="default" style="font-size:10px;padding:5px;">default</button>',
+        '    <button class="demo-icon-switch-color" data-value="blue" style="font-size:10px;padding:5px;">blue</button>',
+        '    <button class="demo-icon-switch-color" data-value="cyan" style="font-size:10px;padding:5px;">cyan</button>',
+        '    <button class="demo-icon-switch-color" data-value="orange" style="font-size:10px;padding:5px;">orange</button>',
+        '    <button class="demo-icon-switch-color" data-value="red" style="font-size:10px;padding:5px;">red</button>',
+        '  </div>',
+        '</div>'
+      ].join('') + container.innerHTML;
+      document.querySelectorAll('.demo-icon-switch-ico').forEach(btn => {
+        btn.addEventListener('click', event => {
+          document.querySelectorAll('.gallery-item-icon--restricted,.gallery-item-icon--unrestricted').forEach(el => {
+            el.classList.forEach(cls => {
+              if (cls.indexOf('--ico-') !== -1) {
+                el.classList.remove(cls)
+              }
+            });
+            let val = btn.getAttribute('data-value');
+            if (val != 'eyeball') {
+              el.classList.add('gallery-item-icon--ico-' + val);
+            }
+          })
+        })
+      });
+      document.querySelectorAll('.demo-icon-switch-color').forEach(btn => {
+        btn.addEventListener('click', event => {
+          document.querySelectorAll('.gallery-item-icon--restricted').forEach(el => {
+            el.classList.forEach(cls => {
+              if (cls.indexOf('--color-') !== -1) {
+                el.classList.remove(cls)
+              }
+            });
+            let val = btn.getAttribute('data-value');
+            if (val != 'default') {
+              el.classList.add('gallery-item-icon--color-' + val + '-line');
+            }
+          })
+        })
+      });
+    });
+  }
+  
   render() {
     const showBackButton = Boolean(
       (this.props.folderId)
@@ -801,6 +866,8 @@ class AssetAdmin extends Component {
     const onSearchToggle = this.props.actions.displaySearch ?
       this.props.actions.displaySearch.toggleSearch :
       undefined;
+    
+    this.hackInDemoIconSwitcher();
 
     return (
       <div className={classNames}>

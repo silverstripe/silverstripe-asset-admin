@@ -4683,7 +4683,7 @@ var AssetAdmin = function (_Component) {
             className: 'icon font-icon-edit-list',
             onClick: this.handleFolderIcon
           },
-          isProtected: !folder.canViewAnonymous,
+          isRestricted: !folder.canViewAnonymous,
           hasChildUserDefinedFormUploads: folder.hasChildUserDefinedFormUploads
         });
       }
@@ -5150,6 +5150,51 @@ var AssetAdmin = function (_Component) {
       });
     }
   }, {
+    key: 'hackInDemoIconSwitcher',
+    value: function hackInDemoIconSwitcher() {
+      if (document.getElementById('demo-icon-switcher')) {
+        return;
+      }
+      var interval = setInterval(function () {
+        var container = document.querySelector('.cms-panel-content');
+        if (!container) {
+          return;
+        }
+        clearInterval(interval);
+        container.innerHTML = ['<div id="demo-icon-switcher">', '  <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom: 10px;">', '    <button class="demo-icon-switch-ico" data-value="person_line" style="font-size:10px;padding:5px;">person_line</button>', '    <button class="demo-icon-switch-ico" data-value="person_lock" style="font-size:10px;padding:5px;">person_lock</button>', '    <button class="demo-icon-switch-ico" data-value="shield" style="font-size:10px;padding:5px;">shield</button>', '    <button class="demo-icon-switch-ico" data-value="lock" style="font-size:10px;padding:5px;">lock</button>', '  </div>', '  <div style="border-bottom: 1px solid grey; margin-bottom: 10px; padding-bottom: 10px;">', '    <button class="demo-icon-switch-ico" data-value="eyeball" style="font-size:10px;padding:5px;">eyeball</button>', '    <button class="demo-icon-switch-ico" data-value="3people" style="font-size:10px;padding:5px;">3people</button>', '    <button class="demo-icon-switch-ico" data-value="globe" style="font-size:10px;padding:5px;">globe</button>', '  </div>', '  <div style="padding-bottom:10px;">', '    <button class="demo-icon-switch-color" data-value="default" style="font-size:10px;padding:5px;">default</button>', '    <button class="demo-icon-switch-color" data-value="blue" style="font-size:10px;padding:5px;">blue</button>', '    <button class="demo-icon-switch-color" data-value="cyan" style="font-size:10px;padding:5px;">cyan</button>', '    <button class="demo-icon-switch-color" data-value="orange" style="font-size:10px;padding:5px;">orange</button>', '    <button class="demo-icon-switch-color" data-value="red" style="font-size:10px;padding:5px;">red</button>', '  </div>', '</div>'].join('') + container.innerHTML;
+        document.querySelectorAll('.demo-icon-switch-ico').forEach(function (btn) {
+          btn.addEventListener('click', function (event) {
+            document.querySelectorAll('.gallery-item-icon--restricted,.gallery-item-icon--unrestricted').forEach(function (el) {
+              el.classList.forEach(function (cls) {
+                if (cls.indexOf('--ico-') !== -1) {
+                  el.classList.remove(cls);
+                }
+              });
+              var val = btn.getAttribute('data-value');
+              if (val != 'eyeball') {
+                el.classList.add('gallery-item-icon--ico-' + val);
+              }
+            });
+          });
+        });
+        document.querySelectorAll('.demo-icon-switch-color').forEach(function (btn) {
+          btn.addEventListener('click', function (event) {
+            document.querySelectorAll('.gallery-item-icon--restricted').forEach(function (el) {
+              el.classList.forEach(function (cls) {
+                if (cls.indexOf('--color-') !== -1) {
+                  el.classList.remove(cls);
+                }
+              });
+              var val = btn.getAttribute('data-value');
+              if (val != 'default') {
+                el.classList.add('gallery-item-icon--color-' + val + '-line');
+              }
+            });
+          });
+        });
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       var showBackButton = Boolean(this.props.folderId || (0, _Search.hasFilters)(this.props.query.filter));
@@ -5161,6 +5206,8 @@ var AssetAdmin = function (_Component) {
       });
       var showSearch = (0, _Search.hasFilters)(this.props.query.filter) || this.props.showSearch;
       var onSearchToggle = this.props.actions.displaySearch ? this.props.actions.displaySearch.toggleSearch : undefined;
+
+      this.hackInDemoIconSwitcher();
 
       return _react2.default.createElement(
         'div',
@@ -8386,8 +8433,8 @@ var TableView = function (_Component) {
   }, {
     key: 'renderVisibility',
     value: function renderVisibility(rowData) {
-      var isProtected = rowData.type === 'folder' && !rowData.canViewAnonymous || rowData.type !== 'folder' && rowData.visibility == 'protected';
-      var myTitle = isProtected ? 'Protected' : 'Public';
+      var isRestricted = rowData.type === 'folder' && !rowData.canViewAnonymous || rowData.type !== 'folder' && rowData.visibility == 'protected';
+      var myTitle = isRestricted ? 'Restricted' : 'Public';
       var myClassName = 'gallery-item--' + (isProtected ? 'protected' : 'public');
       var myStyles = { display: 'inline-block' };
       return _react2.default.createElement('span', { title: myTitle, className: myClassName, style: myStyles });

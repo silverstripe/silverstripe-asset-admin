@@ -355,12 +355,80 @@ $gallery-item-label-height: 40px;
     background-position: center center;
 }
 
+.gallery-item-icon--unrestricted,
 .gallery-item-icon--restricted {
-    background-image: url("../../images/demo_icon_restricted_eyeball.png");
+    background-image: url("../../images/demo_icon_unrestricted_eyeball.png");
 }
 
-.gallery-item-icon--unrestricted {
-    background-image: url("../../images/demo_icon_unrestricted_eyeball.png");
+.gallery-item-icon--ico-3people {
+    background-image: url("../../images/demo_icon_3people.png") !important;
+}
+
+.gallery-item-icon--ico-globe {
+    background-image: url("../../images/demo_icon_globe.png") !important;
+}
+
+.gallery-item-icon--ico-shield {
+    background-image: url("../../images/demo_icon_shield.png") !important;
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none !important;
+    }
+}
+
+.gallery-item-icon--ico-lock {
+    background-image: url("../../images/demo_icon_lock.png") !important;
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none !important;
+    }
+}
+
+.gallery-item-icon--ico-person_lock {
+    background-image: url("../../images/demo_icon_person_lock.png") !important;
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none;
+    }
+}
+
+.gallery-item-icon--ico-person_line {
+    background-image: url("../../images/demo_icon_person_line.png") !important;
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none;
+    }
+}
+
+.gallery-item-icon--restricted {
+    &::before {
+        width: 20px;
+        height: 20px;
+        border-bottom: 2px solid #303b4d;
+        -webkit-transform: translateY(-7px) translateX(5px) rotate(40deg);
+        position: absolute;
+        content: '';
+    }
+}
+
+.gallery-item-icon--color-blue-line::before {
+    border-bottom: 2px solid #005a93 !important;
+}
+
+.gallery-item-icon--color-cyan-line::before {
+    border-bottom: 2px solid #29abe2 !important;
+}
+
+.gallery-item-icon--color-orange-line::before {
+    border-bottom: 2px solid #fd7e14 !important;
+}
+
+.gallery-item-icon--color-red-line::before {
+    border-bottom: 2px solid #da273b !important;
 }
 
 .gallery-item-icon--userdefinedform-upload {
