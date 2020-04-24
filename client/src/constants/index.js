@@ -47,7 +47,7 @@ export default {
       destructive: false,
       callback: null, // defined in <Gallery> for now
       canApply: (items) => (
-        items.some(item => item && !item.published) &&
+        items.some(item => item && item.modified) &&
         items.every(item => item.canEdit && item.type !== 'folder')
       ),
       confirm: null,
