@@ -1431,12 +1431,12 @@ var GalleryItem = function (_Component) {
           });
         }
         if (item.isUserDefinedFormUpload) {
+          var cls = 'gallery-item-icon--userdefinedform-' + (item.visibility == 'public' ? 'subalert' : 'upload');
           flags.push({
             node: 'span',
             key: 'status-userdefinedform-upload',
             title: _i18n2.default._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
-            className: 'gallery-item-icon gallery-item-icon--userdefinedform-upload',
-            alert: item.visibility == 'public' ? true : false
+            className: 'gallery-item-icon ' + cls
           });
         }
         if (item.draft) {
@@ -1457,23 +1457,11 @@ var GalleryItem = function (_Component) {
       }
       var updateStatusFlags = this.getItemFunction('updateStatusFlags');
       flags = updateStatusFlags(flags, this.props);
-      var n = 0;
       return flags.map(function (_ref) {
         var Tag = _ref.node,
-            alert = _ref.alert,
-            attributes = _objectWithoutProperties(_ref, ['node', 'alert']);
+            attributes = _objectWithoutProperties(_ref, ['node']);
 
-        if (alert) {
-          var key = 'udfwa-' + ++n;
-          return _react2.default.createElement(
-            'div',
-            { key: key },
-            _react2.default.createElement(Tag, attributes),
-            _react2.default.createElement('span', { className: 'gallery-item-icon gallery-item-icon--userdefinedform-alert' })
-          );
-        } else {
-          return _react2.default.createElement(Tag, attributes);
-        }
+        return _react2.default.createElement(Tag, attributes);
       });
     }
   }, {

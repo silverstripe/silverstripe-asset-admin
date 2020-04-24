@@ -237,12 +237,12 @@ class GalleryItem extends Component {
         });
       }
       if (item.isUserDefinedFormUpload) {
+        let cls = 'gallery-item-icon--userdefinedform-' + ((item.visibility == 'public') ? 'subalert' : 'upload');
         flags.push({
           node: 'span',
           key: 'status-userdefinedform-upload',
           title: i18n._t('File.USERDEFINEDFORM_UPLOAD', 'UserDefinedForm upload'),
-          className: 'gallery-item-icon gallery-item-icon--userdefinedform-upload',
-          alert: (item.visibility == 'public') ? true : false,
+          className: 'gallery-item-icon ' + cls
         });
       }
       if (item.draft) {
@@ -263,23 +263,7 @@ class GalleryItem extends Component {
     }
     const updateStatusFlags = this.getItemFunction('updateStatusFlags');
     flags = updateStatusFlags(flags, this.props);
-    let n = 0;
-    return flags.map(({ node: Tag, alert, ...attributes }) => {
-      // temp code for demo
-      if (alert) {
-        let key = 'udfwa-' + (++n);
-        return (
-          <div key={key}>
-            <Tag {...attributes} />
-            <span className="gallery-item-icon gallery-item-icon--userdefinedform-alert" />
-          </div>
-        );
-      } else {
-        return (
-          <Tag {...attributes} />
-        );
-      }
-    });
+    return flags.map(({ node: Tag, ...attributes }) => <Tag {...attributes} />);
   }
 
   /**

@@ -327,7 +327,7 @@ $gallery-item-label-height: 40px;
 
 .gallery-item--draft,
 .gallery-item--modified {
-  display: block;
+  display: inline-block;
   width: 8px;
   height: 8px;
   box-shadow: 0 0 1px .5px $white;
@@ -347,14 +347,17 @@ $gallery-item-label-height: 40px;
 
 .gallery-item-icon {
     display: block;
-    height: 20px;
-    width: 20px;
+    height: 27px;
+    width: 27px;
     background-size: 20px auto;
     background-repeat: no-repeat;
     background-position: center center;
-    margin: 2px 2px 0 0;
+    margin: 10px 8px -2px 0;
     float: right;
     clear: both;
+    background-color: white;
+    border-radius: 100%;
+    border: 1px solid #eef0f4;
 }
 
 .gallery-item-icon--unrestricted,
@@ -476,6 +479,11 @@ $gallery-item-label-height: 40px;
 .gallery-item-icon--userdefinedform-upload {
     display: inline-block;
     background-image: url("../../images/demo_icon_userdefinedform_submission.png");
+}
+
+.gallery-item-icon--userdefinedform-subalert {
+    display: inline-block;
+    background-image: url("../../images/demo_icon_userdefinedform_subalert.png");
 }
 
 .gallery-item-icon--userdefinedform-alert {
