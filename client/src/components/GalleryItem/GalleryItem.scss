@@ -357,7 +357,12 @@ $gallery-item-label-height: 40px;
 
 .gallery-item-icon--unrestricted,
 .gallery-item-icon--restricted {
-    background-image: url("../../images/demo_icon_unrestricted_eyeball.png");
+    background-image: url("../../images/demo_icon_restricted_eyeball.png");
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none !important;
+    }
 }
 
 .gallery-item-icon--ico-3people {
@@ -386,6 +391,33 @@ $gallery-item-label-height: 40px;
     }
 }
 
+.gallery-item-icon--ico-key {
+    background-image: url("../../images/demo_icon_key.png") !important;
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none !important;
+    }
+}
+
+.gallery-item-icon--ico-person_key {
+    background-image: url("../../images/demo_icon_person_key.png") !important;
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none !important;
+    }
+}
+
+.gallery-item-icon--ico-person_shield {
+    background-image: url("../../images/demo_icon_person_shield.png") !important;
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none !important;
+    }
+}
+
 .gallery-item-icon--ico-person_lock {
     background-image: url("../../images/demo_icon_person_lock.png") !important;
 
@@ -395,6 +427,14 @@ $gallery-item-label-height: 40px;
     }
 }
 
+.gallery-item-icon--ico-eyelock {
+    background-image: url("../../images/demo_icon_eyelock.png") !important;
+
+    &.gallery-item-icon--unrestricted,
+    &::before {
+        display: none;
+    }
+}
 .gallery-item-icon--ico-person_line {
     background-image: url("../../images/demo_icon_person_line.png") !important;
 
