@@ -14,7 +14,7 @@ import { hasFilters } from 'components/Search/Search';
  * @param {Function} onBrowse Callback for when the user click on one of the breadcrumb element.
  * @param {Function} onFolderIcon Callback for when the user decide to edit the info for a folder.
  */
-const Breadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon }) => {
+const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon }) => {
   // Simple wrapper method around onBrowse that suppress the event
   const handleClick = (...args) => (event) => {
     event.preventDefault();
@@ -67,7 +67,7 @@ const Breadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon }) => {
   return <PlainBreadcrumb multiline crumbs={breadcrumbs} />;
 };
 
-Breadcrumb.propTypes = {
+AssetAdminBreadcrumb.propTypes = {
   onBrowse: PropTypes.func,
   onFolderIcon: PropTypes.func,
   getUrl: PropTypes.func,
@@ -87,4 +87,4 @@ Breadcrumb.propTypes = {
   }),
 };
 
-export default Breadcrumb;
+export default AssetAdminBreadcrumb;

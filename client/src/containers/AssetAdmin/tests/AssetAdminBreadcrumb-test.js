@@ -1,5 +1,5 @@
 /* global jest, describe, it, pit, expect, beforeEach, jasmine */
-import Breadcrumb from '../Breadcrumb';
+import Breadcrumb from '../AssetAdminBreadcrumb';
 import ShallowRenderer from 'react-test-renderer/shallow';
 import React from 'react';
 
