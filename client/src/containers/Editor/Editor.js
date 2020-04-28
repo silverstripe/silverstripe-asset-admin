@@ -283,9 +283,12 @@ class Editor extends Component {
     const campaignTitle = i18n._t('Admin.ADD_TO_CAMPAIGN', 'Add to campaign');
     const Loading = this.props.loadingComponent;
 
-    // FormBuilderLoader doesn't do anything with the file props, but passing it along forces
-    // React to re-render the EditorHeader component when file gets populated by GraphQL data
-    const file = this.props.file;
+    // Most of the the time, the GraphQL data comes back first and the selected file data gets
+    // passed down to the Editor in time for the EditorHeader to be rendered correctly.
+    // Occasionnaly the FormSchema comes back first and the EditorHeader gets rendered without the
+    // necessary file data. Passing `file` to FormBuilderLoader will force a re-render when the
+    // GraphQL file data is filled in later on, which will cause a re-render of the EditorHeader.
+    const { file } = this.props;
 
     return (<div className={editorClasses}>
       <div className="editor__details fill-height">

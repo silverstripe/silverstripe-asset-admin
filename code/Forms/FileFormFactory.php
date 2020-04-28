@@ -46,7 +46,6 @@ class FileFormFactory extends AssetFormFactory
             }
         }
 
-        // All non-admin forms are typically readonly
         switch ($type) {
             case static::TYPE_INSERT_MEDIA:
                 $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
