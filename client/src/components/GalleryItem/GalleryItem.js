@@ -263,7 +263,12 @@ class GalleryItem extends Component {
     }
     const updateStatusFlags = this.getItemFunction('updateStatusFlags');
     flags = updateStatusFlags(flags, this.props);
-    return flags.map(({ node: Tag, ...attributes }) => <Tag {...attributes} />);
+    const renderedFlags = flags.map(({ node: Tag, ...attributes }) => <Tag {...attributes} />);
+    return (
+      <div className="gallery-item--icon-container">
+        {renderedFlags}
+      </div>
+    );
   }
 
   /**
@@ -520,8 +525,8 @@ class GalleryItem extends Component {
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
         >
-          {overlay}
           {this.getStatusFlags()}
+          {overlay}
         </div>
         {this.getProgressBar()}
         {this.getErrorMessage()}

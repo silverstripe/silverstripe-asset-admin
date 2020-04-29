@@ -325,6 +325,14 @@ $gallery-item-label-height: 40px;
   width: 0%;
 }
 
+.gallery-item--icon-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: 100%;
+}
+
 .gallery-item--draft,
 .gallery-item--modified {
   display: inline-block;
@@ -336,12 +344,13 @@ $gallery-item-label-height: 40px;
   margin: 5px 0 0 5px;
 
   &:hover::after {
-    top: -4px;
     font-size: $font-size-xxs;
     font-weight: 200;
     position: absolute;
+    top: 0;
+    left: 0;
     color: $white;
-    margin-left: $spacer-sm;
+    margin: 4px 0 0 18px;
   }
 }
 

@@ -1457,12 +1457,17 @@ var GalleryItem = function (_Component) {
       }
       var updateStatusFlags = this.getItemFunction('updateStatusFlags');
       flags = updateStatusFlags(flags, this.props);
-      return flags.map(function (_ref) {
+      var renderedFlags = flags.map(function (_ref) {
         var Tag = _ref.node,
             attributes = _objectWithoutProperties(_ref, ['node']);
 
         return _react2.default.createElement(Tag, attributes);
       });
+      return _react2.default.createElement(
+        'div',
+        { className: 'gallery-item--icon-container' },
+        renderedFlags
+      );
     }
   }, {
     key: 'getProgressBar',
@@ -1663,8 +1668,8 @@ var GalleryItem = function (_Component) {
             className: this.getThumbnailClassNames(),
             style: this.getThumbnailStyles()
           },
-          overlay,
-          this.getStatusFlags()
+          this.getStatusFlags(),
+          overlay
         ),
         this.getProgressBar(),
         this.getErrorMessage(),
