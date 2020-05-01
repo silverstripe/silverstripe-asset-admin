@@ -63,7 +63,10 @@ class FileFormFactory extends AssetFormFactory
                     $tabs->push($this->getFormFieldHistoryTab($record, $context));
                 }
 
-                $tabs->setReadonly($type === static::TYPE_SELECT);
+                if ($type === static::TYPE_SELECT) {
+                    $tabs->setReadonly(true);
+                }
+
                 break;
         }
 
