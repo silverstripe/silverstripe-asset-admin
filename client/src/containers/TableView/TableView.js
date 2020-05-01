@@ -19,24 +19,6 @@ class TableView extends Component {
     this.renderTitle = this.renderTitle.bind(this);
     this.renderStatus = this.renderStatus.bind(this);
     this.renderNoItemsNotice = this.renderNoItemsNotice.bind(this);
-
-    this.state = {
-      // TODO remove `enableSort` state when Griddle is version bumped up from 0.7.0
-      enableSort: false,
-    };
-  }
-
-  componentDidMount() {
-    // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({
-      enableSort: true,
-    });
-  }
-
-  componentWillUnmount() {
-    this.setState({
-      enableSort: false,
-    });
   }
 
   /**
@@ -139,11 +121,7 @@ class TableView extends Component {
       externalCurrentPage: this.props.page - 1,
       externalMaxPage: Math.ceil(this.props.totalCount / this.props.limit),
       externalSortColumn: sortColumn,
-      // TODO change to `sortDirection === 'asc'` when Griddle is version bumped up from 0.7.0
-      // reference: https://github.com/GriddleGriddle/Griddle/pull/515
-      externalSortAscending: (!this.state.enableSort)
-        ? sortDirection !== 'asc'
-        : sortDirection === 'asc',
+      externalSortAscending: sortDirection === 'asc',
       initialSort: sortColumn,
       columns: this.getColumns(),
       columnMetadata: this.getColumnConfig(),
@@ -201,11 +179,7 @@ class TableView extends Component {
   handleSort(column, ascending) {
     const direction = (ascending) ? 'asc' : 'desc';
 
-    // TODO hide while loading or pull request upstream to not setState()
-    // the ad-hoc sorting looks bad
-    if (this.state.enableSort) {
-      this.props.onSort(`${column},${direction}`);
-    }
+    this.props.onSort(`${column},${direction}`);
   }
 
   /**
