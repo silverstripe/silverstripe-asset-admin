@@ -36,7 +36,7 @@ class FolderCreateFormFactory extends FolderFormFactory
             );
             $fields->push(HiddenField::create('ParentID', null, $context['ParentID']));
 
-            $title = $fields->fieldByName('TitleHeader');
+            $title = $fields->fieldByName('AssetEditorHeaderFieldGroup.TitleHeader');
             $titleNew = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.NewFile', 'New {file}', [
                 'file' => Folder::singleton()->i18n_singular_name()
             ]);

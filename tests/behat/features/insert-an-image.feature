@@ -1,4 +1,4 @@
-@assets @retry
+@assets @retry @in-modal
 Feature: Insert an image into a page
   As a cms author
   I want to insert an image into a page
@@ -12,18 +12,18 @@ Feature: Insert an image into a page
       And I go to "/admin/pages"
       And I click on "About Us" in the tree
 
-  @assets
   Scenario: I can insert an image from the CMS file store
     When I press the "Insert from Files" HTML field button
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
+      And I should not see an ".gallery-item--selectable" element
+      And I should not see an ".bulk-actions" element
     When I press the "Insert" button
     Then the "Content" HTML field should contain "file1.jpg"
     # Required to avoid "unsaved changed" browser dialog
       And I press the "Save" button
 
-  @assets
   Scenario: I can edit properties of an image before inserting it
     When I press the "Insert from Files" HTML field button
       And I select the file named "folder1" in the gallery
@@ -36,13 +36,37 @@ Feature: Insert an image into a page
       # Required to avoid "unsaved changed" browser dialog
       And I press the "Save" button
 
+  Scenario: I can edit image in the file modal
+    When I press the "Insert from Files" HTML field button
+      And I select the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
+      Then I should see the "Form_fileInsertForm" form
+    When I fill in "Alternative text (alt)" with "My alt"
+      And I press the "Details" button
+      Then I should see the "Form_fileEditForm" form
+      And I should not see an ".gallery-item--selectable" element
+      And I should not see an ".bulk-actions" element
+    When I fill in "Form_fileEditForm_Title" with "file one"
+      And I press the "Save" button
+      Then I should see the "Form_fileInsertForm" form
+      And I should see "File One" in the ".editor__heading" element
+    When I press the "Details" button
+      Then I should see the "Form_fileEditForm" form
+    When I click the ".editor-header__back-button" element
+      Then I should see the "Form_fileInsertForm" form
+    When I press the "Update file" button
+      Then the "Content" HTML field should contain "file1.jpg"
+      And the "Content" HTML field should contain "My alt"
+      # Required to avoid "unsaved changed" browser dialog
+      And I press the "Save" button
+
   Scenario: I can link to a file
     Given I select "awesome" in the "Content" HTML field
     When I press the "Insert link" HTML field button
       And I click "Link to a file" in the ".mce-menu" element
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
-    Then I should see an "form#Form_fileInsertForm" element
+    Then I should see the "Form_fileInsertForm" form
       And I fill in "Description" with "My file"
       And I press the "Insert" button
     Then the "Content" HTML field should contain "<a title="My file" href="[file_link,id=2]">awesome</a>"
@@ -52,6 +76,6 @@ Feature: Insert an image into a page
     When I select "awesome" in the "Content" HTML field
       And I press the "Insert link" HTML field button
       And I click "Link to a file" in the ".mce-menu" element
-    Then I should see an "form#Form_fileInsertForm" element
+    Then I should see the "Form_fileInsertForm" form
       And the "Description" field should contain "My file"
       And I should see "Update file" in the "button[name=action_insert]" element

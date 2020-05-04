@@ -2,7 +2,7 @@ import i18n from 'i18n';
 import React, { Component } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
-import AssetAdmin, { getFormSchema } from 'containers/AssetAdmin/AssetAdmin';
+import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import stateRouter from 'containers/AssetAdmin/stateRouter';
 import fileSchemaModalHandler from 'containers/InsertLinkModal/fileSchemaModalHandler';
 import * as galleryActions from 'state/gallery/GalleryActions';
@@ -10,6 +10,7 @@ import * as modalActions from 'state/modal/ModalActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import getFormSchema from 'lib/getFormSchema';
 
 class InsertMediaModal extends Component {
   constructor(props) {
@@ -21,10 +22,8 @@ class InsertMediaModal extends Component {
     const {
       isOpen,
       onBrowse, setOverrides,
-      fileAttributes, folderId, imageSizePresets,
-      actions } = this.props;
-
-    actions.modal.defineImageSizePresets(imageSizePresets);
+      fileAttributes, folderId
+    } = this.props;
 
     if (!isOpen) {
       onBrowse(folderId || 0);
@@ -38,12 +37,6 @@ class InsertMediaModal extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const { imageSizePresets, actions } = this.props;
-
-    if (imageSizePresets) {
-      actions.modal.defineImageSizePresets(imageSizePresets);
-    }
-
     if (!props.isOpen && this.props.isOpen) {
       props.onBrowse(props.folderId);
       props.actions.gallery.deselectFiles();
@@ -77,18 +70,13 @@ class InsertMediaModal extends Component {
    * @returns {object}
    */
   getModalProps() {
-    const props = {
-      ...this.props,
-      className: classnames('insert-media-modal', this.props.className),
+    const { onHide, onInsert, sectionConfig, schemaUrl, className, ...props } = this.props;
+    return {
+      ...props,
+      className: classnames('insert-media-modal', className),
       size: 'lg',
       showCloseButton: false
     };
-    delete props.onHide;
-    delete props.onInsert;
-    delete props.sectionConfig;
-    delete props.schemaUrl;
-
-    return props;
   }
 
   /**
@@ -166,10 +154,7 @@ InsertMediaModal.propTypes = {
   onClosed: PropTypes.func,
   className: PropTypes.string,
   actions: PropTypes.object,
-  imageSizePresets: PropTypes.arrayOf(PropTypes.shape({
-    text: PropTypes.string.isRequired,
-    width: PropTypes.number,
-  }))
+  maxFiles: PropTypes.number,
 };
 
 InsertMediaModal.defaultProps = {
@@ -177,7 +162,9 @@ InsertMediaModal.defaultProps = {
   fileAttributes: {},
   type: 'insert-media',
   folderId: 0,
+  maxFiles: 1,
 };
+
 
 function mapStateToProps(state, ownProps) {
   const config = ownProps.sectionConfig;
@@ -194,11 +181,13 @@ function mapStateToProps(state, ownProps) {
   }
   const fileId = (ownProps.fileAttributes) ? ownProps.fileAttributes.ID : ownProps.fileId;
 
+  const formSchema = state.assetAdmin.modal.formSchema;
+
   const props = {
     config,
     viewAction: ownProps.viewAction,
     folderId,
-    type: ownProps.type,
+    type: formSchema && formSchema.type,
     fileId,
   };
   const { schemaUrl, targetId } = getFormSchema(props);
@@ -210,8 +199,11 @@ function mapStateToProps(state, ownProps) {
   const requireTextFieldUrl = ownProps.requireLinkText ? '?requireLinkText=true' : '';
 
   // set schemaUrl for `fileSchemaModalHandler` to load the default form values properly
+  // This schema URL is not actually passed down to the Editor, it's just use to set the
+  // form schema overrides
   return {
     schemaUrl: `${schemaUrl}/${targetId}${requireTextFieldUrl}`,
+    type: formSchema && formSchema.type
   };
 }
 

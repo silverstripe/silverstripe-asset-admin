@@ -8,10 +8,11 @@ import jQuery from 'jquery';
 import i18n from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { loadComponent } from 'lib/Injector';
+import Injector, { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
 import { imageSizePresetButtons } from './TinyMCE_ssmedia_sizepressets';
+import * as modalActions from 'state/modal/ModalActions';
 
 const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 
@@ -164,10 +165,19 @@ jQuery.entwine('ss', ($) => {
     },
 
     open() {
+      // We're updating the redux store from outside react. This is a bit unusual, but it's
+      // the best way to initialise our modal setting.
+      const { dispatch } = Injector.reducer.store;
+      dispatch(modalActions.initFormStack('insert-media', 'admin'));
+      const imageSizePresets = tinymce.activeEditor.getParam('image_size_presets');
+      dispatch(modalActions.defineImageSizePresets(imageSizePresets));
       this._renderModal(true);
     },
 
     close() {
+      // When closing down the modal, let's reset our modal redux state
+      const { dispatch } = Injector.reducer.store;
+      dispatch(modalActions.reset());
       this._renderModal(false);
     },
 
@@ -180,25 +190,19 @@ jQuery.entwine('ss', ($) => {
     _renderModal(isOpen) {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this._handleInsert(...args);
-      const attrs = this.getOriginalAttributes();
+      const { url, ...attrs } = this.getOriginalAttributes();
       const folderId = this.getFolderId();
       const selection = tinymce.activeEditor.selection;
-      const imageSizePresets = tinymce.activeEditor.getParam('image_size_presets');
-
-
       const selectionContent = selection.getContent() || '';
       const tagName = selection.getNode().tagName;
       // Unsupported media insertion will use insert link form instead
       // treat image tag selection as blank content
       const requireLinkText = tagName !== 'A' && (tagName === 'IMG' || selectionContent.trim() === '');
 
-      delete attrs.url;
-
       // create/update the react component
       ReactDOM.render(
         <InjectableInsertMediaModal
           title={false}
-          type="insert-media"
           isOpen={isOpen}
           folderId={folderId}
           onInsert={handleInsert}
@@ -207,7 +211,6 @@ jQuery.entwine('ss', ($) => {
           className="insert-media-react__dialog-wrapper"
           requireLinkText={requireLinkText}
           fileAttributes={attrs}
-          imageSizePresets={imageSizePresets}
         />,
         this[0]
       );

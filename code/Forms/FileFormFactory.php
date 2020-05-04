@@ -10,6 +10,7 @@ use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\Tab;
@@ -35,17 +36,7 @@ class FileFormFactory extends AssetFormFactory
     protected function getFormFieldTabs($record, $context = [])
     {
         // Add extra tab
-        $tabs = TabSet::create(
-            'Editor',
-            $this->getFormFieldDetailsTab($record, $context),
-            $this->getFormFieldSecurityTab($record, $context),
-            $this->getFormFieldUsageTab($record, $context)
-        );
-
-        if ($this->config()->get('show_history')) {
-            $tabs->push($this->getFormFieldHistoryTab($record, $context));
-        }
-
+        $tabs = TabSet::create('Editor');
         $type = $this->getFormType($context);
 
         // Unsupported media insertion will use insert link form instead
@@ -55,18 +46,27 @@ class FileFormFactory extends AssetFormFactory
             }
         }
 
-        // All non-admin forms are typically readonly
         switch ($type) {
             case static::TYPE_INSERT_MEDIA:
-                $tabs->setReadonly(true);
                 $tabs->unshift($this->getFormFieldAttributesTab($record, $context));
                 break;
             case static::TYPE_INSERT_LINK:
-                $tabs->setReadonly(true);
                 $tabs->unshift($this->getFormFieldLinkOptionsTab($record, $context));
                 break;
             case static::TYPE_SELECT:
-                $tabs->setReadonly(true);
+            default:
+                $tabs->push($this->getFormFieldDetailsTab($record, $context));
+                $tabs->push($this->getFormFieldSecurityTab($record, $context));
+                $tabs->push($this->getFormFieldUsageTab($record, $context));
+
+                if ($this->config()->get('show_history')) {
+                    $tabs->push($this->getFormFieldHistoryTab($record, $context));
+                }
+
+                if ($type === static::TYPE_SELECT) {
+                    $tabs->setReadonly(true);
+                }
+
                 break;
         }
 
@@ -99,18 +99,7 @@ class FileFormFactory extends AssetFormFactory
             )
                 ->setReadonly(true)
         );
-        if ($this->getFormType($context) !== static::TYPE_ADMIN) {
-            $tab->push(LiteralField::create(
-                'EditLink',
-                sprintf(
-                    '<a href="%s" class="%s" target="_blank"><i class="%s" />%s</a>',
-                    $record->CMSEditLink(),
-                    'btn btn-outline-secondary font-icon-edit editor__edit-link',
-                    '',
-                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.EditLink', 'Edit original file')
-                )
-            ));
-        }
+
         return $tab;
     }
 
@@ -170,6 +159,10 @@ class FileFormFactory extends AssetFormFactory
     {
         return Tab::create(
             'Placement',
+            HeaderField::create(_t(
+                'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Placement',
+                'Placement'
+            )),
             LiteralField::create(
                 'AttributesDescription',
                 '<p>' . _t(
