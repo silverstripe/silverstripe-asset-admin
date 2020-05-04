@@ -885,7 +885,7 @@ var _droppable = __webpack_require__("./client/src/components/GalleryItem/droppa
 
 var _droppable2 = _interopRequireDefault(_droppable);
 
-var _Badge = __webpack_require__(15);
+var _Badge = __webpack_require__(16);
 
 var _Badge2 = _interopRequireDefault(_Badge);
 
@@ -984,7 +984,7 @@ var _reactRedux = __webpack_require__(4);
 
 var _Injector = __webpack_require__(3);
 
-var _reactstrap = __webpack_require__(18);
+var _reactstrap = __webpack_require__(15);
 
 var _classnames = __webpack_require__(12);
 
@@ -1214,7 +1214,7 @@ var _droppable = __webpack_require__("./client/src/components/GalleryItem/droppa
 
 var _droppable2 = _interopRequireDefault(_droppable);
 
-var _Badge = __webpack_require__(15);
+var _Badge = __webpack_require__(16);
 
 var _Badge2 = _interopRequireDefault(_Badge);
 
@@ -1227,6 +1227,8 @@ var _reactRedux = __webpack_require__(4);
 var _redux = __webpack_require__(5);
 
 var _reactSelectable = __webpack_require__("./node_modules/react-selectable/dist/react-selectable.js");
+
+var _reactstrap = __webpack_require__(15);
 
 var _ImageLoadActions = __webpack_require__("./client/src/state/imageLoad/ImageLoadActions.js");
 
@@ -1455,13 +1457,14 @@ var GalleryItem = function (_Component) {
           });
         }
       }
+
       var updateStatusFlags = this.getItemFunction('updateStatusFlags');
       flags = updateStatusFlags(flags, this.props);
       var renderedFlags = flags.map(function (_ref) {
         var Tag = _ref.node,
             attributes = _objectWithoutProperties(_ref, ['node']);
 
-        return _react2.default.createElement(Tag, attributes);
+        return _react2.default.createElement(Tag, _extends({ 'data-toggle': 'tooptip', 'data-placement': 'top' }, attributes));
       });
       return _react2.default.createElement(
         'div',
@@ -1794,13 +1797,13 @@ var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDnd = __webpack_require__(17);
+var _reactDnd = __webpack_require__(18);
 
 var _GalleryItem = __webpack_require__("./client/src/components/GalleryItem/GalleryItem.js");
 
 var _GalleryItem2 = _interopRequireDefault(_GalleryItem);
 
-var _Badge = __webpack_require__(15);
+var _Badge = __webpack_require__(16);
 
 var _Badge2 = _interopRequireDefault(_Badge);
 
@@ -1915,7 +1918,7 @@ var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDnd = __webpack_require__(17);
+var _reactDnd = __webpack_require__(18);
 
 var _reactDndHtml5Backend = __webpack_require__(32);
 
@@ -2040,7 +2043,7 @@ var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactDnd = __webpack_require__(17);
+var _reactDnd = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3062,7 +3065,7 @@ var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactstrap = __webpack_require__(18);
+var _reactstrap = __webpack_require__(15);
 
 var _i18n = __webpack_require__(2);
 
@@ -5977,7 +5980,7 @@ var _propTypes = __webpack_require__(1);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _reactstrap = __webpack_require__(18);
+var _reactstrap = __webpack_require__(15);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9302,7 +9305,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _templateObject = _taggedTemplateLiteral(['\n  mutation ', '($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {\n    ', '(IDs: $IDs, Force: $Force, Quiet: $Quiet) {\n      ...on File {\n        __typename\n        ...FileInterfaceFields\n        ...FileFields\n      }\n      ...on PublicationNotice {\n        __typename\n        Type\n        Message\n        IDs\n      }\n    }\n  }\n  ', '\n  ', '\n'], ['\n  mutation ', '($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {\n    ', '(IDs: $IDs, Force: $Force, Quiet: $Quiet) {\n      ...on File {\n        __typename\n        ...FileInterfaceFields\n        ...FileFields\n      }\n      ...on PublicationNotice {\n        __typename\n        Type\n        Message\n        IDs\n      }\n    }\n  }\n  ', '\n  ', '\n']);
 
-var _graphqlTag = __webpack_require__(16);
+var _graphqlTag = __webpack_require__(17);
 
 var _graphqlTag2 = _interopRequireDefault(_graphqlTag);
 
@@ -9368,7 +9371,7 @@ var _templateObject = _taggedTemplateLiteral(['mutation DeleteFiles($IDs:[ID]!) 
 
 var _reactApollo = __webpack_require__(9);
 
-var _graphqlTag = __webpack_require__(16);
+var _graphqlTag = __webpack_require__(17);
 
 var _graphqlTag2 = _interopRequireDefault(_graphqlTag);
 
@@ -9450,7 +9453,7 @@ var _templateObject = _taggedTemplateLiteral(['\n  mutation MoveFiles($folderId:
 
 var _reactApollo = __webpack_require__(9);
 
-var _graphqlTag = __webpack_require__(16);
+var _graphqlTag = __webpack_require__(17);
 
 var _graphqlTag2 = _interopRequireDefault(_graphqlTag);
 
@@ -30035,28 +30038,28 @@ module.exports = DeepFreezeStrict;
 /***/ 15:
 /***/ (function(module, exports) {
 
-module.exports = Badge;
+module.exports = Reactstrap;
 
 /***/ }),
 
 /***/ 16:
 /***/ (function(module, exports) {
 
-module.exports = GraphQLTag;
+module.exports = Badge;
 
 /***/ }),
 
 /***/ 17:
 /***/ (function(module, exports) {
 
-module.exports = ReactDND;
+module.exports = GraphQLTag;
 
 /***/ }),
 
 /***/ 18:
 /***/ (function(module, exports) {
 
-module.exports = Reactstrap;
+module.exports = ReactDND;
 
 /***/ }),
 

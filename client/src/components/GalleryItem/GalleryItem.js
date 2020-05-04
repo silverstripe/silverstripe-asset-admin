@@ -10,6 +10,7 @@ import configShape from 'lib/configShape';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { createSelectable } from 'react-selectable';
+import { Tooltip } from 'reactstrap';
 import * as imageLoadActions from 'state/imageLoad/ImageLoadActions';
 import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
 import PropTypes from 'prop-types';
@@ -261,9 +262,14 @@ class GalleryItem extends Component {
         });
       }
     }
+    
     const updateStatusFlags = this.getItemFunction('updateStatusFlags');
     flags = updateStatusFlags(flags, this.props);
-    const renderedFlags = flags.map(({ node: Tag, ...attributes }) => <Tag {...attributes} />);
+    const renderedFlags = flags.map(({ node: Tag, ...attributes }) => {
+      return (
+        <Tag data-toggle="tooptip" data-placement="top" {...attributes} />
+    );
+    });
     return (
       <div className="gallery-item--icon-container">
         {renderedFlags}
