@@ -70,6 +70,12 @@ class FileInterfaceTypeCreator extends DataObjectInterfaceTypeCreator
             'canDelete' => [
                 'type' => Type::boolean(),
             ],
+            'hasRestrictedAccess' => [
+                'type' => Type::boolean(),
+            ],
+            'visibility' => [
+                'type' => Type::string(),
+            ],
         ];
     }
 

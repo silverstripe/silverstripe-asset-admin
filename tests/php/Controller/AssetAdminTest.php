@@ -311,6 +311,7 @@ class AssetAdminTest extends FunctionalTest
     
     public function testGetMinimalistObjectFromData()
     {
+        /** @var File $file */
         $assetAdmin = AssetAdmin::singleton();
         $file = $this->objFromFixture(File::class, 'file1');
 
@@ -335,6 +336,9 @@ class AssetAdminTest extends FunctionalTest
             "published" => $file->isPublished(),
             "modified" => $file->isModifiedOnDraft(),
             "draft" => $file->isOnDraftOnly(),
+            "hasRestrictedAccess" => $file->hasRestrictedAccess(),
+            "isTrackedFormUpload" => $file->isTrackedFormUpload(),
+            "visibility" => $file->getVisibility(),
         ];
 
         $this->assertEquals($expected, $data);
@@ -343,6 +347,7 @@ class AssetAdminTest extends FunctionalTest
     public function testGetObjectFromDataFile()
     {
         $assetAdmin = AssetAdmin::singleton();
+        /** @var File $file */
         $file = $this->objFromFixture(File::class, 'file1');
 
 
@@ -380,6 +385,9 @@ class AssetAdminTest extends FunctionalTest
             "url" => $file->AbsoluteURL,
             "canEdit" => $file->canEdit(),
             "canDelete" => $file->canDelete(),
+            "hasRestrictedAccess" => $file->hasRestrictedAccess(),
+            "isTrackedFormUpload" => $file->isTrackedFormUpload(),
+            "visibility" => $file->getVisibility(),
         ];
 
         $this->assertEquals($expected, $data);
@@ -388,6 +396,7 @@ class AssetAdminTest extends FunctionalTest
     public function testGetObjectFromDataFileWithFolder()
     {
         $assetAdmin = AssetAdmin::singleton();
+        /** @var File $file */
         $file = $this->objFromFixture(Folder::class, 'folder1');
 
 
@@ -425,6 +434,9 @@ class AssetAdminTest extends FunctionalTest
             "url" => $file->AbsoluteURL,
             "canEdit" => $file->canEdit(),
             "canDelete" => $file->canDelete(),
+            "hasRestrictedAccess" => $file->hasRestrictedAccess(),
+            "isTrackedFormUpload" => $file->isTrackedFormUpload(),
+            "visibility" => $file->getVisibility(),
         ];
 
         $this->assertEquals($expected, $data);

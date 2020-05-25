@@ -44,17 +44,30 @@ const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon })
     }
 
     // Add current folder
-    breadcrumbs.push({
-      text: folder.title,
-      href: hrefBuilder(folder.id),
-      onClick: handleClick(folder.id),
-      icon: {
+    const icons = [
+      {
         className: 'icon font-icon-edit-list',
         onClick: (e) => {
           e.preventDefault();
           onFolderIcon();
         },
-      },
+      }
+    ];
+
+    if (folder.hasRestrictedAccess) {
+      icons.push(
+        {
+          nodeName: 'FileStatusIcon',
+          hasRestrictedAccess: true,
+        }
+      );
+    }
+
+    breadcrumbs.push({
+      text: folder.title,
+      href: hrefBuilder(folder.id),
+      onClick: handleClick(folder.id),
+      icons
     });
   }
   // Search leaf if there was a search entered

@@ -123,6 +123,15 @@ class FileTypeCreator extends TypeCreator
             'canDelete' => [
                 'type' => Type::boolean(),
             ],
+            'hasRestrictedAccess' => [
+                'type' => Type::boolean(),
+            ],
+            'visibility' => [
+                'type' => Type::string(),
+            ],
+            'isTrackedFormUpload' => [
+                'type' => Type::boolean(),
+            ],
             'draft' => [
                 'type' => Type::boolean(),
             ],

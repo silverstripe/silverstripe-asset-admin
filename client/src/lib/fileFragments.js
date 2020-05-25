@@ -13,6 +13,8 @@ const fileInterface = `
     title
     type
     url
+    visibility
+    hasRestrictedAccess
   }
 `;
 
@@ -26,6 +28,7 @@ const file = `
     smallThumbnail
     thumbnail
     version
+    isTrackedFormUpload
   }
 `;
 

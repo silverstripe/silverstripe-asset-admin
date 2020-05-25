@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Griddle from 'griddle-react';
 import i18n from 'i18n';
+import FileStatusIcon from 'components/FileStatusIcon/FileStatusIcon';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import { fileSize } from 'lib/DataFormat';
 import { inject } from 'lib/Injector';
@@ -317,6 +318,35 @@ class TableView extends Component {
   }
 
   /**
+   * @param {Object} rowData
+   * @returns {*}
+   */
+  renderRestrictedAccess(rowData) {
+    const { hasRestrictedAccess } = rowData;
+    const attrs = {
+      fileID: rowData.id,
+      placement: 'top',
+      hasRestrictedAccess
+    };
+    return <FileStatusIcon {...attrs} />;
+  }
+
+  /**
+   * @param {Object} rowData
+   * @returns {*}
+   */
+  renderTrackedFormUpload(rowData) {
+    const { isTrackedFormUpload, hasRestrictedAccess } = rowData;
+    const attrs = {
+      fileID: rowData.id,
+      placement: 'top',
+      isTrackedFormUpload,
+      hasRestrictedAccess
+    };
+    return <FileStatusIcon {...attrs} />;
+  }
+
+  /**
    * Renders the title for the row/item, includes a progress bar if appropriate for uploading
    *
    * @param {object} props
@@ -327,7 +357,11 @@ class TableView extends Component {
 
     return (
       <div className="fill-width">
-        <div className="flexbox-area-grow">{props.data}</div>
+        <div className="flexbox-area-grow">
+          {props.data}
+          {props.rowData.hasRestrictedAccess && this.renderRestrictedAccess(props.rowData)}
+          {props.rowData.isTrackedFormUpload && this.renderTrackedFormUpload(props.rowData)}
+        </div>
         {progress}
       </div>
     );

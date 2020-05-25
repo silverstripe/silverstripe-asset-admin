@@ -108,6 +108,30 @@ class FixtureContext extends BaseFixtureContext
     }
 
     /**
+     * @Then /^I should see a file status icon with the class "([^"]*)"/
+     * @param string $id HTML ID of form
+     */
+    public function iShouldSeeTheFileStatusIconWithTheClass($class)
+    {
+        $js = "window.jQuery && window.jQuery('.file-status-icon__icon').size() > 0";
+        $this->getMainContext()->getSession()->wait(1000, $js);
+        $icon = $this->getMainContext()->getSession()->getPage()->find('css', "{$class}.file-status-icon__icon");
+        assertNotNull($icon, "File status icon '$class' could not be found");
+        assertTrue($icon->isVisible(), "File status icon '$class' is not visible");
+    }
+
+    /**
+     * @Then /^I should not see a file status icon with the class "([^"]*)"/
+     * @param string $id HTML ID of form
+     */
+    public function iShouldNotSeeTheFileStatusIconWithTheClass($id)
+    {
+        $this->getMainContext()->getSession()->wait(2500);
+        $icon = $this->getMainContext()->getSession()->getPage()->find('css', "{$id}.file-status-icon");
+        assertNull($icon, "File status icon '$id' was found");
+    }
+
+    /**
      * @Given /^I click on the latest history item$/
      */
     public function iClickOnTheLatestHistoryItem()

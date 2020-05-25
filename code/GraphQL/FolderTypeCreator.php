@@ -82,6 +82,12 @@ class FolderTypeCreator extends FileTypeCreator
             'canDelete' => [
                 'type' => Type::boolean(),
             ],
+            'hasRestrictedAccess' => [
+                'type' => Type::boolean(),
+            ],
+            'visibility' => [
+                'type' => Type::string(),
+            ],
             'children' => [
                 'type' => $childrenConnection->toType(),
                 'args' => $childrenConnection->args(),

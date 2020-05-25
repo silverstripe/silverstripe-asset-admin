@@ -26,7 +26,7 @@ $gallery-item-label-height: 40px;
 .gallery-item--dropping {
   border-color: $component-active-border-color;
   background-color: $component-active-bg-light;
-};
+}
 
 .gallery-item__draggable,
 .gallery-item__droppable {
@@ -60,6 +60,21 @@ $gallery-item-label-height: 40px;
   .gallery-item__checkbox-label {
     margin-top: 5px;
   }
+
+  .gallery-item__status-flags {
+    display: none;
+  }
+
+  .gallery-item__status-icons {
+    grid-column: 1;
+    text-align: left;
+    margin: 20px 0 0 17px;
+  }
+
+  .file-status-icon__icon::before {
+    color: $blue;
+    font-size: 16px;
+  }
 }
 
 .gallery-item__thumbnail {
@@ -71,6 +86,8 @@ $gallery-item-label-height: 40px;
   border-top-left-radius: $border-radius-sm;
   border-top-right-radius: $border-radius-sm;
   background-size: cover;
+  display: grid;
+  grid-template-columns: 50% 50%;
 }
 
 .gallery-item__thumbnail--error {
@@ -233,11 +250,9 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item--overlay {
+  grid-column: 1 / span 2;
+  grid-row: 1;
   background: rgba(darken($body-color, 10%), .5);
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
   opacity: 0;
   display: none;
   transition-property: opacity, background;
@@ -303,7 +318,6 @@ $gallery-item-label-height: 40px;
   background: $white url("../../images/icon_file.png") center center no-repeat;
 }
 
-
 // Individual progress bar
 .gallery-item__upload-progress {
   height: 18px;
@@ -327,31 +341,53 @@ $gallery-item-label-height: 40px;
   width: 0%;
 }
 
+.gallery-item__status-flags {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.gallery-item__status-icons {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 8px 8px 0 auto;
+  // need to text-align right for IE11
+  text-align: right;
+
+  .file-status-icon {
+    cursor: pointer;
+  }
+
+  .file-status-icon + .file-status-icon {
+    margin-top: 6px;
+  }
+}
+
 .gallery-item--draft,
 .gallery-item--modified {
-  position: absolute;
-  top: $spacer-xs;
-  left: $spacer-xs;
   display: block;
   width: 8px;
   height: 8px;
-  border: 1px solid $state-draft;
   box-shadow: 0 0 1px .5px $white;
   border-radius: 100%;
   z-index: 1;
+  margin: 5px 0 0 5px;
 
   &:hover::after {
-    top: -4px;
     font-size: $font-size-xxs;
     font-weight: 200;
     position: absolute;
+    top: 0;
+    left: 0;
     color: $white;
-    margin-left: $spacer-sm;
+    margin: 4px 0 0 18px;
   }
 }
 
 .gallery-item--draft {
   background-color: $state-draft;
+  border: 1px solid $state-draft;
 
   &:hover::after {
     content: "DRAFT";
@@ -359,7 +395,8 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item--modified {
-  background-color: $state-draft-bg;
+  background-color: $state-modified-bg;
+  border: 1px solid $state-modified;
 
   &:hover::after {
     content: "MODIFIED";
