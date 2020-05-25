@@ -21,6 +21,7 @@ use SilverStripe\Versioned\Versioned;
 
 class FileFormFactory extends AssetFormFactory
 {
+
     /**
      * History tab/form to be shown to the user or not
      *
@@ -338,10 +339,34 @@ class FileFormFactory extends AssetFormFactory
      */
     protected function getStatusFlagMarkup($record)
     {
-        if ($record && ($statusTitle = $record->getStatusTitle())) {
-            return "<span class=\"editor__status-flag\">{$statusTitle}</span>";
+        if (is_null($record)) {
+            return null;
         }
-        return null;
+
+        $html = '';
+        $hasRestrictedAccess = $record->hasRestrictedAccess();
+
+        if ($hasRestrictedAccess) {
+            $title = _t('SilverStripe\\Admin\\FileStatusIcon.ACCESS_RESTRICTED', 'Restricted access');
+            $html .= $this->buildFileStatusIcon($title, 'font-icon-user-lock');
+        }
+
+        if ($record->isTrackedFormUpload()) {
+            $title = $hasRestrictedAccess
+                ? _t('SilverStripe\\Admin\\FileStatusIcon.TRACKED_FORM_UPLOAD_RESTRICTED', 'Form submission')
+                : _t(
+                    'SilverStripe\\Admin\\FileStatusIcon.TRACKED_FORM_UPLOAD_UNRESTRICTED',
+                    'Form submission, unrestricted access'
+                );
+            $fontClass = $hasRestrictedAccess ? 'font-icon-address-card' : 'font-icon-address-card-warning';
+            $html .= $this->buildFileStatusIcon($title, $fontClass);
+        }
+
+        if ($statusTitle = $record->getStatusTitle()) {
+            $html .= sprintf('<span class="editor__status-flag">%s</span>', $statusTitle);
+        }
+
+        return $html;
     }
 
     /**

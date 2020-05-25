@@ -88,9 +88,11 @@ const EditorHeader = ({ onCancel, onDetails, showButton, children }) => {
         </Button>
       }
         {showCancel &&
-        <Button icon="cancel" className={cancelClassName} noText onClick={cancelHandler} >
-          {i18n._t('AssetAdmin.CANCEL')}
-        </Button>
+        <div>
+          <Button icon="cancel" className={cancelClassName} noText onClick={cancelHandler} >
+            {i18n._t('AssetAdmin.CANCEL')}
+          </Button>
+        </div>
       }
       </div>
   );

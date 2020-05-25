@@ -11,7 +11,7 @@ import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import * as displaySearchActions from 'state/displaySearch/DisplaySearchActions';
 import Editor from 'containers/Editor/Editor';
 import Gallery from 'containers/Gallery/Gallery';
-import Breadcrumb from './AssetAdminBreadcrumb';
+import AssetAdminBreadcrumb from './AssetAdminBreadcrumb';
 import Toolbar from 'components/Toolbar/Toolbar';
 import { withApollo } from 'react-apollo';
 import Search, { hasFilters } from 'components/Search/Search';
@@ -191,7 +191,7 @@ class AssetAdmin extends Component {
    * @param {Object} endpointConfig
    * @param {Boolean} includeToken
    * @returns {Function}
-     */
+   */
   createEndpoint(endpointConfig, includeToken = true) {
     return backend.createEndpointFetcher(Object.assign(
       {},
@@ -686,7 +686,7 @@ class AssetAdmin extends Component {
           showBackButton={showBackButton}
           onBackButtonClick={this.handleBackButtonClick}
         >
-          <Breadcrumb {...breadcrumbProps} />
+          <AssetAdminBreadcrumb {...breadcrumbProps} />
           <div className="asset-admin__toolbar-extra pull-xs-right fill-width vertical-align-items">
             <SearchToggle toggled={showSearch} onToggle={onSearchToggle} />
             {toolbarChildren}

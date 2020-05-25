@@ -84,6 +84,12 @@ $uploadfield-item-label-height: 40px;
 .uploadfield-item__meta {
   font-size: $font-size-xs;
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+
+  .file-status-icon {
+    margin-left: 6px;
+  }
 }
 
 .uploadfield-item__specs {
@@ -165,8 +171,7 @@ $uploadfield-item-label-height: 40px;
 }
 
 .uploadfield-item__status {
-  margin: 0 $spacer/2;
+  margin: 0 0 0 $spacer/2;
   color: $state-draft;
-  background-color: $state-draft-bg;
   text-transform: uppercase;
 }

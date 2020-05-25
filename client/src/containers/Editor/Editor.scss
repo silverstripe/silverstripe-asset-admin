@@ -48,11 +48,39 @@
 .editor__heading {
   font-size: $h2-font-size;
   line-height: 2rem;
-  margin-right: $spacer * 2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 2px;
+}
+
+.editor-header__field {
+
+  .file-status-icon {
+    margin-left: 6px;
+
+    &:last-of-type {
+      margin-right: 6px;
+    }
+  }
+
+  // This removes the left margin off the draft/modified badge
+  .file-status-icon + .editor__status-flag {
+    margin-left: 0;
+  }
+
+  .field-group-component__small-holder.editor-header-folder {
+    width: 100%;
+    display: flex;
+
+    .field {
+      max-width: calc(100% - 30px);
+    }
+
+    .file-status-icon {
+      margin-top: 5px;
+    }
+  }
 }
 
 .editor__status-flag {
@@ -70,6 +98,8 @@
 .editor__specs {
   color: $text-muted;
   font-size: $font-size-xxs;
+  display: flex;
+  align-items: center;
 }
 
 .editor__top-message {
@@ -149,8 +179,9 @@
   .editor__heading,
   .editor__specs {
     text-align: center;
-    margin-right: $spacer * 1.5;
-    margin-left: $spacer * 1.5;
+    margin-right: 36px;
+    display: flex;
+    justify-content: center;
   }
 }
 

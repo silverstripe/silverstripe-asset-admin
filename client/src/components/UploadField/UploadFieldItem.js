@@ -4,6 +4,7 @@ import CONSTANTS from 'constants';
 import fileShape from 'lib/fileShape';
 import { fileSize } from 'lib/DataFormat';
 import PropTypes from 'prop-types';
+import FileStatusIcon from 'components/FileStatusIcon/FileStatusIcon';
 
 class UploadFieldItem extends Component {
   constructor(props) {
@@ -315,28 +316,59 @@ class UploadFieldItem extends Component {
   }
 
   /**
+   * @param {Object} item
+   * @returns {*}
+   */
+  renderRestrictedAccess(item) {
+    const { id, hasRestrictedAccess } = item;
+    const attrs = {
+      fileID: id,
+      placement: 'top',
+      hasRestrictedAccess
+    };
+    return <FileStatusIcon {...attrs} />;
+  }
+
+  /**
+   * @param {Object} item
+   * @returns {*}
+   */
+  renderTrackedFormUpload(item) {
+    const { id, isTrackedFormUpload, hasRestrictedAccess } = item;
+    const attrs = {
+      fileID: id,
+      placement: 'top',
+      isTrackedFormUpload,
+      hasRestrictedAccess
+    };
+    return <FileStatusIcon {...attrs} />;
+  }
+
+  /**
    * Get file title / metadata block
    *
    * @returns {object}
    */
   renderFileDetails() {
+    const item = this.props.item;
     let size = '';
-    if (this.props.item.size) {
-      size = `, ${fileSize(this.props.item.size)}`;
+    if (item.size) {
+      size = `, ${fileSize(item.size)}`;
     }
-
     return (
       <div className="uploadfield-item__details fill-height flexbox-area-grow">
         <div className="fill-width">
           <span className="uploadfield-item__title flexbox-area-grow">
-            {this.props.item.title}
+            {item.title}
           </span>
         </div>
         <div className="fill-width uploadfield-item__meta">
           <span className="uploadfield-item__specs">
-            {this.props.item.extension}{size}
+            {item.extension}{size}
           </span>
           {this.renderStatus()}
+          {item.hasRestrictedAccess && this.renderRestrictedAccess(item)}
+          {item.isTrackedFormUpload && this.renderTrackedFormUpload(item)}
         </div>
       </div>
     );

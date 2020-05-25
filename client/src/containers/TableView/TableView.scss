@@ -94,6 +94,22 @@
   cursor: pointer;
 }
 
+.gallery__table-column--title {
+
+  .flexbox-area-grow {
+    display: flex;
+  }
+
+  .file-status-icon {
+    cursor: pointer;
+    margin-left: 6px;
+
+    &:last-of-type {
+      margin-right: 6px;
+    }
+  }
+}
+
 .gallery__table-column--select {
   width: 1%;
 

@@ -1154,6 +1154,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'published' => ($file->hasMethod('isPublished')) ? $file->isPublished() : true,
             'modified' => ($file->hasMethod('isModifiedOnDraft')) ? $file->isModifiedOnDraft() : false,
             'draft' => ($file->hasMethod('isOnDraftOnly')) ? $file->isOnDraftOnly() : false,
+            'hasRestrictedAccess' => $file->hasRestrictedAccess(),
+            'isTrackedFormUpload' => $file->isTrackedFormUpload(),
+            'visibility' => $file->getVisibility()
         );
 
         /** @var Folder $parent */

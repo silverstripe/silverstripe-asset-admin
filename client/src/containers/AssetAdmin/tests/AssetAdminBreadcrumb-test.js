@@ -69,12 +69,12 @@ describe('AssetAdmin Breadcrumb', () => {
     expect(crumbs[2]).toHaveProperty('href', '2');
     expect(crumbs[3]).toHaveProperty('text', 'Three');
     expect(crumbs[3]).toHaveProperty('href', '3');
-    expect(crumbs[3]).toHaveProperty('icon.className', 'icon font-icon-edit-list');
+    expect(crumbs[3].icons[0]).toHaveProperty('className', 'icon font-icon-edit-list');
 
     crumbs[3].onClick(new Event('onClick'));
     expect(onBrowse).toHaveBeenCalledWith(3);
 
-    crumbs[3].icon.onClick(new Event('onClick'));
+    crumbs[3].icons[0].onClick(new Event('onClick'));
     expect(onFolderIcon).toHaveBeenCalledWith();
   });
 
@@ -107,7 +107,7 @@ describe('AssetAdmin Breadcrumb', () => {
 
     expect(crumbs[1]).toHaveProperty('text', 'Search results');
     expect(crumbs[1]).not.toHaveProperty('href');
-    expect(crumbs[1]).not.toHaveProperty('icon');
+    expect(crumbs[1]).not.toHaveProperty('icons');
     expect(crumbs[1]).not.toHaveProperty('onClick');
 
     crumbs[0].onClick(new Event('onClick'));
