@@ -34,7 +34,7 @@ de:
     ErrorItemPermissionDenied: 'Sie haben nicht die nötigen Berechtigungen, {ObjectTitle} zu bearbeiten'
     ErrorNotFound: 'Diser {Type} konnte nicht gefunden werden'
     FILE_NOT_FOUND: 'Datei nicht gefunden'
-    Filetype: 'Dateityp'
+    Filetype: Dateityp
     INVALID_REQUEST: 'Ungültige Anfrage'
     ImageHeight: Höhe
     ImageSpecs: Abmessungen
@@ -50,6 +50,7 @@ de:
     Placement: Platzierung
     SAVEDFILE: 'Datei gespeichert'
     TitleTooltip: 'Titel Text (Tooltip)'
+    TitleTooltipTip: 'Falls benötigt, wird eine längere Erklärung beim Hover angezeigt.'
     UNKNOWN: Unbekannt
     UNPUBLISH_BUTTON: Unveröffentlicht
     UPLOADEDFILE: 'Datei hochgeladen'
@@ -61,23 +62,22 @@ de:
     ACCESSHEADER: 'Wer kann die Datei betrachten?'
     ANYONE: Jeder
     EDITHEADER: 'Wer kann die Datei bearbeiten?'
-    EDITORGROUPS: 'Bearbeitergruppen'
+    EDITORGROUPS: Bearbeitergruppen
     FILENAME: Dateiname
     FOLDERLOCATION: Ort
     INHERIT: 'Von übergeordnetem Ordner übernehmen'
     LOGGED_IN: 'Eingeloggte Benutzer'
     ONLY_GROUPS: 'Nur diese Gruppen (bitte auswählen)'
-    ROOTNAME: '(Hauptebene)'
+    ROOTNAME: (Hauptebene)
     SAVE: Speichern
-    VIEWERGROUPS: 'Betrachtergruppen'
+    VIEWERGROUPS: Betrachtergruppen
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    DOWNLOAD_FILE: 'Datei herunterladen'
     INSERT_FILE: Einfügen
     INSERT_LINK: 'Link zur Datei'
     LINKDESCR: 'Beschreibung des Links'
     LINKOPENNEWWIN: 'In neuem Fenster oder Reiter öffnen'
-    LINKOPTIONS: 'Linkoptionen'
-    LINKTEXT: 'Linktext'
+    LINKOPTIONS: Linkoptionen
+    LINKTEXT: Linktext
     OTHER_ACTIONS: 'Andere Aktionen'
     REPLACE_FILE: 'Datei ersetzen'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dieser Dateityp kann nur als Link eingefügt werden. Sie können den Link nach dem Einfügen bearbeiten.</p>'
@@ -88,7 +88,7 @@ de:
   SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
     CREATE: Erstellen
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
-    FOLDERNAME: 'Ordnername'
+    FOLDERNAME: Ordnername
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Medien hinzufügen'
     Cancel: Abbrechen

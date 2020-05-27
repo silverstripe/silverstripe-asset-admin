@@ -8,6 +8,10 @@ en:
   MoveFormFactory:
     php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Choose a folder'
     php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Move
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Restricted access'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Form submission'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Form submission, unrestricted access'
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Delete folders'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
@@ -31,7 +35,6 @@ en:
     CreatePermissionDenied: 'You do not have permission to add files'
     CurrentFolderOnly: 'Limit to current folder and its sub-folders?'
     DELETE_BUTTON: Delete
-    EditLink: 'Edit original file'
     ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
     ErrorNotFound: 'That {Type} couldn''t be found'
     FILE_NOT_FOUND: 'File not found'
