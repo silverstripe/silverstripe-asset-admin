@@ -1,14 +1,117 @@
 sl:
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Shrani
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Shranjeno
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Objavi
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Objavljeno
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Izberite mapo'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Premakni
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Izbriši mape'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Dodaj v kampanjo'
+    Alignment: Poravnava
+    AlignmentCenter: 'Na sredino'
+    AlignmentLeft: 'Levo s prelomom'
+    AlignmentLeftAlone: Levo
+    AlignmentRight: 'Desno s prelomom'
+    AlignmentRightAlone: Desno
+    AltText: 'Nadomestno besedilo (alt)'
+    AltTextTip: 'Opis za obiskovalce, ki ne morejo videti slike (uporabljajo bralnike zaslona ali sisteme za blokiranje prikaza slik). Priporočamo, da opise vnesete za slike, ki imajo pomembno sporočilno vrednost.'
+    AppCategoryArchive: Arhiviraj
+    AppCategoryAudio: Avdio
+    AppCategoryDocument: Dokument
+    AppCategoryImage: Slika
+    AppCategoryVideo: Video
+    AttributesDescription: 'Spremembe bodo vplivale samo na to specifično umestitev datoteke.'
+    CREATED: 'Prvič preneseno'
+    Caption: 'Naslov slike'
+    CreatePermissionDenied: 'Nimate pravic za dodajanje datotek'
+    CurrentFolderOnly: 'Ali omejimo na trenutno mapo in podrejene mape?'
+    DELETE_BUTTON: Izbriši
+    EditLink: 'Uredi izvorno datoteko'
+    ErrorItemPermissionDenied: 'Nimate pravic za spreminjanje {ObjectTitle}'
+    ErrorNotFound: 'Tip {Type} ne obstaja'
+    FILE_NOT_FOUND: 'Ni datoteke'
+    Filetype: 'Tip datoteke'
+    INVALID_REQUEST: 'Neveljaven zahtevek'
+    ImageHeight: Višina
+    ImageSpecs: Dimenzije
+    ImageWidth: Širina
+    LASTEDIT: 'Nazadnje spremenjeno'
+    LoadIntoFileFailed: 'Neuspešen prenos datoteke'
     MENUTITLE: Datoteke
-    BACKLINKCOUNT: 'Uporabljeno na:'
-    PAGES: Stran/Strani
-    SIZE: 'Velikost datoteke'
-    TYPE: Tip
-    URL: URL
+    NOSUMMARY: 'Povzetek ni na voljo'
+    NewFile: 'Dodaj {file}'
+    PATH: Pot
+    PUBLISHED: Objavljeno
+    PUBLISH_BUTTON: Objavi
+    Placement: Umestitev
+    SAVEDFILE: 'Datoteka shranjena'
+    TitleTooltip: 'Besedilo za oznako ''TITLE'' (namig)'
+    TitleTooltipTip: 'Ponudi podrobnejšo razlago, če je potrebno. Razlaga se izpiše ob prehodu z miško nad besedilom.'
+    UNKNOWN: Neznano
+    UNPUBLISH_BUTTON: 'Umakni iz objave'
+    UPLOADEDFILE: 'Datoteka prenesena'
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
+    MOVEDFOLDER: 'Datoteka premaknjena'
+    RENAMEDFILE: 'Datoteka zamenjana'
+    RENAMEDTITLE: 'Naslov smo nadomestili z '
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Kdo lahko dostopa do te datoteke?'
+    ANYONE: Kdorkoli
+    EDITHEADER: 'Kdo lahko ureja to datoteko?'
+    EDITORGROUPS: 'Skupine urednikov'
+    FILENAME: 'Ime datoteke'
+    FOLDERLOCATION: Lokacija
+    INHERIT: 'Privzemi od nadrejene mape'
+    LOGGED_IN: 'Prijavljeni uporabniki'
+    ONLY_GROUPS: 'Samo naslednje skupine (izberite s seznama)'
+    ROOTNAME: '(Prvi nivo)'
+    SAVE: Shrani
+    VIEWERGROUPS: 'Skupine ogledovalcev'
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    DOWNLOAD_FILE: 'Prenesi datoteko'
+    INSERT_FILE: 'Vstavi datoteko'
+    INSERT_LINK: 'Vstavi povezavo do datoteke'
+    LINKDESCR: 'Opis povezave'
+    LINKOPENNEWWIN: 'Odpri v novem zavihku'
+    LINKOPTIONS: 'Dodatne nastavitve'
+    LINKTEXT: 'Besedilo v povezavi'
+    OTHER_ACTIONS: 'Drugi postopki'
+    REPLACE_FILE: 'Menjaj datoteko'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ta tip datoteke lahko vstavite samo v kot povezavo. Povezavo lahko naknadno tudi uredite.</p>'
+    USAGE: 'Uporabljena na'
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Objavljeno
+    SAVED: Shranjeno
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Ustvari
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Ime mape'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Dodaj datoteke'
+    Cancel: Prekliči
+    ERROR_ABSOLUTE: 'Vgradite lahko samo popolne naslove URL'
+    ERROR_EMBED: 'Na tem naslovu URL ni večpredstavnostnih elementov, ki bi jih bilo mogoče vgraditi'
+    ERROR_HOSTNAME: 'Ne morete uporabiti tega imena gostitelja'
+    ERROR_PORT: 'Ne morete uporabiti teh vrat'
+    ERROR_SCHEME: 'Ne morete uporabiti te datotečne sheme'
+    InsertMedia: 'Vstavi datoteko'
+    UrlDescription: 'Vgradite sliko, video Youtube ali Vimeo in druge večpredstavnostne elemente neposredno s spleta'
   SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Dimenzije
-    EDIT: Uredi
-    EDITINFO: 'Uredi datoteko'
-    FIELDNOTSET: 'Pred uvozom počisti bazo podatkov'
-    REMOVE: Odstrani
+    ErrorMaxFilesReached:
+      one: 'Prenesete lahko le {count} datoteko.'
+      two: 'Prenesete lahko le {count} datoteki.'
+      few: 'Prenesete lahko le {count} datotek.'
+      other: 'Prenesete lahko le {count} datotek.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Mapa ali datoteka ne obstaja'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'Datoteka "{file}" se uporablja na {count} koncu.'
+      two: 'Datoteka "{file}" se uporablja na {count} koncih.'
+      few: 'Datoteka "{file}" se uporablja na {count} koncih.'
+      other: 'Datoteka "{file}" se uporablja na {count} koncih.'
