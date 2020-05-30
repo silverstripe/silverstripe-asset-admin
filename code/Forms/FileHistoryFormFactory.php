@@ -25,19 +25,16 @@ class FileHistoryFormFactory extends FileFormFactory
         if (!$record || !$record->isInDB()) {
             return null;
         }
-        /**
-         * Can remove .label and .label-info when Bootstrap has been updated to BS4 Beta
-         * .label is being replaced with .tag
-         */
+
         $versionTag = sprintf(
-            '<span class="label label-info tag tag-info">v.%s</span>',
+            '<span class="badge badge-info">v.%s</span>',
             $record->Version
         );
         $agoTag = sprintf(
             '%s <time class="relative-time" title="%s">%s</time>',
             $record->WasPublished
-                ? _t('SilverStripe\\AssetAdmin\\Forms\\FileHistoryFormFactory.PUBLISHED', 'Published')
-                : _t('SilverStripe\\AssetAdmin\\Forms\\FileHistoryFormFactory.SAVED', 'Saved'),
+                ? _t(__CLASS__ . '.PUBLISHED', 'Published')
+                : _t(__CLASS__ . '.SAVED', 'Saved'),
             Convert::raw2att($record->LastEdited),
             Convert::raw2xml($record->dbObject('LastEdited')->Ago())
         );
