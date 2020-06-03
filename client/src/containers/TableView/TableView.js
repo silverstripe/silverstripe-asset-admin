@@ -1,3 +1,4 @@
+/* global moment */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Griddle from 'griddle-react';
@@ -382,8 +383,9 @@ class TableView extends Component {
     if (props.rowData.type === 'folder') {
       return null;
     }
-    // TODO format this properly with something like moment.js
-    return <span>{props.data}</span>;
+
+    moment.locale(i18n.detectLocale());
+    return <span>{ moment(props.data).format('L LT') }</span>;
   }
 
   /**
