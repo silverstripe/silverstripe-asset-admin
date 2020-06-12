@@ -9721,10 +9721,10 @@ react-router@^4.4.0-beta.8:
     tiny-invariant "^1.0.2"
     tiny-warning "^1.0.0"
 
-react-selectable@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/react-selectable/-/react-selectable-2.0.2.tgz#e6cceebefb00c6c2512c289f8bc4f76269219ff8"
-  integrity sha512-ALRYd33UOZBlDU/1rez4WwKo7mf2yBngy0pXg6LoE9Df5oGjkyfQ774LbF+f5prIHC5lzPqPunOUR673cwSHkg==
+react-selectable@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-selectable/-/react-selectable-2.1.1.tgz#21272e613929991e248570cc98a9266aa10eeecb"
+  integrity sha512-5W7WrC+TCchIwE8wDQhV5F1iJXNZJN09RsIa7kgl8P8tcG7UOYSkK6M3Jundec90mB7iN+KOLeLivSRdf9WrxQ==
 
 react-split-pane@^0.1.77:
   version "0.1.87"

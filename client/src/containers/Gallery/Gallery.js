@@ -49,6 +49,7 @@ class Gallery extends Component {
     this.handleBulkUnpublish = this.handleBulkUnpublish.bind(this);
     this.handleBulkMove = this.handleBulkMove.bind(this);
     this.handleBulkInsert = this.handleBulkInsert.bind(this);
+    this.handleBeginSelection = this.handleBeginSelection.bind(this);
     this.handleGroupSelect = this.handleGroupSelect.bind(this);
     this.handleClearSelection = this.handleClearSelection.bind(this);
     this.toggleSelectConcat = this.toggleSelectConcat.bind(this);
@@ -528,6 +529,28 @@ class Gallery extends Component {
   }
 
   /**
+   * Pick if the selection started from inside the pagination. If it started from inside the
+   * pagination, cancel it to prevent inteference with the normal pagination.
+   * @param Event e
+   * @returns {boolean}
+   */
+  handleBeginSelection(e) {
+    /** @type Node */
+    let node = e.target;
+    // Loop the nodes until we find the root of the pagination or the root of the selectable area
+    while (node) {
+      if (node.classList.contains('griddle-footer')) {
+        return false;
+      }
+      if (node.classList.contains('gallery__main--selectable')) {
+        break;
+      }
+      node = node.parentNode;
+    }
+    return true;
+  }
+
+  /**
    * Handles a user drilling down into a folder.
    *
    * @param {Event} event - Event object.
@@ -891,6 +914,7 @@ class Gallery extends Component {
             className="flexbox-area-grow fill-height gallery__main--selectable"
             onSelection={this.handleGroupSelect}
             onNonItemClick={this.handleClearSelection}
+            onBeginSelection={this.handleBeginSelection}
             preventDefault={false}
             fixedPosition
           >
