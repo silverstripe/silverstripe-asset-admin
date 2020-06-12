@@ -381,12 +381,12 @@ $gallery-item-label-height: 40px;
     top: 0;
     left: 0;
     color: $white;
-    margin: 4px 0 0 18px;
+    margin: 3px 0 0 18px;
   }
 }
 
 .gallery-item--draft {
-  background-color: $state-draft;
+  background-color: $state-draft-bg;
   border: 1px solid $state-draft;
 
   &:hover::after {
