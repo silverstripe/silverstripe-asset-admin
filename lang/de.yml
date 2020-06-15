@@ -30,7 +30,6 @@ de:
     CreatePermissionDenied: 'Sie haben keine Berechtigungen, Dateien hinzuzufügen'
     CurrentFolderOnly: 'Auf den aktuellen Ordner und die Unterordner beschränken?'
     DELETE_BUTTON: Löschen
-    EditLink: 'Originaldatei bearbeiten'
     ErrorItemPermissionDenied: 'Sie haben nicht die nötigen Berechtigungen, {ObjectTitle} zu bearbeiten'
     ErrorNotFound: 'Diser {Type} konnte nicht gefunden werden'
     FILE_NOT_FOUND: 'Datei nicht gefunden'

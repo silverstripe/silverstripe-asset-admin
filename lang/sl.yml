@@ -8,6 +8,10 @@ sl:
   MoveFormFactory:
     php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Izberite mapo'
     php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Premakni
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Dostop omejen'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Uporaba obrazca'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Uporaba obrazca, neomejen dostop'
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Izbriši mape'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
@@ -31,7 +35,6 @@ sl:
     CreatePermissionDenied: 'Nimate pravic za dodajanje datotek'
     CurrentFolderOnly: 'Ali omejimo na trenutno mapo in podrejene mape?'
     DELETE_BUTTON: Izbriši
-    EditLink: 'Uredi izvorno datoteko'
     ErrorItemPermissionDenied: 'Nimate pravic za spreminjanje {ObjectTitle}'
     ErrorNotFound: 'Tip {Type} ne obstaja'
     FILE_NOT_FOUND: 'Ni datoteke'

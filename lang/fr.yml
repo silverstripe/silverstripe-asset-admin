@@ -30,7 +30,6 @@ fr:
     CreatePermissionDenied: 'Vous n''avez pas l''autorisation d''ajouter des fichiers'
     CurrentFolderOnly: 'Limiter au dossier actuel et ses sous-dossiers ?'
     DELETE_BUTTON: Supprimer
-    EditLink: 'Modifier le fichier original'
     ErrorItemPermissionDenied: 'Vous n''avez pas les autorisations requises pour modifier {ObjectTitle}'
     ErrorNotFound: '{Type} introuvable'
     FILE_NOT_FOUND: 'Fichier introuvable'

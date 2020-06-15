@@ -8,6 +8,10 @@ nl:
   MoveFormFactory:
     php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Kies een map'
     php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Verplaats
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Toegang beperkt'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Formulier inzending'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Formulier inzending, onbeperkt toegang'
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Verwijder mappen'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
@@ -19,6 +23,7 @@ nl:
     AlignmentRight: Rechts
     AlignmentRightAlone: 'Rechts (zonder tekst ernaast)'
     AltText: 'Alternatieve tekst (alt)'
+    AltTextTip: 'Beschrijving voor bezoekers die de afbeelding niet kunnen zien (met schermlezers of afbeeldingsblokkers). Ook goed voor SEO van de pagina.'
     AppCategoryArchive: Archief
     AppCategoryAudio: Audio
     AppCategoryDocument: Document
@@ -30,7 +35,6 @@ nl:
     CreatePermissionDenied: 'U heeft geen rechten om bestanden toe te voegen'
     CurrentFolderOnly: 'Alleen toepassen op huidige map en de onderliggende mappen?'
     DELETE_BUTTON: Verwijderen
-    EditLink: 'Bewerk het bron-bestand'
     ErrorItemPermissionDenied: 'U heeft niet genoeg rechten om {ObjectTitle} aan te passen'
     ErrorNotFound: '{Type} niet gevonden'
     FILE_NOT_FOUND: 'Bestand niet gevonden'
@@ -50,6 +54,7 @@ nl:
     Placement: Plaatsing
     SAVEDFILE: 'Bestand opgeslagen'
     TitleTooltip: 'Titel (bij mouse over)'
+    TitleTooltipTip: 'Optioneel, geeft een betere toelichting van het beeld. Zichtbaar bij muis-over.'
     UNKNOWN: Onbekend
     UNPUBLISH_BUTTON: 'Publicatie intrekken'
     UPLOADEDFILE: 'Bestand opgeslagen'
@@ -71,6 +76,7 @@ nl:
     SAVE: Opslaan
     VIEWERGROUPS: 'Groepen met bekijkrechten'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    DOWNLOAD_FILE: 'Download bestand'
     INSERT_FILE: Invoegen
     INSERT_LINK: 'Link naar bestand'
     LINKDESCR: 'Link omschrijving'

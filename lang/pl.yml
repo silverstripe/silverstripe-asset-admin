@@ -30,7 +30,6 @@ pl:
     CreatePermissionDenied: 'Nie masz uprawnień do dodawania plików'
     CurrentFolderOnly: 'Ogranicz do bieżącego folderu i jego podfolderów?'
     DELETE_BUTTON: Usuń
-    EditLink: 'Edytuj oryginalny plik'
     ErrorItemPermissionDenied: 'Nie masz wymaganych uprawnień do modyfikowania {ObjectTitle}'
     ErrorNotFound: 'Ten {Type} nie został odnaleziony'
     FILE_NOT_FOUND: 'Nie znaleziono pliku'

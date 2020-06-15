@@ -26,7 +26,6 @@ hr:
     CreatePermissionDenied: 'Nemate prava za dodavanje datoteka'
     CurrentFolderOnly: 'Ograniči na trenutni direktorij i njegove pod-direktorije?'
     DELETE_BUTTON: Obriši
-    EditLink: 'Uredi originalnu datoteku'
     ErrorItemPermissionDenied: 'Nemate potrebna prava za izmjenu {ObjectTitle}'
     ErrorNotFound: 'Taj {Type} nemoguće pronaći'
     FILE_NOT_FOUND: 'Datoteka nije pronađena'
