@@ -11,5 +11,9 @@
       padding-left: 0;
     }
 
+    .btn:disabled {
+      text-decoration: none;
+      pointer-events: all;
+    }
   }
 }
