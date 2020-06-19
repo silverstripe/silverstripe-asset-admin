@@ -20,7 +20,6 @@ addons:
 
 env:
   global:
-    - DB=MYSQL
     - COMPOSER_ROOT_VERSION=1.x-dev
     - DISPLAY=":99"
     - XVFBARGS=":99 -ac -screen 0 1024x768x16"
@@ -30,21 +29,17 @@ env:
 matrix:
   include:
     - php: 7.1
-      env: PHPUNIT_TEST=1
-    - php: 7.2
-      env: BEHAT_TEST=1
-    - php: 7.3
-      env: PHPUNIT_TEST=1
-    - php: 7.4
-      env: PHPUNIT_TEST=1
+      env: DB=MYSQL RECIPE_VERSION=4.x-dev PHPUNIT_TEST=1 PHPCS_TEST=1
     - php: 7.1
-      env: NPM_TEST=1
+      env: DB=MYSQL RECIPE_VERSION=4.x-dev NPM_TEST=1
     - php: 7.2
-      env: PHPCS_TEST=1
+      env: DB=PGSQL RECIPE_VERSION=4.x-dev PHPUNIT_TEST=1
+    - php: 7.2
+      env: DB=MYSQL RECIPE_VERSION=4.x-dev BEHAT_TEST=1
     - php: 7.3
-      env:
-        - DB=PGSQL
-        - PHPUNIT_TEST=1
+      env: DB=MYSQL RECIPE_VERSION=4.x-dev PHPUNIT_TEST=1
+    - php: 7.4
+      env: DB=MYSQL RECIPE_VERSION=4.x-dev PHPUNIT_TEST=1
 
 before_script:
 # Extra $PATH
@@ -58,8 +53,10 @@ before_script:
 
 # Install composer
   - composer validate
-  - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:2.x-dev --prefer-dist; fi
-  - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms:4.x-dev silverstripe/frameworktest:0.1.0 --no-update --prefer-dist
+  - composer require silverstripe/recipe-cms:$RECIPE_VERSION silverstripe/recipe-testing:^1 silverstripe/frameworktest:0.1.0 --no-update --prefer-dist
+  # Fix for running phpunit 5 on php 7.4+
+  - composer require --no-update sminnee/phpunit-mock-objects:^3
+  - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:^2 --prefer-dist; fi
   - composer update
 
 # Remove preinstalled Chrome (google-chrome)
