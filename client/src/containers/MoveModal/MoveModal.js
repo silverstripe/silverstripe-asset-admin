@@ -6,10 +6,9 @@ import CONSTANTS from 'constants/index';
 import PropTypes from 'prop-types';
 import {
   deactivateModal,
-  setNoticeMessage,
-  setErrorMessage,
   setFileBadge,
 } from 'state/gallery/GalleryActions';
+import { display as displayToast } from 'state/toasts/ToastsActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import configShape from 'lib/configShape';
 import moveFilesMutation from 'state/files/moveFilesMutation';
@@ -32,24 +31,18 @@ class MoveModal extends React.Component {
 
         setBadge(id, `${selectedFiles.length}`, 'success', CONSTANTS.MOVE_SUCCESS_DURATION);
 
-        const goToFolder = (e) => {
-          e.preventDefault();
-          this.props.onOpenFolder(id);
-          setNotice(null);
-        };
-
-        setNotice({
-          react: (
-            <span>
-              {i18n.sprintf(
-                i18n._t('AssetAdmin.MOVED_ITEMS_TO', 'Moved %s item(s) to ')
-                , selectedFiles.length
-              )}
-              <a href="#" onClick={goToFolder}>{filename}</a>
-            </span>
+        setNotice(
+          i18n.sprintf(
+            i18n._t('AssetAdmin.MOVED_ITEMS_TO', 'Moved %s item(s) to %s'),
+            selectedFiles.length,
+            filename
           ),
-        });
-        this.timeout = setTimeout(() => setNotice(null), CONSTANTS.MOVE_SUCCESS_DURATION);
+          [{
+            label: i18n._t('AssetAdmin.GO_TO_FOLDER', 'Go to folder'),
+            onClick: () => this.props.onOpenFolder(id)
+          }]
+        );
+
         onClosed();
       })
       .catch(() => {
@@ -113,11 +106,11 @@ function mapDispatchToProps(dispatch) {
     onClosed() {
       dispatch(deactivateModal());
     },
-    setNotice(msg) {
-      dispatch(setNoticeMessage(msg));
+    setNotice(msg, actions = []) {
+      dispatch(displayToast({ text: msg, type: 'success', actions }));
     },
     setError(msg) {
-      dispatch(setErrorMessage(msg));
+      dispatch(displayToast({ text: msg, type: 'error' }));
     },
     setBadge(...params) {
       dispatch(setFileBadge(...params));

@@ -7,6 +7,7 @@ import backend from 'lib/Backend';
 import i18n from 'i18n';
 import classnames from 'classnames';
 import * as galleryActions from 'state/gallery/GalleryActions';
+import * as toastsActions from 'state/toasts/ToastsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import * as displaySearchActions from 'state/displaySearch/DisplaySearchActions';
 import Editor from 'containers/Editor/Editor';
@@ -357,7 +358,7 @@ class AssetAdmin extends Component {
       .then((resultItems) => {
         const successes = resultItems.filter((result) => result).length;
         if (successes !== ids.length) {
-          this.props.actions.gallery.setErrorMessage(
+          this.props.actions.toasts.error(
             i18n.sprintf(
               i18n._t(
                 'AssetAdmin.BULK_ACTIONS_DELETE_FAIL',
@@ -367,15 +368,13 @@ class AssetAdmin extends Component {
               ids.length - successes
             )
           );
-          this.props.actions.gallery.setNoticeMessage(null);
         } else {
-          this.props.actions.gallery.setNoticeMessage(
+          this.props.actions.toasts.success(
             i18n.sprintf(
               i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS', '%s folders/files were successfully deleted.'),
               successes
             )
           );
-          this.props.actions.gallery.setErrorMessage(null);
           this.props.actions.gallery.deselectFiles();
         }
 
@@ -796,6 +795,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       gallery: bindActionCreators(galleryActions, dispatch),
+      toasts: bindActionCreators(toastsActions, dispatch),
       displaySearch: bindActionCreators(displaySearchActions, dispatch),
       // TODO Refactor "queued files" into separate visual area and remove coupling here
       queuedFiles: bindActionCreators(queuedFilesActions, dispatch),
