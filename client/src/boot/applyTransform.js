@@ -1,16 +1,8 @@
 import Injector from 'lib/Injector';
-import insertAssetModal from 'transforms/AssetAdmin/insertAssetModal';
 import ownerAwareUnpublish from 'transforms/FormAction/ownerAwareUnpublish';
 import moveTreeDropdownField from 'transforms/TreeDropdownField/moveTreeDropdownField';
 
 const applyTransform = () => {
-  Injector.transform(
-    'insert-media-modal',
-    (updater) => {
-      updater.form.alterSchema('AssetAdmin.EditForm.fileInsertForm', insertAssetModal);
-    }
-  );
-
   Injector.transform(
     'move-form-disabled',
     (updater) => {

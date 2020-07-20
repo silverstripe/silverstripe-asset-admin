@@ -626,7 +626,15 @@ class AssetAdmin extends Component {
    * @returns {object}
    */
   renderEditor() {
-    const { sectionConfig: config, viewAction, type, fileId, dialog, requireLinkText } = this.props;
+    const {
+      sectionConfig: config,
+      viewAction,
+      type,
+      fileId,
+      dialog,
+      requireLinkText,
+      fileSelected
+    } = this.props;
     const { schemaUrl, targetId } = getFormSchema({
       config,
       viewAction,
@@ -639,11 +647,20 @@ class AssetAdmin extends Component {
       return null;
     }
 
+    const schemaUrlQueries = [];
+    if (requireLinkText) {
+      schemaUrlQueries.push({ name: 'requireLinkText', value: true });
+    }
+
+    if (fileSelected) {
+      schemaUrlQueries.push({ name: 'fileSelected', value: true });
+    }
+
     const editorProps = {
       dialog,
       targetId,
       schemaUrl,
-      schemaUrlQueries: requireLinkText ? [{ name: 'requireLinkText', value: true }] : [],
+      schemaUrlQueries,
       file: this.findFile(targetId),
       onClose: this.handleCloseFile,
       onSubmit: this.handleSubmitEditor,
@@ -745,6 +762,7 @@ AssetAdmin.propTypes = {
   loading: PropTypes.bool,
   actions: PropTypes.object,
   maxFiles: PropTypes.number,
+  fileSelected: PropTypes.bool
 };
 
 AssetAdmin.defaultProps = {

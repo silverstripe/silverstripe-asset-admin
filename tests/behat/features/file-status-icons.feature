@@ -1,4 +1,4 @@
-@javascript @assets @retry @sboyd
+@javascript @assets @retry
 Feature: Manage file permissions
   As a cms author
   I want to see file status icons

@@ -191,6 +191,7 @@ jQuery.entwine('ss', ($) => {
       const handleHide = () => this.close();
       const handleInsert = (...args) => this._handleInsert(...args);
       const { url, ...attrs } = this.getOriginalAttributes();
+      const fileSelected = attrs.hasOwnProperty('ID') && attrs.ID !== null;
       const folderId = this.getFolderId();
       const selection = tinymce.activeEditor.selection;
       const selectionContent = selection.getContent() || '';
@@ -211,6 +212,7 @@ jQuery.entwine('ss', ($) => {
           className="insert-media-react__dialog-wrapper"
           requireLinkText={requireLinkText}
           fileAttributes={attrs}
+          fileSelected={fileSelected}
         />,
         this[0]
       );
