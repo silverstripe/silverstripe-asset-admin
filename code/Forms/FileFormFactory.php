@@ -270,13 +270,19 @@ class FileFormFactory extends AssetFormFactory
     protected function getFormActions(RequestHandler $controller = null, $formName, $context = [])
     {
         $record = $context['Record'];
+        $fileSelected = $context['FileSelected'] ?? false;
         $type = $this->getFormType($context);
 
         $actionItems = [];
         if ($type === static::TYPE_INSERT_MEDIA || $type === static::TYPE_SELECT) {
-            $actionItems = array_filter([
-                $this->getInsertAction($record),
-            ]);
+            $action = $this->getInsertAction($record);
+            if ($action) {
+                $actionLabel = $fileSelected
+                    ? _t('AssetAdmin.UPDATE_FILE', 'Update file')
+                    : _t('AssetAdmin.INSERT_FILE', 'Insert file');
+                $action->setTitle($actionLabel);
+                $actionItems[] = $action;
+            }
         } elseif ($type === static::TYPE_INSERT_LINK) {
             $actionItems = array_filter([
                 $this->getInsertLinkAction($record),
@@ -464,7 +470,7 @@ class FileFormFactory extends AssetFormFactory
         $action = null;
         if ($record && $record->isInDB() && $record->canView()) {
             /** @var FormAction $action */
-            $action = FormAction::create('insert', _t(__CLASS__ . '.INSERT_FILE', 'Insert'))
+            $action = FormAction::create('insert', 'Insert')
                 ->setIcon('plus-circled')
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }

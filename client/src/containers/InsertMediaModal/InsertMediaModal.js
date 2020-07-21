@@ -155,6 +155,7 @@ InsertMediaModal.propTypes = {
   className: PropTypes.string,
   actions: PropTypes.object,
   maxFiles: PropTypes.number,
+  fileSelected: PropTypes.bool
 };
 
 InsertMediaModal.defaultProps = {
@@ -162,7 +163,7 @@ InsertMediaModal.defaultProps = {
   fileAttributes: {},
   type: 'insert-media',
   folderId: 0,
-  maxFiles: 1,
+  maxFiles: 1
 };
 
 

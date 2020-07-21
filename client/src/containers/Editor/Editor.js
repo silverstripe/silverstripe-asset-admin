@@ -337,7 +337,7 @@ Editor.propTypes = {
   addToCampaignSchemaUrl: PropTypes.string,
   actions: PropTypes.object,
   showingSubForm: PropTypes.bool,
-  nextType: PropTypes.string
+  nextType: PropTypes.string,
 };
 
 function mapDispatchToProps(dispatch) {

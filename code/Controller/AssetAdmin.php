@@ -750,9 +750,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Pass to form factory
         $showLinkText = $this->getRequest()->getVar('requireLinkText');
+        $fileSelected = $this->getRequest()->getVar('fileSelected');
         $augmentedContext = array_merge(
             $context,
-            [ 'Record' => $file, 'RequireLinkText' => isset($showLinkText) ]
+            [ 'Record' => $file, 'RequireLinkText' => isset($showLinkText), 'FileSelected' => isset($fileSelected) ]
         );
         $scaffolder = $this->getFormFactory($file);
         $form = $scaffolder->getForm($this, $name, $augmentedContext);
