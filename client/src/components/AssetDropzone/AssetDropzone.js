@@ -413,6 +413,7 @@ class AssetDropzone extends Component {
       title: this.getFileTitle(file.name),
       extension: getFileExtension(file.name),
       type: file.type,
+      uploadedToFolderId: this.props.folderId,
     };
     // Add the file optimistically.
     this.props.onAddedFile(details);

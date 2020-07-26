@@ -76,20 +76,23 @@ class AssetAdmin extends Component {
     const {
       files,
       queuedFiles,
+      folderId
     } = this.props;
 
     const combinedFilesList = [
       // Exclude uploaded files that have been reloaded via graphql
       ...queuedFiles
         .items
-        .filter(item => !item.id || !files.find(file => file.id === item.id)),
+        .filter(item =>
+          (!item.id || !files.find(file => file.id === item.id)) &&
+          (!item.hasOwnProperty('uploadedToFolderId') || item.uploadedToFolderId === folderId)
+        ),
       ...files,
     ];
 
-    // Seperate folder and files then return an array with folders at the top (for table view)
+    // Separate folder and files then return an array with folders at the top (for table view)
     const foldersList = combinedFilesList.filter((file) => file.type === 'folder');
     const filesList = combinedFilesList.filter((file) => file.type !== 'folder');
-
     return foldersList.concat(filesList);
   }
 
