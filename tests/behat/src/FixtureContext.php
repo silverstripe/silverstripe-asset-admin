@@ -364,4 +364,62 @@ EOS
 
         $element->click();
     }
+
+    /**
+     * Selects the first image match in the HTML editor (tinymce)
+     *
+     * @When /^I select the image "([^"]+)" in the "([^"]+)" HTML field$/
+     * @param string $filename
+     * @param string $field
+     */
+    public function iSelectTheImageInHtmlField($filename, $field)
+    {
+        $inputField = $this->getHtmlField($field);
+        $inputFieldId = $inputField->getAttribute('id');
+        $filename = addcslashes($filename, "'");
+        $js = <<<JS
+var editor = jQuery('#$inputFieldId').entwine('ss').getEditor(),
+	doc = editor.getInstance().getDoc(),
+	sel = editor.getInstance().selection,
+	rng = document.createRange(),
+	matched = false;
+
+editor.getInstance().focus();
+jQuery(doc).find("img[src*='$filename']").each(function() {
+	if(!matched) {
+		rng.setStart(this, 0);
+		rng.setEnd(this, 0);
+		sel.setRng(rng);
+		editor.getInstance().nodeChanged();
+		matched = true;
+	}
+});
+JS;
+        $this->getMainContext()->getSession()->executeScript($js);
+    }
+
+    /**
+     * Locate an HTML editor field
+     *
+     * @param string $locator Raw html field identifier as passed from
+     * @return NodeElement
+     */
+    protected function getHtmlField($locator)
+    {
+        $locator = str_replace('\\"', '"', $locator);
+        $page = $this->getMainContext()->getSession()->getPage();
+        $element = $page->find('css', 'textarea.htmleditor[name=\'' . $locator . '\']');
+        if ($element) {
+            return $element;
+        }
+        $label = $page->findAll('xpath', sprintf('//label[contains(text(), \'%s\')]', $locator));
+        if (!empty($label)) {
+            assertCount(1, $label, "Found more than one element containing the phrase \"$locator\"");
+            $label = array_shift($label);
+            $fieldId = $label->getAttribute('for');
+            $element = $page->find('css', '#' . $fieldId);
+        }
+        assertNotNull($element, sprintf('HTML field "%s" not found', $locator));
+        return $element;
+    }
 }
