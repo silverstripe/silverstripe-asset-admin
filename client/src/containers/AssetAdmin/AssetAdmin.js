@@ -674,7 +674,9 @@ class AssetAdmin extends Component {
 
     const breadcrumbProps = {
       folder,
-      query,
+      query: (this.props.query && this.props.query.view) ? Object.assign({
+        view: this.props.query.view
+      }, query) : query,
       getUrl,
       onBrowse: this.handleBrowse,
       onFolderIcon: this.handleFolderIcon
