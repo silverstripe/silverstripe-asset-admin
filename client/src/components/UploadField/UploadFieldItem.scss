@@ -138,7 +138,8 @@ $uploadfield-item-label-height: 40px;
 
 .uploadfield-item__progress-bar {
   height: 100%;
-  background: $brand-primary;
+  background: $mid-blue;
+  transition: width $transition-speed-mid ease;
   width: 0%;
 }
 

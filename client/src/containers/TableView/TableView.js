@@ -111,6 +111,7 @@ class TableView extends Component {
       gridClassName: 'gallery__main-view--table',
       rowMetadata: {
         bodyCssClassName: this.getRowMetadata,
+        key: 'key'
       },
       sortAscendingComponent: '',
       sortDescendingComponent: '',

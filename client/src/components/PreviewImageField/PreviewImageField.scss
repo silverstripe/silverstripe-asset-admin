@@ -67,7 +67,8 @@
 
 .preview-image-field__progress-bar {
   height: 100%;
-  background: $brand-primary;
+  background: $mid-blue;
+  transition: width $transition-speed-mid ease;
   width: 0;
 }
 
