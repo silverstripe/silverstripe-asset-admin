@@ -160,9 +160,10 @@
 }
 
 .editor__thumbnail {
+  display: block;
   max-width: 100%;
   max-height: $cms-panel-md * .75;
-  min-height: 60px;
+  min-height: 80px;
   margin: auto;
   transform: scale(1);
   transition: all .5s;
