@@ -197,7 +197,8 @@ $gallery-list-thumb-height: 68px;
 // Individual progress bar
 .gallery__progress-bar-progress {
   height: 100%;
-  background: $brand-primary;
+  background: $mid-blue;
+  transition: width $transition-speed-mid ease;
   width: 0%;
 }
 

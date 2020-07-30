@@ -772,6 +772,7 @@ class Gallery extends Component {
       ...file,
       selected: this.itemIsSelected(file.id),
       highlighted: this.itemIsHighlighted(file.id),
+      key: file.queuedId ? `queueId${file.queuedId}` : `id${file.id}`
     }));
     const {
       type,
