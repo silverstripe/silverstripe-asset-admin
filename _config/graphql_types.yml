@@ -1,0 +1,158 @@
+---
+Name: asset-admin-graphql-types
+---
+SilverStripe\GraphQL\Schema\Schema:
+  schemas:
+    admin:
+      types:
+        FileFilterInput:
+          input: true
+          description: Input type for a File type
+          fields:
+            id: ID
+            anyChildId:
+              type: ID
+              description: Identifies this file by the id of any immediate child
+            parentId: ID
+            name:
+              type: String
+              description: Searches both name and title fields with a partial match
+            lastEditedFrom:
+              type: String
+              description: Date in ISO format (YYYY-mm-dd)
+            lastEditedTo:
+              type: String
+              description: Date in ISO format (YYYY-mm-dd)
+            appCategory: AppCategory
+            recursive:
+              type: Boolean
+              description: >
+                Find all descendants of "parentId" (not only direct children). Caution: Only works with
+                parentId=0 at the moment.
+          FileInput:
+            input: true
+            description: Input type for files and images
+            fields:
+              parentId: Int!
+              title: String
+              name: String
+          FolderInput:
+            input: true
+            description: Input type for folders
+            fields:
+              parentId: Int!
+              title: String
+              name: String
+          File:
+            description: Type for files and images
+            interfaces: [FileInterface]
+            fields:
+              id: Int!
+              created: String
+              lastEdited: String
+              owner: String
+              parentId: Int
+              title: String
+              exists: Boolean
+              type: String
+              category: String
+              name: String
+              filename: String
+              extension: String
+              size: Int
+              url: String
+              thumbnail: String
+              smallThumbnail: String
+              width: Int
+              height: Int
+              isTrackedFormUpload: Boolean
+              draft: Boolean
+              published: Boolean
+              modified: Boolean
+              inUseCount: Int
+              version: Int!
+          Folder:
+            description: Type for folders
+            fields:
+              id: ID!
+              created: String
+              lastEdited: String
+              owner: String
+              parentId: Int
+              title: String
+              type: String
+              category: String
+              exists: Boolean
+              name: String
+              filename: String
+              url: String
+              canView: Boolean
+              canEdit: Boolean
+              canDelete: Boolean
+              hasRestrictedAccess: Boolean
+              visibility: String
+              parents: '[FileInterface]'
+              filesInUseCount: Int
+              children:
+                type: '[FileInterface]'
+                plugins:
+                  dataobjectPaginator: true
+                  dataobjectQuerySort:
+                    fields:
+                      id: true
+                      title: true
+                      created: true
+                      lastEdited: true
+          FileUsage:
+            description: Describe the usage of a file or folder
+            fields:
+              id: ID!
+              inUseCount: Int
+          PublicationNotice:
+            description: Describes an error that occurred on a failed publication operation
+            fields:
+              type:
+                type: String!
+                description: The type of notice
+              message:
+                type: String
+                description: Relevant information pertaining to the error
+              ids:
+                type: '[ID]'
+                description: Relevant record IDs
+      interfaces:
+        FileInterface:
+          typeResolver:
+            - SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver
+            - resolveFileInterfaceType
+          description: Interface for files and folders
+          fields:
+            id: Int!
+            created: String
+            lastEdited: String
+            owner: String
+            parentId: Int
+            title: String
+            type: String
+            category: String
+            exists: Boolean
+            name: String
+            filename: String
+            url: String
+            canView: Boolean
+            canEdit: Boolean
+            canDelete: Boolean
+            hasRestrictedAccess: Boolean
+            visibility: String
+      unions:
+        PublicationResult:
+          types: [File, PublicationNotice]
+          typeResolver:
+            - SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver
+            - resolvePublicationResultUnion
+        FileResult:
+          types: [File, Folder]
+          typeResolver:
+            - SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver
+            - resolveFileInterfaceType
+
