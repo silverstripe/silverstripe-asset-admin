@@ -1,95 +1,33 @@
 <?php
 
+
 namespace SilverStripe\AssetAdmin\GraphQL;
 
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\EnumType;
+
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
-use SilverStripe\Control\HTTPResponse_Exception;
-use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\Assets\File;
-use SilverStripe\ORM\Filterable;
-use SilverStripe\ORM\ArrayList;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\Forms\DateField;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\Filterable;
 
-class FileFilterInputTypeCreator extends TypeCreator
+class FileFilter
 {
-
-    protected $inputObject = true;
-
-    public function attributes()
-    {
-        return [
-            'name' => 'FileFilterInput',
-            'description' => 'Input type for a File type',
-        ];
-    }
-
-    public function fields()
-    {
-        $categoryValues = array_map(function ($category) {
-            return ['value' => $category];
-        }, File::config()->app_categories);
-
-        // Sanitise GraphQL Enum aliases (some contain slashes)
-        foreach ($categoryValues as $key => $v) {
-            unset($categoryValues[$key]);
-            $newKey = strtoupper(preg_replace('/[^[[:alnum:]]]*/', '', $key));
-            $categoryValues[$newKey] = $v;
-        }
-
-        return [
-            'id' => [
-                'type' => Type::id(),
-            ],
-            'anyChildId' => [
-                'type' => Type::id(),
-                'description' => 'Identiies this file by the id of any immediate child'
-            ],
-            'parentId' => [
-                'type' => Type::id(),
-            ],
-            'name' => [
-                'type' => Type::string(),
-                'description' => 'Searches both name and title fields with a partial match'
-            ],
-            'lastEditedFrom' => [
-                'type' => Type::string(),
-                'description' => 'Date in ISO format (YYYY-mm-dd)'
-            ],
-            'lastEditedTo' => [
-                'type' => Type::string(),
-                'description' => 'Date in ISO format (YYYY-mm-dd)'
-            ],
-            'appCategory' => [
-                'type' => new EnumType([
-                    'name' => 'AppCategory',
-                    'values' => $categoryValues
-                ]),
-                'description' => 'Date in ISO format (YYYY-mm-dd)'
-            ],
-            'recursive' => [
-                'type' => Type::boolean(),
-                'description' => 'Find all descendants of "parentId" (not only direct children). '
-                    . 'Caution: Only works with parentId=0 at the moment.'
-            ]
-        ];
-    }
-
     /**
      * Caution: Does NOT enforce canView permissions
      *
      * @param Filterable $list
      * @param array $filter
      * @return Filterable
+     * @throws HTTPResponse_Exception
      */
-    public function filterList(Filterable $list, $filter)
+    public static function filterList(Filterable $list, $filter)
     {
         // ID filtering
         if (isset($filter['id']) && (int)$filter['id'] > 0) {
             $list = $list->filter('ID', $filter['id']);
-            
+
             if ($list->count() === 0) {
                 throw new HTTPResponse_Exception(_t(
                     __CLASS__ . '.FileNotFound',
@@ -175,4 +113,5 @@ class FileFilterInputTypeCreator extends TypeCreator
 
         return $list;
     }
+
 }

@@ -1,0 +1,18 @@
+---
+Name: asset-admin-graphql-queries
+---
+SilverStripe\GraphQL\Schema\Schema:
+  schemas:
+    admin:
+      queries:
+        'readFileUsage(IDs: [ID]!)': '[FileUsage]'
+        'readFiles(filter: FileFilterInput)':
+          type: '[FileResult]'
+          plugins:
+            dataobjectPaginator: true
+            dataobjectQuerySort:
+              fields:
+                id: true
+                title: true
+                created: true
+                lastEdited: true

@@ -1,0 +1,46 @@
+---
+Name: asset-admin-graphql-mutations
+---
+SilverStripe\GraphQL\Schema\Schema:
+  schemas:
+    admin:
+      mutations:
+        'createFile(file: FileInput)':
+          type: FileInterface
+          description: Creates files and images
+        'createFolder(folder: FolderInput)':
+          type: FileInterface
+          description: Creates files and images
+        'deleteFiles(IDs: [ID]!)':
+          type: '[ID]'
+          description:
+        'moveFiles(folderId: ID!, fileIDs: [ID])':
+          type: FileInterface
+        publishFiles:
+          type: '[PublicationResult]'
+          description: Publishes a list of files
+          args:
+            IDs:
+              type: '[ID]!'
+            force:
+              type: Boolean
+              description: If true, proceed with the mutation, regardless of notices
+              defaultValue: false
+            quiet:
+              type: Boolean
+              description: If true, suppress warnings
+        unpublishFiles:
+          type: '[PublicationResult]'
+          description: Unpublishes a list of files
+          args:
+            IDs:
+              type: '[ID]!'
+            force:
+              type: Boolean
+              description: If true, proceed with the mutation, regardless of notices
+              defaultValue: false
+            quiet:
+              type: Boolean
+              description: If true, suppress warnings
+        'updateFiles(id: ID!, file: FileInput)': File
+
