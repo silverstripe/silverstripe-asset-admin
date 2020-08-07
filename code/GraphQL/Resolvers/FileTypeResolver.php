@@ -28,7 +28,6 @@ class FileTypeResolver extends DefaultResolverProvider
      */
     private $thumbnailGenerator;
 
-
     public static function resolveFileType($object)
     {
         return $object instanceof Folder ? 'folder' : $object->FileType;
@@ -110,7 +109,8 @@ class FileTypeResolver extends DefaultResolverProvider
 
     public static function resolveFile($object, array $args, $context, $info)
     {
-        return FieldAccessor::singleton()->accessField($object, $info->fieldName);
+        $field = FieldAccessor::singleton()->normaliseField($object, $info->fieldName);
+        return $object->$field;
     }
 
     /**
