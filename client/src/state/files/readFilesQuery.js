@@ -96,22 +96,22 @@ const query = {
   pluralName: 'Files',
   pagination: false,
   params: {
-    limit: 'Int!',
-    offset: 'Int!',
+    //limit: 'Int!',
+    //offset: 'Int!',
     rootFilter: 'FileFilterInput',
-    childrenFilter: 'FileFilterInput',
-    sortBy: '[ChildrenSortInputType]',
+    //childrenFilter: 'FileFilterInput',
+    //sortBy: '[ChildrenSortInputType]',
   },
   args: {
     root: {
       filter: 'rootFilter'
     },
-    'root/edges/node/...on Folder/children': {
-      limit: 'limit',
-      offset: 'offset',
-      filter: 'childrenFilter',
-      sortBy: 'sortBy',
-    },
+    // 'root/edges/node/...on Folder/children': {
+    //   limit: 'limit',
+    //   offset: 'offset',
+    //   filter: 'childrenFilter',
+    //   sortBy: 'sortBy',
+    // },
   },
   fragments: [
     'FileInterfaceFields',

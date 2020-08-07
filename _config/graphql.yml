@@ -5,7 +5,9 @@ SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\Schema\Registry\ResolverRegistry:
     constructor:
       assetAdminResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver'
-
+      fileTypeResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\FileTypeResolver'
+      folderTypeResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\FolderTypeResolver'
+      publicationResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver'
 ---
 Name: assetadmingraphql-dependencies
 ---

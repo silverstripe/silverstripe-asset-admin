@@ -5,7 +5,7 @@ const buildPublicationMutation = (mutationName) => {
   const operationName = mutationName.charAt(0).toUpperCase() + mutationName.slice(1);
   const mutation = gql`
   mutation ${operationName}($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {
-    ${mutationName}(IDs: $IDs, Force: $Force, Quiet: $Quiet) {
+    ${mutationName}(IDs: $IDs, force: $Force, quiet: $Quiet) {
       ...on File {
         __typename
         ...FileInterfaceFields
@@ -13,9 +13,9 @@ const buildPublicationMutation = (mutationName) => {
       }
       ...on PublicationNotice {
         __typename
-        Type
-        Message
-        IDs
+        type
+        message
+        ids
       }
     }
   }

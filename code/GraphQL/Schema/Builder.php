@@ -8,16 +8,18 @@ use SilverStripe\Assets\File;
 use SilverStripe\GraphQL\Schema\Interfaces\SchemaUpdater;
 use SilverStripe\GraphQL\Schema\Schema;
 use SilverStripe\GraphQL\Schema\Type\Enum;
+use SilverStripe\ORM\ArrayLib;
 
 class Builder implements SchemaUpdater
 {
     public static function updateSchema(Schema $schema): void
     {
+        $appCategories = array_keys(File::config()->get('app_categories'));
         // Build the app category type
-        $categoryValues = array_map(function ($category) {
-            return ['value' => $category];
-        }, File::config()->get('app_categories'));
-
+        $categoryValues = [];
+        foreach ($appCategories as $category) {
+            $categoryValues[$category] = $category;
+        }
         // Sanitise GraphQL Enum aliases (some contain slashes)
         foreach ($categoryValues as $key => $v) {
             unset($categoryValues[$key]);
