@@ -29,7 +29,7 @@ class FolderTypeResolver extends DefaultResolverProvider
      * @throws InvalidArgumentException
      * @throws Exception
      */
-    public function resolveFolderChildren(
+    public static function resolveFolderChildren(
         $object,
         array $args,
         $context,

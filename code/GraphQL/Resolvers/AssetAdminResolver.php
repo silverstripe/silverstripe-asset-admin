@@ -15,6 +15,7 @@ use SilverStripe\GraphQL\QueryHandler\QueryHandler;
 use SilverStripe\GraphQL\Schema\DataObject\FieldAccessor;
 use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\Filterable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 
@@ -219,40 +220,6 @@ class AssetAdminResolver extends DefaultResolverProvider
     }
 
 
-    public function resolve($object, array $args, $context, ResolveInfo $info)
-    {
-        if (!isset($args['IDs']) || !is_array($args['IDs'])) {
-            throw new InvalidArgumentException('IDs must be an array');
-        }
-        $idList = $args['IDs'];
-
-        /** @var DataList|File[] $files */
-        $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($idList);
-        if ($files->count() < count($idList)) {
-            // Find out which files count not be found
-            $missingIds = array_diff($idList, $files->column('ID'));
-            throw new InvalidArgumentException(sprintf(
-                '%s items %s are not found',
-                File::class,
-                implode(', ', $missingIds)
-            ));
-        }
-
-        $usage = [];
-        foreach ($files as $file) {
-            if ($file->canView($context['currentUser'])) {
-                $useEntry = ['id' => $file->ID];
-                $useEntry['inUseCount'] = $file instanceof Folder ?
-                    $file->getFilesInUse()->count():
-                    $file->BackLinkTrackingCount();
-                $usage[] = $useEntry;
-            }
-        }
-
-        return $usage;
-    }
-
-
     public function resolveReadFileUsage($object, array $args, $context, ResolveInfo $info): array
     {
         if (!isset($args['IDs']) || !is_array($args['IDs'])) {
@@ -291,10 +258,10 @@ class AssetAdminResolver extends DefaultResolverProvider
      * @param array $args
      * @param $context
      * @param $info
-     * @return DataList|\SilverStripe\ORM\Filterable
+     * @return DataList|Filterable
      * @throws HTTPResponse_Exception
      */
-    public function resolveReadFiles($object, array $args, $context, $info)
+    public static function resolveReadFiles($object, array $args, $context, $info)
     {
         $filter = (!empty($args['filter'])) ? $args['filter'] : [];
 

@@ -9,10 +9,10 @@ SilverStripe\GraphQL\Schema\Schema:
         'readFiles(filter: FileFilterInput)':
           type: '[FileResult]'
           plugins:
-            dataobjectPaginator: true
-            dataobjectQuerySort:
-              fields:
-                id: true
-                title: true
-                created: true
-                lastEdited: true
+#            sort:
+#              fields:
+#                id: true
+#                title: true
+#                created: true
+#                lastEdited: true
+            paginate: true
