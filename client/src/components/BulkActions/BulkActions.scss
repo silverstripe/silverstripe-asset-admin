@@ -19,10 +19,6 @@ $bulk-actions-width: 300px;
   min-width: 160px;
   border-top: 1px solid $border-color-light;
 
-  & > * {
-    flex: 0;
-  }
-
   &-enter {
     bottom: -$toolbar-total-height;
   }
