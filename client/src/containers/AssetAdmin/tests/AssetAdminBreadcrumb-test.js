@@ -23,7 +23,7 @@ const render = (props) => {
   const renderer = new ShallowRenderer();
   const baseProps = {
     query: { filter: {} },
-    getUrl: (...args) => args.join('/'),
+    getUrl: (folderId) => (folderId ? folderId.toString() : ''),
     onBrowse: jest.fn(),
     onFolderIcon: jest.fn(),
     ...props
@@ -43,7 +43,7 @@ describe('AssetAdmin Breadcrumb', () => {
     expect(crumbs[0]).not.toHaveProperty('icon');
 
     crumbs[0].onClick(new Event('onClick'));
-    expect(onBrowse).toHaveBeenCalledWith();
+    expect(onBrowse).toHaveBeenCalledWith(0, null, { filter: {} });
   });
 
   it('With folders', () => {
@@ -72,7 +72,7 @@ describe('AssetAdmin Breadcrumb', () => {
     expect(crumbs[3].icons[0]).toHaveProperty('className', 'icon font-icon-edit-list');
 
     crumbs[3].onClick(new Event('onClick'));
-    expect(onBrowse).toHaveBeenCalledWith(3);
+    expect(onBrowse).toHaveBeenCalledWith(3, null, { filter: {} });
 
     crumbs[3].icons[0].onClick(new Event('onClick'));
     expect(onFolderIcon).toHaveBeenCalledWith();
@@ -93,7 +93,7 @@ describe('AssetAdmin Breadcrumb', () => {
     expect(crumbs[1]).toHaveProperty('href', '3');
 
     crumbs[1].onClick(new Event('onClick'));
-    expect(onBrowse).toHaveBeenCalledWith(3);
+    expect(onBrowse).toHaveBeenCalledWith(3, null, { filter: {} });
   });
 
   it('With search', () => {
@@ -111,6 +111,6 @@ describe('AssetAdmin Breadcrumb', () => {
     expect(crumbs[1]).not.toHaveProperty('onClick');
 
     crumbs[0].onClick(new Event('onClick'));
-    expect(onBrowse).toHaveBeenCalledWith();
+    expect(onBrowse).toHaveBeenCalledWith(0, null, { filter: { filters: { title: 'booya' } } });
   });
 });
