@@ -7,6 +7,7 @@ const fileInterface = `
     exists
     filename
     id
+    className
     lastEdited
     name
     parentId

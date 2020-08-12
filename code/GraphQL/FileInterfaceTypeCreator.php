@@ -28,6 +28,9 @@ class FileInterfaceTypeCreator extends DataObjectInterfaceTypeCreator
             'id' => [
                 'type' => Type::nonNull(Type::int()),
             ],
+            'className' => [
+                'type' => Type::string(),
+            ],
             'created' => [
                 'type' => Type::string(),
             ],

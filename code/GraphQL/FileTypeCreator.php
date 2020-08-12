@@ -61,6 +61,9 @@ class FileTypeCreator extends TypeCreator
             'id' => [
                 'type' => Type::nonNull(Type::int()),
             ],
+            'className' => [
+                'type' => Type::string(),
+            ],
             'created' => [
                 'type' => Type::string(),
             ],

@@ -40,6 +40,9 @@ class FolderTypeCreator extends FileTypeCreator
             'id' => [
                 'type' => Type::nonNull(Type::int()),
             ],
+            'className' => [
+                'type' => Type::string(),
+            ],
             'created' => [
                 'type' => Type::string(),
             ],
@@ -125,6 +128,7 @@ class FolderTypeCreator extends FileTypeCreator
                 'title' => 'Title',
                 'created' => 'Created',
                 'lastEdited' => 'LastEdited',
+                'className' => 'ClassName',
                 // TODO Make memory-based size search efficient enough for 10k records
                 //size' => 'Size'
             ]);
