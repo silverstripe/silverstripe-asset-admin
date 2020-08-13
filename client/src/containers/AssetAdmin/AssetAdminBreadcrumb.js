@@ -27,8 +27,8 @@ const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon })
   // Set root breadcrumb
   const breadcrumbs = [{
     text: i18n._t('AssetAdmin.FILES', 'Files'),
-    href: hrefBuilder(),
-    onClick: handleClick(),
+    href: hrefBuilder(0, null, query),
+    onClick: handleClick(0, null, query),
   }];
 
   if (folder && folder.id) {
@@ -37,8 +37,8 @@ const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon })
       folder.parents.forEach((parent) => {
         breadcrumbs.push({
           text: parent.title,
-          href: hrefBuilder(parent.id),
-          onClick: handleClick(parent.id)
+          href: hrefBuilder(parent.id, null, query),
+          onClick: handleClick(parent.id, null, query)
         });
       });
     }
@@ -65,8 +65,8 @@ const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon })
 
     breadcrumbs.push({
       text: folder.title,
-      href: hrefBuilder(folder.id),
-      onClick: handleClick(folder.id),
+      href: hrefBuilder(folder.id, null, query),
+      onClick: handleClick(folder.id, null, query),
       icons
     });
   }
@@ -89,6 +89,7 @@ AssetAdminBreadcrumb.propTypes = {
     limit: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     page: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     filter: PropTypes.object,
+    view: PropTypes.string,
   }),
   folder: PropTypes.shape({
     id: PropTypes.number,
