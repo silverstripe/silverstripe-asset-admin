@@ -1,6 +1,7 @@
 <?php
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use Exception;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use GraphQL\Type\Definition\UnionType;

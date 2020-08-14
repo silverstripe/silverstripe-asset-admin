@@ -1198,9 +1198,11 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function generateThumbnails(File $file, $thumbnailLinks = false)
     {
         $links = [];
-        if (!$file->getIsImage()) {
+        $image = $file->ToImage();
+        if (empty($image)) {
             return $links;
         }
+
         $generator = $this->getThumbnailGenerator();
 
         // Small thumbnail
@@ -1214,14 +1216,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         // Generate links if client requests them
         // Note: Thumbnails should always be generated even if links are not
         if ($thumbnailLinks) {
-            $links['smallThumbnail'] = $generator->generateThumbnailLink($file, $smallWidth, $smallHeight);
-            $links['thumbnail'] = $generator->generateThumbnailLink($file, $width, $height);
+            $links['smallThumbnail'] = $generator->generateThumbnailLink($image, $smallWidth, $smallHeight);
+            $links['thumbnail'] = $generator->generateThumbnailLink($image, $width, $height);
         } else {
-            $generator->generateThumbnail($file, $smallWidth, $smallHeight);
-            $generator->generateThumbnail($file, $width, $height);
+            $generator->generateThumbnail($image, $smallWidth, $smallHeight);
+            $generator->generateThumbnail($image, $width, $height);
         }
 
-        $this->extend('updateGeneratedThumbnails', $file, $links, $generator);
+        $this->extend('updateGeneratedThumbnails', $image, $links, $generator);
         return $links;
     }
 
