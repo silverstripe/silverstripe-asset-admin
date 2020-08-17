@@ -109,7 +109,7 @@ class FolderTypeCreator extends FileTypeCreator
      */
     public function getChildrenConnection()
     {
-        return Connection::create('Children')
+        return ReadFileConnection::create('Children')
             ->setConnectionType(function () {
                 return $this->manager->getType('FileInterface');
             })
@@ -125,6 +125,7 @@ class FolderTypeCreator extends FileTypeCreator
                 'title' => 'Title',
                 'created' => 'Created',
                 'lastEdited' => 'LastEdited',
+                'name' => 'Name'
                 // TODO Make memory-based size search efficient enough for 10k records
                 //size' => 'Size'
             ]);

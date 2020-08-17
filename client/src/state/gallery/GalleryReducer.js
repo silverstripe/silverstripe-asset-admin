@@ -18,7 +18,7 @@ const initialState = {
    */
   sorters: [
     {
-      field: 'title',
+      field: 'name',
       direction: 'asc',
       label: i18n._t('AssetAdmin.FILTER_TITLE_ASC', 'title a-z'),
     },
