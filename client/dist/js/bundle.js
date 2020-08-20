@@ -268,16 +268,26 @@ var _readFilesQuery = __webpack_require__("./client/src/state/files/readFilesQue
 
 var _readFilesQuery2 = _interopRequireDefault(_readFilesQuery);
 
+var _readFilesQuery3 = __webpack_require__("./client/src/state/files/_legacy/readFilesQuery.js");
+
+var _readFilesQuery4 = _interopRequireDefault(_readFilesQuery3);
+
 var _readFileUsageQuery = __webpack_require__("./client/src/state/files/readFileUsageQuery.js");
 
 var _readFileUsageQuery2 = _interopRequireDefault(_readFileUsageQuery);
 
+var _Config = __webpack_require__(24);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var isLegacy = _Config2.default.get('graphqlLegacy');
 
 var registerQueries = function registerQueries() {
   _Injector2.default.query.registerFragment('FileInterfaceFields', _fileFragments.fileInterface);
   _Injector2.default.query.registerFragment('FileFields', _fileFragments.file);
-  _Injector2.default.query.register('ReadFilesQuery', _readFilesQuery2.default);
+  _Injector2.default.query.register('ReadFilesQuery', isLegacy ? _readFilesQuery4.default : _readFilesQuery2.default);
   _Injector2.default.query.register('readFileUsageQuery', _readFileUsageQuery2.default);
 };
 exports.default = registerQueries;
@@ -9737,6 +9747,195 @@ exports.default = reducer;
 
 /***/ }),
 
+/***/ "./client/src/state/files/_legacy/buildPublicationMutation.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _templateObject = _taggedTemplateLiteral(['\n  mutation ', '($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {\n    ', '(IDs: $IDs, Force: $Force, Quiet: $Quiet) {\n      ...on File {\n        __typename\n        ...FileInterfaceFields\n        ...FileFields\n      }\n      ...on PublicationNotice {\n        __typename\n        Type\n        Message\n        IDs\n      }\n    }\n  }\n  ', '\n  ', '\n'], ['\n  mutation ', '($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {\n    ', '(IDs: $IDs, Force: $Force, Quiet: $Quiet) {\n      ...on File {\n        __typename\n        ...FileInterfaceFields\n        ...FileFields\n      }\n      ...on PublicationNotice {\n        __typename\n        Type\n        Message\n        IDs\n      }\n    }\n  }\n  ', '\n  ', '\n']);
+
+var _graphqlTag = __webpack_require__(16);
+
+var _graphqlTag2 = _interopRequireDefault(_graphqlTag);
+
+var _fileFragments = __webpack_require__("./client/src/lib/fileFragments.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+var buildPublicationMutation = function buildPublicationMutation(mutationName) {
+  var operationName = mutationName.charAt(0).toUpperCase() + mutationName.slice(1);
+  var mutation = (0, _graphqlTag2.default)(_templateObject, operationName, mutationName, _fileFragments.fileInterface, _fileFragments.file);
+
+  var isProd = "development" === 'production';
+  var config = {
+    props: function props(_ref) {
+      var mutate = _ref.mutate,
+          actions = _ref.ownProps.actions;
+
+      var mutationAction = function mutationAction(IDs) {
+        var Force = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        var Quiet = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : isProd;
+        return mutate({
+          variables: {
+            IDs: IDs,
+            Quiet: Quiet,
+            Force: Force
+          }
+        });
+      };
+
+      return {
+        actions: _extends({}, actions, {
+          files: _extends({}, actions.files, _defineProperty({}, mutationName, mutationAction))
+        })
+      };
+    }
+  };
+
+  return { mutation: mutation, config: config };
+};
+
+exports.default = buildPublicationMutation;
+
+/***/ }),
+
+/***/ "./client/src/state/files/_legacy/readFilesQuery.js":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _Search = __webpack_require__(17);
+
+var _Injector = __webpack_require__(3);
+
+var apolloConfig = {
+  options: function options(_ref) {
+    var sectionConfig = _ref.sectionConfig,
+        folderId = _ref.folderId,
+        fileId = _ref.fileId,
+        params = _ref.query;
+
+    var filter = Object.assign({}, params.filter);
+    var childrenFilter = Object.assign({}, filter, {
+      parentId: undefined,
+
+      recursive: (0, _Search.hasFilters)(filter),
+
+      currentFolderOnly: undefined
+    });
+
+    var anyChildId = (0, _Search.hasFilters)(filter) ? null : fileId || null;
+    var id = anyChildId ? null : folderId || 0;
+
+    var rootFilter = {
+      id: id,
+
+      anyChildId: anyChildId
+    };
+
+    var _ref2 = params.sort ? params.sort.split(',') : ['', ''],
+        _ref3 = _slicedToArray(_ref2, 2),
+        sortField = _ref3[0],
+        sortDir = _ref3[1];
+
+    var limit = params.limit || sectionConfig.limit;
+    return {
+      variables: {
+        rootFilter: rootFilter,
+        childrenFilter: childrenFilter,
+        limit: limit,
+        offset: ((params.page || 1) - 1) * limit,
+        sortBy: sortField && sortDir ? [{ field: sortField, direction: sortDir.toUpperCase() }] : undefined
+      }
+    };
+  },
+  props: function props(_ref4) {
+    var _ref4$data = _ref4.data,
+        error = _ref4$data.error,
+        refetch = _ref4$data.refetch,
+        readFiles = _ref4$data.readFiles,
+        networkLoading = _ref4$data.loading,
+        actions = _ref4.ownProps.actions;
+
+    var folder = readFiles && readFiles.edges[0] ? readFiles.edges[0].node : null;
+    var files = folder && folder.children ? folder.children.edges.map(function (edge) {
+      return edge.node;
+    }).filter(function (file) {
+      return file;
+    }) : [];
+    var filesTotalCount = folder && folder.children ? folder.children.pageInfo.totalCount : 0;
+
+    var filesLoading = folder && !folder.children;
+
+    var errors = error && error.graphQLErrors && error.graphQLErrors.map(function (graphQLError) {
+      return graphQLError.message;
+    });
+    return {
+      loading: networkLoading || filesLoading,
+      folder: folder,
+      files: files,
+      filesTotalCount: filesTotalCount,
+      graphQLErrors: errors,
+      actions: Object.assign({}, actions, {
+        files: Object.assign({}, actions.files, {
+          readFiles: refetch
+        })
+      })
+    };
+  }
+};
+
+var READ = _Injector.graphqlTemplates.READ;
+
+var query = {
+  apolloConfig: apolloConfig,
+  templateName: READ,
+  pluralName: 'Files',
+  pagination: false,
+  params: {
+    limit: 'Int!',
+    offset: 'Int!',
+    rootFilter: 'FileFilterInput',
+    childrenFilter: 'FileFilterInput',
+    sortBy: '[ChildrenSortInputType]'
+  },
+  args: {
+    root: {
+      filter: 'rootFilter'
+    },
+    'root/edges/node/...on Folder/children': {
+      limit: 'limit',
+      offset: 'offset',
+      filter: 'childrenFilter',
+      sortBy: 'sortBy'
+    }
+  },
+  fragments: ['FileInterfaceFields', 'FileFields'],
+  fields: ['pageInfo', ['totalCount'], 'edges', ['node', ['...FileInterfaceFields', '...FileFields', '...on Folder', ['children', ['pageInfo', ['totalCount'], 'edges', ['node', ['...FileInterfaceFields', '...FileFields']]], 'parents', ['id', 'title']]]]]
+};
+
+exports.default = query;
+
+/***/ }),
+
 /***/ "./client/src/state/files/buildPublicationMutation.js":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9959,11 +10158,22 @@ var _buildPublicationMutation = __webpack_require__("./client/src/state/files/bu
 
 var _buildPublicationMutation2 = _interopRequireDefault(_buildPublicationMutation);
 
+var _buildPublicationMutation3 = __webpack_require__("./client/src/state/files/_legacy/buildPublicationMutation.js");
+
+var _buildPublicationMutation4 = _interopRequireDefault(_buildPublicationMutation3);
+
+var _Config = __webpack_require__(24);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _buildPublicationMuta = (0, _buildPublicationMutation2.default)('publishFiles'),
-    mutation = _buildPublicationMuta.mutation,
-    config = _buildPublicationMuta.config;
+var isLegacy = _Config2.default.get('graphqlLegacy');
+var builder = isLegacy ? _buildPublicationMutation4.default : _buildPublicationMutation2.default;
+
+var _builder = builder('publishFiles'),
+    mutation = _builder.mutation,
+    config = _builder.config;
 
 exports.mutation = mutation;
 exports.config = config;
@@ -10177,11 +10387,22 @@ var _buildPublicationMutation = __webpack_require__("./client/src/state/files/bu
 
 var _buildPublicationMutation2 = _interopRequireDefault(_buildPublicationMutation);
 
+var _buildPublicationMutation3 = __webpack_require__("./client/src/state/files/_legacy/buildPublicationMutation.js");
+
+var _buildPublicationMutation4 = _interopRequireDefault(_buildPublicationMutation3);
+
+var _Config = __webpack_require__(24);
+
+var _Config2 = _interopRequireDefault(_Config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _buildPublicationMuta = (0, _buildPublicationMutation2.default)('unpublishFiles'),
-    mutation = _buildPublicationMuta.mutation,
-    config = _buildPublicationMuta.config;
+var isLegacy = _Config2.default.get('graphqlLegacy');
+var builder = isLegacy ? _buildPublicationMutation4.default : _buildPublicationMutation2.default;
+
+var _builder = builder('unpublishFiles'),
+    mutation = _builder.mutation,
+    config = _builder.config;
 
 exports.mutation = mutation;
 exports.config = config;

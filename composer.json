@@ -29,7 +29,8 @@
             "SilverStripe\\AssetAdmin\\": "code/",
             "SilverStripe\\AssetAdmin\\Tests\\": "tests/php/",
             "SilverStripe\\AssetAdmin\\Tests\\Behat\\Context\\": "tests/behat/src/"
-        }
+        },
+        "classmap": ["code/GraphQL/_legacy"]
     },
     "config": {
         "process-timeout": 600
