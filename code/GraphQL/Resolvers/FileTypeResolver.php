@@ -15,6 +15,10 @@ use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\GraphQL\Schema\DataObject\FieldAccessor;
 use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 
+if (!class_exists(DefaultResolverProvider::class)) {
+    return;
+}
+
 class FileTypeResolver extends DefaultResolverProvider
 {
     use Injectable;

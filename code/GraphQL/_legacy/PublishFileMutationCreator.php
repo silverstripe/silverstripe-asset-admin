@@ -7,7 +7,7 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\OperationResolver;
 use SilverStripe\Security\Member;
 
-if (!class_exists(MutationCreator::class)) {
+if (!class_exists(PublicationMutationCreator::class)) {
     return;
 }
 

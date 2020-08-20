@@ -10,6 +10,10 @@ use SilverStripe\GraphQL\Schema\Schema;
 use SilverStripe\GraphQL\Schema\Type\Enum;
 use SilverStripe\ORM\ArrayLib;
 
+if (!interface_exists(SchemaUpdater::class)) {
+    return;
+}
+
 class Builder implements SchemaUpdater
 {
     public static function updateSchema(Schema $schema): void
