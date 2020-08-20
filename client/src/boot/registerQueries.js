@@ -3,9 +3,9 @@ import { fileInterface, file } from 'lib/fileFragments';
 import readFilesQuery from 'state/files/readFilesQuery';
 import readFilesQueryLegacy from 'state/files/_legacy/readFilesQuery';
 import readFileUsageQuery from 'state/files/readFileUsageQuery';
-import Config from 'lib/Config';
 
-const isLegacy = Config.get('graphqlLegacy');
+// Backward compatibility hack. Remove when GraphQL 4 is in core
+const isLegacy = !!document.body.getAttribute('data-graphql-legacy');
 
 const registerQueries = () => {
   Injector.query.registerFragment('FileInterfaceFields', fileInterface);

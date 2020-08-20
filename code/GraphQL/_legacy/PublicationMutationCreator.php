@@ -11,6 +11,10 @@ use GraphQL\Type\Definition\Type;
 use SilverStripe\Security\Member;
 use InvalidArgumentException;
 
+if (!class_exists(MutationCreator::class)) {
+    return;
+}
+
 abstract class PublicationMutationCreator extends MutationCreator implements OperationResolver
 {
     /**

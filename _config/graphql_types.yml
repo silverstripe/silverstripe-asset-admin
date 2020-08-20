@@ -1,5 +1,7 @@
 ---
 Name: asset-admin-graphql-types
+Only:
+  classexists: 'SilverStripe\GraphQL\Schema\Schema'
 ---
 SilverStripe\GraphQL\Schema\Schema:
   schemas:

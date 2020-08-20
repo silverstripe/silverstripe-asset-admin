@@ -15,6 +15,10 @@ use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 
+if (!class_exists(TypeCreator::class)) {
+    return;
+}
+
 /**
  * @skipUpgrade
  */

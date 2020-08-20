@@ -43,3 +43,13 @@ Name: assetadminmodals
 SilverStripe\Admin\ModalController:
   extensions:
     - SilverStripe\AssetAdmin\Extensions\RemoteFileModalExtension
+---
+Name: asset-admin-graphql-thumbnails
+Only:
+  moduleexists: 'silverstripe/graphql'
+---
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\AssetAdmin\Model\ThumbnailGenerator.graphql:
+    class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
+    properties:
+      Generates: false

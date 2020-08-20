@@ -7,6 +7,10 @@ use GraphQL\Type\Definition\Type;
 use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\GraphQL\Manager;
 
+if (!class_exists(TypeCreator::class)) {
+    return;
+}
+
 class FolderInputTypeCreator extends TypeCreator
 {
 

@@ -10,6 +10,9 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 use SilverStripe\GraphQL\Manager;
 
+if (!class_exists(MutationCreator::class)) {
+    return;
+}
 /**
  * @todo Allow file upload (https://github.com/silverstripe/silverstripe-graphql/issues/19)
  */

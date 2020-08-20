@@ -11,6 +11,9 @@ use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\GraphQL\QueryCreator;
 use SilverStripe\Versioned\Versioned;
 
+if (!class_exists(QueryCreator::class)) {
+    return;
+}
 /**
  * GraphQL Query to retrieve usage count for files and folders on GraphQL request.
  */

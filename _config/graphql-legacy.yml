@@ -1,6 +1,8 @@
 # Backward compatability for GraphQL 3
 ---
 Name: assetadmingraphql
+Only:
+  classexists: 'SilverStripe\GraphQL\Manager'
 ---
 SilverStripe\GraphQL\Manager:
   schemas:
@@ -31,10 +33,6 @@ SilverStripe\GraphQL\Manager:
 Name: assetadmingraphql-dependencies
 ---
 SilverStripe\Core\Injector\Injector:
-  SilverStripe\AssetAdmin\Model\ThumbnailGenerator.graphql:
-    class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
-    properties:
-      Generates: false
   SilverStripe\AssetAdmin\GraphQL\FileTypeCreator:
     properties:
       ThumbnailGenerator: '%$SilverStripe\AssetAdmin\Model\ThumbnailGenerator.graphql'

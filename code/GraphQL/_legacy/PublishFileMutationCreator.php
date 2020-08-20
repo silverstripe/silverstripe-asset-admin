@@ -7,6 +7,10 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\OperationResolver;
 use SilverStripe\Security\Member;
 
+if (!class_exists(MutationCreator::class)) {
+    return;
+}
+
 class PublishFileMutationCreator extends PublicationMutationCreator implements OperationResolver
 {
     /**
