@@ -13,6 +13,10 @@ use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 
+if (!class_exists(DefaultResolverProvider::class)) {
+    return;
+}
+
 class PublicationResolver extends DefaultResolverProvider
 {
     const ACTION_PUBLISH = 'publish';

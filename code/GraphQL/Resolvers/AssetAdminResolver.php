@@ -19,6 +19,9 @@ use SilverStripe\ORM\Filterable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 
+if (!class_exists(DefaultResolverProvider::class)) {
+    return;
+}
 class AssetAdminResolver extends DefaultResolverProvider
 {
     public static function resolveFileInterfaceType($object)

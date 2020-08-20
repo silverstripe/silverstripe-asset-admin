@@ -18,6 +18,10 @@ use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 use Exception;
 
+if (!class_exists(DefaultResolverProvider::class)) {
+    return;
+}
+
 class FolderTypeResolver extends DefaultResolverProvider
 {
     /**
