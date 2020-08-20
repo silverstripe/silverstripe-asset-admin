@@ -11,6 +11,10 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 use SilverStripe\GraphQL\Manager;
 
+if (!class_exists(MutationCreator::class)) {
+    return;
+}
+
 class MoveFilesMutationCreator extends MutationCreator implements OperationResolver
 {
     /**

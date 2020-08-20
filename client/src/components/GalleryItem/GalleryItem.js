@@ -393,6 +393,7 @@ class GalleryItem extends Component {
   handleActivate(event) {
     event.stopPropagation();
     if (typeof this.props.onActivate === 'function' && this.saved()) {
+      console.log('activate', this.props.item, event);
       this.props.onActivate(event, this.props.item);
     }
   }

@@ -8,6 +8,10 @@ use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Versioned\RecursivePublishable;
 
+if (!class_exists(DataObjectInterfaceTypeCreator::class)) {
+    return;
+}
+
 /**
  * @skipUpgrade
  */

@@ -15,6 +15,10 @@ use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DB;
 
+if (!class_exists(TypeCreator::class)) {
+    return;
+}
+
 /**
  * @skipUpgrade
  */

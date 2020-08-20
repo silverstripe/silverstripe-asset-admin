@@ -28,9 +28,21 @@ class FileTypeResolver extends DefaultResolverProvider
      */
     private $thumbnailGenerator;
 
+    /**
+     * @param $object
+     * @return mixed
+     */
     public static function resolveFileType($object)
     {
-        return $object instanceof Folder ? 'folder' : $object->FileType;
+        return $object->FileType;
+    }
+
+    /**
+     * @return string
+     */
+    public static function resolveFolderType(): string
+    {
+        return 'folder';
     }
 
     /**
@@ -39,7 +51,15 @@ class FileTypeResolver extends DefaultResolverProvider
      */
     public static function resolveFileCategory($object)
     {
-        return $object instanceof Folder ? 'folder' : $object->appCategory();
+        return $object->appCategory();
+    }
+
+    /**
+     * @return string
+     */
+    public static function resolveFolderCategory(): string
+    {
+        return 'folder';
     }
 
     public static function resolveFileUrl($object)

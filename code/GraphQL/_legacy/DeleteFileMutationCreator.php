@@ -10,6 +10,10 @@ use SilverStripe\GraphQL\OperationResolver;
 use SilverStripe\ORM\DataList;
 use SilverStripe\Versioned\Versioned;
 
+if (!class_exists(MutationCreator::class)) {
+    return;
+}
+
 /**
  * Handles create and update
  */

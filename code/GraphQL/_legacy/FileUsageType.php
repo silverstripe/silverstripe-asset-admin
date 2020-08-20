@@ -7,6 +7,10 @@ use SilverStripe\GraphQL\TypeCreator;
 use GraphQL\Type\Definition\ResolveInfo;
 use Exception;
 
+if (!class_exists(TypeCreator::class)) {
+    return;
+}
+
 /**
  * Define the return type for ReadFileUsageQueryCreator. File usage is return as an array of object with an
  * 'id' property and 'inUseCount' property.

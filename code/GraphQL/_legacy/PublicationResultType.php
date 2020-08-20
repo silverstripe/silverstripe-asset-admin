@@ -6,6 +6,10 @@ use SilverStripe\Assets\File;
 use SilverStripe\GraphQL\TypeCreator;
 use GraphQL\Type\Definition\UnionType;
 
+if (!class_exists(TypeCreator::class)) {
+    return;
+}
+
 class PublicationResultType extends TypeCreator
 {
     public function toType()

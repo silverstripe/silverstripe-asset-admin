@@ -13,6 +13,10 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Forms\DateField;
 
+if (!class_exists(TypeCreator::class)) {
+    return;
+}
+
 class FileFilterInputTypeCreator extends TypeCreator
 {
 
@@ -89,7 +93,7 @@ class FileFilterInputTypeCreator extends TypeCreator
         // ID filtering
         if (isset($filter['id']) && (int)$filter['id'] > 0) {
             $list = $list->filter('ID', $filter['id']);
-            
+
             if ($list->count() === 0) {
                 throw new HTTPResponse_Exception(_t(
                     __CLASS__ . '.FileNotFound',

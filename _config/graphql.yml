@@ -1,5 +1,7 @@
 ---
-Name: assetadmingraphql
+Name: asset-admin-graphql
+Only:
+  classexists: 'SilverStripe\GraphQL\Schema\Schema'
 ---
 SilverStripe\Core\Injector\Injector:
   SilverStripe\GraphQL\Schema\Registry\ResolverRegistry:
@@ -8,14 +10,3 @@ SilverStripe\Core\Injector\Injector:
       fileTypeResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\FileTypeResolver'
       folderTypeResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\FolderTypeResolver'
       publicationResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver'
----
-Name: assetadmingraphql-dependencies
----
-SilverStripe\Core\Injector\Injector:
-  SilverStripe\AssetAdmin\Model\ThumbnailGenerator.graphql:
-    class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
-    properties:
-      Generates: false
-  SilverStripe\AssetAdmin\GraphQL\FileTypeCreator:
-    properties:
-      ThumbnailGenerator: '%$SilverStripe\AssetAdmin\Model\ThumbnailGenerator.graphql'

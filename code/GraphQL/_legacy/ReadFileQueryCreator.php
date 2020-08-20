@@ -8,6 +8,10 @@ use SilverStripe\GraphQL\Pagination\PaginatedQueryCreator;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\Versioned\Versioned;
 
+if (!class_exists(PaginatedQueryCreator::class)) {
+    return;
+}
+
 /**
  * @skipUpgrade
  */

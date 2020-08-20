@@ -8,6 +8,10 @@ use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Member;
 
+if (!class_exists(PublicationMutationCreator::class)) {
+    return;
+}
+
 class UnpublishFileMutationCreator extends PublicationMutationCreator implements i18nEntityProvider
 {
     /**

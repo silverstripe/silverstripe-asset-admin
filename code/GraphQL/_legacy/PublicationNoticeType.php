@@ -7,6 +7,10 @@ use SilverStripe\GraphQL\TypeCreator;
 use GraphQL\Type\Definition\ResolveInfo;
 use Exception;
 
+if (!class_exists(TypeCreator::class)) {
+    return;
+}
+
 class PublicationNoticeType extends TypeCreator
 {
     /**

@@ -276,13 +276,9 @@ var _readFileUsageQuery = __webpack_require__("./client/src/state/files/readFile
 
 var _readFileUsageQuery2 = _interopRequireDefault(_readFileUsageQuery);
 
-var _Config = __webpack_require__(24);
-
-var _Config2 = _interopRequireDefault(_Config);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var isLegacy = _Config2.default.get('graphqlLegacy');
+var isLegacy = !!document.body.getAttribute('data-graphql-legacy');
 
 var registerQueries = function registerQueries() {
   _Injector2.default.query.registerFragment('FileInterfaceFields', _fileFragments.fileInterface);
@@ -1546,6 +1542,7 @@ var GalleryItem = function (_Component) {
     value: function handleActivate(event) {
       event.stopPropagation();
       if (typeof this.props.onActivate === 'function' && this.saved()) {
+        console.log('activate', this.props.item, event);
         this.props.onActivate(event, this.props.item);
       }
     }
@@ -10162,13 +10159,10 @@ var _buildPublicationMutation3 = __webpack_require__("./client/src/state/files/_
 
 var _buildPublicationMutation4 = _interopRequireDefault(_buildPublicationMutation3);
 
-var _Config = __webpack_require__(24);
-
-var _Config2 = _interopRequireDefault(_Config);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var isLegacy = _Config2.default.get('graphqlLegacy');
+var isLegacy = !!document.body.getAttribute('data-graphql-legacy');
+
 var builder = isLegacy ? _buildPublicationMutation4.default : _buildPublicationMutation2.default;
 
 var _builder = builder('publishFiles'),
@@ -10391,13 +10385,9 @@ var _buildPublicationMutation3 = __webpack_require__("./client/src/state/files/_
 
 var _buildPublicationMutation4 = _interopRequireDefault(_buildPublicationMutation3);
 
-var _Config = __webpack_require__(24);
-
-var _Config2 = _interopRequireDefault(_Config);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var isLegacy = _Config2.default.get('graphqlLegacy');
+var isLegacy = !!document.body.getAttribute('data-graphql-legacy');
 var builder = isLegacy ? _buildPublicationMutation4.default : _buildPublicationMutation2.default;
 
 var _builder = builder('unpublishFiles'),
