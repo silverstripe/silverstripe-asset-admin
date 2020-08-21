@@ -17,6 +17,14 @@ $gallery-item-label-height: 40px;
     cursor: pointer;
   }
 
+  &__type-overlay {
+    display: block;
+    height: 100%;
+    width: 100%;
+    grid-column: 1/span 2;
+    grid-row: 1;
+  }
+
   &:not(.gallery-item--error):not(.gallery-item--folder):hover .gallery-item--overlay {
     opacity: 1;
     display: block;
@@ -265,6 +273,7 @@ $gallery-item-label-height: 40px;
   font-size: 14px;
   padding-top: 56px;
   text-align: center;
+  z-index: 1;
 
   &::before {
     margin-right: .385rem;
@@ -306,8 +315,8 @@ $gallery-item-label-height: 40px;
   background: $white url("../../images/icon_audio.png") center center no-repeat;
 }
 
-.gallery-item--video .gallery-item__thumbnail {
-  background: $white url("../../images/icon_video.png") center center no-repeat;
+.gallery-item--video .gallery-item__type-overlay {
+  background: url("../../images/icon_video.png") center center no-repeat;
 }
 
 .gallery-item--document .gallery-item__thumbnail {
