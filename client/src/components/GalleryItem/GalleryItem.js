@@ -67,7 +67,8 @@ class GalleryItem extends Component {
   getThumbnailStyles() {
     // Don't fall back to this.props.item.url since it might be huge
     const { thumbnail, version } = this.props.item;
-    if (!this.isImage() || !thumbnail || this.missing()) {
+    console.dir({thumbnail, version});
+    if (!thumbnail || this.missing()) {
       return {};
     }
 
@@ -512,6 +513,7 @@ class GalleryItem extends Component {
           className={this.getThumbnailClassNames()}
           style={this.getThumbnailStyles()}
         >
+          <div className="gallery-item__type-overlay"></div>
           {overlay}
           {this.getStatusFlags()}
           {this.getStatusIcons()}

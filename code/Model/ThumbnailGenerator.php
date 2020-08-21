@@ -98,20 +98,26 @@ class ThumbnailGenerator
      */
     public function generateThumbnail(AssetContainer $file, $width, $height)
     {
-        if (!$file->getIsImage() || !$file->exists()) {
+        if (!$file->exists()) {
             return null;
+        }
+
+        $img = $file->ToImage();
+
+        if (empty($img)) {
+            null;
         }
 
         // Disable generation if only querying existing files
         if (!$this->getGenerates()) {
-            $file = $file->existingOnly();
+            $img = $img->existingOnly();
         }
 
         // Make large thumbnail
         $method = $this->config()->get('method');
-        return $file->$method($width, $height);
+        return $img->$method($width, $height);
     }
-    
+
     /**
      * Generate "src" property for this thumbnail.
      * This can be either a url or base64 encoded data
@@ -122,9 +128,15 @@ class ThumbnailGenerator
     public function generateLink(AssetContainer $thumbnail = null)
     {
         // Check if thumbnail can be found
-        if (!$thumbnail || !$thumbnail->exists() || !$thumbnail->getIsImage()) {
+        if (!$thumbnail || !$thumbnail->exists()) {
             return null;
         }
+
+        $thumbnail = $thumbnail->ToImage();
+        if (empty($thumbnail)) {
+            return;
+        }
+
         // Ensure thumbnail doesn't exceed safe bounds
         $maxSize = $this->config()->get('max_thumbnail_bytes');
         if ($thumbnail->getAbsoluteSize() > $maxSize) {
