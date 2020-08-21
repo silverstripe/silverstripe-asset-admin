@@ -1172,9 +1172,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         /** @var File $file */
-        if ($file->getIsImage()) {
-            $thumbnails = $this->generateThumbnails($file, $thumbnailLinks);
-
+        if ($thumbnails = $this->generateThumbnails($file, $thumbnailLinks)) {
             if ($thumbnailLinks) {
                 $object = array_merge($object, $thumbnails);
             }
