@@ -103,7 +103,7 @@
 }
 
 .editor__top-message {
-    margin: #{-$panel-padding-x} #{-$panel-padding-x} $spacer;
+    margin: #{-$panel-padding-x/2} #{-$panel-padding-x} $spacer;
 }
 
 .editor__file-preview {
