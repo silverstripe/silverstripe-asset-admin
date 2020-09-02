@@ -184,6 +184,22 @@ describe('GalleryItem', () => {
       expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail gallery-item__thumbnail--small');
     });
 
+    it('should return backgroundImage with the correct url without vid when cache busting is off', () => {
+      props.item = {
+        ...props.item,
+        category: 'image',
+        url: 'myUrl',
+        thumbnail: 'myThumbnailUrl',
+        version: 123,
+      };
+
+      item = ReactTestUtils.renderIntoDocument(
+        <GalleryItem bustCache={false} {...props} />
+      );
+
+      expect(item.getThumbnailStyles()).toEqual({ backgroundImage: 'url(myThumbnailUrl)' });
+      expect(item.getThumbnailClassNames()).toBe('gallery-item__thumbnail gallery-item__thumbnail--small');
+    });
 
     it('should return backgroundImage with the correct data-url when thumbnail is included in graphql body', () => {
       props.item = {

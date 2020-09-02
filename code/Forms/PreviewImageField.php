@@ -13,6 +13,7 @@ use SilverStripe\ORM\DataObject;
  */
 class PreviewImageField extends FormField
 {
+
     /**
      * @var int
      */

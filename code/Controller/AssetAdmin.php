@@ -165,6 +165,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     private static $thumbnail_height = 264;
 
+
+    /**
+     * Whatever the front end should try to bust cache by appending the version id to the image URL.
+     * @config
+     * @var bool
+     */
+    private static $bust_cache = true;
+
     /**
      * @var ThumbnailGenerator
      */
@@ -191,6 +199,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         return array_merge(parent::getClientConfig(), [
             'reactRouter' => true,
+            'bustCache' => static::config()->get('bust_cache'),
             'createFileEndpoint' => [
                 'url' => Controller::join_links($baseLink, 'api/createFile'),
                 'method' => 'post',

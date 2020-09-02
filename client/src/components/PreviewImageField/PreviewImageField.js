@@ -27,15 +27,16 @@ class PreviewImageField extends Component {
     this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
     this.canFileUpload = this.canFileUpload.bind(this);
     this.updateFormData = this.updateFormData.bind(this);
+    this.cacheBustUrl = this.cacheBustUrl.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     // Check latest version to detect file save actions
     if (
-      (this.props.data.url && nextProps.data.url !== this.props.data.url)
-      || (this.props.data.version && nextProps.data.version !== this.props.data.version)
+      (prevProps.data.url && this.props.data.url !== prevProps.data.url)
+      || (prevProps.data.version && this.props.data.version !== prevProps.data.version)
     ) {
-      this.props.actions.previewField.removeFile(this.props.id);
+      this.props.actions.previewField.removeFile(prevProps.id);
     }
   }
 
@@ -234,8 +235,8 @@ class PreviewImageField extends Component {
     }
     const url = upload.url || data.preview || data.url;
     if (url) {
-      return (!data.version || url.startsWith('data:image/')) ?
-        url : this.cacheBustUrl(url, data.version);
+      const plainUrl = url.startsWith('data:image/');
+      return plainUrl ? url : this.cacheBustUrl(url, data.version);
     }
 
     return null;
@@ -247,10 +248,14 @@ class PreviewImageField extends Component {
    * @param {string} versionId
    * @return string
    */
-  cacheBustUrl(url, versionId) {
+  cacheBustUrl(url, versionId = '') {
+    const vid = versionId || this.props.data.version;
+    if (this.props.bustCache === false || !vid) {
+      return url;
+    }
+
     const parsedUrl = urlLib.parse(url);
-    const parsedQs = qs.parse(parsedUrl.query);
-    parsedQs.vid = versionId;
+    const parsedQs = { ...qs.parse(parsedUrl.query), vid };
     return urlLib.format({ ...parsedUrl, search: qs.stringify(parsedQs) });
   }
 
@@ -277,7 +282,7 @@ class PreviewImageField extends Component {
     const linkedImage = (data.url && !progress) ? (
       <a
         className="editor__file-preview-link"
-        href={this.cacheBustUrl(data.url, data.version)}
+        href={this.cacheBustUrl(data.url)}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -355,6 +360,7 @@ PreviewImageField.propTypes = {
   extraClass: PropTypes.string,
   readOnly: PropTypes.bool,
   disabled: PropTypes.bool,
+  bustCache: PropTypes.bool,
   onAutofill: PropTypes.func,
   formid: PropTypes.string,
   nameValue: PropTypes.string,
@@ -398,6 +404,7 @@ PreviewImageField.defaultProps = {
   upload: {},
   // eslint-disable-next-line no-alert
   confirm: (msg) => window.confirm(msg),
+  bustCache: true
 };
 
 function mapStateToProps(state, ownProps) {
@@ -405,11 +412,14 @@ function mapStateToProps(state, ownProps) {
   const id = ownProps.id;
   const upload = state.assetAdmin.previewField[id] || {};
   const selector = formValueSelector(ownProps.formid, getFormState);
+  const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
+  const { bustCache } = state.config.sections.find((section) => section.name === sectionConfigKey);
 
   return {
     securityID,
     upload,
     nameValue: selector(state, 'Name'),
+    bustCache
   };
 }
 

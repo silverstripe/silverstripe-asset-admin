@@ -157,4 +157,55 @@ describe('PreviewImageField', () => {
       expect(edit).toBe(false);
     });
   });
+
+  describe('preview', () => {
+    it('bust cache default', () => {
+      const item = ReactTestUtils.renderIntoDocument(
+        <PreviewImageField {...props} />
+      );
+
+      const url = item.preview('image', { }, { url: '/logo.jpg', version: 123 });
+      expect(url).toBe('/logo.jpg?vid=123');
+    });
+
+    it('bust cache enabled', () => {
+      const item = ReactTestUtils.renderIntoDocument(
+        <PreviewImageField {...props} bustCache />
+      );
+
+      const url = item.preview('image', { }, { url: '/logo.jpg', version: 123 });
+      expect(url).toBe('/logo.jpg?vid=123');
+    });
+
+    it('bust cache disabled', () => {
+      const item = ReactTestUtils.renderIntoDocument(
+        <PreviewImageField {...props} bustCache={false} />
+      );
+
+      const url = item.preview('image', { }, { url: '/logo.jpg', version: 123 });
+      expect(url).toBe('/logo.jpg');
+    });
+
+    it('call cacheBustUrl directly without version', () => {
+      const item = ReactTestUtils.renderIntoDocument(
+        <PreviewImageField {...props} />
+      );
+
+      const url = item.cacheBustUrl('/logo.jpg');
+      expect(url).toBe('/logo.jpg');
+    });
+
+    it('call cacheBustUrl directly with version', () => {
+      const propsWithVersion = {
+        ...props,
+        data: { ...props.data, version: 456 }
+      };
+      const item = ReactTestUtils.renderIntoDocument(
+        <PreviewImageField {...propsWithVersion} />
+      );
+
+      const url = item.cacheBustUrl('/logo.jpg');
+      expect(url).toBe('/logo.jpg?vid=456');
+    });
+  });
 });
