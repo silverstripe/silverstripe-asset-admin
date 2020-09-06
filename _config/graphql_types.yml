@@ -119,7 +119,7 @@ SilverStripe\GraphQL\Schema\Schema:
 #                    title: true
 #                    created: true
 #                    lastEdited: true
-                paginate:
+                paginateList:
                   after: sort
         FileUsage:
           description: Describe the usage of a file or folder
