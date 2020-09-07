@@ -13,6 +13,7 @@ use SilverStripe\Assets\Folder;
 use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\GraphQL\QueryHandler\QueryHandler;
 use SilverStripe\GraphQL\Schema\DataObject\FieldAccessor;
+use SilverStripe\GraphQL\Schema\DataObject\Plugin\Paginator;
 use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\Filterable;

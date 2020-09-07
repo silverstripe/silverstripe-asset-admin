@@ -17,4 +17,7 @@ SilverStripe\GraphQL\Schema\Schema:
 #                title: true
 #                created: true
 #                lastEdited: true
-            paginate: true
+            paginate:
+              resolver:
+                - SilverStripe\GraphQL\Schema\DataObject\Plugin\Paginator
+                - paginate
