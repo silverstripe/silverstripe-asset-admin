@@ -1,0 +1,5 @@
+FileUsage:
+  description: Describe the usage of a file or folder
+  fields:
+    id: ID!
+    inUseCount: Int

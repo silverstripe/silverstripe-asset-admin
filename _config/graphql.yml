@@ -10,3 +10,10 @@ SilverStripe\Core\Injector\Injector:
       fileTypeResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\FileTypeResolver'
       folderTypeResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\FolderTypeResolver'
       publicationResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver'
+SilverStripe\GraphQL\Schema\Schema:
+  schemas:
+    admin:
+      src:
+        assetAdmin: 'silverstripe/asset-admin: _graphql'
+      builders:
+        assetAdmin: SilverStripe\AssetAdmin\GraphQL\Schema\Builder
