@@ -1,0 +1,14 @@
+'readFileUsage(IDs: [ID]!)': '[FileUsage]'
+'readFiles(filter: FileFilterInput)':
+  type: '[FileResult]'
+  plugins:
+    #            sort:
+    #              fields:
+    #                id: true
+    #                title: true
+    #                created: true
+    #                lastEdited: true
+    paginate:
+      resolver:
+        - SilverStripe\GraphQL\Schema\DataObject\Plugin\Paginator
+        - paginate
