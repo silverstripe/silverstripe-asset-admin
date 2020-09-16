@@ -6,6 +6,7 @@ import { inject } from 'lib/Injector';
 import CONSTANTS from 'constants/index';
 import fieldHolder from 'components/FieldHolder/FieldHolder';
 import fileShape from 'lib/fileShape';
+import getStatusCodeMessage from 'lib/getStatusCodeMessage';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 import * as modalActions from 'state/modal/ModalActions';
 import PropTypes from 'prop-types';
@@ -214,7 +215,15 @@ class UploadField extends Component {
   }
 
   handleFailedUpload(file, response) {
-    this.props.actions.uploadField.failUpload(this.props.id, file._queuedId, response);
+    const statusCodeMessage = file.xhr && file.xhr.status
+      ? getStatusCodeMessage(file.xhr.status)
+      : '';
+    this.props.actions.uploadField.failUpload(
+      this.props.id,
+      file._queuedId,
+      response,
+      statusCodeMessage
+    );
   }
 
   /**

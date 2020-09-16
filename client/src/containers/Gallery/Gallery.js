@@ -19,6 +19,7 @@ import { withApollo } from 'react-apollo';
 import { SelectableGroup } from 'react-selectable';
 import GalleryDND from './GalleryDND';
 import configShape from 'lib/configShape';
+import getStatusCodeMessage from 'lib/getStatusCodeMessage';
 import MoveModal from '../MoveModal/MoveModal';
 import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
@@ -435,7 +436,10 @@ class Gallery extends Component {
   }
 
   handleFailedUpload(fileXhr, response) {
-    this.props.actions.queuedFiles.failUpload(fileXhr._queuedId, response);
+    const statusCodeMessage = fileXhr.xhr && fileXhr.xhr.status
+      ? getStatusCodeMessage(fileXhr.xhr.status)
+      : '';
+    this.props.actions.queuedFiles.failUpload(fileXhr._queuedId, response, statusCodeMessage);
   }
 
   /**

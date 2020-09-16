@@ -150,12 +150,11 @@ $uploadfield-item-label-height: 40px;
   color: white;
   background: $brand-danger;
   border-radius: 14px;
-  max-width: 25%;
+  max-width: 50%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 
 .uploadfield-item__complete-icon {
   line-height: 38px;
