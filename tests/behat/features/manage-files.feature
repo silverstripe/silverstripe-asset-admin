@@ -1,4 +1,4 @@
-@javascript @assets @retry
+@javascript @assets @retry @manage-files
 Feature: Manage files
   As a cms author
   I want to upload and manage files within the CMS
@@ -175,7 +175,7 @@ Feature: Manage files
       And I should see "This folder contains file(s) that are currently used" in the ".modal-body" region
       And I should see "Ensure files are removed from content areas" in the ".modal-body" region
       And I press the Delete button inside the modal
-    Then I should see "1 folders/files were successfully archived" in the message box
+    Then I should see a "1 folders/files were successfully archived" success toast
       And I should not see the file named "folder3" in the gallery
 
   @modal
@@ -186,7 +186,7 @@ Feature: Manage files
     Then I should see a modal titled "Confirm file deletion"
       And I should see "file is currently in use" in the ".modal-body" region
       And I press the Delete button inside the modal
-    Then I should see "1 folders/files were successfully archived" in the message box
+    Then I should see a "1 folders/files were successfully archived" success toast
       And I should not see the file named "file1" in the gallery
 
   Scenario: I can move a file through editing
