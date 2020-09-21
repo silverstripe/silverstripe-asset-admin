@@ -1,4 +1,4 @@
-@javascript @assets @retry @manage-files
+@javascript @assets @retry
 Feature: Manage files
   As a cms author
   I want to upload and manage files within the CMS
