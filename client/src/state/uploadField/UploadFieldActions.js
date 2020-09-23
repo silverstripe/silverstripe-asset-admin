@@ -33,15 +33,16 @@ export function setFiles(fieldId, files) {
  *
  * @param {String} fieldId - Identifier of UploadField
  * @param {String} queuedId - Temporary id assigned when this file was queued
+ * @param {Object|String} response
+ * @param {String} statusCodeMessage - message to use based on http status code
  */
-export function failUpload(fieldId, queuedId, response) {
+export function failUpload(fieldId, queuedId, response, statusCodeMessage) {
   return (dispatch) => {
     let message = response.message;
 
-    // if we're given a string, then use it as the error message
     if (typeof response === 'string') {
       message = {
-        value: response,
+        value: statusCodeMessage || response,
         type: 'error',
       };
     }

@@ -17,18 +17,19 @@ export function addQueuedFile(file) {
  * Updates a queued file if it fails to upload.
  *
  * @param {String} queuedId - Temporary id assigned when this file was queued
+ * @param {Object|String} response
+ * @param {String} statusCodeMessage - message to use based on http status code
  */
-export function failUpload(queuedId, response) {
+export function failUpload(queuedId, response, statusCodeMessage) {
   return (dispatch) => {
     let message = response.message;
     if (response.errors && response.errors.length) {
       message = response.errors[0];
     }
 
-    // if we're given a string, then use it as the error message
     if (typeof response === 'string') {
       message = {
-        value: response,
+        value: statusCodeMessage || response,
         type: 'error',
       };
     }
