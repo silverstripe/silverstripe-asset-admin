@@ -19,7 +19,8 @@ Feature: Insert an image into a page
     Then I should see the "Form_fileInsertForm" form
       And I should not see an ".gallery-item--selectable" element
       And I should not see an ".bulk-actions" element
-    When I press the "Insert" button
+    When I press the "Original" button
+      And I press the "Insert" button
     Then the "Content" HTML field should contain "file1.jpg"
     # Required to avoid "unsaved changed" browser dialog
       And I press the "Save" button
@@ -30,6 +31,7 @@ Feature: Insert an image into a page
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
     When I fill in "Alternative text (alt)" with "My alt"
+      And I press the "Original" button
       And I press the "Insert" button
     Then the "Content" HTML field should contain "file1.jpg"
       And the "Content" HTML field should contain "My alt"
@@ -56,7 +58,8 @@ Feature: Insert an image into a page
       Then I should see the "Form_fileEditForm" form
     When I click the ".editor-header__back-button" element
       Then I should see the "Form_fileInsertForm" form
-    When I press the "Insert file" button
+    When I press the "Original" button
+      Then I press the "Insert file" button
       Then the "Content" HTML field should contain "file1.jpg"
       And the "Content" HTML field should contain "My alt"
       # Required so that we click the correct save button below
@@ -69,6 +72,7 @@ Feature: Insert an image into a page
       And I press the "Save" button
       Then I should see the "Update file" button
     When I fill in "Alternative text (alt)" with "My alt updated"
+      And I press the "Original" button
       And I press the "Update file" button
       Then the "Content" HTML field should contain "My alt updated"
       # Required to avoid "unsaved changed" browser dialog
