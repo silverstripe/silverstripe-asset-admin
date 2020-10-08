@@ -30,21 +30,19 @@ env:
 matrix:
   include:
     - php: 7.1
-      env: PHPUNIT_TEST=1
+      env: PHPUNIT_TEST=1 COMPOSER_ARG=--prefer-lowest
     - php: 7.2
       env: BEHAT_TEST=1
     - php: 7.3
-      env: PHPUNIT_TEST=1
+      env: PHPUNIT_TEST=1 PHPCS_TEST=1
     - php: 7.4
       env: PHPUNIT_TEST=1
     - php: 7.1
       env: NPM_TEST=1
-    - php: 7.2
-      env: PHPCS_TEST=1
     - php: 7.3
-      env:
-        - DB=PGSQL
-        - PHPUNIT_TEST=1
+      env: PHPUNIT_TEST=1 DB=PGSQL
+    - php: nightly
+      env: PHPUNIT_TEST=1 COMPOSER_ARG=--ignore-platform-reqs WITH_XDEBUG=1
 
 before_script:
 # Extra $PATH
@@ -52,7 +50,7 @@ before_script:
 
 # Init PHP
   - phpenv rehash
-  - phpenv config-rm xdebug.ini
+  - if [[ ! $WITH_XDEBUG ]] ; then phpenv config-rm xdebug.ini; fi
   - echo 'memory_limit = 2048M' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - echo 'always_populate_raw_post_data = -1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 
@@ -60,7 +58,7 @@ before_script:
   - composer validate
   - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:2.x-dev --prefer-dist; fi
   - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms:4.x-dev silverstripe/frameworktest:0.1.0 --no-update --prefer-dist
-  - composer update
+  - composer update $COMPOSER_ARG
 
 # Remove preinstalled Chrome (google-chrome)
 # this would conflict with our chromium-browser installation

@@ -116,7 +116,7 @@ class FolderTypeCreatorTest extends SapphireTest
         $folder2->write();
 
         $managerMock = $this->getManagerMock();
-        $creator = new FolderTypeCreator($managerMock->reveal());
+        $creator = new FolderTypeCreator($managerMock);
         $parents = $creator->resolveParentsField(
             $folder1_1_1,
             [],
@@ -136,8 +136,7 @@ class FolderTypeCreatorTest extends SapphireTest
 
     protected function getManagerMock()
     {
-        $mock = $this->prophesize(Manager::class);
-        return $mock;
+        return $this->getMockBuilder(Manager::class)->getMock();
     }
 
     protected function getContext()
@@ -152,7 +151,7 @@ class FolderTypeCreatorTest extends SapphireTest
         $context = $context ? $context : $this->getContext();
 
         $managerMock = $this->getManagerMock();
-        $creator = new FolderTypeCreator($managerMock->reveal());
+        $creator = new FolderTypeCreator($managerMock);
         return $creator->resolveChildrenConnection(
             $object,
             $args,
