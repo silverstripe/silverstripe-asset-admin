@@ -24,14 +24,15 @@ Folder:
     visibility: String
     parents: '[FileInterface]'
     filesInUseCount: Int
-    children:
+    'children(filter: FileFilterInput)':
       type: '[FileInterface]'
       plugins:
-        #                sort:
-        #                  fields:
-        #                    id: true
-        #                    title: true
-        #                    created: true
-        #                    lastEdited: true
-        paginateList:
-          after: sort
+        sorter:
+          input: FolderChildrenSortFields
+          fields:
+            id: ID
+            title: Title
+            created: Created
+            lastEdited: LastEdited
+        paginate:
+          resolver: [SilverStripe\GraphQL\Schema\DataObject\Plugin\Paginator, paginate]

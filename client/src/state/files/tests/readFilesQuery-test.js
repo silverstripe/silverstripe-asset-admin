@@ -10,24 +10,19 @@ describe('readFilesQuery', () => {
   let folder = null;
 
   beforeEach(() => {
-    child1 = { node: { id: 2 } };
-    child2 = { node: { id: 3 } };
+    child1 = { id: 2 };
+    child2 = { id: 3 };
     folder = {
       id: 1,
       children: {
         pageInfo: { totalCount: 2 },
-        edges: [child1, child2],
+        nodes: [child1, child2],
       },
     };
     graphqlData = {
       data: {
         refetch: jest.fn(),
-        readFiles: {
-          pageInfo: { totalCount: 1 },
-          edges: [
-            { node: folder },
-          ],
-        },
+        readFiles: [folder],
       },
       ownProps: {
         actions: {},
@@ -38,8 +33,8 @@ describe('readFilesQuery', () => {
   it('should map the readFiles data to props', () => {
     const newProps = config.props(graphqlData);
 
-    expect(newProps.files).toContain(child1.node);
-    expect(newProps.files).toContain(child2.node);
+    expect(newProps.files).toContain(child1);
+    expect(newProps.files).toContain(child2);
     expect(newProps.filesTotalCount).toBe(2);
     expect(typeof newProps.actions.files.readFiles).toBe('function');
 

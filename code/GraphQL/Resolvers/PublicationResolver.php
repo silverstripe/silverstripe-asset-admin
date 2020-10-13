@@ -91,8 +91,8 @@ class PublicationResolver extends DefaultResolverProvider
 
         foreach ($allowedFiles as $file) {
             $result[] = $isPublish
-                ? self::unpublishFile($file, $force)
-                : self::publishFile($file, $force);
+                ? self::publishFile($file, $force)
+                : self::unpublishFile($file, $force);
         }
 
         return $result;

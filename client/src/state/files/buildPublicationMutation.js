@@ -13,7 +13,7 @@ const buildPublicationMutation = (mutationName) => {
       }
       ...on PublicationNotice {
         __typename
-        type
+        noticeType
         message
         ids
       }

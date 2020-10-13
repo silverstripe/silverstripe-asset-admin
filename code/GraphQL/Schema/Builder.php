@@ -18,18 +18,29 @@ class Builder implements SchemaUpdater
 {
     public static function updateSchema(Schema $schema): void
     {
-        $appCategories = array_keys(File::config()->get('app_categories'));
-        // Build the app category type
-        $categoryValues = [];
-        foreach ($appCategories as $category) {
-            $categoryValues[$category] = $category;
-        }
+        $categoryValues = array_map(function ($category) {
+            return ['value' => $category];
+        }, File::config()->get('app_categories'));
+
         // Sanitise GraphQL Enum aliases (some contain slashes)
         foreach ($categoryValues as $key => $v) {
             unset($categoryValues[$key]);
             $newKey = strtoupper(preg_replace('/[^[[:alnum:]]]*/', '', $key));
             $categoryValues[$newKey] = $v;
         }
+
+//        $appCategories = array_keys(File::config()->get('app_categories'));
+//        // Build the app category type
+//        $categoryValues = [];
+//        foreach ($appCategories as $category) {
+//            $categoryValues[$category] = $category;
+//        }
+//        // Sanitise GraphQL Enum aliases (some contain slashes)
+//        foreach ($categoryValues as $key => $v) {
+//            unset($categoryValues[$key]);
+//            $newKey = strtoupper(preg_replace('/[^[[:alnum:]]]*/', '', $key));
+//            $categoryValues[$newKey] = $v;
+//        }
 
         $schema->addEnum(Enum::create('AppCategory', $categoryValues));
     }

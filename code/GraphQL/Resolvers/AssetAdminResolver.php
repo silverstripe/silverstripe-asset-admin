@@ -73,7 +73,7 @@ class AssetAdminResolver extends DefaultResolverProvider
         return $file;
     }
 
-    public function resolveCreateFolder($object, array $args, $context, ResolveInfo $info)
+    public static function resolveCreateFolder($object, array $args, $context, ResolveInfo $info)
     {
         $accessor = FieldAccessor::singleton();
         $parentID = isset($args['folder']['parentId']) ? intval($args['folder']['parentId']) : 0;
@@ -111,7 +111,7 @@ class AssetAdminResolver extends DefaultResolverProvider
         return $folder;
     }
 
-    public function resolveDeleteFiles($object, array $args, $context, ResolveInfo $info)
+    public static function resolveDeleteFiles($object, array $args, $context, ResolveInfo $info)
     {
         if (!isset($args['IDs']) || !is_array($args['IDs'])) {
             throw new InvalidArgumentException('IDs must be an array');
@@ -166,7 +166,7 @@ class AssetAdminResolver extends DefaultResolverProvider
             }
         }
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)
-            ->byIDs($args['fileIds']);
+            ->byIDs($args['fileIDs']);
         $errorFiles = [];
 
         /** @var File $file */
@@ -224,7 +224,7 @@ class AssetAdminResolver extends DefaultResolverProvider
     }
 
 
-    public function resolveReadFileUsage($object, array $args, $context, ResolveInfo $info): array
+    public static function resolveReadFileUsage($object, array $args, $context, ResolveInfo $info): array
     {
         if (!isset($args['IDs']) || !is_array($args['IDs'])) {
             throw new InvalidArgumentException('IDs must be an array');

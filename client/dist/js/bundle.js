@@ -1539,7 +1539,6 @@ var GalleryItem = function (_Component) {
     value: function handleActivate(event) {
       event.stopPropagation();
       if (typeof this.props.onActivate === 'function' && this.saved()) {
-        console.log('activate', this.props.item, event);
         this.props.onActivate(event, this.props.item);
       }
     }
@@ -4877,7 +4876,7 @@ var AssetAdmin = function (_Component) {
           return result.__typename === 'File';
         });
         var confirmationRequired = unpublishFiles.filter(function (result) {
-          return result.__typename === 'PublicationNotice' && result.Type === 'HAS_OWNERS';
+          return result.__typename === 'PublicationNotice' && result.noticeType === 'HAS_OWNERS';
         });
         var successful = successes.map(function (file) {
           _this4.resetFile(file);
@@ -4886,7 +4885,7 @@ var AssetAdmin = function (_Component) {
         var displayedMessages = confirmationRequired.slice(0, 4);
         var rest = confirmationRequired.slice(5);
         var body = displayedMessages.map(function (warning) {
-          return warning.Message;
+          return warning.message;
         });
         if (rest.length) {
           body.push(_i18n2.default.inject(_i18n2.default._t('AssetAdmin.BULK_OWNED_WARNING_REMAINING', 'And {count} other file(s)'), { count: rest.length }));
@@ -4896,7 +4895,7 @@ var AssetAdmin = function (_Component) {
 
           if (confirm(alertMessage.join('\n\n'))) {
             var secondPassIDs = confirmationRequired.reduce(function (acc, curr) {
-              return acc.concat(curr.IDs);
+              return acc.concat(curr.ids);
             }, []);
             return _this4.doUnpublish(secondPassIDs, true).then(function (next) {
               return successful.concat(next);
@@ -9942,7 +9941,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _templateObject = _taggedTemplateLiteral(['\n  mutation ', '($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {\n    ', '(IDs: $IDs, force: $Force, quiet: $Quiet) {\n      ...on File {\n        __typename\n        ...FileInterfaceFields\n        ...FileFields\n      }\n      ...on PublicationNotice {\n        __typename\n        type\n        message\n        ids\n      }\n    }\n  }\n  ', '\n  ', '\n'], ['\n  mutation ', '($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {\n    ', '(IDs: $IDs, force: $Force, quiet: $Quiet) {\n      ...on File {\n        __typename\n        ...FileInterfaceFields\n        ...FileFields\n      }\n      ...on PublicationNotice {\n        __typename\n        type\n        message\n        ids\n      }\n    }\n  }\n  ', '\n  ', '\n']);
+var _templateObject = _taggedTemplateLiteral(['\n  mutation ', '($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {\n    ', '(IDs: $IDs, force: $Force, quiet: $Quiet) {\n      ...on File {\n        __typename\n        ...FileInterfaceFields\n        ...FileFields\n      }\n      ...on PublicationNotice {\n        __typename\n        noticeType\n        message\n        ids\n      }\n    }\n  }\n  ', '\n  ', '\n'], ['\n  mutation ', '($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {\n    ', '(IDs: $IDs, force: $Force, quiet: $Quiet) {\n      ...on File {\n        __typename\n        ...FileInterfaceFields\n        ...FileFields\n      }\n      ...on PublicationNotice {\n        __typename\n        noticeType\n        message\n        ids\n      }\n    }\n  }\n  ', '\n  ', '\n']);
 
 var _graphqlTag = __webpack_require__(16);
 
@@ -10088,7 +10087,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.config = exports.mutation = undefined;
 
-var _templateObject = _taggedTemplateLiteral(['\n  mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {\n    moveFiles(folderId: $folderId, fileIds: $fileIds) {\n      ...FileInterfaceFields\n      ...FileFields\n    }\n  }\n  ', '\n  ', '\n'], ['\n  mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {\n    moveFiles(folderId: $folderId, fileIds: $fileIds) {\n      ...FileInterfaceFields\n      ...FileFields\n    }\n  }\n  ', '\n  ', '\n']);
+var _templateObject = _taggedTemplateLiteral(['\n  mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {\n    moveFiles(folderId: $folderId, fileIDs: $fileIds) {\n      ...FileInterfaceFields\n      ...FileFields\n    }\n  }\n  ', '\n  ', '\n'], ['\n  mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {\n    moveFiles(folderId: $folderId, fileIDs: $fileIds) {\n      ...FileInterfaceFields\n      ...FileFields\n    }\n  }\n  ', '\n  ', '\n']);
 
 var _reactApollo = __webpack_require__(11);
 
@@ -10261,6 +10260,8 @@ var _Search = __webpack_require__(17);
 
 var _Injector = __webpack_require__(3);
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var apolloConfig = {
   options: function options(_ref) {
     var sectionConfig = _ref.sectionConfig,
@@ -10298,28 +10299,25 @@ var apolloConfig = {
         childrenFilter: childrenFilter,
         limit: limit,
         offset: ((params.page || 1) - 1) * limit,
-        sortBy: sortField && sortDir ? [{ field: sortField, direction: sortDir.toUpperCase() }] : undefined
+        sortBy: sortField && sortDir ? _defineProperty({}, sortField, sortDir.toUpperCase()) : undefined
       }
     };
   },
-  props: function props(_ref4) {
-    var _ref4$data = _ref4.data,
-        error = _ref4$data.error,
-        refetch = _ref4$data.refetch,
-        readFiles = _ref4$data.readFiles,
-        networkLoading = _ref4$data.loading,
-        actions = _ref4.ownProps.actions;
+  props: function props(_ref5) {
+    var _ref5$data = _ref5.data,
+        error = _ref5$data.error,
+        refetch = _ref5$data.refetch,
+        readFiles = _ref5$data.readFiles,
+        networkLoading = _ref5$data.loading,
+        actions = _ref5.ownProps.actions;
 
-    var folder = readFiles && readFiles.edges[0] ? readFiles.edges[0].node : null;
-    var files = folder && folder.children ? folder.children.edges.map(function (edge) {
-      return edge.node;
-    }).filter(function (file) {
+    var folder = readFiles ? readFiles[0] : null;
+    var files = folder && folder.children ? folder.children.nodes.filter(function (file) {
       return file;
     }) : [];
     var filesTotalCount = folder && folder.children ? folder.children.pageInfo.totalCount : 0;
 
     var filesLoading = folder && !folder.children;
-
     var errors = error && error.graphQLErrors && error.graphQLErrors.map(function (graphQLError) {
       return graphQLError.message;
     });
@@ -10346,15 +10344,25 @@ var query = {
   pluralName: 'Files',
   pagination: false,
   params: {
-    rootFilter: 'FileFilterInput'
+    limit: 'Int!',
+    offset: 'Int!',
+    rootFilter: 'FileFilterInput',
+    childrenFilter: 'FileFilterInput',
+    sortBy: 'FolderChildrenSortFields'
   },
   args: {
     root: {
       filter: 'rootFilter'
+    },
+    'root/...on Folder/children': {
+      limit: 'limit',
+      offset: 'offset',
+      filter: 'childrenFilter',
+      sort: 'sortBy'
     }
   },
   fragments: ['FileInterfaceFields', 'FileFields'],
-  fields: ['pageInfo', ['totalCount'], 'edges', ['node', ['...FileInterfaceFields', '...FileFields', '...on Folder', ['children', ['pageInfo', ['totalCount'], 'edges', ['node', ['...FileInterfaceFields', '...FileFields']]], 'parents', ['id', 'title']]]]]
+  fields: ['...FileInterfaceFields', '...FileFields', '...on Folder', ['children', ['pageInfo', ['totalCount'], 'nodes', ['...FileInterfaceFields', '...FileFields']], 'parents', ['id', 'title']]]
 };
 
 exports.default = query;
