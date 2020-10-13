@@ -65,6 +65,7 @@ before_script:
   - git remote add -f uc https://github.com/unclecheese/silverstripe-admin
   - git checkout pulls/1/schemageddon
   - cd ../../../
+  - vendor/bin/sake dev/graphql/build schema=admin
 
 # Remove preinstalled Chrome (google-chrome)
 # this would conflict with our chromium-browser installation
