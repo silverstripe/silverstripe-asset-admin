@@ -408,7 +408,7 @@ class AssetAdmin extends Component {
       .then(({ data: { unpublishFiles } }) => {
         const successes = unpublishFiles.filter(result => result.__typename === 'File');
         const confirmationRequired = unpublishFiles.filter(result => (
-          result.__typename === 'PublicationNotice' && result.Type === 'HAS_OWNERS'
+          result.__typename === 'PublicationNotice' && result.noticeType === 'HAS_OWNERS'
         ));
         const successful = successes.map(file => {
           this.resetFile(file);
@@ -416,7 +416,7 @@ class AssetAdmin extends Component {
         });
         const displayedMessages = confirmationRequired.slice(0, 4);
         const rest = confirmationRequired.slice(5);
-        const body = displayedMessages.map(warning => warning.Message);
+        const body = displayedMessages.map(warning => warning.message);
         if (rest.length) {
           body.push(
             i18n.inject(
@@ -449,7 +449,7 @@ class AssetAdmin extends Component {
           // eslint-disable-next-line no-alert
           if (confirm(alertMessage.join('\n\n'))) {
             const secondPassIDs = confirmationRequired.reduce(
-              (acc, curr) => acc.concat(curr.IDs),
+              (acc, curr) => acc.concat(curr.ids),
               []
             );
             return this.doUnpublish(secondPassIDs, true)
