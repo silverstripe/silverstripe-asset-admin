@@ -5,15 +5,9 @@
     "license": "BSD-3-Clause",
     "require": {
         "silverstripe/framework": "^4.5",
-        "silverstripe/admin": "dev-pulls/1/schemageddon as 1.6.3",
-        "silverstripe/graphql": "4.x-dev as 3.2.4",
+        "silverstripe/admin": "1.x-dev",
+        "silverstripe/graphql": "4.x-dev",
         "silverstripe/vendor-plugin": "^1"
-    },
-    "repositories": {
-        "silverstripe/admin": {
-            "type": "vcs",
-            "url": "git@github.com:/unclecheese/silverstripe-admin"
-        }
     },
     "require-dev": {
         "sminnee/phpunit": "^5.7",
