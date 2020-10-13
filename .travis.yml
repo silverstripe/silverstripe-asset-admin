@@ -57,15 +57,18 @@ before_script:
 # Install composer
   - composer validate
   - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:2.x-dev --prefer-dist; fi
-  - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms:4.x-dev silverstripe/frameworktest:0.1.0 --no-update --prefer-dist
+  - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms:4.x-dev silverstripe/frameworktest:dev-pulls/4/schemageddon --no-update --prefer-dist
   - composer update $COMPOSER_ARG
+
+# Remove once everything is merged
   - cd vendor/silverstripe/graphql
-  - git checkout master
+  - git checkout -t origin/master
   - cd ../admin
   - git remote add -f uc https://github.com/unclecheese/silverstripe-admin
   - git checkout pulls/1/schemageddon
   - cd ../../../
   - vendor/bin/sake dev/graphql/build schema=admin
+########################################################
 
 # Remove preinstalled Chrome (google-chrome)
 # this would conflict with our chromium-browser installation
