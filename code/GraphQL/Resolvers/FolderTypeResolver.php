@@ -3,7 +3,6 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
-
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\AssetAdmin\GraphQL\FileFilter;
@@ -150,5 +149,4 @@ class FolderTypeResolver extends DefaultResolverProvider
 
         return $parents;
     }
-
 }

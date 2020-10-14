@@ -3,7 +3,6 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
-
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\FileFilter;
 use SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator;
@@ -33,7 +32,6 @@ class AssetAdminResolver extends DefaultResolverProvider
         if ($object instanceof File) {
             return 'File';
         }
-
     }
 
     public static function resolveCreateFile($object, array $args, $context, ResolveInfo $info)
@@ -306,5 +304,4 @@ class AssetAdminResolver extends DefaultResolverProvider
 
         return $list;
     }
-
 }

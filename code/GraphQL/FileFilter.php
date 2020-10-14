@@ -3,7 +3,6 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
-
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
@@ -113,5 +112,4 @@ class FileFilter
 
         return $list;
     }
-
 }
