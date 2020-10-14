@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Tests\GraphQL;
 
+use SilverStripe\AssetAdmin\GraphQL\FileFilter;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
@@ -55,17 +56,15 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
 
         $baseList = $folder->stageChildren();
 
-        $creator = new FileFilterInputTypeCreator();
-
         // Mock searches for 4th Jan
-        $list = $creator->filterList($baseList, [
+        $list = FileFilter::filterList($baseList, [
             'lastEditedFrom' => '2014-01-04',
             'lastEditedTo' => '2014-01-04',
         ]);
         $this->assertEquals(0, $list->Count());
 
         // Mock searches for 5th Jan
-        $list = $creator->filterList($baseList, [
+        $list = FileFilter::filterList($baseList, [
             'lastEditedFrom' => date('Y-m-d'),
             'lastEditedTo' => date('Y-m-d'),
         ]);
@@ -74,7 +73,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
 
 
         // Mock searches for 5th-6th Jan
-        $list = $creator->filterList($baseList, [
+        $list = FileFilter::filterList($baseList, [
             'createdFrom' => '2014-01-05',
             'createdTo' => '2014-01-06',
         ]);
@@ -83,7 +82,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         $this->assertContains($file2->ID, $list->column('ID'));
 
         // Mock searches for 6th Jan
-        $list = $creator->filterList($baseList, [
+        $list = FileFilter::filterList($baseList, [
             'createdFrom' => '2014-01-06',
             'createdTo' => '2014-01-06',
         ]);
@@ -91,7 +90,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         $this->assertContains($file2->ID, $list->column('ID'));
 
         // Mock searches for 7th Jan
-        $list = $creator->filterList($baseList, [
+        $list = FileFilter::filterList($baseList, [
             'lastEditedFrom' => '2014-01-07',
             'lastEditedTo' => '2014-01-07',
         ]);
@@ -121,9 +120,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         $file2->write();
 
         $baseList = File::get();
-
-        $creator = new FileFilterInputTypeCreator();
-        $list = $creator->filterList($baseList, [
+        $list = FileFilter::filterList($baseList, [
             'parentId' => $folder1->ID
         ]);
         $this->assertContains(
@@ -150,8 +147,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
 
         $baseList = File::get();
 
-        $creator = new FileFilterInputTypeCreator();
-        $list = $creator->filterList($baseList, [
+        $list = FileFilter::filterList($baseList, [
             'id' => $file1->ID
         ]);
         $this->assertContains(
@@ -190,8 +186,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
 
         $baseList = File::get();
 
-        $creator = new FileFilterInputTypeCreator();
-        $list = $creator->filterList($baseList, [
+        $list = FileFilter::filterList($baseList, [
             'anyChildId' => $file2->ID
         ]);
         $this->assertContains(
@@ -227,8 +222,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         $file2->write();
 
         $baseList = File::get();
-        $creator = new FileFilterInputTypeCreator();
-        $listByName = $creator->filterList($baseList, [
+        $listByName = FileFilter::filterList($baseList, [
             'name' => 'Foo',
         ]);
 
@@ -239,8 +233,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         );
 
         $baseList = File::get();
-        $creator = new FileFilterInputTypeCreator();
-        $listByTitle = $creator->filterList($baseList, [
+        $listByTitle = FileFilter::filterList($baseList, [
             'name' => 'FooFileTitle',
         ]);
 
@@ -264,8 +257,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         $archive->write();
 
         $baseList = File::get();
-        $creator = new FileFilterInputTypeCreator();
-        $listImages = $creator->filterList($baseList, [
+        $listImages = FileFilter::filterList($baseList, [
             'appCategory' => ['jpg'],
         ]);
         $this->assertEquals(
@@ -275,8 +267,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         );
 
         $baseList = File::get();
-        $creator = new FileFilterInputTypeCreator();
-        $listArchives = $creator->filterList($baseList, [
+        $listArchives = FileFilter::filterList($baseList, [
             'appCategory' => ['zip'],
         ]);
         $this->assertEquals(

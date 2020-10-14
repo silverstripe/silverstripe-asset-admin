@@ -2,14 +2,13 @@
 
 namespace SilverStripe\AssetAdmin\Tests\GraphQL;
 
-use SilverStripe\AssetAdmin\GraphQL\ReadFileQueryCreator;
+use SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
-use GraphQL\Type\Definition\ResolveInfo;
-use SilverStripe\GraphQL\Manager;
+
 use Silverstripe\Assets\Dev\TestAssetStore;
 
 /**
@@ -88,7 +87,7 @@ class ReadFileQueryCreatorTest extends SapphireTest
     protected function getResultsForSearch($args, $context = null)
     {
         $context = $context ? $context : ['currentUser' => null];
-        $creator = new ReadFileQueryCreator(new Manager());
-        return $creator->resolveConnection(null, $args, $context, new ResolveInfo([]));
+
+        return AssetAdminResolver::resolveReadFiles(null, $args, $context, new FakeResolveInfo());
     }
 }

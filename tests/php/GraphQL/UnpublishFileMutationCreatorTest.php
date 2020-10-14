@@ -2,9 +2,8 @@
 
 namespace SilverStripe\AssetAdmin\Tests\GraphQL;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
-use SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator;
+use SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver;
 use SilverStripe\Assets\File;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Security\Security;
@@ -30,9 +29,8 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         // Bootstrap test
         $this->logInWithPermission('ADMIN');
         $member = Security::getCurrentUser();
-        $mutation = new UnpublishFileMutationCreator();
         $context = ['currentUser' => $member];
-        $resolveInfo = new ResolveInfo([]);
+        $resolveInfo = new FakeResolveInfo();
 
         /** @var File $file */
         $file = $this->objFromFixture(File::class, 'file1');
@@ -51,7 +49,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         }
 
         // Test unpublish without force
-        $result = $mutation->resolve(null, ['IDs' => [$file->ID]], $context, $resolveInfo);
+        $result = PublicationResolver::resolveUnpublishFiles(null, ['IDs' => [$file->ID]], $context, $resolveInfo);
         $this->assertCount(1, $result);
         /** @var Notice $notice */
         $notice = $result[0];
@@ -60,7 +58,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         $this->assertTrue($file->isPublished());
 
         // Unpublish with force
-        $result = $mutation->resolve(null, ['IDs' => [$file->ID], 'Force' => true], $context, $resolveInfo);
+        $result = PublicationResolver::resolveUnpublishFiles(null, ['IDs' => [$file->ID], 'force' => true], $context, $resolveInfo);
         $this->assertCount(1, $result);
         $fileResult = $result[0];
         $this->assertInstanceOf(File::class, $fileResult);

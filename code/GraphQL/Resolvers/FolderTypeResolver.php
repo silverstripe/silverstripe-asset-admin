@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
 
 use GraphQL\Type\Definition\ResolveInfo;
+use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\AssetAdmin\GraphQL\FileFilter;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
@@ -113,6 +114,41 @@ class FolderTypeResolver extends DefaultResolverProvider
             ->limit(null);
 
         return $canViewList;
+    }
+
+    /**
+     * @param Folder|AssetAdminFile $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return int
+     */
+    public static function resolveFolderFilesInUseCount($object, array $args, $context, ResolveInfo $info)
+    {
+        return $object->getFilesInUse()->count();
+    }
+
+    /**
+     * @param File $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return File[]
+     */
+    public static function resolveFolderParents($object, array $args, $context, ResolveInfo $info)
+    {
+        $parents = [];
+        $next = $object->Parent();
+        while ($next && $next->isInDB()) {
+            array_unshift($parents, $next);
+            if ($next->ParentID) {
+                $next = $next->Parent();
+            } else {
+                break;
+            }
+        }
+
+        return $parents;
     }
 
 }
