@@ -2,5 +2,8 @@
 
 .asset-admin__toolbar-extra {
   width: auto;
-}
 
+  button:last-of-type {
+    margin-right: -10px;
+  }
+}

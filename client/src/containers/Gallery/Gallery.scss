@@ -98,7 +98,7 @@
 .gallery__sort {
   display: inline-block;
   vertical-align: middle;
-  padding: $input-btn-padding-y $input-btn-padding-x;
+  padding: 0 $input-btn-padding-x;
 
   // Override chosen inline width to fit to icon
   .chosen-container {
@@ -124,6 +124,10 @@
   }
 
   .chosen-single {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
     &:focus {
       box-shadow: $dropdown-shadow;
     }
@@ -134,18 +138,21 @@
 
       @include media-breakpoint-down(sm) {
         font-size: 0;
-
-        &:after {
-          content: "\e003";
-          font-size: $font-size-lg;
-          font-family: silverstripe;
-          color: $btn-secondary-color;
-        }
       }
     }
 
     > span::before {
-      content: "Sort by ";
+      content: "\e003";
+      font-family: silverstripe;
+      color: $btn-secondary-color;
+      margin-right: 5px;
+      position: relative;
+      top: 1px;
+      font-size: $font-size-sm;
+
+      @include media-breakpoint-down(sm) {
+        font-size: $font-size-lg;
+      }
     }
   }
 
@@ -176,6 +183,10 @@
 
 .gallery__view-change-button .icon:before {
   vertical-align: middle;
+}
+
+.gallery__btn-toolbar .btn-toolbar:first-child {
+  margin-left: -10px;
 }
 
 .gallery__state-buttons {

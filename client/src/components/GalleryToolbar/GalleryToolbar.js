@@ -41,6 +41,7 @@ class GalleryToolbar extends Component {
     if (this.props.view !== 'tile') {
       return null;
     }
+
     return (
       <div className="gallery__sort fieldholder-small">
         <select
@@ -49,17 +50,21 @@ class GalleryToolbar extends Component {
           style={{ width: '160px' }}
           defaultValue={this.props.sort}
         >
-          {this.props.sorters.map((sorter) => (
-            <option
-              key={`${sorter.field}-${sorter.direction}`}
-              onClick={this.handleSelectSort}
-              data-field={sorter.field}
-              data-direction={sorter.direction}
-              value={`${sorter.field},${sorter.direction}`}
-            >
-              {sorter.label}
-            </option>
-          ))}
+          {this.props.sorters.map((sorter) => {
+            // upper case first letter of words
+            const label = sorter.label.replace(/^\w|[\s\-]+\w/g, c => c.toUpperCase());
+            return (
+              <option
+                key={`${sorter.field}-${sorter.direction}`}
+                onClick={this.handleSelectSort}
+                data-field={sorter.field}
+                data-direction={sorter.direction}
+                value={`${sorter.field},${sorter.direction}`}
+              >
+                {label}
+              </option>
+            );
+          })}
         </select>
       </div>
     );
@@ -118,7 +123,7 @@ class GalleryToolbar extends Component {
     return (
       <div className="toolbar--content toolbar--space-save">
         <div className="fill-width">
-          <div className="flexbox-area-grow">
+          <div className="gallery__btn-toolbar flexbox-area-grow">
             <div className="btn-toolbar">
               <BackButton
                 folder={folder}
