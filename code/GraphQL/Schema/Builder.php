@@ -3,7 +3,6 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL\Schema;
 
-
 use SilverStripe\Assets\File;
 use SilverStripe\GraphQL\Schema\Interfaces\SchemaUpdater;
 use SilverStripe\GraphQL\Schema\Schema;

@@ -3,7 +3,6 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
-
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;

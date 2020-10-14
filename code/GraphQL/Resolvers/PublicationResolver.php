@@ -3,7 +3,6 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
-
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
 use SilverStripe\Assets\File;
@@ -166,5 +165,4 @@ class PublicationResolver extends DefaultResolverProvider
         // No live record, no live owners
         return 0;
     }
-
 }
