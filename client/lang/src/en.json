@@ -71,5 +71,7 @@
     "AssetAdmin.CreateTitle": "Insert new media from the web",
     "AssetAdmin.EditTitle": "Media from the web",
     "AssetAdmin.NEXT": "Next",
-    "AssetAdmin.PREVIOUS": "Previous"
+    "AssetAdmin.PREVIOUS": "Previous",
+    "AssetAdmin.MOVED_ITEMS_TO": "Moved %s item(s) to %s",
+    "AssetAdmin.GO_TO_FOLDER": "Go to folder",
 }

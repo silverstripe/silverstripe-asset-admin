@@ -67,8 +67,6 @@ describe('AssetAdmin', () => {
       actions: {
         gallery: {
           deselectFiles: jest.fn(),
-          setErrorMessage: jest.fn(),
-          setNoticeMessage: jest.fn(),
         },
         queuedFiles: {
           addQueuedFile: jest.fn(),
@@ -85,6 +83,11 @@ describe('AssetAdmin', () => {
         },
         confirmDeletion: {
           deleting: jest.fn(),
+        },
+        toasts: {
+          display: jest.fn(),
+          success: jest.fn(),
+          error: jest.fn(),
         }
       },
     };

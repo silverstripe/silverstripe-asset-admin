@@ -100,7 +100,7 @@ Feature: Manage files
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
-      And I should see "3 folders/files were successfully archived" in the message box
+      And I should see a "3 folders/files were successfully archived" success toast
 
   Scenario: I can move multiple files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
@@ -122,8 +122,8 @@ Feature: Manage files
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
-    When I press the "Navigate up a level" button
-      And I click on the file named "folder2" in the gallery
+      And I should see a "Moved 3 item(s) to folder2/" success toast with these actions: Go to folder
+    When I click the "Go to folder" toast action
     Then I should see the file named "file1" in the gallery
       And I should see the file named "file2" in the gallery
       And I should see the file named "testfile" in the gallery
@@ -144,7 +144,7 @@ Feature: Manage files
     Then I should see an ".bulk-actions__action[value='publish']" element
       And I should not see an ".bulk-actions__action[value='unpublish']" element
     When I click "Publish" in the "#BulkActions .dropdown-menu" element
-      Then I should see an ".message-box.message-box--success" element
+      Then I should see a "2 folders/files were successfully published" success toast
     When I check the file named "file2" in the gallery
       And I check the file named "testfile" in the gallery
       And I press the "View actions" button
@@ -153,7 +153,7 @@ Feature: Manage files
     When I check the file named "testfile" in the gallery
       And I press the "View actions" button
       And I press the "Unpublish" button
-      Then I should see an ".message-box.message-box--success" element
+      Then I should see a "1 folders/files were successfully unpublished" success toast
     When I check the file named "file2" in the gallery
       And I check the file named "testfile" in the gallery
       And I press the "View actions" button
@@ -175,7 +175,7 @@ Feature: Manage files
       And I should see "This folder contains file(s) that are currently used" in the ".modal-body" region
       And I should see "Ensure files are removed from content areas" in the ".modal-body" region
       And I press the Delete button inside the modal
-    Then I should see "1 folders/files were successfully archived" in the message box
+    Then I should see a "1 folders/files were successfully archived" success toast
       And I should not see the file named "folder3" in the gallery
 
   @modal
@@ -186,7 +186,7 @@ Feature: Manage files
     Then I should see a modal titled "Confirm file deletion"
       And I should see "file is currently in use" in the ".modal-body" region
       And I press the Delete button inside the modal
-    Then I should see "1 folders/files were successfully archived" in the message box
+    Then I should see a "1 folders/files were successfully archived" success toast
       And I should not see the file named "file1" in the gallery
 
   Scenario: I can move a file through editing

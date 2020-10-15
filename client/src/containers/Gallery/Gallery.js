@@ -12,6 +12,7 @@ import TableView from 'containers/TableView/TableView';
 import CONSTANTS from 'constants/index';
 import FormAlert from 'components/FormAlert/FormAlert';
 import * as galleryActions from 'state/gallery/GalleryActions';
+import * as toastsActions from 'state/toasts/ToastsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import moveFilesMutation from 'state/files/moveFilesMutation';
@@ -257,13 +258,12 @@ class Gallery extends Component {
     return this.props.onPublish(publishItems)
       .then((resultItems) => {
         this.props.actions.gallery.setLoading(false);
-        this.props.actions.gallery.setNoticeMessage(
+        this.props.actions.toasts.success(
           i18n.sprintf(
             i18n._t('AssetAdmin.BULK_ACTIONS_PUBLISH_SUCCESS', '%s folders/files were successfully published.'),
             resultItems.length
           )
         );
-        this.props.actions.gallery.setErrorMessage(null);
         this.props.actions.gallery.deselectFiles();
       });
   }
@@ -288,13 +288,12 @@ class Gallery extends Component {
     return this.props.onUnpublish(unpublishItems)
       .then((resultItems) => {
         this.props.actions.gallery.setLoading(false);
-        this.props.actions.gallery.setNoticeMessage(
+        this.props.actions.toasts.success(
           i18n.sprintf(
             i18n._t('AssetAdmin.BULK_ACTIONS_UNPUBLISH_SUCCESS', '%s folders/files were successfully unpublished.'),
             resultItems.length
           )
         );
-        this.props.actions.gallery.setErrorMessage(null);
         this.props.actions.gallery.deselectFiles();
       });
   }
@@ -576,8 +575,6 @@ class Gallery extends Component {
    */
   handleOpenFolder(event, folder) {
     event.preventDefault();
-    this.props.actions.gallery.setErrorMessage(null);
-    this.props.actions.gallery.setNoticeMessage(null);
     this.props.onOpenFolder(folder.id);
   }
 
@@ -666,7 +663,7 @@ class Gallery extends Component {
         }
       })
       .catch(() => {
-        this.props.actions.gallery.setErrorMessage(
+        this.props.actions.toasts.error(
           i18n._t('AssetAdmin.FAILED_MOVE', 'There was an error moving the selected items.')
         );
       });
@@ -1115,6 +1112,7 @@ function mapDispatchToProps(dispatch) {
   return {
     actions: {
       gallery: bindActionCreators(galleryActions, dispatch),
+      toasts: bindActionCreators(toastsActions, dispatch),
       queuedFiles: bindActionCreators(queuedFilesActions, dispatch),
       confirmDeletion: bindActionCreators(confirmDeletionActions, dispatch)
     },

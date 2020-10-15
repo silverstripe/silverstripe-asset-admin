@@ -35,8 +35,6 @@ describe('Gallery', () => {
           selectFiles: () => {},
           deselectFiles: () => {},
           setPath: () => {},
-          setErrorMessage: () => {},
-          setNoticeMessage: () => {},
           setLoading: () => {},
           onDelete: () => {},
           onPublish: () => {},
@@ -55,6 +53,11 @@ describe('Gallery', () => {
           moveFiles: () => ({}),
           createFolder: () => ({}),
         },
+        toasts: {
+          display: jest.fn(),
+          success: jest.fn(),
+          error: jest.fn(),
+        }
       },
       selectedFiles: [],
       highlightedFiles: [],
@@ -413,8 +416,6 @@ describe('Gallery', () => {
     beforeEach(() => {
       props.onOpenFolder = jest.fn();
       props.onOpenFile = jest.fn();
-      props.actions.gallery.setErrorMessage = jest.fn();
-      props.actions.gallery.setNoticeMessage = jest.fn();
       gallery = ReactTestUtils.renderIntoDocument(
         <Gallery {...props} />
       );
@@ -425,10 +426,7 @@ describe('Gallery', () => {
       const event = new Event('activate');
 
       gallery.handleOpenFolder(event, folder);
-
       expect(props.onOpenFolder).toBeCalledWith(1);
-      expect(props.actions.gallery.setErrorMessage).toBeCalled();
-      expect(props.actions.gallery.setNoticeMessage).toBeCalled();
     });
 
     it('should call onOpenFile', () => {
@@ -496,8 +494,6 @@ describe('Gallery', () => {
       props.onUnpublish = jest.fn((id) => Promise.resolve([{ id }]));
       props.onDelete = jest.fn((id) => Promise.resolve([id]));
       props.actions.gallery.setLoading = jest.fn();
-      props.actions.gallery.setNoticeMessage = jest.fn();
-      props.actions.gallery.setErrorMessage = jest.fn();
       props.actions.gallery.deselectFiles = jest.fn();
       props.actions.confirmDeletion = { confirm: jest.fn() };
     });
@@ -509,7 +505,7 @@ describe('Gallery', () => {
       return gallery.handleBulkPublish({}, [{ id: 5, published: false }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
-          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.actions.toasts.success).toBeCalled();
           expect(props.onPublish).toBeCalledWith([5]);
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         });
@@ -522,7 +518,7 @@ describe('Gallery', () => {
       return gallery.handleBulkUnpublish({}, [{ id: 5, published: true }])
         .then(() => {
           expect(props.actions.gallery.setLoading).toBeCalled();
-          expect(props.actions.gallery.setNoticeMessage).toBeCalled();
+          expect(props.actions.toasts.success).toBeCalled();
           expect(props.onUnpublish).toBeCalledWith([5]);
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         });
@@ -535,7 +531,7 @@ describe('Gallery', () => {
       return gallery.handleBulkUnpublish({}, [{ id: 5, published: false }])
         .then(() => {
           expect(props.actions.gallery.setLoading).not.toBeCalled();
-          expect(props.actions.gallery.setNoticeMessage).not.toBeCalled();
+          expect(props.actions.toasts.success).not.toBeCalled();
           expect(props.onUnpublish).not.toBeCalled();
           expect(props.actions.gallery.deselectFiles).toBeCalled();
         });
