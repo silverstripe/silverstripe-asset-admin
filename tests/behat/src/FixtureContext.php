@@ -240,7 +240,7 @@ EOS
         // Find by row
         $row = $page->find(
             'xpath',
-            "//tr[contains(@class, 'gallery__table-row')]//div[contains(text(), '{$name}')]"
+            "//tr[contains(@class, 'gallery__table-row')]//div//span[contains(text(), '{$name}')]"
         );
         if ($row) {
             return $row;
@@ -346,6 +346,9 @@ EOS
         $title = $itemByPosition->find(
             'xpath',
             "//div[contains(text(), '{$name}')]"
+        ) ?: $itemByPosition->find(
+            'xpath',
+            "//div//span[contains(text(), '{$name}')]"
         );
         assertNotNull($title, sprintf('File at position %s should be named %s', $position, $name));
     }
