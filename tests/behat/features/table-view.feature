@@ -26,5 +26,6 @@ Feature: Change view for asset admin
     When I press the "table" button
       And I wait until I see the ".gallery__table-row" element
       And I click on the file named "folder1" in the gallery
+      And I wait until I see the ".gallery__table-row" element
       And I click "file1" in the ".gallery__table-row" element
     Then I should see the "Form_fileEditForm" form
