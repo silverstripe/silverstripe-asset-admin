@@ -29,20 +29,20 @@ env:
 
 matrix:
   include:
-#    - php: 7.1
-#      env: PHPUNIT_TEST=1 COMPOSER_ARG=--prefer-lowest
+    - php: 7.1
+      env: PHPUNIT_TEST=1 COMPOSER_ARG=--prefer-lowest
     - php: 7.2
       env: BEHAT_TEST=1
-#    - php: 7.3
-#      env: PHPUNIT_TEST=1 PHPCS_TEST=1
-#    - php: 7.4
-#      env: PHPUNIT_TEST=1
-#    - php: 7.1
-#      env: NPM_TEST=1
-#    - php: 7.3
-#      env: PHPUNIT_TEST=1 DB=PGSQL
-#    - php: nightly
-#      env: PHPUNIT_TEST=1 COMPOSER_ARG=--ignore-platform-reqs WITH_XDEBUG=1
+    - php: 7.3
+      env: PHPUNIT_TEST=1 PHPCS_TEST=1
+    - php: 7.4
+      env: PHPUNIT_TEST=1
+    - php: 7.1
+      env: NPM_TEST=1
+    - php: 7.3
+      env: PHPUNIT_TEST=1 DB=PGSQL
+    - php: nightly
+      env: PHPUNIT_TEST=1 COMPOSER_ARG=--ignore-platform-reqs WITH_XDEBUG=1
 
 before_script:
 # Extra $PATH
@@ -67,7 +67,6 @@ before_script:
   - git remote add -f uc https://github.com/unclecheese/silverstripe-admin
   - git checkout pulls/1/schemageddon
   - cd ../../../
-  - vendor/bin/sake dev/graphql/build schema=admin
 ########################################################
 
 # Remove preinstalled Chrome (google-chrome)
@@ -86,7 +85,7 @@ before_script:
   - if [[ $NPM_TEST ]]; then rm -rf client/dist && nvm install && nvm use && npm install -g yarn && yarn install --network-concurrency 1 && (cd vendor/silverstripe/admin && yarn install --network-concurrency 1) && yarn run build; fi
 
 script:
-  - #if [[ $PHPUNIT_TEST ]]; then vendor/bin/phpunit tests/php '' flush=1; fi
+  - if [[ $PHPUNIT_TEST ]]; then vendor/bin/phpunit tests/php '' flush=1; fi
   - if [[ $NPM_TEST ]]; then git diff-files --quiet -w --relative=client; fi
   - if [[ $NPM_TEST ]]; then git diff --name-status --relative=client; fi
   - if [[ $NPM_TEST ]]; then yarn run test; fi
