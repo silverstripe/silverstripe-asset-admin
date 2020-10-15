@@ -28,10 +28,10 @@ const config = {
         // This is an alternative, relatively efficient way to deep clone
         const newData = JSON.parse(JSON.stringify(data));
 
-        let { edges } = newData.readFiles.edges[0].node.children;
-        edges = edges.filter(edge => !IDs.includes(edge.node.id));
-        newData.readFiles.edges[0].node.children.edges = edges;
-        newData.readFiles.edges[0].node.children.pageInfo.totalCount = edges.length;
+        let { nodes } = newData.readFiles[0].children;
+        nodes = nodes.filter(node => !IDs.includes(node.id));
+        newData.readFiles[0].children.nodes = nodes;
+        newData.readFiles[0].children.pageInfo.totalCount = nodes.length;
         store.writeQuery({ query, data: newData, variables });
       }
     });

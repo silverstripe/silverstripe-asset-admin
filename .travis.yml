@@ -91,7 +91,7 @@ script:
   - if [[ $NPM_TEST ]]; then git diff --name-status --relative=client; fi
   - if [[ $NPM_TEST ]]; then yarn run test; fi
   - if [[ $NPM_TEST ]]; then yarn run lint; fi
-  - if [[ $BEHAT_TEST ]]; then vendor/bin/behat --name 'Manage files' @asset-admin; fi
+  - if [[ $BEHAT_TEST ]]; then vendor/bin/behat @asset-admin; fi
   - if [[ $PHPCS_TEST ]]; then composer run-script lint; fi
 
 after_failure:
