@@ -7,7 +7,9 @@
         "silverstripe/framework": "^4.5",
         "silverstripe/admin": "^1.7",
         "silverstripe/graphql": "^3",
-        "silverstripe/vendor-plugin": "^1"
+        "silverstripe/vendor-plugin": "^1",
+
+        "behat/behat": "dev-master as 3.7.0"
     },
     "require-dev": {
         "sminnee/phpunit": "^5.7",
