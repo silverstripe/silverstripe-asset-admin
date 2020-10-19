@@ -1,8 +1,8 @@
 # Backward compatability for GraphQL 3
 ---
 Name: assetadmingraphql
-Only:
-  classexists: 'SilverStripe\GraphQL\Manager'
+Except:
+  classexists: 'SilverStripe\GraphQL\Schema\Schema'
 ---
 SilverStripe\GraphQL\Manager:
   schemas:
