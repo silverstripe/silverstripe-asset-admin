@@ -60,12 +60,12 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
             'IDs' => [
                 'type' => Type::nonNull(Type::listOf(Type::id())),
             ],
-            'Force' => [
+            'force' => [
                 'type' => Type::boolean(),
                 'description' => 'If true, proceed with the mutation, regardless of notices',
                 'defaultValue' => false
             ],
-            'Quiet' => [
+            'quiet' => [
                 'type' => Type::boolean(),
                 'description' => 'If true, suppress warnings'
             ]
