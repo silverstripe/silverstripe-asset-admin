@@ -30,15 +30,15 @@ class PublicationNoticeType extends TypeCreator
     public function fields()
     {
         return [
-            'Type' => [
+            'noticeType' => [
                 'type' => Type::nonNull(Type::string()),
                 'description' => 'The type of notice',
             ],
-            'Message' => [
+            'message' => [
                 'type' => Type::string(),
                 'description' => 'Relevant information pertaining to the error',
             ],
-            'IDs' => [
+            'ids' => [
                 'type' => Type::listOf(Type::id()),
                 'description' => 'Relevant record IDs',
             ],
