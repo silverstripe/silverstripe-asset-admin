@@ -13,12 +13,12 @@ Feature: Change view for asset admin
     When I click on the file named "folder1" in the gallery
       And I click the ".gallery__sort a" element
       And I wait until I see the ".gallery__sort .chosen-results" element
-      And I click "title z-a" in the ".gallery__sort .chosen-results" element
+      And I click "Title Z-A" in the ".gallery__sort .chosen-results" element
     Then I should see the gallery item "file2" in position "1"
       And I should see the gallery item "file1" in position "2"
     When I click the ".gallery__sort a" element
       And I wait until I see the ".gallery__sort .chosen-results" element
-      And I click "title a-z" in the ".gallery__sort .chosen-results" element
+      And I click "Title A-Z" in the ".gallery__sort .chosen-results" element
     Then I should see the gallery item "file1" in position "1"
       And I should see the gallery item "file2" in position "2"
 
