@@ -2,18 +2,38 @@
 
 namespace SilverStripe\AssetAdmin\Extensions;
 
+use SilverStripe\Assets\File;
 use SilverStripe\Assets\Shortcodes\FileLink;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
 
 /**
- * Hides File Links on the "Used On" tab when viewing files
+ * Hides several types of DataObjects on the "Used On" tab when viewing files
  */
 class UsedOnTableExtension extends Extension
 {
+    /**
+     * @var array $excludedClasses
+     */
+    public function updateUsageExcludedClasses(array &$excludedClasses)
+    {
+        $excludedClasses[] = FileLink::class;
+        $excludedClasses[] = File::class;
+        $excludedClasses[] = Member::class;
+    }
+
+    /**
+     * Legacy function kept for semver, replaced with updateUsageExcludedClasses above
+     *
+     * @var ArrayList $usage
+     * @var DataObject $record
+     * @see UsedOnTable::updateUsage
+     * @deprecated 4.7.0 Use self::updateUsageExcludedClasses instead
+     */
     public function updateUsage(ArrayList &$usage, DataObject &$record)
     {
-        $usage = $usage->exclude('ClassName', FileLink::class);
+        // noop
     }
 }
