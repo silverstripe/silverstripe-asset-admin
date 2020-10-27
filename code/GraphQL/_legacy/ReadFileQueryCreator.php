@@ -18,6 +18,11 @@ if (!class_exists(PaginatedQueryCreator::class)) {
 class ReadFileQueryCreator extends PaginatedQueryCreator
 {
 
+    /**
+     * @var UnionType
+     */
+    private $resultType;
+
     public function attributes()
     {
         return [
@@ -29,22 +34,7 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
     {
         return Connection::create('readFiles')
             ->setConnectionType(function () {
-                return new UnionType([
-                    'name' => 'Result',
-                    'types' => [
-                        $this->manager->getType('File'),
-                        $this->manager->getType('Folder')
-                    ],
-                    'resolveType' => function ($object) {
-                        if ($object instanceof Folder) {
-                            return $this->manager->getType('Folder');
-                        }
-                        if ($object instanceof File) {
-                            return $this->manager->getType('File');
-                        }
-                        return null;
-                    }
-                ]);
+                return $this->createResultType();
             })
             ->setArgs(function () {
                 return [
@@ -99,4 +89,30 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
 
         return $list;
     }
+
+    private function createResultType()
+    {
+        if ($this->resultType) {
+            return $this->resultType;
+        }
+        $this->resultType = new UnionType([
+            'name' => 'Result',
+            'types' => [
+                $this->manager->getType('File'),
+                $this->manager->getType('Folder')
+            ],
+            'resolveType' => function ($object) {
+                if ($object instanceof Folder) {
+                    return $this->manager->getType('Folder');
+                }
+                if ($object instanceof File) {
+                    return $this->manager->getType('File');
+                }
+                return null;
+            }
+        ]);
+
+        return $this->resultType;
+    }
+
 }
