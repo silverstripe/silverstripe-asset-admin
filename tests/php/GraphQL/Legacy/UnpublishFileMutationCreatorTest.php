@@ -21,12 +21,10 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
 
     protected function setUp()
     {
+        parent::setUp();
         if (class_exists(Schema::class)) {
             $this->markTestSkipped('GraphQL 3 test ' . __CLASS__ . ' skipped');
         }
-
-        parent::setUp();
-
         // Dynamically assign fileowner as owner (otherwise it pollutes other tests)
         FileOwner::config()->set('owns', ['OwnedFile']);
     }

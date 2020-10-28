@@ -19,11 +19,10 @@ class FileTypeCreatorTest extends SapphireTest
 
     public function setUp()
     {
+        parent::setUp();
         if (class_exists(Schema::class)) {
             $this->markTestSkipped('GraphQL 3 test ' . __CLASS__ . ' skipped');
         }
-
-        parent::setUp();
         TestAssetStore::activate('FileTypeCreatorTest');
     }
 

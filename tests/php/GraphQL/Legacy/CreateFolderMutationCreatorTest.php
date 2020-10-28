@@ -14,14 +14,14 @@ use SilverStripe\GraphQL\Schema\Schema;
 class CreateFolderMutationCreatorTest extends SapphireTest
 {
 
-    protected static $fixture_file = '../fixtures.yml';
+    protected static $fixture_file = '../../fixtures.yml';
 
     public function setUp()
     {
+        parent::setUp();
         if (class_exists(Schema::class)) {
             $this->markTestSkipped('GraphQL 3 test ' . __CLASS__ . ' skipped');
         }
-        parent::setUp();
 
         File::add_extension(FileExtension::class);
         Folder::add_extension(FolderExtension::class);

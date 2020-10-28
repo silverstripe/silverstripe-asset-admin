@@ -19,11 +19,10 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
 
     public function setUp()
     {
+        parent::setUp();
         if (!class_exists(Schema::class)) {
             $this->markTestSkipped('GraphQL 4 test ' . __CLASS__ . ' skipped');
         }
-
-        parent::setUp();
 
         TestAssetStore::activate('AssetAdminTest');
 
