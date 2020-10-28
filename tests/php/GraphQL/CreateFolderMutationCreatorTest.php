@@ -19,11 +19,10 @@ class CreateFolderMutationCreatorTest extends SapphireTest
 
     public function setUp()
     {
+        parent::setUp();
         if (!class_exists(Schema::class)) {
             $this->markTestSkipped('GraphQL 4 test ' . __CLASS__ . ' skipped');
         }
-        parent::setUp();
-
         File::add_extension(FileExtension::class);
         Folder::add_extension(FolderExtension::class);
     }
