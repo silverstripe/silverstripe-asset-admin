@@ -28,7 +28,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         parent::setUp();
 
         // Dynamically assign fileowner as owner (otherwise it pollutes other tests)
-        UnpublishFileMutationCreatorTest\FileOwner::config()->set('owns', ['OwnedFile']);
+        FileOwner::config()->set('owns', ['OwnedFile']);
     }
 
     public function testUnpublishWithOwners()
