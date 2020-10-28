@@ -1,10 +1,9 @@
 <?php
 
-namespace SilverStripe\AssetAdmin\Tests\GraphQL;
+namespace SilverStripe\AssetAdmin\Tests\Legacy\GraphQL;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\FolderTypeCreator;
-use SilverStripe\AssetAdmin\GraphQL\Resolvers\FolderTypeResolver;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
@@ -22,8 +21,8 @@ class FolderTypeCreatorTest extends SapphireTest
 
     protected function setUp()
     {
-        if (!class_exists(Schema::class)) {
-            $this->markTestSkipped('GraphQL 4 test ' . __CLASS__ . ' skipped');
+        if (class_exists(Schema::class)) {
+            $this->markTestSkipped('GraphQL 3 test ' . __CLASS__ . ' skipped');
         }
 
         parent::setUp();
@@ -45,7 +44,7 @@ class FolderTypeCreatorTest extends SapphireTest
                 $folder->Name,
                 $file->Name,
             ],
-            $list->column('Name')
+            $list['edges']->column('Name')
         );
     }
 
@@ -79,7 +78,7 @@ class FolderTypeCreatorTest extends SapphireTest
                 $folder->Name,
                 $rootFile->Name,
             ],
-            $listWithoutRecursive->column('Name')
+            $listWithoutRecursive['edges']->column('Name')
         );
 
         $listWithRecursive = $this->resolveChildrenConnection(
@@ -94,7 +93,7 @@ class FolderTypeCreatorTest extends SapphireTest
                 $nestedFile->Name,
                 $rootFile->Name,
             ],
-            $listWithRecursive->column('Name')
+            $listWithRecursive['edges']->column('Name')
         );
 
         // Test with partial tree search
@@ -108,7 +107,7 @@ class FolderTypeCreatorTest extends SapphireTest
             [
                 $nestedFile->Name,
             ],
-            $listWithPartialTreeRecursive->column('Name')
+            $listWithPartialTreeRecursive['edges']->column('Name')
         );
     }
 
@@ -126,11 +125,13 @@ class FolderTypeCreatorTest extends SapphireTest
         $folder2 = Folder::create(['Name' => 'folder2', 'ParentID' => 0]);
         $folder2->write();
 
-        $parents = FolderTypeResolver::resolveFolderParents(
+        $managerMock = $this->getManagerMock();
+        $creator = new FolderTypeCreator($managerMock);
+        $parents = $creator->resolveParentsField(
             $folder1_1_1,
             [],
             $this->getContext(),
-            new FakeResolveInfo()
+            new ResolveInfo([])
         );
         $this->assertEquals(
             [
@@ -143,6 +144,11 @@ class FolderTypeCreatorTest extends SapphireTest
         );
     }
 
+    protected function getManagerMock()
+    {
+        return $this->getMockBuilder(Manager::class)->getMock();
+    }
+
     protected function getContext()
     {
         return [
@@ -153,11 +159,15 @@ class FolderTypeCreatorTest extends SapphireTest
     protected function resolveChildrenConnection($object, $args, $context = null)
     {
         $context = $context ? $context : $this->getContext();
-        return FolderTypeResolver::resolveFolderChildren(
+
+        $managerMock = $this->getManagerMock();
+        $creator = new FolderTypeCreator($managerMock);
+        return $creator->resolveChildrenConnection(
             $object,
             $args,
             $context,
-            new FakeResolveInfo()
+            new ResolveInfo([]),
+            $creator->getChildrenConnection()
         );
     }
 }

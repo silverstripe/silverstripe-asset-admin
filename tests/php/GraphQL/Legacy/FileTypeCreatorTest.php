@@ -1,10 +1,9 @@
 <?php
 
-namespace SilverStripe\AssetAdmin\Tests\GraphQL;
+namespace SilverStripe\AssetAdmin\Tests\Legacy\GraphQL;
 
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\GraphQL\FileTypeCreator;
-use SilverStripe\AssetAdmin\GraphQL\Resolvers\FileTypeResolver;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\Image;
 use SilverStripe\Assets\Storage\AssetStore;
@@ -20,8 +19,8 @@ class FileTypeCreatorTest extends SapphireTest
 
     public function setUp()
     {
-        if (!class_exists(Schema::class)) {
-            $this->markTestSkipped('GraphQL 4 test ' . __CLASS__ . ' skipped');
+        if (class_exists(Schema::class)) {
+            $this->markTestSkipped('GraphQL 3 test ' . __CLASS__ . ' skipped');
         }
 
         parent::setUp();
@@ -37,6 +36,9 @@ class FileTypeCreatorTest extends SapphireTest
     public function testThumbnail()
     {
         $this->logInWithPermission('ADMIN');
+        /** @var FileTypeCreator $type */
+        $type = Injector::inst()->create(FileTypeCreator::class);
+
         ThumbnailGenerator::config()->set('thumbnail_links', [
             AssetStore::VISIBILITY_PROTECTED => ThumbnailGenerator::INLINE,
             AssetStore::VISIBILITY_PUBLIC => ThumbnailGenerator::URL,
@@ -50,26 +52,26 @@ class FileTypeCreatorTest extends SapphireTest
         $image->write();
 
         // Image original is unset
-        $thumbnail = FileTypeResolver::resolveFileThumbnail($image, [], [], null);
+        $thumbnail = $type->resolveThumbnailField($image, [], [], null);
         $this->assertNull($thumbnail);
 
         // Generate thumbnails by viewing this file's data
         $assetAdmin->getObjectFromData($image, false);
 
         // protected image should have inline thumbnail
-        $thumbnail = FileTypeResolver::resolveFileThumbnail($image, [], [], null);
+        $thumbnail = $type->resolveThumbnailField($image, [], [], null);
         $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWAAAADr', $thumbnail);
 
         // public image should have url
         $image->publishSingle();
-        $thumbnail = FileTypeResolver::resolveFileThumbnail($image, [], [], null);
+        $thumbnail = $type->resolveThumbnailField($image, [], [], null);
         $this->assertEquals('/assets/FileTypeCreatorTest/TestImage__FitMaxWzM1MiwyNjRd.png', $thumbnail);
 
         // Public assets can be set to inline
         ThumbnailGenerator::config()->merge('thumbnail_links', [
             AssetStore::VISIBILITY_PUBLIC => ThumbnailGenerator::INLINE,
         ]);
-        $thumbnail = FileTypeResolver::resolveFileThumbnail($image, [], [], null);
+        $thumbnail = $type->resolveThumbnailField($image, [], [], null);
         $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWAAAADr', $thumbnail);
 
         // Protected assets can be set to url
@@ -78,7 +80,7 @@ class FileTypeCreatorTest extends SapphireTest
             AssetStore::VISIBILITY_PROTECTED => ThumbnailGenerator::URL,
         ]);
         $image->doUnpublish();
-        $thumbnail = FileTypeResolver::resolveFileThumbnail($image, [], [], null);
+        $thumbnail = $type->resolveThumbnailField($image, [], [], null);
         $this->assertEquals('/assets/8cf6c65fa7/TestImage__FitMaxWzM1MiwyNjRd.png', $thumbnail);
     }
 }

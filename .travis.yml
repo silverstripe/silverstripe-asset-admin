@@ -31,10 +31,16 @@ matrix:
   include:
     - php: 7.1
       env: PHPUNIT_TEST=1 COMPOSER_ARG=--prefer-lowest
+    - php: 7.1
+      env: BACKWARD_COMPAT=1 PHPUNIT_TEST=1 COMPOSER_ARG=--prefer-lowest
     - php: 7.2
       env: BEHAT_TEST=1
+    - php: 7.2
+      env: BEHAT_TEST=1 BACKWARD_COMPAT=1
     - php: 7.3
       env: PHPUNIT_TEST=1 PHPCS_TEST=1
+    - php: 7.3
+      env: PHPUNIT_TEST=1 PHPCS_TEST=1 BACKWARD_COMPAT=1
     - php: 7.4
       env: PHPUNIT_TEST=1
     - php: 7.1
@@ -63,6 +69,7 @@ before_script:
 # Remove once everything is merged
   - cd vendor/silverstripe/graphql
   - git checkout -t origin/master
+  - if [[ $BACKWARD_COMPAT ]]; git remote add -f https://github.com/unclecheese/silverstripe-graphql && git checkout pulls/3/schemageddon-comat; fi
   - cd ../admin
   - git remote add -f uc https://github.com/unclecheese/silverstripe-admin
   - git checkout pulls/1/schemageddon

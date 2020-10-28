@@ -1,9 +1,11 @@
 <?php
 
-namespace SilverStripe\AssetAdmin\Tests\GraphQL;
+namespace SilverStripe\AssetAdmin\Tests\Legacy\GraphQL;
 
+use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
-use SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver;
+use SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator;
+use SilverStripe\AssetAdmin\Tests\GraphQL\UnpublishFileMutationCreatorTest\FileOwner;
 use SilverStripe\Assets\File;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\GraphQL\Schema\Schema;
@@ -14,13 +16,13 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
     protected static $fixture_file = 'UnpublishFileMutationCreatorTest.yml';
 
     protected static $extra_dataobjects = [
-        UnpublishFileMutationCreatorTest\FileOwner::class,
+        FileOwner::class,
     ];
 
     protected function setUp()
     {
-        if (!class_exists(Schema::class)) {
-            $this->markTestSkipped('GraphQL 4 test ' . __CLASS__ . ' skipped');
+        if (class_exists(Schema::class)) {
+            $this->markTestSkipped('GraphQL 3 test ' . __CLASS__ . ' skipped');
         }
 
         parent::setUp();
@@ -34,8 +36,9 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         // Bootstrap test
         $this->logInWithPermission('ADMIN');
         $member = Security::getCurrentUser();
+        $mutation = new UnpublishFileMutationCreator();
         $context = ['currentUser' => $member];
-        $resolveInfo = new FakeResolveInfo();
+        $resolveInfo = new ResolveInfo([]);
 
         /** @var File $file */
         $file = $this->objFromFixture(File::class, 'file1');
@@ -54,7 +57,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         }
 
         // Test unpublish without force
-        $result = PublicationResolver::resolveUnpublishFiles(null, ['IDs' => [$file->ID]], $context, $resolveInfo);
+        $result = $mutation->resolve(null, ['IDs' => [$file->ID]], $context, $resolveInfo);
         $this->assertCount(1, $result);
         /** @var Notice $notice */
         $notice = $result[0];
@@ -63,7 +66,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         $this->assertTrue($file->isPublished());
 
         // Unpublish with force
-        $result = PublicationResolver::resolveUnpublishFiles(null, ['IDs' => [$file->ID], 'force' => true], $context, $resolveInfo);
+        $result = $mutation->resolve(null, ['IDs' => [$file->ID], 'Force' => true], $context, $resolveInfo);
         $this->assertCount(1, $result);
         $fileResult = $result[0];
         $this->assertInstanceOf(File::class, $fileResult);
