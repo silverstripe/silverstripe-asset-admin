@@ -74,6 +74,7 @@ before_script:
   - git remote add -f uc https://github.com/unclecheese/silverstripe-admin
   - git checkout pulls/1/schemageddon
   - cd ../../../
+  - 'if [[ ! $BACKWARD_COMPAT ]]; then composer require webonyx/graphql-php:"14.0 as 0.12.6"; fi'
 ########################################################
 
 # Remove preinstalled Chrome (google-chrome)
