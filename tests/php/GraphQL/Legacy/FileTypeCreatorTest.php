@@ -47,7 +47,7 @@ class FileTypeCreatorTest extends SapphireTest
 
         // Build image
         $image = new Image();
-        $image->setFromLocalFile(__DIR__.'/../Forms/fixtures/largeimage.png', 'TestImage.png');
+        $image->setFromLocalFile(__DIR__.'/../../Forms/fixtures/largeimage.png', 'TestImage.png');
         $image->write();
 
         // Image original is unset
