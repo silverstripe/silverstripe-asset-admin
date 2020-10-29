@@ -114,5 +114,4 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
 
         return $this->resultType;
     }
-
 }
