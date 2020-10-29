@@ -44,7 +44,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
 
         // 4 owners, 3 published owners
         for ($i = 1; $i <= 4; $i++) {
-            $owner = new UnpublishFileMutationCreatorTest\FileOwner();
+            $owner = new FileOwner();
             $owner->OwnedFileID = $file->ID;
             $owner->Title = "My Owner {$i}";
             $owner->write();
