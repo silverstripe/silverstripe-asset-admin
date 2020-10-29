@@ -26,7 +26,6 @@ class FolderTypeCreatorTest extends SapphireTest
         if (!class_exists(Schema::class)) {
             $this->markTestSkipped('GraphQL 4 test ' . __CLASS__ . ' skipped');
         }
-
     }
 
     public function testItSortsChildrenOnTypeByDefault()
