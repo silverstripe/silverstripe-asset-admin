@@ -23,15 +23,13 @@ class UsedOnTableTest extends SapphireTest
 
         $response = $usedOnTable->usage(new HTTPRequest("GET", "/"));
 
-        $protocol = Director::is_https() ? 'https' : 'http';
-
         $expected = json_encode([
             "usage"=> [[
-                "id" => 0,
+                "id" => 1,
                 "title" => "My Page",
                 "type" => "Page",
-                "state" => "Draft",
-                "link" => sprintf('%s://localhost/admin/pages/edit/show/1', $protocol)
+                "link" => Director::absoluteURL('admin/pages/edit/show/1'),
+                "ancestors" => []
             ]]
         ]);
         $this->assertEquals($expected, $response->getBody());
