@@ -130,12 +130,6 @@ class FileTypeResolver extends DefaultResolverProvider
         return $object->isModifiedOnDraft();
     }
 
-    public static function resolveFile($object, array $args, $context, $info)
-    {
-        $field = FieldAccessor::singleton()->normaliseField($object, $info->fieldName);
-        return $object->$field;
-    }
-
     /**
      * @param File $object
      * @return int
