@@ -215,7 +215,7 @@ class Editor extends Component {
     // If we have a nextType available, wire the Detail button
     const { formid } = fieldProps;
     // When inserting a regular file, we add a Details button to edit the file metadata
-    const onDetails = nextType && file && file.type !== 'folder' ?
+    const onDetails = nextType && (!file || (file && file.type !== 'folder')) ?
       () => {
         actions.modal.stashFormValues(formid, schemaUrl);
         actions.modal.pushFormStackEntry(nextType);
