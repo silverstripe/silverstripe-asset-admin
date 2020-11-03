@@ -1,7 +1,7 @@
 SilverStripe\Assets\File:
   file1:
     Title: File1
-    FileFilename: files/testfile.txt
+    FileFilename: testfile.txt
     FileHash: 6adf67caca20b8e7c45283d398321f4319d3b07e
     Name: testfile.txt
 SilverStripe\CMS\Model\SiteTree:
