@@ -164,7 +164,7 @@ class AssetAdminResolver extends DefaultResolverProvider
             }
         }
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)
-            ->byIDs($args['fileIDs']);
+            ->byIDs($args['fileIds']);
         $errorFiles = [];
 
         /** @var File $file */

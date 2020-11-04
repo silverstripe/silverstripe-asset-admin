@@ -27,10 +27,19 @@ const config = {
         // Query returns a deeply nested object. Explicit reconstruction via spreads is too verbose.
         // This is an alternative, relatively efficient way to deep clone
         const newData = JSON.parse(JSON.stringify(data));
-        let { nodes } = newData.readFiles.nodes[0].children;
-        nodes = nodes.filter(node => !IDs.includes(node.id));
-        newData.readFiles.nodes[0].children.nodes = nodes;
-        newData.readFiles.nodes[0].children.pageInfo.totalCount = nodes.length;
+
+        // GraphQL backward compat hack
+        if (newData.readFiles.nodes) {
+          let { nodes } = newData.readFiles.nodes[0].children;
+          nodes = nodes.filter(node => !IDs.includes(node.id));
+          newData.readFiles.nodes[0].children.nodes = nodes;
+          newData.readFiles.nodes[0].children.pageInfo.totalCount = nodes.length;
+        } else {
+          let { nodes } = newData.readFiles[0].children;
+          nodes = nodes.filter(node => !IDs.includes(node.id));
+          newData.readFiles[0].children.nodes = nodes;
+          newData.readFiles[0].children.pageInfo.totalCount = nodes.length;
+        }
         store.writeQuery({ query, data: newData, variables });
       }
     });
