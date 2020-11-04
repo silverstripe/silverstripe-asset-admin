@@ -59,12 +59,12 @@ const apolloConfig = {
     }
   ) {
     // Uses same query as search and file list to return a single result (the containing folder)
-    const folder = (readFiles && readFiles.edges[0])
-      ? readFiles.edges[0].node
+    const folder = (readFiles && readFiles.nodes[0])
+      ? readFiles.nodes[0]
       : null;
     const files = (folder && folder.children)
       // Filter nodes because the DELETE resultBehaviour doesn't delete the edge, only the node
-      ? folder.children.edges.map((edge) => edge.node).filter((file) => file)
+      ? folder.children.nodes.filter((file) => file)
       : [];
     const filesTotalCount = (folder && folder.children)
       ? folder.children.pageInfo.totalCount
@@ -106,7 +106,7 @@ const query = {
     root: {
       filter: 'rootFilter'
     },
-    'root/edges/node/...on Folder/children': {
+    'root/nodes/...on Folder/children': {
       limit: 'limit',
       offset: 'offset',
       filter: 'childrenFilter',
@@ -121,26 +121,22 @@ const query = {
     'pageInfo', [
       'totalCount',
     ],
-    'edges', [
-      'node', [
-        '...FileInterfaceFields',
-        '...FileFields',
-        '...on Folder', [
-          'children', [
-            'pageInfo', [
-              'totalCount',
-            ],
-            'edges', [
-              'node', [
-                '...FileInterfaceFields',
-                '...FileFields',
-              ]
-            ]
+    'nodes', [
+      '...FileInterfaceFields',
+      '...FileFields',
+      '...on Folder', [
+        'children', [
+          'pageInfo', [
+            'totalCount',
           ],
-          'parents', [
-            'id',
-            'title',
+          'nodes', [
+            '...FileInterfaceFields',
+            '...FileFields',
           ]
+        ],
+        'parents', [
+          'id',
+          'title',
         ]
       ]
     ],

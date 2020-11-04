@@ -4,7 +4,7 @@ import { fileInterface, file } from 'lib/fileFragments';
 
 const mutation = gql`
   mutation MoveFiles($folderId:ID!, $fileIds:[ID]!) {
-    moveFiles(folderId: $folderId, fileIDs: $fileIds) {
+    moveFiles(folderId: $folderId, fileIds: $fileIds) {
       ...FileInterfaceFields
       ...FileFields
     }

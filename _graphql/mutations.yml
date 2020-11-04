@@ -7,7 +7,7 @@
 'deleteFiles(IDs: [ID]!)':
   type: '[ID]'
   description:
-'moveFiles(folderId: ID!, fileIDs: [ID])':
+'moveFiles(folderId: ID!, fileIds: [ID])':
   type: FileInterface
 publishFiles:
   type: '[PublicationResult]'
