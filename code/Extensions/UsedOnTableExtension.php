@@ -2,7 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Extensions;
 
-use SilverStripe\Assets\File;
+use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Shortcodes\FileLink;
 use SilverStripe\Core\Extension;
 use SilverStripe\ORM\ArrayList;
@@ -20,7 +20,6 @@ class UsedOnTableExtension extends Extension
     public function updateUsageExcludedClasses(array &$excludedClasses)
     {
         $excludedClasses[] = FileLink::class;
-        $excludedClasses[] = File::class;
         $excludedClasses[] = Member::class;
     }
 
@@ -35,5 +34,15 @@ class UsedOnTableExtension extends Extension
     public function updateUsage(ArrayList &$usage, DataObject &$record)
     {
         // noop
+    }
+
+    /**
+     * @param DataObject $dataObject|null
+     */
+    public function updateUsageDataObject(?DataObject &$dataObject)
+    {
+        if ($dataObject instanceof Folder) {
+            $dataObject = null;
+        }
     }
 }
