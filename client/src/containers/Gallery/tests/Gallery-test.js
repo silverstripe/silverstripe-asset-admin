@@ -537,4 +537,27 @@ describe('Gallery', () => {
         });
     });
   });
+
+  describe('renderGalleryView()', () => {
+    beforeEach(() => {
+      props.type = 'admin';
+      props.selectedFiles = [15];
+      props.files = [
+        { id: 15 },
+        { id: 20, queuedId: 108 },
+        { id: 45 },
+      ];
+    });
+
+    it('should render selected files with different key', () => {
+      const gallery = ReactTestUtils.renderIntoDocument(<Gallery {...props} />);
+      const galleryView = gallery.renderGalleryView();
+
+      expect(galleryView.props.files.map(({ key }) => key)).toEqual([
+        'id15--selected',
+        'queueId108',
+        'id45'
+      ]);
+    });
+  });
 });
