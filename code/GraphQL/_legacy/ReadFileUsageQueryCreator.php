@@ -37,7 +37,7 @@ class ReadFileUsageQueryCreator extends QueryCreator
     public function args()
     {
         return [
-            'IDs' => [
+            'ids' => [
                 'type' => Type::nonNull(Type::listOf(Type::id())),
             ],
         ];
@@ -45,10 +45,10 @@ class ReadFileUsageQueryCreator extends QueryCreator
 
     public function resolve($object, array $args, $context, ResolveInfo $info)
     {
-        if (!isset($args['IDs']) || !is_array($args['IDs'])) {
-            throw new \InvalidArgumentException('IDs must be an array');
+        if (!isset($args['ids']) || !is_array($args['ids'])) {
+            throw new \InvalidArgumentException('ids must be an array');
         }
-        $idList = $args['IDs'];
+        $idList = $args['ids'];
 
         /** @var DataList|File[] $files */
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($idList);

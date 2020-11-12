@@ -52,7 +52,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         }
 
         // Test unpublish without force
-        $result = PublicationResolver::resolveUnpublishFiles(null, ['IDs' => [$file->ID]], $context, $resolveInfo);
+        $result = PublicationResolver::resolveUnpublishFiles(null, ['ids' => [$file->ID]], $context, $resolveInfo);
         $this->assertCount(1, $result);
         /** @var Notice $notice */
         $notice = $result[0];
@@ -61,7 +61,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         $this->assertTrue($file->isPublished());
 
         // Unpublish with force
-        $result = PublicationResolver::resolveUnpublishFiles(null, ['IDs' => [$file->ID], 'force' => true], $context, $resolveInfo);
+        $result = PublicationResolver::resolveUnpublishFiles(null, ['ids' => [$file->ID], 'force' => true], $context, $resolveInfo);
         $this->assertCount(1, $result);
         $fileResult = $result[0];
         $this->assertInstanceOf(File::class, $fileResult);

@@ -91,7 +91,7 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
      */
     private function assertUsageCount($id, $expectedCount, $message)
     {
-        $actual = $this->getResultsForSearch(['IDs' => [$id]]);
+        $actual = $this->getResultsForSearch(['ids' => [$id]]);
         if ($expectedCount === false) {
             $this->assertEmpty($actual, $message);
         } else {

@@ -4,7 +4,7 @@
 'createFolder(folder: FolderInput)':
   type: FileInterface
   description: Creates files and images
-'deleteFiles(IDs: [ID]!)':
+'deleteFiles(ids: [ID]!)':
   type: '[ID]'
   description:
 'moveFiles(folderId: ID!, fileIds: [ID])':
@@ -13,7 +13,7 @@ publishFiles:
   type: '[PublicationResult]'
   description: Publishes a list of files
   args:
-    IDs:
+    ids:
       type: '[ID]!'
     force:
       type: Boolean
@@ -26,7 +26,7 @@ unpublishFiles:
   type: '[PublicationResult]'
   description: Unpublishes a list of files
   args:
-    IDs:
+    ids:
       type: '[ID]!'
     force:
       type: Boolean

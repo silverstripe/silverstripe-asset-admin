@@ -2,16 +2,16 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import Injector from 'lib/Injector';
 
-const mutation = gql`mutation DeleteFiles($IDs:[ID]!) {
-  deleteFiles(IDs: $IDs)
+const mutation = gql`mutation DeleteFiles($ids:[ID]!) {
+  deleteFiles(ids: $ids)
 }`;
 
 const config = {
   props: ({ mutate, ownProps }) => {
     const { actions } = ownProps;
-    const deleteFiles = (IDs, parentId = null) => mutate({
+    const deleteFiles = (ids, parentId = null) => mutate({
       variables: {
-        IDs,
+        ids,
       },
       update: (store) => {
         const readFilesQuery = Injector.query.get('ReadFilesQuery');
@@ -31,12 +31,12 @@ const config = {
         // GraphQL backward compat hack
         if (newData.readFiles.nodes) {
           let { nodes } = newData.readFiles.nodes[0].children;
-          nodes = nodes.filter(node => !IDs.includes(node.id));
+          nodes = nodes.filter(node => !ids.includes(node.id));
           newData.readFiles.nodes[0].children.nodes = nodes;
           newData.readFiles.nodes[0].children.pageInfo.totalCount = nodes.length;
         } else {
           let { nodes } = newData.readFiles[0].children;
-          nodes = nodes.filter(node => !IDs.includes(node.id));
+          nodes = nodes.filter(node => !ids.includes(node.id));
           newData.readFiles[0].children.nodes = nodes;
           newData.readFiles[0].children.pageInfo.totalCount = nodes.length;
         }

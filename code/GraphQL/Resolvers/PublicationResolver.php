@@ -46,7 +46,7 @@ class PublicationResolver extends DefaultResolverProvider
         $context,
         ResolveInfo $info
     ) {
-        if (!isset($args['IDs']) || !is_array($args['IDs'])) {
+        if (!isset($args['ids']) || !is_array($args['ids'])) {
             throw new InvalidArgumentException('IDs must be an array');
         }
         $isPublish = $action === self::ACTION_PUBLISH;
@@ -55,7 +55,7 @@ class PublicationResolver extends DefaultResolverProvider
         $quiet = $args['quiet'] ?? false;
         $result = [];
         $warningMessages = [];
-        $idList = $args['IDs'];
+        $idList = $args['ids'];
         $files = Versioned::get_by_stage(File::class, $sourceStage)
             ->byIds($idList);
 

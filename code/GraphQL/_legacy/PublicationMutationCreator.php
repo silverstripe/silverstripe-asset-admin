@@ -60,7 +60,7 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
     public function args()
     {
         return [
-            'IDs' => [
+            'ids' => [
                 'type' => Type::nonNull(Type::listOf(Type::id())),
             ],
             'force' => [
@@ -84,13 +84,13 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
      */
     public function resolve($object, array $args, $context, ResolveInfo $info)
     {
-        if (!isset($args['IDs']) || !is_array($args['IDs'])) {
-            throw new InvalidArgumentException('IDs must be an array');
+        if (!isset($args['ids']) || !is_array($args['ids'])) {
+            throw new InvalidArgumentException('ids must be an array');
         }
-        $force = isset($args['Force']) && $args['Force'];
-        $quiet = isset($args['Quiet']) && $args['Quiet'];
+        $force = isset($args['force']) && $args['force'];
+        $quiet = isset($args['quiet']) && $args['quiet'];
         $result = [];
-        $idList = $args['IDs'];
+        $idList = $args['ids'];
         $files = Versioned::get_by_stage(File::class, $this->sourceStage())
             ->byIds($idList);
 
