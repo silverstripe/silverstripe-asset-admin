@@ -674,11 +674,11 @@ class AssetAdmin extends Component {
   }
 
   render() {
-    const { folder, folderId, query, getUrl, type, maxFiles, filter, toolbarChildren } = this.props;
+    const { folder, folderId, query, getUrl, type, maxFiles, toolbarChildren } = this.props;
 
     const showBackButton = Boolean(folderId || hasFilters(query.filter));
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
-    const filters = filter || {};
+    const filters = query.filter || {};
     const classNames = classnames(
       'fill-height asset-admin',
       type === 'select' && {
@@ -686,16 +686,14 @@ class AssetAdmin extends Component {
         'asset-admin--multi-select': maxFiles !== 1,
       }
     );
-    const showSearch = hasFilters(filter) || this.props.showSearch;
+    const showSearch = hasFilters(query.filter) || this.props.showSearch;
     const onSearchToggle = this.props.actions.displaySearch ?
       this.props.actions.displaySearch.toggleSearch :
       undefined;
 
     const breadcrumbProps = {
       folder,
-      query: (this.props.query && this.props.query.view) ? Object.assign({
-        view: this.props.query.view
-      }, query) : query,
+      query,
       getUrl,
       onBrowse: this.handleBrowse,
       onFolderIcon: this.handleFolderIcon
