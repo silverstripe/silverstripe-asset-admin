@@ -769,12 +769,14 @@ class Gallery extends Component {
    */
   renderGalleryView() {
     const GalleryView = (this.props.view === 'table') ? TableView : ThumbnailView;
-    const files = this.props.files.map((file) => ({
-      ...file,
-      selected: this.itemIsSelected(file.id),
-      highlighted: this.itemIsHighlighted(file.id),
-      key: file.queuedId ? `queueId${file.queuedId}` : `id${file.id}`
-    }));
+    const files = this.props.files.map((file) => {
+      const selected = this.itemIsSelected(file.id);
+      const highlighted = this.itemIsHighlighted(file.id);
+      const key =
+        (file.queuedId ? `queueId${file.queuedId}` : `id${file.id}`) +
+        (selected ? '--selected' : '');
+      return ({ ...file, selected, highlighted, key });
+    });
     const {
       type,
       loading,

@@ -204,3 +204,20 @@ Feature: Manage files
     Then I should see the file named "file1" in the gallery
       And I should not see the file named "folder2" in the gallery
       And I should not see "File cannot be found" in the "#Form_fileEditForm" element
+
+  Scenario: I can search files
+    When I press the "Show search" button
+      Then I should see an "#AssetSearchForm_searchbox" element
+    Then I fill in "SearchBox__name" with "file1"
+      And I press the "Enter" key in the "SearchBox__name" field
+    Then I should see the file named "file1" in the gallery
+      And I should not see the file named "folder1" in the gallery
+    When I press the "Advanced" button
+      Then I should see an ".search-form" element
+    Then I select "Archive" from "File type"
+      And I press the "Search" button
+      Then I should see "No items found"
+      And I should see "File type: Archive"
+    Then I press the "Close" button
+      And I should not see an "#AssetSearchForm_searchbox" element
+      And I should see the file named "folder1" in the gallery
