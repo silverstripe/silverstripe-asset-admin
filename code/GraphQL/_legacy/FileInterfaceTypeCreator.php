@@ -14,6 +14,7 @@ if (!class_exists(DataObjectInterfaceTypeCreator::class)) {
 
 /**
  * @skipUpgrade
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class FileInterfaceTypeCreator extends DataObjectInterfaceTypeCreator
 {

@@ -13,6 +13,7 @@ if (!class_exists(TypeCreator::class)) {
 
 /**
  * @todo Allow setting of Owner and ShowInSearch fields
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class FileInputTypeCreator extends TypeCreator
 {

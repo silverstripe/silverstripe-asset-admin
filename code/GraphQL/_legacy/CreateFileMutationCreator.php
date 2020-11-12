@@ -15,6 +15,7 @@ if (!class_exists(MutationCreator::class)) {
 }
 /**
  * @todo Allow file upload (https://github.com/silverstripe/silverstripe-graphql/issues/19)
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class CreateFileMutationCreator extends MutationCreator implements OperationResolver
 {

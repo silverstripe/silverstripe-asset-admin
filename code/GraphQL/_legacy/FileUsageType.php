@@ -14,6 +14,8 @@ if (!class_exists(TypeCreator::class)) {
 /**
  * Define the return type for ReadFileUsageQueryCreator. File usage is return as an array of object with an
  * 'id' property and 'inUseCount' property.
+ *
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class FileUsageType extends TypeCreator
 {

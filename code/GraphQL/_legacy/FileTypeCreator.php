@@ -21,6 +21,7 @@ if (!class_exists(TypeCreator::class)) {
 
 /**
  * @skipUpgrade
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class FileTypeCreator extends TypeCreator
 {

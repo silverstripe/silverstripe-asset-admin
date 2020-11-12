@@ -16,8 +16,7 @@ if (!class_exists(MutationCreator::class)) {
 /**
  * API available but currently not used, as create folder uses FormBuilder
  *
- * Class CreateFolderMutationCreator
- * @package SilverStripe\AssetAdmin\GraphQL
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class CreateFolderMutationCreator extends MutationCreator implements OperationResolver
 {

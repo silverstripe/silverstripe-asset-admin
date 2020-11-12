@@ -11,6 +11,9 @@ if (!class_exists(PublicationMutationCreator::class)) {
     return;
 }
 
+/**
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ */
 class PublishFileMutationCreator extends PublicationMutationCreator implements OperationResolver
 {
     /**

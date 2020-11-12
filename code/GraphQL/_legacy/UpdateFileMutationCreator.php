@@ -17,6 +17,7 @@ if (!class_exists(MutationCreator::class)) {
 /**
  * Handles create and update
  * @skipUpgrade
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class UpdateFileMutationCreator extends MutationCreator implements OperationResolver
 {

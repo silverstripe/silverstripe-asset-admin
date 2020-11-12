@@ -17,6 +17,9 @@ if (!class_exists(TypeCreator::class)) {
     return;
 }
 
+/**
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ */
 class FileFilterInputTypeCreator extends TypeCreator
 {
 

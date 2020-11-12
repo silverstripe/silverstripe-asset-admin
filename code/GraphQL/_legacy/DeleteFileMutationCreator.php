@@ -16,6 +16,8 @@ if (!class_exists(MutationCreator::class)) {
 
 /**
  * Handles create and update
+ *
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class DeleteFileMutationCreator extends MutationCreator implements OperationResolver
 {

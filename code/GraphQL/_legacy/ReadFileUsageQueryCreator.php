@@ -16,6 +16,8 @@ if (!class_exists(QueryCreator::class)) {
 }
 /**
  * GraphQL Query to retrieve usage count for files and folders on GraphQL request.
+ *
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
  */
 class ReadFileUsageQueryCreator extends QueryCreator
 {

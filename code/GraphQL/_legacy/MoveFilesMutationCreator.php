@@ -15,6 +15,9 @@ if (!class_exists(MutationCreator::class)) {
     return;
 }
 
+/**
+ * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ */
 class MoveFilesMutationCreator extends MutationCreator implements OperationResolver
 {
     /**
