@@ -42,7 +42,7 @@ const apolloConfig = {
         limit,
         offset: ((params.page || 1) - 1) * limit,
         sortBy: (sortField && sortDir)
-          ? [{ field: sortField, direction: sortDir.toUpperCase() }]
+          ? { [sortField]: sortDir.toUpperCase() }
           : undefined,
       },
     };
@@ -59,19 +59,16 @@ const apolloConfig = {
     }
   ) {
     // Uses same query as search and file list to return a single result (the containing folder)
-    const folder = (readFiles && readFiles.edges[0])
-      ? readFiles.edges[0].node
-      : null;
+    const folder = readFiles ? readFiles[0] : null;
     const files = (folder && folder.children)
       // Filter nodes because the DELETE resultBehaviour doesn't delete the edge, only the node
-      ? folder.children.edges.map((edge) => edge.node).filter((file) => file)
+      ? folder.children.nodes.filter((file) => file)
       : [];
     const filesTotalCount = (folder && folder.children)
       ? folder.children.pageInfo.totalCount
       : 0;
 
     const filesLoading = (folder && !folder.children);
-
     const errors = error && error.graphQLErrors &&
       error.graphQLErrors.map((graphQLError) => graphQLError.message);
     return {
@@ -100,17 +97,17 @@ const query = {
     offset: 'Int!',
     rootFilter: 'FileFilterInput',
     childrenFilter: 'FileFilterInput',
-    sortBy: '[ChildrenSortInputType]',
+    sortBy: 'FolderChildrenSortFields',
   },
   args: {
     root: {
       filter: 'rootFilter'
     },
-    'root/edges/node/...on Folder/children': {
+    'root/...on Folder/children': {
       limit: 'limit',
       offset: 'offset',
       filter: 'childrenFilter',
-      sortBy: 'sortBy',
+      sort: 'sortBy',
     },
   },
   fragments: [
@@ -118,31 +115,22 @@ const query = {
     'FileFields',
   ],
   fields: [
-    'pageInfo', [
-      'totalCount',
-    ],
-    'edges', [
-      'node', [
-        '...FileInterfaceFields',
-        '...FileFields',
-        '...on Folder', [
-          'children', [
-            'pageInfo', [
-              'totalCount',
-            ],
-            'edges', [
-              'node', [
-                '...FileInterfaceFields',
-                '...FileFields',
-              ]
-            ]
-          ],
-          'parents', [
-            'id',
-            'title',
-          ]
+    '...FileInterfaceFields',
+    '...FileFields',
+    '...on Folder', [
+      'children', [
+        'pageInfo', [
+          'totalCount',
+        ],
+        'nodes', [
+          '...FileInterfaceFields',
+          '...FileFields',
         ]
-      ]
+      ],
+      'parents', [
+        'id',
+        'title',
+      ],
     ],
   ],
 };

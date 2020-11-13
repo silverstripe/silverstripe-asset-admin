@@ -46,7 +46,7 @@ const query = {
   },
   args: {
     root: {
-      IDs: 'ids'
+      ids: 'ids'
     }
   },
   fields: ['id', 'inUseCount'],

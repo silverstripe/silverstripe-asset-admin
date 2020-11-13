@@ -1,0 +1,37 @@
+File:
+  description: Type for files and images
+  interfaces: [FileInterface]
+  fieldResolver:
+    - SilverStripe\AssetAdmin\GraphQL\Resolvers\FieldResolver
+    - resolve
+  fields:
+    id: Int!
+    created: String
+    lastEdited: String
+    owner: String
+    parentId: Int
+    title: String
+    exists: Boolean
+    type: String
+    category: String
+    name: String
+    filename: String
+    extension: String
+    size: Int
+    url: String
+    thumbnail: String
+    smallThumbnail: String
+    width: Int
+    height: Int
+    isTrackedFormUpload: Boolean
+    draft: Boolean
+    published: Boolean
+    modified: Boolean
+    inUseCount: Int
+    version: Int!
+    canView: Boolean
+    canEdit: Boolean
+    canDelete: Boolean
+    hasRestrictedAccess: Boolean
+    visibility: String
+

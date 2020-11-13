@@ -1,0 +1,7 @@
+FileInput:
+  input: true
+  description: Input type for files and images
+  fields:
+    parentId: Int!
+    title: String
+    name: String

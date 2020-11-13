@@ -334,7 +334,7 @@ class TableView extends Component {
     return (
       <div className="fill-width">
         <div className="flexbox-area-grow">
-          {props.data}
+          <span>{props.data}</span>
           {props.rowData.hasRestrictedAccess && this.renderRestrictedAccess(props.rowData)}
           {props.rowData.isTrackedFormUpload && this.renderTrackedFormUpload(props.rowData)}
         </div>

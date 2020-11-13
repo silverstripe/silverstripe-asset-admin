@@ -4,8 +4,8 @@ import { fileInterface, file } from 'lib/fileFragments';
 const buildPublicationMutation = (mutationName) => {
   const operationName = mutationName.charAt(0).toUpperCase() + mutationName.slice(1);
   const mutation = gql`
-  mutation ${operationName}($IDs:[ID]!, $Force:Boolean, $Quiet:Boolean) {
-    ${mutationName}(IDs: $IDs, Force: $Force, Quiet: $Quiet) {
+  mutation ${operationName}($ids:[ID]!, $force:Boolean, $quiet:Boolean) {
+    ${mutationName}(ids: $ids, force: $force, quiet: $quiet) {
       ...on File {
         __typename
         ...FileInterfaceFields
@@ -13,9 +13,9 @@ const buildPublicationMutation = (mutationName) => {
       }
       ...on PublicationNotice {
         __typename
-        Type
-        Message
-        IDs
+        noticeType
+        message
+        ids
       }
     }
   }
@@ -26,11 +26,11 @@ const buildPublicationMutation = (mutationName) => {
   const isProd = process.env.NODE_ENV === 'production';
   const config = {
     props: ({ mutate, ownProps: { actions } }) => {
-      const mutationAction = (IDs, Force = false, Quiet = isProd) => mutate({
+      const mutationAction = (ids, force = false, quiet = isProd) => mutate({
         variables: {
-          IDs,
-          Quiet,
-          Force
+          ids,
+          quiet,
+          force
         },
       });
 

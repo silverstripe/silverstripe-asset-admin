@@ -1,0 +1,3 @@
+'readFileUsage(ids: [ID]!)': '[FileUsage]'
+'readFiles(filter: FileFilterInput)':
+  type: '[FileResult]'

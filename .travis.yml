@@ -31,10 +31,16 @@ matrix:
   include:
     - php: 7.1
       env: PHPUNIT_TEST=1 COMPOSER_ARG=--prefer-lowest
+    - php: 7.1
+      env: BACKWARD_COMPAT=1 PHPUNIT_TEST=1 COMPOSER_ARG=--prefer-lowest
     - php: 7.2
       env: BEHAT_TEST=1
+    - php: 7.2
+      env: BEHAT_TEST=1 BACKWARD_COMPAT=1
     - php: 7.3
       env: PHPUNIT_TEST=1 PHPCS_TEST=1
+    - php: 7.3
+      env: PHPUNIT_TEST=1 PHPCS_TEST=1 BACKWARD_COMPAT=1
     - php: 7.4
       env: PHPUNIT_TEST=1
     - php: 7.1
@@ -57,8 +63,15 @@ before_script:
 # Install composer
   - composer validate
   - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:2.x-dev --prefer-dist; fi
-  - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms:4.x-dev silverstripe/frameworktest:0.1.0 --no-update --prefer-dist
+  - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms:4.x-dev silverstripe/frameworktest:4.x-dev --no-update --prefer-dist
+
+######## Remove once GraphQL 4 is merged #########
+  - composer require silverstripe/cms:"dev-pulls/4/schemageddon as 4.x-dev" silverstripe/versioned:"dev-pulls/1/schemageddon as 1.x-dev" silverstripe/graphql:"4.x-dev as 3.x-dev" --no-update
+##################################################
+  - 'if [[ $BACKWARD_COMPAT ]]; then composer require silverstripe/graphql:"dev-pulls/3/schemageddon-compat as 3.x-dev" --no-update; fi'
+
   - composer update $COMPOSER_ARG
+
 
 # Remove preinstalled Chrome (google-chrome)
 # this would conflict with our chromium-browser installation

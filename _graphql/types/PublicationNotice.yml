@@ -1,0 +1,12 @@
+PublicationNotice:
+  description: Describes an error that occurred on a failed publication operation
+  fields:
+    noticeType:
+      type: String!
+      description: The type of notice
+    message:
+      type: String
+      description: Relevant information pertaining to the error
+    ids:
+      type: '[ID]'
+      description: Relevant record IDs

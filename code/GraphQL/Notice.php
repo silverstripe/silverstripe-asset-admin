@@ -11,7 +11,7 @@ class Notice
     /**
      * @var string
      */
-    protected $type;
+    protected $noticeType;
 
     /**
      * IDs of records this notice relateds to
@@ -29,31 +29,31 @@ class Notice
      * Notice constructor.
      *
      * @param string $message
-     * @param int $type
+     * @param int $noticeType
      * @param array $ids
      */
-    public function __construct($message, $type, $ids = [])
+    public function __construct($message, $noticeType, $ids = [])
     {
         $this->message = $message;
-        $this->type = $type;
+        $this->noticeType = $noticeType;
         $this->ids = $ids;
     }
 
     /**
      * @return string
      */
-    public function getType()
+    public function getNoticeType()
     {
-        return $this->type;
+        return $this->noticeType;
     }
 
     /**
-     * @param string $type
+     * @param string $noticeType
      * @return $this
      */
-    public function setType($type)
+    public function setNoticeType($noticeType)
     {
-        $this->type = $type;
+        $this->noticeType = $noticeType;
 
         return $this;
     }

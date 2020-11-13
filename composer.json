@@ -6,7 +6,7 @@
     "require": {
         "silverstripe/framework": "^4.5",
         "silverstripe/admin": "^1.7",
-        "silverstripe/graphql": "^3",
+        "silverstripe/graphql": "3.x-dev || 4.x-dev",
         "silverstripe/vendor-plugin": "^1"
     },
     "require-dev": {
@@ -29,7 +29,8 @@
             "SilverStripe\\AssetAdmin\\": "code/",
             "SilverStripe\\AssetAdmin\\Tests\\": "tests/php/",
             "SilverStripe\\AssetAdmin\\Tests\\Behat\\Context\\": "tests/behat/src/"
-        }
+        },
+        "classmap": ["code/GraphQL/_legacy"]
     },
     "config": {
         "process-timeout": 600

@@ -1,0 +1,11 @@
+PublicationResult:
+  types: [File, PublicationNotice]
+  typeResolver:
+    - SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver
+    - resolvePublicationResultUnion
+FileResult:
+  types: [File, Folder]
+  typeResolver:
+    - SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver
+    - resolveFileInterfaceType
+

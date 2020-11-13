@@ -2,16 +2,16 @@ import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import Injector from 'lib/Injector';
 
-const mutation = gql`mutation DeleteFiles($IDs:[ID]!) {
-  deleteFiles(IDs: $IDs)
+const mutation = gql`mutation DeleteFiles($ids:[ID]!) {
+  deleteFiles(ids: $ids)
 }`;
 
 const config = {
   props: ({ mutate, ownProps }) => {
     const { actions } = ownProps;
-    const deleteFiles = (IDs, parentId = null) => mutate({
+    const deleteFiles = (ids, parentId = null) => mutate({
       variables: {
-        IDs,
+        ids,
       },
       update: (store) => {
         const readFilesQuery = Injector.query.get('ReadFilesQuery');
@@ -28,10 +28,18 @@ const config = {
         // This is an alternative, relatively efficient way to deep clone
         const newData = JSON.parse(JSON.stringify(data));
 
-        let { edges } = newData.readFiles.edges[0].node.children;
-        edges = edges.filter(edge => !IDs.includes(edge.node.id));
-        newData.readFiles.edges[0].node.children.edges = edges;
-        newData.readFiles.edges[0].node.children.pageInfo.totalCount = edges.length;
+        // GraphQL backward compat hack
+        if (newData.readFiles.nodes) {
+          let { nodes } = newData.readFiles.nodes[0].children;
+          nodes = nodes.filter(node => !ids.includes(node.id));
+          newData.readFiles.nodes[0].children.nodes = nodes;
+          newData.readFiles.nodes[0].children.pageInfo.totalCount = nodes.length;
+        } else {
+          let { nodes } = newData.readFiles[0].children;
+          nodes = nodes.filter(node => !ids.includes(node.id));
+          newData.readFiles[0].children.nodes = nodes;
+          newData.readFiles[0].children.pageInfo.totalCount = nodes.length;
+        }
         store.writeQuery({ query, data: newData, variables });
       }
     });

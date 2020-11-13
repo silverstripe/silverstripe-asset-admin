@@ -2,13 +2,15 @@
 
 namespace SilverStripe\AssetAdmin\Tests\GraphQL;
 
+use SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
 use GraphQL\Type\Definition\ResolveInfo;
-use SilverStripe\AssetAdmin\GraphQL\CreateFolderMutationCreator;
+use SilverStripe\GraphQL\Schema\Schema;
+use SilverStripe\Versioned\Tests\GraphQL\Fake\Fake;
 
 class CreateFolderMutationCreatorTest extends SapphireTest
 {
@@ -18,7 +20,9 @@ class CreateFolderMutationCreatorTest extends SapphireTest
     public function setUp()
     {
         parent::setUp();
-
+        if (!class_exists(Schema::class)) {
+            $this->markTestSkipped('GraphQL 4 test ' . __CLASS__ . ' skipped');
+        }
         File::add_extension(FileExtension::class);
         Folder::add_extension(FolderExtension::class);
     }
@@ -41,8 +45,7 @@ class CreateFolderMutationCreatorTest extends SapphireTest
                 'name' => 'testItCreatesFolder',
             ]
         ];
-        $creator = new CreateFolderMutationCreator();
-        $newFolder = $creator->resolve(null, $args, null, new ResolveInfo([]));
+        $newFolder = AssetAdminResolver::resolveCreateFolder(null, $args, null, new FakeResolveInfo());
         $this->assertNotNull($newFolder);
         $this->assertEquals($folder1->ID, $newFolder->ParentID);
         $this->assertEquals('testItCreatesFolder', $newFolder->Name);
@@ -62,7 +65,6 @@ class CreateFolderMutationCreatorTest extends SapphireTest
                 'name' => 'disallowCanCreate',
             ]
         ];
-        $creator = new CreateFolderMutationCreator();
-        $creator->resolve(null, $args, null, new ResolveInfo([]));
+        AssetAdminResolver::resolveCreateFolder(null, $args, null, new FakeResolveInfo());
     }
 }

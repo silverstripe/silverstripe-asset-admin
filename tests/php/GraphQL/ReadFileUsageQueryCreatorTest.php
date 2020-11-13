@@ -2,16 +2,14 @@
 
 namespace SilverStripe\AssetAdmin\Tests\GraphQL;
 
-use SilverStripe\AssetAdmin\GraphQL\ReadFileQueryCreator;
-use SilverStripe\AssetAdmin\GraphQL\ReadFileUsageQueryCreator;
+use SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
-use GraphQL\Type\Definition\ResolveInfo;
-use SilverStripe\GraphQL\Manager;
 use Silverstripe\Assets\Dev\TestAssetStore;
+use SilverStripe\GraphQL\Schema\Schema;
 
 /**
  * Most of the search functionality is covered in {@link FileFilterInputTypeCreatorTest}
@@ -26,6 +24,9 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
     public function setUp()
     {
         parent::setUp();
+        if (!class_exists(Schema::class)) {
+            $this->markTestSkipped('GraphQL 4 test ' . __CLASS__ . ' skipped');
+        }
 
         TestAssetStore::activate('AssetAdminTest');
 
@@ -80,8 +81,7 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
     protected function getResultsForSearch($args, $context = null)
     {
         $context = $context ? $context : ['currentUser' => null];
-        $creator = new ReadFileUsageQueryCreator(new Manager());
-        return $creator->resolve(null, $args, $context, new ResolveInfo([]));
+        return AssetAdminResolver::resolveReadFileUsage(null, $args, $context, new FakeResolveInfo());
     }
 
     /**
@@ -91,7 +91,7 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
      */
     private function assertUsageCount($id, $expectedCount, $message)
     {
-        $actual = $this->getResultsForSearch(['IDs' => [$id]]);
+        $actual = $this->getResultsForSearch(['ids' => [$id]]);
         if ($expectedCount === false) {
             $this->assertEmpty($actual, $message);
         } else {
