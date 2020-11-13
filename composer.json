@@ -26,11 +26,10 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverStripe\\AssetAdmin\\": "code/",
+            "SilverStripe\\AssetAdmin\\": ["code/", "_legacy/"],
             "SilverStripe\\AssetAdmin\\Tests\\": "tests/php/",
             "SilverStripe\\AssetAdmin\\Tests\\Behat\\Context\\": "tests/behat/src/"
-        },
-        "classmap": ["code/GraphQL/_legacy"]
+        }
     },
     "config": {
         "process-timeout": 600
