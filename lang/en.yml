@@ -1,4 +1,7 @@
 en:
+  AssetAdmin:
+    INSERT_FILE: 'Insert file'
+    UPDATE_FILE: 'Update file'
   AssetFormFactory:
     php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
     php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Saved
@@ -77,7 +80,6 @@ en:
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download file'
-    INSERT_FILE: Insert
     INSERT_LINK: 'Link to file'
     LINKDESCR: 'Link description'
     LINKOPENNEWWIN: 'Open in new window/tab'
