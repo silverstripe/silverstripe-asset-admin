@@ -64,7 +64,7 @@ before_script:
   - composer validate
   - if [[ $DB == PGSQL ]]; then composer require --no-update silverstripe/postgresql:2.x-dev --prefer-dist; fi
   - composer require silverstripe/recipe-testing:^1 silverstripe/recipe-cms:4.x-dev silverstripe/frameworktest:4.x-dev --no-update --prefer-dist
-  - 'if [[ ! $BACKWARD_COMPAT ]]; then composer require silverstripe/graphql:4.x-dev --no-update; fi'
+  - 'if [[ $BACKWARD_COMPAT ]]; then composer require silverstripe/graphql:3.x-dev --no-update; fi'
   - composer update $COMPOSER_ARG
 
 
