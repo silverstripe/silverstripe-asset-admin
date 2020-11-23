@@ -3,17 +3,8 @@ Name: asset-admin-graphql
 Only:
   classexists: 'SilverStripe\GraphQL\Schema\Schema'
 ---
-SilverStripe\Core\Injector\Injector:
-  SilverStripe\GraphQL\Schema\Registry\ResolverRegistry:
-    constructor:
-      assetAdminResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver'
-      fileTypeResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\FileTypeResolver'
-      folderTypeResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\FolderTypeResolver'
-      publicationResolver: '%$SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver'
 SilverStripe\GraphQL\Schema\Schema:
   schemas:
     admin:
       src:
         assetAdmin: 'silverstripe/asset-admin: _graphql'
-      builders:
-        assetAdmin: SilverStripe\AssetAdmin\GraphQL\Schema\Builder

@@ -19,10 +19,7 @@ use SilverStripe\ORM\Filterable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 
-if (!class_exists(DefaultResolverProvider::class)) {
-    return;
-}
-class AssetAdminResolver extends DefaultResolverProvider
+class AssetAdminResolver
 {
     public static function resolveFileInterfaceType($object)
     {
@@ -263,7 +260,7 @@ class AssetAdminResolver extends DefaultResolverProvider
      * @return DataList|Filterable
      * @throws HTTPResponse_Exception
      */
-    public static function resolveReadFiles($object, array $args, $context, $info)
+    public static function resolveReadFiles($object, array $args = [], $context = [], $info = null)
     {
         $filter = (!empty($args['filter'])) ? $args['filter'] : [];
 
