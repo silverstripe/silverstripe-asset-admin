@@ -63,9 +63,6 @@ class AssetDropzone extends Component {
           this.props.options
         );
       }
-    } else {
-      // remove dropzone listeners (so it potentially doesn't interrupt other listeners)
-      this.dropzone.destroy();
     }
   }
 
