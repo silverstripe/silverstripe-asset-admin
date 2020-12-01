@@ -3,22 +3,14 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\File;
-use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Storage\AssetContainer;
 use SilverStripe\Core\Injector\Injectable;
-use SilverStripe\GraphQL\Schema\DataObject\FieldAccessor;
-use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 
-if (!class_exists(DefaultResolverProvider::class)) {
-    return;
-}
-
-class FileTypeResolver extends DefaultResolverProvider
+class FileTypeResolver
 {
     use Injectable;
 

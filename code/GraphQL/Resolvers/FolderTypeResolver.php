@@ -8,9 +8,7 @@ use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\AssetAdmin\GraphQL\FileFilter;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
-use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\GraphQL\QueryHandler\QueryHandler;
-use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DB;
@@ -18,11 +16,7 @@ use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 use Exception;
 
-if (!class_exists(DefaultResolverProvider::class)) {
-    return;
-}
-
-class FolderTypeResolver extends DefaultResolverProvider
+class FolderTypeResolver
 {
     /**
      * @param Folder $object

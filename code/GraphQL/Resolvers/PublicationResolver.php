@@ -7,16 +7,11 @@ use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
 use SilverStripe\Assets\File;
 use SilverStripe\GraphQL\QueryHandler\QueryHandler;
-use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 
-if (!class_exists(DefaultResolverProvider::class)) {
-    return;
-}
-
-class PublicationResolver extends DefaultResolverProvider
+class PublicationResolver
 {
     const ACTION_PUBLISH = 'publish';
     const ACTION_UNPUBLISH = 'unpublish';

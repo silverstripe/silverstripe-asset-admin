@@ -1,0 +1,7 @@
+resolvers:
+  - SilverStripe\AssetAdmin\GraphQL\Resolvers\AssetAdminResolver
+  - SilverStripe\AssetAdmin\GraphQL\Resolvers\FileTypeResolver
+  - SilverStripe\AssetAdmin\GraphQL\Resolvers\FolderTypeResolver
+  - SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver
+execute:
+  - SilverStripe\AssetAdmin\GraphQL\Schema\Builder
