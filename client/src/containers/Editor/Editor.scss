@@ -32,6 +32,9 @@
     // This is an internal form so needs to be told to overflow with scrollbars
     fieldset {
       overflow-y: auto;
+
+      // This is to fix a layout engine issue which only affects chrome/edge 87, not 86 or 88
+      max-height: inherit;
     }
   }
 
