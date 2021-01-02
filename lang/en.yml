@@ -1,4 +1,7 @@
 en:
+  AssetAdmin:
+    INSERT_FILE: 'Insert file'
+    UPDATE_FILE: 'Update file'
   AssetFormFactory:
     php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
     php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Saved
