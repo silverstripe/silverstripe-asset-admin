@@ -43,6 +43,8 @@ Feature: Insert an image into a page
       Then I should see the "Form_fileInsertForm" form
       And I should see the "Insert file" button
     When I fill in "Alternative text (alt)" with "My alt"
+      # Filling in width is purely to get the framework to scroll-up so that the details button is in view
+      And I scroll the editor details panel to the top
       And I press the "Details" button
       Then I should see the "Form_fileEditForm" form
       And I should not see an ".gallery-item--selectable" element
