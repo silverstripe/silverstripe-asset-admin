@@ -157,7 +157,7 @@ describe('UploadFieldItem', () => {
         <UploadFieldItem {...props} />
       );
       const error = file.renderErrorMessage();
-      expect(error.type).toBe('div');
+      expect(error.type).toBe('span');
       expect(error.props.className).toBe('uploadfield-item__error-message');
       expect(error.props.children).toBe('Error uploading');
     });
