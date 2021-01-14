@@ -11,6 +11,7 @@
     },
     "require-dev": {
         "sminnee/phpunit": "^5.7",
+        "squizlabs/php_codesniffer": "^3",
         "silverstripe/cms": "^4.5",
         "silverstripe/campaign-admin": "^1.5"
     },
