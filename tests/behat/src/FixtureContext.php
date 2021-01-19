@@ -425,4 +425,13 @@ JS;
         assertNotNull($element, sprintf('HTML field "%s" not found', $locator));
         return $element;
     }
+
+    /**
+     * @When /^I scroll the editor details panel to the top$/
+     */
+    public function iScrollTheEditorDetailsPanelToTheTop()
+    {
+        $script = "document.querySelector('.editor__details fieldset').scrollTo(0, 0);";
+        $this->getMainContext()->getSession()->executeScript($script);
+    }
 }
