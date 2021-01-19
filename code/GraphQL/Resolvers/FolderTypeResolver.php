@@ -9,6 +9,7 @@ use SilverStripe\AssetAdmin\GraphQL\FileFilter;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\GraphQL\QueryHandler\QueryHandler;
+use SilverStripe\GraphQL\QueryHandler\UserContextProvider;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DB;
@@ -96,9 +97,10 @@ class FolderTypeResolver
         $ids = $list->dataQuery()->execute()->column('ID');
 
         $permissionChecker = File::singleton()->getPermissionChecker();
+        $member = UserContextProvider::get($context);
         $canViewIDs = array_keys(array_filter($permissionChecker->canViewMultiple(
             $ids,
-            $context[QueryHandler::CURRENT_USER]
+            $member
         )));
         // Filter by visible IDs (or force empty set if none are visible)
         // Remove the limit as it no longer applies. We've already filtered down to the exact
