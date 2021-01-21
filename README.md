@@ -1,6 +1,6 @@
 # SilverStripe Asset Admin Module
 
-[![Build Status](http://img.shields.io/travis/silverstripe/silverstripe-asset-admin.svg?style=flat-square)](https://travis-ci.org/silverstripe/silverstripe-asset-admin)
+[![Build Status](https://api.travis-ci.com/silverstripe/silverstripe-asset-admin.svg?branch=1)](https://travis-ci.com/silverstripe/silverstripe-asset-admin)
 [![SilverStripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
 [![Code Quality](http://img.shields.io/scrutinizer/g/silverstripe/silverstripe-asset-admin.svg?style=flat-square)](https://scrutinizer-ci.com/g/silverstripe/silverstripe-asset-admin)
 [![Code Climate](https://codeclimate.com/github/silverstripe/silverstripe-asset-admin/badges/gpa.svg)](https://codeclimate.com/github/silverstripe/silverstripe-asset-admin)
