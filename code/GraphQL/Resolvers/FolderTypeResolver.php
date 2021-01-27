@@ -8,14 +8,17 @@ use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\AssetAdmin\GraphQL\FileFilter;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
-use SilverStripe\GraphQL\QueryHandler\QueryHandler;
 use SilverStripe\GraphQL\QueryHandler\UserContextProvider;
+use SilverStripe\GraphQL\Schema\DataObject\FieldAccessor;
+use SilverStripe\GraphQL\Schema\Schema;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\Sortable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 use Exception;
+use Closure;
 
 class FolderTypeResolver
 {
@@ -145,4 +148,32 @@ class FolderTypeResolver
 
         return $parents;
     }
+
+    /**
+     * @param array $context
+     * @return Closure
+     */
+    public static function sortChildren(array $context): Closure
+    {
+        $fieldName = $context['fieldName'];
+        return function (?Sortable $list, array $args) use ($fieldName) {
+            if ($list === null) {
+                return null;
+            }
+            $sortArgs = $args[$fieldName] ?? [];
+            foreach ($sortArgs as $field => $dir) {
+                $normalised = FieldAccessor::singleton()->normaliseField(File::singleton(), $field);
+                Schema::invariant(
+                    $normalised,
+                    'Could not find field %s on %s',
+                    $field,
+                    File::class
+                );
+                $list = $list->sort($normalised, $dir);
+            }
+
+            return $list;
+        };
+    }
+
 }

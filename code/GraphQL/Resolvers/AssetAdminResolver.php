@@ -5,16 +5,12 @@ namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\FileFilter;
-use SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Control\HTTPResponse_Exception;
-use SilverStripe\GraphQL\QueryHandler\QueryHandler;
 use SilverStripe\GraphQL\QueryHandler\UserContextProvider;
 use SilverStripe\GraphQL\Schema\DataObject\FieldAccessor;
-use SilverStripe\GraphQL\Schema\DataObject\Plugin\Paginator;
-use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\Filterable;
 use SilverStripe\Versioned\Versioned;
@@ -300,7 +296,7 @@ class AssetAdminResolver
         $list = FileFilter::filterList($list, $filter);
 
         // Permission checks
-        $list = $list->filterByCallback(function (File $file) use ($context) {
+        $list = $list->filterByCallback(function (File $file) use ($context, $member) {
             return $file->canView($member);
         });
 
