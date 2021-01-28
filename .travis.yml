@@ -8,3 +8,13 @@ env:
     - COMPOSER_ROOT_VERSION="1.7.x-dev"
     - REQUIRE_RECIPE="4.7.x-dev"
     - BEHAT_SUITE=asset-admin
+
+before_script:
+  # install chromium 88.0.4324.87
+  # remove existing chromium and chromium-driver
+  - sudo apt-get remove -y chromium-browser chromium-chromedriver
+  # https://launchpad.net/~chromium-team/+archive/ubuntu/beta
+  - sudo -E add-apt-repository -y ppa:chromium-team/beta
+  - sudo -E apt-get install -y chromium-browser chromium-chromedriver
+  # download chromedriver 88
+  # - wget "https://chromedriver.storage.googleapis.com/88.0.4324.96/chromedriver_linux64.zip" -O temp.zip && unzip temp.zip && rm temp.zip && sudo mv chromedriver /usr/bin/chromedriver && sudo chown root:root /usr/bin/chromedriver && sudo chmod +x /usr/bin/chromedriver
