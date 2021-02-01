@@ -7,4 +7,5 @@ env:
   global:
     - COMPOSER_ROOT_VERSION="1.7.x-dev"
     - REQUIRE_RECIPE="4.7.x-dev"
-    - BEHAT_SUITE=asset-admin
+    - BEHAT_SUITE="asset-admin"
+    - $REQUIRE_FRAMEWORKTEST="0.3.0"
