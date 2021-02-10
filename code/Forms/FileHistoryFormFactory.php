@@ -52,9 +52,6 @@ class FileHistoryFormFactory extends FileFormFactory
         $record = $context['Record'];
 
         $fields = new FieldList(
-            PreviewImageField::create('PreviewImage')
-                ->setRecordID($record->ID)
-                ->addExtraClass('editor__file-preview'),
             LiteralField::create('FileSpecs', $this->getSpecsMarkup($record)),
             ReadonlyField::create("Title", File::singleton()->fieldLabel('Title')),
             ReadonlyField::create('Name', File::singleton()->fieldLabel('Filename')),
