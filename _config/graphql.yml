@@ -8,3 +8,11 @@ SilverStripe\GraphQL\Schema\Schema:
     admin:
       src:
         assetAdmin: 'silverstripe/asset-admin: _graphql'
+
+SilverStripe\Core\Injector\Injector:
+  SilverStripe\EventDispatcher\Dispatch\Dispatcher:
+    properties:
+      handlers:
+        graphqlSchemaBuild:
+          on: [ graphqlSchemaBuild.admin ]
+          handler: '%$SilverStripe\GraphQL\Schema\Services\SchemaTranscribeHandler'
