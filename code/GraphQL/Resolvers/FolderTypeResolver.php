@@ -175,5 +175,4 @@ class FolderTypeResolver
             return $list;
         };
     }
-
 }
