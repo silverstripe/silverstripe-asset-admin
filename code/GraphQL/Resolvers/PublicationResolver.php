@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
 use SilverStripe\Assets\File;
 use SilverStripe\GraphQL\QueryHandler\QueryHandler;
+use SilverStripe\GraphQL\QueryHandler\UserContextProvider;
 use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
@@ -69,7 +70,8 @@ class PublicationResolver
         // Check permissions
         foreach ($files as $file) {
             $permissionMethod = $isPublish ? 'canPublish' : 'canUnpublish';
-            if ($file->$permissionMethod($context[QueryHandler::CURRENT_USER])) {
+            $member = UserContextProvider::get($context);
+            if ($file->$permissionMethod($member)) {
                 $allowedFiles[] = $file;
             } elseif (!$quiet) {
                 $warningMessages[] = sprintf(

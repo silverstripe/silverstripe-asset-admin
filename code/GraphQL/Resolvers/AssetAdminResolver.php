@@ -5,15 +5,12 @@ namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\FileFilter;
-use SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Control\HTTPResponse_Exception;
-use SilverStripe\GraphQL\QueryHandler\QueryHandler;
+use SilverStripe\GraphQL\QueryHandler\UserContextProvider;
 use SilverStripe\GraphQL\Schema\DataObject\FieldAccessor;
-use SilverStripe\GraphQL\Schema\DataObject\Plugin\Paginator;
-use SilverStripe\GraphQL\Schema\Resolver\DefaultResolverProvider;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\Filterable;
 use SilverStripe\Versioned\Versioned;
@@ -50,7 +47,8 @@ class AssetAdminResolver
         foreach ($args['file'] as $name => $val) {
             $canCreateContext[$accessor->normaliseField(File::singleton(), $name)] = $val;
         }
-        if (!File::singleton()->canCreate($context[QueryHandler::CURRENT_USER], $canCreateContext)) {
+        $member = UserContextProvider::get($context);
+        if (!File::singleton()->canCreate($member, $canCreateContext)) {
             throw new InvalidArgumentException(sprintf(
                 '%s# create not allowed',
                 File::class
@@ -126,8 +124,9 @@ class AssetAdminResolver
         }
 
         $deletedIDs = [];
+        $member = UserContextProvider::get($context);
         foreach ($files as $file) {
-            if ($file->canArchive($context[QueryHandler::CURRENT_USER])) {
+            if ($file->canArchive($member)) {
                 $file->doArchive();
                 $deletedIDs[] = $file->ID;
             }
@@ -139,6 +138,7 @@ class AssetAdminResolver
     public static function resolveMoveFiles($object, array $args, $context)
     {
         $folderId = (isset($args['folderId'])) ? $args['folderId'] : 0;
+        $member = UserContextProvider::get($context);
 
         if ($folderId) {
             /** @var Folder $folder */
@@ -153,7 +153,7 @@ class AssetAdminResolver
             }
 
             // Check permission
-            if (!$folder->canEdit($context[QueryHandler::CURRENT_USER])) {
+            if (!$folder->canEdit($member)) {
                 throw new InvalidArgumentException(sprintf(
                     '%s edit not allowed',
                     Folder::class
@@ -163,10 +163,9 @@ class AssetAdminResolver
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)
             ->byIDs($args['fileIds']);
         $errorFiles = [];
-
         /** @var File $file */
         foreach ($files as $file) {
-            if ($file->canEdit($context[QueryHandler::CURRENT_USER])) {
+            if ($file->canEdit($member)) {
                 $file->ParentID = $folderId;
                 $file->writeToStage(Versioned::DRAFT);
             } else {
@@ -239,8 +238,9 @@ class AssetAdminResolver
         }
 
         $usage = [];
+        $member = UserContextProvider::get($context);
         foreach ($files as $file) {
-            if ($file->canView($context[QueryHandler::CURRENT_USER])) {
+            if ($file->canView($member)) {
                 $useEntry = ['id' => $file->ID];
                 $useEntry['inUseCount'] = $file instanceof Folder ?
                     $file->getFilesInUse()->count():
@@ -263,6 +263,7 @@ class AssetAdminResolver
     public static function resolveReadFiles($object, array $args = [], $context = [], $info = null)
     {
         $filter = (!empty($args['filter'])) ? $args['filter'] : [];
+        $member = UserContextProvider::get($context);
 
         // Permission checks
         $parent = Folder::singleton();
@@ -276,7 +277,7 @@ class AssetAdminResolver
                 ));
             }
         }
-        if (!$parent->canView($context[QueryHandler::CURRENT_USER])) {
+        if (!$parent->canView($member)) {
             throw new InvalidArgumentException(sprintf(
                 '%s#%s view access not permitted',
                 Folder::class,
@@ -295,8 +296,8 @@ class AssetAdminResolver
         $list = FileFilter::filterList($list, $filter);
 
         // Permission checks
-        $list = $list->filterByCallback(function (File $file) use ($context) {
-            return $file->canView($context[QueryHandler::CURRENT_USER]);
+        $list = $list->filterByCallback(function (File $file) use ($context, $member) {
+            return $file->canView($member);
         });
 
         return $list;

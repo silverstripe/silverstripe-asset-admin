@@ -29,6 +29,7 @@ Folder:
       plugins:
         sorter:
           input: FolderChildrenSortFields
+          resolver: [SilverStripe\AssetAdmin\GraphQL\Resolvers\FolderTypeResolver, sortChildren]
           fields:
             id: ID
             title: Title
