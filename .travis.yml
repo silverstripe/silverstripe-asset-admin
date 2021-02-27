@@ -1,7 +1,16 @@
 version: ~> 1.0
 
 import:
-  - silverstripe/silverstripe-travis-shared:config/provision/standard-jobs-fixed-behat-npm.yml
+  - silverstripe/silverstripe-travis-shared:config/provision/standard.yml
+
+jobs:
+  include:
+    - php: 7.3
+      env:
+        - DB=MYSQL
+        - REQUIRE_RECIPE_TESTING=^1
+        - BEHAT_TEST=1
+        - REQUIRE_GRAPHQL="4.x-dev"
 
 env:
   global:
@@ -9,3 +18,14 @@ env:
     - REQUIRE_RECIPE="4.x-dev"
     - REQUIRE_FRAMEWORKTEST="0.4.2"
     - BEHAT_SUITE="asset-admin"
+
+before_script:
+  - cd vendor/silverstripe
+  - rm -rf versioned
+  - git clone git@github.com:unclecheese/silverstripe-versioned.git
+  - mv silverstripe-versioned versioned
+  - cd versioned
+  - git checkout pulls/1/replace-versions-plugins
+  - cd ../../..
+  # - composer config repositories.myrepo vcs git@github.com:unclecheese/silverstripe-versioned.git
+  # - composer require --no-update "silverstripe/versioned:dev-pulls/1/replace-versions-plugins as 1.x-dev"
