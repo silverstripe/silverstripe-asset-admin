@@ -53,7 +53,8 @@ $gallery-item-label-height: 40px;
     padding-top: 17px;
     padding-bottom: 17px;
     padding-left: 0;
-    width: 131px;
+    // We want to take up the space available minus the space taken by gallery-item__thumbnail
+    width: calc(100% - 45px);
     height: $gallery-folder-title-height;
   }
 
