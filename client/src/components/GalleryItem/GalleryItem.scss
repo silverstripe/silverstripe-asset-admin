@@ -39,6 +39,7 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item--folder {
+  display: flex;
   height: $gallery-folder-height;
 
   .gallery-item__thumbnail {
