@@ -50,7 +50,7 @@ Feature: Single file Upload field
       Then I should see the "Form_fileSelectForm" form
     When I press the "Insert" button
       Then I should see "file1" in the ".uploadfield-item__title" element
-    When I click the ".uploadfield-item__view-btn" element
+    When I click on the ".uploadfield-item__view-btn" element
       And I click on the file named "file2" in the gallery
       Then I should see the "Form_fileSelectForm" form
     When I press the "Insert" button
