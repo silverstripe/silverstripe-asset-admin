@@ -56,7 +56,7 @@ Feature: Insert an image into a page
       And I should see "File One" in the ".editor__heading" element
     When I press the "Details" button
       Then I should see the "Form_fileEditForm" form
-    When I click the ".editor-header__back-button" element
+    When I click on the ".editor-header__back-button" element
       Then I should see the "Form_fileInsertForm" form
     When I press the "Insert file" button
       Then the "Content" HTML field should contain "file1.jpg"
