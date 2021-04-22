@@ -227,9 +227,9 @@ class UploadFieldItem extends Component {
 
     if (message !== null) {
       return (
-        <div className="uploadfield-item__error-message" title={message}>
+        <span className="uploadfield-item__error-message" title={message}>
           {message}
-        </div>
+        </span>
       );
     }
 
@@ -370,6 +370,9 @@ class UploadFieldItem extends Component {
           {item.hasRestrictedAccess && this.renderRestrictedAccess(item)}
           {item.isTrackedFormUpload && this.renderTrackedFormUpload(item)}
         </div>
+        <div className="fill-width">
+          {this.renderErrorMessage()}
+        </div>
       </div>
     );
   }
@@ -398,7 +401,6 @@ class UploadFieldItem extends Component {
         {this.renderThumbnail()}
         {this.renderFileDetails()}
         {this.renderProgressBar()}
-        {this.renderErrorMessage()}
         {this.renderViewButton()}
         {this.renderRemoveButton()}
       </div>

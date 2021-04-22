@@ -144,14 +144,8 @@ $uploadfield-item-label-height: 40px;
 }
 
 .uploadfield-item__error-message {
-  line-height: 28px;
-  height: 28px;
-  margin: 16px 5px;
-  padding: 0 10px;
-  color: white;
-  background: $brand-danger;
+  color: $brand-danger;
   border-radius: 14px;
-  max-width: 50%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
