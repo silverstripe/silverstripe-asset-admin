@@ -354,21 +354,6 @@ EOS
     }
 
     /**
-     * @When /^I click the "([^"]+)" element$/
-     * @param $selector
-     */
-    public function iClickTheElement($selector)
-    {
-        /** @var DocumentElement $page */
-        $page = $this->getMainContext()->getSession()->getPage();
-        $element = $page->find('css', $selector);
-
-        assertNotNull($element, sprintf('Element %s not found', $selector));
-
-        $element->click();
-    }
-
-    /**
      * Selects the first image match in the HTML editor (tinymce)
      *
      * @When /^I select the image "([^"]+)" in the "([^"]+)" HTML field$/
