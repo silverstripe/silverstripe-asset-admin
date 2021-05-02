@@ -6,7 +6,7 @@
     "require": {
         "silverstripe/framework": "^4.5",
         "silverstripe/admin": "^1.7",
-        "silverstripe/graphql": "3.x-dev || 4.x-dev",
+        "silverstripe/graphql": "^3 || ^4",
         "silverstripe/vendor-plugin": "^1"
     },
     "require-dev": {
@@ -27,7 +27,10 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverStripe\\AssetAdmin\\": ["code/", "_legacy/"],
+            "SilverStripe\\AssetAdmin\\": [
+                "code/",
+                "_legacy/"
+            ],
             "SilverStripe\\AssetAdmin\\Tests\\": "tests/php/",
             "SilverStripe\\AssetAdmin\\Tests\\Behat\\Context\\": "tests/behat/src/"
         }
