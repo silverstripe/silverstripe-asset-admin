@@ -15,7 +15,7 @@ if (!interface_exists(SchemaUpdater::class)) {
 
 class Builder implements SchemaUpdater
 {
-    public static function updateSchema(Schema $schema): void
+    public static function updateSchema(Schema $schema, $config = []): void
     {
         $categoryValues = array_map(function ($category) {
             return ['value' => $category];
