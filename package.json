@@ -73,7 +73,7 @@
     "graphql-tag": "^2.8.0",
     "griddle-react": "^0.8.2",
     "jquery": "^3.5.0",
-    "merge": "^1.2.1",
+    "merge": "^2.1.1",
     "modernizr": "^3.5.0",
     "popper.js": "^1.14.4",
     "prop-types": "^15.6.2",
