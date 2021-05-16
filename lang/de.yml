@@ -71,7 +71,6 @@ de:
     SAVE: Speichern
     VIEWERGROUPS: Betrachtergruppen
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: Einfügen
     INSERT_LINK: 'Link zur Datei'
     LINKDESCR: 'Beschreibung des Links'
     LINKOPENNEWWIN: 'In neuem Fenster oder Reiter öffnen'

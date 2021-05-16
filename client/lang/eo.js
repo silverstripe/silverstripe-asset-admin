@@ -6,9 +6,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('eo', {
-    "AssetAdmin.ADD_FOLDER_BUTTON": "Add folder",
-    "AssetAdmin.BACK": "Back",
-    "AssetAdmin.BACK_DESCRIPTION": "Navigate up a level",
+    "AssetAdmin.ADD_FOLDER_BUTTON": "Aldoni dosierujon",
+    "AssetAdmin.BACK": "Reen",
+    "AssetAdmin.BACK_DESCRIPTION": "Navigi supren unu nivelon",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Are you sure you want to %s these files?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Delete",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Are you sure you want to delete these files?",

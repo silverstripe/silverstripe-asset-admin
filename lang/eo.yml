@@ -1,16 +1,118 @@
 eo:
+  AssetAdmin:
+    INSERT_FILE: 'Enmeti dosieron'
+    UPDATE_FILE: 'Ĝisdatigi dosieron'
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Konservi
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Konservita
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publikigi
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Publikigita
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Elekti dosierujon'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Movi
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Limigita aliro'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Sendi formularon'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Sendi formularon, nelimigita aliro'
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Forigi dosierujojn'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Aldoni al kampanjo'
+    Alignment: Ĝisrandigi
+    AlignmentCenter: Centrigi
+    AlignmentLeft: 'Maldekstra ĉirkaŭfluo'
+    AlignmentLeftAlone: Maldekstre
+    AlignmentRight: 'Dekstra ĉirkaŭfluo'
+    AlignmentRightAlone: Dekstre
+    AltText: 'Alternativa teksto (alt)'
+    AltTextTip: 'Priskribo por vizitantoj kiuj ne povas vidi la bildon (uzante ekranlegilon aŭ bildobarilon). Ni rekomendas tion por bildoj kiuj provizas unikan kuntekston al la enhavo.'
+    AppCategoryArchive: Arkivo
+    AppCategoryAudio: Sondosiero
+    AppCategoryDocument: Dokumento
+    AppCategoryImage: Bildo
+    AppCategoryVideo: Filmeto
+    AttributesDescription: 'Ĉi tiuj ŝanĝoj influos nur ĉi tiun lokigon de la dosiero.'
+    CREATED: 'Unue alŝutita'
+    Caption: Kapvorto
+    CreatePermissionDenied: 'Vi ne havas permeson por aldoni dosierojn'
+    CurrentFolderOnly: 'Ĉu limigi al la aktuala dosierujo kaj ties subaj dosierujoj?'
+    DELETE_BUTTON: Forigi
+    ErrorItemPermissionDenied: 'Vi ne havas permeson por ŝanĝi {ObjectTitle}'
+    ErrorNotFound: 'Tiu {Type} ne estas trovebla'
+    FILE_NOT_FOUND: 'Ne trovis tiun dosieron'
+    Filetype: 'Tipo de dosiero'
+    INVALID_REQUEST: 'Malvalida peto'
+    ImageHeight: Alto
+    ImageSpecs: Dimensioj
+    ImageWidth: Larĝo
+    LASTEDIT: 'Lastfoje ŝanĝita'
+    LoadIntoFileFailed: 'Ne povis ŝargi dosieron'
     MENUTITLE: Dosieroj
-    BACKLINKCOUNT: 'Uzite ĉe:'
-    PAGES: paĝo(j)
-    HEIGHT: Alto
-    SIZE: Grando
-    TYPE: Tipo
-    URL: URL
-    WIDTH: Larĝo
+    NOSUMMARY: 'Neniu resumo disponeblas'
+    NewFile: 'Nova {file}'
+    PATH: Vojprefikso
+    PUBLISHED: Publikigita
+    PUBLISH_BUTTON: Publikigi
+    Placement: Lokado
+    SAVEDFILE: 'Konservis dosieron'
+    TitleTooltip: 'Titola teksto (tooltip)'
+    TitleTooltipTip: 'Provizas longdaŭran klarigon, se bezonatan. Vidigi je musumo.'
+    UNKNOWN: Nekonata
+    UNPUBLISH_BUTTON: Malpublikigi
+    UPLOADEDFILE: 'Alŝutita dosiero'
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
+    MOVEDFOLDER: 'Movis dosieron'
+    RENAMEDFILE: 'Anstataŭigis dosieron'
+    RENAMEDTITLE: 'Ĝisdatigis titolon al'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Kiu povas vidi ĉi tiun dosieron?'
+    ANYONE: 'Iu ajn'
+    EDITHEADER: 'Kiu povas redakti ĉi tiun dosieron?'
+    EDITORGROUPS: 'Grupoj de redaktantoj'
+    FILENAME: 'Nomo de dosiero'
+    FOLDERLOCATION: Loko
+    INHERIT: 'Heredi el patra dosierujo'
+    LOGGED_IN: 'Ensalutintaj uzantoj'
+    ONLY_GROUPS: 'Nur ĉi tiuj grupoj (elektu el la listo)'
+    ROOTNAME: '(Supra nivelo)'
+    SAVE: Konservi
+    VIEWERGROUPS: 'Grupoj de vidantoj'
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    DOWNLOAD_FILE: 'Elŝuti dosieron'
+    INSERT_LINK: 'Ligi al dosiero'
+    LINKDESCR: 'Liga priskribo'
+    LINKOPENNEWWIN: 'Malfermi en nova fenestro/langeto'
+    LINKOPTIONS: 'Ligaj ebloj'
+    LINKTEXT: 'Liga teksto'
+    OTHER_ACTIONS: 'Aliaj agoj'
+    REPLACE_FILE: 'Anstataŭigi dosieron'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ĉi tiu tipo de dosiero estas enmetebla nur kiel ligilon. Vi povas redakti la ligilon post enmeto.</p>'
+    USAGE: 'Uzita je'
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Publikigita
+    SAVED: Konservita
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Krei
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Nomo de dosierujo'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Aldoni aŭdvidaĵon'
+    Cancel: Nuligi
+    ERROR_ABSOLUTE: 'Nur absolutaj URL-oj estas enkorpigeblaj.'
+    ERROR_EMBED: 'Neniu enkorpigita aŭdvidaĵo aktuale disponeblas el ĉi tiu URL'
+    ERROR_HOSTNAME: 'Ĉi tiu nomo de servilo ne estas permesita'
+    ERROR_PORT: 'Ĉi tiu dosiera pordo ne estas permesita'
+    ERROR_SCHEME: 'Ĉi tiu dosiera skemo ne estas permesita'
+    InsertMedia: 'Enmeti aŭdvidaĵon'
+    UrlDescription: 'Enkorpigi filmetojn de Youtube kaj Vimeo, bildojn kaj aliajn aŭdvidaĵojn rekte el la reto.'
   SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Dimensioj
-    EDIT: Redakti
-    EDITINFO: 'Redakti ĉi tiun dosieron'
-    FIELDNOTSET: 'Ne trovis informon'
-    REMOVE: Forigi
+    ErrorMaxFilesReached:
+      one: 'Vi povas alŝuti nur {count} dosieron.'
+      other: 'Vi povas alŝuti nur {count} dosierojn.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Ne povis trovi tiun dosieron aŭ dosierujon'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'Dosiero "{file}" estas uzita en {count} loko.'
+      other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
