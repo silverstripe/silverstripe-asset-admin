@@ -37,10 +37,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "File uploaded",
     "AssetAdmin.DROPZONE_UPLOAD": "Upload",
     "AssetAdmin.EDIT": "Edit",
-    "AssetAdmin.ERROR_FILE_SIZE": "File size limit exceeded",
-    "AssetAdmin.ERROR_FILE_NOT_FOUND": "File cannot be found",
-    "AssetAdmin.ERROR_FILE_EXTENSION": "Extension is not allowed",
-    "AssetAdmin.ERROR_DEFAULT": "Something went wrong, please try again",
     "AssetAdmin.FILENAME": "Filename",
     "AssetAdmin.FILES": "Files",
     "AssetAdmin.FILE_MISSING": "File cannot be found",
@@ -78,8 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CreateTitle": "Insert new media from the web",
     "AssetAdmin.EditTitle": "Media from the web",
     "AssetAdmin.NEXT": "Next",
-    "AssetAdmin.PREVIOUS": "Previous",
-    "AssetAdmin.MOVED_ITEMS_TO": "Moved %s item(s) to %s",
-    "AssetAdmin.GO_TO_FOLDER": "Go to folder"
+    "AssetAdmin.PREVIOUS": "Previous"
 });
 }

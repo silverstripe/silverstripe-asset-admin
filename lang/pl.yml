@@ -70,7 +70,6 @@ pl:
     SAVE: Zapisz
     VIEWERGROUPS: 'Kto może zobaczyć (grupy)'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    INSERT_FILE: Wstaw
     INSERT_LINK: 'Link do pliku'
     LINKDESCR: 'Opis linku'
     LINKOPENNEWWIN: 'Otwórz w nowym oknie/zakładce'

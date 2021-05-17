@@ -1,4 +1,7 @@
 sl:
+  AssetAdmin:
+    INSERT_FILE: 'Vstavi datoteko'
+    UPDATE_FILE: 'Posodobi datoteko'
   AssetFormFactory:
     php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Shrani
     php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Shranjeno
@@ -77,7 +80,6 @@ sl:
     VIEWERGROUPS: 'Skupine ogledovalcev'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Prenesi datoteko'
-    INSERT_FILE: 'Vstavi datoteko'
     INSERT_LINK: 'Vstavi povezavo do datoteke'
     LINKDESCR: 'Opis povezave'
     LINKOPENNEWWIN: 'Odpri v novem zavihku'

@@ -1,16 +1,118 @@
 it:
+  AssetAdmin:
+    INSERT_FILE: 'Inserire file'
+    UPDATE_FILE: 'Aggiorna file'
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Salva
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Salvato
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Pubblica
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Pubblicato
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Scegli una cartella'
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Sposta
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Accesso ristretto'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Inoltro modulo'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Inoltro modulo, acesso non ristretto'
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Elimina cartelle'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Files
-    BACKLINKCOUNT: 'Usato in:'
-    PAGES: pagina/e
-    HEIGHT: Altezza
-    SIZE: Dimensione
-    TYPE: 'Tipo di file'
-    URL: URL
-    WIDTH: Larghezza
+    ADDTOCAMPAIGN: 'Aggiungi a campagna'
+    Alignment: Allineamento
+    AlignmentCenter: Centra
+    AlignmentLeft: 'A capo a sinistra'
+    AlignmentLeftAlone: 'A sinistra'
+    AlignmentRight: 'A capo a destra'
+    AlignmentRightAlone: 'A destra'
+    AltText: 'Testo alternativo (alt)'
+    AltTextTip: 'Descrizione per i visitatori che non possono vedere le immagini (utenti di sintesi vocali o di addon che bloccano le immagini). Consigliato per le immagini che forniscono un contesto al contenuto.'
+    AppCategoryArchive: Archivio
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Documento
+    AppCategoryImage: Immagine
+    AppCategoryVideo: Video
+    AttributesDescription: 'Queste modifiche influenzeranno solo questo specifico posizionamento del file.'
+    CREATED: 'Caricato il'
+    Caption: Didascalia
+    CreatePermissionDenied: 'Non hai il permesso di aggiungere file'
+    CurrentFolderOnly: 'Restringere alla cartella corrente e alle sue sottocartelle?'
+    DELETE_BUTTON: Elimina
+    ErrorItemPermissionDenied: 'Non hai il permesso di modificare {ObjectTitle}'
+    ErrorNotFound: '{Type} non può essere trovato'
+    FILE_NOT_FOUND: 'File non trovato'
+    Filetype: 'Tipo file'
+    INVALID_REQUEST: ' Richiesta non valida'
+    ImageHeight: Altezza
+    ImageSpecs: Dimensioni
+    ImageWidth: Larghezza
+    LASTEDIT: 'Ultima modifica'
+    LoadIntoFileFailed: 'Caricamento file fallito'
+    MENUTITLE: File
+    NOSUMMARY: 'Riepilogo non disponibile'
+    NewFile: 'Nuovo {file}'
+    PATH: Percorso
+    PUBLISHED: Pubblicato
+    PUBLISH_BUTTON: Pubblica
+    Placement: Posizione
+    SAVEDFILE: 'File salvato'
+    TitleTooltip: 'Testo titolo (tooltip)'
+    TitleTooltipTip: 'Fornisce una spiegazione dettagliata ove richiesta. Mostrata in hover.'
+    UNKNOWN: Sconosciuto
+    UNPUBLISH_BUTTON: Nascondi
+    UPLOADEDFILE: 'File caricato'
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
+    MOVEDFOLDER: 'File spostato'
+    RENAMEDFILE: 'File sostituito'
+    RENAMEDTITLE: 'Titolo aggiornato a'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Chi può vedere qesto file?'
+    ANYONE: Chiunque
+    EDITHEADER: 'Chi può modificare questo file?'
+    EDITORGROUPS: 'Gruppi di editori'
+    FILENAME: 'Nome file'
+    FOLDERLOCATION: Posizione
+    INHERIT: 'Eredita dalla cartella madre'
+    LOGGED_IN: 'Utenti autenticati'
+    ONLY_GROUPS: 'Solo questi gruppi (scegliere dalla lista)'
+    ROOTNAME: '(Primo Livello)'
+    SAVE: Salva
+    VIEWERGROUPS: 'Gruppi di visualizzatori'
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    DOWNLOAD_FILE: 'Scaricamento file'
+    INSERT_LINK: 'Collegamento al file'
+    LINKDESCR: 'Descrizione del collegamento'
+    LINKOPENNEWWIN: 'Apri in una nuova finestra/scheda'
+    LINKOPTIONS: 'Opzioni collegamento'
+    LINKTEXT: 'Testo collegamento'
+    OTHER_ACTIONS: 'Altre azioni'
+    REPLACE_FILE: 'Sostituisci file'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Questo tipo di file può essere inserito solo come collegamento. Non potrai modificare il collegamento una volta inserito.</p>'
+    USAGE: 'Usato da'
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Pubblicato
+    SAVED: Salvato
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Crea
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Nome cartella'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Aggiungi materiale'
+    Cancel: Annulla
+    ERROR_ABSOLUTE: 'Solo URL assoluti possono essere integrati'
+    ERROR_EMBED: 'Attualmente non è presente alcun materiale incorporabile in questo URL'
+    ERROR_HOSTNAME: 'Questo nome di host non è consentito'
+    ERROR_PORT: 'Questa porta non è consentita'
+    ERROR_SCHEME: 'Questo protocollo non è consentito'
+    InsertMedia: 'Inserisci materiale'
+    UrlDescription: 'Incorpora video YouTube e Vimeo, immagini e altro materiale direttamente dal web.'
   SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Dimensioni
-    EDIT: Modifica
-    EDITINFO: 'Modifica questo file'
-    FIELDNOTSET: 'Informazioni file non trovate'
-    REMOVE: Rimuovi
+    ErrorMaxFilesReached:
+      one: 'Puoi caricare solo {count} file.'
+      other: 'Puoi caricare solo {count} file.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Il file o la cartella non possono essere trovati'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'Il file "{file}" è usato in {count} posto.'
+      other: 'Il file "{file}" è usato in {count} posti.'

@@ -10,6 +10,10 @@
     margin-top: calc(-#{$panel-padding-y} - 1px);
   }
 
+  .form {
+    margin-left: 10px;
+  }
+
   .editor__file-preview-link,
   .editor__file-preview-message--file-missing {
     max-width: 50%;

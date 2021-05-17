@@ -1,4 +1,7 @@
 nl:
+  AssetAdmin:
+    INSERT_FILE: 'Bestand invoegen'
+    UPDATE_FILE: 'Bestand aanpassen'
   AssetFormFactory:
     php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Opslaan
     php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Opgeslagen
@@ -77,7 +80,6 @@ nl:
     VIEWERGROUPS: 'Groepen met bekijkrechten'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download bestand'
-    INSERT_FILE: Invoegen
     INSERT_LINK: 'Link naar bestand'
     LINKDESCR: 'Link omschrijving'
     LINKOPENNEWWIN: 'Openen in nieuw venster of tabblad'
