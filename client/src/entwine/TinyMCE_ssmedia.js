@@ -108,7 +108,13 @@ const filter = 'img[data-shortcode="image"]';
         o.content = '';
         content.each(function () {
           if (this.outerHTML !== undefined) {
-            o.content += this.outerHTML;
+            e.content += this.outerHTML;
+          } else if (this.nodeType == 8) {
+            e.content += "<!-- ";
+            e.content += this.nodeValue;
+            e.content += " -->";
+          } else if (this.nodeType == 3) {
+            e.content += this.nodeValue;
           }
         });
       });
