@@ -108,13 +108,13 @@ const filter = 'img[data-shortcode="image"]';
         o.content = '';
         content.each(function () {
           if (this.outerHTML !== undefined) {
-            e.content += this.outerHTML;
-          } else if (this.nodeType == 8) {
-            e.content += "<!-- ";
-            e.content += this.nodeValue;
-            e.content += " -->";
-          } else if (this.nodeType == 3) {
-            e.content += this.nodeValue;
+            o.content += this.outerHTML;
+          } else if (this.nodeType === 8) {
+            o.content += '<!-- ';
+            o.content += this.nodeValue;
+            o.content += ' -->';
+          } else if (this.nodeType === 3) {
+            o.content += this.nodeValue;
           }
         });
       });
