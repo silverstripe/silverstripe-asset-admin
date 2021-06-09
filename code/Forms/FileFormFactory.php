@@ -83,7 +83,13 @@ class FileFormFactory extends AssetFormFactory
         // Update details tab
         $tab = parent::getFormFieldDetailsTab($record, $context);
 
-        $tab->insertBefore('Name', TextField::create("Title", File::singleton()->fieldLabel('Title')));
+        $tab->insertBefore(
+            'Name',
+            TextField::create(
+                "Title",
+                File::singleton()->fieldLabel(_t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.TITLE', 'Title'))
+            )
+        );
 
         $tab->push(
             DatetimeField::create(
@@ -255,9 +261,9 @@ class FileFormFactory extends AssetFormFactory
                 'data' => [
                     'isPublished' => $record->isPublished(),
                     'isModified' => $record->isModifiedOnDraft(),
-                    'pristineTitle' => _t(__CLASS__ . 'PUBLISHED', 'Published'),
+                    'pristineTitle' => _t(__CLASS__ . '.PUBLISHED', 'Published'),
                     'pristineIcon' => 'tick',
-                    'dirtyTitle' => _t(__CLASS__ . 'PUBLISH', 'Publish'),
+                    'dirtyTitle' => _t(__CLASS__ . '.PUBLISH', 'Publish'),
                     'dirtyIcon' => 'rocket',
                     'pristineClass' => 'btn-outline-primary',
                     'dirtyClass' => 'btn-primary',
