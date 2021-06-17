@@ -197,13 +197,21 @@ function mapStateToProps(state, ownProps) {
     return {};
   }
 
-  const requireTextFieldUrl = ownProps.requireLinkText ? '?requireLinkText=true' : '';
+  const arr = [];
+  if (ownProps.requireLinkText) {
+    arr.push('requireLinkText=true');
+  }
+  if (ownProps.fileSelected) {
+    arr.push('fileSelected=true');
+  }
+  const joined = arr.join('&');
+  const qs = arr.length ? `?${joined}` : '';
 
   // set schemaUrl for `fileSchemaModalHandler` to load the default form values properly
   // This schema URL is not actually passed down to the Editor, it's just use to set the
   // form schema overrides
   return {
-    schemaUrl: `${schemaUrl}/${targetId}${requireTextFieldUrl}`,
+    schemaUrl: `${schemaUrl}/${targetId}${qs}`,
     type: formSchema && formSchema.type
   };
 }
