@@ -11,6 +11,7 @@ import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import getFormSchema from 'lib/getFormSchema';
+import qs from 'qs';
 
 class InsertMediaModal extends Component {
   constructor(props) {
@@ -197,13 +198,21 @@ function mapStateToProps(state, ownProps) {
     return {};
   }
 
-  const requireTextFieldUrl = ownProps.requireLinkText ? '?requireLinkText=true' : '';
+  const queryMap = {};
+  if (ownProps.requireLinkText) {
+    queryMap.requireLinkText = true;
+  }
+  if (ownProps.fileSelected) {
+    queryMap.fileSelected = true;
+  }
+  let query = qs.stringify(queryMap);
+  query = query ? `?${query}` : '';
 
   // set schemaUrl for `fileSchemaModalHandler` to load the default form values properly
   // This schema URL is not actually passed down to the Editor, it's just use to set the
   // form schema overrides
   return {
-    schemaUrl: `${schemaUrl}/${targetId}${requireTextFieldUrl}`,
+    schemaUrl: `${schemaUrl}/${targetId}${query}`,
     type: formSchema && formSchema.type
   };
 }
