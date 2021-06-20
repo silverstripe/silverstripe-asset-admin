@@ -204,6 +204,37 @@ class AssetAdminFile extends DataExtension
     }
 
     /**
+     * @return int
+     */
+    public function getDescendantFileCount(): int
+    {
+        if (!($this->owner instanceof Folder)) {
+            return 0;
+        }
+        $ids = $this->getDescendantFileIDs([$this->owner->ID]);
+        return File::get()->filter('ID', $ids)->exclude('ClassName', Folder::class)->count();
+    }
+
+    /**
+     * Recursively get the $ids of nested Files and Folders, including the original parent Folder
+     *
+     * @param array $ids
+     * @param int $maxDepth Hard limit of max depth
+     * @return array List of parent IDs, including $parentID
+     */
+    private function getDescendantFileIDs(array $ids, int $maxDepth = 10): array
+    {
+        if ($maxDepth === 0) {
+            return $ids;
+        }
+        $childIDs = File::get()->filter('ParentID', $ids)->column('ID');
+        if (empty($childIDs)) {
+            return $ids;
+        }
+        return array_merge($ids, $this->getDescendantFileIDs($childIDs, $maxDepth - 1));
+    }
+
+    /**
      * Get recursive parent IDs
      *
      * @param int|int[] $parentIDorIDs

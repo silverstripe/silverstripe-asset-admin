@@ -4,6 +4,7 @@
 namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
 use GraphQL\Type\Definition\ResolveInfo;
+use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\AssetAdmin\GraphQL\FileFilter;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
 use SilverStripe\Assets\File;
@@ -217,6 +218,33 @@ class AssetAdminResolver
         }
     }
 
+    public static function resolveReadDescendantFileCounts($object, array $args, $context, ResolveInfo $info): array
+    {
+        if (!isset($args['ids']) || !is_array($args['ids'])) {
+            throw new \InvalidArgumentException('ids must be an array');
+        }
+        $ids = $args['ids'];
+
+        /** @var DataList|File[] $files */
+        $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($ids);
+        if ($files->count() < count($ids)) {
+            $class = File::class;
+            $missingIds = implode(', ', array_diff($ids, $files->column('ID')));
+            throw new \InvalidArgumentException("{$class} items {$missingIds} are not found");
+        }
+
+        $data = [];
+        foreach ($files as $file) {
+            if (!$file->canView($context['currentUser'])) {
+                continue;
+            }
+            $data[] = [
+                'id' => $file->ID,
+                'count' => $file->getDescendantFileCount()
+            ];
+        }
+        return $data;
+    }
 
     public static function resolveReadFileUsage($object, array $args, $context, ResolveInfo $info): array
     {

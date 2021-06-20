@@ -77,7 +77,7 @@ Feature: Manage files
     Then I should see the "Form_fileEditForm" form
     When I press the "Other actions" button
       And I press the "Delete" button
-    Then I should see a modal titled "Confirm file deletion"
+    Then I should see a modal titled "Confirm deletion"
       And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
 
@@ -95,7 +95,7 @@ Feature: Manage files
       And I check the file named "testfile" in the gallery
     Then the ".bulk-actions-counter" element should contain "3"
       And I press the "Delete" button
-    Then I should see a modal titled "Confirm file deletion"
+    Then I should see a modal titled "Confirm deletion"
       And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
@@ -166,25 +166,24 @@ Feature: Manage files
     Then I should not see an ".font-icon-rocket[name='action_publish']" element
       And I should see an ".font-icon-tick[name='action_publish']" element
 
-
   @modal
-  Scenario: I can delete a folder containing a file that is in use with a warning
+  Scenario: I can delete a folder containing a file with a warning
     When I check the file named "folder3" in the gallery
     Then I press the "Delete" button
-    Then I should see a modal titled "Confirm file deletion"
-      And I should see "This folder contains file(s) that are currently used" in the ".modal-body" region
+    Then I should see a modal titled "Confirm deletion"
+      And I should see "You're about to delete" in the ".modal-body" region
       And I should see "Ensure files are removed from content areas" in the ".modal-body" region
       And I press the Delete button inside the modal
     Then I should see a "1 folders/files were successfully archived" success toast
       And I should not see the file named "folder3" in the gallery
 
   @modal
-  Scenario: I can delete a file that is in use with a warning
+  Scenario: I can delete a file with a warning
     When I click on the file named "folder3" in the gallery
       And I check the file named "file1" in the gallery
     Then I press the "Delete" button
-    Then I should see a modal titled "Confirm file deletion"
-      And I should see "file is currently in use" in the ".modal-body" region
+    Then I should see a modal titled "Confirm deletion"
+      And I should see "You're about to delete" in the ".modal-body" region
       And I press the Delete button inside the modal
     Then I should see a "1 folders/files were successfully archived" success toast
       And I should not see the file named "file1" in the gallery

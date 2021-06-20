@@ -23,6 +23,7 @@ Folder:
     hasRestrictedAccess: Boolean
     visibility: String
     parents: '[FileInterface]'
+    descendantFileCount: Int
     filesInUseCount: Int
     'children(filter: FileFilterInput)':
       type: '[FileInterface]'

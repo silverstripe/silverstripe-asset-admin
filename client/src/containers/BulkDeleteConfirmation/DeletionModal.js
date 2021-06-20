@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 const DeletionModal = ({ isOpen, body, onCancel, actions }) => (
   <Modal isOpen={isOpen} toggle={onCancel}>
     <ModalHeader toggle={onCancel}>
-      {i18n._t('AssetAdmin.CONFIRM_FILE_DELETION', 'Confirm file deletion')}
+      {i18n._t('AssetAdmin.CONFIRM_FILE_DELETION', 'Confirm deletion')}
     </ModalHeader>
     <ModalBody>{body}</ModalBody>
     <ModalFooter>

@@ -24,3 +24,18 @@ SilverStripe\Assets\Folder:
   folder1221:
     Title: folder1-2-2-1
     Parent: =>SilverStripe\Assets\Folder.folder122
+  folder5:
+    Title: folder5
+  folder51:
+    Title: folder5-1
+    Parent: =>SilverStripe\Assets\Folder.folder5
+SilverStripe\Assets\File:
+  file5a:
+    Title: file5a
+    Parent: =>SilverStripe\Assets\Folder.folder5
+  file51a:
+    Title: file51a
+    Parent: =>SilverStripe\Assets\Folder.folder51
+  file52b:
+    Title: file51b
+    Parent: =>SilverStripe\Assets\Folder.folder51

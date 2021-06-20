@@ -8,7 +8,7 @@ import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionAc
 import * as TRANSITIONS from 'state/confirmDeletion/ConfirmDeletionTransitions';
 import DeletionModal from './DeletionModal';
 import BulkDeleteMessage from './BulkDeleteMessage';
-import { getFileInUseCounts, getFolderInUseCounts } from './helpers';
+import { getFolderDescendantFileTotals, getFileTotalItems } from './helpers';
 import fileShape from 'lib/fileShape';
 import i18n from 'i18n';
 
@@ -17,7 +17,7 @@ import i18n from 'i18n';
  */
 const BulkDeleteConfirmation = ({
   loading, LoadingComponent, transition,
-  files, fileUsage,
+  files, descendantFileCounts,
   onModalClose, onCancel, onConfirm
 }) => {
   let body = null;
@@ -38,13 +38,14 @@ const BulkDeleteConfirmation = ({
     // We're still waiting for results from GraphQL
     body = <LoadingComponent />;
   } else {
-    const foldersInUse = getFolderInUseCounts(files, fileUsage);
-    const filesInUse = getFileInUseCounts(files, fileUsage);
+    const folderCount = Object.keys(descendantFileCounts).length;
+    const folderDescendantFileTotals = getFolderDescendantFileTotals(files, descendantFileCounts);
+    const fileTotalItems = getFileTotalItems(files);
 
-    const bodyProps = { foldersInUse, filesInUse, itemCount: files.length };
+    const bodyProps = { folderCount, folderDescendantFileTotals, fileTotalItems };
     body = <BulkDeleteMessage {...bodyProps} />;
 
-    if (foldersInUse.totalItems || filesInUse.totalItems) {
+    if (folderDescendantFileTotals.totalItems || fileTotalItems) {
       actions = [
         {
           label: i18n._t('AssetAdmin.CANCEL', 'Cancel'),
@@ -79,16 +80,16 @@ BulkDeleteConfirmation.propTypes = {
   LoadingComponent: PropTypes.func,
   transition: PropTypes.oneOf(['canceling', 'deleting', false]),
   files: PropTypes.arrayOf(fileShape),
-  fileUsage: PropTypes.object,
+  descendantFileCounts: PropTypes.object,
   onCancel: PropTypes.func.isRequired,
   onModalClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
 };
 
 /**
- * Wires the Modal with the the GraphQL File Usage Query. Results will be provided via a
- * `fileUsage` prop containing a map of file/folder IDs to the number of location where the
- * file/folder is in use. e.g.: If you're trying to delete file ID 1234 and it's use in 10 pages
+ * Wires the Modal with the the GraphQL File Count Query. Results will be provided via a
+ * `fileCount` prop containing a map of file/folder IDs to the number of nested non-folder Files
+ * within the folder . e.g.: If you're trying to delete Folder ID 1234 and it has 10 nested Files
  * you will get `['1234': 10]`.
  */
 const ConnectedModal = compose(
@@ -96,7 +97,7 @@ const ConnectedModal = compose(
     ['Loading'],
     (Loading) => ({ LoadingComponent: Loading }),
   ),
-  injectGraphql('readFileUsageQuery'),
+  injectGraphql('readDescendantFileCountsQuery'),
   withApollo
 )(BulkDeleteConfirmation);
 
