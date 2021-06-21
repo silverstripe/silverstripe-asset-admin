@@ -9,6 +9,7 @@ SilverStripe\GraphQL\Manager:
     admin:
       types:
         DataObjectInterface: 'SilverStripe\GraphQL\DataObjectInterfaceTypeCreator'
+        DescendantFileCount: 'SilverStripe\AssetAdmin\GraphQL\DescendantFileCountType'
         File: 'SilverStripe\AssetAdmin\GraphQL\FileTypeCreator'
         FileInterface: 'SilverStripe\AssetAdmin\GraphQL\FileInterfaceTypeCreator'
         FileInput: 'SilverStripe\AssetAdmin\GraphQL\FileInputTypeCreator'
@@ -19,6 +20,7 @@ SilverStripe\GraphQL\Manager:
         PublicationNotice: 'SilverStripe\AssetAdmin\GraphQL\PublicationNoticeType'
         PublicationResult: 'SilverStripe\AssetAdmin\GraphQL\PublicationResultType'
       queries:
+        readDescendantFileCounts: 'SilverStripe\AssetAdmin\GraphQL\ReadDescendantFileCountsQueryCreator'
         readFiles: 'SilverStripe\AssetAdmin\GraphQL\ReadFileQueryCreator'
         readFileUsage: 'SilverStripe\AssetAdmin\GraphQL\ReadFileUsageQueryCreator'
       mutations:

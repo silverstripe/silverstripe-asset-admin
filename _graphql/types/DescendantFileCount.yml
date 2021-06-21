@@ -1,0 +1,5 @@
+DescendantFileCount:
+  description: Count of descendant non-folder Files
+  fields:
+    id: ID!
+    count: Int

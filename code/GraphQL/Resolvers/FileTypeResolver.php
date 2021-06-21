@@ -3,10 +3,13 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL\Resolvers;
 
+use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
+use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\File;
+use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Storage\AssetContainer;
 use SilverStripe\Core\Injector\Injectable;
 
@@ -120,6 +123,15 @@ class FileTypeResolver
     public static function resolveFileModified($object)
     {
         return $object->isModifiedOnDraft();
+    }
+
+    /**
+     * @param File|AssetAdminFile $object
+     * @return int
+     */
+    public static function resolveFileDescendantFileCount($object)
+    {
+        return 0;
     }
 
     /**

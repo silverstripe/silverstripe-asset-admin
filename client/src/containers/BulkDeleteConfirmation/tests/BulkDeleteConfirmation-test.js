@@ -24,17 +24,15 @@ describe('BulkDeleteMessage', () => {
       loading: false,
       LoadingComponent: () => <p>Loading...</p>,
       transition: false,
-      files,
-      fileUsage: {},
+      descendantFileCounts: {},
       onCancel: jest.fn(),
       onModalClose: jest.fn(),
       onConfirm: jest.fn(),
     };
   });
 
-
   it('Nothing in use', () => {
-    renderer.render(<Component {...props} />);
+    renderer.render(<Component {...props} files={files.slice(0, 2)} />);
     const { props: { isOpen, actions } } = renderer.getRenderOutput();
 
     expect(isOpen).toBe(true);
@@ -48,7 +46,7 @@ describe('BulkDeleteMessage', () => {
   });
 
   it('Folder in use', () => {
-    renderer.render(<Component {...props} fileUsage={{ 1: 5 }} />);
+    renderer.render(<Component {...props} files={files} fileUsage={{ 1: 5 }} />);
     const { props: { isOpen, actions } } = renderer.getRenderOutput();
 
     expect(isOpen).toBe(true);
@@ -61,7 +59,7 @@ describe('BulkDeleteMessage', () => {
   });
 
   it('Files in use', () => {
-    renderer.render(<Component {...props} fileUsage={{ 3: 5 }} />);
+    renderer.render(<Component {...props} files={files} fileUsage={{ 3: 5 }} />);
     const { props: { isOpen, actions } } = renderer.getRenderOutput();
 
     expect(isOpen).toBe(true);

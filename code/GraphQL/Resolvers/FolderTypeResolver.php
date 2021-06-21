@@ -121,6 +121,18 @@ class FolderTypeResolver
      * @param ResolveInfo $info
      * @return int
      */
+    public static function resolveFolderDescendantFileCount($object, array $args, $context, ResolveInfo $info)
+    {
+        return $object->getDescendantFileCount();
+    }
+
+    /**
+     * @param Folder|AssetAdminFile $object
+     * @param array $args
+     * @param array $context
+     * @param ResolveInfo $info
+     * @return int
+     */
     public static function resolveFolderFilesInUseCount($object, array $args, $context, ResolveInfo $info)
     {
         return $object->getFilesInUse()->count();

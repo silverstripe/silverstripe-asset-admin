@@ -9,10 +9,14 @@
     "AssetAdmin.BULK_ACTIONS_DELETE_FOLDER": "These folders contain files which are currently in use, you must move or delete their contents before you can delete the folder.",
     "AssetAdmin.BULK_ACTIONS_DELETE_MULTI_CONFIRM": "There are %s files currently in use, are you sure you want to delete these files?",
     "AssetAdmin.BULK_ACTIONS_DELETE_SINGLE_CONFIRM": "This file is currently in use in %s places, are you sure you want to delete it?",
+    "AssetAdmin.BULK_ACTIONS_DELETE_ITEMS_CONFIRM": "You're about to delete %s file(s) which may be used in your site's content. Carefully check the file usage on the files before deleting the folder.",
+    "AssetAdmin.BULK_ACTIONS_DELETE_FOLDER_CONFIRM": "Are you sure you want to delete this folder?",
+    "AssetAdmin.BULK_ACTIONS_DELETE_FOLDERS_CONFIRM": "Are you sure you want to delete these folders?",
     "AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS": "%s folders/files were successfully archived.",
     "AssetAdmin.BULK_ACTIONS_PLACEHOLDER": "Select an action...",
     "AssetAdmin.CANCEL": "Cancel",
     "AssetAdmin.CONFIRMDELETE": "Are you sure you want to delete this record?",
+    "AssetAdmin.CONFIRM_FILE_DELETION": "Confirm deletion",
     "AssetAdmin.CREATED": "First uploaded",
     "AssetAdmin.DELETE": "Delete",
     "AssetAdmin.DIM": "Dimensions",
@@ -67,5 +71,7 @@
     "AssetAdmin.CreateTitle": "Insert new media from the web",
     "AssetAdmin.EditTitle": "Media from the web",
     "AssetAdmin.NEXT": "Next",
-    "AssetAdmin.PREVIOUS": "Previous"
+    "AssetAdmin.PREVIOUS": "Previous",
+    "AssetAdmin.MOVED_ITEMS_TO": "Moved %s item(s) to %s",
+    "AssetAdmin.GO_TO_FOLDER": "Go to folder"
 }

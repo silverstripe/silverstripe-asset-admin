@@ -28,22 +28,22 @@ const propsForState = {
   'nothing in use': {
     loading: false,
     files: files.filter(({ id }) => id === 3),
-    fileUsage: {}
+    descendantFileCounts: {}
   },
   'single file in use': {
     loading: false,
     files: files.filter(({ id }) => id === 3),
-    fileUsage: { 3: 1 }
+    descendantFileCounts: { 3: 1 }
   },
   'many file in use': {
     loading: false,
     files,
-    fileUsage: { 3: 1, 4: 5 }
+    descendantFileCounts: { 3: 1, 4: 5 }
   },
   'folder in use': {
     loading: false,
     files: files.filter(({ id }) => id === 1),
-    fileUsage: { 1: 1 }
+    descendantFileCounts: { 1: 1 }
   },
 };
 

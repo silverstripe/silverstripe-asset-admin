@@ -29,4 +29,11 @@ class AssetAdminFileTest extends SapphireTest
             'folder1-2-2-1',
         ], $names), 'Names match those saved to the database (' . implode(', ', $names) . ')');
     }
+
+    public function testGetDescendantFileCount()
+    {
+        /** @var Folder|AssetAdminFile $folder */
+        $folder = $this->objFromFixture(Folder::class, 'folder5');
+        $this->assertSame(3, $folder->getDescendantFileCount());
+    }
 }
