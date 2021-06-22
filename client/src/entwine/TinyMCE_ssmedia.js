@@ -109,6 +109,12 @@ const filter = 'img[data-shortcode="image"]';
         content.each(function () {
           if (this.outerHTML !== undefined) {
             o.content += this.outerHTML;
+          } else if (this.nodeType === 8) {
+            o.content += '<!-- ';
+            o.content += this.nodeValue;
+            o.content += ' -->';
+          } else if (this.nodeType === 3) {
+            o.content += this.nodeValue;
           }
         });
       });
