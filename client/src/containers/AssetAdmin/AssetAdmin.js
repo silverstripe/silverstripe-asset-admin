@@ -52,12 +52,24 @@ class AssetAdmin extends Component {
     this.handleUploadQueue = this.handleUploadQueue.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
+    // this is used as a fallback to the regular graphql query which is limited to
+    // current pagination limit this is used when we need to access previously fetched
+    // data after a second subsequent graphql query has updated props.files
+    this.fetchedFiles = {};
   }
 
   componentWillReceiveProps(props) {
     if (!props.loading && props.folder && props.folderId !== props.folder.id) {
       props.onReplaceUrl(props.folder.id, props.fileId, props.query, props.viewAction);
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    // Save file data in case we need to use it later after paginating the gallery
+    prevProps.files.forEach(file => {
+      this.fetchedFiles[file.id] = file;
+    });
+    return true;
   }
 
   /**
@@ -524,8 +536,11 @@ class AssetAdmin extends Component {
    */
   findFile(fileId) {
     const allFiles = this.getFiles();
-
-    return allFiles.find((item) => item.id === parseInt(fileId, 10));
+    const file = allFiles.find((item) => item.id === parseInt(fileId, 10));
+    if (file) {
+      return file;
+    }
+    return this.fetchedFiles.hasOwnProperty(fileId) ? this.fetchedFiles[fileId] : undefined;
   }
 
   handleUpload() {

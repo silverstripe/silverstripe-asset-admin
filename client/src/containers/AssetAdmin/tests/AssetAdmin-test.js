@@ -9,6 +9,10 @@ jest.mock('containers/BulkDeleteConfirmation/BulkDeleteConfirmation');
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
 import { Component as AssetAdmin } from '../AssetAdmin';
+import Enzyme, { shallow } from 'enzyme';
+import Adapter from 'enzyme-adapter-react-16/build/index';
+
+Enzyme.configure({ adapter: new Adapter() });
 
 function getMockFile(id) {
   return {
@@ -271,6 +275,43 @@ describe('AssetAdmin', () => {
       component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
       component.handleUploadQueue();
       expect(props.actions.files.readFiles).not.toBeCalled();
+    });
+  });
+
+  describe('findFiles', () => {
+    beforeEach(() => {
+      props.files = [];
+      props.queuedFiles = { items: [] };
+      props.folderId = 99;
+      props.onReplaceUrl = () => {};
+    });
+    it('saves files between updates', () => {
+      let fileProps = {
+        files: [
+          { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
+          { id: 2, name: 'file two', type: 'image/jpeg', parent: { id: 99 } }
+        ]
+      };
+      let newProps = { ...props, ...fileProps };
+      const wrapper = shallow(<AssetAdmin {...newProps} />);
+      const wrapper2 = shallow(<AssetAdmin {...newProps} />);
+      expect(wrapper.instance().findFile(1).id).toEqual(1);
+      expect(wrapper.instance().findFile(3)).toBeFalsy();
+      expect(wrapper2.instance().findFile(1).id).toEqual(1);
+      expect(wrapper2.instance().findFile(3)).toBeFalsy();
+      fileProps = {
+        files: [
+          { id: 3, name: 'file three', type: 'image/jpeg', parent: { id: 99 } },
+          { id: 4, name: 'file four', type: 'image/jpeg', parent: { id: 99 } }
+        ]
+      };
+      newProps = { ...props, ...fileProps };
+      wrapper.setProps(newProps);
+      // (don't setProps on wrapper2)
+      expect(wrapper.instance().findFile(1).id).toEqual(1);
+      expect(wrapper.instance().findFile(3).id).toEqual(3);
+      expect(wrapper2.instance().findFile(1).id).toEqual(1);
+      expect(wrapper2.instance().findFile(3)).toBeFalsy();
     });
   });
 
