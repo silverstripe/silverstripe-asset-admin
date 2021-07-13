@@ -63,7 +63,7 @@ class ThumbnailGenerator
      * @var string
      * @config
      */
-    private static $method = 'FitMax';
+    private static $method = 'Fill';
 
     /**
      * Generate thumbnail and return the "src" property for this thumbnail
