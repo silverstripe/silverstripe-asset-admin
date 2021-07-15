@@ -249,7 +249,30 @@ EOS
     }
 
     /**
+     * Helper for finding items in the visible table gallery view by its order
+     *
+     * @param string $rank index of the item to get starting at 1
+     * @return NodeElement
+     */
+    protected function getTableGalleryFolderByRank(string $rank)
+    {
+        /** @var DocumentElement $page */
+        $page = $this->getMainContext()->getSession()->getPage();
+        // Find by cell - folders
+        $cell = $page->find(
+            'xpath',
+            "//div[contains(@class, 'gallery__folders')]/div[$rank]"
+        );
+        if ($cell) {
+            return $cell;
+        }
+        return null;
+    }
+
+    /**
      * Helper for finding items in the visible gallery view by its order
+     *
+     * Note: this does not find folders in table view - use getTableGalleryFolderByRank() for that
      *
      * @param string $rank index of the item to get starting at 1
      * @param int $timeout
@@ -259,7 +282,7 @@ EOS
     {
         /** @var DocumentElement $page */
         $page = $this->getMainContext()->getSession()->getPage();
-        // Find by cell
+        // Find by cell - table view
         $cell = $page->find(
             'xpath',
             "//div[contains(@class, 'gallery__files')]/div[$rank]"
@@ -267,7 +290,7 @@ EOS
         if ($cell) {
             return $cell;
         }
-        // Find by row
+        // Find by row - list view
         $row = $page->find(
             'xpath',
             "//tr[contains(@class, 'gallery__table-row')][$rank]"
@@ -351,6 +374,22 @@ EOS
             "//div//span[contains(text(), '{$name}')]"
         );
         assertNotNull($title, sprintf('File at position %s should be named %s', $position, $name));
+    }
+
+    /**
+     * @Then /^I should see the table gallery folder "([^"]+)" in position "([^"]+)"$/
+     * @param string $name
+     * @param string $position
+     */
+    public function iShouldSeeTheTableGalleryFolderInPosition(string $name, string $position)
+    {
+        $folderByPosition = $this->getTableGalleryFolderByRank($position);
+        assertNotNull($folderByPosition, 'Should have found a gallery folder at position ' . $position);
+        $title = $folderByPosition->find(
+            'xpath',
+            "//div[contains(text(), '{$name}')]"
+        );
+        assertNotNull($title, sprintf('Folder at position %s should be named %s', $position, $name));
     }
 
     /**
