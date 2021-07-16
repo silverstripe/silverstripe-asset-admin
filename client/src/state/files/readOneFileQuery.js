@@ -2,9 +2,9 @@ import { hasFilters } from 'components/Search/Search';
 import { graphqlTemplates } from 'lib/Injector';
 
 const apolloConfig = {
-  options({ sectionConfig, folderId, fileId, query: params }) {
+  options({ fileId }) {
     const rootFilter = {
-      id: 2//fileId,
+      id: fileId,
     };
 
     return {
