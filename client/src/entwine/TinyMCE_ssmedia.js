@@ -82,7 +82,7 @@ const filter = 'img[data-shortcode="image"]';
           .add(content.filter(filter))
           .each(function () {
             const el = jQuery(this);
-            const properties = sanitiseShortCodeProperties({
+            const obj = {
               // Requires server-side preprocessing of HTML+shortcodes in HTMLValue
               src: el.attr('src'),
               id: el.data('id'),
@@ -92,7 +92,10 @@ const filter = 'img[data-shortcode="image"]';
               // don't save caption, since that's in the containing element
               title: el.attr('title'),
               alt: el.attr('alt'),
-            });
+              loading: el.data('loading')
+            };
+
+            const properties = sanitiseShortCodeProperties(obj);
 
             const shortCode = ShortcodeSerialiser.serialise({
               name: 'image',
@@ -124,6 +127,7 @@ const filter = 'img[data-shortcode="image"]';
               id: undefined,
               'data-id': attrs.id,
               'data-shortcode': 'image',
+              'data-loading': attrs.loading
             }))
             .addClass('ss-htmleditorfield-file image');
           content = content.replace(match.original, (jQuery('<div/>').append(el).html()));
@@ -313,6 +317,7 @@ jQuery.entwine('ss', ($) => {
         AltText: $node.attr('alt'),
         Width: $node.attr('width'),
         Height: $node.attr('height'),
+        Loading: $node.attr('data-loading'),
         TitleTooltip: $node.attr('title'),
         Alignment: this.findPosition($node.attr('class')),
         Caption: $caption.text(),
@@ -354,8 +359,7 @@ jQuery.entwine('ss', ($) => {
      */
     getAttributes() {
       const data = this.getData();
-
-      return {
+      const obj = {
         src: data.url,
         alt: data.AltText,
         width: data.Width,
@@ -364,7 +368,9 @@ jQuery.entwine('ss', ($) => {
         class: data.Alignment,
         'data-id': data.ID,
         'data-shortcode': 'image',
+        'data-loading': data.Loading,
       };
+      return obj;
     },
 
     /**

@@ -185,3 +185,32 @@
     justify-content: center;
   }
 }
+
+#Form_fileInsertForm_Dimensions_Holder {
+  width: 67%;
+  margin-right: 0;
+
+  > .form__field-holder > .field-group-component {
+    flex-wrap: wrap;
+
+    & > div, & > ul {
+      flex: 33%;
+    }
+  }
+}
+
+#Form_fileInsertForm_Loading_Holder {
+  @include media-breakpoint-down(md) {
+    width: 50%;
+  }
+
+  margin-right: 0;
+
+  select {
+    height: 36px;
+  }
+
+  .title-tip {
+    float: right;
+  }
+}

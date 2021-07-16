@@ -46,6 +46,10 @@ en:
     ImageHeight: Height
     ImageSpecs: Dimensions
     ImageWidth: Width
+    FileLoading: 'File loading'
+    LazyDefault: 'Lazy (default)'
+    Eager: 'Eager'
+    LoadingTitleTip: 'Lazy-loading (default setting) can speed up the time it takes to view the page by delaying media loading. Eager-loading may increase page load times as file are loaded as soon as possible. Use this option if the files are in view as the page loads (above the fold).'
     LASTEDIT: 'Last changed'
     LoadIntoFileFailed: 'Failed to load file'
     MENUTITLE: Files

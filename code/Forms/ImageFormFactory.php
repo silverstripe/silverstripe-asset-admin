@@ -2,7 +2,10 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
+use SilverStripe\Assets\Image;
 use SilverStripe\Control\RequestHandler;
+use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
@@ -59,23 +62,45 @@ class ImageFormFactory extends FileFormFactory
 
         $tab->insertAfter(
             'Alignment',
-            FieldGroup::create(
-                NumericField::create(
-                    'Width',
-                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width')
+            $dimensionsLoading = FieldGroup::create(
+                FieldGroup::create(
+                    NumericField::create(
+                        'Width',
+                        _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageWidth', 'Width')
+                    )
+                        ->setMaxLength(5)
+                        ->addExtraClass('flexbox-area-grow'),
+                    NumericField::create(
+                        'Height',
+                        _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight', 'Height')
+                    )
+                        ->setMaxLength(5)
+                        ->addExtraClass('flexbox-area-grow')
                 )
-                    ->setMaxLength(5)
-                    ->addExtraClass('flexbox-area-grow'),
-                NumericField::create(
-                    'Height',
-                    _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ImageHeight', 'Height')
-                )
-                    ->setMaxLength(5)
-                    ->addExtraClass('flexbox-area-grow')
+                    ->addExtraClass('fieldgroup--fill-width')
+                    ->setName('Dimensions')
             )
-            ->addExtraClass('fieldgroup--fill-width')
-            ->setName('Dimensions')
+                ->addExtraClass('fieldgroup--fill-width')
+                ->setName('DimensionsLoading')
         );
+        if (Image::getLazyLoadingEnabled()) {
+            $titleTipContent = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LoadingTitleTip', trim(<<<EOT
+Lazy-loading (default setting) can speed up the time it takes to view the page by delaying media loading.
+Eager-loading may increase page load times as file are loaded as soon as possible. Use this option if the files are
+in view as the page loads (above the fold).
+EOT
+            ));
+            $field = DropdownField::create(
+                'Loading',
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.FileLoading', 'File loading'),
+                [
+                    '' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LazyDefault', 'Lazy (default)'),
+                    'eager' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Eager', 'Eager'),
+                ]
+            )
+                ->setTitleTip(new Tip($titleTipContent));
+            $dimensionsLoading->push($field);
+        }
 
         $tab->insertAfter(
             'Caption',
@@ -135,7 +160,7 @@ class ImageFormFactory extends FileFormFactory
             /** @var FieldList $fields */
             $fields = $form->Fields();
 
-            $dimensions = $fields->fieldByName('Editor.Placement.Dimensions');
+            $dimensions = $fields->fieldByName('Editor.Placement.DimensionsLoading.Dimensions');
             $width = null;
             $height = null;
 
