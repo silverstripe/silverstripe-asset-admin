@@ -140,6 +140,7 @@ InsertMediaModal.propTypes = {
     AltText: PropTypes.string,
     Width: PropTypes.number,
     Height: PropTypes.number,
+    Loading: PropTypes.string,
     TitleTooltip: PropTypes.string,
     Alignment: PropTypes.string,
     Description: PropTypes.string,
