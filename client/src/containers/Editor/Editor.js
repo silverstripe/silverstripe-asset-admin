@@ -9,7 +9,7 @@ import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
 import fileShape from 'lib/fileShape';
 import PropTypes from 'prop-types';
-import { inject } from 'lib/Injector';
+import { inject, injectGraphql } from 'lib/Injector';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import * as modalActions from 'state/modal/ModalActions';
 import EditorHeader, { buttonStates } from './EditorHeader';
@@ -206,6 +206,7 @@ class Editor extends Component {
     const schemaUrl = this.getFormSchemaUrl();
 
     let showButton = buttonStates.SWITCH;
+
     if (dialog && file && file.type !== 'folder') {
       // When editing the details of a file from inside the modal, we always show the back button
       // Otherwise, we only show theb ack button in mobile view to allow deselection of file
@@ -328,7 +329,6 @@ Editor.propTypes = {
   dialog: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  // onUnpublish: PropTypes.func.isRequired,
   schemaUrl: PropTypes.string.isRequired,
   schemaUrlQueries: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string,
@@ -360,6 +360,19 @@ function mapStateToProps({ assetAdmin: { gallery, modal } }) {
 
 export { Editor as Component };
 
+
+function magic(Component) {
+  return (props) => {
+    if (props.file) {
+      return <Component {...props} />;
+    } else {
+      const newProps = {...props, fileId: props.targetId};
+      const NewComponent = injectGraphql('ReadOneFileQuery')(Component);
+      return <NewComponent {...newProps} />;
+    }
+  }
+}
+
 export default compose(
   inject(
     ['Loading'],
@@ -368,5 +381,6 @@ export default compose(
     }),
     () => 'AssetAdmin.Editor',
   ),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  magic
 )(Editor);
