@@ -660,10 +660,9 @@ class AssetAdmin extends Component {
 
     const editorProps = {
       dialog,
-      targetId,
+      fileId: targetId,
       schemaUrl,
       schemaUrlQueries,
-      file: this.findFile(targetId),
       onClose: this.handleCloseFile,
       onSubmit: this.handleSubmitEditor,
       onUnpublish: this.handleUnpublish,
