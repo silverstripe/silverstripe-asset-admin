@@ -185,3 +185,30 @@
     justify-content: center;
   }
 }
+
+#Form_fileInsertForm .tab-pane .show {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: -10px;
+
+  & > div {
+    width: 100%;
+  }
+
+  #Form_fileInsertForm_Dimensions_Holder {
+    width: 67%;
+
+    .field-group-component {
+      display: flex;
+      flex-wrap: wrap;
+
+      .field {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  #Form_fileInsertForm_Loading_Holder {
+    width: 33%;
+  }
+}

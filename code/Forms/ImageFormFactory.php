@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
+use SilverStripe\Assets\Image;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
@@ -73,9 +74,26 @@ class ImageFormFactory extends FileFormFactory
                     ->setMaxLength(5)
                     ->addExtraClass('flexbox-area-grow')
             )
-            ->addExtraClass('fieldgroup--fill-width')
-            ->setName('Dimensions')
+                ->addExtraClass('fieldgroup--fill-width')
+                ->setName('Dimensions')
         );
+        if (Image::getLazyLoadingEnabled()) {
+            $titleTipContent = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LoadingTitleTip', trim(<<<EOT
+Lazy loading can increase perceived page performance by slightly delaying media loading. Eager loading will load files
+as soon as possible and can be used if the image is in view as the page loads (above or near the fold).
+EOT
+            ));
+            $field = DropdownField::create(
+                'Loading',
+                _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Loading', 'Loading'),
+                [
+                    '' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LazyDefault', 'Lazy (default)'),
+                    'eager' => _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Eager', 'Eager'),
+                ]
+            )
+                ->setTitleTip(new Tip($titleTipContent));
+            $tab->insertAfter('Dimensions', $field);
+        }
 
         $tab->insertAfter(
             'Caption',
