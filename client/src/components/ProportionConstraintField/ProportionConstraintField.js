@@ -160,15 +160,14 @@ class ProportionConstraintField extends Component {
               key,
             }, child.props.children)
           ))}
+          {!isRemoteFile && <ImageSizePresetList
+            originalWidth={parseInt(originalWidth, 10)}
+            currentWidth={currentWidth}
+            imageSizePresets={imageSizePresets}
+            onSelect={this.handlePresetSelect}
+          />
+          }
         </FieldGroup>
-
-        {!isRemoteFile && <ImageSizePresetList
-          originalWidth={parseInt(originalWidth, 10)}
-          currentWidth={currentWidth}
-          imageSizePresets={imageSizePresets}
-          onSelect={this.handlePresetSelect}
-        />
-        }
       </Fragment>
     );
   }
