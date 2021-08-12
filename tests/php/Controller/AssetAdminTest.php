@@ -40,8 +40,8 @@ class AssetAdminTest extends FunctionalTest
         parent::setUp();
 
         TestAssetStore::activate('AssetAdminTest');
-        $memberID = $this->logInWithPermission('ADMIN');
-        $this->session = new Session([ 'loggedInAs' => $memberID ]);
+        $this->logInWithPermission('ADMIN');
+        $this->session = $this->mainSession->session();
 
         File::add_extension(FileExtension::class);
         Folder::add_extension(FolderExtension::class);
@@ -308,7 +308,7 @@ class AssetAdminTest extends FunctionalTest
         $folder1 = Folder::get()->byID($folder1ID);
         $this->assertEquals('folder1-renamed', $folder1->Name);
     }
-    
+
     public function testGetMinimalistObjectFromData()
     {
         /** @var File $file */
