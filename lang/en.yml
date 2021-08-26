@@ -38,6 +38,7 @@ en:
     CreatePermissionDenied: 'You do not have permission to add files'
     CurrentFolderOnly: 'Limit to current folder and its sub-folders?'
     DELETE_BUTTON: Delete
+    Eager: Eager
     ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
     ErrorNotFound: 'That {Type} couldn''t be found'
     FILE_NOT_FOUND: 'File not found'
@@ -46,12 +47,10 @@ en:
     ImageHeight: Height
     ImageSpecs: Dimensions
     ImageWidth: Width
-    Loading: 'Loading'
-    LazyDefault: 'Lazy (default)'
-    Eager: 'Eager'
-    LoadingTitleTip: 'Lazy loading can increase perceived page performance by slightly delaying media loading. Eager loading will load files as soon as possible and can be used if the image is in view as the page loads (above or near the fold).'
     LASTEDIT: 'Last changed'
+    LazyDefault: 'Lazy (default)'
     LoadIntoFileFailed: 'Failed to load file'
+    Loading: Loading
     MENUTITLE: Files
     NOSUMMARY: 'No summary available'
     NewFile: 'New {file}'
@@ -114,9 +113,9 @@ en:
     ErrorMaxFilesReached:
       one: 'You can only upload {count} file.'
       other: 'You can only upload {count} files.'
-  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
     FileNotFound: 'File or Folder could not be found'
-  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+  SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
     OWNER_WARNING:
-      one: 'File "{file}" is used in {count} place.'
+      one: 'File "{file}" is used in {count} place'
       other: 'File "{file}" is used in {count} places.'
