@@ -33,7 +33,7 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
 
     public function createConnection()
     {
-        return Connection::create('readFiles')
+        return ReadFileConnection::create('readFiles')
             ->setConnectionType(function () {
                 return $this->createResultType();
             })

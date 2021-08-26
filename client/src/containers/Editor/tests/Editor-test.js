@@ -12,7 +12,7 @@ const render = (props) => {
   const baseProps = {
     schemaUrlQueries: [],
     schemaUrl: 'edit/file',
-    targetId: 123,
+    fileId: 123,
     onClose: jest.fn(),
     onSubmit: jest.fn(),
     actions: {

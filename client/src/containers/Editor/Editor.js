@@ -9,7 +9,7 @@ import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
 import fileShape from 'lib/fileShape';
 import PropTypes from 'prop-types';
-import { inject } from 'lib/Injector';
+import { inject, injectGraphql } from 'lib/Injector';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import * as modalActions from 'state/modal/ModalActions';
 import EditorHeader, { buttonStates } from './EditorHeader';
@@ -48,7 +48,7 @@ class Editor extends Component {
    * @returns {string}
    */
   getFormSchemaUrl() {
-    const { schemaUrlQueries, schemaUrl, targetId } = this.props;
+    const { schemaUrlQueries, schemaUrl, fileId } = this.props;
 
     const parsedURL = url.parse(schemaUrl);
     const parsedQs =
@@ -59,7 +59,7 @@ class Editor extends Component {
 
     return url.format({
       ...parsedURL,
-      pathname: `${parsedURL.path}/${targetId}`,
+      pathname: `${parsedURL.path}/${fileId}`,
       search: qs.stringify(parsedQs)
     });
   }
@@ -206,6 +206,7 @@ class Editor extends Component {
     const schemaUrl = this.getFormSchemaUrl();
 
     let showButton = buttonStates.SWITCH;
+
     if (dialog && file && file.type !== 'folder') {
       // When editing the details of a file from inside the modal, we always show the back button
       // Otherwise, we only show theb ack button in mobile view to allow deselection of file
@@ -259,7 +260,7 @@ class Editor extends Component {
 
   render() {
     const formSchemaUrl = this.getFormSchemaUrl();
-    const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.targetId}`;
+    const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
     const editorClasses = classnames(
       'panel', 'form--no-dividers', 'editor', {
         'editor--asset-dropzone--disable': !this.props.enableDropzone
@@ -323,12 +324,11 @@ class Editor extends Component {
 Editor.propTypes = {
   file: fileShape,
   className: PropTypes.string,
-  targetId: PropTypes.number.isRequired,
+  fileId: PropTypes.number.isRequired,
   enableDropzone: PropTypes.bool,
   dialog: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  // onUnpublish: PropTypes.func.isRequired,
   schemaUrl: PropTypes.string.isRequired,
   schemaUrlQueries: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string,
@@ -360,6 +360,7 @@ function mapStateToProps({ assetAdmin: { gallery, modal } }) {
 
 export { Editor as Component };
 
+
 export default compose(
   inject(
     ['Loading'],
@@ -368,5 +369,6 @@ export default compose(
     }),
     () => 'AssetAdmin.Editor',
   ),
-  connect(mapStateToProps, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps),
+  injectGraphql('ReadOneFileQuery')
 )(Editor);

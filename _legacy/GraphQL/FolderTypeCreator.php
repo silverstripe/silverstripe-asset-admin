@@ -114,7 +114,7 @@ class FolderTypeCreator extends FileTypeCreator
      */
     public function getChildrenConnection()
     {
-        return Connection::create('Children')
+        return ReadFileConnection::create('Children')
             ->setConnectionType(function () {
                 return $this->manager->getType('FileInterface');
             })
@@ -208,26 +208,7 @@ class FolderTypeCreator extends FileTypeCreator
             });
         }
 
-        // Filter by permission
-        // DataQuery::column ignores surrogate sorting fields
-        // see https://github.com/silverstripe/silverstripe-framework/issues/8926
-        // the following line is a workaround for `$ids = $list->column('ID');`
-        $ids = $list->dataQuery()->execute()->column('ID');
-
-        $permissionChecker = File::singleton()->getPermissionChecker();
-        $canViewIDs = array_keys(array_filter($permissionChecker->canViewMultiple(
-            $ids,
-            $context['currentUser']
-        )));
-        // Filter by visible IDs (or force empty set if none are visible)
-        // Remove the limit as it no longer applies. We've already filtered down to the exact
-        // IDs we need.
-        $canViewList = $list->filter('ID', $canViewIDs ?: 0)
-            ->limit(null);
-
-        $result = $childrenConnection->resolveList($list, $args);
-
-        return $result;
+        return $childrenConnection->resolveList($list, $args);
     }
 
     /**

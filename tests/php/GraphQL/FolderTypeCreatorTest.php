@@ -28,26 +28,6 @@ class FolderTypeCreatorTest extends SapphireTest
         }
     }
 
-    public function testItSortsChildrenOnTypeByDefault()
-    {
-        $rootFolder = Folder::singleton();
-        $file = File::create(['Name' => 'aaa file']);
-        $file->write();
-        $folder = Folder::create(['Name' => 'bbb folder']);
-        $folder->write();
-        $list = $this->resolveChildrenConnection(
-            $rootFolder,
-            []
-        );
-        $this->assertEquals(
-            [
-                $folder->Name,
-                $file->Name,
-            ],
-            $list->column('Name')
-        );
-    }
-
     public function testItDoesNotFilterByParentIdWithRecursiveFlag()
     {
         $rootFolder = Folder::singleton();

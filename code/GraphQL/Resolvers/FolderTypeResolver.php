@@ -12,7 +12,6 @@ use SilverStripe\GraphQL\QueryHandler\UserContextProvider;
 use SilverStripe\GraphQL\Schema\DataObject\FieldAccessor;
 use SilverStripe\GraphQL\Schema\Schema;
 use SilverStripe\ORM\DataList;
-use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\Sortable;
 use SilverStripe\Versioned\Versioned;
@@ -55,43 +54,6 @@ class FolderTypeResolver
         $list = Versioned::get_by_stage(File::class, 'Stage');
         $filter['parentId'] = $object->ID;
         $list = FileFilter::filterList($list, $filter);
-
-
-        // Ensure that we're looking at a subset of relevant data.
-        if (!isset($args['sort'])) {
-            // only show folders first if no manual ordering is set
-
-            $list = $list->alterDataQuery(static function (DataQuery $dataQuery) {
-                $query = $dataQuery->query();
-                $existingOrderBys = [];
-                foreach ($query->getOrderBy() as $field => $direction) {
-                    if (strpos($field, '.') === false) {
-                        // some fields may be surrogates added by extending augmentSQL
-                        // we have to preserve those expressions rather than auto-generated names
-                        // that SQLSelect::addOrderBy leaves for them (e.g. _SortColumn0)
-                        $field = $query->expressionForField(trim($field, '"')) ?: $field;
-                    }
-
-                    $existingOrderBys[$field] = $direction;
-                }
-
-                // Folders should always go first
-                $dataQuery->sort(
-                    sprintf(
-                        '(CASE WHEN "ClassName"=%s THEN 1 ELSE 0 END)',
-                        DB::get_conn()->quoteString(Folder::class)
-                    ),
-                    'DESC',
-                    true
-                );
-
-                foreach ($existingOrderBys as $field => $dir) {
-                    $dataQuery->sort($field, $dir, false);
-                }
-
-                return $dataQuery;
-            });
-        }
 
         // Filter by permission
         // DataQuery::column ignores surrogate sorting fields
@@ -172,17 +134,30 @@ class FolderTypeResolver
             if ($list === null) {
                 return null;
             }
+
             $sortArgs = $args[$fieldName] ?? [];
+
+            // ensure that folders appear first
+            $className = DB::get_conn()->quoteString(Folder::class);
+            $classNameField = "(CASE WHEN \"ClassName\"={$className} THEN 1 ELSE 0 END)";
+            $sortArgs = array_merge([$classNameField => 'DESC'], $sortArgs);
+
+            $sort = [];
             foreach ($sortArgs as $field => $dir) {
-                $normalised = FieldAccessor::singleton()->normaliseField(File::singleton(), $field);
+                if ($field == $classNameField) {
+                    $normalised = $classNameField;
+                } else {
+                    $normalised = FieldAccessor::singleton()->normaliseField(File::singleton(), $field);
+                }
                 Schema::invariant(
                     $normalised,
                     'Could not find field %s on %s',
                     $field,
                     File::class
                 );
-                $list = $list->sort($normalised, $dir);
+                $sort[$normalised] = $dir;
             }
+            $list = $list->sort($sort);
 
             return $list;
         };
