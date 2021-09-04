@@ -25,7 +25,7 @@ fr:
     AppCategoryImage: Image
     AppCategoryVideo: Vidéo
     AttributesDescription: 'Ces modifications n''affecteront que cet emplacement spécifique du fichier.'
-    CREATED: 'Premier téléchargement'
+    CREATED: 'Premier téléversement'
     Caption: Légende
     CreatePermissionDenied: 'Vous n''avez pas l''autorisation d''ajouter des fichiers'
     CurrentFolderOnly: 'Limiter au dossier actuel et ses sous-dossiers ?'
@@ -51,7 +51,7 @@ fr:
     TitleTooltip: 'Texte (info-bulle)'
     UNKNOWN: Inconnu
     UNPUBLISH_BUTTON: Dépublier
-    UPLOADEDFILE: 'Fichier téléchargé'
+    UPLOADEDFILE: 'Fichier téléversé'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Fichier déplacé'
     RENAMEDFILE: 'Fichier remplacé'
@@ -90,5 +90,9 @@ fr:
     ERROR_ABSOLUTE: 'Seules des url absolues peuvent être intégrées'
     InsertMedia: 'Insérer le média'
     UrlDescription: 'Insérer des vidéos Youtube ou Vimeo, des images et d''autres médias directement à partir du web.'
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    ErrorMaxFilesReached:
+      one: 'Vous ne pouvez pas téléverser plus de {count} fichiers.'
+      other: 'Vous ne pouvez pas téléverser plus de {count} fichiers.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Fichier ou dossier introuvable'
