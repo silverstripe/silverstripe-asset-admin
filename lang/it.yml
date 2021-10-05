@@ -38,6 +38,7 @@ it:
     CreatePermissionDenied: 'Non hai il permesso di aggiungere file'
     CurrentFolderOnly: 'Restringere alla cartella corrente e alle sue sottocartelle?'
     DELETE_BUTTON: Elimina
+    Eager: Avido
     ErrorItemPermissionDenied: 'Non hai il permesso di modificare {ObjectTitle}'
     ErrorNotFound: '{Type} non può essere trovato'
     FILE_NOT_FOUND: 'File non trovato'
@@ -47,7 +48,9 @@ it:
     ImageSpecs: Dimensioni
     ImageWidth: Larghezza
     LASTEDIT: 'Ultima modifica'
+    LazyDefault: 'Pigro (default)'
     LoadIntoFileFailed: 'Caricamento file fallito'
+    Loading: 'In caricamento'
     MENUTITLE: File
     NOSUMMARY: 'Riepilogo non disponibile'
     NewFile: 'Nuovo {file}'
@@ -110,9 +113,9 @@ it:
     ErrorMaxFilesReached:
       one: 'Puoi caricare solo {count} file.'
       other: 'Puoi caricare solo {count} file.'
-  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
-    FileNotFound: 'Il file o la cartella non possono essere trovati'
-  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Il File o la Cartella potrebbe essere inesistente'
+  SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
     OWNER_WARNING:
       one: 'Il file "{file}" è usato in {count} posto.'
       other: 'Il file "{file}" è usato in {count} posti.'

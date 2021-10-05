@@ -101,9 +101,3 @@ de:
     ErrorMaxFilesReached:
       one: 'Sie können nur {count} Datei hochladen.'
       other: 'Sie können nur {count} Dateien hochladen.'
-  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
-    FileNotFound: 'Datei oder Verzeichnis konnte nicht gefunden werden'
-  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
-    OWNER_WARNING:
-      one: 'Die Datei "{file}" wird an {count} Stelle benutzt.'
-      other: 'Die Datei "{file}" wird an {count} Stellen benutzt.'
