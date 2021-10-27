@@ -16,7 +16,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
 
     protected $usesDatabase = true;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (class_exists(Schema::class)) {
@@ -28,7 +28,7 @@ class FileFilterInputTypeCreatorTest extends SapphireTest
         Folder::add_extension(FolderExtension::class);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         File::remove_extension(FileExtension::class);
         Folder::remove_extension(FolderExtension::class);

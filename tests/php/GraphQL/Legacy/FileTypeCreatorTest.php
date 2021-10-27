@@ -17,7 +17,7 @@ class FileTypeCreatorTest extends SapphireTest
 
     protected $usesDatabase = true;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (class_exists(Schema::class)) {
@@ -26,7 +26,7 @@ class FileTypeCreatorTest extends SapphireTest
         TestAssetStore::activate('FileTypeCreatorTest');
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         TestAssetStore::reset();
         parent::tearDown();
