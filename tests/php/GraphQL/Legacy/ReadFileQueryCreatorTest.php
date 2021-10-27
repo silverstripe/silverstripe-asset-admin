@@ -21,7 +21,7 @@ class ReadFileQueryCreatorTest extends SapphireTest
 
     protected $usesDatabase = true;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (class_exists(Schema::class)) {
@@ -33,7 +33,7 @@ class ReadFileQueryCreatorTest extends SapphireTest
         Folder::add_extension(FolderExtension::class);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         File::remove_extension(FileExtension::class);
         Folder::remove_extension(FolderExtension::class);
@@ -42,12 +42,10 @@ class ReadFileQueryCreatorTest extends SapphireTest
         parent::tearDown();
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage view access not permitted
-     */
     public function testItRestrictsParentByCanView()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('iew access not permitted');
         $folder = new Folder(['Name' => 'disallowCanView']);
         $folder->write();
 

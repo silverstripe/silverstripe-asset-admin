@@ -15,14 +15,14 @@ class ThumbnailGeneratorTest extends SapphireTest
 
     protected $usesDatabase = true;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->logInWithPermission('ADMIN');
         TestAssetStore::activate('ThumbnailGeneratorTest');
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         TestAssetStore::reset();
         parent::tearDown();
@@ -92,7 +92,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         $this->assertNull($thumbnail);
         // With graceful thumbnails, it should come back as a URL
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200, true);
-        $this->assertRegExp('#/assets/[A-Za-z0-9]+/TestImage__FitMaxWzEwMCwyMDBd\.png$#', $thumbnail);
+        $this->assertMatchesRegularExpression('#/assets/[A-Za-z0-9]+/TestImage__FitMaxWzEwMCwyMDBd\.png$#', $thumbnail);
         Config::unnest();
 
         // public image should have url

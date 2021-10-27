@@ -22,7 +22,7 @@ class UsedOnTableTest extends SapphireTest
      * Ensure fixture testfile is in the test asset store so that
      * $file->exists() check in code will return true
      */
-    public function setup()
+    protected function setUp(): void
     {
         /** @var File $file */
         parent::setUp();
@@ -33,7 +33,7 @@ class UsedOnTableTest extends SapphireTest
         $file->setFromString($content, $file->generateFilename());
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         TestAssetStore::reset();
         parent::tearDown();

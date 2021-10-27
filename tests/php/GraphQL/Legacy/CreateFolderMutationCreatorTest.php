@@ -16,7 +16,7 @@ class CreateFolderMutationCreatorTest extends SapphireTest
 
     protected static $fixture_file = '../../fixtures.yml';
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (class_exists(Schema::class)) {
@@ -27,7 +27,7 @@ class CreateFolderMutationCreatorTest extends SapphireTest
         Folder::add_extension(FolderExtension::class);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         File::remove_extension(FileExtension::class);
         Folder::remove_extension(FolderExtension::class);
@@ -52,12 +52,10 @@ class CreateFolderMutationCreatorTest extends SapphireTest
         $this->assertEquals('testItCreatesFolder', $newFolder->Name);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage create not allowed
-     */
     public function testItRestrictsCreateFolderByCanCreate()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('create not allowed');
         $folder1 = $this->objFromFixture(Folder::class, 'folder1');
 
         $args = [

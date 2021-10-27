@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Forms;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest\FileOwner;
@@ -18,13 +19,15 @@ use SilverStripe\ORM\ArrayList;
  */
 class UploadFieldTest extends SapphireTest
 {
+    use ArraySubsetAsserts;
+
     protected static $fixture_file = 'FileFormBuilderTest.yml';
 
     protected static $extra_dataobjects = [
         FileOwner::class,
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -41,7 +44,7 @@ class UploadFieldTest extends SapphireTest
         $testimage->setFromLocalFile(__DIR__ . '/fixtures/testimage.png', 'files/testimage.png');
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         TestAssetStore::reset();
         parent::tearDown();
