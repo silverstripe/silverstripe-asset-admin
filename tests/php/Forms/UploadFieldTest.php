@@ -2,7 +2,6 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Forms;
 
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest\FileOwner;
@@ -19,8 +18,6 @@ use SilverStripe\ORM\ArrayList;
  */
 class UploadFieldTest extends SapphireTest
 {
-    use ArraySubsetAsserts;
-
     protected static $fixture_file = 'FileFormBuilderTest.yml';
 
     protected static $extra_dataobjects = [
@@ -105,15 +102,10 @@ class UploadFieldTest extends SapphireTest
                 'files' => [ $admin->getMinimalistObjectFromData($image) ],
             ],
         ];
-        $this->assertArraySubset(
-            [
-                'class' => 'entwine-uploadfield uploadfield myfield',
-                'type' => 'file',
-                'multiple' => false,
-                'id' => 'Form_MyForm_MyField'
-            ],
-            $attributes
-        );
+        $this->assertSame('entwine-uploadfield uploadfield myfield', $attributes['class']);
+        $this->assertSame('file', $attributes['type']);
+        $this->assertSame(false, $attributes['multiple']);
+        $this->assertSame('Form_MyForm_MyField', $attributes['id']);
 
         // Check schema / state are encoded in this field
         $this->assertEquals($schema, json_decode($attributes['data-schema'], true));
