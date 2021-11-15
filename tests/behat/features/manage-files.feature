@@ -220,3 +220,9 @@ Feature: Manage files
     Then I press the "Close" button
       And I should not see an "#AssetSearchForm_searchbox" element
       And I should see the file named "folder1" in the gallery
+
+  Scenario: Bulk actions toolbar
+    Then I should not see a ".bulk-actions" element
+    When I click on the ".gallery-item__checkbox-label[for='item-1']" element
+    When I click on the ".gallery-item__checkbox-label[for='item-5']" element
+    Then I should see a ".bulk-actions" element
