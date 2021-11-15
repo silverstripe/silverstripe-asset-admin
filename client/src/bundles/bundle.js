@@ -7,4 +7,4 @@ require('expose-loader?InsertMediaModal!containers/InsertMediaModal/InsertMediaM
 require('expose-loader?InsertEmbedModal!components/InsertEmbedModal/InsertEmbedModal');
 
 require('boot');
-require('entwine/UploadField/UploadFieldEntwine.js');
+require('entwine/UploadField/UploadFieldEntwine');
