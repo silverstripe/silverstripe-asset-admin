@@ -102,5 +102,3 @@ pl:
       few: 'Możesz przesyłać tylko {count} plików.'
       many: 'Możesz przesyłać tylko {count} plików.'
       other: 'Możesz przesyłać tylko {count} plików.'
-  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
-    FileNotFound: 'Nie można znaleźć pliku lub folderu'
