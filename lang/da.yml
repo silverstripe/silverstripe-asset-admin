@@ -90,3 +90,5 @@ da:
     ERROR_ABSOLUTE: 'Kun absolutte URLer kan blive indlejret'
     InsertMedia: 'Indsæt medie'
     UrlDescription: 'Indlejr Youtube og Vimeo videoer, billeder og andre medier direkte fra nettet.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Filen eller mappen kunne ikke findes'

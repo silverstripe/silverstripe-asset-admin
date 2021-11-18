@@ -110,3 +110,9 @@ eo:
     ErrorMaxFilesReached:
       one: 'Vi povas alŝuti nur {count} dosieron.'
       other: 'Vi povas alŝuti nur {count} dosierojn.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Ne povis trovi tiun dosieron aŭ dosierujon'
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'Dosiero "{file}" estas uzita en {count} loko.'
+      other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
