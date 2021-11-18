@@ -48,7 +48,7 @@
     }
   },
   "devDependencies": {
-    "@silverstripe/eslint-config": "0.0.5",
+    "@silverstripe/eslint-config": "^0.0.6",
     "@silverstripe/webpack-config": "^1.7.0",
     "@storybook/addon-actions": "^3.4.11",
     "@storybook/addons": "^3.4.11",
