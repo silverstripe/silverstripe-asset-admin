@@ -67,7 +67,7 @@
     "bootstrap": "^4.3.1",
     "classnames": "^2.2.5",
     "deep-freeze-strict": "^1.1.1",
-    "dropzone": "^5.5.1",
+    "dropzone": "5.7.2",
     "graphql": "^0.13.2",
     "graphql-fragments": "^0.1.0",
     "graphql-tag": "^2.8.0",
