@@ -19,9 +19,6 @@ if (!class_exists(TypeCreator::class)) {
     return;
 }
 
-$reflector = new \ReflectionClass(TypeCreator::class);
-var_dump($reflector->getFileName());
-
 /**
  * @skipUpgrade
  * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
