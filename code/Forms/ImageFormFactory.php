@@ -78,11 +78,10 @@ class ImageFormFactory extends FileFormFactory
                 ->setName('Dimensions')
         );
         if (Image::getLazyLoadingEnabled()) {
-            $titleTipContent = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LoadingTitleTip', trim(<<<EOT
-Lazy loading can increase perceived page performance by slightly delaying media loading. Eager loading will load files
-as soon as possible and can be used if the image is in view as the page loads (above or near the fold).
-EOT
-            ));
+            $str = 'Lazy loading can increase perceived page performance by slightly delaying media loading. ' .
+            'Eager loading will load files as soon as possible and can be used if the image is in view as the page ' .
+            'loads (above or near the fold).';
+            $titleTipContent = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.LoadingTitleTip', $str);
             $field = DropdownField::create(
                 'Loading',
                 _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.Loading', 'Loading'),
