@@ -119,8 +119,10 @@ class AssetAdminFile extends DataExtension
             return _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.UPLOADEDFILE', "Uploaded file");
         }
 
-        $fromRecord = Versioned::get_version(get_class($this->owner), $this->owner->ID, $from);
-        $toRecord = Versioned::get_version(get_class($this->owner), $this->owner->ID, $to);
+        $fromRecord = Versioned::get_all_versions(get_class($this->owner), $this->owner->ID)
+            ->find('Version', $from);
+        $toRecord = Versioned::get_all_versions(get_class($this->owner), $this->owner->ID)
+            ->find('Version', $to);
 
         $diff = new DataDifferencer($fromRecord, $toRecord);
         $changes = $diff->changedFieldNames();

@@ -11,6 +11,7 @@ use SilverStripe\Assets\Folder;
 use SilverStripe\ORM\Filterable;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\GraphQL\Pagination\Connection;
+use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DB;
