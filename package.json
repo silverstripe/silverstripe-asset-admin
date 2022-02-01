@@ -94,6 +94,9 @@
     "url": "^0.11.0",
     "webpack-sources": "^1.1.0"
   },
+  "resolutions": {
+    "colors": "1.1.2"
+  },
   "babel": {
     "presets": [
       "env",
