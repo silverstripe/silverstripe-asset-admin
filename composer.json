@@ -4,7 +4,7 @@
     "type": "silverstripe-vendormodule",
     "license": "BSD-3-Clause",
     "require": {
-        "php": "^7.3 || ^8.0",
+        "php": "^7.4 || ^8.0",
         "silverstripe/framework": "^4.10",
         "silverstripe/admin": "^1.7",
         "silverstripe/graphql": "^3.5 || ^4"
