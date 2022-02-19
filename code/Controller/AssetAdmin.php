@@ -1207,7 +1207,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function generateThumbnails(File $file, $thumbnailLinks = false)
     {
         $links = [];
-        if (!$file->getIsImage()) {
+        if (!$file->getIsImage() || $file->config()->resample_images === false) {
             return $links;
         }
         $generator = $this->getThumbnailGenerator();

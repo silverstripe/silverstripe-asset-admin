@@ -140,6 +140,10 @@ class ImageThumbnailHelper
     {
         $generated = [];
 
+        if ($file->config()->resample_images === false) {
+            return $generated;
+        }
+
         $store = Injector::inst()->get(AssetStore::class);
         $assetAdmin = AssetAdmin::singleton();
         $generator = $assetAdmin->getThumbnailGenerator();
