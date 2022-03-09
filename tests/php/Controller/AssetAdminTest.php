@@ -16,6 +16,7 @@ use SilverStripe\Dev\FunctionalTest;
 use SilverStripe\Subsites\Extensions\FolderFormFactoryExtension;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\SecurityToken;
+use SilverStripe\Core\Config\Config;
 
 /**
  * Tests {@see AssetAdmin}
@@ -440,5 +441,32 @@ class AssetAdminTest extends FunctionalTest
         ];
 
         $this->assertEquals($expected, $data);
+    }
+
+    public function testGetClientConfigExtensions()
+    {
+        Config::withConfig(function () {
+            $assetAdmin = AssetAdmin::singleton();
+            Config::modify()->set(File::class, 'allowed_extensions', ['boom']);
+
+            $config = $assetAdmin->getClientConfig();
+            $acceptedFiles = $config['dropzoneOptions']['acceptedFiles'];
+            var_dump($acceptedFiles);
+            $this->assertStringContainsString(
+                '.boom',
+                $acceptedFiles,
+                'Extension added to File::allowed_extensions should be allowed by asset admin'
+            );
+
+            Config::modify()->set(File::class, 'allowed_extensions', ['boom', 'boom' => false]);
+
+            $config = $assetAdmin->getClientConfig();
+            $acceptedFiles = $config['dropzoneOptions']['acceptedFiles'];
+            $this->assertStringNotContainsString(
+                '.boom',
+                $acceptedFiles,
+                'Extension that have been manually disallowed should be not be allowed by asset admin'
+            );
+        });
     }
 }
