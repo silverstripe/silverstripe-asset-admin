@@ -1316,7 +1316,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $upload = Upload::create();
         $upload->getValidator()->setAllowedExtensions(
             // filter out '' since this would be a regex problem on JS end
-            array_filter(File::config()->uninherited('allowed_extensions'))
+            array_filter(File::getAllowedExtensions())
         );
         $upload->getValidator()->setAllowedMaxFileSize(
             $this->config()->max_upload_size
