@@ -451,7 +451,6 @@ class AssetAdminTest extends FunctionalTest
 
             $config = $assetAdmin->getClientConfig();
             $acceptedFiles = $config['dropzoneOptions']['acceptedFiles'];
-            var_dump($acceptedFiles);
             $this->assertStringContainsString(
                 '.boom',
                 $acceptedFiles,
