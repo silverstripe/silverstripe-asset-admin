@@ -58,4 +58,21 @@ class MockEmbed implements Embeddable, TestOnly
     {
         return true;
     }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return [];
+    }
+
+    /**
+     * @param array $options
+     * @return self
+     */
+    public function setOptions(array $options)
+    {
+        return $this;
+    }
 }
