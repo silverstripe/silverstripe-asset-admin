@@ -2,8 +2,8 @@
 
 namespace SilverStripe\AssetAdmin\Forms;
 
-use Embed\Exceptions\InvalidUrlException;
 use InvalidArgumentException;
+use SilverStripe\AssetAdmin\Exceptions\InvalidRemoteUrlException;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
@@ -164,7 +164,7 @@ class RemoteFileFormFactory implements FormFactory
     /**
      * @param string $url
      * @return bool
-     * @throws InvalidUrlException
+     * @throws InvalidRemoteUrlException
      */
     protected function validateUrl($url)
     {
@@ -181,12 +181,12 @@ class RemoteFileFormFactory implements FormFactory
      *
      * @param Embeddable $embed
      * @return bool
-     * @throws InvalidUrlException
+     * @throws InvalidRemoteUrlException
      */
     protected function validateEmbed(Embeddable $embed)
     {
         if (!$embed->validate()) {
-            throw new InvalidUrlException(_t(
+            throw new InvalidRemoteUrlException(_t(
                 __CLASS__.'.ERROR_EMBED',
                 'There is currently no embeddable media available from this URL'
             ));
@@ -220,7 +220,7 @@ class RemoteFileFormFactory implements FormFactory
      *
      * @param array $context
      * @return FieldList
-     * @throws InvalidUrlException
+     * @throws InvalidRemoteUrlException
      */
     protected function getEditFormFields($context)
     {
@@ -312,7 +312,7 @@ class RemoteFileFormFactory implements FormFactory
 
     /**
      * @param string $url
-     * @throws InvalidUrlException
+     * @throws InvalidRemoteUrlException
      */
     protected function validateURLScheme($url)
     {
@@ -323,7 +323,7 @@ class RemoteFileFormFactory implements FormFactory
             || ($allowedSchemes && !in_array($scheme, $allowedSchemes))
             || ($disallowedSchemes && in_array($scheme, $disallowedSchemes))
         ) {
-            throw new InvalidUrlException(_t(
+            throw new InvalidRemoteUrlException(_t(
                 __CLASS__ . '.ERROR_SCHEME',
                 'This file scheme is not allowed'
             ));
@@ -332,7 +332,7 @@ class RemoteFileFormFactory implements FormFactory
 
     /**
      * @param string $url
-     * @throws InvalidUrlException
+     * @throws InvalidRemoteUrlException
      */
     protected function validateURLHost($url)
     {
@@ -343,7 +343,7 @@ class RemoteFileFormFactory implements FormFactory
             || ($allowedDomains && !in_array($domain, $allowedDomains))
             || ($disallowedDomains && in_array($domain, $disallowedDomains))
         ) {
-            throw new InvalidUrlException(_t(
+            throw new InvalidRemoteUrlException(_t(
                 __CLASS__ . '.ERROR_HOSTNAME',
                 'This file hostname is not allowed'
             ));
@@ -352,7 +352,7 @@ class RemoteFileFormFactory implements FormFactory
 
     /**
      * @param string $url
-     * @throws InvalidUrlException
+     * @throws InvalidRemoteUrlException
      */
     protected function validateURLPort($url)
     {
@@ -365,7 +365,7 @@ class RemoteFileFormFactory implements FormFactory
         if (($allowedPorts && !in_array($port, $allowedPorts))
             || ($disallowedPorts && in_array($port, $disallowedPorts))
         ) {
-            throw new InvalidUrlException(_t(
+            throw new InvalidRemoteUrlException(_t(
                 __CLASS__ . '.ERROR_PORT',
                 'This file port is not allowed'
             ));
@@ -374,12 +374,12 @@ class RemoteFileFormFactory implements FormFactory
 
     /**
      * @param string $url
-     * @throws InvalidUrlException
+     * @throws InvalidRemoteUrlException
      */
     protected function validateURLAbsolute($url)
     {
         if (!Director::is_absolute_url($url)) {
-            throw new InvalidUrlException(_t(
+            throw new InvalidRemoteUrlException(_t(
                 __CLASS__ . '.ERROR_ABSOLUTE',
                 'Only absolute urls can be embedded'
             ));

@@ -2,10 +2,12 @@
 
 namespace SilverStripe\AssetAdmin\Extensions;
 
-use Embed\Exceptions\InvalidUrlException;
+use Embed\Http\NetworkException;
+use Embed\Http\RequestException;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Admin\ModalController;
 use SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory;
+use SilverStripe\AssetAdmin\Exceptions\InvalidRemoteUrlException;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Convert;
@@ -100,7 +102,7 @@ class RemoteFileModalExtension extends Extension
         try {
             $form = $this->remoteEditForm();
             return $this->getSchemaResponse($schemaID, $form);
-        } catch (InvalidUrlException $exception) {
+        } catch (NetworkException | RequestException | InvalidRemoteUrlException $exception) {
             $errors = ValidationResult::create()
                 ->addError($exception->getMessage());
             // @todo - Don't create dummy form (pass $form = null)
