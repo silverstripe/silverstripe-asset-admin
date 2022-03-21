@@ -5,5 +5,4 @@ import:
 
 env:
   global:
-    - REQUIRE_FRAMEWORKTEST="0.4.2"
     - BEHAT_SUITE="asset-admin"
