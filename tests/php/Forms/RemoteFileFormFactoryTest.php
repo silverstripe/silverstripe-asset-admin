@@ -2,7 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Forms;
 
-use Embed\Exceptions\InvalidUrlException;
+use SilverStripe\AssetAdmin\Exceptions\InvalidRemoteUrlException;
 use SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory;
 use SilverStripe\AssetAdmin\Tests\Forms\RemoteFileFormFactoryTest\MockEmbed;
 use SilverStripe\Core\Injector\Injector;
@@ -147,7 +147,7 @@ class RemoteFileFormFactoryTest extends SapphireTest
      */
     public function testRejectedURLS($config, $rejectedURL)
     {
-        $this->expectException(InvalidUrlException::class);
+        $this->expectException(InvalidRemoteUrlException::class);
 
         // Set config
         foreach ($config as $key => $value) {
