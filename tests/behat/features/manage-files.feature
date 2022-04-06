@@ -27,6 +27,25 @@ Feature: Manage files
       And I should see the file named "folder1-1" in the gallery
       And I should not see the file named "file2" in the gallery
 
+  Scenario: I can use breadcrumbs to navigate up levels
+    When I click on the file named "folder1" in the gallery
+      And I click on the file named "folder1-1" in the gallery
+    Then I should see the breadcrumb link "Files"
+      And I should see the breadcrumb link "folder1"
+      And I should not see the breadcrumb link "folder1-1"
+    When I click on the breadcrumb link "folder1"
+      Then I should see the file named "folder1-1" in the gallery
+      And I should not see the breadcrumb link "folder1"
+      # Validate that the ways we're confirming we're not navigated away in other tests are valid
+      And I should not see an ".uploadfield" element
+      And I should not see an ".cms-preview" element
+    When I click on the breadcrumb link "Files"
+    Then I should see the file named "folder1" in the gallery
+      And I should not see the breadcrumb link "Files"
+      # Validate that the ways we're confirming we're not navigated away in other tests are valid
+      And I should not see an ".uploadfield" element
+      And I should not see an ".cms-preview" element
+
   Scenario: I can upload a file to a folder
     When I click on the file named "folder1" in the gallery
       And I attach the file "testfile.jpg" to dropzone "gallery-container"

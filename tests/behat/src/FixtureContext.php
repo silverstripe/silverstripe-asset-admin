@@ -132,6 +132,38 @@ class FixtureContext extends BaseFixtureContext
         Assert::assertNull($icon, "File status icon '$id' was found");
     }
 
+
+    /**
+     * @Given /^I click on the breadcrumb link "([^"]+)"$/
+     * @param string $name
+     */
+    public function stepIClickBreadcrumbLink($name)
+    {
+        $link = $this->getBreadcrumbLink($name);
+        Assert::assertNotNull($link, "Breadcrumb link named '$name' could not be found");
+        $link->click();
+    }
+
+    /**
+     * @Then /^I should see the breadcrumb link "([^"]*)"/
+     * @param string $name
+     */
+    public function iShouldSeeTheBreadcrumbLink($name)
+    {
+        $link = $this->getBreadcrumbLink($name);
+        Assert::assertNotNull($link, "Breadcrumb link named '$name' could not be found");
+    }
+
+    /**
+     * @Then /^I should not see the breadcrumb link "([^"]*)"/
+     * @param string $name
+     */
+    public function iShouldNotSeeTheBreadcrumbLink($name)
+    {
+        $link = $this->getBreadcrumbLink($name);
+        Assert::assertNull($link, "Breadcrumb link named '$name' was found when it should not be visible");
+    }
+
     /**
      * @Given /^I click on the latest history item$/
      */
@@ -247,6 +279,23 @@ EOS
             return $row;
         }
         return null;
+    }
+
+    /**
+     * Helper for finding breadcrumb links
+     *
+     * @param string $name Title of item
+     * @return NodeElement
+     */
+    protected function getBreadcrumbLink(string $name): ?NodeElement
+    {
+        /** @var DocumentElement $page */
+        $page = $this->getMainContext()->getSession()->getPage();
+        $link = $page->find(
+            'xpath',
+            "//li[contains(@class, 'breadcrumb__item')]//a[contains(@class, 'breadcrumb__item-title')][text()='$name']"
+        );
+        return $link;
     }
 
     /**
