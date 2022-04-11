@@ -8,6 +8,7 @@ Feature: Insert an image into a page
     Given a "page" "About Us" has the "Content" "<p>My awesome content</p>"
       And a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
+      And a "folder" "folder1/folder1-1"
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/pages"
       And I click on "About Us" in the tree
@@ -35,6 +36,24 @@ Feature: Insert an image into a page
       And the "Content" HTML field should contain "My alt"
       # Required to avoid "unsaved changed" browser dialog
       And I press the "Save" button
+
+  Scenario: I can use modal breadcrumbs to navigate up levels
+    When I press the "Insert from Files" HTML field button
+      And I select the file named "folder1" in the gallery
+      And I select the file named "folder1-1" in the gallery
+    Then I should see the breadcrumb link "Files"
+      And I should see the breadcrumb link "folder1"
+      And I should not see the breadcrumb link "folder1-1"
+    When I click on the breadcrumb link "folder1"
+      Then I should see the file named "folder1-1" in the gallery
+      And I should not see the breadcrumb link "folder1"
+      # Validate that we haven't navigated away from the pages admin
+      And I can see the preview panel
+    When I click on the breadcrumb link "Files"
+    Then I should see the file named "folder1" in the gallery
+      And I should not see the breadcrumb link "Files"
+      # Validate that we haven't navigated away from the pages admin
+      And I can see the preview panel
 
   Scenario: I can edit an image in the file modal
     When I press the "Insert from Files" HTML field button

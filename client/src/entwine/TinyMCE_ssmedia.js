@@ -144,13 +144,6 @@ const filter = 'img[data-shortcode="image"]';
 })();
 
 jQuery.entwine('ss', ($) => {
-  // this is required because the React version of e.preventDefault() doesn't work
-  // this is to stop React Tabs from navigating the page
-  $('.insert-media-react__dialog-wrapper .nav-link, ' +
-  '.insert-media-react__dialog-wrapper .breadcrumb__container a').entwine({
-    onclick: (e) => e.preventDefault(),
-  });
-
   $('.js-injector-boot #insert-media-react__dialog-wrapper').entwine({
     Element: null,
 

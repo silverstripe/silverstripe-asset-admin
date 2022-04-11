@@ -7,6 +7,7 @@ Feature: Single file Upload field
     Given a "page" "About Us" has the "Content" "<p>My awesome content</p>"
       And a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
+      And a "folder" "folder1/folder1-1"
       And a "employee" "Allen"
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/test/SilverStripe-FrameworkTest-Model-Employee"
@@ -57,3 +58,22 @@ Feature: Single file Upload field
       Then I should see "file2" in the ".uploadfield-item__title" element
     # Required to avoid "unsaved changed" browser dialog
     Then I press the "Save" button
+
+  Scenario: I can use modal breadcrumbs to navigate up levels
+    When I click "Choose existing" in the ".uploadfield" element
+      And I press the "Back" HTML field button
+      And I select the file named "folder1" in the gallery
+      And I select the file named "folder1-1" in the gallery
+    Then I should see the breadcrumb link "Files"
+      And I should see the breadcrumb link "folder1"
+      And I should not see the breadcrumb link "folder1-1"
+    When I click on the breadcrumb link "folder1"
+      Then I should see the file named "folder1-1" in the gallery
+      And I should not see the breadcrumb link "folder1"
+      # Validate that we haven't navigated away from the pages admin
+      And I should see an ".uploadfield" element
+    When I click on the breadcrumb link "Files"
+    Then I should see the file named "folder1" in the gallery
+      And I should not see the breadcrumb link "Files"
+      # Validate that we haven't navigated away from the pages admin
+      And I should see an ".uploadfield" element
