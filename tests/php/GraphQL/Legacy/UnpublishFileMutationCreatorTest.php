@@ -2,9 +2,9 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Legacy\GraphQL;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\Notice;
 use SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator;
+use SilverStripe\AssetAdmin\Tests\GraphQL\FakeResolveInfo;
 use SilverStripe\AssetAdmin\Tests\GraphQL\UnpublishFileMutationCreatorTest\FileOwner;
 use SilverStripe\Assets\File;
 use SilverStripe\Dev\SapphireTest;
@@ -36,7 +36,7 @@ class UnpublishFileMutationCreatorTest extends SapphireTest
         $member = Security::getCurrentUser();
         $mutation = new UnpublishFileMutationCreator();
         $context = ['currentUser' => $member];
-        $resolveInfo = new ResolveInfo([]);
+        $resolveInfo = new FakeResolveInfo();
 
         /** @var File $file */
         $file = $this->objFromFixture(File::class, 'file1');

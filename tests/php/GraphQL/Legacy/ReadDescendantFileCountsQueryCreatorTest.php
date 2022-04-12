@@ -5,10 +5,10 @@ namespace SilverStripe\AssetAdmin\Tests\Legacy\GraphQL;
 use SilverStripe\AssetAdmin\GraphQL\ReadDescendantFileCountsQueryCreator;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
+use SilverStripe\AssetAdmin\Tests\GraphQL\FakeResolveInfo;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
-use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\GraphQL\Manager;
 use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\GraphQL\Schema\Schema;
@@ -78,7 +78,7 @@ class ReadDescendantFileCountsQueryCreatorTest extends SapphireTest
     {
         $context = $context ? $context : ['currentUser' => null];
         $creator = new ReadDescendantFileCountsQueryCreator(new Manager());
-        return $creator->resolve(null, $args, $context, new ResolveInfo([]));
+        return $creator->resolve(null, $args, $context, new FakeResolveInfo());
     }
 
     /**

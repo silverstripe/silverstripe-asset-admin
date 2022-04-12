@@ -8,9 +8,9 @@ use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
-use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\GraphQL\Schema\Schema;
 use SilverStripe\Versioned\Tests\GraphQL\Fake\Fake;
+use SilverStripe\AssetAdmin\Tests\GraphQL\FakeResolveInfo;
 
 class CreateFolderMutationCreatorTest extends SapphireTest
 {
