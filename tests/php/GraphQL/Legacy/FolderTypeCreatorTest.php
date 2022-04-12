@@ -2,7 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Legacy\GraphQL;
 
-use GraphQL\Type\Definition\ResolveInfo;
+use SilverStripe\AssetAdmin\Tests\GraphQL\FakeResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\FolderTypeCreator;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
@@ -130,7 +130,7 @@ class FolderTypeCreatorTest extends SapphireTest
             $folder1_1_1,
             [],
             $this->getContext(),
-            new ResolveInfo([])
+            new FakeResolveInfo()
         );
         $this->assertEquals(
             [
@@ -165,7 +165,7 @@ class FolderTypeCreatorTest extends SapphireTest
             $object,
             $args,
             $context,
-            new ResolveInfo([]),
+            new FakeResolveInfo(),
             $creator->getChildrenConnection()
         );
     }

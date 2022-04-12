@@ -4,10 +4,10 @@ namespace SilverStripe\AssetAdmin\Tests\Legacy\GraphQL;
 
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
+use SilverStripe\AssetAdmin\Tests\GraphQL\FakeResolveInfo;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
-use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\CreateFolderMutationCreator;
 use SilverStripe\GraphQL\Schema\Schema;
 
@@ -46,7 +46,7 @@ class CreateFolderMutationCreatorTest extends SapphireTest
             ]
         ];
         $creator = new CreateFolderMutationCreator();
-        $newFolder = $creator->resolve(null, $args, null, new ResolveInfo([]));
+        $newFolder = $creator->resolve(null, $args, null, new FakeResolveInfo());
         $this->assertNotNull($newFolder);
         $this->assertEquals($folder1->ID, $newFolder->ParentID);
         $this->assertEquals('testItCreatesFolder', $newFolder->Name);
@@ -65,6 +65,6 @@ class CreateFolderMutationCreatorTest extends SapphireTest
             ]
         ];
         $creator = new CreateFolderMutationCreator();
-        $creator->resolve(null, $args, null, new ResolveInfo([]));
+        $creator->resolve(null, $args, null, new FakeResolveInfo());
     }
 }
