@@ -2,9 +2,9 @@
 
 namespace SilverStripe\AssetAdmin\Tests\GraphQL;
 
-use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\FolderTypeCreator;
 use SilverStripe\AssetAdmin\GraphQL\Resolvers\FolderTypeResolver;
+use SilverStripe\AssetAdmin\Tests\GraphQL\FakeResolveInfo;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;

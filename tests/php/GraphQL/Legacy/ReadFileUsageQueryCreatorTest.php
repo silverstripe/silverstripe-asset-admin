@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Legacy\GraphQL;
 
+use SilverStripe\AssetAdmin\Tests\GraphQL\FakeResolveInfo;
 use SilverStripe\AssetAdmin\GraphQL\ReadFileQueryCreator;
 use SilverStripe\AssetAdmin\GraphQL\ReadFileUsageQueryCreator;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
@@ -9,7 +10,6 @@ use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Dev\SapphireTest;
-use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\GraphQL\Manager;
 use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\GraphQL\Schema\Schema;
@@ -84,7 +84,7 @@ class ReadFileUsageQueryCreatorTest extends SapphireTest
     {
         $context = $context ? $context : ['currentUser' => null];
         $creator = new ReadFileUsageQueryCreator(new Manager());
-        return $creator->resolve(null, $args, $context, new ResolveInfo([]));
+        return $creator->resolve(null, $args, $context, new FakeResolveInfo());
     }
 
     /**
