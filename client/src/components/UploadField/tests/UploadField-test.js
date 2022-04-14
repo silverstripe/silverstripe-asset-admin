@@ -49,6 +49,7 @@ describe('UploadField', () => {
       onChange: jest.fn(),
       actions: {
         uploadField: {
+          setFormSchemaFilesHash: jest.fn(),
           setFiles: jest.fn(),
           removeFile: jest.fn(),
         },

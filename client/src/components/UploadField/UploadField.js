@@ -10,6 +10,7 @@ import getStatusCodeMessage from 'lib/getStatusCodeMessage';
 import * as uploadFieldActions from 'state/uploadField/UploadFieldActions';
 import * as modalActions from 'state/modal/ModalActions';
 import PropTypes from 'prop-types';
+import md5 from 'crypto-js/md5';
 
 /**
  * Check if two arrays of file objects have different id keys
@@ -61,19 +62,24 @@ class UploadField extends Component {
   }
 
   componentDidMount() {
-    // Copy form schema data into redux and then ignore it
-    const { id, data, actions, value, files } = this.props;
+    const { id, formSchemaFilesHash, data, actions, files } = this.props;
 
-    // If the data within the "files" prop already matches the value then we don't need to copy
-    // schema data into redux
-    if (
-      value && value.Files && files && value.Files.length === files.length
-      && files.filter(file => !value.Files.includes(file.id)).length === 0
-    ) {
+    // This tracks changes to the underlying schema data for this field. It may be desirable in
+    // future to remove this and instead reset redux state whenever a "legacy" form triggers a
+    // PJAX load. See https://github.com/silverstripe/silverstripe-asset-admin/issues/960
+    const newFormSchemaFilesHash = md5(JSON.stringify(data.files)).toString();
+
+    // If this is the first time this field has mounted, or the schema data has changed (typically
+    // caused by a PJAX load from saving a legacy non-react form), load the list of files from the
+    // schema data (data.files)
+    if (formSchemaFilesHash !== newFormSchemaFilesHash) {
+      actions.uploadField.setFormSchemaFilesHash(id, newFormSchemaFilesHash);
+      actions.uploadField.setFiles(id, data.files);
       return;
     }
 
-    actions.uploadField.setFiles(id, data.files);
+    // Otherwise, we're safe to load from redux state
+    actions.uploadField.setFiles(id, files);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -88,16 +94,28 @@ class UploadField extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // If the value updates but there's no files entry for the value then we need to perform a "set
-    // files" action... This can happen when the value (stored with redux-form) is updated
-    const { value: { Files: prevValue } } = prevProps;
     const {
       id,
+      formSchemaFilesHash,
       data,
       files,
       value: { Files: value },
-      actions: { uploadField: { setFiles } }
+      actions: { uploadField: { setFormSchemaFilesHash, setFiles } }
     } = this.props;
+
+    const newFormSchemaFilesHash = md5(JSON.stringify(data.files)).toString();
+
+    // If the schema data has changed (typically caused by a PJAX load from saving a legacy
+    // non-react form), load the list of files from the schema data (data.files)
+    if (formSchemaFilesHash !== newFormSchemaFilesHash) {
+      setFormSchemaFilesHash(id, newFormSchemaFilesHash);
+      setFiles(id, data.files);
+      return;
+    }
+
+    // If the value updates but there's no files entry for the value then we need to perform a "set
+    // files" action... This can happen when the value (stored with redux-form) is updated
+    const { value: { Files: prevValue } } = prevProps;
 
     if (
       // If the lengths match
@@ -555,6 +573,7 @@ UploadField.propTypes = {
     Files: PropTypes.arrayOf(PropTypes.number),
   }),
   files: PropTypes.arrayOf(fileShape), // Authoritative redux state
+  formSchemaFilesHash: PropTypes.string, // Hash of initial schema data, see componentDidMount()
   readOnly: PropTypes.bool,
   disabled: PropTypes.bool,
   data: PropTypes.shape({
@@ -585,15 +604,17 @@ UploadField.defaultProps = {
 function mapStateToProps(state, ownprops) {
   const id = ownprops.id;
   let files = [];
+  let formSchemaFilesHash = null;
   if (state.assetAdmin
     && state.assetAdmin.uploadField
     && state.assetAdmin.uploadField.fields
     && state.assetAdmin.uploadField.fields[id]
   ) {
     files = state.assetAdmin.uploadField.fields[id].files || [];
+    formSchemaFilesHash = state.assetAdmin.uploadField.fields[id].formSchemaFilesHash || null;
   }
   const securityId = state.config.SecurityID;
-  return { files, securityId };
+  return { files, securityId, formSchemaFilesHash };
 }
 
 function mapDispatchToProps(dispatch) {

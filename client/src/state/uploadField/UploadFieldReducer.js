@@ -14,7 +14,7 @@ const initialState = {
  * Default object for an empty field state
  * @type {{files: Array}}
  */
-const initialFieldState = { files: [] };
+const initialFieldState = { formSchemaFilesHash: null, files: [] };
 
 function uploadFieldReducer(state = initialState, action) {
   // Get field reducer
@@ -22,6 +22,9 @@ function uploadFieldReducer(state = initialState, action) {
 
   // Update state for this field
   switch (action.type) {
+    case ACTION_TYPES.UPLOADFIELD_SET_FORM_SCHEMA_FILES_HASH:
+      return reduceField(() => ({ formSchemaFilesHash: action.payload.hash }));
+
     case ACTION_TYPES.UPLOADFIELD_ADD_FILE:
       return reduceField((field) => {
         // don't re-add
