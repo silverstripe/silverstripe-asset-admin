@@ -66,7 +66,7 @@ class FolderTypeResolver
         $canViewIDs = array_keys(array_filter($permissionChecker->canViewMultiple(
             $ids,
             $member
-        )));
+        ) ?? []));
         // Filter by visible IDs (or force empty set if none are visible)
         // Remove the limit as it no longer applies. We've already filtered down to the exact
         // IDs we need.

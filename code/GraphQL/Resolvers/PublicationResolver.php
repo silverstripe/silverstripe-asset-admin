@@ -56,8 +56,8 @@ class PublicationResolver
             ->byIds($idList);
 
         // If warning suppression is not on, bundle up all the warnings into a single exception
-        if (!$quiet && $files->count() < count($idList)) {
-            $missingIds = array_diff($idList, $files->column('ID'));
+        if (!$quiet && $files->count() < count($idList ?? [])) {
+            $missingIds = array_diff($idList ?? [], $files->column('ID'));
             foreach ($missingIds as $id) {
                 $warningMessages[] = sprintf(
                     'File #%s either does not exist or is not on stage %s.',

@@ -328,7 +328,7 @@ class UploadField extends FormField implements FileHandleField
     public function validate($validator)
     {
         $maxFiles = $this->getAllowedMaxFileNumber();
-        $count = count($this->getItems());
+        $count = count($this->getItems() ?? []);
 
         if ($maxFiles < 1 || $count <= $maxFiles) {
             return true;

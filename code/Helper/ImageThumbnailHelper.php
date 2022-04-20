@@ -107,7 +107,7 @@ class ImageThumbnailHelper
             }
 
             $generated = $this->generateThumbnails($file);
-            if (count($generated) > 0) {
+            if (count($generated ?? []) > 0) {
                 $generatedCount++;
                 $this->logger->debug(sprintf('Generated thumbnail for %s', $file->Filename));
             }

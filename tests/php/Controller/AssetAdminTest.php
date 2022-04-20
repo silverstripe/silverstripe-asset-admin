@@ -91,7 +91,7 @@ class AssetAdminTest extends FunctionalTest
 
         $this->assertFalse($response->isError());
 
-        $body = json_decode($response->getBody(), true);
+        $body = json_decode($response->getBody() ?? '', true);
 
         $this->assertArrayHasKey('summary', $body[0]);
         $this->assertArrayHasKey('versionid', $body[0]);
@@ -121,7 +121,7 @@ class AssetAdminTest extends FunctionalTest
             'POST'
         );
         $this->assertFalse($response->isError());
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = json_decode($response->getBody() ?? '', true);
         $newFile = File::get()->byID($responseData[0]['id']);
         $this->assertNotNull($newFile);
         $this->assertEquals($folder1->ID, $newFile->ParentID);
@@ -135,7 +135,7 @@ class AssetAdminTest extends FunctionalTest
             'POST'
         );
         $this->assertFalse($response->isError());
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = json_decode($response->getBody() ?? '', true);
         $newFile2 = File::get()->byID($responseData[0]['id']);
         $this->assertNotNull($newFile2);
         $this->assertEquals($folder1->ID, $newFile2->ParentID);
@@ -212,7 +212,7 @@ class AssetAdminTest extends FunctionalTest
         );
         $this->assertTrue($response->isError());
         $this->assertEquals(400, $response->getStatusCode());
-        $responseData = json_decode($response->getBody(), true);
+        $responseData = json_decode($response->getBody() ?? '', true);
         $this->assertEquals(
             [
                 'type' => 'error',
@@ -276,13 +276,13 @@ class AssetAdminTest extends FunctionalTest
         for ($i = 0; $i < 10000; $i++) {
             $tmpFileContent .= '0';
         }
-        file_put_contents($tmpFilePath, $tmpFileContent);
+        file_put_contents($tmpFilePath ?? '', $tmpFileContent);
 
         // emulates the $_FILES array
         return array(
             'name' => $tmpFileName,
             'type' => 'text/plaintext',
-            'size' => filesize($tmpFilePath),
+            'size' => filesize($tmpFilePath ?? ''),
             'tmp_name' => $tmpFilePath,
             'error' => UPLOAD_ERR_OK,
         );

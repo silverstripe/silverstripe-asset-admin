@@ -282,7 +282,7 @@ abstract class AssetFormFactory implements FormFactory
         ];
 
         $this->invokeWithExtensions('updatePopoverActions', $actions, $record);
-        return array_filter($actions);
+        return array_filter($actions ?? []);
     }
 
     /**

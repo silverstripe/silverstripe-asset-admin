@@ -19,12 +19,12 @@ class Builder implements SchemaUpdater
     {
         $categoryValues = array_map(function ($category) {
             return ['value' => $category];
-        }, File::config()->get('app_categories'));
+        }, File::config()->get('app_categories') ?? []);
 
         // Sanitise GraphQL Enum aliases (some contain slashes)
         foreach ($categoryValues as $key => $v) {
             unset($categoryValues[$key]);
-            $newKey = strtoupper(preg_replace('/[^[[:alnum:]]]*/', '', $key));
+            $newKey = strtoupper(preg_replace('/[^[[:alnum:]]]*/', '', $key ?? '') ?? '');
             $categoryValues[$newKey] = $v;
         }
 

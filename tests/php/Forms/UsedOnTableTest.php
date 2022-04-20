@@ -28,7 +28,7 @@ class UsedOnTableTest extends SapphireTest
         parent::setUp();
         TestAssetStore::activate('UsedOnTableTest');
         $path = dirname(__DIR__) . '/Forms/fixtures/testfile.txt';
-        $content = file_get_contents($path);
+        $content = file_get_contents($path ?? '');
         $file = File::get()->find('Name', 'testfile.txt');
         $file->setFromString($content, $file->generateFilename());
     }

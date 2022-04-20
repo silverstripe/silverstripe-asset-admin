@@ -113,7 +113,7 @@ class RemoteFileFormFactory implements FormFactory
         $form = Form::create($controller, $name, $fields, $actions, $validator);
         $form->addExtraClass('form--fill-height');
         $form->addExtraClass('form--no-dividers');
-        $form->addExtraClass('insert-embed-modal--'. strtolower($context['type']));
+        $form->addExtraClass('insert-embed-modal--'. strtolower($context['type'] ?? ''));
 
         // Extend form
         $this->invokeWithExtensions('updateForm', $form, $controller, $name, $context);
@@ -230,7 +230,7 @@ class RemoteFileFormFactory implements FormFactory
             return $this->getCreateFormFields();
         }
 
-        $url = trim($url);
+        $url = trim($url ?? '');
 
         // Get embed
         $this->validateUrl($url);
@@ -316,12 +316,12 @@ class RemoteFileFormFactory implements FormFactory
      */
     protected function validateURLScheme($url)
     {
-        $scheme = strtolower(parse_url($url, PHP_URL_SCHEME));
+        $scheme = strtolower(parse_url($url ?? '', PHP_URL_SCHEME) ?? '');
         $allowedSchemes = self::config()->get('fileurl_scheme_whitelist');
         $disallowedSchemes = self::config()->get('fileurl_scheme_blacklist');
         if (!$scheme
-            || ($allowedSchemes && !in_array($scheme, $allowedSchemes))
-            || ($disallowedSchemes && in_array($scheme, $disallowedSchemes))
+            || ($allowedSchemes && !in_array($scheme, $allowedSchemes ?? []))
+            || ($disallowedSchemes && in_array($scheme, $disallowedSchemes ?? []))
         ) {
             throw new InvalidRemoteUrlException(_t(
                 __CLASS__ . '.ERROR_SCHEME',
@@ -336,12 +336,12 @@ class RemoteFileFormFactory implements FormFactory
      */
     protected function validateURLHost($url)
     {
-        $domain = strtolower(parse_url($url, PHP_URL_HOST));
+        $domain = strtolower(parse_url($url ?? '', PHP_URL_HOST) ?? '');
         $allowedDomains = self::config()->get('fileurl_domain_whitelist');
         $disallowedDomains = self::config()->get('fileurl_domain_blacklist');
         if (!$domain
-            || ($allowedDomains && !in_array($domain, $allowedDomains))
-            || ($disallowedDomains && in_array($domain, $disallowedDomains))
+            || ($allowedDomains && !in_array($domain, $allowedDomains ?? []))
+            || ($disallowedDomains && in_array($domain, $disallowedDomains ?? []))
         ) {
             throw new InvalidRemoteUrlException(_t(
                 __CLASS__ . '.ERROR_HOSTNAME',
@@ -356,14 +356,14 @@ class RemoteFileFormFactory implements FormFactory
      */
     protected function validateURLPort($url)
     {
-        $port = (int)parse_url($url, PHP_URL_PORT);
+        $port = (int)parse_url($url ?? '', PHP_URL_PORT);
         if (!$port) {
             return;
         }
         $allowedPorts = self::config()->get('fileurl_port_whitelist');
         $disallowedPorts = self::config()->get('fileurl_port_blacklist');
-        if (($allowedPorts && !in_array($port, $allowedPorts))
-            || ($disallowedPorts && in_array($port, $disallowedPorts))
+        if (($allowedPorts && !in_array($port, $allowedPorts ?? []))
+            || ($disallowedPorts && in_array($port, $disallowedPorts ?? []))
         ) {
             throw new InvalidRemoteUrlException(_t(
                 __CLASS__ . '.ERROR_PORT',
