@@ -295,7 +295,7 @@ class FileFormFactory extends AssetFormFactory
         }
 
         // Group all actions
-        if (count($actionItems) > 1) {
+        if (count($actionItems ?? []) > 1) {
             $actionItems = [
                 FieldGroup::create($actionItems)
                     ->setName('Actions')

@@ -118,7 +118,7 @@ class FolderTypeCreatorTest extends SapphireTest
             ],
             array_map(function ($folder) {
                 return $folder->Name;
-            }, $parents)
+            }, $parents ?? [])
         );
     }
 

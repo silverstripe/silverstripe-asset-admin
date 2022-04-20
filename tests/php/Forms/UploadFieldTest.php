@@ -108,7 +108,7 @@ class UploadFieldTest extends SapphireTest
         $this->assertSame('Form_MyForm_MyField', $attributes['id']);
 
         // Check schema / state are encoded in this field
-        $this->assertEquals($schema, json_decode($attributes['data-schema'], true));
-        $this->assertEquals($state, json_decode($attributes['data-state'], true));
+        $this->assertEquals($schema, json_decode($attributes['data-schema'] ?? '', true));
+        $this->assertEquals($state, json_decode($attributes['data-state'] ?? '', true));
     }
 }
