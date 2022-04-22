@@ -164,8 +164,8 @@ class FixtureContext extends BaseFixtureContext
         // Get path
         $filesPath = $this->getFilesPath();
         if ($filesPath) {
-            $fullPath = rtrim(realpath($filesPath), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$path;
-            if (is_file($fullPath)) {
+            $fullPath = rtrim(realpath($filesPath ?? '') ?? '', DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.$path;
+            if (is_file($fullPath ?? '')) {
                 $path = $fullPath;
             }
         }
@@ -216,7 +216,7 @@ EOS
         $mainContext = $this->getMainContext();
         $mainContext
             ->assertSession()
-            ->elementTextContains('css', '.message-box', str_replace('\\"', '"', $text));
+            ->elementTextContains('css', '.message-box', str_replace('\\"', '"', $text ?? ''));
     }
 
     /**
@@ -404,7 +404,7 @@ EOS
     {
         $inputField = $this->getHtmlField($field);
         $inputFieldId = $inputField->getAttribute('id');
-        $filename = addcslashes($filename, "'");
+        $filename = addcslashes($filename ?? '', "'");
         $js = <<<JS
 var editor = jQuery('#$inputFieldId').entwine('ss').getEditor(),
 	doc = editor.getInstance().getDoc(),
@@ -434,7 +434,7 @@ JS;
      */
     protected function getHtmlField($locator)
     {
-        $locator = str_replace('\\"', '"', $locator);
+        $locator = str_replace('\\"', '"', $locator ?? '');
         $page = $this->getMainContext()->getSession()->getPage();
         $element = $page->find('css', 'textarea.htmleditor[name=\'' . $locator . '\']');
         if ($element) {

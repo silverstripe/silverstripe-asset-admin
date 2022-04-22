@@ -145,7 +145,7 @@ class ThumbnailGenerator
                 return $thumbnail->getURL();
             case self::INLINE:
                 // Generate inline content
-                $base64 = base64_encode($thumbnail->getString());
+                $base64 = base64_encode($thumbnail->getString() ?? '');
                 return sprintf(
                     'data:%s;base64,%s',
                     $thumbnail->getMimeType(),

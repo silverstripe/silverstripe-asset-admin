@@ -127,7 +127,7 @@ class AssetAdminFile extends DataExtension
         $diff = new DataDifferencer($fromRecord, $toRecord);
         $changes = $diff->changedFieldNames();
 
-        $k = array_search('LastEdited', $changes);
+        $k = array_search('LastEdited', $changes ?? []);
 
         if ($k !== false) {
             unset($changes[$k]);

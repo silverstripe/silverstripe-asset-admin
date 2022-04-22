@@ -114,9 +114,9 @@ class AssetAdminResolver
 
         /** @var DataList $file */
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($idList);
-        if ($files->count() < count($idList)) {
+        if ($files->count() < count($idList ?? [])) {
             // Find out which files count not be found
-            $missingIds = array_diff($idList, $files->column('ID'));
+            $missingIds = array_diff($idList ?? [], $files->column('ID'));
             throw new InvalidArgumentException(sprintf(
                 '%s items %s are not found',
                 File::class,
@@ -193,7 +193,7 @@ class AssetAdminResolver
     {
         $fieldName = $info->fieldName;
         $method = 'get'.$fieldName;
-        if (method_exists($value, $method)) {
+        if (method_exists($value, $method ?? '')) {
             return $value->$method();
         }
 
@@ -227,9 +227,9 @@ class AssetAdminResolver
 
         /** @var DataList|File[] $files */
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($ids);
-        if ($files->count() < count($ids)) {
+        if ($files->count() < count($ids ?? [])) {
             $class = File::class;
-            $missingIds = implode(', ', array_diff($ids, $files->column('ID')));
+            $missingIds = implode(', ', array_diff($ids ?? [], $files->column('ID')));
             throw new \InvalidArgumentException("{$class} items {$missingIds} are not found");
         }
 
@@ -255,9 +255,9 @@ class AssetAdminResolver
 
         /** @var DataList|File[] $files */
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($idList);
-        if ($files->count() < count($idList)) {
+        if ($files->count() < count($idList ?? [])) {
             // Find out which files count not be found
-            $missingIds = array_diff($idList, $files->column('ID'));
+            $missingIds = array_diff($idList ?? [], $files->column('ID'));
             throw new InvalidArgumentException(sprintf(
                 '%s items %s are not found',
                 File::class,
