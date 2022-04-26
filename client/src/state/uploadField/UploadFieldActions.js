@@ -1,6 +1,20 @@
 import ACTION_TYPES from './UploadFieldActionTypes';
 
 /**
+ * Store a hash of the form schema data for an UploadField instance
+ *
+ * @param {String} fieldId - Identifier of UploadField
+ * @param {String} hash - Hash of data
+ */
+export function setFormSchemaFilesHash(fieldId, hash) {
+  return (dispatch) =>
+    dispatch({
+      type: ACTION_TYPES.UPLOADFIELD_SET_FORM_SCHEMA_FILES_HASH,
+      payload: { fieldId, hash },
+    });
+}
+
+/**
  * Adds a file which has not been persisted to the server yet.
  *
  * @param {String} fieldId Identifier of UploadField
