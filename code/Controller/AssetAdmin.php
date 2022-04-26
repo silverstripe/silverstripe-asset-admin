@@ -41,6 +41,7 @@ use SilverStripe\Security\Security;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
+use SilverStripe\View\SSViewer;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -1432,5 +1433,16 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         // Default permissions
         return parent::canView($member);
+    }
+
+    public function PreviewPanel()
+    {
+        $templates = SSViewer::get_templates_by_class(get_class($this), '_PreviewPanel', __CLASS__);
+        $template = SSViewer::chooseTemplate($templates);
+        // Only render preview panel if a template specifically for the asset admin has been provided
+        if ($template) {
+            return $this->renderWith($template);
+        }
+        return null;
     }
 }
