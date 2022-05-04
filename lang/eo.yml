@@ -61,6 +61,9 @@ eo:
     UNKNOWN: Nekonata
     UNPUBLISH_BUTTON: Malpublikigi
     UPLOADEDFILE: 'Alŝutita dosiero'
+    Eager: Avida
+    LazyDefault: 'Malavida (apriora)'
+    Loading: Ŝargas
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Movis dosieron'
     RENAMEDFILE: 'Anstataŭigis dosieron'
@@ -115,4 +118,10 @@ eo:
   SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
     OWNER_WARNING:
       one: 'Dosiero "{file}" estas uzita en {count} loko.'
+      other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Ne povis trovi tiun dosieron aŭ dosierujon'
+  SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
+    OWNER_WARNING:
+      one: 'Dosiero "{file}" estas uzita en 1 loko.'
       other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
