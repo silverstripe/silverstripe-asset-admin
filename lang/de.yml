@@ -53,6 +53,8 @@ de:
     UNKNOWN: Unbekannt
     UNPUBLISH_BUTTON: Unveröffentlicht
     UPLOADEDFILE: 'Datei hochgeladen'
+    AltTextTip: 'Beschreibung für Besucher, die das Bild nicht sehen können (mit Screenreadern oder Bildblockern). Empfohlen für Bilder, die einen einzigartigen Kontext zum Inhalt bieten.'
+    Loading: Laden
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Datei verschoben'
     RENAMEDFILE: 'Datei erstetzt'
@@ -80,6 +82,7 @@ de:
     REPLACE_FILE: 'Datei ersetzen'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dieser Dateityp kann nur als Link eingefügt werden. Sie können den Link nach dem Einfügen bearbeiten.</p>'
     USAGE: 'Benutzt in'
+    DOWNLOAD_FILE: 'Datei herunterladen'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Veröffentlicht
     SAVED: Gespeichert
@@ -107,3 +110,16 @@ de:
     OWNER_WARNING:
       one: 'Die Datei "{file}" wird an {count} Stelle benutzt.'
       other: 'Die Datei "{file}" wird an {count} Stellen benutzt.'
+  AssetAdmin:
+    INSERT_FILE: 'Datei einfügen'
+    UPDATE_FILE: 'Datei aktualisieren'
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Eingeschränkter Zugriff'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Übermittlung des Formulars'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Übermittlung des Formulars, unbeschränkter Zugang'
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Datei oder Ordner konnte nicht gefunden werden'
+  SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
+    OWNER_WARNING:
+      one: 'Die Datei "{file}" wird an {count} Stelle verwendet.'
+      other: 'Die Datei "{file}" wird an {count} Stellen verwendet.'
