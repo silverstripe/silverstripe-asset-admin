@@ -208,4 +208,68 @@ describe('PreviewImageField', () => {
       expect(url).toBe('/logo.jpg?vid=456');
     });
   });
+
+  describe('handleUploadComplete()', () => {
+    it.each(
+      [
+        {
+          responseStatus: 'success',
+          upload: {
+            category: 'image',
+            extension: 'png',
+            filename: 'test.png',
+          },
+        },
+        {
+          responseStatus: 'error',
+          upload: {
+            category: 'text',
+            extension: 'txt',
+            filename: 'test.txt',
+            errors: [
+              {
+                code: 400,
+                type: 'error',
+                value: 'Filesize is too large, maximum 100 KB allowed',
+              }
+            ]
+          },
+          message: 'Filesize is too large, maximum 100 KB allowed',
+        },
+      ]
+    )('should wait before upload complete', ({ responseStatus, upload, message }) => {
+      props.actions = {
+        previewField: {
+          updateStatus: jest.fn((id, { status }) => {
+            props.upload.status = status;
+            props.id = id;
+          })
+        },
+      };
+      props.upload = upload;
+      props.upload.progress = 100;
+
+      const item = ReactTestUtils.renderIntoDocument(
+        <PreviewImageField {...props} />
+      );
+
+      item.handleUploadComplete(responseStatus);
+
+      if (responseStatus === 'error') {
+        expect(props.id).toBe('Form_Test_Field');
+        expect(props.upload.progress).toBe(100);
+        expect(props.upload.category).toBe('text');
+        expect(props.upload.status).toBe(responseStatus);
+        expect(props.upload.errors[0].code).toBe(400);
+        expect(props.upload.errors[0].type).toBe(responseStatus);
+        expect(props.upload.errors[0].value).toBe(message);
+      } else {
+        expect(props.id).toBe('Form_Test_Field');
+        expect(props.upload.status).toBe(responseStatus);
+        expect(props.upload.errors).toBe(undefined);
+        expect(props.upload.category).toBe('image');
+        expect(props.upload.progress).toBe(100);
+      }
+    });
+  });
 });

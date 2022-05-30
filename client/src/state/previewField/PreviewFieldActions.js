@@ -27,3 +27,10 @@ export function updateFile(id, data) {
     payload: { id, data },
   };
 }
+
+export function updateStatus(id, status) {
+  return {
+    type: ACTION_TYPES.PREVIEWFIELD_UPDATE_STATUS,
+    payload: { id, status },
+  };
+}
