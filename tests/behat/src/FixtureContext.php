@@ -508,4 +508,30 @@ JS;
         $script = "document.querySelector('.editor__details fieldset').scrollTo(0, 0);";
         $this->getMainContext()->getSession()->executeScript($script);
     }
+
+    /**
+     * Example: Given the maximum file size is 5k
+     *
+     * @Given /^the maximum file size is "([^"]+)"$/
+     * @param string $size Max file size
+     */
+    public function stepCreateMaximumFileSizeStep($size): void
+    {
+        $config = <<<YAML
+        ---
+        name: fileallowedsize
+        ---
+
+        SilverStripe\Assets\Upload_Validator:
+            default_max_file_size:
+                '*': $size
+        YAML;
+
+        $file = 'file-allowed-size.yml';
+        $path = $this->getDestinationConfigFolder($file);
+        file_put_contents($path, $config);
+
+        $this->activatedConfigFiles[] = $path;
+        $this->getMainContext()->visit('dev/build?flush');
+    }
 }

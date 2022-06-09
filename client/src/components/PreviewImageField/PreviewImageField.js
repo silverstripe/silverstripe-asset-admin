@@ -23,6 +23,7 @@ class PreviewImageField extends Component {
     this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
     this.handleSending = this.handleSending.bind(this);
     this.handleUploadProgress = this.handleUploadProgress.bind(this);
+    this.handleUploadComplete = this.handleUploadComplete.bind(this);
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
     this.handleRemoveErroredUpload = this.handleRemoveErroredUpload.bind(this);
     this.canFileUpload = this.canFileUpload.bind(this);
@@ -81,6 +82,7 @@ class PreviewImageField extends Component {
       onSuccess: this.handleSuccessfulUpload,
       onSending: this.handleSending,
       onUploadProgress: this.handleUploadProgress,
+      onUploadComplete: this.handleUploadComplete,
       canFileUpload: this.canFileUpload,
       updateFormData: this.updateFormData,
     };
@@ -223,6 +225,15 @@ class PreviewImageField extends Component {
   }
 
   /**
+   * Upload was complete, set status changes to reflect it
+   *
+   * @param {object} file
+   */
+  handleUploadComplete(status) {
+    this.props.actions.previewField.updateStatus(this.props.id, { status });
+  }
+
+  /**
    * Build the preview URL
    * @param {string} category
    * @param {object} upload
@@ -277,6 +288,8 @@ class PreviewImageField extends Component {
     }
 
     const { category, progress, message } = upload;
+    const errors = upload.errors ? upload.errors[0] : null;
+    const status = upload.status ? upload.status : null;
     const preview = this.preview(category, upload, data);
     const image = <img alt="preview" src={preview} className="editor__thumbnail" />;
     const linkedImage = (data.url && !progress) ? (
@@ -296,13 +309,25 @@ class PreviewImageField extends Component {
     ) : null;
     let messageBox = null;
 
-    if (message) {
+    if (errors || status === 'error') {
+      const errorMessage = errors && errors.value
+        ? errors.value
+        : i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.');
+
+      const errorType = errors && errors.type ? errors.type : 'error';
+
+      messageBox = (
+        <div className={`preview-image-field__message preview-image-field__message--${errorType}`}>
+          {errorMessage}
+        </div>
+      );
+    } else if (message) {
       messageBox = (
         <div className={`preview-image-field__message preview-image-field__message--${message.type}`}>
           {message.value}
         </div>
       );
-    } else if (progress === 100) {
+    } else if (progress === 100 && status === 'success') {
       messageBox = (
         <div className="preview-image-field__message preview-image-field__message--success">
           {i18n._t(
@@ -390,6 +415,7 @@ PreviewImageField.propTypes = {
       type: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
     }),
+    status: PropTypes.string,
   }),
   actions: PropTypes.object,
   securityID: PropTypes.string,
