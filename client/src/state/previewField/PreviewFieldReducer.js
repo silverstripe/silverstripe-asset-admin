@@ -29,6 +29,12 @@ function previewFieldReducer(state = initialState, action) {
       }));
     }
 
+    case ACTION_TYPES.PREVIEWFIELD_UPDATE_STATUS: {
+      return deepFreeze(Object.assign({}, state, {
+        [action.payload.id]: Object.assign({}, state[action.payload.id], action.payload.status),
+      }));
+    }
+
     default:
       return state;
   }

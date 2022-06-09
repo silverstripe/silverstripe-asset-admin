@@ -72,4 +72,20 @@ describe('previewFieldReducer', () => {
       expect(nextState[id].progress).toBe(32);
     });
   });
+
+  describe('PREVIEWFIELD_UPDATE_STATUS', () => {
+    it('should add the status to the existing file state', () => {
+      const status = {
+        status: 'error',
+      };
+      initialState[id] = { id: 543 };
+      const nextState = previewFieldReducer(initialState, {
+        type: ACTION_TYPES.PREVIEWFIELD_UPDATE_STATUS,
+        payload: { id, status },
+      });
+
+      expect(nextState[id].id).toBe(543);
+      expect(nextState[id].status).toBe(status.status);
+    });
+  });
 });

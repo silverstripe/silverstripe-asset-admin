@@ -22,6 +22,7 @@ class AssetDropzone extends Component {
     this.handleDragLeave = this.handleDragLeave.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
     this.handleUploadProgress = this.handleUploadProgress.bind(this);
+    this.handleUploadComplete = this.handleUploadComplete.bind(this);
     this.handleError = this.handleError.bind(this);
     this.handleSending = this.handleSending.bind(this);
     this.handleSuccess = this.handleSuccess.bind(this);
@@ -122,6 +123,9 @@ class AssetDropzone extends Component {
 
       // Whenever the file upload progress changes
       uploadprogress: this.handleUploadProgress,
+
+      // When the file upload complete
+      complete: this.handleUploadComplete,
 
       // The text used before any files are dropped
       dictDefaultMessage: i18n._t('AssetAdmin.DROPZONE_DEFAULT_MESSAGE', 'Drop files here to upload'),
@@ -300,6 +304,17 @@ class AssetDropzone extends Component {
       this.props.onUploadProgress(file, progress, bytesSent);
     }
   }
+
+  /**
+   * Event handler when a file's upload complete.
+   *
+   * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
+   */
+  handleUploadComplete(file) {
+      if (typeof this.props.onUploadComplete === 'function') {
+        this.props.onUploadComplete(file.status);
+      }
+    }
 
   /**
    * Event handler triggered when the user drops a file on the dropzone.
