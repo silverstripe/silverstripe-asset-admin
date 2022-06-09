@@ -5,4 +5,5 @@ import:
 
 env:
   global:
+    - REQUIRE_RECIPE="4.10.x-dev"
     - BEHAT_SUITE="asset-admin"
