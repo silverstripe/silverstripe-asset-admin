@@ -80,7 +80,7 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
 
         // Filter list
         $list = Versioned::get_by_stage(File::class, Versioned::DRAFT);
-        $filterInputType = new FileFilterInputTypeCreator($this->manager);
+        $filterInputType = FileFilterInputTypeCreator::create($this->manager);
         $list = $filterInputType->filterList($list, $filter);
 
         // Permission checks
