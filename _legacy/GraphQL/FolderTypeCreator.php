@@ -167,7 +167,7 @@ class FolderTypeCreator extends FileTypeCreator
 
         /** @var DataList $list */
         $list = Versioned::get_by_stage(File::class, 'Stage');
-        $filterInputType = new FileFilterInputTypeCreator($this->manager);
+        $filterInputType = FileFilterInputTypeCreator::create($this->manager);
 
         $filter['parentId'] = $object->ID;
         $list = $filterInputType->filterList($list, $filter);
