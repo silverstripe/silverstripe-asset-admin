@@ -172,6 +172,7 @@ Feature: Manage files
     When I check the file named "testfile" in the gallery
       And I press the "View actions" button
       And I press the "Unpublish" button
+      And I wait for 3 seconds
       Then I should see a "1 folders/files were successfully unpublished" success toast
     When I check the file named "file2" in the gallery
       And I check the file named "testfile" in the gallery

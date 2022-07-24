@@ -24,8 +24,9 @@ Feature: File details
     When I click "Details" in the "#Editor .nav-tabs" element
     Then the rendered HTML should contain "<span class="editor__status-flag">Draft</span>"
     When I press the "Publish" button
-    Then I should not see a ".editor__status-flag" element
+    And I wait for 5 seconds
+    Then the rendered HTML should not contain "<span class="editor__status-flag">"
     And I fill in "Form_fileEditForm_Title" with "file-modified-1"
     And I press the "Save" button
+    And I wait for 5 seconds
     Then the rendered HTML should contain "<span class="editor__status-flag">Modified</span>"
-
