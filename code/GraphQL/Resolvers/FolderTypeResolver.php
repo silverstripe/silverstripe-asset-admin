@@ -18,6 +18,7 @@ use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 use Exception;
 use Closure;
+use SilverStripe\ORM\DataQuery;
 
 class FolderTypeResolver
 {
@@ -130,35 +131,54 @@ class FolderTypeResolver
     public static function sortChildren(array $context): Closure
     {
         $fieldName = $context['fieldName'];
-        return function (?Sortable $list, array $args) use ($fieldName) {
+        return function (?DataList $list, array $args) use ($fieldName) {
             if ($list === null) {
                 return null;
             }
 
             $sortArgs = $args[$fieldName] ?? [];
 
-            // ensure that folders appear first
-            $className = DB::get_conn()->quoteString(Folder::class);
-            $classNameField = "(CASE WHEN \"ClassName\"={$className} THEN 1 ELSE 0 END)";
-            $sortArgs = array_merge([$classNameField => 'DESC'], $sortArgs);
-
-            $sort = [];
-            foreach ($sortArgs as $field => $dir) {
-                if ($field == $classNameField) {
-                    $normalised = $classNameField;
-                } else {
-                    $normalised = FieldAccessor::singleton()->normaliseField(File::singleton(), $field);
+            $list = $list->alterDataQuery(static function (DataQuery $dataQuery) use ($sortArgs) {
+                $query = $dataQuery->query();
+                $existingOrderBys = [];
+                foreach ($query->getOrderBy() as $field => $direction) {
+                    if (strpos($field, '.') === false) {
+                        // some fields may be surrogates added by extending augmentSQL
+                        // we have to preserve those expressions rather than auto-generated names
+                        // that SQLSelect::addOrderBy leaves for them (e.g. _SortColumn0)
+                        $field = $query->expressionForField(trim($field, '"')) ?: $field;
+                    }
+                    $existingOrderBys[$field] = $direction;
                 }
-                Schema::invariant(
-                    $normalised,
-                    'Could not find field %s on %s',
-                    $field,
-                    File::class
-                );
-                $sort[$normalised] = $dir;
-            }
-            $list = $list->sort($sort);
 
+                // Folders always go first
+                $dataQuery->sort(
+                    sprintf(
+                        '(CASE WHEN "ClassName"=%s THEN 1 ELSE 0 END)',
+                        DB::get_conn()->quoteString(Folder::class)
+                    ),
+                    'DESC',
+                    true
+                );
+
+                foreach ($sortArgs as $field => $dir) {
+                    $normalised = FieldAccessor::singleton()->normaliseField(File::singleton(), $field);
+                    Schema::invariant(
+                        $normalised,
+                        'Could not find field %s on %s',
+                        $field,
+                        File::class
+                    );
+                    $dataQuery->sort($field, $dir, false);
+                }
+
+                // respect default_sort
+                foreach ($existingOrderBys as $field => $dir) {
+                    $dataQuery->sort($field, $dir, false);
+                }
+
+                return $dataQuery;
+            });
             return $list;
         };
     }
