@@ -1,16 +1,11 @@
-# SilverStripe Asset Admin Module
+# Silverstripe Asset Admin Module
 
 [![CI](https://github.com/silverstripe/silverstripe-asset-admin/actions/workflows/ci.yml/badge.svg)](https://github.com/silverstripe/silverstripe-asset-admin/actions/workflows/ci.yml)
-[![SilverStripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
-[![Code Quality](http://img.shields.io/scrutinizer/g/silverstripe/silverstripe-asset-admin.svg?style=flat-square)](https://scrutinizer-ci.com/g/silverstripe/silverstripe-asset-admin)
-[![Code Climate](https://codeclimate.com/github/silverstripe/silverstripe-asset-admin/badges/gpa.svg)](https://codeclimate.com/github/silverstripe/silverstripe-asset-admin)
-[![Version](http://img.shields.io/packagist/v/silverstripe/asset-admin.svg?style=flat-square)](https://packagist.org/packages/silverstripe/asset-admin)
-[![License](http://img.shields.io/packagist/l/silverstripe/asset-admin.svg?style=flat-square)](LICENSE.md)
-![helpfulrobot](https://helpfulrobot.io/silverstripe/asset-admin/badge)
+[![Silverstripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
 
 ## Overview
 
-The Asset Admin module provides a interface for managing files within SilverStripe CMS [assets module](https://github.com/silverstripe/silverstripe-assets). This section shows a library of files available to use on your website and includes images and documents such as PDF files, and can also include javascript files. 
+The Asset Admin module provides a interface for managing files within Silverstripe CMS [assets module](https://github.com/silverstripe/silverstripe-assets). This section shows a library of files available to use on your website and includes images and documents such as PDF files, and can also include javascript files. 
 
 ## Installation
 
