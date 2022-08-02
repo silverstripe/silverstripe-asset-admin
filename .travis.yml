@@ -1,9 +1,0 @@
-version: ~> 1.0
-
-import:
-  - silverstripe/silverstripe-travis-shared:config/provision/standard-jobs-fixed-behat-npm.yml
-
-env:
-  global:
-    - REQUIRE_RECIPE="4.10.x-dev"
-    - BEHAT_SUITE="asset-admin"
