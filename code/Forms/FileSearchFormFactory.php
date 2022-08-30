@@ -21,11 +21,6 @@ class FileSearchFormFactory implements FormFactory
     use Extensible;
     use Injectable;
 
-    public function __construct()
-    {
-        $this->constructExtensions();
-    }
-
     /**
      * Generates the form
      *
