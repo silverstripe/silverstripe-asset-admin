@@ -5,10 +5,10 @@ Feature: File details
 
   Background:
 
-    Given the "group" "EDITOR group" has permissions "CMS_ACCESS_LeftAndMain" and "FILE_EDIT_ALL"
+    Given the "group" "EDITOR" has permissions "Access to 'Files' section" and "FILE_EDIT_ALL"
     And a "image" "assets/file1.jpg"
     And a "page" "My page" has the "Content" "<p>[image id=1]</p>"
-    And I am logged in with "EDITOR" permissions
+    And I am logged in as a member of "EDITOR" group
 
   Scenario: Operate file details
 

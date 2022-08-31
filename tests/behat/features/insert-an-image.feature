@@ -9,7 +9,8 @@ Feature: Insert an image into a page
       And a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
       And a "folder" "folder1/folder1-1"
-      And I am logged in with "ADMIN" permissions
+      And the "group" "EDITOR" has permissions "Access to 'Files' section" and "Access to 'Pages' section" and "FILE_EDIT_ALL"
+      And I am logged in as a member of "EDITOR" group
       And I go to "/admin/pages"
       And I click on "About Us" in the tree
 

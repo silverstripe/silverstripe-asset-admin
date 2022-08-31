@@ -9,7 +9,8 @@ Feature: Manage files
       And a "image" "assets/folder1/folder1-1/file2.jpg" was created "2010-01-01 12:00:00"
       And a "folder" "assets/folder2"
       And a page "Gallery" containing an image "assets/folder3/file1.jpg"
-      And I am logged in with "ADMIN" permissions
+      And the "group" "EDITOR" has permissions "Access to 'Files' section" and "FILE_EDIT_ALL"
+      And I am logged in as a member of "EDITOR" group
       And I go to "/admin/assets"
 
   @modal

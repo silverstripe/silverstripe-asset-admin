@@ -8,7 +8,7 @@ Feature: Manage file permissions
     Given a "image" "assets/folder1/file1.jpg" was created "2012-01-01 12:00:00"
       And a "image" "assets/folder1/folder1-1/file2.jpg" was created "2010-01-01 12:00:00"
       And a "folder" "assets/folder2"
-      And the "group" "EDITOR group" has permissions "Access to all CMS sections"
+      And the "group" "EDITOR" has permissions "Access to 'Files' section"
       And a page "Gallery" containing an image "assets/folder3/file1.jpg"
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/assets"
@@ -24,7 +24,7 @@ Feature: Manage file permissions
       And I select "ADMIN group" in the "#Form_fileEditForm_EditorGroups_Holder" tree dropdown
       And I press the "Save" button
       And I am not logged in
-      And I am logged in with "EDITOR" permissions
+      And I am logged in as a member of "EDITOR" group
       And I go to "/admin/assets"
       And I click on the folder named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
@@ -42,10 +42,10 @@ Feature: Manage file permissions
     Then I should see the "Form_fileEditForm" form
     When I click "Permissions" in the "#Editor .nav-tabs" element
       And I select "Only these groups (choose from list)" from "Who can edit this file?" input group
-      And I select "EDITOR group" in the "#Form_fileEditForm_EditorGroups_Holder" tree dropdown
+      And I select "EDITOR" in the "#Form_fileEditForm_EditorGroups_Holder" tree dropdown
       And I press the "Save" button
       And I am not logged in
-      And I am logged in with "EDITOR" permissions
+      And I am logged in as a member of "EDITOR" group
       And I go to "/admin/assets"
       And I wait for 1 second
       And I click on the folder named "folder1" in the gallery
