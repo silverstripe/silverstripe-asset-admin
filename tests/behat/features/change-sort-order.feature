@@ -60,7 +60,8 @@ Feature: Change view for asset admin
       # subfolder names must start with a letter greater than "t"
       And a "image" "folder1/xsubfolder1/testfile.jpg"
       And a "image" "folder1/zsubfolder2/testfile.jpg"
-      And I am logged in with "ADMIN" permissions
+      And the "group" "EDITOR" has permissions "Access to 'Files' section" and "FILE_EDIT_ALL"
+      And I am logged in as a member of "EDITOR" group
       And I go to "/admin/assets"
 
   Scenario: I can switch the sorting order in table view

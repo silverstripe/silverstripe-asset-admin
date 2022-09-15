@@ -8,7 +8,8 @@ Feature: Multi file Upload field
       And a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
       And a "company" "ACME inc"
-      And I am logged in with "ADMIN" permissions
+      And the "group" "EDITOR" has permissions "VIEW_DRAFT_CONTENT" and "Access to 'Test ModelAdmin' section" and "TEST_DATAOBJECT_EDIT" and "Access to 'Files' section" and "FILE_EDIT_ALL" 
+      And I am logged in as a member of "EDITOR" group
       And I go to "/admin/test/"
       And I click "ACME inc" in the "#Form_EditForm_SilverStripe-FrameworkTest-Model-Company" element
       And I should see an ".uploadfield" element
