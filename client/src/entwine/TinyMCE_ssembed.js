@@ -20,30 +20,38 @@ const filter = 'div[data-shortcode="embed"]';
       const insertTitle = i18n._t('AssetAdmin.INSERT_VIA_URL', 'Insert media via URL');
       const editTitle = i18n._t('AssetAdmin.EDIT_MEDIA', 'Edit media');
       const contextTitle = i18n._t('AssetAdmin.MEDIA', 'Media');
-      editor.addButton('ssembed', {
-        title: insertTitle,
-        icon: 'media',
-        cmd: 'ssembed',
-        stateSelector: filter
-      });
-      editor.addMenuItem('ssembed', {
-        text: contextTitle,
-        icon: 'media',
-        cmd: 'ssembed',
-      });
-      editor.addButton('ssembededit', {
-        title: editTitle,
-        icon: 'editimage',
-        cmd: 'ssembed'
-      });
-      editor.addContextToolbar(
-        (embed) => editor.dom.is(embed, filter),
-        'alignleft aligncenter alignright | ssembededit'
-      );
 
       editor.addCommand('ssembed', () => {
         // See HtmlEditorField.js
         jQuery(`#${editor.id}`).entwine('ss').openEmbedDialog();
+      });
+
+      // Button in main toolbar
+      editor.ui.registry.addButton('ssembed', {
+        tooltip: insertTitle,
+        icon: 'embed',
+        onAction: () => editor.execCommand('ssembed'),
+        stateSelector: filter
+      });
+
+      // Right click context menu item
+      editor.ui.registry.addMenuItem('ssembed', {
+        text: contextTitle,
+        icon: 'embed',
+        onAction: () => editor.execCommand('ssembed'),
+      });
+
+      // Context menu when an embed is selected
+      editor.ui.registry.addButton('ssembededit', {
+        tooltip: editTitle,
+        icon: 'edit-block',
+        onAction: () => editor.execCommand('ssembed'),
+      });
+      editor.ui.registry.addContextToolbar('ssembed', {
+        predicate: (node) => editor.dom.is(node, filter),
+        position: 'node',
+        scope: 'node',
+        items: 'alignleft aligncenter alignright | ssembededit'
       });
 
       // Replace the tinymce default media commands with the ssembed command
@@ -51,13 +59,13 @@ const filter = 'div[data-shortcode="embed"]';
         const cmd = e.command;
         const ui = e.ui;
         const val = e.value;
-        if (cmd === 'mceAdvMedia' || cmd === 'mceAdvMedia') {
+        if (cmd === 'mceMedia') {
           e.preventDefault();
           editor.execCommand('ssembed', ui, val);
         }
       });
 
-      editor.on('SaveContent', (o) => {
+      editor.on('GetContent', (o) => {
         const content = jQuery(`<div>${o.content}</div>`);
 
         // Transform [embed] shortcodes
@@ -148,6 +156,16 @@ const filter = 'div[data-shortcode="embed"]';
         // eslint-disable-next-line no-param-reassign
         o.content = content;
       });
+
+      // getMetadata method on a returned object is used by the "help" plugin
+      return {
+        getMetadata() {
+          return {
+            name: 'Silverstripe Embed',
+            url: 'https://docs.silverstripe.org/en/4/developer_guides/forms/field_types/htmleditorfield',
+          };
+        }
+      };
     },
   };
 

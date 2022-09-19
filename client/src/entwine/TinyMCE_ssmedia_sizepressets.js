@@ -71,7 +71,7 @@ function presetButton(editor, preset) {
    * Setups the button. Fired once, the first time the button is rendered.
    * @param event
    */
-  const onpostrender = (event) => {
+  const onPostRender = (event) => {
     // Get a reference to the button
     const button = event.target;
 
@@ -97,7 +97,7 @@ function presetButton(editor, preset) {
   /**
    * Action that gets run when a user clicks on the button
    */
-  const onclick = () => {
+  const onAction = () => {
     const img = image();
     if (!img) {
       return;
@@ -121,11 +121,10 @@ function presetButton(editor, preset) {
   };
 
   // Tell TinyMCE about our new button
-  editor.addButton(formatName, {
-    icon: false,
+  editor.ui.registry.addButton(formatName, {
     text,
-    onclick,
-    onpostrender
+    onAction,
+    onPostRender
   });
 
   return formatName;

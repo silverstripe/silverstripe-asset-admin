@@ -456,20 +456,18 @@ EOS
         $filename = addcslashes($filename ?? '', "'");
         $js = <<<JS
 var editor = jQuery('#$inputFieldId').entwine('ss').getEditor(),
-	doc = editor.getInstance().getDoc(),
-	sel = editor.getInstance().selection,
-	rng = document.createRange(),
-	matched = false;
+    doc = editor.getInstance().getDoc(),
+    sel = doc.getSelection(),
+    rng = new Range(),
+    matched = false;
 
-editor.getInstance().focus();
 jQuery(doc).find("img[src*='$filename']").each(function() {
-	if(!matched) {
-		rng.setStart(this, 0);
-		rng.setEnd(this, 0);
-		sel.setRng(rng);
-		editor.getInstance().nodeChanged();
-		matched = true;
-	}
+    if(!matched) {
+        rng.selectNode(this);
+        sel.removeAllRanges();
+        sel.addRange(rng);
+        matched = true;
+    }
 });
 JS;
         $this->getMainContext()->getSession()->executeScript($js);
