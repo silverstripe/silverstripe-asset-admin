@@ -24,57 +24,63 @@ const filter = 'img[data-shortcode="image"]';
     /**
      * Initilise this plugin
      *
-     * @param {Object} ed TinyMCE editor object
+     * @param {Object} editor TinyMCE editor object
      */
-    init(ed) {
+    init(editor) {
       const insertTitle = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
       const editTitle = i18n._t('AssetAdmin.EDIT_IMAGE', 'Edit image');
       const contextTitle = i18n._t('AssetAdmin.FILE', 'File');
-      ed.addButton('ssmedia', {
-        title: insertTitle,
+
+      editor.addCommand('ssmedia', () => {
+        // See HtmlEditorField.js
+        jQuery(`#${editor.id}`).entwine('ss').openMediaDialog();
+      });
+
+      // Button in main toolbar
+      editor.ui.registry.addButton('ssmedia', {
+        tooltip: insertTitle,
         icon: 'image',
-        cmd: 'ssmedia',
+        onAction: () => editor.execCommand('ssmedia'),
         stateSelector: filter
       });
-      ed.addMenuItem('ssmedia', {
+
+      // Right click context menu item
+      editor.ui.registry.addMenuItem('ssmedia', {
         text: contextTitle,
         icon: 'image',
-        cmd: 'ssmedia'
-      });
-      ed.addButton('ssmediaedit', {
-        title: editTitle,
-        icon: 'editimage',
-        cmd: 'ssmedia'
+        onAction: () => editor.execCommand('ssmedia'),
       });
 
-      const sizePresets = ed.getParam('image_size_presets');
+      // Context menu when an embed is selected
+      editor.ui.registry.addButton('ssmediaedit', {
+        tooltip: editTitle,
+        icon: 'edit-block',
+        onAction: () => editor.execCommand('ssmedia'),
+      });
+      const sizePresets = editor.getParam('image_size_presets');
       let buttonList = [];
       if (sizePresets) {
-        buttonList = imageSizePresetButtons(ed, sizePresets);
+        buttonList = imageSizePresetButtons(editor, sizePresets);
       }
-
-      ed.addContextToolbar(
-        (img) => ed.dom.is(img, filter),
-        `${buttonList.join(' ')} | ssmediaedit`
-      );
-
-      ed.addCommand('ssmedia', () => {
-        // See HtmlEditorField.js
-        jQuery(`#${ed.id}`).entwine('ss').openMediaDialog();
+      editor.ui.registry.addContextToolbar('ssmedia', {
+        predicate: (node) => editor.dom.is(node, filter),
+        position: 'node',
+        scope: 'node',
+        items: `${buttonList.join(' ')} | ssmediaedit`
       });
 
       // Replace the mceAdvImage and mceImage commands with the ssmedia command
-      ed.on('BeforeExecCommand', (e) => {
+      editor.on('BeforeExecCommand', (e) => {
         const cmd = e.command;
         const ui = e.ui;
         const val = e.value;
-        if (cmd === 'mceAdvImage' || cmd === 'mceImage') {
+        if (cmd === 'mceEditImage' || cmd === 'mceImage') {
           e.preventDefault();
-          ed.execCommand('ssmedia', ui, val);
+          editor.execCommand('ssmedia', ui, val);
         }
       });
 
-      ed.on('SaveContent', (o) => {
+      editor.on('Content', (o) => {
         const content = jQuery(o.content);
 
         // Transform [image] shortcodes
@@ -113,7 +119,7 @@ const filter = 'img[data-shortcode="image"]';
           }
         });
       });
-      ed.on('BeforeSetContent', (o) => {
+      editor.on('BeforeSetContent', (o) => {
         let content = o.content;
 
         // Transform [image] tag
@@ -136,6 +142,16 @@ const filter = 'img[data-shortcode="image"]';
 
         o.content = content;
       });
+
+      // getMetadata method on a returned object is used by the "help" plugin
+      return {
+        getMetadata() {
+          return {
+            name: 'Silverstripe Media',
+            url: 'https://docs.silverstripe.org/en/4/developer_guides/forms/field_types/htmleditorfield',
+          };
+        }
+      };
     },
   };
 

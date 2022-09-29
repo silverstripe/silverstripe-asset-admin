@@ -20,7 +20,7 @@ Feature: Insert an image into a page
     Then I should see the "Form_fileInsertForm" form
       And I should not see an ".gallery-item--selectable" element
       And I should not see an ".bulk-actions" element
-    When I press the "Insert" button
+    When I press the "Insert file" button
     Then the "Content" HTML field should contain "file1.jpg"
     # Required to avoid "unsaved changed" browser dialog
       And I press the "Save" button
@@ -31,7 +31,7 @@ Feature: Insert an image into a page
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
     When I fill in "Alternative text (alt)" with "My alt"
-      And I press the "Insert" button
+      And I press the "Insert file" button
     Then the "Content" HTML field should contain "file1.jpg"
       And the "Content" HTML field should contain "My alt"
       # Required to avoid "unsaved changed" browser dialog
@@ -107,7 +107,7 @@ Feature: Insert an image into a page
   Scenario: I can link to a file
     Given I select "awesome" in the "Content" HTML field
     When I press the "Insert link" HTML field button
-      And I click "Link to a file" in the ".mce-menu" element
+      And I click "Link to a file" in the ".tox-collection__group" element
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
@@ -119,7 +119,7 @@ Feature: Insert an image into a page
     # Check that the field is reset when adding another new link
     When I select "awesome" in the "Content" HTML field
       And I press the "Insert link" HTML field button
-      And I click "Link to a file" in the ".mce-menu" element
+      And I click "Link to a file" in the ".tox-collection__group" element
     Then I should see the "Form_fileInsertForm" form
       And the "Description" field should contain "My file"
       And I should see "Link to file" in the "button[name=action_insert]" element
