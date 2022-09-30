@@ -80,7 +80,7 @@ const filter = 'img[data-shortcode="image"]';
         }
       });
 
-      editor.on('Content', (o) => {
+      editor.on('GetContent', (o) => {
         const content = jQuery(o.content);
 
         // Transform [image] shortcodes
