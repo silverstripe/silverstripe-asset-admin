@@ -204,8 +204,9 @@ jQuery.entwine('ss', ($) => {
       const { url, ...attrs } = this.getOriginalAttributes();
       const fileSelected = attrs.hasOwnProperty('ID') && attrs.ID !== null;
       const folderId = this.getFolderId();
-      const selection = tinymce.activeEditor.selection;
-      const selectionContent = selection.getContent() || '';
+      const editor = this.getElement().getEditor();
+      const selection = editor.getInstance().selection;
+      const selectionContent = editor.getSelection();
       const tagName = selection.getNode().tagName;
       // Unsupported media insertion will use insert link form instead
       // treat image tag selection as blank content
@@ -408,8 +409,7 @@ jQuery.entwine('ss', ($) => {
         properties: { id: data.ID },
       }, true);
 
-      const selection = tinymce.activeEditor.selection;
-      const selectionContent = selection.getContent() || '';
+      const selectionContent = this.getElement().getSelection();
       let linkText = selectionContent || data.Text || data.filename;
 
       // if link was highlighted, then we don't want to place more text inside that text
