@@ -17,7 +17,7 @@ File:
     name: String
     filename: String
     extension: String
-    size: Int
+    size: Float
     url: String
     thumbnail: String
     smallThumbnail: String
