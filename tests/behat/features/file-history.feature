@@ -7,7 +7,8 @@ Feature: View File History
   Background:
     Given a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
-      And I am logged in with "ADMIN" permissions
+      And the "group" "EDITOR" has permissions "Access to 'Files' section" and "FILE_EDIT_ALL"
+      And I am logged in as a member of "EDITOR" group
       And I have a config file "history.yml"
       And I go to "/admin/assets"
       And I select the file named "folder1" in the gallery

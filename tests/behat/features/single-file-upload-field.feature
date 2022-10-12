@@ -8,8 +8,10 @@ Feature: Single file Upload field
       And a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
       And a "folder" "folder1/folder1-1"
-      And a "employee" "Allen"
-      And I am logged in with "ADMIN" permissions
+      And the "Company" "ACME inc" with "Category"="Other"
+      And the "Employee" "Allen" with "Company"="1"
+      And the "group" "EDITOR" has permissions "VIEW_DRAFT_CONTENT" and "Access to 'Files' section" and "FILE_EDIT_ALL" and "Access to 'Test ModelAdmin' section" and "TEST_DATAOBJECT_EDIT"
+      And I am logged in as a member of "EDITOR" group
       And I go to "/admin/test/SilverStripe-FrameworkTest-Model-Employee"
       And I click "Allen" in the "#Form_EditForm_SilverStripe-FrameworkTest-Model-Employee" element
       And I should see an ".uploadfield" element
