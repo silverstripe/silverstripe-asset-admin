@@ -525,16 +525,14 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     /**
      * Redirects 3.x style detail links to new 4.x style routing.
-     *
-     * @param HTTPRequest $request
      */
-    public function legacyRedirectForEditView($request)
+    public function legacyRedirectForEditView(HTTPRequest $request): HTTPResponse
     {
         $fileID = $request->param('FileID');
         /** @var File $file */
         $file = File::get()->byID($fileID);
         $link = $this->getFileEditLink($file) ?: $this->Link();
-        $this->redirect($link);
+        return $this->redirect($link);
     }
 
     /**
@@ -890,13 +888,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     /**
      * Gets a JSON schema representing the current edit form.
-     *
-     * WARNING: Experimental API.
-     *
-     * @param HTTPRequest $request
-     * @return HTTPResponse
      */
-    public function schema($request)
+    public function schema(HTTPRequest $request): HTTPResponse
     {
         $formName = $request->param('FormName');
         if ($formName !== 'fileHistoryForm') {
@@ -950,12 +943,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $form;
     }
 
-    /**
-     * @param array $data
-     * @param Form $form
-     * @return HTTPResponse
-     */
-    public function createfolder($data, $form)
+    public function createfolder(array $data, Form $form): HTTPResponse
     {
         $parentID = isset($data['ParentID']) ? intval($data['ParentID']) : 0;
         $data['Parent'] = null;
@@ -991,39 +979,23 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $this->getSchemaResponse($schemaId, $createForm, null, $schemaData);
     }
 
-    /**
-     * @param array $data
-     * @param Form $form
-     * @return HTTPResponse
-     */
-    public function save($data, $form)
+    public function save(array $data, Form $form): HTTPResponse
     {
         return $this->saveOrPublish($data, $form, false);
     }
 
-    /**
-     * @param array $data
-     * @param Form $form
-     * @return HTTPResponse
-     */
-    public function publish($data, $form)
+    public function publish(array $data, Form $form): HTTPResponse
     {
         return $this->saveOrPublish($data, $form, true);
     }
 
     /**
-     * Update thisrecord
-     *
-     * @param array $data
-     * @param Form $form
-     * @param bool $doPublish
-     * @return HTTPResponse
+     * Update this record
      */
-    protected function saveOrPublish($data, $form, $doPublish = false)
+    protected function saveOrPublish(array $data, Form $form, bool $doPublish = false): HTTPResponse
     {
         if (!isset($data['ID']) || !is_numeric($data['ID'])) {
             $this->jsonError(400);
-            return null;
         }
 
         $id = (int) $data['ID'];
@@ -1032,12 +1004,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         if (!$record) {
             $this->jsonError(404);
-            return null;
         }
 
         if (!$record->canEdit() || ($doPublish && !$record->canPublish())) {
             $this->jsonError(401);
-            return null;
         }
 
         // check File extension
@@ -1076,11 +1046,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         return $this->getRecordUpdatedResponse($record, $form);
     }
 
-    public function unpublish($data, $form)
+    public function unpublish(array $data, Form $form): HTTPResponse
     {
         if (!isset($data['ID']) || !is_numeric($data['ID'])) {
             $this->jsonError(400);
-            return null;
         }
 
         $id = (int) $data['ID'];
@@ -1089,12 +1058,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
         if (!$record) {
             $this->jsonError(404);
-            return null;
         }
 
         if (!$record->canUnpublish()) {
             $this->jsonError(401);
-            return null;
         }
 
         $record->doUnpublish();
@@ -1237,24 +1204,21 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
 
     /**
      * Action handler for adding pages to a campaign
-     *
-     * @param array $data
-     * @param Form $form
-     * @return DBHTMLText|HTTPResponse
      */
-    public function addtocampaign($data, $form)
+    public function addtocampaign(array $data, Form $form): HTTPResponse
     {
         $id = $data['ID'];
         $record = File::get()->byID($id);
 
         $handler = AddToCampaignHandler::create($this, $record, 'addToCampaignForm');
-        $results = $handler->addToCampaign($record, $data);
-        if (!isset($results)) {
-            return null;
+        $response = $handler->addToCampaign($record, $data);
+        $message = $response->getBody();
+        if (empty($message)) {
+            return $response;
         }
 
         // Send extra "message" data with schema response
-        $extraData = ['message' => $results];
+        $extraData = ['message' => $message];
         $schemaId = Controller::join_links($this->Link('schema/addToCampaignForm'), $id);
         return $this->getSchemaResponse($schemaId, $form, null, $extraData);
     }
@@ -1329,11 +1293,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     /**
      * Get response for successfully updated record
      *
-     * @param File $record
      * @param Form $form
-     * @return HTTPResponse
      */
-    protected function getRecordUpdatedResponse($record, $form)
+    protected function getRecordUpdatedResponse(File $record, $form): HTTPResponse
     {
         // Return the record data in the same response as the schema to save a postback
         $schemaData = ['record' => $this->getObjectFromData($record)];

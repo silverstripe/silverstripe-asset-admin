@@ -3,6 +3,7 @@
 namespace SilverStripe\AssetAdmin\BatchAction;
 
 use SilverStripe\Admin\CMSBatchAction;
+use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Convert;
 use SilverStripe\ORM\SS_List;
 
@@ -17,7 +18,7 @@ class DeleteAssets extends CMSBatchAction
         return _t(__CLASS__.'.TITLE', 'Delete folders');
     }
 
-    public function run(SS_List $records)
+    public function run(SS_List $records): HTTPResponse
     {
         $status = array(
             'modified'=>array(),
@@ -38,6 +39,8 @@ class DeleteAssets extends CMSBatchAction
             unset($record);
         }
 
-        return json_encode($status);
+        return HTTPResponse::create()
+            ->setBody(json_encode($status))
+            ->addHeader('Content-type', 'application/json');
     }
 }
