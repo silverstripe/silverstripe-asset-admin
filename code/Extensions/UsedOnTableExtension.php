@@ -29,7 +29,7 @@ class UsedOnTableExtension extends Extension
      * @var ArrayList $usage
      * @var DataObject $record
      * @see UsedOnTable::updateUsage
-     * @deprecated 4.7.0 Use self::updateUsageExcludedClasses instead
+     * @deprecated 4.7.0 Use updateUsageExcludedClasses() instead
      */
     public function updateUsage(ArrayList &$usage, DataObject &$record)
     {
