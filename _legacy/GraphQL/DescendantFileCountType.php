@@ -2,6 +2,8 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
+use SilverStripe\GraphQL\Manager;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\GraphQL\TypeCreator;
 
@@ -13,13 +15,19 @@ if (!class_exists(TypeCreator::class)) {
  * Define the return type for ReadDescendantFileCountsQueryCreator
  * Return as an array of object with an 'id' property and 'count' property.
  *
- * @deprecated 1.8..2.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class DescendantFileCountType extends TypeCreator
 {
     /**
      * @return array
      */
+    public function __construct(Manager $manager = null)
+    {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
+    }
+
     public function attributes()
     {
         return [

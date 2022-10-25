@@ -1,6 +1,7 @@
 <?php
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\Assets\Folder;
 use SilverStripe\GraphQL\MutationCreator;
@@ -16,7 +17,7 @@ if (!class_exists(MutationCreator::class)) {
 /**
  * API available but currently not used, as create folder uses FormBuilder
  *
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class CreateFolderMutationCreator extends MutationCreator implements OperationResolver
 {
@@ -27,6 +28,7 @@ class CreateFolderMutationCreator extends MutationCreator implements OperationRe
 
     public function __construct(Manager $manager = null)
     {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
         $this->accessor = new CaseInsensitiveFieldAccessor();
 
         parent::__construct($manager);

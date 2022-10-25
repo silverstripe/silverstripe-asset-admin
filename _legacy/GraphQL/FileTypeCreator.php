@@ -21,7 +21,7 @@ if (!class_exists(TypeCreator::class)) {
 
 /**
  * @skipUpgrade
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class FileTypeCreator extends TypeCreator
 {
@@ -37,6 +37,7 @@ class FileTypeCreator extends TypeCreator
 
     public function __construct(Manager $manager = null)
     {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
         $this->accessor = new CaseInsensitiveFieldAccessor();
 
         parent::__construct($manager);

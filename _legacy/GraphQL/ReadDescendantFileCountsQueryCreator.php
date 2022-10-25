@@ -1,6 +1,7 @@
 <?php
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
@@ -16,10 +17,15 @@ if (!class_exists(QueryCreator::class)) {
 /**
  * GraphQL Query to retrieve the file count within a folder
  *
- * @deprecated 1.8..2.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class ReadDescendantFileCountsQueryCreator extends QueryCreator
 {
+
+    public function __construct()
+    {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+    }
 
     public function attributes()
     {

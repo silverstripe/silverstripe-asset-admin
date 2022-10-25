@@ -1,6 +1,7 @@
 <?php
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use GraphQL\Type\Definition\UnionType;
@@ -14,7 +15,7 @@ if (!class_exists(PaginatedQueryCreator::class)) {
 
 /**
  * @skipUpgrade
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class ReadFileQueryCreator extends PaginatedQueryCreator
 {
@@ -23,6 +24,11 @@ class ReadFileQueryCreator extends PaginatedQueryCreator
      * @var UnionType
      */
     private $resultType;
+
+    public function __construct()
+    {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+    }
 
     public function attributes()
     {

@@ -1,6 +1,7 @@
 <?php
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\Assets\File;
@@ -17,10 +18,15 @@ if (!class_exists(QueryCreator::class)) {
 /**
  * GraphQL Query to retrieve usage count for files and folders on GraphQL request.
  *
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class ReadFileUsageQueryCreator extends QueryCreator
 {
+
+    public function __construct()
+    {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+    }
 
     public function attributes()
     {

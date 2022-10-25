@@ -2,7 +2,9 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use GraphQL\Type\Definition\Type;
+use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\TypeCreator;
 use GraphQL\Type\Definition\ResolveInfo;
 use Exception;
@@ -15,13 +17,19 @@ if (!class_exists(TypeCreator::class)) {
  * Define the return type for ReadFileUsageQueryCreator. File usage is return as an array of object with an
  * 'id' property and 'inUseCount' property.
  *
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class FileUsageType extends TypeCreator
 {
     /**
      * @return array
      */
+    public function __construct(Manager $manager = null)
+    {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
+    }
+
     public function attributes()
     {
         return [

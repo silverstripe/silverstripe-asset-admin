@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
@@ -22,10 +23,15 @@ if (!class_exists(TypeCreator::class)) {
 
 /**
  * @skipUpgrade
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class FolderTypeCreator extends FileTypeCreator
 {
+
+    public function __construct()
+    {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+    }
 
     public function attributes()
     {

@@ -1,6 +1,7 @@
 <?php
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\Assets\File;
 use GraphQL\Type\Definition\Type;
@@ -17,7 +18,7 @@ if (!class_exists(MutationCreator::class)) {
 /**
  * Handles create and update
  * @skipUpgrade
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class UpdateFileMutationCreator extends MutationCreator implements OperationResolver
 {
@@ -29,6 +30,7 @@ class UpdateFileMutationCreator extends MutationCreator implements OperationReso
 
     public function __construct(Manager $manager = null)
     {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
         $this->accessor = new CaseInsensitiveFieldAccessor();
 
         parent::__construct($manager);

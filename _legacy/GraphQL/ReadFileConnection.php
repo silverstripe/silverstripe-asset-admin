@@ -1,6 +1,7 @@
 <?php
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Assets\Folder;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\ORM\DataQuery;
@@ -13,7 +14,7 @@ if (!class_exists(Connection::class)) {
 /**
  * Connection that sorts by folders first
  *
- * @deprecated 1.8 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use _graphql directory functionality instead
  */
 class ReadFileConnection extends Connection
 {
@@ -24,6 +25,11 @@ class ReadFileConnection extends Connection
      * @param array $sortBy
      * @return SS_List
      */
+    public function __construct()
+    {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+    }
+
     protected function applySort($list, $sortBy)
     {
         $className = DB::get_conn()->quoteString(Folder::class);
