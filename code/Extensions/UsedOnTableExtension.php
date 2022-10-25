@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Extensions;
 
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Shortcodes\FileLink;
 use SilverStripe\Core\Extension;
@@ -29,10 +30,11 @@ class UsedOnTableExtension extends Extension
      * @var ArrayList $usage
      * @var DataObject $record
      * @see UsedOnTable::updateUsage
-     * @deprecated 4.7.0 Use self::updateUsageExcludedClasses instead
+     * @deprecated 1.7.0 Use updateUsageExcludedClasses() instead
      */
     public function updateUsage(ArrayList &$usage, DataObject &$record)
     {
+        Deprecation::notice('1.7.0', 'Use updateUsageExcludedClasses() instead');
         // noop
     }
 

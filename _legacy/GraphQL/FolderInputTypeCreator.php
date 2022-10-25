@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\GraphQL\Util\CaseInsensitiveFieldAccessor;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\GraphQL\TypeCreator;
@@ -12,7 +13,7 @@ if (!class_exists(TypeCreator::class)) {
 }
 
 /**
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use the latest version of graphql instead
  */
 class FolderInputTypeCreator extends TypeCreator
 {
@@ -26,6 +27,7 @@ class FolderInputTypeCreator extends TypeCreator
 
     public function __construct(Manager $manager = null)
     {
+        Deprecation::notice('1.8.0', 'Use the latest version of graphql instead', Deprecation::SCOPE_CLASS);
         $this->accessor = new CaseInsensitiveFieldAccessor();
 
         parent::__construct($manager);
