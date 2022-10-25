@@ -19,17 +19,21 @@ if (!class_exists(Connection::class)) {
 class ReadFileConnection extends Connection
 {
     /**
+     * @param string $connectionName
+     */
+    public function __construct($connectionName)
+    {
+        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($connectionName);
+    }
+
+    /**
      * Always sort by folders before files
      *
      * @param SS_List $list
      * @param array $sortBy
      * @return SS_List
      */
-    public function __construct()
-    {
-        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
-    }
-
     protected function applySort($list, $sortBy)
     {
         $className = DB::get_conn()->quoteString(Folder::class);

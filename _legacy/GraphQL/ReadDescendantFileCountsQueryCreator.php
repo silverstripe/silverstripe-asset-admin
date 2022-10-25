@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\Type;
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\QueryCreator;
 use SilverStripe\ORM\DataList;
 use SilverStripe\Versioned\Versioned;
@@ -22,9 +23,10 @@ if (!class_exists(QueryCreator::class)) {
 class ReadDescendantFileCountsQueryCreator extends QueryCreator
 {
 
-    public function __construct()
+    public function __construct(Manager $manager = null)
     {
         Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
     }
 
     public function attributes()

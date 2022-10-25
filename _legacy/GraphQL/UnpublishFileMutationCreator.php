@@ -5,6 +5,7 @@ namespace SilverStripe\AssetAdmin\GraphQL;
 use SilverStripe\Dev\Deprecation;
 use SilverStripe\Assets\File;
 use SilverStripe\i18n\i18nEntityProvider;
+use SilverStripe\GraphQL\Manager;
 use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\Member;
@@ -31,9 +32,10 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator implements
     /**
      * @return string
      */
-    public function __construct()
+    public function __construct(Manager $manager = null)
     {
         Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
     }
 
     protected function sourceStage()

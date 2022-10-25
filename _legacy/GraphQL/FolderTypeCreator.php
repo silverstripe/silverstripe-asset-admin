@@ -11,6 +11,7 @@ use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\ORM\Filterable;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\Pagination\Connection;
 use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\ORM\DataQuery;
@@ -28,9 +29,10 @@ if (!class_exists(TypeCreator::class)) {
 class FolderTypeCreator extends FileTypeCreator
 {
 
-    public function __construct()
+    public function __construct(Manager $manager = null)
     {
         Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
     }
 
     public function attributes()

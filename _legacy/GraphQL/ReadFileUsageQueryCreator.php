@@ -9,6 +9,7 @@ use SilverStripe\Assets\Folder;
 use GraphQL\Type\Definition\UnionType;
 use SilverStripe\GraphQL\Pagination\PaginatedQueryCreator;
 use SilverStripe\GraphQL\Pagination\Connection;
+use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\QueryCreator;
 use SilverStripe\Versioned\Versioned;
 
@@ -23,9 +24,10 @@ if (!class_exists(QueryCreator::class)) {
 class ReadFileUsageQueryCreator extends QueryCreator
 {
 
-    public function __construct()
+    public function __construct(Manager $manager = null)
     {
         Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
     }
 
     public function attributes()
