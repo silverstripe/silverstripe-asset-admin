@@ -14,7 +14,7 @@ if (!class_exists(Connection::class)) {
 /**
  * Connection that sorts by folders first
  *
- * @deprecated 1.8.0 Use _graphql directory functionality instead
+ * @deprecated 1.8.0 Use the latest version of graphql instead
  */
 class ReadFileConnection extends Connection
 {
@@ -23,7 +23,7 @@ class ReadFileConnection extends Connection
      */
     public function __construct($connectionName)
     {
-        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        Deprecation::notice('1.8.0', 'Use the latest version of graphql instead', Deprecation::SCOPE_CLASS);
         parent::__construct($connectionName);
     }
 

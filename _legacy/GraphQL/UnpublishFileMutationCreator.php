@@ -15,7 +15,7 @@ if (!class_exists(PublicationMutationCreator::class)) {
 }
 
 /**
- * @deprecated 1.8.0 Use _graphql directory functionality instead
+ * @deprecated 1.8.0 Use the latest version of graphql instead
  */
 class UnpublishFileMutationCreator extends PublicationMutationCreator implements i18nEntityProvider
 {
@@ -34,7 +34,7 @@ class UnpublishFileMutationCreator extends PublicationMutationCreator implements
      */
     public function __construct(Manager $manager = null)
     {
-        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        Deprecation::notice('1.8.0', 'Use the latest version of graphql instead', Deprecation::SCOPE_CLASS);
         parent::__construct($manager);
     }
 

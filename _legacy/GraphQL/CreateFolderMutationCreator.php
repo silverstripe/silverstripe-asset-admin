@@ -17,7 +17,7 @@ if (!class_exists(MutationCreator::class)) {
 /**
  * API available but currently not used, as create folder uses FormBuilder
  *
- * @deprecated 1.8.0 Use _graphql directory functionality instead
+ * @deprecated 1.8.0 Use the latest version of graphql instead
  */
 class CreateFolderMutationCreator extends MutationCreator implements OperationResolver
 {
@@ -28,7 +28,7 @@ class CreateFolderMutationCreator extends MutationCreator implements OperationRe
 
     public function __construct(Manager $manager = null)
     {
-        Deprecation::notice('1.8.0', 'Use _graphql directory functionality instead', Deprecation::SCOPE_CLASS);
+        Deprecation::notice('1.8.0', 'Use the latest version of graphql instead', Deprecation::SCOPE_CLASS);
         $this->accessor = new CaseInsensitiveFieldAccessor();
 
         parent::__construct($manager);
