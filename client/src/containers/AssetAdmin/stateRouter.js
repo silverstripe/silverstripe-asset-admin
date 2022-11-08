@@ -52,7 +52,7 @@ class AssetAdminStateRouter extends Component {
     }
 
     return buildUrl({
-      base: this.props.sectionConfig.url,
+      base: this.props.sectionConfig.reactRoutePath,
       folderId: newFolderId,
       fileId: newFileId,
       query: newQuery,

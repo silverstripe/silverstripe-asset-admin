@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouter, { routerPropTypes } from 'lib/withRouter';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
 import { decodeQuery } from 'lib/DataFormat';
 import qs from 'qs';
@@ -78,7 +77,7 @@ class AssetAdminRouter extends Component {
     }
 
     return buildUrl({
-      base: `/${this.props.sectionConfig.url}`,
+      base: `/${this.props.sectionConfig.reactRoutePath}`,
       folderId: newFolderId,
       fileId: newFileId,
       query: newQuery,
@@ -90,8 +89,8 @@ class AssetAdminRouter extends Component {
    * @return {Number} Folder ID being viewed
    */
   getFolderId() {
-    if (this.props.match.params && this.props.match.params.folderId) {
-      return parseInt(this.props.match.params.folderId, 10);
+    if (this.props.router.params && this.props.router.params.folderId) {
+      return parseInt(this.props.router.params.folderId, 10);
     }
     return 0;
   }
@@ -100,15 +99,15 @@ class AssetAdminRouter extends Component {
    * @return {Number} File ID being viewed
    */
   getFileId() {
-    if (this.props.match.params && this.props.match.params.fileId) {
-      return parseInt(this.props.match.params.fileId, 10);
+    if (this.props.router.params && this.props.router.params.fileId) {
+      return parseInt(this.props.router.params.fileId, 10);
     }
     return 0;
   }
 
   getViewAction() {
-    if (this.props.match.params && this.props.match.params.viewAction) {
-      return this.props.match.params.viewAction;
+    if (this.props.router.params && this.props.router.params.viewAction) {
+      return this.props.router.params.viewAction;
     }
     return CONSTANTS.ACTIONS.EDIT_FILE;
   }
@@ -138,7 +137,7 @@ class AssetAdminRouter extends Component {
    * @returns {Object}
    */
   getQuery() {
-    return decodeQuery(this.props.location.search);
+    return decodeQuery(this.props.router.location.search);
   }
 
   /**
@@ -152,7 +151,7 @@ class AssetAdminRouter extends Component {
   handleBrowse(folderId, fileId, query, action) {
     const pathname = this.getUrl(folderId, fileId, query, action);
 
-    this.props.history.push(pathname);
+    this.props.router.navigate(pathname);
   }
 
   /**
@@ -167,7 +166,7 @@ class AssetAdminRouter extends Component {
   handleReplaceUrl(folderId, fileId, query, action) {
     const pathname = this.getUrl(folderId, fileId, query, action);
 
-    this.props.history.replace(pathname);
+    this.props.router.navigate(pathname, { replace: true });
   }
 
   render() {
@@ -182,13 +181,7 @@ class AssetAdminRouter extends Component {
 
 AssetAdminRouter.propTypes = {
   sectionConfig: configShape,
-  location: PropTypes.shape({
-    pathname: PropTypes.string,
-    query: PropTypes.object,
-    search: PropTypes.string,
-  }),
-  params: PropTypes.object,
-  router: PropTypes.object,
+  router: routerPropTypes,
 };
 
 function mapStateToProps(state) {

@@ -2,6 +2,7 @@
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { loadComponent } from 'lib/Injector';
 import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
 import InsertEmbedModal from 'components/InsertEmbedModal/InsertEmbedModal';
@@ -178,13 +179,19 @@ jQuery.entwine('ss', ($) => {
 
     Data: {},
 
+    ReactRoot: null,
+
     onunmatch() {
       // solves errors given by ReactDOM "no matched root found" error.
       this._clearModal();
     },
 
     _clearModal() {
-      ReactDOM.unmountComponentAtNode(this[0]);
+      const root = this.getReactRoot();
+      if (root) {
+        root.unmount();
+        this.setReactRoot(null);
+      }
       // this.empty();
     },
 
@@ -213,7 +220,11 @@ jQuery.entwine('ss', ($) => {
       const attrs = this.getOriginalAttributes();
 
       // create/update the react component
-      ReactDOM.render(
+      let root = this.getReactRoot();
+      if (!root) {
+        root = createRoot(this[0]);
+      }
+      root.render(
         <InjectableInsertEmbedModal
           isOpen={isOpen}
           onCreate={handleCreate}
@@ -223,9 +234,9 @@ jQuery.entwine('ss', ($) => {
           bodyClassName="modal__dialog"
           className="insert-embed-react__dialog-wrapper"
           fileAttributes={attrs}
-        />,
-        this[0]
+        />
       );
+      this.setReactRoot(root);
     },
 
     _handleLoadingError() {

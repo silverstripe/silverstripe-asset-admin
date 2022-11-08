@@ -8,6 +8,7 @@ import jQuery from 'jquery';
 import i18n from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Injector, { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
@@ -165,13 +166,19 @@ jQuery.entwine('ss', ($) => {
 
     Data: {},
 
+    ReactRoot: null,
+
     onunmatch() {
       // solves errors given by ReactDOM "no matched root found" error.
       this._clearModal();
     },
 
     _clearModal() {
-      ReactDOM.unmountComponentAtNode(this[0]);
+      const root = this.getReactRoot();
+      if (root) {
+        root.unmount();
+        this.setReactRoot(null);
+      }
       // this.empty();
     },
 
@@ -213,7 +220,11 @@ jQuery.entwine('ss', ($) => {
       const requireLinkText = tagName !== 'A' && (tagName === 'IMG' || selectionContent.trim() === '');
 
       // create/update the react component
-      ReactDOM.render(
+      let root = this.getReactRoot();
+      if (!root) {
+        root = createRoot(this[0]);
+      }
+      root.render(
         <InjectableInsertMediaModal
           title={false}
           isOpen={isOpen}
@@ -225,9 +236,9 @@ jQuery.entwine('ss', ($) => {
           requireLinkText={requireLinkText}
           fileAttributes={attrs}
           fileSelected={fileSelected}
-        />,
-        this[0]
+        />
       );
+      this.setReactRoot(root);
     },
 
     /**

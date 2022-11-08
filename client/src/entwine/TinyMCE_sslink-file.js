@@ -2,7 +2,7 @@
 import i18n from 'i18n';
 import TinyMCEActionRegistrar from 'lib/TinyMCEActionRegistrar';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import jQuery from 'jquery';
 import ShortcodeSerialiser from 'lib/ShortcodeSerialiser';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
@@ -56,6 +56,8 @@ jQuery.entwine('ss', ($) => {
    * Assumes that $('.insert-link__dialog-wrapper').entwine({}); is defined for shared functions
    */
   $(`.js-injector-boot #${modalId}`).entwine({
+    ReactRoot: null,
+
     renderModal(isOpen) {
       // We're updating the redux store from outside react. This is a bit unusual, but it's
       // the best way to initialise our modal setting.
@@ -75,7 +77,12 @@ jQuery.entwine('ss', ($) => {
       const requireLinkText = tagName !== 'A' && selectionContent.trim() === '';
 
       // create/update the react component
-      ReactDOM.render(
+      let root = this.getReactRoot();
+      if (!root) {
+        root = createRoot(this[0]);
+        this.setReactRoot(root);
+      }
+      root.render(
         <InjectableInsertMediaModal
           isOpen={isOpen}
           type="insert-link"
@@ -86,8 +93,7 @@ jQuery.entwine('ss', ($) => {
           className="insert-link__dialog-wrapper--internal"
           fileAttributes={attrs}
           requireLinkText={requireLinkText}
-        />,
-        this[0]
+        />
       );
     },
 

@@ -1,4 +1,4 @@
-import { graphql } from 'react-apollo';
+import { graphql } from '@apollo/client/react/hoc';
 import gql from 'graphql-tag';
 import Injector from 'lib/Injector';
 
@@ -23,6 +23,12 @@ const config = {
         }
         const query = readFilesQuery.getGraphqlAST();
         const data = store.readQuery({ query, variables });
+
+        // When loading for example /show/0/edit/14 directly (instead of letting react routing
+        // get you there) this tends to be null. Returning here avoids errors.
+        if (!data) {
+          return;
+        }
 
         // Query returns a deeply nested object. Explicit reconstruction via spreads is too verbose.
         // This is an alternative, relatively efficient way to deep clone

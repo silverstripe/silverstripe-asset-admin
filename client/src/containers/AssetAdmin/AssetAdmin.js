@@ -12,9 +12,8 @@ import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import * as displaySearchActions from 'state/displaySearch/DisplaySearchActions';
 import Editor from 'containers/Editor/Editor';
 import Gallery from 'containers/Gallery/Gallery';
-import AssetAdminBreadcrumb from './AssetAdminBreadcrumb';
 import Toolbar from 'components/Toolbar/Toolbar';
-import { withApollo } from 'react-apollo';
+import { withApollo } from '@apollo/client/react/hoc';
 import Search, { hasFilters } from 'components/Search/Search';
 import SearchToggle from 'components/Search/SearchToggle';
 import deleteFilesMutation from 'state/files/deleteFilesMutation';
@@ -23,13 +22,18 @@ import publishFilesMutation from 'state/files/publishFilesMutation';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
 import { injectGraphql } from 'lib/Injector';
-import BulkDeleteConfirmation from '../BulkDeleteConfirmation/BulkDeleteConfirmation';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import getFormSchema from 'lib/getFormSchema';
+import BulkDeleteConfirmation from '../BulkDeleteConfirmation/BulkDeleteConfirmation';
+import AssetAdminBreadcrumb from './AssetAdminBreadcrumb';
 
 class AssetAdmin extends Component {
   constructor(props) {
     super(props);
+    // Needed to avoid warnings about missing state when getDerivedStateFromProps is called
+    if (!this.state) {
+      this.state = {};
+    }
 
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
@@ -54,10 +58,11 @@ class AssetAdmin extends Component {
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
   }
 
-  componentWillReceiveProps(props) {
+  static getDerivedStateFromProps(props) {
     if (!props.loading && props.folder && props.folderId !== props.folder.id) {
       props.onReplaceUrl(props.folder.id, props.fileId, props.query, props.viewAction);
     }
+    return null;
   }
 
   /**
