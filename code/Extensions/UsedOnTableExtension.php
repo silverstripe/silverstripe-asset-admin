@@ -34,7 +34,6 @@ class UsedOnTableExtension extends Extension
      */
     public function updateUsage(ArrayList &$usage, DataObject &$record)
     {
-        Deprecation::notice('1.7.0', 'Use updateUsageExcludedClasses() instead');
         // noop
     }
 
