@@ -52,6 +52,11 @@ pl:
     UNKNOWN: Nieznany
     UNPUBLISH_BUTTON: 'Cofnij publikację'
     UPLOADEDFILE: 'Przesłano plik'
+    AltTextTip: 'Opis dla odwiedzających, którzy nie mogą wyświetlić obrazu (za pomocą czytników ekranu lub blokerów obrazu). Zalecane w przypadku obrazów, które zapewniają unikalny kontekst treści.'
+    Eager: Zainteresowany
+    LazyDefault: 'Obrazki lazyload (domyślnie)'
+    Loading: Wczytywanie
+    TitleTooltipTip: 'W razie potrzeby zawiera wyjaśnienie w dłuższej formie. Wyświetlane po najechaniu kursorem'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Przeniesiono plik'
     RENAMEDFILE: 'Zastąpiono plik'
@@ -79,6 +84,7 @@ pl:
     REPLACE_FILE: 'Zastąp plik'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ten typ pliku można wstawić tylko jako łącze. Możesz edytować link, gdy zostanie wstawiony.</p>'
     USAGE: 'Użyty na'
+    DOWNLOAD_FILE: 'Pobierz plik'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Opublikowano
     SAVED: Zapisano
@@ -104,3 +110,18 @@ pl:
       other: 'Możesz przesyłać tylko {count} plików.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Nie można znaleźć pliku lub folderu'
+  AssetAdmin:
+    INSERT_FILE: 'Wgraj plik'
+    UPDATE_FILE: 'Aktualizuj plik'
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Dostęp jest ograniczony'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Dane przesłane z formularza'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Dane przesłane z formularza, nieograniczony dostęp'
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Nie można znaleźć pliku lub folderu'
+  SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
+    OWNER_WARNING:
+      one: 'Plik "{file}" jest używany w jednym {count} miejscu.'
+      few: 'Plik "{file}" jest używany w kilku {count} miejscach.'
+      many: 'Plik "{file}" jest używany w wielu {count} miejscach.'
+      other: 'Plik "{file}" jest używany w {count} miejscach.'
