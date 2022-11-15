@@ -1067,7 +1067,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   search: PropTypes.object,
   enableDropzone: PropTypes.bool,
   concatenateSelect: PropTypes.bool,
-  GalleryToolbar: PropTypes.func,
+  GalleryToolbar: PropTypes.elementType,
   sorters: PropTypes.arrayOf(PropTypes.shape({
     field: PropTypes.string.isRequired,
     direction: PropTypes.oneOf(['asc', 'desc']).isRequired,

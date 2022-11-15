@@ -77,7 +77,7 @@ const BulkDeleteConfirmation = ({
 
 BulkDeleteConfirmation.propTypes = {
   loading: PropTypes.bool.isRequired,
-  LoadingComponent: PropTypes.func,
+  LoadingComponent: PropTypes.elementType,
   transition: PropTypes.oneOf(['canceling', 'deleting', false]),
   files: PropTypes.arrayOf(fileShape),
   descendantFileCounts: PropTypes.object,

@@ -174,9 +174,9 @@ GalleryToolbar.propTypes = {
     message: PropTypes.node,
     status: PropTypes.string,
   })),
-  BackButton: PropTypes.func,
-  UploadButton: PropTypes.func,
-  AddFolderButton: PropTypes.func,
+  BackButton: PropTypes.elementType,
+  UploadButton: PropTypes.elementType,
+  AddFolderButton: PropTypes.elementType,
 };
 
 GalleryToolbar.defaultProps = {

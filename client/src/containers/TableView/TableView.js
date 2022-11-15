@@ -431,7 +431,7 @@ TableView.defaultProps = galleryViewDefaultProps;
 TableView.propTypes = {
   ...galleryViewPropTypes,
   sort: PropTypes.string.isRequired,
-  VersionedBadge: PropTypes.oneOfType([PropTypes.node, PropTypes.func])
+  VersionedBadge: PropTypes.elementType
 };
 
 export { TableView as Component };

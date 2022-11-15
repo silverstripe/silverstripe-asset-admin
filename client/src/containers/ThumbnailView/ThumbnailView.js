@@ -184,8 +184,8 @@ ThumbnailView.defaultProps = galleryViewDefaultProps;
 
 ThumbnailView.propTypes = {
   ...galleryViewPropTypes,
-  File: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
-  Folder: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
+  File: PropTypes.elementType.isRequired,
+  Folder: PropTypes.elementType.isRequired,
 };
 
 const injector = inject(
