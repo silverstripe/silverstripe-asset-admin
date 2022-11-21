@@ -88,7 +88,7 @@ class FixtureContext extends BaseFixtureContext
         // TODO This should wait for any XHRs and React rendering to finish
         $this->getMainContext()->getSession()->wait(
             1000,
-            "window.jQuery && window.jQuery('.editor__status-flag').size() > 0"
+            "window.jQuery && window.jQuery('.editor__status-flag').length > 0"
         );
 
         $page = $this->getMainContext()->getSession()->getPage();
@@ -114,7 +114,7 @@ class FixtureContext extends BaseFixtureContext
      */
     public function iShouldSeeTheFileStatusIconWithTheClass($class)
     {
-        $js = "window.jQuery && window.jQuery('.file-status-icon__icon').size() > 0";
+        $js = "window.jQuery && window.jQuery('.file-status-icon__icon').length > 0";
         $this->getMainContext()->getSession()->wait(1000, $js);
         $icon = $this->getMainContext()->getSession()->getPage()->find('css', "{$class}.file-status-icon__icon");
         Assert::assertNotNull($icon, "File status icon '$class' could not be found");
@@ -171,7 +171,7 @@ class FixtureContext extends BaseFixtureContext
     {
         $this->getMainContext()->getSession()->wait(
             5000,
-            "window.jQuery && window.jQuery('.history-list__list li').size() > 0"
+            "window.jQuery && window.jQuery('.history-list__list li').length > 0"
         );
 
         $page = $this->getMainContext()->getSession()->getPage();

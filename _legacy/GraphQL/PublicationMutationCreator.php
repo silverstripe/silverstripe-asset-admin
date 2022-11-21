@@ -2,8 +2,10 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Assets\File;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\MutationCreator;
 use SilverStripe\GraphQL\OperationResolver;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -16,7 +18,7 @@ if (!class_exists(MutationCreator::class)) {
 }
 
 /**
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use the latest version of graphql instead
  */
 abstract class PublicationMutationCreator extends MutationCreator implements OperationResolver
 {
@@ -38,6 +40,12 @@ abstract class PublicationMutationCreator extends MutationCreator implements Ope
     /**
      * @return array
      */
+    public function __construct(Manager $manager = null)
+    {
+        Deprecation::notice('1.8.0', 'Use the latest version of graphql instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
+    }
+
     public function attributes()
     {
         return [

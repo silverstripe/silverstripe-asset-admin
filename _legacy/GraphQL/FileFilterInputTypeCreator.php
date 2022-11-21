@@ -2,10 +2,12 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\EnumType;
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use SilverStripe\Control\HTTPResponse_Exception;
+use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\TypeCreator;
 use SilverStripe\Assets\File;
 use SilverStripe\ORM\Filterable;
@@ -18,12 +20,18 @@ if (!class_exists(TypeCreator::class)) {
 }
 
 /**
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use the latest version of graphql instead
  */
 class FileFilterInputTypeCreator extends TypeCreator
 {
 
     protected $inputObject = true;
+
+    public function __construct(Manager $manager = null)
+    {
+        Deprecation::notice('1.8.0', 'Use the latest version of graphql instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
+    }
 
     public function attributes()
     {

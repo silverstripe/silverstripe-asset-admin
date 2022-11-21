@@ -2,7 +2,9 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\GraphQL\DataObjectInterfaceTypeCreator;
+use SilverStripe\GraphQL\Manager;
 use GraphQL\Type\Definition\Type;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
@@ -14,10 +16,16 @@ if (!class_exists(DataObjectInterfaceTypeCreator::class)) {
 
 /**
  * @skipUpgrade
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use the latest version of graphql instead
  */
 class FileInterfaceTypeCreator extends DataObjectInterfaceTypeCreator
 {
+
+    public function __construct(Manager $manager = null)
+    {
+        Deprecation::notice('1.8.0', 'Use the latest version of graphql instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
+    }
 
     public function attributes()
     {

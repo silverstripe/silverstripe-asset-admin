@@ -2,9 +2,11 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
 use GraphQL\Type\Definition\ResolveInfo;
 use SilverStripe\Assets\File;
 use GraphQL\Type\Definition\Type;
+use SilverStripe\GraphQL\Manager;
 use SilverStripe\GraphQL\MutationCreator;
 use SilverStripe\GraphQL\OperationResolver;
 use SilverStripe\ORM\DataList;
@@ -17,10 +19,16 @@ if (!class_exists(MutationCreator::class)) {
 /**
  * Handles create and update
  *
- * @deprecated 4.8..5.0 Use silverstripe/graphql:^4 functionality.
+ * @deprecated 1.8.0 Use the latest version of graphql instead
  */
 class DeleteFileMutationCreator extends MutationCreator implements OperationResolver
 {
+
+    public function __construct(Manager $manager = null)
+    {
+        Deprecation::notice('1.8.0', 'Use the latest version of graphql instead', Deprecation::SCOPE_CLASS);
+        parent::__construct($manager);
+    }
 
     public function attributes()
     {
