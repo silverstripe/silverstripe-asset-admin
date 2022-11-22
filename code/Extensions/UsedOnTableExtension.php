@@ -2,11 +2,9 @@
 
 namespace SilverStripe\AssetAdmin\Extensions;
 
-use SilverStripe\Dev\Deprecation;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Shortcodes\FileLink;
 use SilverStripe\Core\Extension;
-use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 
@@ -22,19 +20,6 @@ class UsedOnTableExtension extends Extension
     {
         $excludedClasses[] = FileLink::class;
         $excludedClasses[] = Member::class;
-    }
-
-    /**
-     * Legacy function kept for semver, replaced with updateUsageExcludedClasses above
-     *
-     * @var ArrayList $usage
-     * @var DataObject $record
-     * @see UsedOnTable::updateUsage
-     * @deprecated 1.7.0 Use updateUsageExcludedClasses() instead
-     */
-    public function updateUsage(ArrayList &$usage, DataObject &$record)
-    {
-        // noop
     }
 
     /**
