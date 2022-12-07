@@ -5,8 +5,6 @@ namespace SilverStripe\AssetAdmin\Controller;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Shortcodes\FileLink;
-use SilverStripe\CMS\Model\SiteTree;
-use SilverStripe\CMS\Model\SiteTreeFileExtension;
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
@@ -185,7 +183,6 @@ class AssetAdminFile extends DataExtension
     {
         $list = ArrayList::create();
 
-        // Check SiteTreeFileExtension
         if ($this->owner instanceof Folder) {
             // Join on tracking table
             $parents = static::nestedFolderIDs($this->owner->ID);
