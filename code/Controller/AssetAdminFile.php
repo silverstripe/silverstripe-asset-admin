@@ -40,7 +40,7 @@ class AssetAdminFile extends DataExtension
     {
         // Update edit link for this file to point to the new asset admin
         $controller = AssetAdmin::singleton();
-        $link = Director::absoluteURL($controller->getFileEditLink($this->owner));
+        $link = Director::absoluteURL((string) $controller->getFileEditLink($this->owner));
     }
 
     /**
