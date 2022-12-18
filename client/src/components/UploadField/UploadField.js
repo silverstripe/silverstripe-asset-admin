@@ -589,9 +589,9 @@ UploadField.propTypes = {
     canAttach: PropTypes.bool,
     maxFiles: PropTypes.number,
   }),
-  UploadFieldItem: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  AssetDropzone: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
-  InsertMediaModal: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  UploadFieldItem: PropTypes.elementType,
+  AssetDropzone: PropTypes.elementType,
+  InsertMediaModal: PropTypes.elementType,
   getItemProps: PropTypes.func,
 };
 

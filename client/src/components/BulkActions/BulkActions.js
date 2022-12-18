@@ -142,7 +142,7 @@ BulkActions.propTypes = {
     canApply: PropTypes.func,
     confirm: PropTypes.func,
   })),
-  ActionMenu: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
+  ActionMenu: PropTypes.elementType,
   showCount: PropTypes.bool,
 };
 

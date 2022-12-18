@@ -12,25 +12,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   applyTransform();
 
-  const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin');
+  const baseURL = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin').reactRoutePath;
 
   reactRouteRegister.add({
     path: '/',
     routes: [
       {
-        path: `/${sectionConfig.url}/show/:folderId/:viewAction/:fileId`,
+        path: `${baseURL}/show/:folderId/:viewAction/:fileId`,
         component: AssetAdminRouter,
       },
       {
-        path: `/${sectionConfig.url}/show/:folderId/:viewAction`,
+        path: `${baseURL}/show/:folderId/:viewAction`,
         component: AssetAdminRouter,
       },
       {
-        path: `/${sectionConfig.url}/show/:folderId`,
+        path: `${baseURL}/show/:folderId`,
         component: AssetAdminRouter,
       },
       {
-        path: `/${sectionConfig.url}`,
+        path: `${baseURL}`,
         component: AssetAdminRouter,
       },
     ],

@@ -2,6 +2,7 @@
 import jQuery from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { schemaMerge } from 'lib/schemaFieldValues';
 import { loadComponent } from 'lib/Injector';
 
@@ -14,6 +15,7 @@ jQuery.entwine('ss', ($) => {
    */
   $('.js-injector-boot input.entwine-uploadfield').entwine({
     Component: null,
+    ReactRoot: null,
 
     getContainer() {
       let container = this.siblings('.uploadfield-holder')[0];

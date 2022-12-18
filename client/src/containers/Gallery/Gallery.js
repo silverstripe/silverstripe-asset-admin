@@ -1,4 +1,3 @@
-/* global window */
 import $ from 'jquery';
 import i18n from 'i18n';
 import React, { Component } from 'react';
@@ -16,14 +15,14 @@ import * as toastsActions from 'state/toasts/ToastsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import moveFilesMutation from 'state/files/moveFilesMutation';
-import { withApollo } from 'react-apollo';
+import { withApollo } from '@apollo/client/react/hoc';
 import { SelectableGroup } from 'react-selectable';
-import GalleryDND from './GalleryDND';
 import configShape from 'lib/configShape';
 import getStatusCodeMessage from 'lib/getStatusCodeMessage';
-import MoveModal from '../MoveModal/MoveModal';
 import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
+import MoveModal from '../MoveModal/MoveModal';
+import GalleryDND from './GalleryDND';
 
 /**
  * List of possible possible bulk actions.
@@ -1067,7 +1066,7 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   search: PropTypes.object,
   enableDropzone: PropTypes.bool,
   concatenateSelect: PropTypes.bool,
-  GalleryToolbar: PropTypes.func,
+  GalleryToolbar: PropTypes.elementType,
   sorters: PropTypes.arrayOf(PropTypes.shape({
     field: PropTypes.string.isRequired,
     direction: PropTypes.oneOf(['asc', 'desc']).isRequired,

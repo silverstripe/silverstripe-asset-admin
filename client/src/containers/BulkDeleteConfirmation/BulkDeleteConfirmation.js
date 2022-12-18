@@ -2,15 +2,15 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withApollo } from 'react-apollo';
+import { withApollo } from '@apollo/client/react/hoc';
 import { inject, injectGraphql } from 'lib/Injector';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import * as TRANSITIONS from 'state/confirmDeletion/ConfirmDeletionTransitions';
+import i18n from 'i18n';
+import fileShape from 'lib/fileShape';
 import DeletionModal from './DeletionModal';
 import BulkDeleteMessage from './BulkDeleteMessage';
 import { getFolderDescendantFileTotals, getFileTotalItems } from './helpers';
-import fileShape from 'lib/fileShape';
-import i18n from 'i18n';
 
 /**
  * Wires the Redux store and Apollo result set with the DeletionModal.
@@ -77,7 +77,7 @@ const BulkDeleteConfirmation = ({
 
 BulkDeleteConfirmation.propTypes = {
   loading: PropTypes.bool.isRequired,
-  LoadingComponent: PropTypes.func,
+  LoadingComponent: PropTypes.elementType,
   transition: PropTypes.oneOf(['canceling', 'deleting', false]),
   files: PropTypes.arrayOf(fileShape),
   descendantFileCounts: PropTypes.object,

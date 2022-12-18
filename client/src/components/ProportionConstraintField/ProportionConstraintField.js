@@ -187,7 +187,7 @@ ProportionConstraintField.propTypes = {
     width: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     height: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   }).isRequired,
-  FieldGroup: PropTypes.oneOfType([PropTypes.element, PropTypes.func]).isRequired,
+  FieldGroup: PropTypes.elementType.isRequired,
   imageSizePresets: PropTypes.arrayOf(PropTypes.shape({
     width: PropTypes.number,
     text: PropTypes.string,
