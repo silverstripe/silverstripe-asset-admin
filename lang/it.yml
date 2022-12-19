@@ -113,9 +113,11 @@ it:
     ErrorMaxFilesReached:
       one: 'Puoi caricare solo {count} file.'
       other: 'Puoi caricare solo {count} file.'
+      many: 'Puoi caricare solo {count} file.'
   SilverStripe\AssetAdmin\GraphQL\FileFilter:
     FileNotFound: 'Il File o la Cartella potrebbe essere inesistente'
   SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
     OWNER_WARNING:
       one: 'Il file "{file}" è usato in {count} posto.'
       other: 'Il file "{file}" è usato in {count} posti.'
+      many: 'Il file "{file}" è usato in {count} posti.'

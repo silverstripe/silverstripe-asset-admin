@@ -94,5 +94,6 @@ fr:
     ErrorMaxFilesReached:
       one: 'Vous ne pouvez pas téléverser plus de {count} fichiers.'
       other: 'Vous ne pouvez pas téléverser plus de {count} fichiers.'
+      many: 'Vous ne pouvez pas téléverser plus de {count} fichiers.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Fichier ou dossier introuvable'
