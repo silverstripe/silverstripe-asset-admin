@@ -230,8 +230,7 @@ class AssetAdmin extends Component {
     }
     // If the file is currently being edited, refresh that view
     if (this.props.fileId === file.id) {
-      this.handleCloseFile();
-      this.handleOpenFile(file.id);
+      this.props.resetFileDetails(this.getFolderId(), file.id, this.props.query);
     }
   }
 
@@ -481,8 +480,7 @@ class AssetAdmin extends Component {
       this.props.actions.files.readFiles()
         .then(() => {
           if (fileId && response.find(file => file.id === fileId)) {
-            this.handleCloseFile();
-            this.handleOpenFile(fileId);
+            this.props.resetFileDetails(this.getFolderId(), fileId, this.props.query);
           }
         });
     });
@@ -739,6 +737,7 @@ AssetAdmin.propTypes = {
   sectionConfig: configShape,
   fileId: PropTypes.number,
   folderId: PropTypes.number,
+  resetFileDetails: PropTypes.func,
   onBrowse: PropTypes.func,
   onReplaceUrl: PropTypes.func,
   onInsertMany: PropTypes.func,
