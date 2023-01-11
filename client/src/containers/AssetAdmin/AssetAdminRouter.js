@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import withRouter, { routerPropTypes } from 'lib/withRouter';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
@@ -53,6 +54,7 @@ class AssetAdminRouter extends Component {
 
     this.handleBrowse = this.handleBrowse.bind(this);
     this.handleReplaceUrl = this.handleReplaceUrl.bind(this);
+    this.handleResetDetails = this.handleResetDetails.bind(this);
     this.getUrl = this.getUrl.bind(this);
   }
 
@@ -128,6 +130,7 @@ class AssetAdminRouter extends Component {
       getUrl: this.getUrl,
       onBrowse: this.handleBrowse,
       onReplaceUrl: this.handleReplaceUrl,
+      resetFileDetails: this.handleResetDetails,
     };
   }
 
@@ -169,10 +172,40 @@ class AssetAdminRouter extends Component {
     this.props.router.navigate(pathname, { replace: true });
   }
 
+  /**
+   * Reset the details screen for a file.
+   * This requires replacing the current navigation to the folder without the details open,
+   * then replacing it again with it open again.
+   *
+   * @param {number} [folderId]
+   * @param {number} [fileId]
+   * @param {object} [query]
+   */
+  handleResetDetails(folderId, fileId, query) {
+    const currentPathname = this.getUrl(folderId, fileId, query);
+    const clearPathname = this.getUrl(folderId, null, query);
+    this.props.router.navigate(
+      clearPathname,
+      {
+        replace: true,
+        state: { reset: true, resetPath: currentPathname }
+      }
+    );
+  }
+
   render() {
+    // If rendering during a details reset, navigate back to the appropriate location
+    const locationState = this.props.router.location.state;
+    if (locationState && locationState && locationState.reset) {
+      return (
+        <Navigate to={locationState.resetPath} replace />
+      );
+    }
+    // If there's no section config we have nothing to render
     if (!this.props.sectionConfig) {
       return null;
     }
+    // Render the asset admin
     return (
       <AssetAdmin {...this.getSectionProps()} />
     );
