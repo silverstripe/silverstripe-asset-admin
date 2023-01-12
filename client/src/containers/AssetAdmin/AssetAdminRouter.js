@@ -7,6 +7,7 @@ import { decodeQuery } from 'lib/DataFormat';
 import qs from 'qs';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
+import { joinUrlPaths } from 'lib/urls';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -29,15 +30,15 @@ function buildUrl({ base, folderId, fileId, query, action }) {
 
   let url = null;
   if (fileId) {
-    url = `${base}/show/${folderId}/${CONSTANTS.ACTIONS.EDIT_FILE}/${fileId}`;
+    url = joinUrlPaths(base, `show/${folderId}/${CONSTANTS.ACTIONS.EDIT_FILE}/${fileId}`);
   } else if (folderId) {
-    url = `${base}/show/${folderId}`;
+    url = joinUrlPaths(base, `show/${folderId}`);
   } else {
-    url = `${base}/`;
+    url = base;
   }
 
   if (action === CONSTANTS.ACTIONS.CREATE_FOLDER) {
-    url = `${base}/show/${folderId || 0}/${action}`;
+    url = joinUrlPaths(base, `show/${folderId || 0}/${action}`);
   }
 
   const hasQuery = query && Object.keys(query).length > 0;
