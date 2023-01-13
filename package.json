@@ -44,7 +44,8 @@
     ],
     "transform": {
       ".*": "babel-jest"
-    }
+    },
+    "testEnvironment": "jsdom"
   },
   "devDependencies": {
     "@silverstripe/eslint-config": "^1.0.0-alpha6",
@@ -75,6 +76,7 @@
     "graphql-fragments": "^0.1.0",
     "graphql-tag": "^2.12.6",
     "griddle-react": "^0.8.2",
+    "jest-environment-jsdom": "^29.3.1",
     "merge": "^2.1.1",
     "modernizr": "^3.12.0",
     "prop-types": "^15.8.1",
@@ -99,11 +101,5 @@
   },
   "browserslist": [
     "defaults"
-  ],
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
-  }
+  ]
 }
