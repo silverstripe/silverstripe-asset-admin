@@ -19,4 +19,8 @@ call_user_func(function () {
     ]);
     $config->insertButtonsAfter('table', 'ssmedia');
     $config->insertButtonsAfter('ssmedia', 'ssembed');
+
+    $validElements = $config->getOption('extended_valid_elements');
+    $validElements .= ",figure[class|data*|id|style|title],figcaption[class|data*|id|style|title]";
+    $config->setOption('extended_valid_elements', $validElements);
 });

@@ -8,7 +8,7 @@ import InsertEmbedModal from 'components/InsertEmbedModal/InsertEmbedModal';
 import i18n from 'i18n';
 
 const InjectableInsertEmbedModal = loadComponent(InsertEmbedModal);
-const filter = 'div[data-shortcode="embed"]';
+const filter = 'div[data-shortcode="embed"],figure[data-shortcode="embed"]';
 
 /**
  * Embed shortcodes are split into an outer <div> element and an inner <img>
@@ -109,7 +109,7 @@ const filter = 'div[data-shortcode="embed"]';
           const data = match.properties;
 
           // Add base div
-          const base = jQuery('<div/>')
+          const base = (data.caption ? jQuery('<figure />') : jQuery('<div/>'))
             .attr('data-url', data.url || match.content)
             .attr('data-shortcode', 'embed')
             .addClass(data.class)
@@ -130,9 +130,9 @@ const filter = 'div[data-shortcode="embed"]';
 
           base.append(placeholder);
 
-          // Add caption p tag
+          // Add caption tag
           if (data.caption) {
-            const caption = jQuery('<p />')
+            const caption = jQuery('<figcaption />')
               .addClass('caption')
               .text(data.caption);
             base.append(caption);
@@ -307,9 +307,10 @@ jQuery.entwine('ss', ($) => {
       }
 
       const data = this.getData();
+      console.log(data);
 
       // Add base div
-      const base = jQuery('<div/>')
+      const base = (data.CaptionText ? jQuery('<figure />') : jQuery('<div/>'))
         .attr('data-url', data.Url)
         .attr('data-shortcode', 'embed')
         .addClass(data.Placement)
@@ -331,9 +332,9 @@ jQuery.entwine('ss', ($) => {
       // Add to base
       base.append(placeholder);
 
-      // Add caption p tag
+      // Add caption tag
       if (data.CaptionText) {
-        const caption = jQuery('<p />')
+        const caption = jQuery('<figcaption />')
           .addClass('caption')
           .text(data.CaptionText);
         base.append(caption);
