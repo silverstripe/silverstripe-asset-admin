@@ -7,7 +7,6 @@
 import jQuery from 'jquery';
 import i18n from 'i18n';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import Injector, { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
