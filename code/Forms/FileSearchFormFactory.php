@@ -53,7 +53,6 @@ class FileSearchFormFactory implements FormFactory
     {
         // Note: "Name" field is excluded as it is baked directly into the Search.js react component
 
-        /** @skipUpgrade */
         // File type field
         $appCategories = array(
             'ARCHIVE' => _t(

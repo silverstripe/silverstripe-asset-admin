@@ -25,7 +25,6 @@ use SilverStripe\ORM\SS_List;
  * Additionally supports writing directly to the File table not attached
  * to any parent record.
  *
- * @skipUpgrade
  */
 class UploadField extends FormField implements FileHandleField
 {
