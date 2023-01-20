@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as schemaActions from 'state/schema/SchemaActions';
 import PropTypes from 'prop-types';
+import { joinUrlPaths } from 'lib/urls';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -174,7 +175,7 @@ function mapStateToProps(state, ownProps) {
   const targetUrl = ownProps.fileAttributes ? ownProps.fileAttributes.Url : '';
   const baseEditUrl = sectionConfig.form.remoteEditForm.schemaUrl;
 
-  const editUrl = targetUrl && `${baseEditUrl}/?embedurl=${encodeURIComponent(targetUrl)}`;
+  const editUrl = targetUrl && joinUrlPaths(baseEditUrl, `/?embedurl=${encodeURIComponent(targetUrl)}`);
   const createUrl = sectionConfig.form.remoteCreateForm.schemaUrl;
 
   const schemaUrl = editUrl || createUrl;
