@@ -11,9 +11,6 @@ use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Versioned\Versioned;
 
-/**
- * @skipUpgrade
- */
 class UsedOnTableTest extends SapphireTest
 {
     protected static $fixture_file = 'UsedOnTableTest.yml';

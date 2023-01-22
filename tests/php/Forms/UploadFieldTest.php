@@ -13,9 +13,6 @@ use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\ORM\ArrayList;
 
-/**
- * @skipUpgrade
- */
 class UploadFieldTest extends SapphireTest
 {
     protected static $fixture_file = 'FileFormBuilderTest.yml';

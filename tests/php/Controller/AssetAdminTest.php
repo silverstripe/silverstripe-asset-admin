@@ -20,7 +20,6 @@ use SilverStripe\Core\Config\Config;
 
 /**
  * Tests {@see AssetAdmin}
- * @skipUpgrade
  */
 class AssetAdminTest extends FunctionalTest
 {
@@ -104,7 +103,6 @@ class AssetAdminTest extends FunctionalTest
     {
         $folder1 = $this->objFromFixture(Folder::class, 'folder1');
 
-        /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'testItCreatesFile.txt'));
         $_FILES = $fileData;
         $postedData = array_merge(
@@ -169,7 +167,6 @@ class AssetAdminTest extends FunctionalTest
     {
         $folder = $this->objFromFixture(Folder::class, 'disallowCanAddChildren');
 
-        /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'test.txt'));
         $_FILES = $fileData;
         $response = Director::test(
@@ -195,7 +192,6 @@ class AssetAdminTest extends FunctionalTest
             'folder1'
         );
 
-        /** @skipUpgrade */
         $fileData = array('Upload' => $this->getUploadFile('Upload', 'disallowed.php'));
         $_FILES = $fileData;
         $response = Director::test(

@@ -17,9 +17,6 @@ use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\ORM\ArrayList;
 
-/**
- * @skipUpgrade
- */
 class ImageFormFactoryTest extends SapphireTest
 {
     /** @var Image */

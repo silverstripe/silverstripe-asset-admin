@@ -26,9 +26,6 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\Forms\TreeMultiselectField;
 
-/**
- * @skipUpgrade
- */
 abstract class AssetFormFactory implements FormFactory
 {
     use Extensible;
