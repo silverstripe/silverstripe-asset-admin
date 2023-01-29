@@ -1,7 +1,6 @@
 /* global window */
 import jQuery from 'jquery';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom/client';
 import { schemaMerge } from 'lib/schemaFieldValues';
 import { loadComponent } from 'lib/Injector';
@@ -31,7 +30,11 @@ jQuery.entwine('ss', ($) => {
     onunmatch() {
       this._super();
       // solves errors given by ReactDOM "no matched root found" error.
-      ReactDOM.unmountComponentAtNode(this.siblings('.uploadfield-holder')[0]);
+      const root = this.getReactRoot();
+      if (root) {
+        root.unmount();
+        this.setReactRoot(null);
+      }
     },
 
     onmatch() {
@@ -66,13 +69,17 @@ jQuery.entwine('ss', ($) => {
       const UploadField = this.getComponent();
 
       // TODO: rework entwine so that react has control of holder
-      ReactDOM.render(
+      let root = this.getReactRoot();
+      if (!root) {
+        root = createRoot(this.getContainer());
+        this.setReactRoot(root);
+      }
+      root.render(
         <UploadField
           {...props}
           onChange={onChange}
           noHolder
-        />,
-        this.getContainer()
+        />
       );
     },
 
