@@ -62,12 +62,12 @@ class UploadField extends Component {
   }
 
   componentDidMount() {
-    const { id, formSchemaFilesHash, data, actions, files } = this.props;
+    const { id, formSchemaFilesHash, data, value, actions, files } = this.props;
 
     // This tracks changes to the underlying schema data for this field. It may be desirable in
     // future to remove this and instead reset redux state whenever a "legacy" form triggers a
     // PJAX load. See https://github.com/silverstripe/silverstripe-asset-admin/issues/960
-    const newFormSchemaFilesHash = md5(JSON.stringify(data.files)).toString();
+    const newFormSchemaFilesHash = md5(JSON.stringify(value.Files)).toString();
 
     // If this is the first time this field has mounted, or the schema data has changed (typically
     // caused by a PJAX load from saving a legacy non-react form), load the list of files from the
@@ -103,7 +103,7 @@ class UploadField extends Component {
       actions: { uploadField: { setFormSchemaFilesHash, setFiles } }
     } = this.props;
 
-    const newFormSchemaFilesHash = md5(JSON.stringify(data.files)).toString();
+    const newFormSchemaFilesHash = md5(JSON.stringify(value.Files)).toString();
 
     // If the schema data has changed (typically caused by a PJAX load from saving a legacy
     // non-react form), load the list of files from the schema data (data.files)
