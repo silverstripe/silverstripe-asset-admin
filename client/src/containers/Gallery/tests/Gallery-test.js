@@ -471,21 +471,6 @@ describe('Gallery', () => {
     });
   });
 
-  describe('handleCreateFolder()', () => {
-    let gallery = null;
-
-    beforeEach(() => {
-      props.onCreateFolder = jest.fn();
-
-      gallery = ReactTestUtils.renderIntoDocument(
-        <Gallery {...props} />
-      );
-      gallery.handleCreateFolder();
-
-      expect(props.onCreateFolder).toBeCalled();
-    });
-  });
-
   describe('bulkActions', () => {
     let gallery = null;
 

@@ -1,4 +1,4 @@
-/* global jest, jasmine, describe, it, expect, beforeEach, FormData */
+/* global jest, describe, it, expect, beforeEach, FormData */
 jest.mock('containers/FormBuilderLoader/FormBuilderLoader');
 jest.mock('components/FormBuilderModal/FormBuilderModal');
 

@@ -1,4 +1,4 @@
-/* global jest, describe, it, expect, beforeEach, jasmine */
+/* global jest, describe, it, expect, beforeEach */
 
 import uploadFieldReducer from '../UploadFieldReducer';
 import fileStructure from '../../../lib/fileStructure';
@@ -122,7 +122,7 @@ describe('uploadFieldReducer', () => {
       });
       expect(nextState.fields.anotherfield.files.length).toBe(2);
       expect(nextState.fields.anotherfield.files[1]).toEqual(
-        jasmine.objectContaining({
+        expect.objectContaining({
           id: 10,
           queuedId: 'xyz',
           name: 'InProgressFile.jpg',

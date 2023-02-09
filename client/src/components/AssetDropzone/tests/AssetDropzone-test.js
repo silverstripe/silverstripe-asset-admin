@@ -1,4 +1,4 @@
-/* global jest, jasmine, describe, it, expect, beforeEach, FormData */
+/* global jest, describe, it, expect, beforeEach, FormData */
 
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
@@ -24,15 +24,10 @@ describe('AssetDropzone', () => {
     let item = null;
 
     beforeEach(() => {
-      item = ReactTestUtils.renderIntoDocument(
-        <AssetDropzone {...props} />
-      );
+      item = new AssetDropzone();
     });
 
     it('should set this.dropzone to null', () => {
-      item.dropzone = 1;
-      item.constructor(props);
-
       expect(item.dropzone).toBe(null);
     });
   });

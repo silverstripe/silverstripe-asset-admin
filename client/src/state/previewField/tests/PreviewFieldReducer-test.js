@@ -1,4 +1,4 @@
-/* global jest, describe, it, expect, beforeEach, jasmine */
+/* global jest, describe, it, expect, beforeEach */
 
 import previewFieldReducer from '../PreviewFieldReducer';
 import ACTION_TYPES from '../PreviewFieldActionTypes';

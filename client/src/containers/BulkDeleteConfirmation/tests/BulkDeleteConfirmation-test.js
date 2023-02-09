@@ -1,4 +1,4 @@
-/* global jest, jasmine, describe, it, expect, beforeEach, Event */
+/* global jest, describe, it, expect, beforeEach, Event */
 
 import React from 'react';
 import { Component } from '../BulkDeleteConfirmation';
