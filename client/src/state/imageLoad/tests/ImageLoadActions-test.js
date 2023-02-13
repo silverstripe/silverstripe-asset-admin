@@ -1,4 +1,4 @@
-/* global jest, describe, it, expect, beforeEach, jasmine */
+/* global jest, describe, it, expect, beforeEach */
 
 jest.mock('../ImageLoadActionHandler', () => jest.fn());
 

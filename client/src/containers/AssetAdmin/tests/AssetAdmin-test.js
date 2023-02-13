@@ -1,4 +1,4 @@
-/* global jest, describe, it, pit, expect, beforeEach, jasmine */
+/* global jest, describe, it, pit, expect, beforeEach */
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('containers/Editor/Editor');

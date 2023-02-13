@@ -30,10 +30,6 @@ import AssetAdminBreadcrumb from './AssetAdminBreadcrumb';
 class AssetAdmin extends Component {
   constructor(props) {
     super(props);
-    // Needed to avoid warnings about missing state when getDerivedStateFromProps is called
-    if (!this.state) {
-      this.state = {};
-    }
 
     this.handleOpenFile = this.handleOpenFile.bind(this);
     this.handleCloseFile = this.handleCloseFile.bind(this);
@@ -58,11 +54,10 @@ class AssetAdmin extends Component {
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
   }
 
-  static getDerivedStateFromProps(props) {
-    if (!props.loading && props.folder && props.folderId !== props.folder.id) {
+  componentWillReceiveProps(props) {
+    if ((typeof props.onReplaceUrl === 'function') && !props.loading && props.folder && props.folderId !== props.folder.id) {
       props.onReplaceUrl(props.folder.id, props.fileId, props.query, props.viewAction);
     }
-    return null;
   }
 
   /**

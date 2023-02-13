@@ -1,4 +1,4 @@
-/* global jest, describe, it, pit, expect, beforeEach, jasmine */
+/* global jest, describe, it, pit, expect, beforeEach */
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('containers/AssetAdmin/AssetAdmin');
@@ -17,19 +17,14 @@ describe('AssetAdminRouter', () => {
         limit: 10,
         form: {},
       },
-      location: {
-        pathname: '',
-        query: {},
-        search: '',
-      },
-      match: {
-        params: {
-          fileId: '0',
-          folderId: '0',
+      router: {
+        location: {
+          pathname: '',
+          query: {},
+          search: '',
         },
-      },
-      history: {
-        push: jest.fn(),
+        navigate: jest.fn(),
+        params: {},
       },
     };
   });
@@ -42,7 +37,7 @@ describe('AssetAdminRouter', () => {
     });
 
     it('should retain page query parameter when not changing folders', () => {
-      const newUrl = component.getUrl(props.match.params.folderId, null, { page: 2 });
+      const newUrl = component.getUrl(props.router.params.folderId, null, { page: 2 });
       expect(newUrl).toContain('page=2');
     });
 
