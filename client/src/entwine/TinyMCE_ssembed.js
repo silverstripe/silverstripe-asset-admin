@@ -19,11 +19,26 @@ const filter = 'div[data-shortcode="embed"]';
     init: (editor) => {
       const insertTitle = i18n._t('AssetAdmin.INSERT_VIA_URL', 'Insert media via URL');
       const editTitle = i18n._t('AssetAdmin.EDIT_MEDIA', 'Edit media');
+      const deleteTitle = i18n._t('AssetAdmin.DELETE_MEDIA', 'Delete media');
       const contextTitle = i18n._t('AssetAdmin.MEDIA', 'Media');
 
       editor.addCommand('ssembed', () => {
         // See HtmlEditorField.js
         jQuery(`#${editor.id}`).entwine('ss').openEmbedDialog();
+      });
+
+      editor.addCommand('ssembed-delete', () => {
+        const node = editor.selection.getNode();
+        // selecting the div correctly
+        if (editor.dom.is(node, filter)) {
+          node.remove();
+        // selecting the image inside the div
+        } else if (editor.dom.is(node.parentNode, filter)) {
+          node.parentNode.remove();
+        // anything else
+        } else {
+          console.error({ error: 'Unexpected selection - expected embed', selectedNode: node });
+        }
       });
 
       // Button in main toolbar
@@ -42,16 +57,24 @@ const filter = 'div[data-shortcode="embed"]';
       });
 
       // Context menu when an embed is selected
+      // edit button
       editor.ui.registry.addButton('ssembededit', {
         tooltip: editTitle,
         icon: 'edit-block',
         onAction: () => editor.execCommand('ssembed'),
       });
+      // delete button
+      editor.ui.registry.addButton('ssembeddelete', {
+        tooltip: deleteTitle,
+        icon: 'remove',
+        onAction: () => editor.execCommand('ssembed-delete'),
+      });
+      // actual menu
       editor.ui.registry.addContextToolbar('ssembed', {
         predicate: (node) => editor.dom.is(node, filter),
         position: 'node',
         scope: 'node',
-        items: 'alignleft aligncenter alignright | ssembededit'
+        items: 'alignleft aligncenter alignright | ssembededit ssembeddelete'
       });
 
       // Replace the tinymce default media commands with the ssembed command
