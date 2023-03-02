@@ -1,4 +1,4 @@
-/* global jest, describe, it, pit, expect, beforeEach, jasmine */
+/* global jest, describe, it, pit, expect, beforeEach */
 import isStashableField, { findField } from '../helpers';
 
 const stashable = {

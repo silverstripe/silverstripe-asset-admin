@@ -1,4 +1,4 @@
-/* global jest, jasmine, describe, it, expect, beforeEach */
+/* global jest, describe, it, expect, beforeEach */
 
 jest.mock('jquery', () => {
   const jqueryMock = {
@@ -131,7 +131,7 @@ describe('BulkActions', () => {
       const callbackMockFn = jest.fn();
 
       bulkActions.getOptionByValue
-        .mockReturnValueOnce({ confirm: Promise.resolve(), callback: callbackMockFn });
+        .mockReturnValueOnce({ confirm: () => Promise.resolve(), callback: callbackMockFn });
       return bulkActions.handleChangeValue(event).then(() => {
         expect(callbackMockFn).toBeCalled();
       });
@@ -141,9 +141,9 @@ describe('BulkActions', () => {
       const callbackMockFn = jest.fn();
 
       bulkActions.getOptionByValue
-        .mockReturnValueOnce({ confirm: Promise.reject(), callback: callbackMockFn });
+        .mockReturnValueOnce({ confirm: () => Promise.reject('cancelled'), callback: callbackMockFn });
       return bulkActions.handleChangeValue(event).then(() => {
-        expect(callbackMockFn).toBeCalled();
+        expect(callbackMockFn).not.toBeCalled();
       });
     });
   });

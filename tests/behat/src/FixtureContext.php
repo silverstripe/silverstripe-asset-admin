@@ -65,19 +65,23 @@ class FixtureContext extends BaseFixtureContext
     }
 
     /**
-     * @Then /^I should see the "([^"]*)" form$/
+     * @Then /^I should (not |)see the "([^"]*)" form$/
      * @param string $id HTML ID of form
      * @param integer $timeout
      */
-    public function iShouldSeeTheForm($id, $timeout = 3)
+    public function iShouldSeeTheForm($not, $id, $timeout = 3)
     {
         /** @var DocumentElement $page */
         $page = $this->getMainContext()->getSession()->getPage();
         $form = $this->retryThrowable(function () use ($page, $id) {
             return $page->find('css', "form#{$id}");
         }, $timeout);
-        Assert::assertNotNull($form, "form with id $id could not be found");
-        Assert::assertTrue($form->isVisible(), "form with id $id is not visible");
+        if ($not) {
+            Assert::assertNull($form, "form with id $id was present when it should not be");
+        } else {
+            Assert::assertNotNull($form, "form with id $id could not be found");
+            Assert::assertTrue($form->isVisible(), "form with id $id is not visible");
+        }
     }
 
     /**
@@ -451,25 +455,43 @@ EOS
      */
     public function iSelectTheImageInHtmlField($filename, $field)
     {
-        $inputField = $this->getHtmlField($field);
-        $inputFieldId = $inputField->getAttribute('id');
-        $filename = addcslashes($filename ?? '', "'");
-        $js = <<<JS
-var editor = jQuery('#$inputFieldId').entwine('ss').getEditor(),
-    doc = editor.getInstance().getDoc(),
-    sel = doc.getSelection(),
-    rng = new Range(),
-    matched = false;
-
-jQuery(doc).find("img[src*='$filename']").each(function() {
-    if(!matched) {
-        rng.selectNode(this);
-        sel.removeAllRanges();
-        sel.addRange(rng);
-        matched = true;
+        $this->selectInTheHtmlField("img[src*='$filename']", $field);
     }
-});
-JS;
+
+    /**
+     * Selects the first media embed match in the HTML editor (tinymce)
+     *
+     * @When /^I select the media "([^"]+)" in the "([^"]+)" HTML field$/
+     */
+    public function iSelectTheMediaInHtmlField(string $url, string $field)
+    {
+        $this->selectInTheHtmlField("div.embed[data-url='$url']", $field);
+    }
+
+    /**
+     * Selects the first match of $select in the given HTML editor (tinymce)
+     */
+    protected function selectInTheHtmlField(string $select, string $field)
+    {
+        $inputField = $this->getHtmlField($field);
+        $inputField->getParent()->find('css', 'iframe')->click();
+        $inputFieldId = $inputField->getAttribute('id');
+        $js = <<<JS
+        var editor = jQuery('#$inputFieldId').entwine('ss').getEditor(),
+            doc = editor.getInstance().getDoc(),
+            sel = doc.getSelection(),
+            rng = new Range(),
+            matched = false;
+
+        jQuery(doc).find("$select").each(function() {
+            if(!matched) {
+                rng.selectNode(this);
+                sel.removeAllRanges();
+                sel.addRange(rng);
+                matched = true;
+            }
+        });
+        JS;
         $this->getMainContext()->getSession()->executeScript($js);
     }
 

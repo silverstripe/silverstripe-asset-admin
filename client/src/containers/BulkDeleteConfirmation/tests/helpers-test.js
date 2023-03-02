@@ -1,4 +1,4 @@
-/* global jest, describe, it, pit, expect, beforeEach, jasmine */
+/* global jest, describe, it, pit, expect, beforeEach */
 import { getFolderDescendantFileTotals, getFileTotalItems } from '../helpers';
 import { mockfiles as files } from './mockfiles';
 

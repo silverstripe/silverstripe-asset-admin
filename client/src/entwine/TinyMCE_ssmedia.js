@@ -29,11 +29,21 @@ const filter = 'img[data-shortcode="image"]';
     init(editor) {
       const insertTitle = i18n._t('AssetAdmin.INSERT_FROM_FILES', 'Insert from Files');
       const editTitle = i18n._t('AssetAdmin.EDIT_IMAGE', 'Edit image');
+      const deleteTitle = i18n._t('AssetAdmin.DELETE_IMAGE', 'Delete image');
       const contextTitle = i18n._t('AssetAdmin.FILE', 'File');
 
       editor.addCommand('ssmedia', () => {
         // See HtmlEditorField.js
         jQuery(`#${editor.id}`).entwine('ss').openMediaDialog();
+      });
+
+      editor.addCommand('ssmedia-delete', () => {
+        const node = editor.selection.getNode();
+        if (editor.dom.is(node, filter)) {
+          node.remove();
+        } else {
+          console.error({ error: 'Unexpected selection - expected image', selectedNode: node });
+        }
       });
 
       // Button in main toolbar
@@ -52,21 +62,30 @@ const filter = 'img[data-shortcode="image"]';
       });
 
       // Context menu when an embed is selected
+      // edit button
       editor.ui.registry.addButton('ssmediaedit', {
         tooltip: editTitle,
         icon: 'edit-block',
         onAction: () => editor.execCommand('ssmedia'),
       });
+      // delete button
+      editor.ui.registry.addButton('ssmediadelete', {
+        tooltip: deleteTitle,
+        icon: 'remove',
+        onAction: () => editor.execCommand('ssmedia-delete'),
+      });
+      // size presets
       const sizePresets = editor.getParam('image_size_presets');
       let buttonList = [];
       if (sizePresets) {
         buttonList = imageSizePresetButtons(editor, sizePresets);
       }
+      // the menu itself
       editor.ui.registry.addContextToolbar('ssmedia', {
         predicate: (node) => editor.dom.is(node, filter),
         position: 'node',
         scope: 'node',
-        items: `${buttonList.join(' ')} | ssmediaedit`
+        items: `${buttonList.join(' ')} | ssmediaedit ssmediadelete`
       });
 
       // Replace the mceAdvImage and mceImage commands with the ssmedia command
@@ -126,7 +145,7 @@ const filter = 'img[data-shortcode="image"]';
         let match = ShortcodeSerialiser.match('image', false, content);
         while (match) {
           const attrs = match.properties;
-          const el = jQuery('<img/>')
+          const el = jQuery('<img>')
             .attr(Object.assign({}, attrs, {
               id: undefined,
               'data-id': attrs.id,
@@ -134,7 +153,7 @@ const filter = 'img[data-shortcode="image"]';
               'data-loading': attrs.loading
             }))
             .addClass('ss-htmleditorfield-file image');
-          content = content.replace(match.original, (jQuery('<div/>').append(el).html()));
+          content = content.replace(match.original, (jQuery('<div></div>').append(el).html()));
 
           // Get next match
           match = ShortcodeSerialiser.match('image', false, content);

@@ -1,4 +1,4 @@
-/* global jest, describe, it, expect, beforeEach, jasmine */
+/* global jest, describe, it, expect, beforeEach */
 
 import ImageLoadActionHandler from '../ImageLoadActionHandler';
 import IMAGE_STATUS from '../ImageLoadStatus';
@@ -36,7 +36,9 @@ describe('ImageLoadActionHandler', () => {
   });
 
   it('eternally failing images end up failed', () => {
-    jest.useFakeTimers();
+    jest.useFakeTimers({
+      legacyFakeTimers: true,
+    });
 
     const options = {
       minRetry: 4,
@@ -49,7 +51,7 @@ describe('ImageLoadActionHandler', () => {
     // Create handler which always fails
     const loadImageHandler = new ImageLoadActionHandler(
       options,
-      (url, resolve, reject) => { reject(); }
+      (url, resolve, reject) => { reject(4); }
     );
 
     // Attempts three times, after a 4 second then 8 second retry delay
@@ -73,7 +75,9 @@ describe('ImageLoadActionHandler', () => {
   });
 
   it('initially failing download can eventually succeed', () => {
-    jest.useFakeTimers();
+    jest.useFakeTimers({
+      legacyFakeTimers: true,
+    });
 
     const options = {
       minRetry: 4,
@@ -88,7 +92,7 @@ describe('ImageLoadActionHandler', () => {
       if (attempts > 2) {
         resolve();
       } else {
-        reject();
+        reject(2);
       }
     };
 
@@ -110,7 +114,9 @@ describe('ImageLoadActionHandler', () => {
   });
 
   it('failed download with expiry will eventually expire', () => {
-    jest.useFakeTimers();
+    jest.useFakeTimers({
+      legacyFakeTimers: true,
+    });
 
     const options = {
       minRetry: 4,
@@ -121,7 +127,7 @@ describe('ImageLoadActionHandler', () => {
       // ensure all future timers advance automatically
       onTimeout: () => jest.runAllTimers(),
     };
-    const handler = (url, resolve, reject) => { reject(); };
+    const handler = (url, resolve, reject) => { reject(3); };
     // Create handler which always fails
     const loadImageHandler = new ImageLoadActionHandler(
       options,

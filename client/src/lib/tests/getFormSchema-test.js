@@ -1,4 +1,4 @@
-/* global jest, jasmine, describe, it, expect, beforeEach, FormData */
+/* global jest, describe, it, expect, beforeEach, FormData */
 
 import getFormSchema from '../getFormSchema';
 import CONSTANTS from 'constants/index';
