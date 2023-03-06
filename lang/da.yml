@@ -77,6 +77,7 @@ da:
     LINKTEXT: 'Link tekst'
     OTHER_ACTIONS: 'Andre handlinger'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Denne filtype kan kun indsættes som et link. Du kan redigere linket når det er sat ind.</p>'
+    USAGE: 'Brugt på'
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Udgivet
     SAVED: Gemt
@@ -90,5 +91,9 @@ da:
     ERROR_ABSOLUTE: 'Kun absolutte URLer kan blive indlejret'
     InsertMedia: 'Indsæt medie'
     UrlDescription: 'Indlejr Youtube og Vimeo videoer, billeder og andre medier direkte fra nettet.'
+    ERROR_EMBED: 'Pt. intet indhold på denne URL der kan indlejres'
+    ERROR_PORT: 'Filens portnummer er ikke tilladt'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
+    FileNotFound: 'Filen eller mappen kunne ikke findes'
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
     FileNotFound: 'Filen eller mappen kunne ikke findes'

@@ -120,3 +120,5 @@ sl:
       two: 'Datoteka "{file}" se uporablja na {count} koncih.'
       few: 'Datoteka "{file}" se uporablja na {count} koncih.'
       other: 'Datoteka "{file}" se uporablja na {count} koncih.'
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Mapa ali datoteka ne obstaja'

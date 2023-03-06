@@ -45,6 +45,9 @@ hr:
     UNKNOWN: Nepoznatno
     UNPUBLISH_BUTTON: Odjavi
     UPLOADEDFILE: 'Prenesena datoteka'
+    AttributesDescription: 'Ove promjene će utjecati samo na specifičan smještan ove datoteke.'
+    Caption: Natpis
+    TitleTooltip: 'Naslov (tooltip)'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Premještena datoteka'
     RENAMEDFILE: 'Zamjenjena datoteka'
@@ -69,3 +72,5 @@ hr:
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Dodaj mediju'
     Cancel: Odustani
+  AssetAdmin:
+    INSERT_FILE: 'Ubaci datoteku'
