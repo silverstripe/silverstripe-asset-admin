@@ -8,9 +8,23 @@ ru:
     TYPE: Тип
     URL: URL
     WIDTH: Ширина
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Размеры
     EDIT: Редактировать
     EDITINFO: 'Редактировать этот файл'
     FIELDNOTSET: 'Информация о файле не найдена'
     REMOVE: Удалить
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    FILENAME: Filename
+    SAVE: Save
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Имя директории'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    Cancel: Cancel

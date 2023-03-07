@@ -6,9 +6,23 @@ mi:
     SIZE: 'Rahi kōnae'
     TYPE: 'Momo kōnae'
     URL: PRO
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: 'Ngā Rahinga'
     EDIT: Whakatika
     EDITINFO: 'Whakatikatia tēnei kōnae'
     FIELDNOTSET: 'Kāore i kitea te mōhiohio kōnae'
     REMOVE: Tango
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    FILENAME: Filename
+    SAVE: Save
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Ingoa kōpaki'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    Cancel: Cancel

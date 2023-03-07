@@ -8,9 +8,35 @@ lt:
     TYPE: 'Bylos tipas'
     URL: 'URL adresas'
     WIDTH: Plotis
+    AppCategoryArchive: Archyvas
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
+    PUBLISHED: Publikuota
+    PUBLISH_BUTTON: Publikuoti
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Matmenys
     EDIT: Redaguoti
     EDITINFO: 'Redaguoti šią bylą'
     FIELDNOTSET: 'Informacija apie bylą nerasta'
     REMOVE: Pašalinti
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
+  FileFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publikuoti
+    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Publikuota
+  MoveFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Perkelti
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Ribotas priėjimas'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    FILENAME: Filename
+    SAVE: Save
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Publikuota
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Katalogo pavadinimas'
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    Cancel: Cancel
