@@ -97,3 +97,5 @@ fr:
       many: 'Vous ne pouvez pas téléverser plus de {count} fichiers.'
   SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Fichier ou dossier introuvable'
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Fichier ou dossier introuvable'

@@ -6,9 +6,23 @@ zh:
     SIZE: 文件尺寸
     TYPE: 文件类型
     URL: 网址
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: 尺寸
     EDIT: 编辑
     EDITINFO: 编辑该文件
     FIELDNOTSET: 没有找到文件信息
     REMOVE: 移除
+  AssetFormFactory:
+    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    FILENAME: Filename
+    SAVE: Save
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 文件夹名称
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    Cancel: Cancel
