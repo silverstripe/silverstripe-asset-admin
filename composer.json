@@ -5,9 +5,9 @@
     "license": "BSD-3-Clause",
     "require": {
         "php": "^7.4 || ^8.0",
-        "silverstripe/framework": "^4.11",
-        "silverstripe/admin": "^1.7",
-        "silverstripe/graphql": "^3.5 || ^4"
+        "silverstripe/framework": "4.13.x-dev",
+        "silverstripe/admin": "1.13.x-dev",
+        "silverstripe/graphql": "3.8.x-dev || 4.2.x-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
@@ -28,7 +28,10 @@
     },
     "autoload": {
         "psr-4": {
-            "SilverStripe\\AssetAdmin\\": ["code/", "_legacy/"],
+            "SilverStripe\\AssetAdmin\\": [
+                "code/",
+                "_legacy/"
+            ],
             "SilverStripe\\AssetAdmin\\Tests\\": "tests/php/",
             "SilverStripe\\AssetAdmin\\Tests\\Behat\\Context\\": "tests/behat/src/"
         }
