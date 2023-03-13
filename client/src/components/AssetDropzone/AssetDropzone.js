@@ -60,14 +60,14 @@ class AssetDropzone extends Component {
       this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
     }
     // add listeners when necessary
-    if (this.props.canUpload && prevProps.canUpload !== this.props.canUpload) {
+    if (this.props.canUpload) {
       if (this.dropzone) {
         this.dropzone.enable();
 
         this.dropzone.options = Object.assign({},
           this.getDefaultOptions(),
           this.dropzone.options,
-          this.props.options
+          prevProps.options
         );
       }
     }
