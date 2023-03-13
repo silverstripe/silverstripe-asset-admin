@@ -47,9 +47,9 @@ class HistoryList extends Component {
     this.refreshHistoryIfNeeded();
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate() {
     // TODO race conditions happening, this should have history state shifted to redux
-    this.refreshHistoryIfNeeded(nextProps);
+    this.refreshHistoryIfNeeded(this.props);
   }
 
   componentWillUnmount() {

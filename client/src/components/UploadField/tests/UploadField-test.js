@@ -214,7 +214,7 @@ describe('UploadField', () => {
     });
 
     it('should not call onChange for the same file list', () => {
-      file.componentWillReceiveProps(props);
+      file.componentDidUpdate(props);
 
       expect(props.onChange).not.toBeCalled();
     });
@@ -227,7 +227,7 @@ describe('UploadField', () => {
           { id: 9 },
         ],
       });
-      file.componentWillReceiveProps(newProps);
+      file.componentDidUpdate(newProps);
 
       expect(props.onChange).toBeCalled();
     });
@@ -239,7 +239,7 @@ describe('UploadField', () => {
           { id: 12 },
         ],
       });
-      file.componentWillReceiveProps(newProps);
+      file.componentDidUpdate(newProps);
 
       expect(props.onChange).toBeCalled();
     });

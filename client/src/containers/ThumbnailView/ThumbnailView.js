@@ -119,7 +119,7 @@ class ThumbnailView extends Component {
     const badge = badges.find((badgeItem) => badgeItem.id === item.id);
     let props = {
       sectionConfig,
-      key: item.key,
+      key: item.id,
       selectableKey: item.id,
       item,
       selectedFiles,

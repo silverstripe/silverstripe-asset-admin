@@ -49,12 +49,12 @@ class GalleryItem extends Component {
     this.handleCancelUpload = this.handleCancelUpload.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (shouldLoadImage(nextProps)) {
+  componentDidUpdate() {
+    if (shouldLoadImage(this.props)) {
       // Tell backend to start loading the image
-      nextProps.actions.imageLoad.loadImage(
-        nextProps.item.thumbnail,
-        nextProps.sectionConfig.imageRetry
+      this.props.actions.imageLoad.loadImage(
+        this.props.item.thumbnail,
+        this.props.sectionConfig.imageRetry
       );
     }
   }

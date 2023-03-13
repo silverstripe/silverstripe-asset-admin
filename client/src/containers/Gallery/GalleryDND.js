@@ -23,7 +23,7 @@ class GalleryDND extends Component {
     window.addEventListener('drop', this.handleDrop, true);
   }
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     setTimeout(() => {
       if (!this.mounted || !this.context.dragDropManager) {
         return;
