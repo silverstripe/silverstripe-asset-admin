@@ -47,9 +47,9 @@ class HistoryList extends Component {
     this.refreshHistoryIfNeeded();
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     // TODO race conditions happening, this should have history state shifted to redux
-    this.refreshHistoryIfNeeded(nextProps);
+    this.refreshHistoryIfNeeded(prevProps);
   }
 
   componentWillUnmount() {
@@ -60,16 +60,16 @@ class HistoryList extends Component {
   /**
    * Determine if the history list requires a refresh
    *
-   * @param {object} nextProps
+   * @param {object} prevProps
    */
-  refreshHistoryIfNeeded(nextProps) {
+  refreshHistoryIfNeeded(prevProps) {
     if (
-      (!nextProps && !this.state.loadedDetails)
-      || (nextProps.data.fileId !== this.props.data.fileId)
-      || (nextProps.data.latestVersionId !== this.props.data.latestVersionId)
+      (!prevProps && !this.state.loadedDetails)
+      || (this.props.data.fileId !== prevProps.data.fileId)
+      || (this.props.data.latestVersionId !== prevProps.data.latestVersionId)
     ) {
       this.setState({ loadedDetails: false });
-      const fileId = (nextProps) ? nextProps.data.fileId : this.props.data.fileId;
+      const fileId = (this.props) ? this.props.data.fileId : prevProps.data.fileId;
       clearTimeout(this.timer);
 
       /*

@@ -82,17 +82,6 @@ class UploadField extends Component {
     actions.uploadField.setFiles(id, files);
   }
 
-  componentWillReceiveProps(nextProps) {
-    // Propegate redux state changes to redux-from value for this field
-    const existingFiles = this.props.files || [];
-    const newFiles = nextProps.files || [];
-    const filesChanged = compareValues(existingFiles, newFiles);
-
-    if (filesChanged) {
-      this.handleChange(null, nextProps);
-    }
-  }
-
   componentDidUpdate(prevProps) {
     const {
       id,
@@ -102,6 +91,15 @@ class UploadField extends Component {
       value: { Files: value },
       actions: { uploadField: { setFormSchemaFilesHash, setFiles } }
     } = this.props;
+
+    // Propegate redux state changes to redux-from value for this field
+    const existingFiles = prevProps.files || [];
+    const newFiles = files || [];
+    const filesChanged = compareValues(existingFiles, newFiles);
+
+    if (filesChanged) {
+      this.handleChange(null, this.props);
+    }
 
     const newFormSchemaFilesHash = md5(JSON.stringify(value.Files)).toString();
 

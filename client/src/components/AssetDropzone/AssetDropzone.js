@@ -52,27 +52,24 @@ class AssetDropzone extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
+    // Reattach name to hiddenFileInput as dropzone recreates this element after each upload
+    const { name } = this.props;
+
+    if (name && this.dropzone.hiddenFileInput) {
+      this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
+    }
     // add listeners when necessary
-    if (nextProps.canUpload) {
+    if (this.props.canUpload) {
       if (this.dropzone) {
         this.dropzone.enable();
 
         this.dropzone.options = Object.assign({},
           this.getDefaultOptions(),
           this.dropzone.options,
-          this.props.options
+          prevProps.options
         );
       }
-    }
-  }
-
-  componentDidUpdate() {
-    // Reattach name to hiddenFileInput as dropzone recreates this element after each upload
-    const { name } = this.props;
-
-    if (name && this.dropzone.hiddenFileInput) {
-      this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
     }
   }
 

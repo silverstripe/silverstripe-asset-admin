@@ -92,7 +92,7 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item__thumbnail--error {
-  background-color: mix($white, $brand-danger, 20);
+  background-color: mix($white, $brand-danger, 20%);
 }
 
 .gallery-item__thumbnail--no-preview {
@@ -216,14 +216,14 @@ $gallery-item-label-height: 40px;
 
 .gallery-item__error-message {
   position: absolute;
-  top: calc(50% - (#{$gallery-item-label-height} / 2));
+  top: calc(50% - calc(#{$gallery-item-label-height} / 2));
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   max-height: calc(100% - #{$gallery-item-label-height});
   overflow: hidden;
   width: 90%;
   color: $white;
-  background-color: mix($white, $brand-danger, 20);
+  background-color: mix($white, $brand-danger, 20%);
   text-align: center;
 }
 
@@ -239,14 +239,14 @@ $gallery-item-label-height: 40px;
       left: 0;
       right: 0;
       bottom: 0;
-      background: mix($white, $brand-danger, 20);
+      background: mix($white, $brand-danger, 20%);
       border-radius: 2px 2px 0 0;
     }
   }
 
   &:hover .gallery-item__thumbnail::after,
   &:hover .gallery-item__error-message {
-    background: mix($white, $brand-danger, 10);
+    background: mix($white, $brand-danger, 10%);
   }
 }
 
@@ -324,7 +324,7 @@ $gallery-item-label-height: 40px;
   height: 18px;
   width: 75%;
   position: absolute;
-  top: calc(50% - (#{$gallery-item-label-height} / 2));
+  top: calc(50% - calc(#{$gallery-item-label-height} / 2));
   left: 50%;
   transform: translateX(-50%) translateY(-50%);
   border-radius: 10px;

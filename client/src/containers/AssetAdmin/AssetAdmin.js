@@ -54,9 +54,9 @@ class AssetAdmin extends Component {
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
   }
 
-  componentWillReceiveProps(props) {
-    if ((typeof props.onReplaceUrl === 'function') && !props.loading && props.folder && props.folderId !== props.folder.id) {
-      props.onReplaceUrl(props.folder.id, props.fileId, props.query, props.viewAction);
+  componentDidUpdate() {
+    if ((typeof this.props.onReplaceUrl === 'function') && !this.props.loading && this.props.folder && this.props.folderId !== this.props.folder.id) {
+      this.props.onReplaceUrl(this.props.folder.id, this.props.fileId, this.props.query, this.props.viewAction);
     }
   }
 
