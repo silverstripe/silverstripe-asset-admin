@@ -211,7 +211,7 @@ describe('Gallery', () => {
     });
   });
 
-  describe('componentWillReceiveProps()', () => {
+  describe('componentDidUpdate()', () => {
     let gallery = null;
 
     beforeEach(() => {

@@ -206,7 +206,7 @@ describe('UploadField', () => {
     });
   });
 
-  describe('componentWillReceiveProps', () => {
+  describe('componentDidUpdate', () => {
     beforeEach(() => {
       file = ReactTestUtils.renderIntoDocument(
         <UploadField {...props} />
