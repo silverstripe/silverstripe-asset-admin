@@ -224,7 +224,7 @@ describe('Gallery', () => {
     });
 
     it('should not call purgeUploadQueue when receiving same files', () => {
-      gallery.componentWillReceiveProps(Object.assign({}, props, {
+      gallery.componentDidUpdate(Object.assign({}, props, {
         files: [
           { id: 1 },
         ],
@@ -233,7 +233,7 @@ describe('Gallery', () => {
     });
 
     it('should call purgeUploadQueue when changing folder', () => {
-      gallery.componentWillReceiveProps(Object.assign({}, props, {
+      gallery.componentDidUpdate(Object.assign({}, props, {
         folderId: 8,
         folder: {
           id: 8,

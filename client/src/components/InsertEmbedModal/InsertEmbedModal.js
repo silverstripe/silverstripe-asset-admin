@@ -16,13 +16,13 @@ class InsertEmbedModal extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setOverrides(this.props);
   }
 
-  componentWillReceiveProps(props) {
-    if (props.isOpen && !this.props.isOpen) {
-      this.setOverrides(props);
+  componentDidUpdate(prevProps) {
+    if (this.props.isOpen && !prevProps.isOpen) {
+      this.setOverrides(this.props);
     }
   }
 

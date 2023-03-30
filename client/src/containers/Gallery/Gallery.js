@@ -77,27 +77,28 @@ class Gallery extends Component {
     window.addEventListener('keyup', this.toggleSelectConcat);
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
+    this.initSortDropdown();
+    this.initFlushUploadFiles(prevProps);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.toggleSelectConcat);
+    window.removeEventListener('keyup', this.toggleSelectConcat);
+  }
+
+  initFlushUploadFiles(prevProps) {
     // turn off chosen.js
-    if (nextProps.view !== 'tile') {
+    if (this.props.view !== 'tile') {
       const $select = this.getSortElement();
 
       $select.off('change');
     }
 
     // Flush uploaded files on folder navigation
-    if (this.props.folderId !== nextProps.folderId) {
-      nextProps.actions.queuedFiles.purgeUploadQueue();
+    if (prevProps.folderId !== this.props.folderId) {
+      this.props.actions.queuedFiles.purgeUploadQueue();
     }
-  }
-
-  componentDidUpdate() {
-    this.initSortDropdown();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.toggleSelectConcat);
-    window.removeEventListener('keyup', this.toggleSelectConcat);
   }
 
   /**

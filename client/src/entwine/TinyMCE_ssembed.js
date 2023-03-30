@@ -37,6 +37,7 @@ const filter = 'div[data-shortcode="embed"]';
           node.parentNode.remove();
         // anything else
         } else {
+          // eslint-disable-next-line no-console
           console.error({ error: 'Unexpected selection - expected embed', selectedNode: node });
         }
       });

@@ -171,7 +171,7 @@ $uploadfield-item-label-height: 40px;
 }
 
 .uploadfield-item__status {
-  margin: 0 0 0 $spacer/2;
+  margin: 0 0 0 map_get($spacers, 2);
   color: $state-draft;
   text-transform: uppercase;
 }

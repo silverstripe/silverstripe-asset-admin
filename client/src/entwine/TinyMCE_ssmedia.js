@@ -42,6 +42,7 @@ const filter = 'img[data-shortcode="image"]';
         if (editor.dom.is(node, filter)) {
           node.remove();
         } else {
+          // eslint-disable-next-line no-console
           console.error({ error: 'Unexpected selection - expected image', selectedNode: node });
         }
       });

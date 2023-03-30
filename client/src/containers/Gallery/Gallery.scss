@@ -1,3 +1,20 @@
+// Replacement for deprecated form-control-focus
+
+@mixin gridle-select-focus () {
+  &:focus {
+    color: $input-focus-color;
+    background-color: $input-focus-bg;
+    border-color: $input-focus-border-color;
+    outline: 0;
+    // Avoid using mixin so we can pass custom focus shadow properly
+    @if $enable-shadows {
+      box-shadow: $input-box-shadow, $input-focus-box-shadow;
+    } @else {
+      box-shadow: $input-focus-box-shadow;
+    }
+  }
+}
+
 .gallery {
   position: relative;
 }
@@ -200,7 +217,7 @@
 }
 
 .gallery__view-change-button {
-  margin-right: -$panel-padding-x / 2;
+  margin-right: -(calc($panel-padding-x / 2));
 }
 
 // Griddle overrides
@@ -225,7 +242,7 @@
     background-image: none;
     text-align: center;
     display: inline;
-    @include form-control-focus();
+    @include gridle-select-focus();
   }
 }
 

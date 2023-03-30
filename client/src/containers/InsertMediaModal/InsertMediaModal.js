@@ -37,17 +37,17 @@ class InsertMediaModal extends Component {
     }
   }
 
-  componentWillReceiveProps(props) {
-    if (!props.isOpen && this.props.isOpen) {
-      props.onBrowse(props.folderId);
-      props.actions.gallery.deselectFiles();
+  componentDidUpdate(prevProps) {
+    if (!this.props.isOpen && prevProps.isOpen) {
+      this.props.onBrowse(this.props.folderId);
+      this.props.actions.gallery.deselectFiles();
     }
-    if (typeof this.props.setOverrides === 'function' &&
-      props.isOpen &&
-      !this.props.isOpen
+    if (typeof prevProps.setOverrides === 'function' &&
+      this.props.isOpen &&
+      !prevProps.isOpen
     ) {
-      this.props.setOverrides(props);
-      props.onBrowse(props.folderId, props.fileAttributes ? props.fileAttributes.ID : null);
+      prevProps.setOverrides(this.props);
+      this.props.onBrowse(this.props.folderId, this.props.fileAttributes ? this.props.fileAttributes.ID : null);
     }
   }
 
