@@ -326,7 +326,6 @@ class Gallery extends Component {
   handleSort(value) {
     this.props.actions.queuedFiles.purgeUploadQueue();
     this.props.onSort(value);
-    // this will flow round to `componentWillReceiveProps` and update sort there.
   }
 
   /**
