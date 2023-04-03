@@ -30,7 +30,10 @@ function presetButton(editor, preset) {
    * @returns {HTMLElement|undefined}
    */
   const image = () => {
-    const img = editor.selection.getNode();
+    let img = editor.selection.getNode();
+    if (img.tagName !== 'IMG' && img.children.item('img')) {
+      img = img.children.item('img');
+    }
     return img && img.tagName === 'IMG' ? img : undefined;
   };
 
@@ -89,7 +92,9 @@ function presetButton(editor, preset) {
       if (formatMatches()) {
         editor.formatter.apply(formatName);
         const img = image();
-        img.setAttribute('width', width || img.naturalWidth);
+        if (img) {
+          img.setAttribute('width', width || img.naturalWidth);
+        }
       }
     }
   };
