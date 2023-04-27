@@ -24,6 +24,12 @@ Feature: Single file Upload field
       Then I should see the "Form_fileSelectForm" form
     When I press the "Insert" button
       Then I should see "file1" in the ".uploadfield-item__title" element
+    # Ensure you can remove the file then select a different one
+    When I click on the ".uploadfield-item__remove-btn" element
+      And I click "Choose existing" in the ".uploadfield" element
+      And I click on the file named "file2" in the gallery
+    When I press the "Insert" button
+      Then I should see "file2" in the ".uploadfield-item__title" element
     # Required to avoid "unsaved changed" browser dialog
     Then I press the "Save" button
 
