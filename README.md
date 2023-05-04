@@ -9,11 +9,9 @@ The Asset Admin module provides a interface for managing files within Silverstri
 
 ## Installation
 
+```sh
+composer require silverstripe/asset-admin
 ```
-$ composer require silverstripe/asset-admin
-```
-
-You'll also need to run `dev/build`.
 
 ## Versioning
 
@@ -37,4 +35,4 @@ and any new translations will be merged back to the project source code.
 Please use [https://www.transifex.com/silverstripe/silverstripe-asset-admin/](https://www.transifex.com/silverstripe/silverstripe-asset-admin/) to contribute translations,
 rather than sending pull requests with YAML files.
 
-See the ["i18n" topic](https://docs.silverstripe.org/en/4/developer_guides/i18n/) on docs.silverstripe.org for more details.
+See the ["i18n" topic](https://docs.silverstripe.org/en/developer_guides/i18n/) on docs.silverstripe.org for more details.
