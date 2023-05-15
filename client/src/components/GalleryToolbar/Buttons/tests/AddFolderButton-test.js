@@ -1,19 +1,18 @@
-/* global jest, describe, it, expect, beforeEach, Event */
+/* global jest, test, expect */
 import React from 'react';
 import Component from '../AddFolderButton';
-import ReactTestUtils from 'react-dom/test-utils';
+import { render, fireEvent } from '@testing-library/react';
 
-describe('AddFolderButton', () => {
-  describe('handleCreateFolder()', () => {
-    it('should call onCreateFolder on click', () => {
-      const props = {
-        canEdit: true,
-        onCreateFolder: jest.fn()
-      };
-      const button = ReactTestUtils.renderIntoDocument(<Component {...props} />);
-      button.handleCreateFolder(new Event('click'));
-
-      expect(props.onCreateFolder).toBeCalled();
-    });
-  });
+test('AddFolderButton', () => {
+  const onCreateFolder = jest.fn();
+  const { container } = render(
+    <Component {...{
+      canEdit: true,
+      onCreateFolder
+    }}
+    />
+  );
+  const button = container.querySelector('button#add-folder-button');
+  fireEvent.click(button);
+  expect(onCreateFolder.mock.calls.length).toBe(1);
 });

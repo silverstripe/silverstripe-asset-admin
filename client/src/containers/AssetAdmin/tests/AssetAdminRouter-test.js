@@ -1,50 +1,60 @@
-/* global jest, describe, it, pit, expect, beforeEach */
-
-// mock sub-components, as they could rely on a Redux store context and not necessary for unit test
-jest.mock('containers/AssetAdmin/AssetAdmin');
+/* global jest, test, expect */
 
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Component as AssetAdminRouter } from '../AssetAdminRouter';
 
-describe('AssetAdminRouter', () => {
-  let props = null;
+let lastReturn;
+let nextParams;
+beforeEach(() => {
+  lastReturn = undefined;
+  nextParams = undefined;
+});
 
-  beforeEach(() => {
-    props = {
-      sectionConfig: {
-        url: '',
-        limit: 10,
-        form: {},
+function makeProps(obj = {}) {
+  return {
+    sectionConfig: {
+      url: '',
+      limit: 10,
+      form: {},
+    },
+    router: {
+      location: {
+        pathname: '',
+        query: {},
+        search: '',
       },
-      router: {
-        location: {
-          pathname: '',
-          query: {},
-          search: '',
-        },
-        navigate: jest.fn(),
-        params: {},
+      navigate: jest.fn(),
+      params: {
+        folderId: 0
       },
-    };
-  });
+    },
+    AssetAdminComponent: ({ getUrl }) => <div
+      data-testid="test-asset-admin"
+      onClick={() => {
+      lastReturn = getUrl(...nextParams);
+    }}
+    />,
+    ...obj
+  };
+}
 
-  describe('getUrl', () => {
-    let component = null;
+test('AssetAdminRouter getUrl should retain page query parameter when not changing folders', async () => {
+  render(
+    <AssetAdminRouter {...makeProps()}/>
+  );
+  const admin = await screen.findByTestId('test-asset-admin');
+  nextParams = [0, null, { page: 2 }];
+  fireEvent.click(admin);
+  expect(lastReturn).toContain('page=2');
+});
 
-    beforeEach(() => {
-      component = ReactTestUtils.renderIntoDocument(<AssetAdminRouter {...props} />);
-    });
-
-    it('should retain page query parameter when not changing folders', () => {
-      const newUrl = component.getUrl(props.router.params.folderId, null, { page: 2 });
-      expect(newUrl).toContain('page=2');
-    });
-
-    it('should remove page query parameter when changing folders', () => {
-      const newFolderId = '99';
-      const newUrl = component.getUrl(newFolderId, null, { page: 2 });
-      expect(newUrl).not.toContain('page=2');
-    });
-  });
+test('AssetAdminRouter getUrl should remove page query parameter when changing folders', async () => {
+  render(
+    <AssetAdminRouter {...makeProps()}/>
+  );
+  const admin = await screen.findByTestId('test-asset-admin');
+  nextParams = [99, null, { page: 2 }];
+  fireEvent.click(admin);
+  expect(lastReturn).not.toContain('page=2');
 });

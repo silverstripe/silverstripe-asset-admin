@@ -26,6 +26,7 @@ class BackButton extends Component {
       folder,
       badges,
       onMoveFiles,
+      BackComponent
     } = this.props;
     const { parentId: itemId } = folder;
     if (itemId === null) {
@@ -34,7 +35,7 @@ class BackButton extends Component {
     const badge = badges.find((item) => item.id === itemId);
     return (
       <div className="gallery__back-container">
-        <Back
+        <BackComponent
           item={{ id: itemId }}
           onClick={this.handleBackClick}
           onDropFiles={onMoveFiles}
@@ -60,6 +61,11 @@ BackButton.propTypes = {
   })).isRequired,
   onOpenFolder: PropTypes.func.isRequired,
   onMoveFiles: PropTypes.func.isRequired,
+  BackComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+};
+
+BackButton.defaultProps = {
+  BackComponent: Back,
 };
 
 export default BackButton;

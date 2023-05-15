@@ -1,7 +1,7 @@
-/* global jest, describe, it, pit, expect, beforeEach */
+/* global jest, test, expect */
 import Breadcrumb from '../AssetAdminBreadcrumb';
-import ShallowRenderer from 'react-test-renderer/shallow';
 import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 const folder = {
   id: 3,
@@ -12,105 +12,101 @@ const folder = {
   ]
 };
 
-/**
- * Helper method to render our Asset-Admin specific breadcrumb. Because the asset-admin breadcrumb
- * wraps around the regular breadcrumb, we're simply shallow rendering the componentlooking at
- * what get passed to the underlying component.
- * @param {Object} props
- * @returns {Object}
- */
-const render = (props) => {
-  const renderer = new ShallowRenderer();
-  const baseProps = {
+function makeProps(obj = {}) {
+  return {
     query: { filter: {} },
     getUrl: (folderId) => (folderId ? folderId.toString() : ''),
-    onBrowse: jest.fn(),
-    onFolderIcon: jest.fn(),
-    ...props
+    onBrowse: () => null,
+    onFolderIcon: () => null,
+    PlainBreadcrumbComponent: ({ multiline, crumbs }) => (
+      <div data-testid="test-plain-breadcrumb-component" data-multiline={multiline}>
+        {crumbs.map(crumb => <div data-testid="test-breadcrumb" key={crumb.text} onClick={crumb.onClick} data-href={crumb.href}>
+          {crumb.icons && crumb.icons.map(icon => <div data-testid="test-icon" key={icon.className} onClick={icon.onClick} />)}
+          {crumb.text}
+        </div>)}
+      </div>
+    ),
+    ...obj
   };
-  renderer.render(<Breadcrumb {...baseProps} />);
-  return { ...renderer.getRenderOutput(), baseProps };
-};
+}
 
-describe('AssetAdmin Breadcrumb', () => {
-  it('Root', () => {
-    const { props: { multiline, crumbs }, baseProps: { onBrowse } } = render({});
+test('AssetAdminBreadcrumb Root', async () => {
+  const onBrowse = jest.fn();
+  render(
+    <Breadcrumb {...makeProps({
+      onBrowse
+    })}
+    />
+  );
+  const crumbs = await screen.findAllByTestId('test-breadcrumb');
+  expect(crumbs.length).toBe(1);
+  expect(crumbs[0].textContent).toBe('Files');
+  fireEvent.click(crumbs[0]);
+  expect(onBrowse.mock.calls.length).toBe(1);
+  expect(onBrowse.mock.calls[0]).toEqual([0, null, { filter: {} }]);
+});
 
-    expect(multiline).toBe(true);
-    expect(crumbs).toHaveLength(1);
-    expect(crumbs[0]).toHaveProperty('text', 'Files');
-    expect(crumbs[0]).toHaveProperty('href', '');
-    expect(crumbs[0]).not.toHaveProperty('icon');
+test('AssetAdminBreadcrumb With folders', async () => {
+  const onBrowse = jest.fn();
+  const onFolderIcon = jest.fn();
+  render(
+    <Breadcrumb {...makeProps({
+      folder,
+      onBrowse,
+      onFolderIcon
+    })}
+    />
+  );
+  const crumbs = await screen.findAllByTestId('test-breadcrumb');
+  expect(crumbs.length).toBe(4);
+  expect(crumbs[0].textContent).toBe('Files');
+  expect(crumbs[1].textContent).toBe('One');
+  expect(crumbs[2].textContent).toBe('Two');
+  expect(crumbs[3].textContent).toBe('Three');
+  fireEvent.click(crumbs[3]);
+  expect(onBrowse.mock.calls.length).toBe(1);
+  expect(onBrowse.mock.calls[0]).toEqual([3, null, { filter: {} }]);
+  const icons = await screen.findAllByTestId('test-icon');
+  expect(icons.length).toBe(1);
+  expect(icons[0].parentNode.textContent).toBe('Three');
+  fireEvent.click(icons[0]);
+  expect(onFolderIcon.mock.calls.length).toBe(1);
+});
 
-    crumbs[0].onClick(new Event('onClick'));
-    expect(onBrowse).toHaveBeenCalledWith(0, null, { filter: {} });
-  });
+test('AssetAdminBreadcrumb With top folder', async () => {
+  const onBrowse = jest.fn();
+  render(
+    <Breadcrumb {...makeProps({
+      folder: { ...folder, parents: undefined },
+      onBrowse
+    })}
+    />
+  );
+  const crumbs = await screen.findAllByTestId('test-breadcrumb');
+  expect(crumbs.length).toBe(2);
+  expect(crumbs[0].textContent).toBe('Files');
+  expect(crumbs[1].textContent).toBe('Three');
+  fireEvent.click(crumbs[1]);
+  expect(onBrowse.mock.calls.length).toBe(1);
+  expect(onBrowse.mock.calls[0]).toEqual([3, null, { filter: {} }]);
+});
 
-  it('With folders', () => {
-    const {
-      props: {
-        multiline,
-        crumbs
-      },
-      baseProps: {
-        onBrowse,
-        onFolderIcon
-      }
-    } = render({ folder });
-
-    expect(multiline).toBe(true);
-    expect(crumbs).toHaveLength(4);
-    expect(crumbs[0]).toHaveProperty('text', 'Files');
-    expect(crumbs[0]).toHaveProperty('href', '');
-
-    expect(crumbs[1]).toHaveProperty('text', 'One');
-    expect(crumbs[1]).toHaveProperty('href', '1');
-    expect(crumbs[2]).toHaveProperty('text', 'Two');
-    expect(crumbs[2]).toHaveProperty('href', '2');
-    expect(crumbs[3]).toHaveProperty('text', 'Three');
-    expect(crumbs[3]).toHaveProperty('href', '3');
-    expect(crumbs[3].icons[0]).toHaveProperty('className', 'icon font-icon-edit-list');
-
-    crumbs[3].onClick(new Event('onClick'));
-    expect(onBrowse).toHaveBeenCalledWith(3, null, { filter: {} });
-
-    crumbs[3].icons[0].onClick(new Event('onClick'));
-    expect(onFolderIcon).toHaveBeenCalledWith();
-  });
-
-  it('With top folder', () => {
-    const {
-      props: { multiline, crumbs },
-      baseProps: { onBrowse }
-    } = render({ folder: { ...folder, parents: undefined } });
-
-    expect(multiline).toBe(true);
-    expect(crumbs).toHaveLength(2);
-    expect(crumbs[0]).toHaveProperty('text', 'Files');
-    expect(crumbs[0]).toHaveProperty('href', '');
-
-    expect(crumbs[1]).toHaveProperty('text', 'Three');
-    expect(crumbs[1]).toHaveProperty('href', '3');
-
-    crumbs[1].onClick(new Event('onClick'));
-    expect(onBrowse).toHaveBeenCalledWith(3, null, { filter: {} });
-  });
-
-  it('With search', () => {
-    const query = { filter: { filters: { title: 'booya' } } };
-    const { props: { multiline, crumbs }, baseProps: { onBrowse } } = render({ query });
-
-    expect(multiline).toBe(true);
-    expect(crumbs).toHaveLength(2);
-    expect(crumbs[0]).toHaveProperty('text', 'Files');
-    expect(crumbs[0]).toHaveProperty('href', '');
-
-    expect(crumbs[1]).toHaveProperty('text', 'Search results');
-    expect(crumbs[1]).not.toHaveProperty('href');
-    expect(crumbs[1]).not.toHaveProperty('icons');
-    expect(crumbs[1]).not.toHaveProperty('onClick');
-
-    crumbs[0].onClick(new Event('onClick'));
-    expect(onBrowse).toHaveBeenCalledWith(0, null, { filter: { filters: { title: 'booya' } } });
-  });
+test('AssetAdminBreadcrumb With search', async () => {
+  const onBrowse = jest.fn();
+  render(
+    <Breadcrumb {...makeProps({
+      query: { filter: { filters: { title: 'booya' } } },
+      onBrowse
+    })}
+    />
+  );
+  const crumbs = await screen.findAllByTestId('test-breadcrumb');
+  expect(crumbs.length).toBe(2);
+  expect(crumbs[0].textContent).toBe('Files');
+  expect(crumbs[1].textContent).toBe('Search results');
+  expect(crumbs[1].getAttribute('data-href')).toBe(null);
+  expect(crumbs[1].getAttribute('data-testid')).toBe('test-breadcrumb');
+  fireEvent.click(crumbs[0]);
+  expect(onBrowse.mock.calls.length).toBe(1);
+  expect(onBrowse.mock.calls[0]).toEqual([0, null, { filter: { filters: { title: 'booya' } } }]);
 });

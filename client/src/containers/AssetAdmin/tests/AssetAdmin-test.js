@@ -1,14 +1,36 @@
-/* global jest, describe, it, pit, expect, beforeEach */
+/* global jest, test, expect, beforeEach, afterEach */
+
+import React from 'react';
+import { Component as AssetAdmin } from '../AssetAdmin';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('containers/Editor/Editor');
-jest.mock('components/Search/Search');
-jest.mock('containers/Gallery/Gallery');
-jest.mock('containers/BulkDeleteConfirmation/BulkDeleteConfirmation');
 
-import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-import { Component as AssetAdmin } from '../AssetAdmin';
+jest.mock('lib/getFormSchema', () => ({
+  __esModule: true,
+  default: () => ({
+    schemaUrl: 'mySchemaUrl',
+    targetId: 'myTargetId'
+  })
+}));
+
+let lastReturn;
+let nextAction;
+let nextParams;
+
+let consoleErrorFn;
+beforeEach(() => {
+  lastReturn = undefined;
+  nextAction = undefined;
+  nextParams = [];
+  // surpress warning:
+  // Warning: Injector.getDerivedStateFromProps(): A valid state object (or null) must be returned. You have returned undefined
+  consoleErrorFn = jest.spyOn(console, 'error').mockImplementation(() => null);
+});
+afterEach(() => {
+  consoleErrorFn.mockRestore();
+});
 
 function getMockFile(id) {
   return {
@@ -17,380 +39,492 @@ function getMockFile(id) {
   };
 }
 
-describe('AssetAdmin', () => {
-  let props = null;
-
-  beforeEach(() => {
-    props = {
-      client: {
-        dataId: jest.fn()
-          .mockReturnValue(getMockFile(1)),
-      },
-      dialog: true,
-      sectionConfig: {
+function makeProps(obj = {}) {
+  return {
+    client: {
+      dataId: () => null
+        .mockReturnValue(getMockFile(1)),
+    },
+    dialog: true,
+    sectionConfig: {
+      url: '',
+      limit: 10,
+      createFileEndpoint: {
         url: '',
-        limit: 10,
-        createFileEndpoint: {
-          url: '',
-        },
-        form: {
-          fileEditForm: {
-            schemaUrl: '',
-          },
-          fileSearchForm: {
-            schemaUrl: '',
-          },
-        },
       },
-      fileId: null,
-      folderId: null,
-      getUrl: jest.fn(),
-      query: {
-        sort: '',
-        limit: 10,
-        page: 1,
+      form: {
+        fileEditForm: {
+          schemaUrl: '',
+        },
+        fileSearchForm: {
+          schemaUrl: '',
+        },
+        addToCampaignForm: {
+          schemaUrl: '',
+        }
       },
-      type: 'admin',
-      files: [],
+    },
+    fileId: null,
+    folderId: null,
+    getUrl: () => null,
+    query: {
+      sort: '',
+      limit: 10,
+      page: 1,
+    },
+    type: 'admin',
+    files: [],
+    queuedFiles: {
+      items: [],
+    },
+    filesTotalCount: 20,
+    folder: {
+      id: 0,
+      title: '',
+      parents: [],
+      parentId: 0,
+      canView: true,
+      canEdit: true,
+    },
+    actions: {
+      gallery: {
+        deselectFiles: () => null,
+      },
       queuedFiles: {
-        items: [],
+        addQueuedFile: () => null,
+        failUpload: () => null,
+        purgeUploadQueue: () => null,
+        removeQueuedFile: () => null,
+        succeedUpload: () => null,
       },
-      filesTotalCount: 20,
-      folder: {
-        id: 0,
-        title: '',
-        parents: [],
-        parentId: 0,
-        canView: true,
-        canEdit: true,
+      files: {
+        deleteFiles: () => Promise.resolve({ data: { deleteFiles: [] } }),
+        readFiles: () => Promise.resolve(),
+        publishFiles: () => Promise.resolve({ data: { publishFiles: [] } }),
+        unpublishFiles: () => Promise.resolve({ data: { unpublishFiles: [] } }),
+      },
+      confirmDeletion: {
+        deleting: () => null,
+      },
+      toasts: {
+        display: () => null,
+        success: () => null,
+        error: () => null,
+      }
+    },
+    showSearch: true,
+    EditorComponent: ({ onSubmit }) => <div data-testid="test-editor" onClick={() => onSubmit(...nextParams)}/>,
+    GalleryComponent: ({ onPublish, onUnpublish, onSuccessfulUploadQueue, files }) => <div
+      data-testid="test-gallery"
+      onClick={() => {
+      if (nextAction === 'publish') {
+        onPublish(...nextParams);
+      } else if (nextAction === 'unpublish') {
+        onUnpublish(...nextParams);
+      } else if (nextAction === 'successfulupload') {
+        onSuccessfulUploadQueue(...nextParams);
+      } else if (nextAction === 'files') {
+        lastReturn = files;
+      }
+    }}
+    />,
+    SearchComponent: ({ onSearch }) => <div data-testid="test-search" onClick={() => onSearch(...nextParams)}/>,
+    BulkDeleteConfirmationComponent: ({ onConfirm }) => <div data-testid="test-bulk-delete-confirmation" onClick={() => onConfirm(...nextParams)}/>,
+    ...obj
+  };
+}
+
+test('AssetAdmin handleSubmitEditor should call the onSubmitEditor property when that is supplied', async () => {
+  const onSubmitEditor = jest.fn(() => Promise.resolve(null));
+  const paramSubmit = jest.fn(() => Promise.resolve(null));
+  render(
+    <AssetAdmin {...makeProps({
+      onSubmitEditor
+    })}
+    />
+  );
+  const editor = await screen.findByTestId('test-editor');
+  nextParams = [{}, 'action_test', paramSubmit];
+  fireEvent.click(editor);
+  expect(onSubmitEditor).toBeCalledWith({}, 'action_test', paramSubmit, undefined);
+  expect(paramSubmit).not.toBeCalled();
+});
+
+test('AssetAdmin handleSubmitEditor should call the paramSubmit given when no onSubmitEditor is supplied', async () => {
+  const paramSubmit = jest.fn(() => Promise.resolve(null));
+  render(
+    <AssetAdmin {...makeProps()}/>
+  );
+  const editor = await screen.findByTestId('test-editor');
+  nextParams = [{}, 'action_test', paramSubmit];
+  fireEvent.click(editor);
+  expect(paramSubmit).toBeCalled();
+});
+
+test('AssetAdmin handleBrowse should clear selected files when folder changes', async () => {
+  const deselectFiles = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 2,
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          deselectFiles
+        }
+      }
+    })}
+    />
+  );
+  const search = await screen.findByTestId('test-search');
+  nextParams = [{
+    currentFolderOnly: false
+  }];
+  fireEvent.click(search);
+  expect(deselectFiles.mock.calls.length).toBe(2);
+});
+
+test('AssetAdmin handleBrowse should not clear selected', async () => {
+  const deselectFiles = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 2,
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          deselectFiles
+        }
+      }
+    })}
+    />
+  );
+  const search = await screen.findByTestId('test-search');
+  nextParams = [{
+    currentFolderOnly: true
+  }];
+  fireEvent.click(search);
+  expect(deselectFiles.mock.calls.length).toBe(1);
+});
+
+test('AssetAdmin handleDelete should delete a file', async () => {
+  const deleteFiles = jest.fn(() => Promise.resolve({ data: { deleteFiles: [] } }));
+  const removeQueuedFile = jest.fn();
+  const files = [
+    getMockFile(1)
+  ];
+  render(
+    <AssetAdmin {...makeProps({
+      files,
+      queuedFiles: {
+        items: [
+          {
+            ...getMockFile(2),
+            queuedId: 2
+          },
+        ]
       },
       actions: {
-        gallery: {
-          deselectFiles: jest.fn(),
-        },
-        queuedFiles: {
-          addQueuedFile: jest.fn(),
-          failUpload: jest.fn(),
-          purgeUploadQueue: jest.fn(),
-          removeQueuedFile: jest.fn(),
-          succeedUpload: jest.fn(),
-        },
+        ...makeProps().actions,
         files: {
-          deleteFiles: jest.fn(() => Promise.resolve({ data: { deleteFiles: [] } })),
-          readFiles: jest.fn(() => Promise.resolve()),
-          publishFiles: jest.fn(() => Promise.resolve({ data: { publishFiles: [] } })),
-          unpublishFiles: jest.fn(() => Promise.resolve({ data: { unpublishFiles: [] } })),
-        },
-        confirmDeletion: {
-          deleting: jest.fn(),
-        },
-        toasts: {
-          display: jest.fn(),
-          success: jest.fn(),
-          error: jest.fn(),
+          ...makeProps().actions.files,
+          deleteFiles
+        }
+      }
+    })}
+    />
+  );
+  const confirmation = await screen.findByTestId('test-bulk-delete-confirmation');
+  nextParams = [[files[0].id]];
+  fireEvent.click(confirmation);
+  expect(deleteFiles.mock.calls.length).toBe(1);
+  expect(deleteFiles.mock.calls[0][0]).toEqual([files[0].id]);
+});
+
+test('AssetAdmin handleDelete should remove the file from the queued files list', async () => {
+  const removeQueuedFile = jest.fn();
+  const files = [
+    getMockFile(1)
+  ];
+  render(
+    <AssetAdmin {...makeProps({
+      files,
+      queuedFiles: {
+        items: [
+          {
+            ...getMockFile(2),
+            queuedId: 2
+          },
+        ]
+      },
+      actions: {
+        ...makeProps().actions,
+        queuedFiles: {
+          ...makeProps().actions.queuedFiles,
+          removeQueuedFile
         }
       },
-    };
-  });
+    })}
+    />
+  );
+  const confirmation = await screen.findByTestId('test-bulk-delete-confirmation');
+  nextParams = [[2]];
+  fireEvent.click(confirmation);
+  expect(removeQueuedFile.mock.calls.length).toBe(1);
+  expect(removeQueuedFile.mock.calls[0][0]).toEqual(2);
+});
 
-  describe('handleSubmitEditor', () => {
-    let component = null;
-    let response = null;
-    let propSubmit = null;
-    let paramSubmit = null;
-
-    beforeEach(() => {
-      response = { record: {} };
-      propSubmit = jest.fn(() => Promise.resolve(response));
-      paramSubmit = jest.fn(() => Promise.resolve(response));
-    });
-
-    it('should call the onSubmitEditor property when that is supplied', () => {
-      component = ReactTestUtils.renderIntoDocument(
-        <AssetAdmin
-          {...props}
-          onSubmitEditor={propSubmit}
-        />);
-      component.handleSubmitEditor({}, 'action_test', paramSubmit);
-
-      expect(propSubmit).toBeCalledWith({}, 'action_test', paramSubmit, undefined);
-      expect(paramSubmit).not.toBeCalled();
-    });
-
-    it('should call the paramSubmit given when no onSubmitEditor is supplied', () => {
-      component = ReactTestUtils.renderIntoDocument(
-        <AssetAdmin
-          {...props}
-        />);
-      component.handleSubmitEditor({}, 'action_test', paramSubmit);
-
-      expect(paramSubmit).toBeCalled();
-    });
-
-    it('should call handleOpenFile if action is creating a folder in admin', () => {
-      component = ReactTestUtils.renderIntoDocument(
-        <AssetAdmin
-          {...props}
-        />);
-      component.handleOpenFile = jest.fn();
-      component.handleOpenFolder = jest.fn();
-
-      return component.handleSubmitEditor({}, 'action_createfolder', paramSubmit)
-        .then(() => {
-          expect(component.handleOpenFile).toBeCalled();
-          expect(component.handleOpenFolder).not.toBeCalled();
-        });
-    });
-
-    it('should call handleOpenFolder if action is creating a folder not in admin', () => {
-      props.type = 'insert-media';
-      component = ReactTestUtils.renderIntoDocument(
-        <AssetAdmin
-          {...props}
-        />);
-      component.handleOpenFile = jest.fn();
-      component.handleOpenFolder = jest.fn();
-
-      return component.handleSubmitEditor({}, 'action_createfolder', paramSubmit)
-        .then(() => {
-          expect(component.handleOpenFile).not.toBeCalled();
-          expect(component.handleOpenFolder).toBeCalled();
-        });
-    });
-  });
-
-  describe('handleBrowse', () => {
-    let component = null;
-
-    beforeEach(() => {
-      props.folderId = 2;
-      props.actions.gallery.deselectFiles = jest.fn();
-      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-    });
-
-    it('should clear selected files when folder changes', () => {
-      component.handleBrowse(3);
-
-      expect(props.actions.gallery.deselectFiles).toBeCalled();
-    });
-
-    it('should not clear selected files', () => {
-      component.handleBrowse(2);
-
-      expect(props.actions.gallery.deselectFiles).not.toBeCalled();
-    });
-  });
-
-  describe('handleDelete', () => {
-    let component = null;
-
-    beforeEach(() => {
-      props.files = [
-        getMockFile(1),
-      ];
-      props.queuedFiles = {
+test('AssetAdmin doPublish should publish a file', async () => {
+  const publishFiles = jest.fn(() => Promise.resolve({ data: { publishFiles: [] } }));
+  const files = [
+    getMockFile(1)
+  ];
+  render(
+    <AssetAdmin {...makeProps({
+      files,
+      queuedFiles: {
         items: [
-          { ...getMockFile(2), queuedId: 2 },
-        ],
-      };
-      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-    });
-
-    it('should delete a file', () => {
-      const id = props.files[0].id;
-      component.handleDelete([id]);
-
-      expect(props.actions.files.deleteFiles).toBeCalledWith([id], 0);
-    });
-
-    it('should remove the file from the queued files list', () => {
-      const id = props.queuedFiles.items[0].id;
-      props.actions.queuedFiles.removeQueuedFile = jest.fn();
-      return component.handleDelete([id]).then(() => {
-        expect(props.actions.queuedFiles.removeQueuedFile)
-          .toBeCalledWith(props.queuedFiles.items[0].queuedId);
-      });
-    });
-  });
-  describe('doPublish', () => {
-    let component = null;
-
-    beforeEach(() => {
-      props.files = [
-        getMockFile(1),
-      ];
-      props.queuedFiles = {
-        items: [
-          { ...getMockFile(2), queuedId: 2 },
-        ],
-      };
-      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-    });
-
-    it('should publish a file', () => {
-      const id = props.files[0].id;
-      component.doPublish([id]);
-
-      expect(props.actions.files.publishFiles).toBeCalledWith([id]);
-    });
-  });
-
-  describe('doUnpublish', () => {
-    let component = null;
-
-    beforeEach(() => {
-      props.files = [
-        getMockFile(1),
-      ];
-      props.queuedFiles = {
-        items: [
-          { ...getMockFile(2), queuedId: 2 },
-        ],
-      };
-      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-    });
-
-    it('should unpublish a file', () => {
-      const id = props.files[0].id;
-      component.doUnpublish([id]);
-
-      expect(props.actions.files.unpublishFiles).toBeCalledWith([id], false);
-    });
-  });
-
-  describe('handleUploadQueue', () => {
-    let component = null;
-    it('should refresh if a file is open', () => {
-      props.fileId = 123;
-      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-      component.handleUploadQueue();
-      expect(props.actions.files.readFiles).toBeCalled();
-    });
-    it('should not refresh if no file is open', () => {
-      props.fileId = 0;
-      component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-      component.handleUploadQueue();
-      expect(props.actions.files.readFiles).not.toBeCalled();
-    });
-  });
-
-  describe('getFiles', () => {
-    const deriveFilesIDs = (_props) => {
-      props = { ...props, ..._props };
-      const component = ReactTestUtils.renderIntoDocument(<AssetAdmin {...props} />);
-      return component.getFiles().map(({ id }) => id);
-    };
-
-    beforeEach(() => {
-      props.files = [];
-      props.queuedFiles = { items: [] };
-      props.folderId = 99;
-    });
-
-    it('no files provided', () => {
-      expect(deriveFilesIDs({})).toEqual([]);
-    });
-
-    it('some files in a folder', () => {
-      expect(deriveFilesIDs({
-        files: [
-          { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-          { id: 2, name: 'file two', type: 'image/jpeg', parent: { id: 99 } }
+          {
+            ...getMockFile(2),
+            queuedId: 2
+          },
         ]
-      })).toEqual([1, 2]);
-    });
-
-    it('files+queuedFiles', () => {
-      expect(deriveFilesIDs({
-        files: [
-          { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-          { id: 2, name: 'file two', type: 'image/jpeg', parent: { id: 99 } }
-        ],
-        queuedFiles: {
-          items: [
-            { id: 3, name: 'file three', type: 'image/jpeg', parent: { id: 99 } },
-            { id: 4, name: 'file four', type: 'image/jpeg', parent: { id: 99 } }
-          ]
+      },
+      actions: {
+        ...makeProps().actions,
+        files: {
+          ...makeProps().actions.files,
+          publishFiles
         }
-      })).toEqual([3, 4, 1, 2]);
-    });
+      },
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'publish';
+  nextParams = [[files[0].id]];
+  fireEvent.click(gallery);
+  expect(publishFiles.mock.calls.length).toBe(1);
+  expect(publishFiles.mock.calls[0][0]).toEqual([files[0].id]);
+});
 
-    it('upload error e.g. invalid file extension', () => {
-      expect(deriveFilesIDs({
-        files: [
-          { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-        ],
-        queuedFiles: {
-          items: [
-            {
-              id: 0,
-              name: 'invalid file attempted to upload',
-              type: 'alien/artifact',
-              parent: { id: 0 },
-              message: { type: 'error', value: 'Invalid file extension' },
-              uploadedToFolderId: 99,
-            },
-          ]
+test('AssetAdmin doUnpublish should unpublish a file', async () => {
+  const unpublishFiles = jest.fn(() => Promise.resolve({ data: { unpublishFiles: [] } }));
+  const files = [
+    getMockFile(1)
+  ];
+  render(
+    <AssetAdmin {...makeProps({
+      files,
+      queuedFiles: {
+        items: [
+          {
+            ...getMockFile(2),
+            queuedId: 2
+          },
+        ]
+      },
+      actions: {
+        ...makeProps().actions,
+        files: {
+          ...makeProps().actions.files,
+          unpublishFiles
         }
-      })).toEqual([0, 1]);
-    });
+      },
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'unpublish';
+  nextParams = [[files[0].id]];
+  fireEvent.click(gallery);
+  expect(unpublishFiles.mock.calls.length).toBe(1);
+  expect(unpublishFiles.mock.calls[0][0]).toEqual([files[0].id]);
+});
 
-    it('upload in progress', () => {
-      expect(deriveFilesIDs({
-        files: [
-          { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-        ],
-        queuedFiles: {
-          items: [
-            {
-              id: 0,
-              name: 'file uploading',
-              type: 'image/jpeg',
-              parent: { id: 0 },
-              uploadedToFolderId: 99,
-            },
-          ]
+test('AssetAdmin handleUploadQueue should not refresh if no file is open', async () => {
+  const readFiles = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      fileId: 0,
+      actions: {
+        ...makeProps().actions,
+        files: {
+          ...makeProps().actions.files,
+          readFiles
         }
-      })).toEqual([0, 1]);
-    });
+      },
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'successfulupload';
+  fireEvent.click(gallery);
+  expect(readFiles.mock.calls.length).toBe(0);
+});
 
-    it('upload in progress to root folder', () => {
-      expect(deriveFilesIDs({
-        files: [
-          { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-        ],
-        queuedFiles: {
-          items: [
-            {
-              id: 0,
-              name: 'file uploading',
-              type: 'image/jpeg',
-              parent: { id: 0 },
-              uploadedToFolderId: 0,
-            },
-          ]
-        },
-        folderId: 0
-      })).toEqual([0, 1]);
-    });
+test('AssetAdmin getFiles no files provided', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      files: [],
+      queuedFiles: {
+        items: []
+      },
+      folderId: 99
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  expect(lastReturn).toStrictEqual([]);
+});
 
-    it('viewing a folder after uploading to a different folder', () => {
-      expect(deriveFilesIDs({
-        files: [
-          { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-        ],
-        queuedFiles: {
-          items: [
-            {
-              id: 0,
-              name: 'file uploaded',
-              type: 'image/jpeg',
-              parent: { id: 0 },
-              uploadedToFolderId: 77,
-            },
-          ]
-        },
-      })).toEqual([1]);
-    });
-  });
+test('AssetAdmin getFiles some files in a folder', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      files: [
+        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
+        { id: 2, name: 'file two', type: 'image/jpeg', parent: { id: 99 } }
+      ],
+      queuedFiles: {
+        items: []
+      },
+      folderId: 99
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([1, 2]);
+});
+
+test('AssetAdmin getFiles some files in a folder', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      files: [
+        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
+        { id: 2, name: 'file two', type: 'image/jpeg', parent: { id: 99 } }
+      ],
+      queuedFiles: {
+        items: [
+          { id: 3, name: 'file three', type: 'image/jpeg', parent: { id: 99 } },
+          { id: 4, name: 'file four', type: 'image/jpeg', parent: { id: 99 } }
+        ]
+      },
+      folderId: 99
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([3, 4, 1, 2]);
+});
+
+test('AssetAdmin getFiles upload error e.g. invalid file extension', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      files: [
+        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
+      ],
+      queuedFiles: {
+        items: [
+          {
+            id: 0,
+            name: 'invalid file attempted to upload',
+            type: 'alien/artifact',
+            parent: { id: 0 },
+            message: { type: 'error', value: 'Invalid file extension' },
+            uploadedToFolderId: 99,
+          },
+        ]
+      },
+      folderId: 99
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1]);
+});
+
+test('AssetAdmin getFiles upload in progress', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      files: [
+        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
+      ],
+      queuedFiles: {
+        items: [
+          {
+            id: 0,
+            name: 'file uploading',
+            type: 'image/jpeg',
+            parent: { id: 0 },
+            uploadedToFolderId: 99,
+          },
+        ]
+      },
+      folderId: 99
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1]);
+});
+
+test('AssetAdmin getFiles upload in progress to root folder', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      files: [
+        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
+      ],
+      queuedFiles: {
+        items: [
+          {
+            id: 0,
+            name: 'file uploading',
+            type: 'image/jpeg',
+            parent: { id: 0 },
+            uploadedToFolderId: 0,
+          },
+        ]
+      },
+      folderId: 0
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1]);
+});
+
+test('AssetAdmin viewing a folder after uploading to a different folder', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      files: [
+        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
+      ],
+      queuedFiles: {
+        items: [
+          {
+            id: 0,
+            name: 'file uploaded',
+            type: 'image/jpeg',
+            parent: { id: 0 },
+            uploadedToFolderId: 77,
+          },
+        ]
+      }
+    })}
+    />
+  );
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([1]);
 });

@@ -355,13 +355,14 @@ class PreviewImageField extends Component {
   }
 
   render() {
+    const { AssetDropzoneComponent } = this.props;
     const dropzoneProps = this.getDropzoneProps();
 
     if (this.canEdit()) {
       return (
-        <AssetDropzone {...dropzoneProps}>
+        <AssetDropzoneComponent {...dropzoneProps}>
           {this.renderImage()}
-        </AssetDropzone>
+        </AssetDropzoneComponent>
       );
     }
     const classNames = [
@@ -420,6 +421,7 @@ PreviewImageField.propTypes = {
   actions: PropTypes.object,
   securityID: PropTypes.string,
   confirm: PropTypes.func,
+  AssetDropzoneComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
 };
 
 PreviewImageField.defaultProps = {
@@ -430,7 +432,8 @@ PreviewImageField.defaultProps = {
   upload: {},
   // eslint-disable-next-line no-alert
   confirm: (msg) => window.confirm(msg),
-  bustCache: true
+  bustCache: true,
+  AssetDropzoneComponent: AssetDropzone
 };
 
 function mapStateToProps(state, ownProps) {

@@ -1,8 +1,8 @@
-/* global jest, describe, it, expect, beforeEach, Event */
+/* global jest, test, expect */
 
 import React from 'react';
-import Component from '../BulkDeleteMessage';
-import ShallowRenderer from 'react-test-renderer/shallow';
+import BulkDeleteMessage from '../BulkDeleteMessage';
+import { render } from '@testing-library/react';
 
 const unlinkFileWarning = 'Ensure files are removed from content areas prior to deleting them, otherwise they will appear as broken links.';
 
@@ -52,115 +52,134 @@ const emptyFolderMessage = 'Are you sure you want to delete this folder?';
 
 const emptyFoldersMessage = 'Are you sure you want to delete these folders?';
 
-describe('BulkDeleteMessage', () => {
-  const renderer = new ShallowRenderer();
+function makeProps(obj = {}) {
+  return {
+    actions: [
+      {
+        value: 'foo'
+      }
+    ],
+    ...obj
+  };
+}
 
-  describe('Deleting a file and a folder', () => {
-    const testCases = [
-      [
-        'file in use',
-        { ...noFoldersProps, ...oneFileProps },
-        getMessage('1'),
-      ],
-      [
-        'folder in use',
-        { ...noFilesProps, ...oneFolderProps },
-        getMessage('5'),
-      ],
-      [
-        'file and folder in use',
-        { ...oneFileProps, ...oneFolderProps },
-        getMessage('6'),
-      ],
-    ];
+test('BulkDeleteMessage Deleting a file and a folder file in use', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...noFoldersProps,
+      ...oneFileProps
+    })}
+    />
+  );
+  const ps = container.querySelectorAll('p');
+  expect(ps.length).toBe(2);
+  expect(ps[0].textContent).toBe(getMessage('1'));
+  expect(ps[1].textContent).toBe(unlinkFileWarning);
+});
 
-    testCases.forEach(([desc, props, expectedMessage]) => {
-      it(desc, () => {
-        renderer.render(<Component {...props} />);
-        const result = renderer.getRenderOutput();
-        expect(result.props.children.length).toEqual(2);
-        expect(result.props.children[0]).toEqual(
-          <p>{expectedMessage}</p>
-        );
-      });
-    });
-  });
+test('BulkDeleteMessage Deleting a file and a folder folder in use', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...noFilesProps,
+      ...oneFolderProps
+    })}
+    />
+  );
+  const ps = container.querySelectorAll('p');
+  expect(ps.length).toBe(2);
+  expect(ps[0].textContent).toBe(getMessage('5'));
+  expect(ps[1].textContent).toBe(unlinkFileWarning);
+});
 
-  describe('Deleting folders', () => {
-    const testCases = [
-      [
-        'one folder in use',
-        { ...noFilesProps, ...oneFolderProps },
-        getMessage('5'),
-      ],
-      [
-        'multiple folders in use',
-        { ...noFilesProps, ...manyfolderProps },
-        getMessage('10'),
-      ],
-    ];
+test('BulkDeleteMessage Deleting a file and a folder file and folder in use', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...oneFileProps,
+      ...oneFolderProps
+    })}
+    />
+  );
+  expect(container.querySelector('p').textContent).toBe(getMessage('6'));
+});
 
-    testCases.forEach(([desc, props, expectedMessage]) => {
-      it(desc, () => {
-        renderer.render(<Component {...props} />);
-        const result = renderer.getRenderOutput();
-        expect(result.props.children.length).toEqual(2);
-        expect(result.props.children[0]).toEqual(
-          <p>{expectedMessage}</p>
-        );
-      });
-    });
-  });
+test('BulkDeleteMessage Deleting folders one folder in use', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...noFilesProps,
+      ...oneFolderProps
+    })}
+    />
+  );
+  const ps = container.querySelectorAll('p');
+  expect(ps.length).toBe(2);
+  expect(ps[0].textContent).toBe(getMessage('5'));
+  expect(ps[1].textContent).toBe(unlinkFileWarning);
+});
 
-  describe('Deleting empty folders', () => {
-    const testCases = [
-      [
-        'one empty folder',
-        { ...noFilesProps, ...oneEmptyFolder },
-        emptyFolderMessage,
-      ],
-      [
-        'multiple empty folders',
-        { ...noFilesProps, ...manyEmptyFolders },
-        emptyFoldersMessage,
-      ],
-    ];
+test('BulkDeleteMessage Deleting folders multiple folders in use', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...noFilesProps,
+      ...manyfolderProps
+    })}
+    />
+  );
+  const ps = container.querySelectorAll('p');
+  expect(ps.length).toBe(2);
+  expect(ps[0].textContent).toBe(getMessage('10'));
+  expect(ps[1].textContent).toBe(unlinkFileWarning);
+});
 
-    testCases.forEach(([desc, props, expectedMessage]) => {
-      it(desc, () => {
-        renderer.render(<Component {...props} />);
-        const result = renderer.getRenderOutput();
-        expect(result.props.children.length).toEqual(2);
-        expect(result.props.children[0]).toEqual(
-          <p>{expectedMessage}</p>
-        );
-      });
-    });
-  });
+test('BulkDeleteMessage Deleting empty folders one empty folder', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...noFilesProps,
+      ...oneEmptyFolder
+    })}
+    />
+  );
+  const ps = container.querySelectorAll('p');
+  expect(ps.length).toBe(1);
+  expect(ps[0].textContent).toBe(emptyFolderMessage);
+});
 
-  describe('Deleting files', () => {
-    const testCases = [
-      [
-        'one file in use',
-        { ...noFoldersProps, ...oneFileProps },
-        getMessage('1'),
-      ],
-      [
-        'many files in use',
-        { ...noFoldersProps, ...manyFilesProps },
-        getMessage('2'),
-      ]
-    ];
+test('BulkDeleteMessage Deleting empty folders multiple empty folders', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...noFilesProps,
+      ...manyEmptyFolders
+    })}
+    />
+  );
+  const ps = container.querySelectorAll('p');
+  expect(ps.length).toBe(1);
+  expect(ps[0].textContent).toBe(emptyFoldersMessage);
+});
 
-    testCases.forEach(([desc, props, expectedMessage]) => {
-      it(desc, () => {
-        renderer.render(<Component {...props} />);
-        const result = renderer.getRenderOutput();
-        expect(result.props.children).toEqual([
-          <p>{expectedMessage}</p>,
-          <p>{unlinkFileWarning}</p>
-        ]);
-      });
-    });
-  });
+test('BulkDeleteMessage Deleting files one file in use', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...noFoldersProps,
+      ...oneFileProps
+    })}
+    />
+  );
+  const ps = container.querySelectorAll('p');
+  expect(ps.length).toBe(2);
+  expect(ps[0].textContent).toBe(getMessage('1'));
+  expect(ps[1].textContent).toBe(unlinkFileWarning);
+});
+
+test('BulkDeleteMessage Deleting files many files in use', () => {
+  const { container } = render(
+    <BulkDeleteMessage {...makeProps({
+      ...noFoldersProps,
+      ...manyFilesProps
+    })}
+    />
+  );
+  const ps = container.querySelectorAll('p');
+  expect(ps.length).toBe(2);
+  expect(ps[0].textContent).toBe(getMessage('2'));
+  expect(ps[1].textContent).toBe(unlinkFileWarning);
 });
