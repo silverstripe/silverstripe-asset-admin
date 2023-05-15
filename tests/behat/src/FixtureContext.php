@@ -451,27 +451,33 @@ EOS
      */
     public function iSelectTheImageInHtmlField($filename, $field)
     {
-        $inputField = $this->getHtmlField($field);
-        $inputFieldId = $inputField->getAttribute('id');
-        $filename = addcslashes($filename ?? '', "'");
-        $js = <<<JS
-var editor = jQuery('#$inputFieldId').entwine('ss').getEditor(),
-	doc = editor.getInstance().getDoc(),
-	sel = editor.getInstance().selection,
-	rng = document.createRange(),
-	matched = false;
+        $this->selectInTheHtmlField("img[src*='$filename']", $field);
+    }
 
-editor.getInstance().focus();
-jQuery(doc).find("img[src*='$filename']").each(function() {
-	if(!matched) {
-		rng.setStart(this, 0);
-		rng.setEnd(this, 0);
-		sel.setRng(rng);
-		editor.getInstance().nodeChanged();
-		matched = true;
-	}
-});
-JS;
+    /**
+     * Selects the first match of $select in the given HTML editor (tinymce)
+     */
+    protected function selectInTheHtmlField(string $select, string $field)
+    {
+        $inputField = $this->getHtmlField($field);
+        $inputField->getParent()->find('css', 'iframe')->click();
+        $inputFieldId = $inputField->getAttribute('id');
+        $js = <<<JS
+        var editor = jQuery('#$inputFieldId').entwine('ss').getEditor(),
+            doc = editor.getInstance().getDoc(),
+            sel = doc.getSelection(),
+            rng = new Range(),
+            matched = false;
+
+        jQuery(doc).find("$select").each(function() {
+            if(!matched) {
+                rng.selectNode(this);
+                sel.removeAllRanges();
+                sel.addRange(rng);
+                matched = true;
+            }
+        });
+        JS;
         $this->getMainContext()->getSession()->executeScript($js);
     }
 
