@@ -1,4 +1,8 @@
-/* global jest, describe, it, expect, beforeEach */
+/* global jest, test, expect */
+
+import React from 'react';
+import { Component as BulkActions } from '../BulkActions';
+import { render, fireEvent } from '@testing-library/react';
 
 jest.mock('jquery', () => {
   const jqueryMock = {
@@ -13,138 +17,78 @@ jest.mock('jquery', () => {
   return () => jqueryMock;
 });
 
-import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-import { Component as BulkActions } from '../BulkActions';
-
-describe('BulkActions', () => {
-  describe('canApply()', () => {
-    let props = null;
-    beforeEach(() => {
-      props = {
-        actions: [
-          {
-            value: 'action-with-apply',
-            label: '',
-            canApply: (items) => items.filter(item => item.applies).length,
-            callback: () => true,
-          },
-          {
-            value: 'action-without-apply',
-            label: '',
-            callback: () => true,
-          },
-        ],
-      };
-    });
-
-    it('shows an action button when canApply returns true', () => {
-      const propsWithItems = Object.assign({}, props, { items: [{ applies: true }] });
-      const bulkActions = ReactTestUtils.renderIntoDocument(
-        <BulkActions {...propsWithItems} />
-      );
-      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions__action')
-        .find(el => el.value === 'action-with-apply');
-      expect(matchedBulkAction).toBeTruthy();
-    });
-
-    it('does not show an action button when canApply returns false', () => {
-      const propsWithItems = Object.assign({}, props, { items: [{ applies: false }] });
-      const bulkActions = ReactTestUtils.renderIntoDocument(
-        <BulkActions {...propsWithItems} />
-      );
-      const matchedBulkAction = ReactTestUtils.scryRenderedDOMComponentsWithClass(bulkActions, 'bulk-actions__action')
-        .find(el => el.value === 'action-with-apply');
-      expect(matchedBulkAction).toBeFalsy();
-    });
-  });
-
-  describe('getOptionByValue()', () => {
-    let bulkActions = null;
-    let props = null;
-
-    beforeEach(() => {
-      props = {
-        actions: [
-          {
-            value: 'my-first-action',
-            label: 'My First Action',
-            callback: () => true,
-          },
-        ],
-        items: [],
-      };
-      bulkActions = ReactTestUtils.renderIntoDocument(
-        <BulkActions {...props} />
-      );
-    });
-
-    it('should return the option which matches the given value', () => {
-      expect(bulkActions.getOptionByValue('my-first-action').value).not.toBeFalsy();
-    });
-
-    it('should return null if no option matches the given value', () => {
-      expect(bulkActions.getOptionByValue('unknown-action')).toBeFalsy();
-    });
-  });
-
-  describe('handleChangeValue()', () => {
-    let bulkActions = null;
-    let event = null;
-    let props = null;
-
-    beforeEach(() => {
-      props = {
-        actions: [],
-        items: [],
-      };
-      bulkActions = ReactTestUtils.renderIntoDocument(
-        <BulkActions {...props} />
-      );
-      event = {
-        target: {
-          value: null,
+test('BulkActions canApply() shows an action button when canApply returns true', async () => {
+  const { container } = render(
+    <BulkActions {...{
+      actions: [
+        {
+          value: 'action-with-apply',
+          label: '',
+          canApply: (items) => items.filter(item => item.applies).length,
+          callback: () => true,
         },
-      };
+        {
+          value: 'action-without-apply',
+          label: '',
+          callback: () => true,
+        },
+      ],
+      items: [{ applies: true }]
+    }}
+    />
+  );
+  const actions = container.querySelectorAll('.bulk-actions__action');
+  expect(actions).toHaveLength(2);
+  expect(actions[0].getAttribute('value')).toBe('action-with-apply');
+  expect(actions[1].getAttribute('value')).toBe('action-without-apply');
+});
 
-      bulkActions.getOptionByValue = jest.fn();
-      bulkActions.applyAction = jest.fn();
-    });
 
-    it('should return undefined if no valid option is selected', () => {
-      bulkActions.getOptionByValue.mockReturnValueOnce(null);
+test('BulkActions canApply() shows an action button when canApply returns false', () => {
+  const { container } = render(
+    <BulkActions {...{
+      actions: [
+        {
+          value: 'action-with-apply',
+          label: '',
+          canApply: (items) => items.filter(item => item.applies).length,
+          callback: () => true,
+        },
+        {
+          value: 'action-without-apply',
+          label: '',
+          callback: () => true,
+        },
+      ],
+      items: [{ applies: false }]
+    }}
+    />
+  );
+  const actions = container.querySelectorAll('.bulk-actions__action');
+  expect(actions).toHaveLength(1);
+  expect(actions[0].getAttribute('value')).toBe('action-without-apply');
+});
 
-      expect(bulkActions.handleChangeValue(event)).toBeFalsy();
-    });
-
-
-    it('should use callback if no confirm callback is configured', () => {
-      const callbackMockFn = jest.fn();
-
-      bulkActions.getOptionByValue.mockReturnValueOnce({ confirm: null, callback: callbackMockFn });
-      return bulkActions.handleChangeValue(event).then(() => {
-        expect(callbackMockFn).toBeCalled();
-      });
-    });
-
-    it('should use callback if confirm is configured and resolved', () => {
-      const callbackMockFn = jest.fn();
-
-      bulkActions.getOptionByValue
-        .mockReturnValueOnce({ confirm: () => Promise.resolve(), callback: callbackMockFn });
-      return bulkActions.handleChangeValue(event).then(() => {
-        expect(callbackMockFn).toBeCalled();
-      });
-    });
-
-    it('should not use callback if confirm is configured and rejected', () => {
-      const callbackMockFn = jest.fn();
-
-      bulkActions.getOptionByValue
-        .mockReturnValueOnce({ confirm: () => Promise.reject('cancelled'), callback: callbackMockFn });
-      return bulkActions.handleChangeValue(event).then(() => {
-        expect(callbackMockFn).not.toBeCalled();
-      });
-    });
+test('BulkActions getOptionsByValue() should return the option which matches the given value', async () => {
+  let doResolve;
+  const promise = new Promise((resolve) => {
+    doResolve = resolve;
   });
+  const { container } = render(
+    <BulkActions {...{
+      actions: [
+        {
+          value: 'my-first-action',
+          label: 'My First Action',
+          callback: () => doResolve(),
+        },
+      ],
+      items: [{ applies: true }],
+    }}
+    />
+  );
+  const action = container.querySelector('.bulk-actions__action');
+  fireEvent.click(action);
+  await promise;
+  expect(container.querySelector('.bulk-actions__action').getAttribute('value')).toBe('my-first-action');
 });

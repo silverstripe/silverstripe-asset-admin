@@ -572,6 +572,7 @@ class AssetAdmin extends Component {
    * @returns {object}
    */
   renderGallery() {
+    const { GalleryComponent } = this.props;
     const config = this.props.sectionConfig;
     const createFileApiUrl = config.createFileEndpoint.url;
     const createFileApiMethod = config.createFileEndpoint.method;
@@ -584,7 +585,7 @@ class AssetAdmin extends Component {
     const filters = this.props.query.filter || {};
 
     return (
-      <Gallery
+      <GalleryComponent
         files={this.getFiles()}
         fileId={this.props.fileId}
         folderId={this.getFolderId()}
@@ -633,7 +634,8 @@ class AssetAdmin extends Component {
       fileId,
       dialog,
       requireLinkText,
-      fileSelected
+      fileSelected,
+      EditorComponent
     } = this.props;
     const { schemaUrl, targetId } = getFormSchema({
       config,
@@ -667,11 +669,11 @@ class AssetAdmin extends Component {
       addToCampaignSchemaUrl: config.form.addToCampaignForm.schemaUrl
     };
 
-    return <Editor {...editorProps} />;
+    return <EditorComponent {...editorProps} />;
   }
 
   render() {
-    const { folder, folderId, query, getUrl, type, maxFiles, toolbarChildren } = this.props;
+    const { folder, folderId, query, getUrl, type, maxFiles, toolbarChildren, SearchComponent, BulkDeleteConfirmationComponent } = this.props;
 
     const showBackButton = Boolean(folderId || hasFilters(query.filter));
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
@@ -708,7 +710,7 @@ class AssetAdmin extends Component {
             {toolbarChildren}
           </div>
         </Toolbar>
-        {showSearch && <Search
+        {showSearch && <SearchComponent
           onSearch={this.handleDoSearch}
           id="AssetSearchForm"
           formSchemaUrl={searchFormSchemaUrl}
@@ -721,7 +723,7 @@ class AssetAdmin extends Component {
           {this.renderGallery()}
           {this.renderEditor()}
         </div>
-        <BulkDeleteConfirmation onConfirm={this.handleDelete} />
+        <BulkDeleteConfirmationComponent onConfirm={this.handleDelete} />
       </div>
     );
   }
@@ -762,7 +764,11 @@ AssetAdmin.propTypes = {
   loading: PropTypes.bool,
   actions: PropTypes.object,
   maxFiles: PropTypes.number,
-  fileSelected: PropTypes.bool
+  fileSelected: PropTypes.bool,
+  EditorComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  GalleryComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  SearchComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  BulkDeleteConfirmationComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 };
 
 AssetAdmin.defaultProps = {
@@ -774,6 +780,10 @@ AssetAdmin.defaultProps = {
     filter: {},
   },
   maxFiles: null,
+  EditorComponent: Editor,
+  GalleryComponent: Gallery,
+  SearchComponent: Search,
+  BulkDeleteConfirmationComponent: BulkDeleteConfirmation
 };
 
 function mapStateToProps(state, ownProps) {

@@ -1,131 +1,136 @@
-/* global jest, describe, it, expect, beforeEach, FormData */
+/* global jest, expect, test */
+import React from 'react';
+import EditorHeader, { buttonStates } from '../EditorHeader';
+import { render, fireEvent } from '@testing-library/react';
+
 jest.mock('containers/FormBuilderLoader/FormBuilderLoader');
 jest.mock('components/FormBuilderModal/FormBuilderModal');
 
-import React from 'react';
-import Enzyme, { shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16/build/index';
-import EditorHeader, { buttonStates } from '../EditorHeader';
-
-Enzyme.configure({ adapter: new Adapter() });
-
-/**
- *
- * @param props
- * @returns {{baseProps: {showButton: string}, wrapper: ReactWrapper}}
- */
-const render = (props) => {
-  const baseProps = {
+function makeProps(obj = {}) {
+  return {
     showButton: buttonStates.NONE,
-    ...props
+    ...obj
   };
-  const wrapper = shallow(<EditorHeader {...baseProps}>Title field</EditorHeader>);
-  return { wrapper, baseProps };
-};
+}
 
-const BACK_SELECTOR = '.editor-header__back-button';
-const BACK_MEDIA_QUERY_SELECTOR = `${BACK_SELECTOR}--md-below`;
-const CANCEL_SELECTOR = '.editor-header__cancel-button';
-const CANCEL_MEDIA_QUERY_SELECTOR = `${CANCEL_SELECTOR}--lg-above`;
-const EDIT_SELECTOR = '.editor-header__edit';
+test('EditorHeader render No button at all', () => {
+  const { container } = render(
+    <EditorHeader {...makeProps()}>
+      Title field
+    </EditorHeader>
+  );
+  expect(container.querySelector('.editor-header__field').textContent).toBe('Title field');
+  expect(container.querySelector('.editor-header__back-button')).toBe(null);
+  expect(container.querySelector('.editor-header__cancel-button')).toBe(null);
+  expect(container.querySelector('.editor-header__edit')).toBe(null);
+});
 
-describe('EditorHeader', () => {
-  describe('render', () => {
-    it('No button at all', () => {
-      const { wrapper } = render({});
-      expect(wrapper.text().includes('Title field')).toBeTruthy();
-      expect(wrapper.find(BACK_SELECTOR).exists()).toBeFalsy();
-      expect(wrapper.find(CANCEL_SELECTOR).exists()).toBeFalsy();
-      expect(wrapper.find(EDIT_SELECTOR).exists()).toBeFalsy();
-    });
+test('EditorHeader render Details button', () => {
+  const onDetails = jest.fn();
+  const { container } = render(
+    <EditorHeader {...makeProps({
+      onDetails
+    })}
+    >
+      Title field
+    </EditorHeader>
+  );
+  expect(container.querySelector('.editor-header__field').textContent).toBe('Title field');
+  expect(container.querySelector('.editor-header__back-button')).toBe(null);
+  expect(container.querySelector('.editor-header__cancel-button')).toBe(null);
+  expect(container.querySelector('.editor-header__edit')).not.toBe(null);
+  fireEvent.click(container.querySelector('.editor-header__edit'));
+  expect(onDetails).toBeCalled();
+});
 
-    it('Details button', () => {
-      const onDetails = jest.fn();
-      const { wrapper } = render({ onDetails });
-      expect(wrapper.text().includes('Title field')).toBeTruthy();
-      expect(wrapper.find(BACK_SELECTOR).exists()).toBeFalsy();
-      expect(wrapper.find(CANCEL_SELECTOR).exists()).toBeFalsy();
+test('EditorHeader render Back button always displayed', () => {
+  const onCancel = jest.fn();
+  const { container } = render(
+    <EditorHeader {...makeProps({
+      onCancel,
+      showButton: buttonStates.ALWAYS_BACK
+    })}
+    >
+      Title field
+    </EditorHeader>
+  );
+  expect(container.querySelector('.editor-header__field').textContent).toBe('Title field');
+  expect(container.querySelector('.editor-header__cancel-button')).toBe(null);
+  expect(container.querySelector('.editor-header__edit')).toBe(null);
+  expect(container.querySelector('.editor-header__back-button')).not.toBe(null);
+  fireEvent.click(container.querySelector('.editor-header__back-button'));
+  expect(onCancel).toBeCalled();
+});
 
-      const btnDetails = wrapper.find(EDIT_SELECTOR);
-      expect(btnDetails.exists()).toBeTruthy();
+test('EditorHeader render Back button sometimes displayed', () => {
+  const onCancel = jest.fn();
+  const { container } = render(
+    <EditorHeader {...makeProps({
+      onCancel,
+      showButton: buttonStates.ONLY_BACK
+    })}
+    >
+      Title field
+    </EditorHeader>
+  );
+  expect(container.querySelector('.editor-header__field').textContent).toBe('Title field');
+  expect(container.querySelector('.editor-header__cancel-button')).toBe(null);
+  expect(container.querySelector('.editor-header__edit')).toBe(null);
+  expect(container.querySelector('.editor-header__back-button')).not.toBe(null);
+  fireEvent.click(container.querySelector('.editor-header__back-button'));
+  expect(onCancel).toBeCalled();
+});
 
-      btnDetails.simulate('click', new MouseEvent('click'));
-      expect(onDetails).toBeCalled();
-    });
+test('EditorHeader render Cancel button always displayed', () => {
+  const onCancel = jest.fn();
+  const { container } = render(
+    <EditorHeader {...makeProps({
+      onCancel,
+      showButton: buttonStates.ALWAYS_CANCEL
+    })}
+    >
+      Title field
+    </EditorHeader>
+  );
+  expect(container.querySelector('.editor-header__field').textContent).toBe('Title field');
+  expect(container.querySelector('.editor-header__back-button')).toBe(null);
+  expect(container.querySelector('.editor-header__edit')).toBe(null);
+  expect(container.querySelector('.editor-header__cancel-button')).not.toBe(null);
+  fireEvent.click(container.querySelector('.editor-header__cancel-button'));
+  expect(onCancel).toBeCalled();
+});
 
-    it('Back button always displayed', () => {
-      const onCancel = jest.fn();
-      const { wrapper } = render({ onCancel, showButton: buttonStates.ALWAYS_BACK });
-      expect(wrapper.text().includes('Title field')).toBeTruthy();
-      expect(wrapper.find(CANCEL_SELECTOR).exists()).toBeFalsy();
-      expect(wrapper.find(EDIT_SELECTOR).exists()).toBeFalsy();
+test('EditorHeader render Cancel button sometimes displayed', () => {
+  const onCancel = jest.fn();
+  const { container } = render(
+    <EditorHeader {...makeProps({
+      onCancel,
+      showButton: buttonStates.ONLY_CANCEL
+    })}
+    >
+      Title field
+    </EditorHeader>
+  );
+  expect(container.querySelector('.editor-header__field').textContent).toBe('Title field');
+  expect(container.querySelector('.editor-header__back-button')).toBe(null);
+  expect(container.querySelector('.editor-header__edit')).toBe(null);
+  expect(container.querySelector('.editor-header__cancel-button')).not.toBe(null);
+  fireEvent.click(container.querySelector('.editor-header__cancel-button'));
+  expect(onCancel).toBeCalled();
+});
 
-      const btnBack = wrapper.find(BACK_SELECTOR);
-      expect(btnBack.exists()).toBeTruthy();
-      expect(btnBack.is(BACK_MEDIA_QUERY_SELECTOR)).toBeFalsy();
-
-      btnBack.simulate('click', new MouseEvent('click'));
-      expect(onCancel).toBeCalled();
-    });
-
-    it('Back button sometimes displayed', () => {
-      const onCancel = jest.fn();
-      const { wrapper } = render({ onCancel, showButton: buttonStates.ONLY_BACK });
-      expect(wrapper.text().includes('Title field')).toBeTruthy();
-      expect(wrapper.find(CANCEL_SELECTOR).exists()).toBeFalsy();
-      expect(wrapper.find(EDIT_SELECTOR).exists()).toBeFalsy();
-
-      const btnBack = wrapper.find(BACK_SELECTOR);
-      expect(btnBack.exists()).toBeTruthy();
-      expect(btnBack.is(BACK_MEDIA_QUERY_SELECTOR)).toBeTruthy();
-
-      btnBack.simulate('click', new MouseEvent('click'));
-      expect(onCancel).toBeCalled();
-    });
-
-    it('Cancel button always displayed', () => {
-      const onCancel = jest.fn();
-      const { wrapper } = render({ onCancel, showButton: buttonStates.ALWAYS_CANCEL });
-
-      expect(wrapper.text().includes('Title field')).toBeTruthy();
-      expect(wrapper.find(BACK_SELECTOR).exists()).toBeFalsy();
-      expect(wrapper.find(EDIT_SELECTOR).exists()).toBeFalsy();
-
-      const btnCancel = wrapper.find(CANCEL_SELECTOR);
-      expect(btnCancel.exists()).toBeTruthy();
-      expect(btnCancel.is(CANCEL_MEDIA_QUERY_SELECTOR)).toBeFalsy();
-
-      btnCancel.simulate('click', new MouseEvent('click'));
-      expect(onCancel).toBeCalled();
-    });
-
-
-    it('Cancel button sometimes displayed', () => {
-      const onCancel = jest.fn();
-      const { wrapper } = render({ onCancel, showButton: buttonStates.ONLY_CANCEL });
-
-      expect(wrapper.text().includes('Title field')).toBeTruthy();
-      expect(wrapper.find(BACK_SELECTOR).exists()).toBeFalsy();
-      expect(wrapper.find(EDIT_SELECTOR).exists()).toBeFalsy();
-
-      const btnCancel = wrapper.find(CANCEL_SELECTOR);
-      expect(btnCancel.exists()).toBeTruthy();
-      expect(btnCancel.is(CANCEL_MEDIA_QUERY_SELECTOR)).toBeTruthy();
-
-      btnCancel.simulate('click', new MouseEvent('click'));
-      expect(onCancel).toBeCalled();
-    });
-
-    it('Switch between cancel and back', () => {
-      const { wrapper } = render({ showButton: buttonStates.SWITCH });
-
-      const btnCancel = wrapper.find(CANCEL_SELECTOR);
-      expect(btnCancel.exists()).toBeTruthy();
-      expect(btnCancel.is(CANCEL_MEDIA_QUERY_SELECTOR)).toBeTruthy();
-
-      const btnBack = wrapper.find(BACK_SELECTOR);
-      expect(btnBack.exists()).toBeTruthy();
-      expect(btnBack.is(BACK_MEDIA_QUERY_SELECTOR)).toBeTruthy();
-    });
-  });
+test('EditorHeader render Switch between cancel and back', () => {
+  const { container } = render(
+    <EditorHeader {...makeProps({
+      showButton: buttonStates.SWITCH
+    })}
+    >
+      Title field
+    </EditorHeader>
+  );
+  expect(container.querySelector('.editor-header__field').textContent).toBe('Title field');
+  expect(container.querySelector('.editor-header__cancel-button')).not.toBe(null);
+  expect(container.querySelector('.editor-header__cancel-button').classList).toContain('editor-header__cancel-button--lg-above');
+  expect(container.querySelector('.editor-header__back-button')).not.toBe(null);
+  expect(container.querySelector('.editor-header__back-button').classList).toContain('editor-header__back-button--md-below');
 });

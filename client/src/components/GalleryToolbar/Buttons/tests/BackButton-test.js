@@ -1,51 +1,58 @@
-/* global jest, describe, it, expect, beforeEach, Event */
+/* global jest, test,expect */
 import React from 'react';
-// mock sub-components, as they could rely on a Redux store context and not necessary for unit test
-jest.mock('components/BackButton/BackButton');
+import { render, fireEvent, screen } from '@testing-library/react';
+import BackButton from '../BackButton';
 
-import ReactTestUtils from 'react-dom/test-utils';
-import Component from '../BackButton';
+function makeProps(obj = {}) {
+  return {
+    folder: {
+      id: 1,
+      title: 'container folder',
+      parentId: null,
+      canView: true,
+      canEdit: true,
+    },
+    BackComponent: ({ onClick }) => <div data-testid="test-back" onClick={onClick}/>,
+    onMoveFiles: () => {},
+    onOpenFolder: () => {},
+    badges: [],
+    ...obj
+  };
+}
 
-describe('BackButton', () => {
-  let props = null;
+test('BackButton render should not render if parentId is not set', () => {
+  const { container } = render(
+    <BackButton {...makeProps()}/>
+  );
+  expect(container.querySelectorAll('.gallery__back-container')).toHaveLength(0);
+});
 
-  beforeEach(() => {
-    props = {
+test('BackButton render a react component if parentId is set', () => {
+  const { container } = render(
+    <BackButton {...makeProps({
       folder: {
-        id: 1,
-        title: 'container folder',
-        parentId: null,
-        canView: true,
-        canEdit: true,
+        ...makeProps().folder,
+        parentId: 15
+      }
+    })}
+    />
+  );
+  expect(container.querySelectorAll('.gallery__back-container')).toHaveLength(1);
+});
+
+test('BackButton handleBackClick() should open folder with parentId', async () => {
+  const onOpenFolder = jest.fn();
+  render(
+    <BackButton {...makeProps({
+      folder: {
+        ...makeProps().folder,
+        parentId: 15
       },
-      onMoveFiles: () => {},
-      onOpenFolder: () => {},
-      badges: [],
-    };
-  });
-
-  describe('render BackButton', () => {
-    it('should not render if parentId is not set', () => {
-      const backbutton = ReactTestUtils.renderIntoDocument(<Component {...props} />);
-      const locator = ReactTestUtils.scryRenderedDOMComponentsWithClass(backbutton, 'gallery__back-container');
-      expect(locator.length).toBe(0);
-    });
-
-    it('should render a react component if parentId is set', () => {
-      props.folder.parentId = 15;
-      const backbutton = ReactTestUtils.renderIntoDocument(<Component {...props} />);
-      const locator = ReactTestUtils.scryRenderedDOMComponentsWithClass(backbutton, 'gallery__back-container');
-      expect(locator.length).toBe(1);
-    });
-  });
-
-  describe('handleBackClick()', () => {
-    it('should open folder with parentId', () => {
-      props.folder.parentId = 15;
-      props.onOpenFolder = jest.fn();
-      const backbutton = ReactTestUtils.renderIntoDocument(<Component {...props} />);
-      backbutton.handleBackClick(new Event('click'));
-      expect(props.onOpenFolder).toBeCalledWith(15);
-    });
-  });
+      onOpenFolder
+    })}
+    />
+  );
+  const back = await screen.findByTestId('test-back');
+  fireEvent.click(back);
+  expect(onOpenFolder).toBeCalledWith(15);
 });

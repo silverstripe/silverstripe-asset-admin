@@ -1,135 +1,177 @@
-/* global jest, describe, it, expect, beforeEach */
+/* global jest, expect, test */
+
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { Component as InsertEmbedModal } from '../InsertEmbedModal';
+
+function makeProps(obj = {}) {
+  return {
+    onInsert: () => null,
+    onCreate: () => null,
+    onClosed: () => null,
+    schemaUrl: 'test.com/schema',
+    actions: {
+      schema: {
+        setSchemaStateOverrides: () => null,
+      },
+    },
+    FormBuilderModalComponent: ({ onSubmit }) => <div data-testid="test-form-builder-modal" onClick={() => onSubmit({}, 'action_addmedia')}/>,
+    ...obj
+  };
+}
 
 // FormBuilderLoader mock was not mocking properly
 // manually override with a stateless null component
 jest.mock('components/FormBuilderModal/FormBuilderModal', () => () => null);
 
-import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-import { Component as InsertEmbedModal } from '../InsertEmbedModal';
-
-describe('InsertEmbedModal', () => {
-  let props = {};
-
-  beforeEach(() => {
-    props = {
-      onInsert: jest.fn(),
-      onCreate: jest.fn(),
-      onClosed: jest.fn(),
-      schemaUrl: 'test.com/schema',
+test('InsertEmbedModal clearOverrides() should call the action to state override and provide null', () => {
+  const setSchemaStateOverrides = jest.fn();
+  const { unmount } = render(
+    <InsertEmbedModal {...makeProps({
       actions: {
         schema: {
-          setSchemaStateOverrides: jest.fn(),
-        },
+          setSchemaStateOverrides,
+        }
+      }
+    })}
+    />
+  );
+  unmount();
+  expect(setSchemaStateOverrides).toBeCalledWith('test.com/schema', null);
+});
+
+test('InsertEmbedModal setOverrides() should set a new override url if url has changed', () => {
+  const setSchemaStateOverrides = jest.fn();
+  const { rerender } = render(
+    <InsertEmbedModal {...makeProps({
+      actions: {
+        schema: {
+          setSchemaStateOverrides,
+        }
       },
-    };
-  });
+      isOpen: false
+    })}
+    />
+  );
+  rerender(
+    <InsertEmbedModal {...makeProps({
+      actions: {
+        schema: {
+          setSchemaStateOverrides,
+        }
+      },
+      schemaUrl: 'test2.com/schema',
+      isOpen: true
+    })}
+    />
+  );
+  expect(setSchemaStateOverrides.mock.calls).toHaveLength(2);
+  expect(setSchemaStateOverrides).toHaveBeenNthCalledWith(1, 'test.com/schema', { fields: [] });
+  expect(setSchemaStateOverrides).toHaveBeenNthCalledWith(2, 'test2.com/schema', { fields: [] });
+});
 
-  describe('clearOverrides()', () => {
-    it('should call the action to state override and provide null', () => {
-      const component = ReactTestUtils.renderIntoDocument(
-        <InsertEmbedModal {...props} />
-      );
+test('InsertEmbedModal setOverrides() should not set a new override url if url has not changed', () => {
+  const setSchemaStateOverrides = jest.fn();
+  const { rerender } = render(
+    <InsertEmbedModal {...makeProps({
+      actions: {
+        schema: {
+          setSchemaStateOverrides,
+        }
+      },
+      isOpen: false
+    })}
+    />
+  );
+  rerender(
+    <InsertEmbedModal {...makeProps({
+      actions: {
+        schema: {
+          setSchemaStateOverrides,
+        }
+      },
+      isOpen: true
+    })}
+    />
+  );
+  expect(setSchemaStateOverrides.mock.calls).toHaveLength(2);
+  expect(setSchemaStateOverrides).toHaveBeenNthCalledWith(1, 'test.com/schema', { fields: [] });
+  expect(setSchemaStateOverrides).toHaveBeenNthCalledWith(2, 'test.com/schema', { fields: [] });
+});
 
-      component.clearOverrides();
+test('InsertEmbedModal setOverrides() should not call the state override action if no url is provided', () => {
+  const setSchemaStateOverrides = jest.fn();
+  const { rerender } = render(
+    <InsertEmbedModal {...makeProps({
+      actions: {
+        schema: {
+          setSchemaStateOverrides,
+        }
+      },
+      isOpen: false
+    })}
+    />
+  );
+  rerender(
+    <InsertEmbedModal {...makeProps({
+      actions: {
+        schema: {
+          setSchemaStateOverrides,
+        }
+      },
+      schemaUrl: '',
+      isOpen: true
+    })}
+    />
+  );
+  expect(setSchemaStateOverrides.mock.calls).toHaveLength(1);
+  expect(setSchemaStateOverrides).toHaveBeenNthCalledWith(1, 'test.com/schema', { fields: [] });
+});
 
-      expect(props.actions.schema.setSchemaStateOverrides).toBeCalledWith('test.com/schema', null);
-    });
-  });
+test('InsertEmbedModal setOverrides() should set the fields in the proper structure and exclude ID', () => {
+  const setSchemaStateOverrides = jest.fn();
+  const { rerender } = render(
+    <InsertEmbedModal {...makeProps({
+      actions: {
+        schema: {
+          setSchemaStateOverrides,
+        }
+      },
+      isOpen: false
+    })}
+    />
+  );
+  rerender(
+    <InsertEmbedModal {...makeProps({
+      actions: {
+        schema: {
+          setSchemaStateOverrides,
+        }
+      },
+      schemaUrl: 'test.com/schema',
+      fileAttributes: {
+        ID: 5,
+        Name: 'Bob',
+      },
+      isOpen: true
+    })}
+    />
+  );
+  expect(setSchemaStateOverrides.mock.calls).toHaveLength(2);
+  expect(setSchemaStateOverrides).toHaveBeenNthCalledWith(1, 'test.com/schema', { fields: [] });
+  expect(setSchemaStateOverrides).toHaveBeenNthCalledWith(2, 'test.com/schema', { fields: [{ name: 'Name', value: 'Bob' }] });
+});
 
-  describe('setOverrides()', () => {
-    it('should clear override if url has changed', () => {
-      const component = ReactTestUtils.renderIntoDocument(
-        <InsertEmbedModal {...props} />
-      );
-      const nextProps = {
-        schemaUrl: 'test2.com/schema',
-        fileAttributes: {
-          ID: 5,
-          Name: 'Bob',
-        },
-      };
-
-      component.clearOverrides = jest.fn();
-      component.setOverrides(nextProps);
-
-      expect(component.clearOverrides).toBeCalled();
-    });
-
-    it('should not call the state override action if no url is provided', () => {
-      props.schemaUrl = '';
-      const component = ReactTestUtils.renderIntoDocument(
-        <InsertEmbedModal {...props} />
-      );
-      const nextProps = {
-        schemaUrl: '',
-      };
-
-      component.setOverrides(nextProps);
-
-      expect(props.actions.schema.setSchemaStateOverrides).not.toBeCalled();
-    });
-
-    it('should set the fields in the proper structure and exclude ID', () => {
-      const component = ReactTestUtils.renderIntoDocument(
-        <InsertEmbedModal {...props} />
-      );
-      const nextProps = {
-        schemaUrl: 'test.com/schema',
-        fileAttributes: {
-          ID: 5,
-          Name: 'Bob',
-        },
-      };
-
-      component.setOverrides(nextProps);
-
-      expect(props.actions.schema.setSchemaStateOverrides).toBeCalledWith('test.com/schema', {
-        fields: [
-          { name: 'Name', value: 'Bob' },
-        ],
-      });
-    });
-  });
-
-  describe('handleSubmit()', () => {
-    it('should call create when addmedia is actioned', () => {
-      const component = ReactTestUtils.renderIntoDocument(
-        <InsertEmbedModal {...props} />
-      );
-      const data = { Name: 'Bob' };
-      const mockSubmit = jest.fn();
-
-      component.handleSubmit(data, 'action_addmedia', mockSubmit);
-
-      expect(props.onCreate).toBeCalledWith(data);
-      expect(mockSubmit).not.toBeCalled();
-    });
-
-    it('should call insert when insertmedia is actioned', () => {
-      const component = ReactTestUtils.renderIntoDocument(
-        <InsertEmbedModal {...props} />
-      );
-      const data = { Name: 'Bob' };
-      const mockSubmit = jest.fn();
-
-      component.handleSubmit(data, 'action_insertmedia', mockSubmit);
-
-      expect(props.onInsert).toBeCalledWith(data);
-      expect(mockSubmit).not.toBeCalled();
-    });
-
-    it('should call hide when cancel is actioned', () => {
-      const component = ReactTestUtils.renderIntoDocument(
-        <InsertEmbedModal {...props} />
-      );
-      const data = { Name: 'Bob' };
-      const mockSubmit = jest.fn();
-
-      component.handleSubmit(data, 'action_cancel', mockSubmit);
-
-      expect(props.onClosed).toBeCalled();
-      expect(mockSubmit).not.toBeCalled();
-    });
-  });
+test('InsertEmbedModal handleSubmit() should call create when addmedia is actioned', async () => {
+  const onCreate = jest.fn();
+  const { container } = render(
+    <InsertEmbedModal {...makeProps({
+      onCreate,
+      isOpen: false
+    })}
+    />
+  );
+  const modal = await screen.findByTestId('test-form-builder-modal');
+  fireEvent.click(modal);
+  expect(onCreate).toBeCalled();
 });

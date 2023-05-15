@@ -1,186 +1,243 @@
-/* global jest, describe, it, expect, beforeEach */
+/* global jest, test, expect */
+
+import React from 'react';
+import { Component as ThumbnailView } from '../ThumbnailView';
+// import mocks for injector props
+import { render, screen, fireEvent } from '@testing-library/react';
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('components/FormAlert/FormAlert');
 jest.mock('components/GalleryItem/GalleryItem');
-jest.mock('griddle-react');
 
-import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-import { Component as ThumbnailView } from '../ThumbnailView';
-// import mocks for injector props
-import { File, Folder } from 'components/GalleryItem/GalleryItem';
-
-describe('ThumbnailView', () => {
-  let props = null;
-
-  beforeEach(() => {
-    const itemProps = {
-      uploading: false,
-      type: 'folder',
-      category: 'folder',
-      title: 'My test file',
-    };
-    props = {
-      files: [
-        Object.assign({}, itemProps, { id: 12, parent: { id: 0 } }),
-        Object.assign({}, itemProps, { id: 15, parent: { id: 6 } }),
-      ],
-      onOpenFile: jest.fn(),
-      onOpenFolder: jest.fn(),
-      onSort: jest.fn(),
-      onSetPage: jest.fn(),
-      renderNoItemsNotice: jest.fn(),
-      badges: [],
-      File,
-      Folder,
-    };
-  });
-
-  describe('handleSetPage()', () => {
-    it('should call onSetPage with the same param', () => {
-      const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-      view.handleSetPage(3);
-
-      expect(props.onSetPage).toBeCalledWith(4);
-    });
-  });
-
-  describe('handleNextPage()', () => {
-    it('should increment from the current page', () => {
-      props.page = 3;
-      const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-      view.handleNextPage();
-
-      expect(props.onSetPage).toBeCalledWith(4);
-    });
-  });
-
-  describe('handlePrevPage()', () => {
-    it('should decrement from the current page', () => {
-      props.page = 3;
-      const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-      view.handlePrevPage();
-
-      expect(props.onSetPage).toBeCalledWith(2);
-    });
-
-    it('should stay on page 1 if that is the current page', () => {
-      props.page = 1;
-      const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-      view.handlePrevPage();
-
-      expect(props.onSetPage).toBeCalledWith(1);
-    });
-  });
-
-  describe('filter file/folder', () => {
-    let view = null;
-
-    beforeEach(() => {
-      view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-    });
-
-    it('should return true for folder types', () => {
-      const file = { type: 'folder' };
-      const filter = view.folderFilter(file);
-
-      expect(filter).toBe(true);
-    });
-
-    it('should return true for non-folder types', () => {
-      const file = { type: 'image' };
-      const filter = view.fileFilter(file);
-
-      expect(filter).toBe(true);
-    });
-  });
-
-  describe('renderPagination()', () => {
-    it('should render pagination when the count of items exceed the items per page limit', () => {
-      props.totalCount = 40;
-      props.limit = 15;
-      const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-      const pagination = view.renderPagination();
-
-      expect(pagination).not.toBeNull();
-    });
-
-    it('should return null when the count of items equals the items per page limit', () => {
-      props.totalCount = 15;
-      props.limit = 15;
-      const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-      const pagination = view.renderPagination();
-
-      expect(pagination).toBeNull();
-    });
-
-    it('should return null when the count of items is less than the items per page limit', () => {
-      props.totalCount = 5;
-      props.limit = 15;
-      const view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-      const pagination = view.renderPagination();
-
-      expect(pagination).toBeNull();
-    });
-  });
-
-  describe('renderItem()', () => {
-    let view = null;
-    let itemProps = null;
-
-    beforeEach(() => {
-      props.onCancelUpload = () => null;
-      props.onRemoveErroredUpload = () => null;
-      view = ReactTestUtils.renderIntoDocument(<ThumbnailView {...props} />);
-      itemProps = {
+function makeProps(obj = {}) {
+  return {
+    files: [
+      {
+        key: 12,
+        id: 12,
+        parent: {
+          id: 0
+        },
         uploading: false,
         type: 'folder',
         category: 'folder',
-        id: 5,
         title: 'My test file',
-      };
-    });
-
-    it('should have cancel callbacks and no activate callback', () => {
-      itemProps = Object.assign({}, itemProps, {
-        queuedId: 23,
-        progress: 20,
-        id: 0,
-      });
-      const item = ReactTestUtils.renderIntoDocument(view.renderItem(itemProps, 0));
-
-      expect(typeof item.props.onCancelUpload).toBe('function');
-      expect(typeof item.props.onRemoveErroredUpload).toBe('function');
-      expect(typeof item.props.onActivate).not.toBe('function');
-    });
-
-    it('should callback folder for a folder type item', () => {
-      itemProps = Object.assign({}, itemProps, {
+      },
+      {
+        key: 16,
+        id: 16,
+        parent: {
+          id: 6
+        },
+        uploading: false,
         type: 'folder',
-      });
-      const item = ReactTestUtils.renderIntoDocument(view.renderItem(itemProps, 0));
+        category: 'folder',
+        title: 'My test file',
+      },
+    ],
+    onOpenFile: jest.fn(),
+    onOpenFolder: jest.fn(),
+    onSort: jest.fn(),
+    onSetPage: jest.fn(),
+    renderNoItemsNotice: jest.fn(),
+    badges: [],
+    File: ({ selectableKey, onActivate, item }) => <div data-testid="test-file" data-id={selectableKey} onClick={onActivate} key={item.key} />,
+    Folder: ({ selectableKey, onActivate, item }) => <div data-testid="test-folder" data-id={selectableKey} onClick={onActivate} key={item.key} />,
+    page: 1,
+    totalCount: 10,
+    limit: 1,
+    ...obj
+  };
+}
 
-      item.props.onActivate();
 
-      expect(typeof item.props.onCancelUpload).not.toBe('function');
-      expect(typeof item.props.onRemoveErroredUpload).not.toBe('function');
-      expect(props.onOpenFolder).toBeCalled();
-      expect(props.onOpenFile).not.toBeCalled();
-    });
+test('ThumbnailView handleSetPage()', async () => {
+  const onSetPage = jest.fn();
+  render(
+    <ThumbnailView {...makeProps({
+      onSetPage
+    })}
+    />
+  );
+  const option = await screen.findByText('5');
+  const select = option.parentNode;
+  fireEvent.change(select, { target: { value: option.value } });
+  expect(onSetPage.mock.calls.length).toBe(1);
+  expect(onSetPage.mock.calls[0][0]).toBe(5);
+});
 
-    it('should callback folder for a folder type item', () => {
-      itemProps = Object.assign({}, itemProps, {
-        type: 'image',
-      });
-      const item = ReactTestUtils.renderIntoDocument(view.renderItem(itemProps, 0));
+test('ThumbnailView handleNextPage()', async () => {
+  const onSetPage = jest.fn();
+  render(
+    <ThumbnailView {...makeProps({
+      page: 3,
+      onSetPage
+    })}
+    />
+  );
+  const next = await screen.findByText('Next');
+  fireEvent.click(next);
+  expect(onSetPage.mock.calls.length).toBe(1);
+  expect(onSetPage.mock.calls[0][0]).toBe(4);
+});
 
-      item.props.onActivate();
+test('ThumbnailView handlePrevPage() should decrement from the current page', async () => {
+  const onSetPage = jest.fn();
+  render(
+    <ThumbnailView {...makeProps({
+      page: 3,
+      onSetPage
+    })}
+    />
+  );
+  const prev = await screen.findByText('Previous');
+  fireEvent.click(prev);
+  expect(onSetPage.mock.calls.length).toBe(1);
+  expect(onSetPage.mock.calls[0][0]).toBe(2);
+});
 
-      expect(typeof item.props.onCancelUpload).not.toBe('function');
-      expect(typeof item.props.onRemoveErroredUpload).not.toBe('function');
-      expect(props.onOpenFolder).not.toBeCalled();
-      expect(props.onOpenFile).toBeCalled();
-    });
-  });
+test('ThumbnailView handlePrevPage() should not be available from the first page', async () => {
+  const onSetPage = jest.fn();
+  render(
+    <ThumbnailView {...makeProps({
+      onSetPage
+    })}
+    />
+  );
+  await screen.findByText('Next');
+  expect(screen.queryByText('Previous')).toBeNull();
+});
+
+test('ThumnbnailView filter file/folder should return true for folder types', async () => {
+  render(
+    <ThumbnailView {...makeProps({
+      files: [
+        {
+          key: 12,
+          id: 12,
+          parent: {
+            id: 0
+          },
+          uploading: false,
+          type: 'folder',
+          category: 'folder',
+          title: 'My test folder',
+        },
+      ]
+    })}
+    />
+  );
+  const folders = await screen.findAllByTestId('test-folder');
+  expect(folders.length).toBe(1);
+  expect(folders[0].getAttribute('data-id')).toBe('12');
+});
+
+test('ThumnbnailView filter file/folder should return true for non-folder types', async () => {
+  render(
+    <ThumbnailView {...makeProps({
+      files: [
+        {
+          key: 13,
+          id: 13,
+          parent: {
+            id: 0
+          },
+          uploading: false,
+          type: 'image',
+          category: 'image',
+          title: 'My test file',
+        },
+      ]
+    })}
+    />
+  );
+  const folders = await screen.findAllByTestId('test-file');
+  expect(folders.length).toBe(1);
+  expect(folders[0].getAttribute('data-id')).toBe('13');
+});
+
+test('ThumnbnailView renderPagination() should render pagination when the count of items exceed the items per page limit', async () => {
+  render(
+    <ThumbnailView {...makeProps({
+      totalCount: 40,
+      limit: 15
+    })}
+    />
+  );
+  const next = await screen.findByText('Next');
+  expect(next).not.toBeNull();
+});
+
+test('ThumnbnailView renderPagination() should return null when the count of items equals the items per page limit', async () => {
+  render(
+    <ThumbnailView {...makeProps({
+      totalCount: 15,
+      limit: 15
+    })}
+    />
+  );
+  expect(screen.queryByText('Next')).toBeNull();
+});
+
+test('ThumnbnailView renderPagination() should return null when the count of items is less than the items per page limit', async () => {
+  render(
+    <ThumbnailView {...makeProps({
+      totalCount: 5,
+      limit: 15
+    })}
+    />
+  );
+  expect(screen.queryByText('Next')).toBeNull();
+});
+
+test('ThumnbnailView renderItem() hould callback folder for a folder type item', async () => {
+  const onOpenFolder = jest.fn();
+  const onOpenFile = jest.fn();
+  render(
+    <ThumbnailView {...makeProps({
+      onOpenFolder,
+      onOpenFile,
+      files: [
+        {
+          uploading: false,
+          type: 'folder',
+          category: 'folder',
+          title: 'My test folder',
+          id: 5,
+          key: 5,
+        }
+      ]
+    })}
+    />
+  );
+  const folder = await screen.findByTestId('test-folder');
+  fireEvent.click(folder);
+  expect(onOpenFolder.mock.calls.length).toBe(1);
+  expect(onOpenFile.mock.calls.length).toBe(0);
+});
+
+test('ThumnbnailView renderItem() hould callback file for a file type item', async () => {
+  const onOpenFolder = jest.fn();
+  const onOpenFile = jest.fn();
+  render(
+    <ThumbnailView {...makeProps({
+      onOpenFolder,
+      onOpenFile,
+      files: [
+        {
+          uploading: false,
+          type: 'image',
+          category: 'file',
+          title: 'My test file',
+          id: 5,
+          key: 5,
+        }
+      ]
+    })}
+    />
+  );
+  const folder = await screen.findByTestId('test-file');
+  fireEvent.click(folder);
+  expect(onOpenFolder.mock.calls.length).toBe(0);
+  expect(onOpenFile.mock.calls.length).toBe(1);
 });

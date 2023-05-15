@@ -202,7 +202,7 @@ class Editor extends Component {
    * @param {Object} fieldProps
    */
   editorHeader({ SchemaComponent, ...fieldProps }) {
-    const { dialog, nextType, showingSubForm, actions, file } = this.props;
+    const { dialog, nextType, showingSubForm, actions, file, EditorHeaderComponent } = this.props;
     const schemaUrl = this.getFormSchemaUrl();
 
     let showButton = buttonStates.SWITCH;
@@ -230,9 +230,9 @@ class Editor extends Component {
     };
 
     return (
-      <EditorHeader {...props}>
+      <EditorHeaderComponent {...props}>
         <SchemaComponent {...fieldProps} />
-      </EditorHeader>
+      </EditorHeaderComponent>
     );
   }
 
@@ -245,13 +245,13 @@ class Editor extends Component {
   createFn(SchemaComponent, componentProps) {
     if (componentProps.name === 'AssetEditorHeaderFieldGroup') {
       // If we're building the field for our Header Field group.
-      const EditorHeaderComponent = this.editorHeader;
+      const CreatedEditorHeader = this.editorHeader;
       const editorHeaderProps = {
         key: componentProps.id,
         SchemaComponent,
         ...componentProps
       };
-      return <EditorHeaderComponent {...editorHeaderProps} />;
+      return <CreatedEditorHeader {...editorHeaderProps} />;
     }
 
     // Fallback to the regular field creation logic
@@ -259,6 +259,7 @@ class Editor extends Component {
   }
 
   render() {
+    const { FormBuilderLoaderComponent, FormBuilderModalComponent } = this.props;
     const formSchemaUrl = this.getFormSchemaUrl();
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
     const editorClasses = classnames(
@@ -293,7 +294,7 @@ class Editor extends Component {
 
     return (<div className={editorClasses}>
       <div className="editor__details fill-height">
-        <FormBuilderLoader
+        <FormBuilderLoaderComponent
           identifier={formIdentifier}
           schemaUrl={formSchemaUrl}
           onSubmit={this.handleSubmit}
@@ -305,7 +306,7 @@ class Editor extends Component {
           file={file}
         />
         {error}
-        <FormBuilderModal
+        <FormBuilderModalComponent
           title={campaignTitle}
           identifier="AssetAdmin.AddToCampaign"
           isOpen={this.state.openModal}
@@ -338,6 +339,15 @@ Editor.propTypes = {
   actions: PropTypes.object,
   showingSubForm: PropTypes.bool,
   nextType: PropTypes.string,
+  EditorHeaderComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  FormBuilderLoaderComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  FormBuilderModalComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+};
+
+Editor.defaultProps = {
+  EditorHeaderComponent: EditorHeader,
+  FormBuilderLoaderComponent: FormBuilderLoader,
+  FormBuilderModalComponent: FormBuilderModal
 };
 
 function mapDispatchToProps(dispatch) {

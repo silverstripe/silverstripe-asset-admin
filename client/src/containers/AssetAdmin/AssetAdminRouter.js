@@ -8,6 +8,7 @@ import qs from 'qs';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
 import { joinUrlPaths } from 'lib/urls';
+import PropTypes from 'prop-types';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -196,6 +197,7 @@ class AssetAdminRouter extends Component {
 
   render() {
     // If rendering during a details reset, navigate back to the appropriate location
+    const { AssetAdminComponent } = this.props;
     const locationState = this.props.router.location.state;
     if (locationState && locationState && locationState.reset) {
       return (
@@ -208,7 +210,7 @@ class AssetAdminRouter extends Component {
     }
     // Render the asset admin
     return (
-      <AssetAdmin {...this.getSectionProps()} />
+      <AssetAdminComponent {...this.getSectionProps()} />
     );
   }
 }
@@ -216,7 +218,13 @@ class AssetAdminRouter extends Component {
 AssetAdminRouter.propTypes = {
   sectionConfig: configShape,
   router: routerPropTypes,
+  AssetAdminComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
 };
+
+AssetAdminRouter.defaultProps = {
+  AssetAdminComponent: AssetAdmin
+};
+
 
 function mapStateToProps(state) {
   const sectionConfig = state.config.sections.find((section) => section.name === sectionConfigKey);
