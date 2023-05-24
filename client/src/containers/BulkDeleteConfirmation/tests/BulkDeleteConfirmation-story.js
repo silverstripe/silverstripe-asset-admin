@@ -1,61 +1,66 @@
-import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { setAddon, storiesOf } from '@storybook/react';
 import { Component as BulkDeleteConfirmation } from '../BulkDeleteConfirmation';
-import { withKnobs, boolean, select } from '@storybook/addon-knobs/react';
-import { JSXAddon } from 'storybook-addon-jsx';
+import { jsxDecorator } from 'storybook-addon-jsx';
 import { mockfiles as files } from './mockfiles';
 import LoadingComponent from 'components/Loading/Loading';
 import { action } from '@storybook/addon-actions';
 
-setAddon(JSXAddon);
-
 const actions = {
-  onCancel: (event) => action('onCancel')(event),
-  onConfirm: (event) => action('onConfirm')(event),
-  onModalClose: (event) => action('onModalClose')(event)
+    onCancel: (event) => action('onCancel')(event),
+    onConfirm: (event) => action('onConfirm')(event),
+    onModalClose: (event) => action('onModalClose')(event),
 };
 
 actions.onCancel.toString = () => 'onCancel';
 actions.onConfirm.toString = () => 'onConfirm';
 actions.onModalClose.toString = () => 'onModalClose';
 
-const propsForState = {
-  loading: {
-    loading: true,
-    LoadingComponent
-  },
-  'nothing in use': {
-    loading: false,
-    files: files.filter(({ id }) => id === 3),
-    descendantFileCounts: {}
-  },
-  'single file in use': {
-    loading: false,
-    files: files.filter(({ id }) => id === 3),
-    descendantFileCounts: { 3: 1 }
-  },
-  'many file in use': {
-    loading: false,
-    files,
-    descendantFileCounts: { 3: 1, 4: 5 }
-  },
-  'folder in use': {
-    loading: false,
-    files: files.filter(({ id }) => id === 1),
-    descendantFileCounts: { 1: 1 }
-  },
+export default {
+    title: 'AssetAdmin/DeleteConfirmation',
+    decorators: [jsxDecorator],
+    component: BulkDeleteConfirmation,
 };
 
-storiesOf('AssetAdmin/DeleteConfirmation', module)
-  .addDecorator(withKnobs)
-  .add('Default', () => {
-    const key = select('State', Object.keys(propsForState), 'loading');
-    const props = propsForState[key];
+export const Default = {
+    args: {
+      loading: true,
+      LoadingComponent,
+      ...actions,
+    }
+};
 
-    return (<BulkDeleteConfirmation
-      transition={boolean('canceling', false) && 'canceling'}
-      {...props}
-      {...actions}
-    />);
-  });
+export const NothingInUse = {
+  args: {
+    ...Default.args,
+    loading: false,
+    files: files.filter(({ id }) => id === 3),
+    descendantFileCounts: {},
+  }
+};
+
+export const SingleFileInUse = {
+  args: {
+    ...Default.args,
+    loading: false,
+    files: files.filter(({ id }) => id === 3),
+    descendantFileCounts: { 3: 1 },
+  }
+};
+
+export const ManyFilesInUse = {
+  args: {
+    ...Default.args,
+    loading: false,
+    files,
+    descendantFileCounts: { 3: 1, 4: 5 },
+  }
+};
+
+export const FolderInUse = {
+  args: {
+    ...Default.args,
+    loading: false,
+    files: files.filter(({ id }) => id === 1),
+    descendantFileCounts: { 1: 1 },
+  }
+};
