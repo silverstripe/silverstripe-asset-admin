@@ -1,4 +1,9 @@
-/* global jest, describe, it, expect, beforeEach, Event */
+/* global jest, expect, test */
+
+import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
+import { Component as GalleryToolbar } from '../GalleryToolbar';
+
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('components/FormAlert/FormAlert');
 jest.mock('components/AssetDropzone/AssetDropzone');
@@ -19,78 +24,60 @@ jest.mock('jquery', () => {
   return () => jqueryMock;
 });
 
-import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-import { Component as GalleryToolbar } from '../GalleryToolbar';
-
-describe('GalleryToolbar', () => {
-  let props = null;
-
-  beforeEach(() => {
-    props = {
-      folder: {
-        id: 1,
-        title: 'container folder',
-        parentId: null,
-        canView: true,
-        canEdit: true,
+function makeProps(obj = {}) {
+  return {
+    folder: {
+      id: 1,
+      title: 'container folder',
+      parentId: null,
+      canView: true,
+      canEdit: true,
+    },
+    sort: '',
+    onMoveFiles: () => {},
+    onCreateFolder: () => {},
+    onOpenFolder: () => {},
+    onSort: () => {},
+    onViewChange: () => {},
+    badges: [],
+    sectionConfig: {},
+    BackButton: () => null,
+    UploadButton: () => null,
+    AddFolderButton: () => null,
+    sorters: [
+      {
+        field: 'title',
+        direction: 'asc',
+        label: 'title a-z',
       },
-      sort: '',
-      onMoveFiles: () => {},
-      onCreateFolder: () => {},
-      onOpenFolder: () => {},
-      onSort: () => {},
-      onViewChange: () => {},
-      badges: [],
-      sectionConfig: {},
-      BackButton: () => null,
-      UploadButton: () => null,
-      AddFolderButton: () => null,
-      sorters: [
-        {
-          field: 'title',
-          direction: 'asc',
-          label: 'title a-z',
-        },
-        {
-          field: 'title',
-          direction: 'desc',
-          label: 'title z-a',
-        },
-        {
-          field: 'lastEdited',
-          direction: 'desc',
-          label: 'newest',
-        },
-        {
-          field: 'lastEdited',
-          direction: 'asc',
-          label: 'oldest',
-        },
-      ]
-    };
-  });
-
-  describe('handleSelectSort()', () => {
-    let gallerytoolbar = null;
-    let onSort = null;
-    const event = {
-      currentTarget: {
-        value: 'title,desc',
+      {
+        field: 'title',
+        direction: 'desc',
+        label: 'title z-a',
       },
-    };
+      {
+        field: 'lastEdited',
+        direction: 'desc',
+        label: 'newest',
+      },
+      {
+        field: 'lastEdited',
+        direction: 'asc',
+        label: 'oldest',
+      },
+    ],
+    ...obj
+  };
+}
 
-    beforeEach(() => {
-      onSort = jest.fn();
-      const localProps = Object.assign({}, props, { onSort });
-      gallerytoolbar = ReactTestUtils.renderIntoDocument(
-        <GalleryToolbar {...localProps} />
-      );
-    });
-
-    it('should purge the upload queue', () => {
-      gallerytoolbar.handleSelectSort(event);
-      expect(onSort).toBeCalledWith('title,desc');
-    });
-  });
+test('GalleryToolbar handleSelectSort() should purge the upload queue', () => {
+  const onSort = jest.fn();
+  const { container } = render(
+    <GalleryToolbar {...makeProps({
+      onSort
+    })}
+    />
+  );
+  fireEvent.click(container.querySelector('.dropdown option[value="title,desc"]'));
+  expect(onSort).toBeCalledWith('title,desc');
 });

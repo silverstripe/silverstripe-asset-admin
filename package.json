@@ -33,11 +33,6 @@
     "roots": [
       "client/src"
     ],
-    "moduleNameMapper": {
-      "^react-dom/client$": "react-dom-16",
-      "^react-dom((/.*)?)$": "react-dom-16$1",
-      "^react((/.*)?)$": "react-16$1"
-    },
     "modulePaths": [
       "client/src",
       "../admin/client/src",
@@ -56,14 +51,11 @@
     "@silverstripe/eslint-config": "^1.0.0",
     "@silverstripe/webpack-config": "^2.0.0",
     "@storybook/addon-actions": "^7.0.18",
+    "@testing-library/react": "^14.0.0",
     "babel-jest": "^29.3.0",
     "copy-webpack-plugin": "^11.0.0",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6",
     "jest-cli": "^29.3.0",
     "jest-environment-jsdom": "^29.3.1",
-    "react-16": "npm:react@^16.14.0",
-    "react-dom-16": "npm:react-dom@^16.14.0",
     "terser-webpack-plugin": "^5.3.6",
     "webpack": "^5.74.0",
     "webpack-cli": "^5.0.0"

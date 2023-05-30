@@ -1,193 +1,239 @@
-/* global jest, describe, it, expect, beforeEach, FormData */
-jest.mock('containers/FormBuilderLoader/FormBuilderLoader');
-jest.mock('components/FormBuilderModal/FormBuilderModal');
+/* global jest, test, expect, beforeEach */
 
 import React from 'react';
-import ReactTestUtils from 'react-dom/test-utils';
-
 import { Component as Editor } from '../Editor';
 import { buttonStates } from '../EditorHeader';
+import { render, screen, fireEvent } from '@testing-library/react';
 
-const render = (props) => {
-  const baseProps = {
+let consoleErrorFn;
+let nextAction;
+let nextParams;
+let createFnParams;
+beforeEach(() => {
+  nextAction = undefined;
+  nextParams = [];
+  // surpress warning:
+  // Warning: Injector.getDerivedStateFromProps(): A valid state object (or null) must be returned. You have returned undefined
+  consoleErrorFn = jest.spyOn(console, 'error').mockImplementation(() => null);
+});
+afterEach(() => {
+  consoleErrorFn.mockRestore();
+});
+
+function makeProps(obj = {}) {
+  return {
     schemaUrlQueries: [],
     schemaUrl: 'edit/file',
     fileId: 123,
-    onClose: jest.fn(),
-    onSubmit: jest.fn(),
+    onClose: () => null,
+    onSubmit: () => null,
     actions: {
       modal: {
-        popFormStackEntry: jest.fn(),
-        pushFormStackEntry: jest.fn(),
-        stashFormValues: jest.fn(),
+        popFormStackEntry: () => null,
+        pushFormStackEntry: () => null,
+        stashFormValues: () => null,
       }
     },
     file: {
       type: 'image'
     },
-    ...props
+    EditorHeaderComponent: ({ onCancel, onDetails, showButton }) => <div
+      data-testid="test-editor-header"
+      onClick={() => {
+      if (nextAction === 'cancel') {
+        onCancel();
+      } else if (nextAction === 'details') {
+        onDetails();
+      }
+    }}
+      data-show-button={showButton}
+    />,
+    FormBuilderLoaderComponent: ({ createFn, onAction, schemaUrl }) => (
+      <div data-testid="test-form-builder-loader" onClick={() => onAction(...nextParams)} data-schema-url={schemaUrl}>{createFn(...createFnParams)}</div>
+    ),
+    FormBuilderModalComponent: ({ isOpen }) => <div data-testid="test-form-builder-modal" data-is-open={isOpen}/>,
+    ...obj
   };
-  const component = ReactTestUtils.renderIntoDocument(<Editor {...baseProps} />);
-  return { component, baseProps };
-};
+}
 
-describe('Editor', () => {
-  describe('handleClose', () => {
-    it('Closing editor', () => {
-      const {
-        component,
-        baseProps: {
-          actions: {
-            modal: { popFormStackEntry }
-          },
-          onClose
+async function openModal() {
+  const loader = await screen.findByTestId('test-form-builder-loader');
+  nextParams = [{
+    preventDefault: () => null,
+    currentTarget: {
+      name: 'action_addtocampaign'
+    }
+  }];
+  fireEvent.click(loader);
+  nextParams = [{
+    preventDefault: () => null,
+    currentTarget: {
+      name: 'foo'
+    }
+  }];
+}
+
+test('Editor handleClose Closing editor', async () => {
+  const popFormStackEntry = jest.fn();
+  const onClose = jest.fn();
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup' }];
+  render(
+    <Editor {...makeProps({
+      actions: {
+        modal: {
+          popFormStackEntry
         }
-      } = render({ showingSubForm: false });
+      },
+      onClose,
+      showingSubForm: false
+    })}
+    />
+  );
+  openModal();
+  let modal = await screen.findByTestId('test-form-builder-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('true');
+  const header = await screen.findByTestId('test-editor-header');
+  nextAction = 'cancel';
+  fireEvent.click(header);
+  expect(popFormStackEntry).not.toHaveBeenCalled();
+  expect(onClose).toHaveBeenCalled();
+  modal = await screen.findByTestId('test-form-builder-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('false');
+  expect(header.getAttribute('data-show-button')).toBe(buttonStates.SWITCH);
+});
 
-      component.openModal();
-      component.handleClose();
-
-      expect(popFormStackEntry).not.toHaveBeenCalled();
-      expect(onClose).toHaveBeenCalled();
-      expect(component.state).toHaveProperty('openModal', false);
-    });
-
-    it('Closing sub form', () => {
-      const {
-        component,
-        baseProps: {
-          actions: {
-            modal: { popFormStackEntry }
-          },
-          onClose
+test('Editor handleClose Closing sub form', async () => {
+  const popFormStackEntry = jest.fn();
+  const onClose = jest.fn();
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup' }];
+  render(
+    <Editor {...makeProps({
+      actions: {
+        modal: {
+          popFormStackEntry
         }
-      } = render({ showingSubForm: true });
+      },
+      onClose,
+      showingSubForm: true
+    })}
+    />
+  );
+  openModal();
+  let modal = await screen.findByTestId('test-form-builder-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('true');
+  const header = await screen.findByTestId('test-editor-header');
+  nextAction = 'cancel';
+  fireEvent.click(header);
+  expect(popFormStackEntry).toHaveBeenCalled();
+  expect(onClose).not.toHaveBeenCalled();
+  modal = await screen.findByTestId('test-form-builder-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('true');
+  expect(header.getAttribute('data-show-button')).toBe(buttonStates.SWITCH);
+});
 
-      component.openModal();
-      component.handleClose();
+test('Editor editorHeader Top Form without detail', async () => {
+  createFnParams = ['div', { formid: 'myFormName' }];
+  render(
+    <Editor {...makeProps()}/>
+  );
+  const loader = await screen.findByTestId('test-form-builder-loader');
+  expect(loader.querySelectorAll('div[formid="myFormName"]').length).toBe(1);
+});
 
-      expect(popFormStackEntry).toHaveBeenCalled();
-      expect(onClose).not.toHaveBeenCalled();
-      expect(component.state).toHaveProperty('openModal', true);
-    });
-  });
-
-  describe('editorHeader', () => {
-    it('Top form without detail', () => {
-      const { component } = render({});
-
-      component.openModal();
-      const connectedHeader = component.editorHeader({ SchemaComponent: 'div' });
-
-      expect(connectedHeader.type.name).toBe('EditorHeader');
-      expect(connectedHeader.props.onDetails).toBeFalsy();
-      expect(connectedHeader.props.onCancel).toBe(component.handleClose);
-      expect(connectedHeader.props.children.type).toBe('div');
-      expect(connectedHeader.props.showButton).toBe(buttonStates.SWITCH);
-    });
-
-    it('Top form with detail in dialog', () => {
-      const {
-        component,
-        baseProps: {
-          actions: {
-            modal: { pushFormStackEntry, stashFormValues }
-          }
+test('Editor editorHeader Top Form with detail in dialog', async () => {
+  const pushFormStackEntry = jest.fn();
+  const stashFormValues = jest.fn();
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup', formid: 'myFormName' }];
+  render(
+    <Editor {...makeProps({
+      actions: {
+        modal: {
+          pushFormStackEntry,
+          stashFormValues
         }
-      } = render({ showingSubForm: false, nextType: 'subform', dialog: true });
+      },
+      showingSubForm: false,
+      nextType: 'subform',
+      dialog: true
+    })}
+    />
+  );
+  openModal();
+  const header = await screen.findByTestId('test-editor-header');
+  nextAction = 'details';
+  fireEvent.click(header);
+  expect(stashFormValues).toHaveBeenCalledWith('myFormName', 'edit/file/123');
+  expect(pushFormStackEntry).toHaveBeenCalledWith('subform');
+  expect(header.getAttribute('data-show-button')).toBe(buttonStates.ONLY_BACK);
+});
 
-      component.openModal();
-      const connectedHeader = component.editorHeader({
-        SchemaComponent: 'div',
-        formid: 'myFormName'
-      });
+test('Editor editorHeader Sub form in dialog', async () => {
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup', formid: 'myFormName' }];
+  render(
+    <Editor {...makeProps({
+      showingSubForm: true,
+      dialog: true
+    })}
+    />
+  );
+  openModal();
+  const header = await screen.findByTestId('test-editor-header');
+  expect(header.getAttribute('data-show-button')).toBe(buttonStates.ALWAYS_BACK);
+});
 
-      expect(connectedHeader.type.name).toBe('EditorHeader');
-      expect(connectedHeader.props.onCancel).toBe(component.handleClose);
-      expect(connectedHeader.props.children.type).toBe('div');
-      expect(connectedHeader.props.showButton).toBe(buttonStates.ONLY_BACK);
+test('Editor editorHeader Form for folder', async () => {
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup', formid: 'myFormName' }];
+  render(
+    <Editor {...makeProps({
+      nextType: 'subform',
+      dialog: true,
+      file: { type: 'folder' }
+    })}
+    />
+  );
+  openModal();
+  const header = await screen.findByTestId('test-editor-header');
+  expect(header.getAttribute('data-show-button')).toBe(buttonStates.SWITCH);
+});
 
-      connectedHeader.props.onDetails();
-      expect(stashFormValues).toHaveBeenCalledWith('myFormName', 'edit/file/123');
-      expect(pushFormStackEntry).toHaveBeenCalledWith('subform');
-    });
+test('Editor getFormSchemaUrl Plain URL', async () => {
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup' }];
+  render(
+    <Editor {...makeProps({
+      schemaUrlQueries: []
+    })}
+    />
+  );
+  openModal();
+  const loader = await screen.findByTestId('test-form-builder-loader');
+  expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123');
+});
 
-    it('Sub form in dialog', () => {
-      const { component } = render({ showingSubForm: true, dialog: true });
+test('Editor getFormSchemaUrl Plain URL', async () => {
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup' }];
+  render(
+    <Editor {...makeProps({
+      schemaUrlQueries: [{ name: 'q', value: 'search' }]
+    })}
+    />
+  );
+  openModal();
+  const loader = await screen.findByTestId('test-form-builder-loader');
+  expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123?q=search');
+});
 
-      component.openModal();
-      const connectedHeader = component.editorHeader({ SchemaComponent: 'div' });
-
-      expect(connectedHeader.type.name).toBe('EditorHeader');
-      expect(connectedHeader.props.onDetails).toBeFalsy();
-      expect(connectedHeader.props.onCancel).toBe(component.handleClose);
-      expect(connectedHeader.props.children.type).toBe('div');
-      expect(connectedHeader.props.showButton).toBe(buttonStates.ALWAYS_BACK);
-    });
-
-    it('Form for folder', () => {
-      const { component } =
-        render({ nextType: 'subform', dialog: true, file: { type: 'folder' } });
-
-      component.openModal();
-      const connectedHeader = component.editorHeader({
-        SchemaComponent: 'div',
-        formid: 'myFormName'
-      });
-
-      expect(connectedHeader.type.name).toBe('EditorHeader');
-      expect(connectedHeader.props.onDetails).toBeFalsy();
-      expect(connectedHeader.props.onCancel).toBe(component.handleClose);
-      expect(connectedHeader.props.children.type).toBe('div');
-      expect(connectedHeader.props.showButton).toBe(buttonStates.SWITCH);
-    });
-  });
-
-  describe('createFn', () => {
-    it('Regular Field', () => {
-      const { component } = render({});
-      const fieldComponent = component.createFn('div', { name: 'Title', id: 'TitleID' });
-
-      expect(fieldComponent.type).toBe('div');
-      expect(fieldComponent.key).toBe('TitleID');
-      expect(fieldComponent.props.name).toBe('Title');
-      expect(fieldComponent.props.id).toBe('TitleID');
-    });
-
-    it('Editor Header Field', () => {
-      const { component } = render({});
-      const fieldComponent = component.createFn('div', { name: 'AssetEditorHeaderFieldGroup', id: 'TitleID' });
-
-      expect(fieldComponent.type.name).toBe('bound editorHeader');
-      expect(fieldComponent.key).toBe('TitleID');
-      expect(fieldComponent.props.SchemaComponent).toBe('div');
-      expect(fieldComponent.props.name).toBe('AssetEditorHeaderFieldGroup');
-      expect(fieldComponent.props.id).toBe('TitleID');
-    });
-  });
-
-  describe('getFormSchemaUrl', () => {
-    const testCase = [
-      ['Plain URL', {}, 'edit/file/123'],
-      [
-        'Query param',
-        { schemaUrlQueries: [{ name: 'q', value: 'search' }] },
-        'edit/file/123?q=search'
-      ],
-      [
-        'More than one query param',
-        { schemaUrlQueries: [
-          { name: 'q', value: 'search' },
-          { name: 'foo', value: 'bar' },
-        ] },
-        'edit/file/123?q=search&foo=bar'
+test('Editor getFormSchemaUrl Plain URL', async () => {
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup' }];
+  render(
+    <Editor {...makeProps({
+      schemaUrlQueries: [
+        { name: 'q', value: 'search' },
+        { name: 'foo', value: 'bar' },
       ]
-    ];
-
-    testCase.forEach(([desc, props, expected]) => it(desc, () => {
-      const { component } = render(props);
-      const formSchemaUrl = component.getFormSchemaUrl();
-      expect(formSchemaUrl).toBe(expected);
-    }));
-  });
+    })}
+    />
+  );
+  openModal();
+  const loader = await screen.findByTestId('test-form-builder-loader');
+  expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123?q=search&foo=bar');
 });

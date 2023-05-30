@@ -697,7 +697,7 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderBulkActions() {
-    const { type, dialog, maxFilesSelect, files, selectedFiles } = this.props;
+    const { type, dialog, maxFilesSelect, files, selectedFiles, BulkActionsComponent } = this.props;
 
     // When rendering gallery in modal or in select mode, filter all action but insert.
     const actionFilter = (type === ACTION_TYPES.SELECT || dialog)
@@ -747,7 +747,7 @@ class Gallery extends Component {
 
     if (selected.length > 0 && [ACTION_TYPES.ADMIN, ACTION_TYPES.SELECT].includes(type)) {
       return (
-        <BulkActions
+        <BulkActionsComponent
           actions={actions}
           items={selected}
           total={maxFilesSelect}
@@ -1032,6 +1032,7 @@ Gallery.defaultProps = Object.assign({}, sharedDefaultProps, {
   view: 'tile',
   enableDropzone: true,
   dialog: false,
+  BulkActionsComponent: BulkActions
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
@@ -1071,7 +1072,8 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
     field: PropTypes.string.isRequired,
     direction: PropTypes.oneOf(['asc', 'desc']).isRequired,
     label: PropTypes.string.isRequired,
-  })).isRequired
+  })).isRequired,
+  BulkActionsComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
 });
 
 function mapStateToProps(state, ownProps) {

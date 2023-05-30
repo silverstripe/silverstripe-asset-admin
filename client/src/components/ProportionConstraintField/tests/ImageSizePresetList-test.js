@@ -1,76 +1,70 @@
-/* global jest, describe, it, expect, beforeEach */
+/* global jest, test, expect */
 
 import React from 'react';
 import ImageSizePresetList from '../ImageSizePresetList';
-import Enzyme, { mount } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16/build/index';
+import { render, screen, fireEvent } from '@testing-library/react';
 
 
-Enzyme.configure({ adapter: new Adapter() });
+function makeProps(obj = {}) {
+  return {
+    onSelect: () => null,
+    imageSizePresets: [
+      { width: 1234, text: 'default', default: true },
+      { width: 4321, text: 'super large' },
+      { width: 2, text: 'super small' },
+    ],
+    currentWidth: 123,
+    originalWidth: 321,
+    ...obj
+  };
+}
 
-const imageSizePresets = [
-  { width: 1234, text: 'default', default: true },
-  { width: 4321, text: 'super large' },
-  { width: 2, text: 'super small' },
-];
+test('ImageSizePresetList render() presets are displayed', () => {
+  const { container } = render(
+    <ImageSizePresetList {...makeProps()}/>
+  );
+  const buttons = container.querySelectorAll('button');
+  expect(buttons[0].querySelector('span.sr-only').textContent).toBe('Set image size to "default"');
+  expect(buttons[0].querySelector('span[aria-hidden="true"]').textContent).toBe('default');
+  expect(buttons[1].querySelector('span.sr-only').textContent).toBe('Set image size to "super large"');
+  expect(buttons[1].querySelector('span[aria-hidden="true"]').textContent).toBe('super large');
+  expect(buttons[2].querySelector('span.sr-only').textContent).toBe('Set image size to "super small"');
+  expect(buttons[2].querySelector('span[aria-hidden="true"]').textContent).toBe('super small');
+});
 
-/**
- * @param {Object} props
- * @returns {{item: *, calls: }}
- */
-const render = (props = {}) => {
-  const onSelect = jest.fn();
+test('ImageSizePresetList render() prset bigger than image are disabled', () => {
+  const { container } = render(
+    <ImageSizePresetList {...makeProps()}/>
+  );
+  const buttons = container.querySelectorAll('button');
+  expect(buttons[0].disabled).toBe(true);
+  expect(buttons[1].disabled).toBe(true);
+  expect(buttons[2].disabled).toBe(false);
+});
 
-  const item = mount(
-    <ImageSizePresetList
-      onSelect={onSelect}
-      imageSizePresets={imageSizePresets}
-      currentWidth={123}
-      originalWidth={321}
-      {...props}
+test('ImageSizePresetList render() selected preset is disabled', () => {
+  const { container } = render(
+    <ImageSizePresetList {...makeProps({
+      currentWidth: 2
+    })}
     />
   );
+  const buttons = container.querySelectorAll('button');
+  expect(buttons[0].disabled).toBe(true);
+  expect(buttons[1].disabled).toBe(true);
+  expect(buttons[2].disabled).toBe(true);
+});
 
-  return {
-    item,
-    calls: onSelect.mock.calls,
-    buttons: item ? item.find('Button') : undefined
-  };
-};
-
-describe('ImageSizePresetList', () => {
-  describe('render()', () => {
-    it('presets are displayed', () => {
-      const { buttons } = render();
-      expect(buttons.get(0).props.children[0].props.children).toContain('Set image size to');
-      expect(buttons.get(0).props.children[1].props.children).toContain('default');
-      expect(buttons.get(1).props.children[0].props.children).toContain('Set image size to');
-      expect(buttons.get(1).props.children[1].props.children).toContain('super large');
-      expect(buttons.get(2).props.children[0].props.children).toContain('Set image size to');
-      expect(buttons.get(2).props.children[1].props.children).toContain('super small');
-    });
-
-    it('preset bigger than image are disabled', () => {
-      const { buttons } = render();
-      expect(buttons.get(0).props.disabled).toBe(true);
-      expect(buttons.get(1).props.disabled).toBe(true);
-      expect(buttons.get(2).props.disabled).toBe(false);
-    });
-
-    it('selected preset is disabled', () => {
-      const { buttons } = render({ currentWidth: 2 });
-      expect(buttons.get(0).props.disabled).toBe(true);
-      expect(buttons.get(1).props.disabled).toBe(true);
-      expect(buttons.get(2).props.disabled).toBe(true);
-    });
-  });
-
-  describe('onSelect()', () => {
-    it('clicking a button trigger onSelect()', () => {
-      const { buttons, calls } = render();
-      buttons.get(2).props.onClick();
-      expect(calls.length).toBe(1);
-      expect(calls[0][0]).toBe(2);
-    });
-  });
+test('ImageSizePresetList onSelect() clicking a button trigger onSelect()', () => {
+  const onSelect = jest.fn();
+  const { container } = render(
+    <ImageSizePresetList {...makeProps({
+      onSelect
+    })}
+    />
+  );
+  const buttons = container.querySelectorAll('button');
+  fireEvent.click(buttons[2]);
+  expect(onSelect.mock.calls.length).toBe(1);
+  expect(onSelect.mock.calls[0][0]).toBe(2);
 });

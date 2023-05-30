@@ -135,7 +135,8 @@ class InsertEmbedModal extends Component {
   }
 
   render() {
-    return <FormBuilderModal {...this.getModalProps()} />;
+    const { FormBuilderModalComponent } = this.props;
+    return <FormBuilderModalComponent {...this.getModalProps()} />;
   }
 }
 
@@ -161,11 +162,13 @@ InsertEmbedModal.propTypes = {
   schemaUrl: PropTypes.string.isRequired,
   targetUrl: PropTypes.string,
   onLoadingError: PropTypes.func,
+  FormBuilderModalComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
 };
 
 InsertEmbedModal.defaultProps = {
   className: '',
   fileAttributes: {},
+  FormBuilderModalComponent: FormBuilderModal
 };
 
 function mapStateToProps(state, ownProps) {
