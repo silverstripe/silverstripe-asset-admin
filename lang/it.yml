@@ -2,15 +2,6 @@ it:
   AssetAdmin:
     INSERT_FILE: 'Inserire file'
     UPDATE_FILE: 'Aggiorna file'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Salva
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Salvato
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Pubblica
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Pubblicato
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Scegli una cartella'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Sposta
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Accesso ristretto'
     TRACKED_FORM_UPLOAD_RESTRICTED: 'Inoltro modulo'

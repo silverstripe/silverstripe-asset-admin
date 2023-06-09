@@ -17,8 +17,6 @@ sr:
     EDITINFO: 'Измени ову датотеку'
     FIELDNOTSET: 'Информације о датотеци нису пронађене'
     REMOVE: Уклони
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

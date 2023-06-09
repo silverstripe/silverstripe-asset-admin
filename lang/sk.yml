@@ -19,8 +19,6 @@ sk:
     EDITINFO: 'Editovať súbor'
     FIELDNOTSET: 'Žiadna informácia o súbore'
     REMOVE: Odstrániť
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

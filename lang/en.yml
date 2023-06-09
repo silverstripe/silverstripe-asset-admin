@@ -2,15 +2,6 @@ en:
   AssetAdmin:
     INSERT_FILE: 'Insert file'
     UPDATE_FILE: 'Update file'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Saved
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publish
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Published
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Choose a folder'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Move
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Restricted access'
     TRACKED_FORM_UPLOAD_RESTRICTED: 'Form submission'
@@ -80,6 +71,7 @@ en:
     ONLY_GROUPS: 'Only these groups (choose from list)'
     ROOTNAME: '(Top level)'
     SAVE: Save
+    SAVED: Saved
     VIEWERGROUPS: 'Viewer Groups'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download file'
@@ -89,6 +81,8 @@ en:
     LINKOPTIONS: 'Link options'
     LINKTEXT: 'Link text'
     OTHER_ACTIONS: 'Other actions'
+    PUBLISH: Publish
+    PUBLISHED: Published
     REPLACE_FILE: 'Replace file'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">This file type can only be inserted as a link. You can edit the link once it is inserted.</p>'
     USAGE: 'Used on'
@@ -99,6 +93,9 @@ en:
     CREATE: Create
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: 'Folder name'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Choose a folder'
+    MOVE: Move
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Add media'
     Cancel: Cancel
