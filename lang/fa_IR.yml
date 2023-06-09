@@ -19,8 +19,6 @@ fa_IR:
     EDITINFO: 'ویرایش این فایل'
     FIELDNOTSET: 'اطلاعات فایل پیدا نشد'
     REMOVE: حذف
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

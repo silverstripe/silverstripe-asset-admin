@@ -2,15 +2,6 @@ sl:
   AssetAdmin:
     INSERT_FILE: 'Vstavi datoteko'
     UPDATE_FILE: 'Posodobi datoteko'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Shrani
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Shranjeno
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Objavi
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Objavljeno
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Izberite mapo'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Premakni
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Dostop omejen'
     TRACKED_FORM_UPLOAD_RESTRICTED: 'Uporaba obrazca'

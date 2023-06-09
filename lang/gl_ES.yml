@@ -11,8 +11,6 @@ gl_ES:
   SilverStripe\AssetAdmin\Forms\UploadField:
     EDITINFO: 'Editar este ficheiro'
     FIELDNOTSET: 'Ficheiro de información non atopado'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

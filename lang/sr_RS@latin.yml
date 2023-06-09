@@ -17,8 +17,6 @@ sr_RS@latin:
     EDITINFO: 'Izmeni ovu datoteku'
     FIELDNOTSET: 'Informacije o datoteci nisu pronađene'
     REMOVE: Ukloni
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

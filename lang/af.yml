@@ -16,8 +16,6 @@ af:
     EDITINFO: 'Verander die lêer'
     FIELDNOTSET: 'Die lêer informasie kan nie gevind word nie'
     REMOVE: Verwyder
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
