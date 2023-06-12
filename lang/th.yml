@@ -16,8 +16,6 @@ th:
     EDITINFO: แก้ไขไฟล์นี้
     FIELDNOTSET: ไม่พบข้อมูลเกี่ยวกับไฟล์
     REMOVE: ลบออก
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

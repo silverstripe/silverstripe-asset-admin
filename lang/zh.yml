@@ -17,8 +17,6 @@ zh:
     EDITINFO: 编辑该文件
     FIELDNOTSET: 没有找到文件信息
     REMOVE: 移除
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

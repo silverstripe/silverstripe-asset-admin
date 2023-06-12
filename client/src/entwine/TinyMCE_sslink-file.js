@@ -69,6 +69,7 @@ jQuery.entwine('ss', ($) => {
       const handleInsert = (...args) => this.handleInsert(...args);
       const attrs = this.getOriginalAttributes();
       const selection = tinymce.activeEditor.selection;
+      const folderId = this.getFolderId();
       const selectionContent = selection.getContent() || '';
       const tagName = selection.getNode().tagName;
       const requireLinkText = tagName !== 'A' && selectionContent.trim() === '';
@@ -78,6 +79,7 @@ jQuery.entwine('ss', ($) => {
         <InjectableInsertMediaModal
           isOpen={isOpen}
           type="insert-link"
+          folderId={folderId}
           onInsert={handleInsert}
           onClosed={handleHide}
           title={false}
@@ -109,6 +111,22 @@ jQuery.entwine('ss', ($) => {
         target: data.TargetBlank ? '_blank' : '',
         title: data.Description,
       };
+    },
+
+    /**
+     * Get default upload folder
+     *
+     * @returns {(number|null)}
+     */
+    getFolderId() {
+      const $field = this.getElement();
+      if (!$field) {
+        return null;
+      }
+
+      // Check type safely
+      const folderId = Number($field.data('config').upload_folder_id);
+      return isNaN(folderId) ? null : folderId;
     },
 
     getOriginalAttributes() {

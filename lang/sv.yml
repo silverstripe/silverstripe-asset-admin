@@ -19,8 +19,6 @@ sv:
     EDITINFO: 'Redigera filen'
     FIELDNOTSET: 'Hittade ingen filinformation'
     REMOVE: 'Ta bort'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

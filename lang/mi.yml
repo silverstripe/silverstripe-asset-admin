@@ -17,8 +17,6 @@ mi:
     EDITINFO: 'Whakatikatia tēnei kōnae'
     FIELDNOTSET: 'Kāore i kitea te mōhiohio kōnae'
     REMOVE: Tango
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

@@ -10,8 +10,6 @@ bs:
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

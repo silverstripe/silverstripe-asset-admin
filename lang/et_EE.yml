@@ -17,8 +17,6 @@ et_EE:
     EDITINFO: 'Muuda seda faili'
     FIELDNOTSET: 'Failiteavet ei leitud'
     REMOVE: Eemalda
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

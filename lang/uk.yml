@@ -12,8 +12,6 @@ uk:
     LASTEDIT: 'Last changed'
   SilverStripe\AssetAdmin\Forms\UploadField:
     EDITINFO: 'Редагувати цей файл'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
