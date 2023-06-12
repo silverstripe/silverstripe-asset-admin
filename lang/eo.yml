@@ -2,15 +2,6 @@ eo:
   AssetAdmin:
     INSERT_FILE: 'Enmeti dosieron'
     UPDATE_FILE: 'Ĝisdatigi dosieron'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Konservi
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Konservita
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publikigi
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Publikigita
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Elekti dosierujon'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Movi
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Limigita aliro'
     TRACKED_FORM_UPLOAD_RESTRICTED: 'Sendi formularon'

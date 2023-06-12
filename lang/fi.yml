@@ -19,8 +19,6 @@ fi:
     EDITINFO: 'Muokkaa tätä tiedostoa'
     FIELDNOTSET: 'Tietoja tiedostosta ei löytynyt'
     REMOVE: Poista
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

@@ -2,15 +2,6 @@ nl:
   AssetAdmin:
     INSERT_FILE: 'Bestand invoegen'
     UPDATE_FILE: 'Bestand aanpassen'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Opslaan
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Opgeslagen
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publiceer
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Gepubliceerd
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Kies een map'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Verplaats
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Toegang beperkt'
     TRACKED_FORM_UPLOAD_RESTRICTED: 'Formulier inzending'

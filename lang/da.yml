@@ -1,13 +1,4 @@
 da:
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Gem
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Gemt
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Udgiv
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Udgivet
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Vælg en mappe'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Flyt
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Slet mapper'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
