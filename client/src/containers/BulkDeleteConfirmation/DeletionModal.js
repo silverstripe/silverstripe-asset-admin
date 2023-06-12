@@ -12,10 +12,10 @@ const DeletionModal = ({ isOpen, body, onCancel, actions }) => (
     <ModalFooter>
       {actions.map(({ label, handler, color }) => (
         <Button key={label} color={color} onClick={handler}>{label}</Button>
-        ))}
+      ))}
     </ModalFooter>
   </Modal>
-  );
+);
 
 DeletionModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,

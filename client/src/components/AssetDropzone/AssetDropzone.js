@@ -308,10 +308,10 @@ class AssetDropzone extends Component {
    * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleUploadComplete(file) {
-      if (typeof this.props.onUploadComplete === 'function') {
-        this.props.onUploadComplete(file.status);
-      }
+    if (typeof this.props.onUploadComplete === 'function') {
+      this.props.onUploadComplete(file.status);
     }
+  }
 
   /**
    * Event handler triggered when the user drops a file on the dropzone.

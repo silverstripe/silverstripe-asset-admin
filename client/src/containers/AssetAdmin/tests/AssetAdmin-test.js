@@ -117,16 +117,16 @@ function makeProps(obj = {}) {
     GalleryComponent: ({ onPublish, onUnpublish, onSuccessfulUploadQueue, files }) => <div
       data-testid="test-gallery"
       onClick={() => {
-      if (nextAction === 'publish') {
-        onPublish(...nextParams);
-      } else if (nextAction === 'unpublish') {
-        onUnpublish(...nextParams);
-      } else if (nextAction === 'successfulupload') {
-        onSuccessfulUploadQueue(...nextParams);
-      } else if (nextAction === 'files') {
-        lastReturn = files;
-      }
-    }}
+        if (nextAction === 'publish') {
+          onPublish(...nextParams);
+        } else if (nextAction === 'unpublish') {
+          onUnpublish(...nextParams);
+        } else if (nextAction === 'successfulupload') {
+          onSuccessfulUploadQueue(...nextParams);
+        } else if (nextAction === 'files') {
+          lastReturn = files;
+        }
+      }}
     />,
     SearchComponent: ({ onSearch }) => <div data-testid="test-search" onClick={() => onSearch(...nextParams)}/>,
     BulkDeleteConfirmationComponent: ({ onConfirm }) => <div data-testid="test-bulk-delete-confirmation" onClick={() => onConfirm(...nextParams)}/>,

@@ -8,30 +8,30 @@ import { render, fireEvent } from '@testing-library/react';
 function makeProps(obj = {}) {
   return {
     id: 0,
-      selectable: true,
-      selected: false,
-      onSelect: () => null,
-      onActivate: () => null,
-      onDelete: () => null,
-      onRemoveErroredUpload: () => null,
-      onCancelUpload: () => null,
-      item: {
-        width: 10,
-        height: 10,
-        exists: true,
-        category: 'image',
-        id: 1,
-        title: 'test',
-        canEdit: true,
+    selectable: true,
+    selected: false,
+    onSelect: () => null,
+    onActivate: () => null,
+    onDelete: () => null,
+    onRemoveErroredUpload: () => null,
+    onCancelUpload: () => null,
+    item: {
+      width: 10,
+      height: 10,
+      exists: true,
+      category: 'image',
+      id: 1,
+      title: 'test',
+      canEdit: true,
+    },
+    sectionConfig: {
+      imageRetry: {
+        minRetry: 0,
+        maxRetry: 0,
+        expiry: 0,
       },
-      sectionConfig: {
-        imageRetry: {
-          minRetry: 0,
-          maxRetry: 0,
-          expiry: 0,
-        },
-      },
-      loadState: IMAGE_STATUS.DISABLED,
+    },
+    loadState: IMAGE_STATUS.DISABLED,
     ...obj
   };
 }

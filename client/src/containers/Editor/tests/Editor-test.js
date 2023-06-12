@@ -40,12 +40,12 @@ function makeProps(obj = {}) {
     EditorHeaderComponent: ({ onCancel, onDetails, showButton }) => <div
       data-testid="test-editor-header"
       onClick={() => {
-      if (nextAction === 'cancel') {
-        onCancel();
-      } else if (nextAction === 'details') {
-        onDetails();
-      }
-    }}
+        if (nextAction === 'cancel') {
+          onCancel();
+        } else if (nextAction === 'details') {
+          onDetails();
+        }
+      }}
       data-show-button={showButton}
     />,
     FormBuilderLoaderComponent: ({ createFn, onAction, schemaUrl }) => (

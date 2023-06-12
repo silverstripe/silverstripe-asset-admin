@@ -32,14 +32,14 @@ function makeProps(obj = {}) {
     AssetDropzoneComponent: ({ onSuccess, canFileUpload, onUploadComplete, children }) => <div
       data-testid="test-asset-dropzone"
       onClick={() => {
-      if (nextAction === 'response') {
-        onSuccess(nextParam);
-      } else if (nextAction === 'canfileupload') {
-        lastReturn = canFileUpload(nextParam);
-      } else if (nextAction === 'uploadcomplete') {
-        onUploadComplete(nextParam);
-      }
-    }}
+        if (nextAction === 'response') {
+          onSuccess(nextParam);
+        } else if (nextAction === 'canfileupload') {
+          lastReturn = canFileUpload(nextParam);
+        } else if (nextAction === 'uploadcomplete') {
+          onUploadComplete(nextParam);
+        }
+      }}
     >{children}</div>,
     ...obj
   };
