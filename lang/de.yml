@@ -1,13 +1,4 @@
 de:
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Speichern
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Gespeichert
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Veröffentlichen
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Veröffentlicht
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Ordner auswählen'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Verschieben
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Ordner löschen'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:

@@ -19,8 +19,6 @@ ru:
     EDITINFO: 'Редактировать этот файл'
     FIELDNOTSET: 'Информация о файле не найдена'
     REMOVE: Удалить
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

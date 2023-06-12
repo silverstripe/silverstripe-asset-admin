@@ -19,8 +19,6 @@ es:
     EDITINFO: 'Editar este archivo'
     FIELDNOTSET: 'No ha sido encontrada la información del archivo'
     REMOVE: Eliminar
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

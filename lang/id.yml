@@ -17,8 +17,6 @@ id:
     EDITINFO: 'Edit berkas ini'
     FIELDNOTSET: 'Informasi berkas tidak ada'
     REMOVE: Buang
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

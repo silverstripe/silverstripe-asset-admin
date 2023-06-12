@@ -1,13 +1,4 @@
 hr:
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Spremi
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Spremljeno
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Objavi
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Objavljeno
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Odaberi direktorij'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Premjesti
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Obriši direktorije'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
