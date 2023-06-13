@@ -26,134 +26,189 @@ const props = {
 
 export default {
   title: 'AssetAdmin/GalleryItem',
+  component: GalleryItem,
   decorators: [
     (storyFn) => (
-            <SelectGalleryItemTracker>{storyFn()}</SelectGalleryItemTracker>
+      <SelectGalleryItemTracker>{storyFn()}</SelectGalleryItemTracker>
     ),
   ],
-};
-
-export const FileItem = () => <GalleryItem {...props} />;
-
-FileItem.story = {
-  name: 'File item',
-};
-
-export const FileItemHighlighted = () => {
-  const modProps = {
-    ...props,
-    item: {
-      ...props.item,
-      highlighted: true,
+  tags: ['autodocs'],
+  parameters: {
+    docs: {
+      description: {
+        component: 'Displays a file/folder as a thumbnail with relevant actions.'
+      },
+      canvas: {
+        sourceState: 'shown',
+      },
     },
-  };
-
-  return <GalleryItem {...modProps} />;
-};
-
-FileItemHighlighted.story = {
-  name: 'File item - highlighted',
-};
-
-export const FileItemDraft = () => {
-  const modProps = {
-    ...props,
+  },
+  argTypes: {
     item: {
-      ...props.item,
-      draft: true,
+      description: 'File details to display for.',
+      table: {
+        type: { summary: 'object' },
+      },
     },
-  };
-
-  return <GalleryItem {...modProps} />;
-};
-
-FileItemDraft.story = {
-  name: 'File item - draft',
-};
-
-export const FileItemModified = () => {
-  const modProps = {
-    ...props,
-    item: {
-      ...props.item,
-      modified: true,
+    highlights: {
+      description: 'Defines whether the item is highlighted (from being open).',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: false },
+      },
     },
-  };
-
-  return <GalleryItem {...modProps} />;
-};
-
-FileItemModified.story = {
-  name: 'File item - modified',
-};
-
-export const FileItemUploadInProgress = () => {
-  const modProps = {
-    ...props,
-    item: {
-      ...props.item,
-      id: 0,
-      uploading: true,
-      progress: 35,
+    selected: {
+      description: 'Defines whether the item is actively selected.',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: false },
+      },
     },
-  };
-
-  return <GalleryItem {...modProps} />;
-};
-
-FileItemUploadInProgress.story = {
-  name: 'File item - upload in progress',
-};
-
-export const FolderItem = () => {
-  const modProps = {
-    ...props,
-    item: {
-      ...props.item,
-      title: 'My folder',
-      category: 'folder',
+    enlarged: {
+      description: 'Whether the item should apply the enlarged class (e.g. when hovered over).',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: false },
+      },
     },
-  };
-
-  return <GalleryItem {...modProps} />;
-};
-
-FolderItem.story = {
-  name: 'Folder item',
-};
-
-export const FolderItemHighlighted = () => {
-  const modProps = {
-    ...props,
-    item: {
-      ...props.item,
-      title: 'My folder',
-      category: 'folder',
-      highlighted: true,
+    message: {
+      table: {
+        type: { summary: 'object' },
+        defaultValue: { summary: '{}' },
+      },
     },
-  };
-
-  return <GalleryItem {...modProps} />;
-};
-
-FolderItemHighlighted.story = {
-  name: 'Folder item highlighted',
-};
-
-export const FolderItemHoveredWithDroppableItems = () => {
-  const modProps = {
-    ...props,
-    item: {
-      ...props.item,
-      title: 'My folder',
-      category: 'folder',
+    value: {
+      description: 'message.value: The message to display over the preview area.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: null },
+      },
     },
-    enlarged: true,
-  };
-
-  return <GalleryItem {...modProps} />;
+    type: {
+      description: 'message.type: The type of message.',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: null },
+      },
+    },
+    selectable: {
+      description: 'Defines whether the item can be selected.',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: false },
+      },
+    },
+    onActivate: {
+      description: 'Callback for when the item is activated (normally by Click).',
+      table: {
+        type: { summary: 'function' },
+      },
+    },
+    onSelect: {
+      description: 'Callback for when the item is selected.',
+      table: {
+        type: { summary: 'function' },
+      },
+    },
+    onCancelUpload: {
+      description: 'Callback for when the item is cancelled from uploading.',
+      table: {
+        type: { summary: 'function' },
+      },
+    },
+    onRemoveErroredUpload: {
+      description: 'Callback for when the item should be removed, can be called after it errors during upload.',
+      table: {
+        type: { summary: 'function' },
+      },
+    },
+  }
 };
 
-FolderItemHoveredWithDroppableItems.story = {
-  name: 'Folder item hovered with droppable items',
+export const _GalleryItem = (args) => <GalleryItem {...args} />;
+_GalleryItem.args = {
+  selectable: true
+};
+
+export const FileItem = (args) => <GalleryItem {...args} />;
+FileItem.args = {
+  selectable: true
+};
+
+export const FileItemWithWrongID = (args) => <GalleryItem {...args} />;
+FileItemWithWrongID.args = {
+  item: {
+    id: 2
+  },
+  selectable: true
+};
+
+export const FileItemHighlighted = (args) => <GalleryItem {...args} />;
+FileItemHighlighted.args = {
+  ...props,
+  item: {
+    ...props.item,
+    highlighted: true,
+  },
+};
+
+export const FileItemDraft = (args) => <GalleryItem {...args} />;
+FileItemDraft.args = {
+  ...props,
+  item: {
+    ...props.item,
+    draft: true,
+  },
+};
+
+export const FileItemModified = (args) => <GalleryItem {...args} />;
+FileItemModified.args = {
+  ...props,
+  item: {
+    ...props.item,
+    modified: true,
+  },
+};
+
+export const FileItemUploadInProgress = (args) => <GalleryItem {...args} />;
+FileItemUploadInProgress.args = {
+  ...props,
+  item: {
+    ...props.item,
+    id: 0,
+    uploading: true,
+    progress: 35,
+  },
+};
+
+export const FolderItem = (args) => <GalleryItem {...args} />;
+FolderItem.args = {
+  ...props,
+  item: {
+    ...props.item,
+    title: 'My folder',
+    category: 'folder',
+  },
+};
+
+export const FolderItemHighlighted = (args) => <GalleryItem {...args} />;
+FolderItemHighlighted.args = {
+  ...props,
+  item: {
+    ...props.item,
+    title: 'My folder',
+    category: 'folder',
+    highlighted: true,
+  },
+};
+
+export const FolderItemHoveredWithDroppableItems = (args) => <GalleryItem {...args} />;
+FolderItemHoveredWithDroppableItems.args = {
+  ...props,
+  item: {
+    ...props.item,
+    title: 'My folder',
+    category: 'folder',
+  },
+  enlarged: true,
 };
