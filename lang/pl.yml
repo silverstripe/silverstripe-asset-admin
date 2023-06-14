@@ -65,6 +65,7 @@ pl:
     ROOTNAME: '(Najwyższy poziom)'
     SAVE: Zapisz
     VIEWERGROUPS: 'Kto może zobaczyć (grupy)'
+    SAVED: Zapisano
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_LINK: 'Link do pliku'
     LINKDESCR: 'Opis linku'
@@ -76,6 +77,8 @@ pl:
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ten typ pliku można wstawić tylko jako łącze. Możesz edytować link, gdy zostanie wstawiony.</p>'
     USAGE: 'Użyty na'
     DOWNLOAD_FILE: 'Pobierz plik'
+    PUBLISH: Opublikuj
+    PUBLISHED: Opublikowano
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Opublikowano
     SAVED: Zapisano
@@ -116,3 +119,6 @@ pl:
       few: 'Plik "{file}" jest używany w kilku {count} miejscach.'
       many: 'Plik "{file}" jest używany w wielu {count} miejscach.'
       other: 'Plik "{file}" jest używany w {count} miejscach.'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Wybierz folder'
+    MOVE: Przenieś

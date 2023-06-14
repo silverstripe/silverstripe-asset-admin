@@ -33,3 +33,8 @@ lt:
     FOLDERNAME: 'Katalogo pavadinimas'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    PUBLISH: Publikuoti
+    PUBLISHED: Publikuota
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    MOVE: Perkelti

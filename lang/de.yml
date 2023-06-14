@@ -63,6 +63,7 @@ de:
     ROOTNAME: (Hauptebene)
     SAVE: Speichern
     VIEWERGROUPS: Betrachtergruppen
+    SAVED: Gespeichert
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_LINK: 'Link zur Datei'
     LINKDESCR: 'Beschreibung des Links'
@@ -74,6 +75,8 @@ de:
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dieser Dateityp kann nur als Link eingefügt werden. Sie können den Link nach dem Einfügen bearbeiten.</p>'
     USAGE: 'Benutzt in'
     DOWNLOAD_FILE: 'Datei herunterladen'
+    PUBLISH: Veröffentlichen
+    PUBLISHED: Veröffentlicht
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Veröffentlicht
     SAVED: Gespeichert
@@ -114,3 +117,6 @@ de:
     OWNER_WARNING:
       one: 'Die Datei "{file}" wird an {count} Stelle verwendet.'
       other: 'Die Datei "{file}" wird an {count} Stellen verwendet.'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Ordner auswählen'
+    MOVE: Verschieben
