@@ -60,6 +60,7 @@ da:
     ROOTNAME: '(Top niveau)'
     SAVE: Gem
     VIEWERGROUPS: Visningsgrupper
+    SAVED: Gemt
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_LINK: 'Link til fil'
     LINKDESCR: 'Link beskrivelse'
@@ -69,6 +70,8 @@ da:
     OTHER_ACTIONS: 'Andre handlinger'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Denne filtype kan kun indsættes som et link. Du kan redigere linket når det er sat ind.</p>'
     USAGE: 'Brugt på'
+    PUBLISH: Udgiv
+    PUBLISHED: Udgivet
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Udgivet
     SAVED: Gemt
@@ -88,3 +91,6 @@ da:
     FileNotFound: 'Filen eller mappen kunne ikke findes'
   SilverStripe\AssetAdmin\GraphQL\FileFilter:
     FileNotFound: 'Filen eller mappen kunne ikke findes'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Vælg en mappe'
+    MOVE: Flyt

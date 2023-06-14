@@ -60,6 +60,7 @@ fr:
     ROOTNAME: (Racine)
     SAVE: Sauvegarder
     VIEWERGROUPS: 'Groupes de visualisation'
+    SAVED: Sauvegardé
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_LINK: 'Lien du fichier'
     LINKDESCR: 'Description du lien'
@@ -68,6 +69,8 @@ fr:
     LINKTEXT: 'Texte du lien'
     OTHER_ACTIONS: 'Autres actions'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ce type de fichier peut uniquement être inséré en tant que lien. Vous pourrez modifier le lien après qu''il aura été inséré.</p>'
+    PUBLISH: Publier
+    PUBLISHED: Publié
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Publié
     SAVED: Sauvegardé
@@ -90,3 +93,6 @@ fr:
     FileNotFound: 'Fichier ou dossier introuvable'
   SilverStripe\AssetAdmin\GraphQL\FileFilter:
     FileNotFound: 'Fichier ou dossier introuvable'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Choisir un dossier'
+    MOVE: Déplacer
