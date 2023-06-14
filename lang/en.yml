@@ -30,8 +30,8 @@ en:
     CurrentFolderOnly: 'Limit to current folder and its sub-folders?'
     DELETE_BUTTON: Delete
     Eager: Eager
-    ErrorItemPermissionDenied: 'You don''t have the necessary permissions to modify {ObjectTitle}'
-    ErrorNotFound: 'That {Type} couldn''t be found'
+    ErrorItemPermissionDenied: "You don't have the necessary permissions to modify {ObjectTitle}"
+    ErrorNotFound: "That {Type} couldn't be found"
     FILE_NOT_FOUND: 'File not found'
     Filetype: 'File type'
     INVALID_REQUEST: 'Invalid request'
