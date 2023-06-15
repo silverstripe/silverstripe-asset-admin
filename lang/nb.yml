@@ -17,8 +17,6 @@ nb:
     EDITINFO: 'Rediger denne filen'
     FIELDNOTSET: 'Filinformasjon ikke funnet'
     REMOVE: Fjern
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

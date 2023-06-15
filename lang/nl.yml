@@ -2,15 +2,6 @@ nl:
   AssetAdmin:
     INSERT_FILE: 'Bestand invoegen'
     UPDATE_FILE: 'Bestand aanpassen'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Opslaan
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Opgeslagen
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publiceer
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Gepubliceerd
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Kies een map'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Verplaats
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Toegang beperkt'
     TRACKED_FORM_UPLOAD_RESTRICTED: 'Formulier inzending'
@@ -81,6 +72,7 @@ nl:
     ROOTNAME: '(Bovenste niveau)'
     SAVE: Opslaan
     VIEWERGROUPS: 'Groepen met bekijkrechten'
+    SAVED: Opgeslagen
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download bestand'
     INSERT_LINK: 'Link naar bestand'
@@ -92,6 +84,8 @@ nl:
     REPLACE_FILE: 'Vervang bestand'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dit bestandstype kan alleen als link ingevoegd worden. Na het invoegen kan het bewerkt worden.</p>'
     USAGE: 'In gebruik op'
+    PUBLISH: Publiceer
+    PUBLISHED: Gepubliceerd
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Gepubliceerd
     SAVED: Opgeslagen
@@ -119,3 +113,6 @@ nl:
     OWNER_WARNING:
       one: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
       other: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Kies een map'
+    MOVE: Verplaats

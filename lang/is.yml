@@ -1,6 +1,4 @@
 is:
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete

@@ -17,8 +17,6 @@ ar:
     EDITINFO: 'قم بتعديل هذا الملف'
     FIELDNOTSET: 'لا يوجد معلومات عن الملف'
     REMOVE: حذف
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

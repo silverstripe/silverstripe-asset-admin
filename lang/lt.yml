@@ -22,13 +22,6 @@ lt:
     EDITINFO: 'Redaguoti šią bylą'
     FIELDNOTSET: 'Informacija apie bylą nerasta'
     REMOVE: Pašalinti
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Save
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publikuoti
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Publikuota
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Perkelti
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Ribotas priėjimas'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
@@ -40,3 +33,8 @@ lt:
     FOLDERNAME: 'Katalogo pavadinimas'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    PUBLISH: Publikuoti
+    PUBLISHED: Publikuota
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    MOVE: Perkelti

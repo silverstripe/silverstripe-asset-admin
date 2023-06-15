@@ -1,13 +1,4 @@
 hr:
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Spremi
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Spremljeno
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Objavi
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Objavljeno
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Odaberi direktorij'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Premjesti
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Obriši direktorije'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
@@ -58,10 +49,13 @@ hr:
     FILENAME: 'Naziv datoteke'
     FOLDERLOCATION: Lokacije
     SAVE: Spremi
+    SAVED: Spremljeno
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     INSERT_LINK: 'Poveži s datotekom'
     LINKOPENNEWWIN: 'Otvori u novom prozoru/tabu'
     OTHER_ACTIONS: 'Druge akcije'
+    PUBLISH: Objavi
+    PUBLISHED: Objavljeno
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Objavljeno
     SAVED: Spremljeno
@@ -74,3 +68,6 @@ hr:
     Cancel: Odustani
   AssetAdmin:
     INSERT_FILE: 'Ubaci datoteku'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Odaberi direktorij'
+    MOVE: Premjesti

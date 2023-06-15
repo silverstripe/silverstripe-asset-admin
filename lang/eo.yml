@@ -2,15 +2,6 @@ eo:
   AssetAdmin:
     INSERT_FILE: 'Enmeti dosieron'
     UPDATE_FILE: 'Ĝisdatigi dosieron'
-  AssetFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVE: Konservi
-    php.SilverStripe\AssetAdmin\Forms\AssetFormFactorySAVED: Konservita
-  FileFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISH: Publikigi
-    php.SilverStripe\AssetAdmin\Forms\FileFormFactoryPUBLISHED: Publikigita
-  MoveFormFactory:
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryCHOOSEFOLDER: 'Elekti dosierujon'
-    php.SilverStripe\AssetAdmin\Forms\MoveFormFactoryMOVE: Movi
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Limigita aliro'
     TRACKED_FORM_UPLOAD_RESTRICTED: 'Sendi formularon'
@@ -81,6 +72,7 @@ eo:
     ROOTNAME: '(Supra nivelo)'
     SAVE: Konservi
     VIEWERGROUPS: 'Grupoj de vidantoj'
+    SAVED: Konservita
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Elŝuti dosieron'
     INSERT_LINK: 'Ligi al dosiero'
@@ -92,6 +84,8 @@ eo:
     REPLACE_FILE: 'Anstataŭigi dosieron'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ĉi tiu tipo de dosiero estas enmetebla nur kiel ligilon. Vi povas redakti la ligilon post enmeto.</p>'
     USAGE: 'Uzita je'
+    PUBLISH: Publikigi
+    PUBLISHED: Publikigita
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Publikigita
     SAVED: Konservita
@@ -125,3 +119,6 @@ eo:
     OWNER_WARNING:
       one: 'Dosiero "{file}" estas uzita en 1 loko.'
       other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Elekti dosierujon'
+    MOVE: Movi

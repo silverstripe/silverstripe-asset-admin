@@ -249,9 +249,9 @@ class FileFormFactory extends AssetFormFactory
                 'data' => [
                     'isPublished' => $record->isPublished(),
                     'isModified' => $record->isModifiedOnDraft(),
-                    'pristineTitle' => _t(__CLASS__ . 'PUBLISHED', 'Published'),
+                    'pristineTitle' => _t(__CLASS__ . '.PUBLISHED', 'Published'),
                     'pristineIcon' => 'tick',
-                    'dirtyTitle' => _t(__CLASS__ . 'PUBLISH', 'Publish'),
+                    'dirtyTitle' => _t(__CLASS__ . '.PUBLISH', 'Publish'),
                     'dirtyIcon' => 'rocket',
                     'pristineClass' => 'btn-outline-primary',
                     'dirtyClass' => 'btn-primary',
