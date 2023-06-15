@@ -72,8 +72,8 @@ jQuery.entwine('ss', ($) => {
       const attrs = this.getOriginalAttributes();
       const editor = this.getElement().getEditor();
       const selection = editor.getInstance().selection;
-      const folderId = this.getFolderId();
       const selectionContent = editor.getSelection();
+      const folderId = this.getFolderId();
       const tagName = selection.getNode().tagName;
       const requireLinkText = tagName !== 'A' && selectionContent.trim() === '';
 
