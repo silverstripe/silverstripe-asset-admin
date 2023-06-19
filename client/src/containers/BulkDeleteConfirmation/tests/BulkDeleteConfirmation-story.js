@@ -6,9 +6,9 @@ import LoadingComponent from 'components/Loading/Loading';
 import { action } from '@storybook/addon-actions';
 
 const actions = {
-    onCancel: (event) => action('onCancel')(event),
-    onConfirm: (event) => action('onConfirm')(event),
-    onModalClose: (event) => action('onModalClose')(event),
+  onCancel: (event) => action('onCancel')(event),
+  onConfirm: (event) => action('onConfirm')(event),
+  onModalClose: (event) => action('onModalClose')(event),
 };
 
 actions.onCancel.toString = () => 'onCancel';
@@ -16,17 +16,17 @@ actions.onConfirm.toString = () => 'onConfirm';
 actions.onModalClose.toString = () => 'onModalClose';
 
 export default {
-    title: 'AssetAdmin/DeleteConfirmation',
-    decorators: [jsxDecorator],
-    component: BulkDeleteConfirmation,
+  title: 'AssetAdmin/DeleteConfirmation',
+  decorators: [jsxDecorator],
+  component: BulkDeleteConfirmation,
 };
 
 export const Default = {
-    args: {
-      loading: true,
-      LoadingComponent,
-      ...actions,
-    }
+  args: {
+    loading: true,
+    LoadingComponent,
+    ...actions,
+  }
 };
 
 export const NothingInUse = {

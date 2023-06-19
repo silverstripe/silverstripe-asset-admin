@@ -47,54 +47,54 @@ export const buttonStates = {
  * Wraps the form headers with some buttons to switch between different form.
  */
 const EditorHeader = ({ onCancel, onDetails, showButton, children }) => {
-    const cancelHandler = handle(onCancel);
+  const cancelHandler = handle(onCancel);
 
-    const showBack = [
-      ALWAYS_BACK,
-      SWITCH,
-      ONLY_BACK
-    ].indexOf(showButton) >= 0;
-    const showCancel = [
-      ALWAYS_CANCEL,
-      SWITCH,
-      ONLY_CANCEL
-    ].indexOf(showButton) >= 0;
+  const showBack = [
+    ALWAYS_BACK,
+    SWITCH,
+    ONLY_BACK
+  ].indexOf(showButton) >= 0;
+  const showCancel = [
+    ALWAYS_CANCEL,
+    SWITCH,
+    ONLY_CANCEL
+  ].indexOf(showButton) >= 0;
 
-    const backClassName = classnames(
-      'editor-header__back-button',
-      'btn--icon-xl',
-      {
-        'editor-header__back-button--md-below': [SWITCH, ONLY_BACK].indexOf(showButton) >= 0
-      }
-    );
+  const backClassName = classnames(
+    'editor-header__back-button',
+    'btn--icon-xl',
+    {
+      'editor-header__back-button--md-below': [SWITCH, ONLY_BACK].indexOf(showButton) >= 0
+    }
+  );
 
-    const cancelClassName = classnames(
-      'editor-header__cancel-button',
-      'btn--icon-xl',
-      {
-        'editor-header__cancel-button--lg-above': [SWITCH, ONLY_CANCEL].indexOf(showButton) >= 0
-      }
-    );
+  const cancelClassName = classnames(
+    'editor-header__cancel-button',
+    'btn--icon-xl',
+    {
+      'editor-header__cancel-button--lg-above': [SWITCH, ONLY_CANCEL].indexOf(showButton) >= 0
+    }
+  );
 
-    return (
-      <div className="editor-header">
-        {showBack && <BackButton className={backClassName} onClick={cancelHandler} />}
-        <div className="editor-header__field">
-          {children}
-        </div>
-        {onDetails &&
+  return (
+    <div className="editor-header">
+      {showBack && <BackButton className={backClassName} onClick={cancelHandler} />}
+      <div className="editor-header__field">
+        {children}
+      </div>
+      {onDetails &&
         <Button onClick={handle(onDetails)} icon="edit-list" className="editor-header__edit" outline>
           {i18n._t('AssetAdmin.DETAILS', 'Details')}
         </Button>
       }
-        {showCancel &&
+      {showCancel &&
         <div>
           <Button icon="cancel" className={cancelClassName} noText onClick={cancelHandler} >
             {i18n._t('AssetAdmin.CANCEL')}
           </Button>
         </div>
       }
-      </div>
+    </div>
   );
 };
 

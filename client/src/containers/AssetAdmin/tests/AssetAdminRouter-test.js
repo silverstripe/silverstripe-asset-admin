@@ -32,8 +32,8 @@ function makeProps(obj = {}) {
     AssetAdminComponent: ({ getUrl }) => <div
       data-testid="test-asset-admin"
       onClick={() => {
-      lastReturn = getUrl(...nextParams);
-    }}
+        lastReturn = getUrl(...nextParams);
+      }}
     />,
     ...obj
   };

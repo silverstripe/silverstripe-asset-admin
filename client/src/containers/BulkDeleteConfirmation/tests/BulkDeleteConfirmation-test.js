@@ -18,12 +18,12 @@ const files = [
 function makeProps(obj = {}) {
   return {
     loading: false,
-      LoadingComponent: () => <p>Loading...</p>,
-      transition: false,
-      descendantFileCounts: {},
-      onCancel: () => null,
-      onModalClose: () => null,
-      onConfirm: () => null,
+    LoadingComponent: () => <p>Loading...</p>,
+    transition: false,
+    descendantFileCounts: {},
+    onCancel: () => null,
+    onModalClose: () => null,
+    onConfirm: () => null,
     ...obj
   };
 }

@@ -318,7 +318,7 @@ class Gallery extends Component {
     }
   }
 
-   /**
+  /**
    * Handler for when the user changes the sort order
    *
    * @param {string} value
