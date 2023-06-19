@@ -60,7 +60,7 @@ class AssetDropzone extends Component {
       this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
     }
     // add listeners when necessary
-    if (this.props.canUpload && prevProps.canUpload !== this.props.canUpload) {
+    if (this.props.canUpload && prevProps.options !== this.props.options) {
       if (this.dropzone) {
         this.dropzone.enable();
 
@@ -308,10 +308,10 @@ class AssetDropzone extends Component {
    * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
   handleUploadComplete(file) {
-      if (typeof this.props.onUploadComplete === 'function') {
-        this.props.onUploadComplete(file.status);
-      }
+    if (typeof this.props.onUploadComplete === 'function') {
+      this.props.onUploadComplete(file.status);
     }
+  }
 
   /**
    * Event handler triggered when the user drops a file on the dropzone.
