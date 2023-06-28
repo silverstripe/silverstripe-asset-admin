@@ -12,6 +12,7 @@ class AddFolderButton extends Component {
     super();
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
   }
+
   handleCreateFolder(event) {
     const { onCreateFolder } = this.props;
     event.preventDefault();
@@ -19,6 +20,7 @@ class AddFolderButton extends Component {
       onCreateFolder();
     }
   }
+
   render() {
     const { canEdit } = this.props;
     return (

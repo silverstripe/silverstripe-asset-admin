@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DragLayer } from 'react-dnd';
-import GalleryItem from './GalleryItem';
 import Badge from 'components/Badge/Badge';
+import GalleryItem from './GalleryItem';
 
 class GalleryItemDragLayer extends Component {
   getOffset() {

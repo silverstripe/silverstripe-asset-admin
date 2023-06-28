@@ -44,7 +44,6 @@ const structural = {
   children: [stashableChild, nonStashableChild]
 };
 
-
 export const fields = [
   stashable,
   structural,
@@ -89,4 +88,3 @@ describe('Modal Store helpers', () => {
     );
   });
 });
-

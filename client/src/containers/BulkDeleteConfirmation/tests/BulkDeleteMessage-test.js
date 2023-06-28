@@ -1,8 +1,8 @@
 /* global jest, test, expect */
 
 import React from 'react';
-import BulkDeleteMessage from '../BulkDeleteMessage';
 import { render } from '@testing-library/react';
+import BulkDeleteMessage from '../BulkDeleteMessage';
 
 const unlinkFileWarning = 'Ensure files are removed from content areas prior to deleting them, otherwise they will appear as broken links.';
 

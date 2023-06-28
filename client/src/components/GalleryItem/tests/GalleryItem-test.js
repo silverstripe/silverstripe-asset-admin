@@ -1,9 +1,9 @@
 /* global jest, test, expect */
 
 import React from 'react';
-import { Component as GalleryItem } from '../GalleryItem';
 import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
 import { render, fireEvent } from '@testing-library/react';
+import { Component as GalleryItem } from '../GalleryItem';
 
 function makeProps(obj = {}) {
   return {

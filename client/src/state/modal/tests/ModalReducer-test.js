@@ -1,4 +1,6 @@
 /* global jest, describe, it, pit, expect, beforeEach */
+import setIn from 'redux-form/lib/structure/plain/setIn';
+import SCHEMA_ACTION_TYPES from 'state/schema/SchemaActionTypes';
 import reducer, { initialState } from '../ModalReducer';
 import {
   defineImageSizePresets,
@@ -9,8 +11,6 @@ import {
   resetFormStack,
   initFormStack
 } from '../ModalActions';
-import setIn from 'redux-form/lib/structure/plain/setIn';
-import SCHEMA_ACTION_TYPES from 'state/schema/SchemaActionTypes';
 
 const presetList = [
   { width: 123, text: 'test preset' }
@@ -246,4 +246,3 @@ describe('Modal State Reducers', () => {
     });
   });
 });
-

@@ -172,7 +172,6 @@ test('UploadField getFolderId() should match 0 for file in root', async () => {
   expect(modal.getAttribute('data-folder-id')).toBe('0');
 });
 
-
 test('UploadField getFolderId() should match 0 for file in root', async () => {
   render(
     <UploadField {...makeProps({
@@ -185,7 +184,6 @@ test('UploadField getFolderId() should match 0 for file in root', async () => {
   const modal = await screen.findByTestId('test-insert-media-modal');
   expect(modal.getAttribute('data-folder-id')).toBe('23');
 });
-
 
 test('UploadField getFolderId() should match 0 (file system root id) when no parentid specified', async () => {
   render(

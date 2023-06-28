@@ -12,10 +12,10 @@ import PropTypes from 'prop-types';
 import { inject, injectGraphql } from 'lib/Injector';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import * as modalActions from 'state/modal/ModalActions';
-import EditorHeader, { buttonStates } from './EditorHeader';
 import classnames from 'classnames';
 import url from 'url';
 import qs from 'qs';
+import EditorHeader, { buttonStates } from './EditorHeader';
 
 const formIdentifier = 'AssetAdmin.EditForm';
 
@@ -369,7 +369,6 @@ function mapStateToProps({ assetAdmin: { gallery, modal } }) {
 }
 
 export { Editor as Component };
-
 
 export default compose(
   inject(

@@ -1,8 +1,8 @@
 /* global jest, test, expect, beforeEach, afterEach */
 
 import React from 'react';
-import { Component as AssetAdmin } from '../AssetAdmin';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { Component as AssetAdmin } from '../AssetAdmin';
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('containers/Editor/Editor');
@@ -207,7 +207,6 @@ test('AssetAdmin handleBrowse should not clear selected', async () => {
 
 test('AssetAdmin handleDelete should delete a file', async () => {
   const deleteFiles = jest.fn(() => Promise.resolve({ data: { deleteFiles: [] } }));
-  const removeQueuedFile = jest.fn();
   const files = [
     getMockFile(1)
   ];

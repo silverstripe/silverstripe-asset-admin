@@ -1,7 +1,7 @@
 /* global jest, describe, it, expect, beforeEach, FormData */
 
-import getFormSchema from '../getFormSchema';
 import CONSTANTS from 'constants/index';
+import getFormSchema from '../getFormSchema';
 
 const { CREATE_FOLDER, EDIT_FILE } = CONSTANTS.ACTIONS;
 

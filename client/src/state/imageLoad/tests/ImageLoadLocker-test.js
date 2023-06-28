@@ -1,8 +1,8 @@
 /* global jest, describe, it, expect, beforeEach */
 
-jest.unmock('../ImageLoadLocker');
-
 import { Component as ImageLoadLocker } from '../ImageLoadLocker';
+
+jest.unmock('../ImageLoadLocker');
 
 describe('ImageLoadLocker', () => {
   let locker = null;

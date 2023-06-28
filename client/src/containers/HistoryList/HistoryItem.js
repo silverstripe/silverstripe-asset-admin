@@ -42,7 +42,6 @@ class HistoryItem extends Component {
   }
 }
 
-
 HistoryItem.propTypes = {
   versionid: PropTypes.number.isRequired,
   summary: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]).isRequired,

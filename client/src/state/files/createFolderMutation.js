@@ -1,4 +1,3 @@
-
 const config = {
   props: ({ mutate, ownProps: { errors, actions = {}, errorMessage } }) => {
     const createFolder = (parentId, name) => mutate({
@@ -42,4 +41,3 @@ const buildQueryConfig = () => ({
 });
 
 export { config, buildQueryConfig };
-

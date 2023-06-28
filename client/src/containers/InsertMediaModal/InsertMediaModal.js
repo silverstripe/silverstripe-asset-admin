@@ -168,7 +168,6 @@ InsertMediaModal.defaultProps = {
   maxFiles: 1
 };
 
-
 function mapStateToProps(state, ownProps) {
   const config = ownProps.sectionConfig;
 

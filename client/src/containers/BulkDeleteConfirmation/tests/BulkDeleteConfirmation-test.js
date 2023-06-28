@@ -1,9 +1,8 @@
 /* global jest, test, expect */
 
 import React from 'react';
-import { Component as BulkDeleteConfirmation } from '../BulkDeleteConfirmation';
 import { render, screen, fireEvent } from '@testing-library/react';
-
+import { Component as BulkDeleteConfirmation } from '../BulkDeleteConfirmation';
 
 const FOLDER = 'folder';
 const FILE = 'file';
@@ -94,4 +93,3 @@ test('BulkDeleteConfirmation Files in use', async () => {
   expect(onConfirm.mock.calls.length).toBe(0);
   expect(onCancel.mock.calls.length).toBe(1);
 });
-

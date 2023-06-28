@@ -460,7 +460,6 @@ class AssetAdmin extends Component {
       });
   }
 
-
   /**
    * Unpublish files and update the UI
    *

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import $ from 'jquery';
 import i18n from 'i18n';
 import React, { Component } from 'react';

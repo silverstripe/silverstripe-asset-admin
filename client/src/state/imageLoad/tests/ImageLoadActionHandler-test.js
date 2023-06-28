@@ -16,7 +16,6 @@ describe('ImageLoadActionHandler', () => {
       (url, resolve) => { resolve(); }
     );
 
-
     // Test image loading succeeds
     return loadImageHandler
       .loadImage('http://www.example.com/file.jpg')

@@ -1,6 +1,6 @@
 import deepFreeze from 'deep-freeze-strict';
-import GALLERY from './GalleryActionTypes';
 import i18n from 'i18n';
+import GALLERY from './GalleryActionTypes';
 
 const initialState = {
   selectedFiles: [],
