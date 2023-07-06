@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* global moment */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';

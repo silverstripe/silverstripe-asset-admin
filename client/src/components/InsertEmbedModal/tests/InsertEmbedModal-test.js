@@ -164,7 +164,7 @@ test('InsertEmbedModal setOverrides() should set the fields in the proper struct
 
 test('InsertEmbedModal handleSubmit() should call create when addmedia is actioned', async () => {
   const onCreate = jest.fn();
-  const { container } = render(
+  render(
     <InsertEmbedModal {...makeProps({
       onCreate,
       isOpen: false

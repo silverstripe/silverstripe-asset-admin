@@ -37,7 +37,6 @@ function presetButton(editor, preset) {
     return img && img.tagName === 'IMG' ? img : undefined;
   };
 
-
   /**
    * Enabled/Disabled the provided TinyMCE button
    * @param {Object} button TinyMCE button object

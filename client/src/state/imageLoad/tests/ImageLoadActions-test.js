@@ -1,11 +1,11 @@
 /* global jest, describe, it, expect, beforeEach */
 
-jest.mock('../ImageLoadActionHandler', () => jest.fn());
-
 import ImageLoadActionHandler from '../ImageLoadActionHandler';
 import IMAGE_STATUS from '../ImageLoadStatus';
 import IMAGE_LOAD from '../ImageLoadActionTypes';
 import { loadImage } from '../ImageLoadActions';
+
+jest.mock('../ImageLoadActionHandler', () => jest.fn());
 
 describe('loadImage', () => {
   let dispatch = null;
@@ -47,6 +47,7 @@ describe('loadImage', () => {
         expect(opts.maxRetry).toBe(4);
         this.opts = opts;
       }
+
       loadImage(url) {
         expect(url).toBe('http://www.mysite.com/another.jpg');
         return Promise.resolve(this.opts);
@@ -68,7 +69,6 @@ describe('loadImage', () => {
         type: IMAGE_LOAD.RESET,
         payload: { url },
       });
-
 
       const status = 'MY_MOCK_STATUS';
       opts.onStatusChange(url, status);

@@ -1,7 +1,7 @@
 /* global jest, expect, test */
 import React from 'react';
-import EditorHeader, { buttonStates } from '../EditorHeader';
 import { render, fireEvent } from '@testing-library/react';
+import EditorHeader, { buttonStates } from '../EditorHeader';
 
 jest.mock('containers/FormBuilderLoader/FormBuilderLoader');
 jest.mock('components/FormBuilderModal/FormBuilderModal');

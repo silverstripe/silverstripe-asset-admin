@@ -30,7 +30,6 @@ class HistoryList extends Component {
     super(props);
 
     this.state = {
-      detailView: null,
       history: [],
       loadedDetails: false,
     };

@@ -1,8 +1,8 @@
 /* global jest, expect, test */
 
 import React from 'react';
-import { Component as TableView } from '../TableView';
 import { render } from '@testing-library/react';
+import { Component as TableView } from '../TableView';
 
 jest.mock('griddle-react', () => ({
   __esModule: true,

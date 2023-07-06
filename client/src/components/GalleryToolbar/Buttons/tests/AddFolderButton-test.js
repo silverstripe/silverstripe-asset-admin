@@ -1,7 +1,7 @@
 /* global jest, test, expect */
 import React from 'react';
-import Component from '../AddFolderButton';
 import { render, fireEvent } from '@testing-library/react';
+import Component from '../AddFolderButton';
 
 test('AddFolderButton', () => {
   const onCreateFolder = jest.fn();

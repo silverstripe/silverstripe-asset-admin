@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Component as BulkDeleteConfirmation } from '../BulkDeleteConfirmation';
 import { jsxDecorator } from 'storybook-addon-jsx';
-import { mockfiles as files } from './mockfiles';
 import LoadingComponent from 'components/Loading/Loading';
 import { action } from '@storybook/addon-actions';
+import { mockfiles as files } from './mockfiles';
+import { Component as BulkDeleteConfirmation } from '../BulkDeleteConfirmation';
 
 const actions = {
   onCancel: (event) => action('onCancel')(event),

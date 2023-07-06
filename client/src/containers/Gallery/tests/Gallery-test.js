@@ -1,7 +1,7 @@
 /* global jest, expect, test */
 
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import { Component as Gallery } from '../Gallery';
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
@@ -23,7 +23,7 @@ jest.mock('jquery', () => {
   return () => jqueryMock;
 });
 
-
+// eslint-disable-next-line no-unused-vars
 let nextAction;
 let consoleWarnFn;
 let consoleErrorFn;
@@ -121,12 +121,11 @@ function makeProps(obj = {}) {
       },
     ],
     BulkActionsComponent: ({ items, actions }) => <div data-testid="test-bulk-actions">
-        {actions.map(a => <div data-testid={`test-bulk-action-${a.value}`} onClick={() => a.callback({}, items)}/>)}
-      </div>,
+      {actions.map(a => <div data-testid={`test-bulk-action-${a.value}`} onClick={() => a.callback({}, items)}/>)}
+    </div>,
     ...obj
   };
 }
-
 
 test('Gallery componentDidUpdate() should not call purgeUploadQueue when receiving same files', () => {
   const purgeUploadQueue = jest.fn();

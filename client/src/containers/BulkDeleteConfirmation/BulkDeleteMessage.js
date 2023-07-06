@@ -38,14 +38,14 @@ const confirmationMessage = (folderCount, folderDescendantFileTotals, fileTotalI
  * Display a context dependent confirmation message.
  */
 const BulkDeleteMessage = ({ folderCount, folderDescendantFileTotals, fileTotalItems }) => (
-  <Fragment>
+  <>
     <p>{confirmationMessage(folderCount, folderDescendantFileTotals, fileTotalItems)}</p>
     {(folderDescendantFileTotals.totalItems > 0 || fileTotalItems > 0) &&
     <p>{i18n._t(
       'AssetAdmin.BULK_ACTIONS_DELETE_WARNING',
       'Ensure files are removed from content areas prior to deleting them, otherwise they will appear as broken links.'
     )}</p>}
-  </Fragment>
+  </>
 );
 
 BulkDeleteMessage.propTypes = {

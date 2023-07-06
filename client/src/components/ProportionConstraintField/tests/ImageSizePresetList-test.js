@@ -1,9 +1,8 @@
 /* global jest, test, expect */
 
 import React from 'react';
+import { render, fireEvent } from '@testing-library/react';
 import ImageSizePresetList from '../ImageSizePresetList';
-import { render, screen, fireEvent } from '@testing-library/react';
-
 
 function makeProps(obj = {}) {
   return {

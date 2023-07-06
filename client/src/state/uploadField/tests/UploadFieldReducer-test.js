@@ -26,7 +26,6 @@ describe('uploadFieldReducer', () => {
     };
   });
 
-
   describe('UPLOADFIELD_ADD_FILE', () => {
     it('should add a new file to a list', () => {
       const nextState = uploadFieldReducer(initialState, {

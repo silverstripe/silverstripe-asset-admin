@@ -46,4 +46,3 @@ _BackButton.args = {};
 
 export const WithBadge = (args) => (<BackButton {...args} badge={{ message: '+3', status: 'success' }} />);
 export const Enlarged = () => <BackButton enlarged />;
-

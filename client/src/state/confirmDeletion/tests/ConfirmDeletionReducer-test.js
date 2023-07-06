@@ -13,7 +13,6 @@ const files = [
   { id: 4, title: 'document.pdf', type: FILE },
 ];
 
-
 describe('Confirm Deletion State Reducers', () => {
   describe(ACTION_TYPES.CONFIRM_DELETION_ASK, () => {
     it('Asking to confirm deletion', () => {
@@ -147,4 +146,3 @@ describe('Confirm Deletion State Reducers', () => {
     });
   });
 });
-

@@ -225,7 +225,6 @@ AssetAdminRouter.defaultProps = {
   AssetAdminComponent: AssetAdmin
 };
 
-
 function mapStateToProps(state) {
   const sectionConfig = state.config.sections.find((section) => section.name === sectionConfigKey);
 

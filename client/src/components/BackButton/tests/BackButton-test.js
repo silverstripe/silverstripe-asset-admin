@@ -1,8 +1,8 @@
 /* global jest, test, expect */
 
 import React from 'react';
-import { Component as BackButton } from '../BackButton';
 import { render } from '@testing-library/react';
+import { Component as BackButton } from '../BackButton';
 
 function makeProps(obj = {}) {
   return {

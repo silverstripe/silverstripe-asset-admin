@@ -1,9 +1,9 @@
 /* global jest, test, expect, beforeEach */
 
 import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Component as Editor } from '../Editor';
 import { buttonStates } from '../EditorHeader';
-import { render, screen, fireEvent } from '@testing-library/react';
 
 let consoleErrorFn;
 let nextAction;

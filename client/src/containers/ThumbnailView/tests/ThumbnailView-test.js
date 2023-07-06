@@ -1,9 +1,9 @@
 /* global jest, test, expect */
 
 import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { Component as ThumbnailView } from '../ThumbnailView';
 // import mocks for injector props
-import { render, screen, fireEvent } from '@testing-library/react';
 
 // mock sub-components, as they could rely on a Redux store context and not necessary for unit test
 jest.mock('components/FormAlert/FormAlert');
@@ -49,7 +49,6 @@ function makeProps(obj = {}) {
     ...obj
   };
 }
-
 
 test('ThumbnailView handleSetPage()', async () => {
   const onSetPage = jest.fn();

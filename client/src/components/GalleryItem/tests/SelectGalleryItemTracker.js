@@ -16,9 +16,7 @@ class SelectGalleryItemTracker extends Component {
 
   handleSelect(event, item) {
     triggerAction(this.state.selected ? 'unchecked' : 'checked', item.title);
-    this.setState({
-      selected: !this.state.selected,
-    });
+    this.setState((prevState) => ({ selected: !prevState.selected }));
   }
 
   render() {

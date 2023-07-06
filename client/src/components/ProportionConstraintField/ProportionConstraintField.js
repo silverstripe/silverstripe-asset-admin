@@ -1,11 +1,11 @@
-import React, { Component, Children, cloneElement, Fragment } from 'react';
+import React, { Component, Children, cloneElement } from 'react';
 import PropTypes from 'prop-types';
 import { inject } from 'lib/Injector';
-import ImageSizePresetList from './ImageSizePresetList';
 import { formValueSelector } from 'redux-form';
 import getFormState from 'lib/getFormState';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import ImageSizePresetList from './ImageSizePresetList';
 
 /**
  * Component that displays a width and height field, syncing them up so that the ratio between
@@ -149,26 +149,25 @@ class ProportionConstraintField extends Component {
       imageSizePresets } = this.props;
 
     return (
-      <Fragment>
-        <FieldGroup smallholder={false} {...this.props}>
-          {this.props.children.map((child, key) => (
-            cloneElement(child, {
-              // overload the children change handler
-              onChange: (e, newValue) => this.handleChange(key, e, newValue),
-              onBlur: (e) => this.handleBlur(key, e),
-              onFocus: () => this.handleFocus(),
-              key,
-            }, child.props.children)
-          ))}
-          {!isRemoteFile && <ImageSizePresetList
-            originalWidth={parseInt(originalWidth, 10)}
-            currentWidth={currentWidth}
-            imageSizePresets={imageSizePresets}
-            onSelect={this.handlePresetSelect}
-          />
+      <FieldGroup smallholder={false} {...this.props}>
+        {this.props.children.map((child, key) => (
+          cloneElement(child, {
+            // overload the children change handler
+            onChange: (e, newValue) => this.handleChange(key, e, newValue),
+            onBlur: (e) => this.handleBlur(key, e),
+            onFocus: () => this.handleFocus(),
+            // eslint-disable-next-line react/no-array-index-key
+            key,
+          }, child.props.children)
+        ))}
+        {!isRemoteFile && <ImageSizePresetList
+          originalWidth={parseInt(originalWidth, 10)}
+          currentWidth={currentWidth}
+          imageSizePresets={imageSizePresets}
+          onSelect={this.handlePresetSelect}
+        />
           }
-        </FieldGroup>
-      </Fragment>
+      </FieldGroup>
     );
   }
 }

@@ -1,6 +1,6 @@
-import ACTION_TYPES from './UploadFieldActionTypes';
 import fileStructure from 'lib/fileStructure';
 import getFieldReducer from 'lib/reduxFieldReducer';
+import ACTION_TYPES from './UploadFieldActionTypes';
 
 /**
  * Initial base state

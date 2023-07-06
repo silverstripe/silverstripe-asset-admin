@@ -1,6 +1,6 @@
-import ACTION_TYPES from './ModalActionTypes';
 import getIn from 'redux-form/lib/structure/plain/getIn';
 import { setSchemaStateOverrides } from 'state/schema/SchemaActions';
+import ACTION_TYPES from './ModalActionTypes';
 import isStashableField from './helpers';
 
 /**

@@ -21,6 +21,7 @@ class BackButton extends Component {
       onOpenFolder(folder.parentId);
     }
   }
+
   render() {
     const {
       folder,

@@ -11,8 +11,8 @@ import { createRoot } from 'react-dom/client';
 import Injector, { loadComponent } from 'lib/Injector';
 import InsertMediaModal from 'containers/InsertMediaModal/InsertMediaModal';
 import ShortcodeSerialiser, { sanitiseShortCodeProperties } from 'lib/ShortcodeSerialiser';
-import { imageSizePresetButtons } from './TinyMCE_ssmedia_sizepressets';
 import * as modalActions from 'state/modal/ModalActions';
+import { imageSizePresetButtons } from './TinyMCE_ssmedia_sizepressets';
 
 const InjectableInsertMediaModal = loadComponent(InsertMediaModal);
 

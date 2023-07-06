@@ -1,8 +1,8 @@
 /* global jest, test, expect */
 
 import React from 'react';
-import { Component as BulkActions } from '../BulkActions';
 import { render, fireEvent } from '@testing-library/react';
+import { Component as BulkActions } from '../BulkActions';
 
 jest.mock('jquery', () => {
   const jqueryMock = {
@@ -42,7 +42,6 @@ test('BulkActions canApply() shows an action button when canApply returns true',
   expect(actions[0].getAttribute('value')).toBe('action-with-apply');
   expect(actions[1].getAttribute('value')).toBe('action-without-apply');
 });
-
 
 test('BulkActions canApply() shows an action button when canApply returns false', () => {
   const { container } = render(
