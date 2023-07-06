@@ -5,7 +5,7 @@
     "license": "BSD-3-Clause",
     "require": {
         "php": "^8.1",
-        "silverstripe/framework": "^5",
+        "silverstripe/framework": "^5.1",
         "silverstripe/admin": "^2",
         "silverstripe/graphql": "^5"
     },

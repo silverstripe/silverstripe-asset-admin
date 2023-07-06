@@ -16,6 +16,7 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\ListboxField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\PopoverField;
 use SilverStripe\Forms\ReadonlyField;
@@ -25,6 +26,8 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\Security\InheritedPermissions;
+use SilverStripe\Security\Member;
 
 abstract class AssetFormFactory implements FormFactory
 {
@@ -349,15 +352,17 @@ abstract class AssetFormFactory implements FormFactory
     {
         // Get permissions
         $viewersOptionsField = [
-            'Inherit' => _t(__CLASS__.'.INHERIT', 'Inherit from parent folder'),
-            'Anyone' => _t(__CLASS__.'.ANYONE', 'Anyone'),
-            'LoggedInUsers' => _t(__CLASS__.'.LOGGED_IN', 'Logged-in users'),
-            'OnlyTheseUsers' => _t(__CLASS__.'.ONLY_GROUPS', 'Only these groups (choose from list)')
+            InheritedPermissions::INHERIT => _t(__CLASS__.'.INHERIT', 'Inherit from parent folder'),
+            InheritedPermissions::ANYONE => _t(__CLASS__.'.ANYONE', 'Anyone'),
+            InheritedPermissions::LOGGED_IN_USERS => _t(__CLASS__.'.LOGGED_IN', 'Logged-in users'),
+            InheritedPermissions::ONLY_THESE_USERS => _t(__CLASS__.'.ONLY_GROUPS', 'Only these groups (choose from list)'),
+            InheritedPermissions::ONLY_THESE_MEMBERS => _t(__CLASS__.'.ONLY_MEMBERS', 'Only these users (choose from list)'),
         ];
 
         // No "Anyone" editors option
         $editorsOptionsField = $viewersOptionsField;
-        unset($editorsOptionsField['Anyone']);
+        unset($editorsOptionsField[InheritedPermissions::ANYONE]);
+        $membersMap = Member::get()->map('ID', 'Name');
 
         return Tab::create(
             'Permissions',
@@ -370,6 +375,11 @@ abstract class AssetFormFactory implements FormFactory
                 'ViewerGroups',
                 _t(__CLASS__.'.VIEWERGROUPS', 'Viewer Groups')
             ),
+            ListboxField::create(
+                'ViewerMembers',
+                _t(__CLASS__.'.VIEWERMEMBERS', 'Viewer Users'),
+                $membersMap
+            ),
             OptionsetField::create(
                 "CanEditType",
                 _t(__CLASS__.'.EDITHEADER', 'Who can edit this file?')
@@ -378,6 +388,11 @@ abstract class AssetFormFactory implements FormFactory
             TreeMultiselectField::create(
                 'EditorGroups',
                 _t(__CLASS__.'.EDITORGROUPS', 'Editor Groups')
+            ),
+            ListboxField::create(
+                'EditorMembers',
+                _t(__CLASS__.'.EDITORMEMBERS', 'Editor Users'),
+                $membersMap
             )
         );
     }
