@@ -9,44 +9,79 @@ import { descendantFileTotalsShape } from './helpers';
  * @param {object} fileTotalItems
  * @returns {string}
  */
-const confirmationMessage = (folderCount, folderDescendantFileTotals, fileTotalItems) => {
+const confirmationMessage = (
+  folderCount,
+  folderDescendantFileTotals,
+  fileTotalItems,
+  archiveFiles
+) => {
   const fileCount = folderDescendantFileTotals.totalCount + fileTotalItems;
   if (fileCount > 0) {
+    let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_ITEMS_CONFIRM';
+    let transDefault = [
+      "You're about to delete %s file(s) which may be used in your site's content.",
+      'Carefully check the file usage on the files before deleting the folder.'
+    ].join(' ');
+    if (archiveFiles) {
+      transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_ITEMS_CONFIRM';
+      transDefault = [
+        "You're about to archive %s file(s) which may be used in your site's content.",
+        'Carefully check the file usage on the files before archiving the folder.'
+      ].join(' ');
+    }
     return i18n.sprintf(
-      i18n._t(
-        'AssetAdmin.BULK_ACTIONS_DELETE_ITEMS_CONFIRM',
-        [
-          "You're about to delete %s file(s) which may be used in your site's content.",
-          'Carefully check the file usage on the files before deleting the folder.'
-        ].join(' ')
-      ),
+      i18n._t(transKey, transDefault),
       fileCount
     );
   } else if (folderCount === 1) {
-    return i18n._t(
-      'AssetAdmin.BULK_ACTIONS_DELETE_FOLDER_CONFIRM',
-      'Are you sure you want to delete this folder?'
-    );
+    let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_FOLDER_CONFIRM';
+    let transDefault = 'Are you sure you want to delete this folder?';
+    if (archiveFiles) {
+      transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_FOLDER_CONFIRM';
+      transDefault = 'Are you sure you want to archive this folder?';
+    }
+    return i18n._t(transKey, transDefault);
   }
-  return i18n._t(
-    'AssetAdmin.BULK_ACTIONS_DELETE_FOLDERS_CONFIRM',
-    'Are you sure you want to delete these folders?'
-  );
+  let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_FOLDERS_CONFIRM';
+  let transDefault = 'Are you sure you want to delete these folders?';
+  if (archiveFiles) {
+    transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_FOLDERS_CONFIRM';
+    transDefault = 'Are you sure you want to archive these folders?';
+  }
+  return i18n._t(transKey, transDefault);
 };
 
 /**
  * Display a context dependent confirmation message.
  */
-const BulkDeleteMessage = ({ folderCount, folderDescendantFileTotals, fileTotalItems }) => (
-  <Fragment>
-    <p>{confirmationMessage(folderCount, folderDescendantFileTotals, fileTotalItems)}</p>
-    {(folderDescendantFileTotals.totalItems > 0 || fileTotalItems > 0) &&
-    <p>{i18n._t(
-      'AssetAdmin.BULK_ACTIONS_DELETE_WARNING',
-      'Ensure files are removed from content areas prior to deleting them, otherwise they will appear as broken links.'
-    )}</p>}
-  </Fragment>
-);
+const BulkDeleteMessage = ({
+  folderCount,
+  folderDescendantFileTotals,
+  fileTotalItems,
+  archiveFiles
+}) => {
+  let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_WARNING';
+  let transDefault = 'Ensure files are removed from content areas prior to deleting them, otherwise they will '
+    + 'appear as broken links.';
+  if (archiveFiles) {
+    transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_WARNING';
+    transDefault = 'Ensure files are removed from content areas prior to archiving them, otherwise they will '
+      + 'appear as broken links.';
+  }
+  const message = confirmationMessage(
+    folderCount,
+    folderDescendantFileTotals,
+    fileTotalItems,
+    archiveFiles
+  );
+  return (
+    <Fragment>
+      <p>{message}</p>
+      {(folderDescendantFileTotals.totalItems > 0 || fileTotalItems > 0) &&
+      <p>{i18n._t(transKey, transDefault)}</p>}
+    </Fragment>
+  );
+};
 
 BulkDeleteMessage.propTypes = {
   folderCount: PropTypes.number,

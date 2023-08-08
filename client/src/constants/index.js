@@ -23,6 +23,18 @@ export default {
         items.every(item => item && item.canDelete)
       ),
     },
+    // Archive is the same as Delete just with a different label and icon
+    // There is logic to choose which bulk-action to use in Gallery.js
+    {
+      value: 'archive',
+      label: i18n._t('AssetAdmin.BULK_ACTIONS_ARCHIVE', 'Archive'),
+      className: 'font-icon-box',
+      destructive: true,
+      callback: null, // defined in <Gallery> for now
+      canApply: (items) => (
+        items.every(item => item && item.canDelete)
+      ),
+    },
     {
       value: 'edit',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_EDIT', 'Edit'),

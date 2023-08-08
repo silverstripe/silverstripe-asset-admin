@@ -30,6 +30,7 @@ import PropTypes from 'prop-types';
  */
 const ACTION_TYPES = {
   DELETE: 'delete',
+  ARCHIVE: 'archive',
   EDIT: 'edit',
   MOVE: 'move',
   PUBLISH: 'publish',
@@ -698,21 +699,28 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderBulkActions() {
-    const { type, dialog, maxFilesSelect, files, selectedFiles } = this.props;
+    const { type, dialog, maxFilesSelect, files, selectedFiles, sectionConfig } = this.props;
 
     // When rendering gallery in modal or in select mode, filter all action but insert.
     const actionFilter = (type === ACTION_TYPES.SELECT || dialog)
       ? action => action.value === ACTION_TYPES.INSERT
       : action => action.value !== ACTION_TYPES.INSERT;
 
+    // Used to choose whether the text should be "Delete" or "Archive"
+    const deleteButtonFilter = (sectionConfig.archiveFiles)
+      ? action => action.value !== ACTION_TYPES.DELETE
+      : action => action.value !== ACTION_TYPES.ARCHIVE;
+
     const actions = CONSTANTS.BULK_ACTIONS
       .filter(actionFilter)
+      .filter(deleteButtonFilter)
       .map((action) => {
         if (action.callback) {
           return action;
         }
         switch (action.value) {
-          case ACTION_TYPES.DELETE: {
+          case ACTION_TYPES.DELETE:
+          case ACTION_TYPES.ARCHIVE: {
             return {
               ...action,
               callback: (event, items) => {
