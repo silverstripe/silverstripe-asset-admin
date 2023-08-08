@@ -42,6 +42,7 @@ use SilverStripe\Security\SecurityToken;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\View\Requirements;
 use SilverStripe\View\SSViewer;
+use SilverStripe\VersionedAdmin\Extensions\FileArchiveExtension;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -267,7 +268,9 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
                 'acceptedFiles' => implode(',', array_map(function ($ext) {
                     return $ext[0] != '.' ? ".$ext" : $ext;
                 }, $validator->getAllowedExtensions() ?? []))
-            ]
+            ],
+            'archiveFiles' => class_exists(FileArchiveExtension::class)
+                && File::singleton()->isArchiveFieldEnabled(),
         ]);
     }
 
