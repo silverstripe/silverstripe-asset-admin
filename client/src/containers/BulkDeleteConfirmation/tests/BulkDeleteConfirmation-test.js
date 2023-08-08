@@ -4,7 +4,7 @@ import React from 'react';
 import { Component } from '../BulkDeleteConfirmation';
 import ShallowRenderer from 'react-test-renderer/shallow';
 
-describe('BulkDeleteMessage', () => {
+describe('BulkDeleteConfirmation', () => {
   const renderer = new ShallowRenderer();
 
   const FOLDER = 'folder';
@@ -28,10 +28,11 @@ describe('BulkDeleteMessage', () => {
       onCancel: jest.fn(),
       onModalClose: jest.fn(),
       onConfirm: jest.fn(),
+      archiveFiles: false
     };
   });
 
-  it('Nothing in use', () => {
+  it('Nothing in use - delete', () => {
     renderer.render(<Component {...props} files={files.slice(0, 2)} />);
     const { props: { isOpen, actions } } = renderer.getRenderOutput();
 
@@ -45,20 +46,46 @@ describe('BulkDeleteMessage', () => {
     expect(props.onCancel.mock.calls.length).toBe(0);
   });
 
-  it('Folder in use', () => {
+  it('Nothing in use - archive', () => {
+    renderer.render(<Component
+      {...{
+        ...props,
+        archiveFiles: true
+      }}
+      files={files.slice(0, 2)}
+    />);
+    const { props: { actions } } = renderer.getRenderOutput();
+    expect(actions[0].label).toBe('Archive');
+  });
+
+  it('Folder in use - delete', () => {
     renderer.render(<Component {...props} files={files} fileUsage={{ 1: 5 }} />);
     const { props: { isOpen, actions } } = renderer.getRenderOutput();
 
     expect(isOpen).toBe(true);
     expect(actions.length).toBe(2);
     expect(actions[0].label).toBe('Cancel');
+    expect(actions[1].label).toBe('Delete');
 
     actions[0].handler();
     expect(props.onConfirm.mock.calls.length).toBe(0);
     expect(props.onCancel.mock.calls.length).toBe(1);
   });
 
-  it('Files in use', () => {
+  it('Folder in use - archive', () => {
+    renderer.render(<Component
+      {...{
+        ...props,
+        archiveFiles: true
+      }}
+      files={files}
+      fileUsage={{ 1: 5 }}
+    />);
+    const { props: { actions } } = renderer.getRenderOutput();
+    expect(actions[1].label).toBe('Archive');
+  });
+
+  it('Files in use - delete', () => {
     renderer.render(<Component {...props} files={files} fileUsage={{ 3: 5 }} />);
     const { props: { isOpen, actions } } = renderer.getRenderOutput();
 
@@ -70,5 +97,18 @@ describe('BulkDeleteMessage', () => {
     actions[0].handler();
     expect(props.onConfirm.mock.calls.length).toBe(0);
     expect(props.onCancel.mock.calls.length).toBe(1);
+  });
+
+  it('Files in use - archive', () => {
+    renderer.render(<Component
+      {...{
+        ...props,
+        archiveFiles: true
+      }}
+      files={files}
+      fileUsage={{ 3: 5 }}
+    />);
+    const { props: { actions } } = renderer.getRenderOutput();
+    expect(actions[1].label).toBe('Archive');
   });
 });

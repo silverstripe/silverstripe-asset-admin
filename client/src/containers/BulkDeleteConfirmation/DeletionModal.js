@@ -34,11 +34,7 @@ DeletionModal.propTypes = {
     handler: PropTypes.func,
     color: PropTypes.string
   })),
-  archiveFiles: PropTypes.bool,
-};
-
-DeletionModal.defaultProps = {
-  archiveFiles: false
+  archiveFiles: PropTypes.bool.isRequired,
 };
 
 export default DeletionModal;

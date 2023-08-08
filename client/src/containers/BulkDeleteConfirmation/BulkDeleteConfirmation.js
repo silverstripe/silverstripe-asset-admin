@@ -87,11 +87,7 @@ BulkDeleteConfirmation.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onModalClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
-  archiveFiles: PropTypes.bool,
-};
-
-BulkDeleteConfirmation.defaultProps = {
-  archiveFiles: false
+  archiveFiles: PropTypes.bool.isRequired,
 };
 
 /**
