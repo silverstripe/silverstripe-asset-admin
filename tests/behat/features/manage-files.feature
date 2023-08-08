@@ -120,7 +120,7 @@ Feature: Manage files
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
-      And I should see a "3 folders/files were successfully archived" success toast
+      And I should see a "3 folders/files were successfully deleted" success toast
 
   Scenario: I can move multiple files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
@@ -195,7 +195,7 @@ Feature: Manage files
       And I should see "You're about to delete" in the ".modal-body" region
       And I should see "Ensure files are removed from content areas" in the ".modal-body" region
       And I press the Delete button inside the modal
-    Then I should see a "1 folders/files were successfully archived" success toast
+    Then I should see a "1 folders/files were successfully deleted" success toast
       And I should not see the file named "folder3" in the gallery
 
   @modal
@@ -206,7 +206,7 @@ Feature: Manage files
     Then I should see a modal titled "Confirm deletion"
       And I should see "You're about to delete" in the ".modal-body" region
       And I press the Delete button inside the modal
-    Then I should see a "1 folders/files were successfully archived" success toast
+    Then I should see a "1 folders/files were successfully deleted" success toast
       And I should not see the file named "file1" in the gallery
 
   Scenario: I can move a file through editing
