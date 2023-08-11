@@ -4,7 +4,10 @@ import React from 'react';
 import Component from '../BulkDeleteMessage';
 import ShallowRenderer from 'react-test-renderer/shallow';
 
-const unlinkFileWarning = 'Ensure files are removed from content areas prior to deleting them, otherwise they will appear as broken links.';
+const unlinkFileWarning = (archiveFiles) => {
+  const word = archiveFiles ? 'archiving' : 'deleting';
+  return `Ensure files are removed from content areas prior to ${word} them, otherwise they will appear as broken links.`;
+};
 
 const noFoldersProps = {
   folderCount: 0,
@@ -43,123 +46,136 @@ const manyFilesProps = {
   fileTotalItems: 2,
 };
 
-const getMessage = (count) => [
-  `You're about to delete ${count} file(s) which may be used in your site's content.`,
-  'Carefully check the file usage on the files before deleting the folder.'
-].join(' ');
+const getMessage = (count, archiveFiles) => {
+  const wordOne = archiveFiles ? 'archive' : 'delete';
+  const wordTwo = archiveFiles ? 'archiving' : 'deleting';
+  return [
+  `You're about to ${wordOne} ${count} file(s) which may be used in your site's content.`,
+  `Carefully check the file usage on the files before ${wordTwo} the file(s).`
+  ].join(' ');
+};
 
-const emptyFolderMessage = 'Are you sure you want to delete this folder?';
+const emptyFolderMessage = (archiveFiles) => {
+  const word = archiveFiles ? 'archive' : 'delete';
+  return `Are you sure you want to ${word} this folder?`;
+};
 
-const emptyFoldersMessage = 'Are you sure you want to delete these folders?';
+const emptyFoldersMessage = (archiveFiles) => {
+  const word = archiveFiles ? 'archive' : 'delete';
+  return `Are you sure you want to ${word} these folders?`;
+};
 
-describe('BulkDeleteMessage', () => {
-  const renderer = new ShallowRenderer();
+[false, true].forEach((archiveFiles) => {
+  const word = archiveFiles ? 'archive' : 'delete';
+  describe(`BulkDeleteMessage - ${word}`, () => {
+    const renderer = new ShallowRenderer();
 
-  describe('Deleting a file and a folder', () => {
-    const testCases = [
-      [
-        'file in use',
-        { ...noFoldersProps, ...oneFileProps },
-        getMessage('1'),
-      ],
-      [
-        'folder in use',
-        { ...noFilesProps, ...oneFolderProps },
-        getMessage('5'),
-      ],
-      [
-        'file and folder in use',
-        { ...oneFileProps, ...oneFolderProps },
-        getMessage('6'),
-      ],
-    ];
+    describe('Deleting a file and a folder', () => {
+      const testCases = [
+        [
+          'file in use',
+          { ...noFoldersProps, ...oneFileProps, archiveFiles },
+          getMessage('1', archiveFiles),
+        ],
+        [
+          'folder in use',
+          { ...noFilesProps, ...oneFolderProps, archiveFiles },
+          getMessage('5', archiveFiles),
+        ],
+        [
+          'file and folder in use',
+          { ...oneFileProps, ...oneFolderProps, archiveFiles },
+          getMessage('6', archiveFiles),
+        ],
+      ];
 
-    testCases.forEach(([desc, props, expectedMessage]) => {
-      it(desc, () => {
-        renderer.render(<Component {...props} />);
-        const result = renderer.getRenderOutput();
-        expect(result.props.children.length).toEqual(2);
-        expect(result.props.children[0]).toEqual(
-          <p>{expectedMessage}</p>
-        );
+      testCases.forEach(([desc, props, expectedMessage]) => {
+        it(desc, () => {
+          renderer.render(<Component {...props} />);
+          const result = renderer.getRenderOutput();
+          expect(result.props.children.length).toEqual(2);
+          expect(result.props.children[0]).toEqual(
+            <p>{expectedMessage}</p>
+          );
+        });
       });
     });
-  });
 
-  describe('Deleting folders', () => {
-    const testCases = [
-      [
-        'one folder in use',
-        { ...noFilesProps, ...oneFolderProps },
-        getMessage('5'),
-      ],
-      [
-        'multiple folders in use',
-        { ...noFilesProps, ...manyfolderProps },
-        getMessage('10'),
-      ],
-    ];
+    describe('Deleting folders', () => {
+      const testCases = [
+        [
+          'one folder in use',
+          { ...noFilesProps, ...oneFolderProps, archiveFiles },
+          getMessage('5', archiveFiles),
+        ],
+        [
+          'multiple folders in use',
+          { ...noFilesProps, ...manyfolderProps, archiveFiles },
+          getMessage('10', archiveFiles),
+        ],
+      ];
 
-    testCases.forEach(([desc, props, expectedMessage]) => {
-      it(desc, () => {
-        renderer.render(<Component {...props} />);
-        const result = renderer.getRenderOutput();
-        expect(result.props.children.length).toEqual(2);
-        expect(result.props.children[0]).toEqual(
-          <p>{expectedMessage}</p>
-        );
+      testCases.forEach(([desc, props, expectedMessage]) => {
+        it(desc, () => {
+          renderer.render(<Component {...props} />);
+          const result = renderer.getRenderOutput();
+          expect(result.props.children.length).toEqual(2);
+          expect(result.props.children[0]).toEqual(
+            <p>{expectedMessage}</p>
+          );
+        });
       });
     });
-  });
 
-  describe('Deleting empty folders', () => {
-    const testCases = [
-      [
-        'one empty folder',
-        { ...noFilesProps, ...oneEmptyFolder },
-        emptyFolderMessage,
-      ],
-      [
-        'multiple empty folders',
-        { ...noFilesProps, ...manyEmptyFolders },
-        emptyFoldersMessage,
-      ],
-    ];
+    describe('Deleting empty folders', () => {
+      const testCases = [
+        [
+          'one empty folder',
+          { ...noFilesProps, ...oneEmptyFolder, archiveFiles },
+          emptyFolderMessage(archiveFiles),
+        ],
+        [
+          'multiple empty folders',
+          { ...noFilesProps, ...manyEmptyFolders, archiveFiles },
+          emptyFoldersMessage(archiveFiles),
+        ],
+      ];
 
-    testCases.forEach(([desc, props, expectedMessage]) => {
-      it(desc, () => {
-        renderer.render(<Component {...props} />);
-        const result = renderer.getRenderOutput();
-        expect(result.props.children.length).toEqual(2);
-        expect(result.props.children[0]).toEqual(
-          <p>{expectedMessage}</p>
-        );
+      testCases.forEach(([desc, props, expectedMessage]) => {
+        it(desc, () => {
+          renderer.render(<Component {...props} />);
+          const result = renderer.getRenderOutput();
+          expect(result.props.children.length).toEqual(2);
+          expect(result.props.children[0]).toEqual(
+            <p>{expectedMessage}</p>
+          );
+        });
       });
     });
-  });
 
-  describe('Deleting files', () => {
-    const testCases = [
-      [
-        'one file in use',
-        { ...noFoldersProps, ...oneFileProps },
-        getMessage('1'),
-      ],
-      [
-        'many files in use',
-        { ...noFoldersProps, ...manyFilesProps },
-        getMessage('2'),
-      ]
-    ];
+    describe('Deleting files', () => {
+      const testCases = [
+        [
+          'one file in use',
+          { ...noFoldersProps, ...oneFileProps, archiveFiles },
+          getMessage('1', archiveFiles),
+        ],
+        [
+          'many files in use',
+          { ...noFoldersProps, ...manyFilesProps, archiveFiles },
+          getMessage('2', archiveFiles),
+        ]
+      ];
 
-    testCases.forEach(([desc, props, expectedMessage]) => {
-      it(desc, () => {
-        renderer.render(<Component {...props} />);
-        const result = renderer.getRenderOutput();
-        expect(result.props.children).toEqual([
-          <p>{expectedMessage}</p>,
-          <p>{unlinkFileWarning}</p>
-        ]);
+      testCases.forEach(([desc, props, expectedMessage]) => {
+        it(desc, () => {
+          renderer.render(<Component {...props} />);
+          const result = renderer.getRenderOutput();
+          expect(result.props.children).toEqual([
+            <p>{expectedMessage}</p>,
+            <p>{unlinkFileWarning(archiveFiles)}</p>
+          ]);
+        });
       });
     });
   });

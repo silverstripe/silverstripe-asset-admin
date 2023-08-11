@@ -20,13 +20,13 @@ const confirmationMessage = (
     let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_ITEMS_CONFIRM';
     let transDefault = [
       "You're about to delete %s file(s) which may be used in your site's content.",
-      'Carefully check the file usage on the files before deleting the folder.'
+      'Carefully check the file usage on the files before deleting the file(s).'
     ].join(' ');
     if (archiveFiles) {
       transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_ITEMS_CONFIRM';
       transDefault = [
         "You're about to archive %s file(s) which may be used in your site's content.",
-        'Carefully check the file usage on the files before archiving the folder.'
+        'Carefully check the file usage on the files before archiving the file(s).'
       ].join(' ');
     }
     return i18n.sprintf(
