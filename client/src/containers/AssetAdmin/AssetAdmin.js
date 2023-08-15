@@ -356,21 +356,31 @@ class AssetAdmin extends Component {
       })
       .then((resultItems) => {
         const successes = resultItems.filter((result) => result).length;
+        const { archiveFiles } = this.props.sectionConfig;
         if (successes !== ids.length) {
+          let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_FAIL_02';
+          let transDefault = '%s folders/files were successfully deleted, but %s files were not able to be deleted.';
+          if (archiveFiles) {
+            transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_FAIL_02';
+            transDefault = '%s folders/files were successfully archived, but %s files were not able to be archived.';
+          }
           this.props.actions.toasts.error(
             i18n.sprintf(
-              i18n._t(
-                'AssetAdmin.BULK_ACTIONS_DELETE_FAIL',
-                '%s folders/files were successfully deleted, but %s files were not able to be deleted.'
-              ),
+              i18n._t(transKey, transDefault),
               successes,
               ids.length - successes
             )
           );
         } else {
+          let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS_02';
+          let transDefault = '%s folders/files were successfully deleted.';
+          if (archiveFiles) {
+            transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_SUCCESS_02';
+            transDefault = '%s folders/files were successfully archived.';
+          }
           this.props.actions.toasts.success(
             i18n.sprintf(
-              i18n._t('AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS', '%s folders/files were successfully deleted.'),
+              i18n._t(transKey, transDefault),
               successes
             )
           );
@@ -674,6 +684,7 @@ class AssetAdmin extends Component {
 
   render() {
     const { folder, folderId, query, getUrl, type, maxFiles, toolbarChildren, SearchComponent, BulkDeleteConfirmationComponent } = this.props;
+    const { archiveFiles } = this.props.sectionConfig;
 
     const showBackButton = Boolean(folderId || hasFilters(query.filter));
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;

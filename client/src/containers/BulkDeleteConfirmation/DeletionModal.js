@@ -3,19 +3,27 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 
-const DeletionModal = ({ isOpen, body, onCancel, actions }) => (
-  <Modal isOpen={isOpen} toggle={onCancel}>
-    <ModalHeader toggle={onCancel}>
-      {i18n._t('AssetAdmin.CONFIRM_FILE_DELETION', 'Confirm deletion')}
-    </ModalHeader>
-    <ModalBody>{body}</ModalBody>
-    <ModalFooter>
-      {actions.map(({ label, handler, color }) => (
-        <Button key={label} color={color} onClick={handler}>{label}</Button>
-        ))}
-    </ModalFooter>
-  </Modal>
+const DeletionModal = ({ isOpen, body, onCancel, actions, archiveFiles }) => {
+  let transKey = 'AssetAdmin.CONFIRM_FILE_DELETION';
+  let transDefault = 'Confirm deletion';
+  if (archiveFiles) {
+    transKey = 'AssetAdmin.CONFIRM_FILE_ARCHIVE';
+    transDefault = 'Confirm archive';
+  }
+  return (
+    <Modal isOpen={isOpen} toggle={onCancel}>
+      <ModalHeader toggle={onCancel}>
+        {i18n._t(transKey, transDefault)}
+      </ModalHeader>
+      <ModalBody>{body}</ModalBody>
+      <ModalFooter>
+        {actions.map(({ label, handler, color }) => (
+          <Button key={label} color={color} onClick={handler}>{label}</Button>
+          ))}
+      </ModalFooter>
+    </Modal>
   );
+};
 
 DeletionModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
@@ -25,7 +33,8 @@ DeletionModal.propTypes = {
     label: PropTypes.string.isRequired,
     handler: PropTypes.func,
     color: PropTypes.string
-  }))
+  })),
+  archiveFiles: PropTypes.bool.isRequired,
 };
 
 export default DeletionModal;

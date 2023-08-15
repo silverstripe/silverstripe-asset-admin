@@ -29,6 +29,7 @@ import GalleryDND from './GalleryDND';
  */
 const ACTION_TYPES = {
   DELETE: 'delete',
+  ARCHIVE: 'archive',
   EDIT: 'edit',
   MOVE: 'move',
   PUBLISH: 'publish',
@@ -318,11 +319,11 @@ class Gallery extends Component {
     }
   }
 
-   /**
-   * Handler for when the user changes the sort order
-   *
-   * @param {string} value
-   */
+  /**
+  * Handler for when the user changes the sort order
+  *
+  * @param {string} value
+  */
   handleSort(value) {
     this.props.actions.queuedFiles.purgeUploadQueue();
     this.props.onSort(value);
@@ -435,7 +436,7 @@ class Gallery extends Component {
 
   handleFailedUpload(fileXhr, response) {
     const statusCodeMessage = fileXhr.xhr && fileXhr.xhr.status
-      ? getStatusCodeMessage(fileXhr.xhr.status)
+      ? getStatusCodeMessage(fileXhr.xhr.status, fileXhr.xhr)
       : '';
     this.props.actions.queuedFiles.failUpload(fileXhr._queuedId, response, statusCodeMessage);
   }
@@ -697,21 +698,28 @@ class Gallery extends Component {
    * @returns {XML}
    */
   renderBulkActions() {
-    const { type, dialog, maxFilesSelect, files, selectedFiles, BulkActionsComponent } = this.props;
+    const { type, dialog, maxFilesSelect, files, selectedFiles, BulkActionsComponent, sectionConfig } = this.props;
 
     // When rendering gallery in modal or in select mode, filter all action but insert.
     const actionFilter = (type === ACTION_TYPES.SELECT || dialog)
       ? action => action.value === ACTION_TYPES.INSERT
       : action => action.value !== ACTION_TYPES.INSERT;
 
+    // Used to choose whether the text should be "Delete" or "Archive"
+    const deleteButtonFilter = (sectionConfig.archiveFiles)
+      ? action => action.value !== ACTION_TYPES.DELETE
+      : action => action.value !== ACTION_TYPES.ARCHIVE;
+
     const actions = CONSTANTS.BULK_ACTIONS
       .filter(actionFilter)
+      .filter(deleteButtonFilter)
       .map((action) => {
         if (action.callback) {
           return action;
         }
         switch (action.value) {
-          case ACTION_TYPES.DELETE: {
+          case ACTION_TYPES.DELETE:
+          case ACTION_TYPES.ARCHIVE: {
             return {
               ...action,
               callback: (event, items) => {
@@ -867,10 +875,10 @@ class Gallery extends Component {
           <div className="gallery__error flexbox-area-grow">
             <div className="gallery__error-message">
               <h3>
-                { i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.') }
+                {i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.')}
               </h3>
-              { errorMessage && <p>{ errorMessage }</p> }
-              { hasGraphQLErrors && graphQLErrors.map((error, index) => (
+              {errorMessage && <p>{errorMessage}</p>}
+              {hasGraphQLErrors && graphQLErrors.map((error, index) => (
                 // eslint-disable-next-line react/no-array-index-key
                 <p key={index}>{error}</p>
               ))}
@@ -896,10 +904,10 @@ class Gallery extends Component {
 
     const messages = (
       <div className="gallery_messages">
-        { errorMessage &&
+        {errorMessage &&
           <FormAlert value={errorMessage} type="danger" />
         }
-        { noticeMessage &&
+        {noticeMessage &&
           <FormAlert value={noticeMessage} type="success" />
         }
       </div>
@@ -971,7 +979,7 @@ class Gallery extends Component {
             </AssetDropzone>
           </SelectableGroup>
         </GalleryDND>
-        { this.props.loading && <Loading /> }
+        {this.props.loading && <Loading />}
         <MoveModal
           sectionConfig={this.props.sectionConfig}
           folderId={this.props.folderId}

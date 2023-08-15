@@ -25,6 +25,7 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeDropdownField;
 use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\VersionedAdmin\Extensions\FileArchiveExtension;
 
 abstract class AssetFormFactory implements FormFactory
 {
@@ -175,10 +176,15 @@ abstract class AssetFormFactory implements FormFactory
     protected function getDeleteAction($record)
     {
         // Delete action
+        $archiveFiles = class_exists(FileArchiveExtension::class) && File::singleton()->isArchiveFieldEnabled();
         if ($record && $record->isInDB() && $record->canDelete()) {
-            $deleteText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.DELETE_BUTTON', 'Delete');
+            if ($archiveFiles) {
+                $deleteText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.ARCHIVE_BUTTON', 'Archive');
+            } else {
+                $deleteText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.DELETE_BUTTON', 'Delete');
+            }
             return FormAction::create('delete', $deleteText)
-                ->setIcon('trash-bin');
+                ->setIcon($archiveFiles ? 'box' : 'trash-bin');
         }
         return null;
     }
