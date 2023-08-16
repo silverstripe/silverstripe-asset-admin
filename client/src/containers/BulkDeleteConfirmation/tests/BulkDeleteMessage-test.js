@@ -45,7 +45,7 @@ const manyFilesProps = {
 
 const getMessage = (count) => [
   `You're about to delete ${count} file(s) which may be used in your site's content.`,
-  'Carefully check the file usage on the files before deleting the folder.'
+  'Carefully check the file usage on the files before deleting the file(s).'
 ].join(' ');
 
 const emptyFolderMessage = 'Are you sure you want to delete this folder?';
