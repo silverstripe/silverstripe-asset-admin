@@ -1,22 +1,16 @@
 ja:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: ファイル
     BACKLINKCOUNT: 以下で使用される：
-    PAGES: ページ
-    SIZE: ファイルサイズ
-    TYPE: ファイルの種類
-    URL: URL
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: 大きさ
-    EDIT: 編集
-    EDITINFO: このファイルを編集
-    FIELDNOTSET: ファイル情報が見つかりませんでした
-    REMOVE: 削除
+    MENUTITLE: ファイル
+    PAGES: ページ
+    SIZE: ファイルサイズ
+    TYPE: ファイルの種類
+    URL: URL
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -24,3 +18,9 @@ ja:
     FOLDERNAME: フォルダ名
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: 大きさ
+    EDIT: 編集
+    EDITINFO: このファイルを編集
+    FIELDNOTSET: ファイル情報が見つかりませんでした
+    REMOVE: 削除

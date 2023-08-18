@@ -1,13 +1,13 @@
 el:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Αρχεία
     BACKLINKCOUNT: 'Χρησιμοποιείται σε:'
-    PAGES: σελίδες
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
+    MENUTITLE: Αρχεία
+    PAGES: σελίδες
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

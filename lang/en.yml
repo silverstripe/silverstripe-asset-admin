@@ -10,6 +10,7 @@ en:
     TITLE: 'Delete folders'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Add to campaign'
+    ARCHIVE_BUTTON: Archive
     Alignment: Alignment
     AlignmentCenter: Center
     AlignmentLeft: 'Left wrap'
@@ -23,7 +24,6 @@ en:
     AppCategoryDocument: Document
     AppCategoryImage: Image
     AppCategoryVideo: Video
-    ARCHIVE_BUTTON: Archive
     AttributesDescription: 'These changes will only affect this particular placement of the file.'
     CREATED: 'First uploaded'
     Caption: Caption
@@ -65,15 +65,18 @@ en:
     ANYONE: Anyone
     EDITHEADER: 'Who can edit this file?'
     EDITORGROUPS: 'Editor Groups'
+    EDITORMEMBERS: 'Editor Users'
     FILENAME: Filename
     FOLDERLOCATION: Location
     INHERIT: 'Inherit from parent folder'
     LOGGED_IN: 'Logged-in users'
     ONLY_GROUPS: 'Only these groups (choose from list)'
+    ONLY_MEMBERS: 'Only these users (choose from list)'
     ROOTNAME: '(Top level)'
     SAVE: Save
     SAVED: Saved
     VIEWERGROUPS: 'Viewer Groups'
+    VIEWERMEMBERS: 'Viewer Users'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download file'
     INSERT_LINK: 'Link to file'

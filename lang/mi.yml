@@ -1,22 +1,16 @@
 mi:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: 'Ngā Kōnae'
     BACKLINKCOUNT: 'I whakamahia i:'
-    PAGES: 'te/ngā whārangi'
-    SIZE: 'Rahi kōnae'
-    TYPE: 'Momo kōnae'
-    URL: PRO
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: 'Ngā Rahinga'
-    EDIT: Whakatika
-    EDITINFO: 'Whakatikatia tēnei kōnae'
-    FIELDNOTSET: 'Kāore i kitea te mōhiohio kōnae'
-    REMOVE: Tango
+    MENUTITLE: 'Ngā Kōnae'
+    PAGES: 'te/ngā whārangi'
+    SIZE: 'Rahi kōnae'
+    TYPE: 'Momo kōnae'
+    URL: PRO
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -24,3 +18,9 @@ mi:
     FOLDERNAME: 'Ingoa kōpaki'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: 'Ngā Rahinga'
+    EDIT: Whakatika
+    EDITINFO: 'Whakatikatia tēnei kōnae'
+    FIELDNOTSET: 'Kāore i kitea te mōhiohio kōnae'
+    REMOVE: Tango

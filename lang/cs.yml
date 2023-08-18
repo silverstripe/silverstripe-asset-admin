@@ -1,24 +1,18 @@
 cs:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Soubory
     BACKLINKCOUNT: 'Použito na:'
-    PAGES: stránka(y)
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
     HEIGHT: Výška
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
+    MENUTITLE: Soubory
+    PAGES: stránka(y)
     SIZE: Velikost
     TYPE: Typ
     URL: URL
     WIDTH: Šířka
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Rozměry
-    EDIT: Editovat
-    EDITINFO: 'Editovat tento soubor'
-    FIELDNOTSET: 'Žádná informace o souboru'
-    REMOVE: Odstranit
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -26,3 +20,9 @@ cs:
     FOLDERNAME: 'Název složky'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Rozměry
+    EDIT: Editovat
+    EDITINFO: 'Editovat tento soubor'
+    FIELDNOTSET: 'Žádná informace o souboru'
+    REMOVE: Odstranit
