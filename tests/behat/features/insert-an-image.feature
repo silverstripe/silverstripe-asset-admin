@@ -105,6 +105,36 @@ Feature: Insert an image into a page
       # Required to avoid "unsaved changed" browser dialog
       And I press the "Save" button
 
+  Scenario: I can add text with special characters as Alternative text
+    When I press the "Insert from Files" HTML field button
+      And I select the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
+    Then I should see the "Form_fileInsertForm" form
+    When I fill in "Alternative text (alt)" with "My alt updated & saved"
+    When I fill in "Title text (tooltip)" with "My title text updated & saved"
+      And I press the "Insert" button
+    Then the "Content" HTML field should contain "file1.jpg"
+      And the "Content" HTML field should contain "My alt updated &amp; saved"
+      And I press the "Save" button
+    # We need this to update DB with new value after it was created in the previous step
+    When I press the "Save" button
+      Then the "Content" HTML field should contain "file1.jpg"
+      And the "Content" HTML field should contain "My alt updated & saved"
+      And the "Content" HTML field should contain "My title text updated & saved"
+    When I select the image "file1.jpg" in the "Content" HTML field
+      And I press the "Insert from Files" HTML field button
+      And I should see the "Update file" button
+    When I fill in "Caption" with "My caption updated & saved"
+      And I press the "Update file" button
+    Then the "Content" HTML field should contain "My alt updated &amp; saved"
+      And the "Content" HTML field should contain "My title text updated &amp; saved"
+      And the "Content" HTML field should contain "My caption updated &amp; saved"
+      And I press the "Publish" button
+    Then I go to "/about-us"
+      And I should see an "img[alt='My alt updated & saved']" element
+      And I should see an "img[title='My title text updated & saved']" element
+      And I should see "My caption updated & saved"
+
   Scenario: I can link to a file
     Given I select "awesome" in the "Content" HTML field
     When I press the "Insert link" HTML field button
