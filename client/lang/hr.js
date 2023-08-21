@@ -6,9 +6,11 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('hr', {
+    "AssetAdmin.ADD_FILES": "Dodaj iz datoteka",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Dodaj direktorij",
     "AssetAdmin.BACK": "Nazad",
     "AssetAdmin.BACK_DESCRIPTION": "Navigate up a level",
+    "AssetAdmin.BROWSE": "Pretraži",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Jeste li sugurni da želite %s ove datoteke?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Obriši",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Jeste li sugurni da želite obrisati ove datoteke?",
@@ -21,6 +23,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CANCEL": "Odustani",
     "AssetAdmin.CONFIRMDELETE": "Jeste li sugurni da želite obrisati ovaj zapis?",
     "AssetAdmin.CREATED": "Prvi prijenos",
+    "AssetAdmin.CreateTitle": "Dodaj novu mediju s weba",
     "AssetAdmin.DELETE": "Obriši",
     "AssetAdmin.DIM": "Dimenzije",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Prekini prijenos",
@@ -37,6 +40,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "Prvi prijenos",
     "AssetAdmin.DROPZONE_UPLOAD": "Prenesi",
     "AssetAdmin.EDIT": "Uredi",
+    "AssetAdmin.EMPTY": "Nema datoteka",
+    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed je samo kompatibilan s vanjskim datotekama",
+    "AssetAdmin.EditTitle": "Medij s weba",
     "AssetAdmin.FILENAME": "Naziv datoteke",
     "AssetAdmin.FILES": "Datoteke",
     "AssetAdmin.FILE_MISSING": "Datoteka nije pronađena",
@@ -48,7 +54,10 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.JOINLAST": "i",
     "AssetAdmin.LASTEDIT": "Zadnja promjena",
     "AssetAdmin.LOADMORE": "Učitaj više",
+    "AssetAdmin.NEXT": "Sljedeći",
     "AssetAdmin.NOITEMSFOUND": "Nisu pronađene stavke",
+    "AssetAdmin.OR": "ili",
+    "AssetAdmin.PREVIOUS": "Prethodni",
     "AssetAdmin.PROMPTFOLDERNAME": "Molimo unesite naziv direktorija (ili prazno za odustati)",
     "AssetAdmin.REPlACE_FILE_SUCCESS": "Prijenos uspješan, datoteka će biti zamjenjena nakon što Spremite.",
     "AssetAdmin.SAVE": "Spremi",
@@ -65,15 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SIZE": "Veličina",
     "AssetAdmin.TITLE": "Naslov",
     "AssetAdmin.TYPE": "Vrsta datoteke",
-    "AssetAdmin.URL": "Link",
-    "AssetAdmin.ADD_FILES": "Dodaj iz datoteka",
-    "AssetAdmin.BROWSE": "Pretraži",
-    "AssetAdmin.EMPTY": "Nema datoteka",
-    "AssetAdmin.OR": "ili",
-    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed je samo kompatibilan s vanjskim datotekama",
-    "AssetAdmin.CreateTitle": "Dodaj novu mediju s weba",
-    "AssetAdmin.EditTitle": "Medij s weba",
-    "AssetAdmin.NEXT": "Sljedeći",
-    "AssetAdmin.PREVIOUS": "Prethodni"
+    "AssetAdmin.URL": "Link"
 });
 }

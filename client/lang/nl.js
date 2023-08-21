@@ -6,9 +6,11 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('nl', {
+    "AssetAdmin.ADD_FILES": "Kies uit CMS bestanden",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Map toevoegen",
     "AssetAdmin.BACK": "Terug",
     "AssetAdmin.BACK_DESCRIPTION": "Niveau omhoog",
+    "AssetAdmin.BROWSE": "Uploaden",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Weet u zeker dat u deze bestanden wil %s?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Verwijder",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Weet u zeker dat u deze bestanden wil verwijderen?",
@@ -21,6 +23,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CANCEL": "Annuleren",
     "AssetAdmin.CONFIRMDELETE": "Weet u zeker dat dit verwijderd kan worden?",
     "AssetAdmin.CREATED": "Voor het eerst opslagen op",
+    "AssetAdmin.CreateTitle": "Media vanaf het web invoegen",
     "AssetAdmin.DELETE": "Verwijder",
     "AssetAdmin.DIM": "Afmetingen",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Upload annuleren",
@@ -37,6 +40,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "Uploaden gelukt",
     "AssetAdmin.DROPZONE_UPLOAD": "Upload",
     "AssetAdmin.EDIT": "Bewerk",
+    "AssetAdmin.EMPTY": "Geen bestanden",
+    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embedden kan alleen met externe bestanden",
+    "AssetAdmin.EditTitle": "Media van andere site",
     "AssetAdmin.FILENAME": "Bestandsnaam",
     "AssetAdmin.FILES": "Bestanden",
     "AssetAdmin.FILE_MISSING": "Bestand niet gevonden",
@@ -48,7 +54,10 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.JOINLAST": "en",
     "AssetAdmin.LASTEDIT": "Laatste wijziging",
     "AssetAdmin.LOADMORE": "Meer inladen",
+    "AssetAdmin.NEXT": "Volgende",
     "AssetAdmin.NOITEMSFOUND": "Geen items gevonden",
+    "AssetAdmin.OR": "of",
+    "AssetAdmin.PREVIOUS": "Vorige",
     "AssetAdmin.PROMPTFOLDERNAME": "Type de naam van de map (of laat leeg om te annuleren)",
     "AssetAdmin.REPlACE_FILE_SUCCESS": "Uploaden gelukt, het bestand wordt vervangen na het drukken op Opslaan",
     "AssetAdmin.SAVE": "Opslaan",
@@ -65,15 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SIZE": "Grootte",
     "AssetAdmin.TITLE": "Titel",
     "AssetAdmin.TYPE": "Bestandstype",
-    "AssetAdmin.URL": "URL",
-    "AssetAdmin.ADD_FILES": "Kies uit CMS bestanden",
-    "AssetAdmin.BROWSE": "Uploaden",
-    "AssetAdmin.EMPTY": "Geen bestanden",
-    "AssetAdmin.OR": "of",
-    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embedden kan alleen met externe bestanden",
-    "AssetAdmin.CreateTitle": "Media vanaf het web invoegen",
-    "AssetAdmin.EditTitle": "Media van andere site",
-    "AssetAdmin.NEXT": "Volgende",
-    "AssetAdmin.PREVIOUS": "Vorige"
+    "AssetAdmin.URL": "URL"
 });
 }

@@ -6,9 +6,11 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('pl', {
+    "AssetAdmin.ADD_FILES": "Dodaj z plików",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Utwórz folder",
     "AssetAdmin.BACK": "Powrót",
     "AssetAdmin.BACK_DESCRIPTION": "Przejdź poziom wyżej",
+    "AssetAdmin.BROWSE": "Przeglądaj",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Czy na pewno chcesz %s tych plików?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Usuń",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Czy na pewno chcesz usunąć te pliki?",
@@ -21,6 +23,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CANCEL": "Anuluj",
     "AssetAdmin.CONFIRMDELETE": "Czy na pewno chcesz usunąć ten rekord?",
     "AssetAdmin.CREATED": "Pierwsze wgranie",
+    "AssetAdmin.CreateTitle": "Wstaw nowe plik (media)i z internetu",
     "AssetAdmin.DELETE": "Usuń",
     "AssetAdmin.DIM": "Wymiary",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Anuluj przesyłanie",
@@ -37,6 +40,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "Pierwsze wgranie na serwer",
     "AssetAdmin.DROPZONE_UPLOAD": "Wgraj",
     "AssetAdmin.EDIT": "Edytuj",
+    "AssetAdmin.EMPTY": "Brak plików",
+    "AssetAdmin.ERROR_OEMBED_REMOTE": "Osadzanie jest zgodne tylko ze zdalnymi plikami",
+    "AssetAdmin.EditTitle": "Pliki (media) z internetu",
     "AssetAdmin.FILENAME": "Nazwa pliku",
     "AssetAdmin.FILES": "Pliki",
     "AssetAdmin.FILE_MISSING": "Nie można znaleźć pliku",
@@ -48,7 +54,10 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.JOINLAST": "i",
     "AssetAdmin.LASTEDIT": "Ostatnia zmiana",
     "AssetAdmin.LOADMORE": "Wczytaj więcej",
+    "AssetAdmin.NEXT": "Następny",
     "AssetAdmin.NOITEMSFOUND": "Nie znaleziono żadnych plików",
+    "AssetAdmin.OR": "lub",
+    "AssetAdmin.PREVIOUS": "Poprzedni",
     "AssetAdmin.PROMPTFOLDERNAME": "Wprowadź nazwę folderu (lub pusty, aby anulować)",
     "AssetAdmin.REPlACE_FILE_SUCCESS": "Przesyłanie powiodło się, plik zostanie zastąpiony, gdy zapiszesz.",
     "AssetAdmin.SAVE": "Zapisz",
@@ -65,15 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SIZE": "Rozmiar",
     "AssetAdmin.TITLE": "Tytuł",
     "AssetAdmin.TYPE": "Typ pliku",
-    "AssetAdmin.URL": "URL",
-    "AssetAdmin.ADD_FILES": "Dodaj z plików",
-    "AssetAdmin.BROWSE": "Przeglądaj",
-    "AssetAdmin.EMPTY": "Brak plików",
-    "AssetAdmin.OR": "lub",
-    "AssetAdmin.ERROR_OEMBED_REMOTE": "Osadzanie jest zgodne tylko ze zdalnymi plikami",
-    "AssetAdmin.CreateTitle": "Wstaw nowe plik (media)i z internetu",
-    "AssetAdmin.EditTitle": "Pliki (media) z internetu",
-    "AssetAdmin.NEXT": "Następny",
-    "AssetAdmin.PREVIOUS": "Poprzedni"
+    "AssetAdmin.URL": "URL"
 });
 }

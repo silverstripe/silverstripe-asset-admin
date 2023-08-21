@@ -1,15 +1,15 @@
 bs:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Datoteke
     BACKLINKCOUNT: 'Korišteno ovdje:'
-    PAGES: strana(ice)
-    SIZE: Veličina
-    TYPE: Tip
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
+    MENUTITLE: Datoteke
+    PAGES: strana(ice)
+    SIZE: Veličina
+    TYPE: Tip
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
