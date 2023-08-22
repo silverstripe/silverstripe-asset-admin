@@ -683,7 +683,6 @@ class AssetAdmin extends Component {
 
   render() {
     const { folder, folderId, query, getUrl, type, maxFiles, toolbarChildren, SearchComponent, BulkDeleteConfirmationComponent } = this.props;
-    const { archiveFiles } = this.props.sectionConfig;
 
     const showBackButton = Boolean(folderId || hasFilters(query.filter));
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
