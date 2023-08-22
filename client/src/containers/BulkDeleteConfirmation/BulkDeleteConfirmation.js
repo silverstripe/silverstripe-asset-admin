@@ -18,12 +18,14 @@ import { getFolderDescendantFileTotals, getFileTotalItems } from './helpers';
 const BulkDeleteConfirmation = ({
   loading, LoadingComponent, transition,
   files, descendantFileCounts,
-  onModalClose, onCancel, onConfirm
+  onModalClose, onCancel, onConfirm, archiveFiles
 }) => {
   let body = null;
+  const transKey = archiveFiles ? 'AssetAdmin.ARCHIVE' : 'AssetAdmin.DELETE';
+  const transDefault = archiveFiles ? 'Archive' : 'Delete';
   let actions = [
     {
-      label: i18n._t('AssetAdmin.DELETE', 'Delete'),
+      label: i18n._t(transKey, transDefault),
       handler: () => onConfirm(files.map(({ id }) => id)),
       color: 'danger'
     },
@@ -42,7 +44,7 @@ const BulkDeleteConfirmation = ({
     const folderDescendantFileTotals = getFolderDescendantFileTotals(files, descendantFileCounts);
     const fileTotalItems = getFileTotalItems(files);
 
-    const bodyProps = { folderCount, folderDescendantFileTotals, fileTotalItems };
+    const bodyProps = { folderCount, folderDescendantFileTotals, fileTotalItems, archiveFiles };
     body = <BulkDeleteMessage {...bodyProps} />;
 
     if (folderDescendantFileTotals.totalItems || fileTotalItems) {
@@ -53,10 +55,10 @@ const BulkDeleteConfirmation = ({
           color: 'primary'
         },
         {
-          label: i18n._t('AssetAdmin.DELETE', 'Delete'),
+          label: i18n._t(transKey, transDefault),
           handler: () => onConfirm(files.map(({ id }) => id)),
           color: 'danger',
-        },
+        }
       ];
     }
   }
@@ -72,6 +74,7 @@ const BulkDeleteConfirmation = ({
     actions={actions}
     onCancel={onCancel}
     onClosed={onModalClose}
+    archiveFiles={archiveFiles}
   />);
 };
 
@@ -84,6 +87,7 @@ BulkDeleteConfirmation.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onModalClose: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
+  archiveFiles: PropTypes.bool.isRequired,
 };
 
 /**

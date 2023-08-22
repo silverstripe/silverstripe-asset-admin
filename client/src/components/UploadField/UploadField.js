@@ -232,7 +232,7 @@ class UploadField extends Component {
 
   handleFailedUpload(file, response) {
     const statusCodeMessage = file.xhr && file.xhr.status
-      ? getStatusCodeMessage(file.xhr.status)
+      ? getStatusCodeMessage(file.xhr.status, file.xhr)
       : '';
     this.props.actions.uploadField.failUpload(
       this.props.id,

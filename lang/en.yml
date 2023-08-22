@@ -23,6 +23,7 @@ en:
     AppCategoryDocument: Document
     AppCategoryImage: Image
     AppCategoryVideo: Video
+    ARCHIVE_BUTTON: Archive
     AttributesDescription: 'These changes will only affect this particular placement of the file.'
     CREATED: 'First uploaded'
     Caption: Caption
