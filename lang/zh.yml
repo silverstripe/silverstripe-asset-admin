@@ -1,22 +1,16 @@
 zh:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: 文件
     BACKLINKCOUNT: 应用于：
-    PAGES: 单个或多个页面
-    SIZE: 文件尺寸
-    TYPE: 文件类型
-    URL: 网址
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: 尺寸
-    EDIT: 编辑
-    EDITINFO: 编辑该文件
-    FIELDNOTSET: 没有找到文件信息
-    REMOVE: 移除
+    MENUTITLE: 文件
+    PAGES: 单个或多个页面
+    SIZE: 文件尺寸
+    TYPE: 文件类型
+    URL: 网址
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -24,3 +18,9 @@ zh:
     FOLDERNAME: 文件夹名称
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: 尺寸
+    EDIT: 编辑
+    EDITINFO: 编辑该文件
+    FIELDNOTSET: 没有找到文件信息
+    REMOVE: 移除

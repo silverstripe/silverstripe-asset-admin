@@ -10,6 +10,7 @@ en:
     TITLE: 'Delete folders'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Add to campaign'
+    ARCHIVE_BUTTON: Archive
     Alignment: Alignment
     AlignmentCenter: Center
     AlignmentLeft: 'Left wrap'
@@ -23,7 +24,6 @@ en:
     AppCategoryDocument: Document
     AppCategoryImage: Image
     AppCategoryVideo: Video
-    ARCHIVE_BUTTON: Archive
     AttributesDescription: 'These changes will only affect this particular placement of the file.'
     CREATED: 'First uploaded'
     Caption: Caption

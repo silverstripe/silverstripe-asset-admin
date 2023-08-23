@@ -71,8 +71,8 @@ it:
     ONLY_GROUPS: 'Solo questi gruppi (scegliere dalla lista)'
     ROOTNAME: '(Primo Livello)'
     SAVE: Salva
-    VIEWERGROUPS: 'Gruppi di visualizzatori'
     SAVED: Salvato
+    VIEWERGROUPS: 'Gruppi di visualizzatori'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Scaricamento file'
     INSERT_LINK: 'Collegamento al file'
@@ -81,11 +81,11 @@ it:
     LINKOPTIONS: 'Opzioni collegamento'
     LINKTEXT: 'Testo collegamento'
     OTHER_ACTIONS: 'Altre azioni'
+    PUBLISH: Pubblica
+    PUBLISHED: Pubblicato
     REPLACE_FILE: 'Sostituisci file'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Questo tipo di file può essere inserito solo come collegamento. Non potrai modificare il collegamento una volta inserito.</p>'
     USAGE: 'Usato da'
-    PUBLISH: Pubblica
-    PUBLISHED: Pubblicato
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Pubblicato
     SAVED: Salvato
@@ -93,6 +93,9 @@ it:
     CREATE: Crea
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: 'Nome cartella'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Scegli una cartella'
+    MOVE: Sposta
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Aggiungi materiale'
     Cancel: Annulla
@@ -105,16 +108,13 @@ it:
     UrlDescription: 'Incorpora video YouTube e Vimeo, immagini e altro materiale direttamente dal web.'
   SilverStripe\AssetAdmin\Forms\UploadField:
     ErrorMaxFilesReached:
+      many: 'Puoi caricare solo {count} file.'
       one: 'Puoi caricare solo {count} file.'
       other: 'Puoi caricare solo {count} file.'
-      many: 'Puoi caricare solo {count} file.'
   SilverStripe\AssetAdmin\GraphQL\FileFilter:
     FileNotFound: 'Il File o la Cartella potrebbe essere inesistente'
   SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
     OWNER_WARNING:
+      many: 'Il file "{file}" è usato in {count} posti.'
       one: 'Il file "{file}" è usato in {count} posto.'
       other: 'Il file "{file}" è usato in {count} posti.'
-      many: 'Il file "{file}" è usato in {count} posti.'
-  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
-    CHOOSEFOLDER: 'Scegli una cartella'
-    MOVE: Sposta

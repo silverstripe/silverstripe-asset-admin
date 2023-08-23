@@ -6,9 +6,11 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('it', {
+    "AssetAdmin.ADD_FILES": "Aggiungi da file",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Aggiungi cartella",
     "AssetAdmin.BACK": "Indietro",
     "AssetAdmin.BACK_DESCRIPTION": "Vai al livello superiore",
+    "AssetAdmin.BROWSE": "Sfoglia",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Sei sicuro di voler %s questi file?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Elimina",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Sei sicuro di voler eliminare questi file?",
@@ -21,6 +23,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CANCEL": "Annulla",
     "AssetAdmin.CONFIRMDELETE": "Sei sicuro di voler eliminare questo record?",
     "AssetAdmin.CREATED": "Caricato il",
+    "AssetAdmin.CreateTitle": "Inserire nuovo materiale dal web",
     "AssetAdmin.DELETE": "Elimina",
     "AssetAdmin.DIM": "Dimensioni",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Annulla caricamento",
@@ -37,6 +40,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "File caricato",
     "AssetAdmin.DROPZONE_UPLOAD": "Carica",
     "AssetAdmin.EDIT": "Modifica",
+    "AssetAdmin.EMPTY": "Nessun file",
+    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
+    "AssetAdmin.EditTitle": "Materiale dal web",
     "AssetAdmin.FILENAME": "Nome file",
     "AssetAdmin.FILES": "File",
     "AssetAdmin.FILE_MISSING": "Il file non può essere trovato",
@@ -48,7 +54,10 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.JOINLAST": "e",
     "AssetAdmin.LASTEDIT": "Ultima modifica",
     "AssetAdmin.LOADMORE": "Carica ancora",
+    "AssetAdmin.NEXT": "Prossimo",
     "AssetAdmin.NOITEMSFOUND": "Nessun elemento trovato",
+    "AssetAdmin.OR": "o",
+    "AssetAdmin.PREVIOUS": "Precedente",
     "AssetAdmin.PROMPTFOLDERNAME": "Inserire il nome della cartella (o lasciare vuoto per annullare)",
     "AssetAdmin.REPlACE_FILE_SUCCESS": "Caricamento eseguito, il file sarà sostituito con Salva.",
     "AssetAdmin.SAVE": "Salva",
@@ -65,15 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SIZE": "Dimensione",
     "AssetAdmin.TITLE": "Titolo",
     "AssetAdmin.TYPE": "Tipo file",
-    "AssetAdmin.URL": "URL",
-    "AssetAdmin.ADD_FILES": "Aggiungi da file",
-    "AssetAdmin.BROWSE": "Sfoglia",
-    "AssetAdmin.EMPTY": "Nessun file",
-    "AssetAdmin.OR": "o",
-    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
-    "AssetAdmin.CreateTitle": "Inserire nuovo materiale dal web",
-    "AssetAdmin.EditTitle": "Materiale dal web",
-    "AssetAdmin.NEXT": "Prossimo",
-    "AssetAdmin.PREVIOUS": "Precedente"
+    "AssetAdmin.URL": "URL"
 });
 }

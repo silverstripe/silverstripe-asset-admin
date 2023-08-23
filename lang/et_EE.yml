@@ -1,24 +1,24 @@
 et_EE:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Failid
     BACKLINKCOUNT: 'Kasutatakse:'
-    PAGES: 'leht (lehed)'
-    SIZE: Failisuurus
-    TYPE: Failitüüp
-    URL: URL
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
+    MENUTITLE: Failid
+    PAGES: 'leht (lehed)'
+    SIZE: Failisuurus
+    TYPE: Failitüüp
+    URL: URL
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    FILENAME: Filename
+    SAVE: Save
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    Cancel: Cancel
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Mõõtmed
     EDIT: Muuda
     EDITINFO: 'Muuda seda faili'
     FIELDNOTSET: 'Failiteavet ei leitud'
     REMOVE: Eemalda
-  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
-    FILENAME: Filename
-    SAVE: Save
-  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
-    Cancel: Cancel

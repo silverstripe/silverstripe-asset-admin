@@ -1,15 +1,13 @@
 ro:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Fişiere
     BACKLINKCOUNT: 'Folosit la'
-    PAGES: pagină(pagini)
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    EDITINFO: 'Editeaza acest fisier'
+    MENUTITLE: Fişiere
+    PAGES: pagină(pagini)
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -17,3 +15,5 @@ ro:
     FOLDERNAME: 'Nume dosar'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    EDITINFO: 'Editeaza acest fisier'

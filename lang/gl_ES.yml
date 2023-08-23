@@ -1,18 +1,18 @@
 gl_ES:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Ficheiros
-    SIZE: 'Tamaño ficheiro'
-    TYPE: 'Tipo ficheiro'
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    EDITINFO: 'Editar este ficheiro'
-    FIELDNOTSET: 'Ficheiro de información non atopado'
+    MENUTITLE: Ficheiros
+    SIZE: 'Tamaño ficheiro'
+    TYPE: 'Tipo ficheiro'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    EDITINFO: 'Editar este ficheiro'
+    FIELDNOTSET: 'Ficheiro de información non atopado'

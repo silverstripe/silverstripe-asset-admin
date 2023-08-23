@@ -29,6 +29,7 @@ eo:
     CreatePermissionDenied: 'Vi ne havas permeson por aldoni dosierojn'
     CurrentFolderOnly: 'Ĉu limigi al la aktuala dosierujo kaj ties subaj dosierujoj?'
     DELETE_BUTTON: Forigi
+    Eager: Avida
     ErrorItemPermissionDenied: 'Vi ne havas permeson por ŝanĝi {ObjectTitle}'
     ErrorNotFound: 'Tiu {Type} ne estas trovebla'
     FILE_NOT_FOUND: 'Ne trovis tiun dosieron'
@@ -38,7 +39,9 @@ eo:
     ImageSpecs: Dimensioj
     ImageWidth: Larĝo
     LASTEDIT: 'Lastfoje ŝanĝita'
+    LazyDefault: 'Malavida (apriora)'
     LoadIntoFileFailed: 'Ne povis ŝargi dosieron'
+    Loading: Ŝargas
     MENUTITLE: Dosieroj
     NOSUMMARY: 'Neniu resumo disponeblas'
     NewFile: 'Nova {file}'
@@ -52,9 +55,6 @@ eo:
     UNKNOWN: Nekonata
     UNPUBLISH_BUTTON: Malpublikigi
     UPLOADEDFILE: 'Alŝutita dosiero'
-    Eager: Avida
-    LazyDefault: 'Malavida (apriora)'
-    Loading: Ŝargas
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Movis dosieron'
     RENAMEDFILE: 'Anstataŭigis dosieron'
@@ -71,8 +71,8 @@ eo:
     ONLY_GROUPS: 'Nur ĉi tiuj grupoj (elektu el la listo)'
     ROOTNAME: '(Supra nivelo)'
     SAVE: Konservi
-    VIEWERGROUPS: 'Grupoj de vidantoj'
     SAVED: Konservita
+    VIEWERGROUPS: 'Grupoj de vidantoj'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Elŝuti dosieron'
     INSERT_LINK: 'Ligi al dosiero'
@@ -81,11 +81,11 @@ eo:
     LINKOPTIONS: 'Ligaj ebloj'
     LINKTEXT: 'Liga teksto'
     OTHER_ACTIONS: 'Aliaj agoj'
+    PUBLISH: Publikigi
+    PUBLISHED: Publikigita
     REPLACE_FILE: 'Anstataŭigi dosieron'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ĉi tiu tipo de dosiero estas enmetebla nur kiel ligilon. Vi povas redakti la ligilon post enmeto.</p>'
     USAGE: 'Uzita je'
-    PUBLISH: Publikigi
-    PUBLISHED: Publikigita
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Publikigita
     SAVED: Konservita
@@ -93,6 +93,9 @@ eo:
     CREATE: Krei
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: 'Nomo de dosierujo'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Elekti dosierujon'
+    MOVE: Movi
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Aldoni aŭdvidaĵon'
     Cancel: Nuligi
@@ -107,18 +110,15 @@ eo:
     ErrorMaxFilesReached:
       one: 'Vi povas alŝuti nur {count} dosieron.'
       other: 'Vi povas alŝuti nur {count} dosierojn.'
-  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
-    FileNotFound: 'Ne povis trovi tiun dosieron aŭ dosierujon'
-  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
-    OWNER_WARNING:
-      one: 'Dosiero "{file}" estas uzita en {count} loko.'
-      other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
   SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Ne povis trovi tiun dosieron aŭ dosierujon'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Ne povis trovi tiun dosieron aŭ dosierujon'
   SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
     OWNER_WARNING:
       one: 'Dosiero "{file}" estas uzita en 1 loko.'
       other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
-  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
-    CHOOSEFOLDER: 'Elekti dosierujon'
-    MOVE: Movi
+  SilverStripe\AssetAdmin\GraphQL\UnpublishFileMutationCreator:
+    OWNER_WARNING:
+      one: 'Dosiero "{file}" estas uzita en {count} loko.'
+      other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
