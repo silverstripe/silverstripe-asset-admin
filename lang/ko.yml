@@ -1,13 +1,13 @@
 ko:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: 파일
     BACKLINKCOUNT: '다음에서 사용중 '
-    PAGES: 페이지
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
+    MENUTITLE: 파일
+    PAGES: 페이지
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

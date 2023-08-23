@@ -6,9 +6,11 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('fr', {
+    "AssetAdmin.ADD_FILES": "Ajouter depuis les fichiers",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Nouveau dossier",
     "AssetAdmin.BACK": "Retour",
     "AssetAdmin.BACK_DESCRIPTION": "Répertoire parent",
+    "AssetAdmin.BROWSE": "Parcourir",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Etes-vous sûr de vouloir %s ces fichiers?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Supprimer",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Etes-vous sûr de vouloir supprimer ces fichiers?",
@@ -21,6 +23,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CANCEL": "Annuler",
     "AssetAdmin.CONFIRMDELETE": "Etes-vous sûr de vouloir supprimer cet enregistrement?",
     "AssetAdmin.CREATED": "Premier téléversement",
+    "AssetAdmin.CreateTitle": "Insérer un nouveau média à partir du web",
     "AssetAdmin.DELETE": "Supprimer",
     "AssetAdmin.DIM": "Taille",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Annuler le téléversement",
@@ -37,6 +40,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "Fichier téléversé.",
     "AssetAdmin.DROPZONE_UPLOAD": "Téléverser",
     "AssetAdmin.EDIT": "Editer",
+    "AssetAdmin.EMPTY": "Aucun fichier",
+    "AssetAdmin.ERROR_OEMBED_REMOTE": "L'intégration n'est compatible qu'avec des fichiers distants",
+    "AssetAdmin.EditTitle": "Média à partir du web",
     "AssetAdmin.FILENAME": "Nom de fichier",
     "AssetAdmin.FILES": "Fichiers",
     "AssetAdmin.FILE_MISSING": "Fichier introuvable",
@@ -48,7 +54,10 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.JOINLAST": "et",
     "AssetAdmin.LASTEDIT": "Dernière modification",
     "AssetAdmin.LOADMORE": "Charger plus d'éléments",
+    "AssetAdmin.NEXT": "Suivant",
     "AssetAdmin.NOITEMSFOUND": "Aucun élément trouvé",
+    "AssetAdmin.OR": "ou",
+    "AssetAdmin.PREVIOUS": "Précédent",
     "AssetAdmin.PROMPTFOLDERNAME": "Merci d'entrer un nom de dossier (ou laisser vide pour annuler)",
     "AssetAdmin.REPlACE_FILE_SUCCESS": "Téléversement réussi, le fichier sera remplacé après sauvegarde.",
     "AssetAdmin.SAVE": "Sauvegarder",
@@ -65,15 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SIZE": "Taille",
     "AssetAdmin.TITLE": "Titre",
     "AssetAdmin.TYPE": "Type de fichier",
-    "AssetAdmin.URL": "URL",
-    "AssetAdmin.ADD_FILES": "Ajouter depuis les fichiers",
-    "AssetAdmin.BROWSE": "Parcourir",
-    "AssetAdmin.EMPTY": "Aucun fichier",
-    "AssetAdmin.OR": "ou",
-    "AssetAdmin.ERROR_OEMBED_REMOTE": "L'intégration n'est compatible qu'avec des fichiers distants",
-    "AssetAdmin.CreateTitle": "Insérer un nouveau média à partir du web",
-    "AssetAdmin.EditTitle": "Média à partir du web",
-    "AssetAdmin.NEXT": "Suivant",
-    "AssetAdmin.PREVIOUS": "Précédent"
+    "AssetAdmin.URL": "URL"
 });
 }

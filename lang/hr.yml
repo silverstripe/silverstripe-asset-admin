@@ -1,4 +1,6 @@
 hr:
+  AssetAdmin:
+    INSERT_FILE: 'Ubaci datoteku'
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Obriši direktorije'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
@@ -13,7 +15,9 @@ hr:
     AppCategoryDocument: Dokument
     AppCategoryImage: Slika
     AppCategoryVideo: Video
+    AttributesDescription: 'Ove promjene će utjecati samo na specifičan smještan ove datoteke.'
     CREATED: 'Prvi prijenos'
+    Caption: Natpis
     CreatePermissionDenied: 'Nemate prava za dodavanje datoteka'
     CurrentFolderOnly: 'Ograniči na trenutni direktorij i njegove pod-direktorije?'
     DELETE_BUTTON: Obriši
@@ -33,12 +37,10 @@ hr:
     PUBLISHED: Objavljeno
     PUBLISH_BUTTON: Objavi
     SAVEDFILE: 'Spremljena datoteke'
+    TitleTooltip: 'Naslov (tooltip)'
     UNKNOWN: Nepoznatno
     UNPUBLISH_BUTTON: Odjavi
     UPLOADEDFILE: 'Prenesena datoteka'
-    AttributesDescription: 'Ove promjene će utjecati samo na specifičan smještan ove datoteke.'
-    Caption: Natpis
-    TitleTooltip: 'Naslov (tooltip)'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Premještena datoteka'
     RENAMEDFILE: 'Zamjenjena datoteka'
@@ -63,11 +65,9 @@ hr:
     CREATE: Kreiraj
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: 'Naziv direktorija'
-  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
-    AddMedia: 'Dodaj mediju'
-    Cancel: Odustani
-  AssetAdmin:
-    INSERT_FILE: 'Ubaci datoteku'
   SilverStripe\AssetAdmin\Forms\MoveFormFactory:
     CHOOSEFOLDER: 'Odaberi direktorij'
     MOVE: Premjesti
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Dodaj mediju'
+    Cancel: Odustani

@@ -1,40 +1,40 @@
 lt:
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Ribotas priėjimas'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Bylos
+    AppCategoryArchive: Archyvas
     BACKLINKCOUNT: 'Naudojama:'
-    PAGES: puslapis(-iai)
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
     HEIGHT: Aukštis
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
+    MENUTITLE: Bylos
+    PAGES: puslapis(-iai)
+    PUBLISHED: Publikuota
+    PUBLISH_BUTTON: Publikuoti
     SIZE: 'Bylos dydis'
     TYPE: 'Bylos tipas'
     URL: 'URL adresas'
     WIDTH: Plotis
-    AppCategoryArchive: Archyvas
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    FILENAME: Filename
+    SAVE: Save
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    PUBLISH: Publikuoti
     PUBLISHED: Publikuota
-    PUBLISH_BUTTON: Publikuoti
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Publikuota
+  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
+    FOLDERNAME: 'Katalogo pavadinimas'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    MOVE: Perkelti
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    Cancel: Cancel
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Matmenys
     EDIT: Redaguoti
     EDITINFO: 'Redaguoti šią bylą'
     FIELDNOTSET: 'Informacija apie bylą nerasta'
     REMOVE: Pašalinti
-  SilverStripe\Admin\FileStatusIcon:
-    ACCESS_RESTRICTED: 'Ribotas priėjimas'
-  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
-    FILENAME: Filename
-    SAVE: Save
-  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
-    PUBLISHED: Publikuota
-  SilverStripe\AssetAdmin\Forms\FolderFormFactory:
-    FOLDERNAME: 'Katalogo pavadinimas'
-  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
-    Cancel: Cancel
-  SilverStripe\AssetAdmin\Forms\FileFormFactory:
-    PUBLISH: Publikuoti
-    PUBLISHED: Publikuota
-  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
-    MOVE: Perkelti

@@ -1,18 +1,18 @@
 pt:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Ficheiros
     BACKLINKCOUNT: 'Usado em:'
-    PAGES: página(s)
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    EDITINFO: 'Editar este ficheiro'
-    FIELDNOTSET: 'Informação do ficheiro não encontrada'
+    MENUTITLE: Ficheiros
+    PAGES: página(s)
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    EDITINFO: 'Editar este ficheiro'
+    FIELDNOTSET: 'Informação do ficheiro não encontrada'
