@@ -1,24 +1,18 @@
 sv:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Filer
     BACKLINKCOUNT: 'Använd på:'
-    PAGES: sida(-or)
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
     HEIGHT: Höjd
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
+    MENUTITLE: Filer
+    PAGES: sida(-or)
     SIZE: Filstorlek
     TYPE: Filtyp
     URL: URL
     WIDTH: Bredd
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Dimensioner
-    EDIT: Ändra
-    EDITINFO: 'Redigera filen'
-    FIELDNOTSET: 'Hittade ingen filinformation'
-    REMOVE: 'Ta bort'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -26,3 +20,9 @@ sv:
     FOLDERNAME: Mappnamn
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Dimensioner
+    EDIT: Ändra
+    EDITINFO: 'Redigera filen'
+    FIELDNOTSET: 'Hittade ingen filinformation'
+    REMOVE: 'Ta bort'

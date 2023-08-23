@@ -1,4 +1,11 @@
 pl:
+  AssetAdmin:
+    INSERT_FILE: 'Wgraj plik'
+    UPDATE_FILE: 'Aktualizuj plik'
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Dostęp jest ograniczony'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Dane przesłane z formularza'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Dane przesłane z formularza, nieograniczony dostęp'
   SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
     TITLE: 'Usuń folder'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
@@ -10,6 +17,7 @@ pl:
     AlignmentRight: 'Przyciągnij do prawej'
     AlignmentRightAlone: 'Samo, po prawej'
     AltText: 'Tekst alternatywny (alt)'
+    AltTextTip: 'Opis dla odwiedzających, którzy nie mogą wyświetlić obrazu (za pomocą czytników ekranu lub blokerów obrazu). Zalecane w przypadku obrazów, które zapewniają unikalny kontekst treści.'
     AppCategoryArchive: Archiwum
     AppCategoryAudio: 'Dźwięki audio'
     AppCategoryDocument: Dokument
@@ -21,6 +29,7 @@ pl:
     CreatePermissionDenied: 'Nie masz uprawnień do dodawania plików'
     CurrentFolderOnly: 'Ogranicz do bieżącego folderu i jego podfolderów?'
     DELETE_BUTTON: Usuń
+    Eager: Zainteresowany
     ErrorItemPermissionDenied: 'Nie masz wymaganych uprawnień do modyfikowania {ObjectTitle}'
     ErrorNotFound: 'Ten {Type} nie został odnaleziony'
     FILE_NOT_FOUND: 'Nie znaleziono pliku'
@@ -30,7 +39,9 @@ pl:
     ImageSpecs: Wymiary
     ImageWidth: Szerokość
     LASTEDIT: 'Ostatnia zmiana'
+    LazyDefault: 'Obrazki lazyload (domyślnie)'
     LoadIntoFileFailed: 'Nie udało się wczytać pliku'
+    Loading: Wczytywanie
     MENUTITLE: Pliki
     NOSUMMARY: 'Brak dostępnych podsumowań'
     NewFile: 'Nowy {file}'
@@ -40,14 +51,10 @@ pl:
     Placement: Umieszczenie
     SAVEDFILE: 'Zapisano plik'
     TitleTooltip: 'Tytuł (tooltip)'
+    TitleTooltipTip: 'W razie potrzeby zawiera wyjaśnienie w dłuższej formie. Wyświetlane po najechaniu kursorem'
     UNKNOWN: Nieznany
     UNPUBLISH_BUTTON: 'Cofnij publikację'
     UPLOADEDFILE: 'Przesłano plik'
-    AltTextTip: 'Opis dla odwiedzających, którzy nie mogą wyświetlić obrazu (za pomocą czytników ekranu lub blokerów obrazu). Zalecane w przypadku obrazów, które zapewniają unikalny kontekst treści.'
-    Eager: Zainteresowany
-    LazyDefault: 'Obrazki lazyload (domyślnie)'
-    Loading: Wczytywanie
-    TitleTooltipTip: 'W razie potrzeby zawiera wyjaśnienie w dłuższej formie. Wyświetlane po najechaniu kursorem'
   SilverStripe\AssetAdmin\Controller\AssetAdminFile:
     MOVEDFOLDER: 'Przeniesiono plik'
     RENAMEDFILE: 'Zastąpiono plik'
@@ -64,21 +71,21 @@ pl:
     ONLY_GROUPS: 'Tylko ci z grupy (wybierz z listy)'
     ROOTNAME: '(Najwyższy poziom)'
     SAVE: Zapisz
-    VIEWERGROUPS: 'Kto może zobaczyć (grupy)'
     SAVED: Zapisano
+    VIEWERGROUPS: 'Kto może zobaczyć (grupy)'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    DOWNLOAD_FILE: 'Pobierz plik'
     INSERT_LINK: 'Link do pliku'
     LINKDESCR: 'Opis linku'
     LINKOPENNEWWIN: 'Otwórz w nowym oknie/zakładce'
     LINKOPTIONS: 'Opcje linku'
     LINKTEXT: 'Tekst linku'
     OTHER_ACTIONS: 'Inne akcje'
+    PUBLISH: Opublikuj
+    PUBLISHED: Opublikowano
     REPLACE_FILE: 'Zastąp plik'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Ten typ pliku można wstawić tylko jako łącze. Możesz edytować link, gdy zostanie wstawiony.</p>'
     USAGE: 'Użyty na'
-    DOWNLOAD_FILE: 'Pobierz plik'
-    PUBLISH: Opublikuj
-    PUBLISHED: Opublikowano
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Opublikowano
     SAVED: Zapisano
@@ -86,6 +93,9 @@ pl:
     CREATE: Utwórz
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: 'Nazwa folderu'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Wybierz folder'
+    MOVE: Przenieś
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Dodaj media'
     Cancel: Anuluj
@@ -98,27 +108,17 @@ pl:
     UrlDescription: 'Umieszczaj filmy, zdjęcia i inne materiały wideo z serwisu Youtube i Vimeo bezpośrednio z internetu.'
   SilverStripe\AssetAdmin\Forms\UploadField:
     ErrorMaxFilesReached:
-      one: 'Możesz przesyłać tylko {count} plików.'
       few: 'Możesz przesyłać tylko {count} plików.'
       many: 'Możesz przesyłać tylko {count} plików.'
+      one: 'Możesz przesyłać tylko {count} plików.'
       other: 'Możesz przesyłać tylko {count} plików.'
-  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
-    FileNotFound: 'Nie można znaleźć pliku lub folderu'
-  AssetAdmin:
-    INSERT_FILE: 'Wgraj plik'
-    UPDATE_FILE: 'Aktualizuj plik'
-  SilverStripe\Admin\FileStatusIcon:
-    ACCESS_RESTRICTED: 'Dostęp jest ograniczony'
-    TRACKED_FORM_UPLOAD_RESTRICTED: 'Dane przesłane z formularza'
-    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Dane przesłane z formularza, nieograniczony dostęp'
   SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Nie można znaleźć pliku lub folderu'
+  SilverStripe\AssetAdmin\GraphQL\FileFilterInputTypeCreator:
     FileNotFound: 'Nie można znaleźć pliku lub folderu'
   SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
     OWNER_WARNING:
-      one: 'Plik "{file}" jest używany w jednym {count} miejscu.'
       few: 'Plik "{file}" jest używany w kilku {count} miejscach.'
       many: 'Plik "{file}" jest używany w wielu {count} miejscach.'
+      one: 'Plik "{file}" jest używany w jednym {count} miejscu.'
       other: 'Plik "{file}" jest używany w {count} miejscach.'
-  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
-    CHOOSEFOLDER: 'Wybierz folder'
-    MOVE: Przenieś

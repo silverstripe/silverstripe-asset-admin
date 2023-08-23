@@ -6,9 +6,11 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('th', {
+    "AssetAdmin.ADD_FILES": "Add from files",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Add folder",
     "AssetAdmin.BACK": "Back",
     "AssetAdmin.BACK_DESCRIPTION": "Navigate up a level",
+    "AssetAdmin.BROWSE": "Browse",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Are you sure you want to %s these files?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Delete",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Are you sure you want to delete these files?",
@@ -21,6 +23,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CANCEL": "Cancel",
     "AssetAdmin.CONFIRMDELETE": "Are you sure you want to delete this record?",
     "AssetAdmin.CREATED": "First uploaded",
+    "AssetAdmin.CreateTitle": "Insert new media from the web",
     "AssetAdmin.DELETE": "Delete",
     "AssetAdmin.DIM": "Dimensions",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Cancel upload",
@@ -37,6 +40,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "File uploaded",
     "AssetAdmin.DROPZONE_UPLOAD": "Upload",
     "AssetAdmin.EDIT": "Edit",
+    "AssetAdmin.EMPTY": "No files",
+    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
+    "AssetAdmin.EditTitle": "Media from the web",
     "AssetAdmin.FILENAME": "Filename",
     "AssetAdmin.FILES": "Files",
     "AssetAdmin.FILE_MISSING": "File cannot be found",
@@ -48,7 +54,10 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.JOINLAST": "and",
     "AssetAdmin.LASTEDIT": "Last changed",
     "AssetAdmin.LOADMORE": "Load more",
+    "AssetAdmin.NEXT": "Next",
     "AssetAdmin.NOITEMSFOUND": "No items found",
+    "AssetAdmin.OR": "or",
+    "AssetAdmin.PREVIOUS": "Previous",
     "AssetAdmin.PROMPTFOLDERNAME": "Please enter a folder name (or blank to cancel)",
     "AssetAdmin.REPlACE_FILE_SUCCESS": "Upload successful, the file will be replaced when you Save.",
     "AssetAdmin.SAVE": "Save",
@@ -65,15 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SIZE": "Size",
     "AssetAdmin.TITLE": "Title",
     "AssetAdmin.TYPE": "File type",
-    "AssetAdmin.URL": "URL",
-    "AssetAdmin.ADD_FILES": "Add from files",
-    "AssetAdmin.BROWSE": "Browse",
-    "AssetAdmin.EMPTY": "No files",
-    "AssetAdmin.OR": "or",
-    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
-    "AssetAdmin.CreateTitle": "Insert new media from the web",
-    "AssetAdmin.EditTitle": "Media from the web",
-    "AssetAdmin.NEXT": "Next",
-    "AssetAdmin.PREVIOUS": "Previous"
+    "AssetAdmin.URL": "URL"
 });
 }

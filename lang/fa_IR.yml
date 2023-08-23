@@ -1,24 +1,18 @@
 fa_IR:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: فایل‌ها
     BACKLINKCOUNT: 'استفاده شده در:'
-    PAGES: صفحه(ها)
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
     HEIGHT: ارتفاع
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
+    MENUTITLE: فایل‌ها
+    PAGES: صفحه(ها)
     SIZE: 'حجم فایل'
     TYPE: 'نوع فایل'
     URL: 'نشانی اینترنتی'
     WIDTH: پهنا
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: ابعاد
-    EDIT: ویرایش
-    EDITINFO: 'ویرایش این فایل'
-    FIELDNOTSET: 'اطلاعات فایل پیدا نشد'
-    REMOVE: حذف
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -26,3 +20,9 @@ fa_IR:
     FOLDERNAME: 'نام پوشه'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: ابعاد
+    EDIT: ویرایش
+    EDITINFO: 'ویرایش این فایل'
+    FIELDNOTSET: 'اطلاعات فایل پیدا نشد'
+    REMOVE: حذف

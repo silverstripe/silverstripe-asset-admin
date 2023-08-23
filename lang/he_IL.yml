@@ -1,16 +1,16 @@
 he_IL:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: קבצים
     BACKLINKCOUNT: 'נעשה שימוש בתאריך:'
-    PAGES: עמוד/ים
-    SIZE: גודל
-    TYPE: סוג
-    URL: 'כתובת הדף'
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
+    MENUTITLE: קבצים
+    PAGES: עמוד/ים
+    SIZE: גודל
+    TYPE: סוג
+    URL: 'כתובת הדף'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save

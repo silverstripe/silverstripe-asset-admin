@@ -71,8 +71,8 @@ nl:
     ONLY_GROUPS: 'Alleen deze groepen (selecteer)'
     ROOTNAME: '(Bovenste niveau)'
     SAVE: Opslaan
-    VIEWERGROUPS: 'Groepen met bekijkrechten'
     SAVED: Opgeslagen
+    VIEWERGROUPS: 'Groepen met bekijkrechten'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download bestand'
     INSERT_LINK: 'Link naar bestand'
@@ -81,11 +81,11 @@ nl:
     LINKOPTIONS: Linkinstellingen
     LINKTEXT: 'Link tekst'
     OTHER_ACTIONS: 'Andere acties'
+    PUBLISH: Publiceer
+    PUBLISHED: Gepubliceerd
     REPLACE_FILE: 'Vervang bestand'
     UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Dit bestandstype kan alleen als link ingevoegd worden. Na het invoegen kan het bewerkt worden.</p>'
     USAGE: 'In gebruik op'
-    PUBLISH: Publiceer
-    PUBLISHED: Gepubliceerd
   SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
     PUBLISHED: Gepubliceerd
     SAVED: Opgeslagen
@@ -93,6 +93,9 @@ nl:
     CREATE: Aanmaken
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: 'Naam van map'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Kies een map'
+    MOVE: Verplaats
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Media toevoegen'
     Cancel: Annuleren
@@ -113,6 +116,3 @@ nl:
     OWNER_WARNING:
       one: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
       other: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
-  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
-    CHOOSEFOLDER: 'Kies een map'
-    MOVE: Verplaats

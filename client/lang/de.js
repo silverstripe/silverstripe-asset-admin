@@ -6,9 +6,11 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('de', {
+    "AssetAdmin.ADD_FILES": "Aus Dateien hinzufügen",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Verzeichnis hinzufügen",
     "AssetAdmin.BACK": "Zurück",
     "AssetAdmin.BACK_DESCRIPTION": "Eine Ebene nach oben",
+    "AssetAdmin.BROWSE": "Durchsuchen",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Sind Sie sicher, dass Sie diese Dateien %s möchten?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Löschen",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Sind Sie sicher, dass Sie diese Datei löschen möchten?",
@@ -21,6 +23,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.CANCEL": "Abbrechen",
     "AssetAdmin.CONFIRMDELETE": "Sind Sie sicher, dass Sie diesen Datensatz löschen möchten?",
     "AssetAdmin.CREATED": "Zuerst hochgeladen",
+    "AssetAdmin.CreateTitle": "Fügen Sie Medien aus dem Web ein",
     "AssetAdmin.DELETE": "Löschen",
     "AssetAdmin.DIM": "Abmessungen",
     "AssetAdmin.DROPZONE_CANCEL_UPLOAD": "Upload abbrechen",
@@ -37,6 +40,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "Datei hochgeladen",
     "AssetAdmin.DROPZONE_UPLOAD": "Hochladen",
     "AssetAdmin.EDIT": "Ändern",
+    "AssetAdmin.EMPTY": "Keine Dateien",
+    "AssetAdmin.ERROR_OEMBED_REMOTE": "Einbetten ist nur mit Remote-Dateien möglich.",
+    "AssetAdmin.EditTitle": "Medien aus dem Web",
     "AssetAdmin.FILENAME": "Dateiname",
     "AssetAdmin.FILES": "Dateien",
     "AssetAdmin.FILE_MISSING": "Datei kann nicht gefunden werden",
@@ -48,7 +54,10 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.JOINLAST": "und",
     "AssetAdmin.LASTEDIT": "Letzte Änderung",
     "AssetAdmin.LOADMORE": "Lade mehr",
+    "AssetAdmin.NEXT": "Nächste",
     "AssetAdmin.NOITEMSFOUND": "Keine Items gefunden",
+    "AssetAdmin.OR": "oder",
+    "AssetAdmin.PREVIOUS": "Vorherige",
     "AssetAdmin.PROMPTFOLDERNAME": "Bitte geben Sie einen Ordnernamen ein (oder leer zum Abbrechen)",
     "AssetAdmin.REPlACE_FILE_SUCCESS": "Hochladen erfolgreich, die Datei wird beim Speichern ersetzt.",
     "AssetAdmin.SAVE": "Speichern",
@@ -65,15 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SIZE": "Größe",
     "AssetAdmin.TITLE": "Titel",
     "AssetAdmin.TYPE": "Dateityp",
-    "AssetAdmin.URL": "URL",
-    "AssetAdmin.ADD_FILES": "Aus Dateien hinzufügen",
-    "AssetAdmin.BROWSE": "Durchsuchen",
-    "AssetAdmin.EMPTY": "Keine Dateien",
-    "AssetAdmin.OR": "oder",
-    "AssetAdmin.ERROR_OEMBED_REMOTE": "Einbetten ist nur mit Remote-Dateien möglich.",
-    "AssetAdmin.CreateTitle": "Fügen Sie Medien aus dem Web ein",
-    "AssetAdmin.EditTitle": "Medien aus dem Web",
-    "AssetAdmin.NEXT": "Nächste",
-    "AssetAdmin.PREVIOUS": "Vorherige"
+    "AssetAdmin.URL": "URL"
 });
 }

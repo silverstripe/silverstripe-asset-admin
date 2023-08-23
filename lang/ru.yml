@@ -1,24 +1,18 @@
 ru:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Файлы
     BACKLINKCOUNT: 'Используется на:'
-    PAGES: страниц(а)
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
     HEIGHT: Высота
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
+    MENUTITLE: Файлы
+    PAGES: страниц(а)
     SIZE: Размер
     TYPE: Тип
     URL: URL
     WIDTH: Ширина
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Размеры
-    EDIT: Редактировать
-    EDITINFO: 'Редактировать этот файл'
-    FIELDNOTSET: 'Информация о файле не найдена'
-    REMOVE: Удалить
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -26,3 +20,9 @@ ru:
     FOLDERNAME: 'Имя директории'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Размеры
+    EDIT: Редактировать
+    EDITINFO: 'Редактировать этот файл'
+    FIELDNOTSET: 'Информация о файле не найдена'
+    REMOVE: Удалить

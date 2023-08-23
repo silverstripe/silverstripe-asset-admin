@@ -1,22 +1,16 @@
 sr_RS@latin:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
-    MENUTITLE: Datoteke
     BACKLINKCOUNT: 'Koristi se na:'
-    PAGES: stranici(a)
-    SIZE: Veličina
-    TYPE: Tip
-    URL: URL
     CREATED: 'First uploaded'
     DELETE_BUTTON: Delete
     Filetype: 'File type'
     ImageSpecs: Dimensions
     LASTEDIT: 'Last changed'
-  SilverStripe\AssetAdmin\Forms\UploadField:
-    Dimensions: Dimenzije
-    EDIT: Izmeni
-    EDITINFO: 'Izmeni ovu datoteku'
-    FIELDNOTSET: 'Informacije o datoteci nisu pronađene'
-    REMOVE: Ukloni
+    MENUTITLE: Datoteke
+    PAGES: stranici(a)
+    SIZE: Veličina
+    TYPE: Tip
+    URL: URL
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     FILENAME: Filename
     SAVE: Save
@@ -24,3 +18,9 @@ sr_RS@latin:
     FOLDERNAME: 'Ime fascikle'
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     Cancel: Cancel
+  SilverStripe\AssetAdmin\Forms\UploadField:
+    Dimensions: Dimenzije
+    EDIT: Izmeni
+    EDITINFO: 'Izmeni ovu datoteku'
+    FIELDNOTSET: 'Informacije o datoteci nisu pronađene'
+    REMOVE: Ukloni
