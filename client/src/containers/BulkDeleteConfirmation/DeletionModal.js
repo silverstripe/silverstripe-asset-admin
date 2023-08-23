@@ -19,7 +19,7 @@ const DeletionModal = ({ isOpen, body, onCancel, actions, archiveFiles }) => {
       <ModalFooter>
         {actions.map(({ label, handler, color }) => (
           <Button key={label} color={color} onClick={handler}>{label}</Button>
-          ))}
+        ))}
       </ModalFooter>
     </Modal>
   );

@@ -1,5 +1,5 @@
 import i18n from 'i18n';
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { descendantFileTotalsShape } from './helpers';
 
@@ -75,11 +75,11 @@ const BulkDeleteMessage = ({
     archiveFiles
   );
   return (
-    <Fragment>
+    <>
       <p>{message}</p>
       {(folderDescendantFileTotals.totalItems > 0 || fileTotalItems > 0) &&
       <p>{i18n._t(transKey, transDefault)}</p>}
-    </Fragment>
+    </>
   );
 };
 
