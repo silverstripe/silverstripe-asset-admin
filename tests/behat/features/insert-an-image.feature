@@ -112,7 +112,7 @@ Feature: Insert an image into a page
     Then I should see the "Form_fileInsertForm" form
     When I fill in "Alternative text (alt)" with "My alt updated & saved"
     When I fill in "Title text (tooltip)" with "My title text updated & saved"
-      And I press the "Insert" button
+      And I press the "Insert file" button
     Then the "Content" HTML field should contain "file1.jpg"
       And the "Content" HTML field should contain "My alt updated &amp; saved"
       And I press the "Save" button
