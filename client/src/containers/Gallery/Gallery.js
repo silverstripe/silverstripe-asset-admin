@@ -2,7 +2,6 @@
 import $ from 'jquery';
 import i18n from 'i18n';
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import AssetDropzone from 'components/AssetDropzone/AssetDropzone';
@@ -109,7 +108,7 @@ class Gallery extends Component {
    * @returns {jQuery}
    */
   getSortElement() {
-    return $(ReactDOM.findDOMNode(this)).find('.gallery__sort .dropdown');
+    return $(this.gallery).find('.gallery__sort .dropdown');
   }
 
   /**

@@ -1,6 +1,5 @@
 /* global FileReader, Image, document, FormData */
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import i18n from 'i18n';
 import DropzoneLib from 'dropzone';
 import $ from 'jquery';
@@ -33,7 +32,7 @@ class AssetDropzone extends Component {
 
   componentDidMount() {
     this.dropzone = new DropzoneLib(
-      ReactDOM.findDOMNode(this),
+      this.dropzoneRef,
       Object.assign({},
         this.getDefaultOptions(),
         this.props.options
@@ -92,7 +91,7 @@ class AssetDropzone extends Component {
     }
 
     if (uploadSelector) {
-      const found = $(ReactDOM.findDOMNode(this)).find(uploadSelector);
+      const found = $(this.dropzoneRef).find(uploadSelector);
       if (found && found.length) {
         clickable = found.toArray();
       }
@@ -268,7 +267,7 @@ class AssetDropzone extends Component {
    * @param {Event} event
    */
   handleDragLeave(event) {
-    const componentNode = ReactDOM.findDOMNode(this);
+    const componentNode = this.dropzoneRef;
 
     if (!this.props.canUpload) {
       return;
@@ -552,7 +551,7 @@ class AssetDropzone extends Component {
     }
 
     return (
-      <div className={className.join(' ')}>
+      <div className={className.join(' ')} ref={node => { this.dropzoneRef = node; }}>
         {this.props.uploadButton &&
         <button {...buttonProps}>
           {i18n._t('AssetAdmin.DROPZONE_UPLOAD')}
