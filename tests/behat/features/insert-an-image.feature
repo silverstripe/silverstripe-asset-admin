@@ -154,3 +154,27 @@ Feature: Insert an image into a page
     Then I should see the "Form_fileInsertForm" form
       And the "Description" field should contain "My file"
       And I should see "Link to file" in the "button[name=action_insert]" element
+
+  Scenario: I can wrap an image in a link to a file
+    # Add an actual image to the WYSIWYG
+    Given I press the "Insert from Files" HTML field button
+      And I select the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
+      And I press the "Insert file" button
+      # Required to avoid "unsaved changes" browser dialog
+      And I press the "Save" button
+    # Validate that everything is ready for the test
+    Then I should not see a ".tox-pop__dialog .tox-toolbar" element
+      And I should not see the "Form_fileInsertForm" form
+      And the "Content" HTML field should contain "file1.jpg"
+    When I select the image "file1.jpg" in the "Content" HTML field
+      And I press the "Insert link" HTML field button
+      And I click "Link to a file" in the ".tox-collection__group" element
+      And I select the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
+    Then I should see the "Form_fileInsertForm" form
+      And I should not see "Link text"
+      And I press the "Link to file" button
+    Then the "Content" HTML field should contain "<a href="[file_link,id=2]">[image src="/assets/folder1/3d0ef6ec37/file1.jpg" id="2" width="50" height="50" class="leftAlone ss-htmleditorfield-file image"]</a>"
+      # Required to avoid "unsaved changed" browser dialog
+      And I press the "Save" button
