@@ -9,6 +9,7 @@ use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Config\Configurable;
 use SilverStripe\Core\Extensible;
 use SilverStripe\Core\Injector\Injectable;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -152,13 +153,13 @@ abstract class AssetFormFactory implements FormFactory
     {
         if ($record && $record->isInDB() && $record->canEdit()) {
             /** @var FormAction $action */
-            $action = FormAction::create('save', _t(__CLASS__.'.SAVE', 'Save'))
+            $action = FormAction::create('save', _t(__CLASS__ . '.SAVE', 'Save'))
                 ->setIcon('save')
                 ->setSchemaState([
                     'data' => [
-                        'pristineTitle' => _t(__CLASS__.'.SAVED', 'Saved'),
+                        'pristineTitle' => _t(__CLASS__ . '.SAVED', 'Saved'),
                         'pristineIcon' => 'tick',
-                        'dirtyTitle' => _t(__CLASS__.'.SAVE', 'Save'),
+                        'dirtyTitle' => _t(__CLASS__ . '.SAVE', 'Save'),
                         'dirtyIcon' => 'save',
                         'pristineClass' => 'btn-outline-primary',
                         'dirtyClass' => '',
@@ -303,17 +304,28 @@ abstract class AssetFormFactory implements FormFactory
         /** @var Tab $tab */
         $tab = Tab::create(
             'Details',
-            TextField::create('Name', _t(__CLASS__.'.FILENAME', 'Filename')),
+            TextField::create('Name', _t(__CLASS__ . '.FILENAME', 'Filename')),
             $location = TreeDropdownField::create(
                 'ParentID',
-                _t(__CLASS__.'.FOLDERLOCATION', 'Location'),
+                _t(__CLASS__ . '.FOLDERLOCATION', 'Location'),
                 Folder::class
             )
                 ->setShowSelectedPath(true)
         );
 
+
+        if (!$record instanceof Folder) {
+            $tab->push(
+                CheckboxField::create(
+                    'ShowInSearch',
+                    _t(__CLASS__ . '.SHOWINSEARRCH', 'Show in search?')
+                )
+            );
+        }
+
+
         $location
-            ->setEmptyString(_t(__CLASS__.'.ROOTNAME', '(Top level)'))
+            ->setEmptyString(_t(__CLASS__ . '.ROOTNAME', '(Top level)'))
             ->setShowSearch(true);
         return $tab;
     }
@@ -358,11 +370,11 @@ abstract class AssetFormFactory implements FormFactory
     {
         // Get permissions
         $viewersOptionsField = [
-            InheritedPermissions::INHERIT => _t(__CLASS__.'.INHERIT', 'Inherit from parent folder'),
-            InheritedPermissions::ANYONE => _t(__CLASS__.'.ANYONE', 'Anyone'),
-            InheritedPermissions::LOGGED_IN_USERS => _t(__CLASS__.'.LOGGED_IN', 'Logged-in users'),
-            InheritedPermissions::ONLY_THESE_USERS => _t(__CLASS__.'.ONLY_GROUPS', 'Only these groups (choose from list)'),
-            InheritedPermissions::ONLY_THESE_MEMBERS => _t(__CLASS__.'.ONLY_MEMBERS', 'Only these users (choose from list)'),
+            InheritedPermissions::INHERIT => _t(__CLASS__ . '.INHERIT', 'Inherit from parent folder'),
+            InheritedPermissions::ANYONE => _t(__CLASS__ . '.ANYONE', 'Anyone'),
+            InheritedPermissions::LOGGED_IN_USERS => _t(__CLASS__ . '.LOGGED_IN', 'Logged-in users'),
+            InheritedPermissions::ONLY_THESE_USERS => _t(__CLASS__ . '.ONLY_GROUPS', 'Only these groups (choose from list)'),
+            InheritedPermissions::ONLY_THESE_MEMBERS => _t(__CLASS__ . '.ONLY_MEMBERS', 'Only these users (choose from list)'),
         ];
 
         // No "Anyone" editors option
@@ -370,37 +382,39 @@ abstract class AssetFormFactory implements FormFactory
         unset($editorsOptionsField[InheritedPermissions::ANYONE]);
         $membersMap = Member::get()->map('ID', 'Name');
 
-        return Tab::create(
+        $tab = Tab::create(
             'Permissions',
             OptionsetField::create(
                 'CanViewType',
-                _t(__CLASS__.'.ACCESSHEADER', 'Who can view this file?')
+                _t(__CLASS__ . '.ACCESSHEADER', 'Who can view this file?')
             )
                 ->setSource($viewersOptionsField),
             TreeMultiselectField::create(
                 'ViewerGroups',
-                _t(__CLASS__.'.VIEWERGROUPS', 'Viewer Groups')
+                _t(__CLASS__ . '.VIEWERGROUPS', 'Viewer Groups')
             ),
             ListboxField::create(
                 'ViewerMembers',
-                _t(__CLASS__.'.VIEWERMEMBERS', 'Viewer Users'),
+                _t(__CLASS__ . '.VIEWERMEMBERS', 'Viewer Users'),
                 $membersMap
             ),
             OptionsetField::create(
                 "CanEditType",
-                _t(__CLASS__.'.EDITHEADER', 'Who can edit this file?')
+                _t(__CLASS__ . '.EDITHEADER', 'Who can edit this file?')
             )
                 ->setSource($editorsOptionsField),
             TreeMultiselectField::create(
                 'EditorGroups',
-                _t(__CLASS__.'.EDITORGROUPS', 'Editor Groups')
+                _t(__CLASS__ . '.EDITORGROUPS', 'Editor Groups')
             ),
             ListboxField::create(
                 'EditorMembers',
-                _t(__CLASS__.'.EDITORMEMBERS', 'Editor Users'),
+                _t(__CLASS__ . '.EDITORMEMBERS', 'Editor Users'),
                 $membersMap
             )
         );
+
+        return $tab;
     }
 
     public function getRequiredContext()
