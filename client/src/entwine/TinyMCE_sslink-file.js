@@ -68,11 +68,8 @@ jQuery.entwine('ss', ($) => {
 
       const handleInsert = (...args) => this.handleInsert(...args);
       const attrs = this.getOriginalAttributes();
-      const selection = tinymce.activeEditor.selection;
       const folderId = this.getFolderId();
-      const selectionContent = selection.getContent() || '';
-      const tagName = selection.getNode().tagName;
-      const requireLinkText = tagName !== 'A' && selectionContent.trim() === '';
+      const requireLinkText = this.getRequireLinkText();
 
       // create/update the react component
       ReactDOM.render(
