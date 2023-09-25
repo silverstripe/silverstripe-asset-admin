@@ -13,6 +13,7 @@ use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\RequiredFields;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
@@ -498,5 +499,24 @@ class FileFormFactory extends AssetFormFactory
     public function getRequiredContext()
     {
         return parent::getRequiredContext() + ['RequireLinkText'];
+    }
+
+    /**
+     * Get the validator for the form to be built
+     *
+     * @param RequestHandler $controller
+     * @param $formName
+     * @param $context
+     * @return RequiredFields
+     */
+    protected function getValidator(RequestHandler $controller = null, $formName, $context = [])
+    {
+        $validator = parent::getValidator($controller, $formName, $context);
+
+        if (isset($context['RequireLinkText']) && $context['RequireLinkText']) {
+            $validator->addRequiredField('Text');
+        }
+
+        return $validator;
     }
 }
