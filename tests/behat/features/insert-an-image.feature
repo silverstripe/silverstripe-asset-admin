@@ -155,6 +155,20 @@ Feature: Insert an image into a page
       And the "Description" field should contain "My file"
       And I should see "Link to file" in the "button[name=action_insert]" element
 
+  Scenario: I can link to a file with link text
+    Given I fill in the "Content" HTML field with "<p><img src='file1.jpg'></p>"
+    When I press the "Insert link" HTML field button
+      And I click "Link to a file" in the ".mce-menu" element
+      And I select the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
+    Then I should see the "Form_fileInsertForm" form
+      And I press the "Link to file" button
+    Then I should see "Link text is required"
+      And I fill in "Link text" with "My file"
+      And I press the "Link to file" button
+    Then the "Content" HTML field should contain "<a href="[file_link,id=2]">My file</a>"
+      And I press the "Save" button
+
   Scenario: I can wrap an image in a link to a file
     # Add an actual image to the WYSIWYG
     Given I press the "Insert from Files" HTML field button
