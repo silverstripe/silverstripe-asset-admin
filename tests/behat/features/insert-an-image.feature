@@ -158,7 +158,7 @@ Feature: Insert an image into a page
   Scenario: I can link to a file with link text
     Given I fill in the "Content" HTML field with "<p><img src='file1.jpg'></p>"
     When I press the "Insert link" HTML field button
-      And I click "Link to a file" in the ".mce-menu" element
+      And I click "Link to a file" in the ".tox-collection__group" element
       And I select the file named "folder1" in the gallery
       And I click on the file named "file1" in the gallery
     Then I should see the "Form_fileInsertForm" form
