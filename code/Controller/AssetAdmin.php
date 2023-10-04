@@ -302,7 +302,8 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
         $data['Parent'] = $parentRecord;
 
-        $tmpFile = $request->postVar('Upload');
+        /** @var UploadedFile $tmpFile */
+        $tmpFile = $request->files->get('Upload');
         if (!$upload->validate($tmpFile)) {
             $errors = $upload->getErrors();
             $message = array_shift($errors);
@@ -311,7 +312,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // TODO Allow batch uploads
-        $fileClass = File::get_class_for_file_extension(File::get_file_extension($tmpFile['name']));
+        $fileClass = File::get_class_for_file_extension(File::get_file_extension($tmpFile->getBaseName()));
         /** @var File $file */
         $file = Injector::inst()->create($fileClass);
 
