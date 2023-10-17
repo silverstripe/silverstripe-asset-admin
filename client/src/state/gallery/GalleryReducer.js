@@ -12,8 +12,6 @@ const initialState = {
   concatenateSelect: false,
   loading: false,
   /**
-   * @todo Use lowercase identifiers once we can map them in the silverstripe/graphql module
-   *
    * @type {array} sorters
    */
   sorters: [

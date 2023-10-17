@@ -283,8 +283,6 @@ class AssetAdmin extends Component {
           this.handleOpenFile(response.record.id);
         }
 
-        // TODO Update GraphQL store with new model,
-        // see https://github.com/silverstripe/silverstripe-graphql/issues/14
         return this.props.actions.files.readFiles()
           .then(() => {
             // open the containing folder, since folder edit mode isn't desired
@@ -477,9 +475,6 @@ class AssetAdmin extends Component {
    */
   handleUnpublish(fileIds) {
     return this.doUnpublish(fileIds).then((response) => {
-      // TODO Update GraphQL store with new model or update apollo and use new API
-      // see https://github.com/silverstripe/silverstripe-graphql/issues/14
-      // see https://dev-blog.apollodata.com/apollo-clients-new-imperative-store-api-6cb69318a1e3
       const { fileId } = this.props;
       this.props.actions.files.readFiles()
         .then(() => {
@@ -536,8 +531,7 @@ class AssetAdmin extends Component {
   }
 
   handleUpload() {
-    // TODO Update GraphQL store with new model,
-    // see https://github.com/silverstripe/silverstripe-graphql/issues/14
+    // noop
   }
 
   handleUploadQueue() {
@@ -558,7 +552,6 @@ class AssetAdmin extends Component {
   }
 
   handleMoveFilesSuccess(folderId, fileIds) {
-    // TODO Refactor "queued files" into separate visual area and remove coupling here
     const files = this.props.queuedFiles.items.filter((file) => (
       fileIds.includes(file.id)
     ));
@@ -570,8 +563,6 @@ class AssetAdmin extends Component {
     });
 
     this.props.actions.gallery.deselectFiles();
-    // TODO Update GraphQL store with new model,
-    // see https://github.com/silverstripe/silverstripe-graphql/issues/14
     this.props.actions.files.readFiles();
   }
 
@@ -799,7 +790,6 @@ function mapStateToProps(state, ownProps) {
   const { formSchema } = state.assetAdmin.modal;
   return {
     securityId: state.config.SecurityID,
-    // TODO Refactor "queued files" into separate visual area and remove coupling here
     queuedFiles: state.assetAdmin.queuedFiles,
     showSearch: state.assetAdmin.displaySearch.isOpen,
     type: (formSchema && formSchema.type) || ownProps.type,
@@ -812,7 +802,6 @@ function mapDispatchToProps(dispatch) {
       gallery: bindActionCreators(galleryActions, dispatch),
       toasts: bindActionCreators(toastsActions, dispatch),
       displaySearch: bindActionCreators(displaySearchActions, dispatch),
-      // TODO Refactor "queued files" into separate visual area and remove coupling here
       queuedFiles: bindActionCreators(queuedFilesActions, dispatch),
       confirmDeletion: bindActionCreators(confirmDeletionActions, dispatch)
     },

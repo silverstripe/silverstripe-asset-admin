@@ -25,7 +25,6 @@ class HistoryItem extends Component {
     }
 
     return (
-      // @todo wrap the contents in an `<a>` tag
       // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
       <li
         className="list-group-item history-item"
