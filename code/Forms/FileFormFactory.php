@@ -216,7 +216,6 @@ class FileFormFactory extends AssetFormFactory
                     $fields->unshift(LiteralField::create('UnembedableMessage', $unembedableMsg));
                 }
             }
-            // @todo move specs to a component/class, so it can update specs when a File is replaced
             $fields->insertAfter(
                 'TitleHeader',
                 LiteralField::create('FileSpecs', $this->getSpecsMarkup($record))

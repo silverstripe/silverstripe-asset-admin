@@ -271,10 +271,6 @@ jQuery.entwine('ss', ($) => {
     _handleInsert(data, file) {
       let result = false;
       this.setData(Object.assign({}, data, file));
-
-      // Sometimes AssetAdmin.js handleSubmitEditor() can't find the file
-      // @todo Ensure that we always return a file for any valid ID
-
       // in case of any errors, better to catch them than let them go silent
       try {
         let category = null;

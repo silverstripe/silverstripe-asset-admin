@@ -89,7 +89,6 @@ class FixtureContext extends BaseFixtureContext
      */
     public function iShouldSeeTheFileStatusFlag()
     {
-        // TODO This should wait for any XHRs and React rendering to finish
         $this->getMainContext()->getSession()->wait(
             1000,
             "window.jQuery && window.jQuery('.editor__status-flag').length > 0"
@@ -106,7 +105,6 @@ class FixtureContext extends BaseFixtureContext
      */
     public function iShouldNotSeeTheFileStatusFlag()
     {
-        // TODO Flakey assertion, since the status flag might not be loaded via XHR yet
         $page = $this->getMainContext()->getSession()->getPage();
         $flag = $page->find('css', '.editor__status-flag');
         Assert::assertNull($flag, "File editor status flag should not be present");

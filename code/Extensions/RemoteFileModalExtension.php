@@ -104,7 +104,6 @@ class RemoteFileModalExtension extends Extension
         } catch (NetworkException | RequestException | InvalidRemoteUrlException $exception) {
             $errors = ValidationResult::create()
                 ->addError($exception->getMessage());
-            // @todo - Don't create dummy form (pass $form = null)
             $form = Form::create(null, 'Form', FieldList::create(), FieldList::create());
             $code = $exception->getCode();
 
@@ -120,8 +119,6 @@ class RemoteFileModalExtension extends Extension
 
     /**
      * Generate schema for the given form based on the X-Formschema-Request header value
-     *
-     * @todo de-dupe this logic with LeftAndMain::getSchemaResponse()
      *
      * @param string $schemaID ID for this schema. Required.
      * @param Form $form Required for 'state' or 'schema' response

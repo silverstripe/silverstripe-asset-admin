@@ -40,7 +40,6 @@
 
     // Unable to use classes within the popover, so we use elements to style
     ul {
-      // TODO remove important by removing nesting of lists
       padding-left: 0 !important;
       list-style-type: none;
       margin-left: -#{$popover-body-padding-x} + 1px; // minus border
