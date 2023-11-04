@@ -127,19 +127,16 @@ class Gallery extends Component {
     }
 
     if (filters.lastEditedFrom && filters.lastEditedTo) {
-      // TODO Date localisation
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDBETWEEN',
         'last edited between \'{lastEditedFrom}\' and \'{lastEditedTo}\''
       ));
     } else if (filters.lastEditedFrom) {
-      // TODO Date localisation
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDFROM',
         'last edited after \'{lastEditedFrom}\''
       ));
     } else if (filters.lastEditedTo) {
-      // TODO Date localisation
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGEEDITEDTO',
         'last edited before \'{lastEditedTo}\''
@@ -147,7 +144,6 @@ class Gallery extends Component {
     }
 
     if (filters.appCategory) {
-      // TODO Category name localisation
       messages.push(i18n._t(
         'AssetAdmin.SEARCHRESULTSMESSAGECATEGORY',
         'categorised as \'{appCategory}\''
@@ -402,8 +398,6 @@ class Gallery extends Component {
 
     this.props.actions.queuedFiles.succeedUpload(fileXhr._queuedId, json[0]);
 
-    // TODO Update GraphQL store with new model,
-    // see https://github.com/silverstripe/silverstripe-graphql/issues/14
     if (this.props.onSuccessfulUpload) {
       this.props.onSuccessfulUpload(json);
     }

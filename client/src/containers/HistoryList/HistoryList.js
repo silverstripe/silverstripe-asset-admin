@@ -11,8 +11,6 @@ const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 /**
  * Create a new endpoint
  *
- * @todo duplication with assetadmin.
- *
  * @param {Object} endpointConfig
  * @param {Boolean} includeToken
  * @returns {Function}
@@ -47,7 +45,7 @@ class HistoryList extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    // TODO race conditions happening, this should have history state shifted to redux
+    // Avoids race conditions from happening
     this.refreshHistoryIfNeeded(prevProps);
   }
 
@@ -75,7 +73,6 @@ class HistoryList extends Component {
        * This needs a delay/throttle, so this api request tries to be made last in the stack.
        * We also use this to stop an API call happening if the component is going to
        * unmount soon.
-       * TODO: This could potentially be solved by using apollo-client's caching and graphql.
        */
       this.timer = setTimeout(() => {
         this.api({

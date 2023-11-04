@@ -131,7 +131,6 @@ class TableView extends Component {
       columnMetadata: this.getColumnConfig(),
       useGriddleStyles: false,
       onRowClick: this.handleRowClick,
-      // TODO will need to request upstream to stop their internal sorting to show folders first
       results: this.props.files,
       customNoDataComponent: this.renderNoItemsNotice,
     };

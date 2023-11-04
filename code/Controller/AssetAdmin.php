@@ -310,7 +310,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return null;
         }
 
-        // TODO Allow batch uploads
         $fileClass = File::get_class_for_file_extension(File::get_file_extension($tmpFile['name']));
         /** @var File $file */
         $file = Injector::inst()->create($fileClass);
@@ -570,8 +569,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-     * @todo Implement on client
-     *
      * @param bool $unlinked
      * @return ArrayList
      */
@@ -899,8 +896,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Get schema for history form
-        // @todo Eventually all form scaffolding will be based on context rather than record ID
-        // See https://github.com/silverstripe/silverstripe-framework/issues/6362
         $itemID = $request->param('ItemID');
         $version = $request->param('OtherItemID');
         $form = $this->getFileHistoryForm([

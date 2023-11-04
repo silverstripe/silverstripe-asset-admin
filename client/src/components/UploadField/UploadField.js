@@ -226,7 +226,6 @@ class UploadField extends Component {
       return;
     }
 
-    // @todo - Should successful uploads be moved to another state?
     this.props.actions.uploadField.succeedUpload(this.props.id, file._queuedId, json[0]);
   }
 
