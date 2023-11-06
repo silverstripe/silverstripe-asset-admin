@@ -10,6 +10,7 @@ it:
     TITLE: 'Elimina cartelle'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Aggiungi a campagna'
+    ARCHIVE_BUTTON: Archivio
     Alignment: Allineamento
     AlignmentCenter: Centra
     AlignmentLeft: 'A capo a sinistra'

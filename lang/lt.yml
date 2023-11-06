@@ -2,6 +2,7 @@ lt:
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Ribotas priėjimas'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ARCHIVE_BUTTON: Archyvas
     AppCategoryArchive: Archyvas
     BACKLINKCOUNT: 'Naudojama:'
     CREATED: 'First uploaded'

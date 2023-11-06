@@ -3,6 +3,7 @@ da:
     TITLE: 'Slet mapper'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Tilføj til kampagne'
+    ARCHIVE_BUTTON: Arkiv
     Alignment: Justering
     AlignmentCenter: Centreret
     AlignmentLeft: 'Venstre med ombrydning'

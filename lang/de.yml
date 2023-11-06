@@ -10,6 +10,7 @@ de:
     TITLE: 'Ordner löschen'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Zu Kampagne hinzufügen'
+    ARCHIVE_BUTTON: Archiv
     Alignment: Ausrichtung
     AlignmentCenter: Mittig
     AlignmentLeft: 'Links umfließend'

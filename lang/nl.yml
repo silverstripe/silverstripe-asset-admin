@@ -10,6 +10,7 @@ nl:
     TITLE: 'Verwijder mappen'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Aan campagne toevoegen'
+    ARCHIVE_BUTTON: Archief
     Alignment: Uitlijning
     AlignmentCenter: Gecentreerd
     AlignmentLeft: Links

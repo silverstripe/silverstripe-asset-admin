@@ -3,6 +3,7 @@ fr:
     TITLE: 'Supprimer les dossiers'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Ajouter à une campagne'
+    ARCHIVE_BUTTON: Archiver
     Alignment: Alignement
     AlignmentCenter: Centré
     AlignmentLeft: 'A gauche du texte'

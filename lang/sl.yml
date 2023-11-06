@@ -10,6 +10,7 @@ sl:
     TITLE: 'Izbriši mape'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Dodaj v kampanjo'
+    ARCHIVE_BUTTON: Arhiviraj
     Alignment: Poravnava
     AlignmentCenter: 'Na sredino'
     AlignmentLeft: 'Levo s prelomom'
