@@ -36,7 +36,7 @@ const ACTION_TYPES = {
   UNPUBLISH: 'unpublish',
   INSERT: 'insert',
   ADMIN: 'admin',
-  SELECT: 'select'
+  SELECT: 'select',
 };
 
 class Gallery extends Component {
@@ -68,6 +68,7 @@ class Gallery extends Component {
     this.handleBeginSelection = this.handleBeginSelection.bind(this);
     this.handleGroupSelect = this.handleGroupSelect.bind(this);
     this.handleClearSelection = this.handleClearSelection.bind(this);
+    this.handleSelectAll = this.handleSelectAll.bind(this);
     this.toggleSelectConcat = this.toggleSelectConcat.bind(this);
     this.getSelectableFiles = this.getSelectableFiles.bind(this);
   }
@@ -540,6 +541,14 @@ class Gallery extends Component {
   }
 
   /**
+   * Selects all visible files
+   */
+  handleSelectAll() {
+    const ids = this.props.files.map(file => file.id);
+    this.handleGroupSelect(ids, new Event('na'));
+  }
+
+  /**
    * Pick if the selection started from inside the pagination. If it started from inside the
    * pagination, cancel it to prevent inteference with the normal pagination.
    * @param Event e
@@ -756,6 +765,8 @@ class Gallery extends Component {
           key={selected.length > 0}
           container={this.gallery}
           showCount={maxFilesSelect !== 1}
+          onClearSelection={this.handleClearSelection}
+          onSelectAll={this.handleSelectAll}
         />
       );
     }
