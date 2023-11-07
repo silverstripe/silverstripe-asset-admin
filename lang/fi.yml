@@ -1,25 +1,15 @@
 fi:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     BACKLINKCOUNT: 'Linkitetty:'
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
     HEIGHT: Korkeus
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
     MENUTITLE: Tiedostot
     PAGES: sivu(t)
     SIZE: Koko
     TYPE: Tyyppi
     URL: URL
     WIDTH: Leveys
-  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
-    FILENAME: Filename
-    SAVE: Save
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: 'Kansion nimi'
-  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
-    Cancel: Cancel
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Mitat
     EDIT: Muokkaa
