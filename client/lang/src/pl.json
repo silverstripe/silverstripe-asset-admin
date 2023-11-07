@@ -4,6 +4,9 @@
     "AssetAdmin.BACK": "Powrót",
     "AssetAdmin.BACK_DESCRIPTION": "Przejdź poziom wyżej",
     "AssetAdmin.BROWSE": "Przeglądaj",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Archiwum",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_FAIL_02": "%s foldery / pliki zostały pomyślnie zarchiwizowane, ale plików %s nie można było zarchiwizować.",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_SUCCESS_02": "%s foldery / pliki zostały pomyślnie zarchiwizowane.",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Czy na pewno chcesz %s tych plików?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Usuń",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Czy na pewno chcesz usunąć te pliki?",
@@ -43,7 +46,6 @@
     "AssetAdmin.FILTER_DATE_DESC": "najnowszy",
     "AssetAdmin.FILTER_TITLE_ASC": "tytuł a-z",
     "AssetAdmin.FILTER_TITLE_DESC": "tytuł z-a",
-    "AssetAdmin.JOIN": ",",
     "AssetAdmin.JOINLAST": "i",
     "AssetAdmin.LASTEDIT": "Ostatnia zmiana",
     "AssetAdmin.LOADMORE": "Wczytaj więcej",
@@ -66,6 +68,5 @@
     "AssetAdmin.SELECT": "Wybierz",
     "AssetAdmin.SIZE": "Rozmiar",
     "AssetAdmin.TITLE": "Tytuł",
-    "AssetAdmin.TYPE": "Typ pliku",
-    "AssetAdmin.URL": "URL"
+    "AssetAdmin.TYPE": "Typ pliku"
 }

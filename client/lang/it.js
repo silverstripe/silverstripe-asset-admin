@@ -11,6 +11,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.BACK": "Indietro",
     "AssetAdmin.BACK_DESCRIPTION": "Vai al livello superiore",
     "AssetAdmin.BROWSE": "Sfoglia",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Archivio",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_FAIL_02": "%s cartelle/file sono stati archiviati con successo ma non è stato possibile archiviare %s file.",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_SUCCESS_02": "%s cartelle/file sono state archiviate con successo.",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Sei sicuro di voler %s questi file?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Elimina",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Sei sicuro di voler eliminare questi file?",
@@ -41,7 +44,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_UPLOAD": "Carica",
     "AssetAdmin.EDIT": "Modifica",
     "AssetAdmin.EMPTY": "Nessun file",
-    "AssetAdmin.ERROR_OEMBED_REMOTE": "Embed is only compatible with remote files",
     "AssetAdmin.EditTitle": "Materiale dal web",
     "AssetAdmin.FILENAME": "Nome file",
     "AssetAdmin.FILES": "File",
@@ -50,7 +52,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.FILTER_DATE_DESC": "più nuovo",
     "AssetAdmin.FILTER_TITLE_ASC": "titolo a-z",
     "AssetAdmin.FILTER_TITLE_DESC": "titolo z-a",
-    "AssetAdmin.JOIN": ",",
     "AssetAdmin.JOINLAST": "e",
     "AssetAdmin.LASTEDIT": "Ultima modifica",
     "AssetAdmin.LOADMORE": "Carica ancora",
@@ -73,7 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SELECT": "Scegliere",
     "AssetAdmin.SIZE": "Dimensione",
     "AssetAdmin.TITLE": "Titolo",
-    "AssetAdmin.TYPE": "Tipo file",
-    "AssetAdmin.URL": "URL"
+    "AssetAdmin.TYPE": "Tipo file"
 });
 }

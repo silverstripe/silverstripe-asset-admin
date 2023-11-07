@@ -1,20 +1,10 @@
 th:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     BACKLINKCOUNT: 'ถูกใช้งานเมื่อ:'
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
     MENUTITLE: ไฟล์
     PAGES: หน้า
     SIZE: ขนาด
     TYPE: ชนิด
-  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
-    FILENAME: Filename
-    SAVE: Save
-  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
-    Cancel: Cancel
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: ขนาดสัดส่วน
     EDIT: แก้ไข

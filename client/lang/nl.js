@@ -11,6 +11,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.BACK": "Terug",
     "AssetAdmin.BACK_DESCRIPTION": "Niveau omhoog",
     "AssetAdmin.BROWSE": "Uploaden",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Archief",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_FAIL_02": "%s bestanden/mappen zijn gearchiveerd, maar%s bestanden zijn niet gelukt.",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_SUCCESS_02": "%s bestanden/mappen verwijderd.",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Weet u zeker dat u deze bestanden wil %s?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Verwijder",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Weet u zeker dat u deze bestanden wil verwijderen?",
@@ -38,7 +41,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.DROPZONE_REMOVE_FILE": "Verwijder bestand",
     "AssetAdmin.DROPZONE_RESPONSE_ERROR": "Probleem bij het opslaan",
     "AssetAdmin.DROPZONE_SUCCESS_UPLOAD": "Uploaden gelukt",
-    "AssetAdmin.DROPZONE_UPLOAD": "Upload",
     "AssetAdmin.EDIT": "Bewerk",
     "AssetAdmin.EMPTY": "Geen bestanden",
     "AssetAdmin.ERROR_OEMBED_REMOTE": "Embedden kan alleen met externe bestanden",
@@ -50,7 +52,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.FILTER_DATE_DESC": "nieuwste",
     "AssetAdmin.FILTER_TITLE_ASC": "naam a-z",
     "AssetAdmin.FILTER_TITLE_DESC": "naam z-a",
-    "AssetAdmin.JOIN": ",",
     "AssetAdmin.JOINLAST": "en",
     "AssetAdmin.LASTEDIT": "Laatste wijziging",
     "AssetAdmin.LOADMORE": "Meer inladen",
@@ -73,7 +74,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SELECT": "Selecteer",
     "AssetAdmin.SIZE": "Grootte",
     "AssetAdmin.TITLE": "Titel",
-    "AssetAdmin.TYPE": "Bestandstype",
-    "AssetAdmin.URL": "URL"
+    "AssetAdmin.TYPE": "Bestandstype"
 });
 }
