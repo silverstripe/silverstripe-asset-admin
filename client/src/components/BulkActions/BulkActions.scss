@@ -39,14 +39,26 @@ $bulk-actions-width: 300px;
 
   .bulk-actions-counter {
     vertical-align: middle;
-    min-width: 28px;
-    padding: 6px;
+    padding: 5px 12px 5px 8px;
     margin-right: 8px;
     line-height: $line-height-base;
     color: $white;
     text-align: center;
     background-color: $component-active-bg;
     border-radius: $btn-border-radius;
+    font-weight: bold;
+
+    &.btn-secondary:hover,
+    &.btn-secondary:focus,
+    &.btn-secondary:focus-visible {
+      background-color: $brand-secondary;
+      border-color: $brand-secondary;
+      color: $white;
+    }
+  }
+
+  .bulk-actions-select-all button {
+    color: $component-active-bg;
     font-weight: bold;
   }
 

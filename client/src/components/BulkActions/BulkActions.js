@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
 class BulkActions extends Component {
   constructor(props) {
     super(props);
-
     this.handleChangeValue = this.handleChangeValue.bind(this);
     this.renderChild = this.renderChild.bind(this);
   }
@@ -106,13 +105,30 @@ class BulkActions extends Component {
     }
 
     const { ActionMenu, showCount } = this.props;
-
-    const count = this.props.items.length;
+    const selectAll = i18n._t('AssetAdmin.BULK_ACTIONS_SELECT_ALL', 'Select all');
+    const selected = i18n.sprintf(
+      i18n._t('AssetAdmin.BULK_ACTIONS_SELECTED', '%s selected'),
+      this.props.items.length
+    );
+    const title = i18n._t('AssetAdmin.BULK_ACTIONS_CLEAR_SELECTION', 'Clear selection');
 
     return (
       <div className="bulk-actions fieldholder-small">
         {showCount &&
-          <div className="bulk-actions-counter">{count}</div>
+          <>
+            <Button
+              className="bulk-actions-counter font-icon-cross-mark"
+              onClick={this.props.onClearSelection}
+              title={title}
+            >
+              {selected}
+            </Button>
+            <div className="bulk-actions-select-all">
+              <Button onClick={this.props.onSelectAll}>
+                {selectAll}
+              </Button>
+            </div>
+          </>
         }
         {children.slice(0, 2)}
         {children.length > 2 && ActionMenu
@@ -144,6 +160,8 @@ BulkActions.propTypes = {
   })),
   ActionMenu: PropTypes.elementType,
   showCount: PropTypes.bool,
+  onClearSelection: PropTypes.func.isRequired,
+  onSelectAll: PropTypes.func.isRequired,
 };
 
 BulkActions.defaultProps = {

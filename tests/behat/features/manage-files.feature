@@ -69,7 +69,7 @@ Feature: Manage files
   Scenario: I can edit a folder
     When I check the folder named "folder1" in the gallery
     Then I should see an ".bulk-actions__action[value='edit']" element
-      And the ".bulk-actions-counter" element should contain "1"
+      And the ".bulk-actions-counter" element should contain "1 selected"
     When I press the "Edit" button
       And I wait for 1 second
     Then I should see the "Form_fileEditForm" form
@@ -106,14 +106,14 @@ Feature: Manage files
     When I click on the file named "folder1" in the gallery
       And I check the file named "file1" in the gallery
     Then I should see an ".bulk-actions__action[value='edit']" element
-      And the ".bulk-actions-counter" element should contain "1"
+      And the ".bulk-actions-counter" element should contain "1 selected"
     When I check the file named "file2" in the gallery
     Then the ".bulk-actions__action[value='delete']" element should contain "Delete"
-      And the ".bulk-actions-counter" element should contain "2"
+      And the ".bulk-actions-counter" element should contain "2 selected"
       And I should not see an ".bulk-actions__action[value='edit']" element
     When I attach the file "testfile.jpg" to dropzone "gallery-container"
       And I check the file named "testfile" in the gallery
-    Then the ".bulk-actions-counter" element should contain "3"
+    Then the ".bulk-actions-counter" element should contain "3 selected"
       And I press the "Delete" button
     Then I should see a modal titled "Confirm deletion"
       And I press the Delete button inside the modal
@@ -129,11 +129,11 @@ Feature: Manage files
       And I check the file named "file1" in the gallery
       And I check the file named "file2" in the gallery
     Then I should see an ".bulk-actions__action[value='move']" element
-      And the ".bulk-actions-counter" element should contain "2"
+      And the ".bulk-actions-counter" element should contain "2 selected"
       And the ".bulk-actions__action[value='move']" element should contain "Move"
     When I attach the file "testfile.jpg" to dropzone "gallery-container"
       And I check the file named "testfile" in the gallery
-    Then the ".bulk-actions-counter" element should contain "3"
+    Then the ".bulk-actions-counter" element should contain "3 selected"
       And I press the "Move" button
     Then I should see a modal titled "Move 3 item(s) to..."
       And I should see the "Form_moveForm" form
@@ -147,6 +147,24 @@ Feature: Manage files
     Then I should see the file named "file1" in the gallery
       And I should see the file named "file2" in the gallery
       And I should see the file named "testfile" in the gallery
+
+  Scenario: I can select all and deselect all files with bulk action buttons
+    Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
+    When I click on the file named "folder1" in the gallery
+    Then I should not see a ".bulk-actions" element
+      And I should not see a "bulk-actions-counter" element
+      And I should not see a "bulk-actions-select-all" element
+    When I check the file named "file1" in the gallery
+    Then I should see a ".bulk-actions" element
+      And I should see a ".bulk-actions-counter" element
+      And the ".bulk-actions-counter" element should contain "1 selected"
+      And I should see a ".bulk-actions-select-all" element
+    When I click on the ".bulk-actions-select-all" element
+      Then the ".bulk-actions-counter" element should contain "3 selected"
+    When I click on the ".bulk-actions-counter" element
+      Then I should not see a ".bulk-actions" element
+      And I should not see a "bulk-actions-counter" element
+      And I should not see a "bulk-actions-select-all" element
 
   Scenario: I can publish and unpublish multiple files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
