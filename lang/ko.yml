@@ -1,17 +1,7 @@
 ko:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     BACKLINKCOUNT: '다음에서 사용중 '
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
     MENUTITLE: 파일
     PAGES: 페이지
-  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
-    FILENAME: Filename
-    SAVE: Save
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: '폴더 이름'
-  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
-    Cancel: Cancel

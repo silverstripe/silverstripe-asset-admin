@@ -10,6 +10,7 @@ sl:
     TITLE: 'Izbriši mape'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Dodaj v kampanjo'
+    ARCHIVE_BUTTON: Arhiviraj
     Alignment: Poravnava
     AlignmentCenter: 'Na sredino'
     AlignmentLeft: 'Levo s prelomom'
@@ -22,7 +23,6 @@ sl:
     AppCategoryAudio: Avdio
     AppCategoryDocument: Dokument
     AppCategoryImage: Slika
-    AppCategoryVideo: Video
     AttributesDescription: 'Spremembe bodo vplivale samo na to specifično umestitev datoteke.'
     CREATED: 'Prvič preneseno'
     Caption: 'Naslov slike'

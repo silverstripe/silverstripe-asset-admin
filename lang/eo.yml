@@ -10,6 +10,7 @@ eo:
     TITLE: 'Forigi dosierujojn'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Aldoni al kampanjo'
+    ARCHIVE_BUTTON: Arkivo
     Alignment: Ĝisrandigi
     AlignmentCenter: Centrigi
     AlignmentLeft: 'Maldekstra ĉirkaŭfluo'

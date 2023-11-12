@@ -1,23 +1,13 @@
 id:
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     BACKLINKCOUNT: 'Dipakai pada:'
-    CREATED: 'First uploaded'
-    DELETE_BUTTON: Delete
-    Filetype: 'File type'
-    ImageSpecs: Dimensions
-    LASTEDIT: 'Last changed'
     MENUTITLE: Berkas
     PAGES: laman
     SIZE: 'Ukuran berkas'
     TYPE: 'Jenis berkas'
     URL: URL
-  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
-    FILENAME: Filename
-    SAVE: Save
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
     FOLDERNAME: 'Nama folder'
-  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
-    Cancel: Cancel
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Dimensi
     EDIT: Edit
