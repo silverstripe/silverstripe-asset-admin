@@ -3,6 +3,7 @@ fr:
     TITLE: 'Supprimer les dossiers'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Ajouter à une campagne'
+    ARCHIVE_BUTTON: Archiver
     Alignment: Alignement
     AlignmentCenter: Centré
     AlignmentLeft: 'A gauche du texte'
@@ -11,9 +12,6 @@ fr:
     AlignmentRightAlone: 'A droite'
     AltText: 'Texte alternatif (alt)'
     AppCategoryArchive: Archiver
-    AppCategoryAudio: Audio
-    AppCategoryDocument: Document
-    AppCategoryImage: Image
     AppCategoryVideo: Vidéo
     AttributesDescription: 'Ces modifications n''affecteront que cet emplacement spécifique du fichier.'
     CREATED: 'Premier téléversement'
@@ -27,7 +25,6 @@ fr:
     Filetype: 'Type de fichier'
     INVALID_REQUEST: 'Requête invalide'
     ImageHeight: Hauteur
-    ImageSpecs: Dimensions
     ImageWidth: Largeur
     LASTEDIT: 'Dernière modification'
     LoadIntoFileFailed: 'Echec dans le chargement du fichier'

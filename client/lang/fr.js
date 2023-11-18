@@ -11,6 +11,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.BACK": "Retour",
     "AssetAdmin.BACK_DESCRIPTION": "Répertoire parent",
     "AssetAdmin.BROWSE": "Parcourir",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Archiver",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_FAIL_02": "%s dossier/fichier archivé avec succès, mais %s fichiers n'ont pu être archivés.",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_SUCCESS_02": "%s dossiers/fichiers archivés avec succès.",
     "AssetAdmin.BULK_ACTIONS_CONFIRM": "Etes-vous sûr de vouloir %s ces fichiers?",
     "AssetAdmin.BULK_ACTIONS_DELETE": "Supprimer",
     "AssetAdmin.BULK_ACTIONS_DELETE_CONFIRM": "Etes-vous sûr de vouloir supprimer ces fichiers?",
@@ -50,7 +53,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.FILTER_DATE_DESC": "plus récent",
     "AssetAdmin.FILTER_TITLE_ASC": "titre a-z",
     "AssetAdmin.FILTER_TITLE_DESC": "titre z-a",
-    "AssetAdmin.JOIN": ",",
     "AssetAdmin.JOINLAST": "et",
     "AssetAdmin.LASTEDIT": "Dernière modification",
     "AssetAdmin.LOADMORE": "Charger plus d'éléments",
@@ -73,7 +75,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.SELECT": "Sélectionner",
     "AssetAdmin.SIZE": "Taille",
     "AssetAdmin.TITLE": "Titre",
-    "AssetAdmin.TYPE": "Type de fichier",
-    "AssetAdmin.URL": "URL"
+    "AssetAdmin.TYPE": "Type de fichier"
 });
 }

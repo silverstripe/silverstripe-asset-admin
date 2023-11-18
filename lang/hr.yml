@@ -5,6 +5,7 @@ hr:
     TITLE: 'Obriši direktorije'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Dodaj na kampanju'
+    ARCHIVE_BUTTON: Arhiviraj
     Alignment: poravnavanje
     AlignmentCenter: Centar
     AlignmentLeftAlone: Lijevo
@@ -14,7 +15,6 @@ hr:
     AppCategoryAudio: Zvuk
     AppCategoryDocument: Dokument
     AppCategoryImage: Slika
-    AppCategoryVideo: Video
     AttributesDescription: 'Ove promjene će utjecati samo na specifičan smještan ove datoteke.'
     CREATED: 'Prvi prijenos'
     Caption: Natpis

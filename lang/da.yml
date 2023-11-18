@@ -3,6 +3,7 @@ da:
     TITLE: 'Slet mapper'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Tilføj til kampagne'
+    ARCHIVE_BUTTON: Arkiv
     Alignment: Justering
     AlignmentCenter: Centreret
     AlignmentLeft: 'Venstre med ombrydning'
@@ -14,7 +15,6 @@ da:
     AppCategoryAudio: Lyd
     AppCategoryDocument: Dokument
     AppCategoryImage: Billede
-    AppCategoryVideo: Video
     AttributesDescription: 'Disse ændringer har kun effekt på denne specifikke placering af filen.'
     CREATED: 'Først uploadet'
     Caption: Billedtekst
