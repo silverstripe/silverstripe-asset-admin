@@ -10,6 +10,7 @@ it:
     TITLE: 'Elimina cartelle'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     ADDTOCAMPAIGN: 'Aggiungi a campagna'
+    ARCHIVE_BUTTON: Archivio
     Alignment: Allineamento
     AlignmentCenter: Centra
     AlignmentLeft: 'A capo a sinistra'
@@ -19,10 +20,8 @@ it:
     AltText: 'Testo alternativo (alt)'
     AltTextTip: 'Descrizione per i visitatori che non possono vedere le immagini (utenti di sintesi vocali o di addon che bloccano le immagini). Consigliato per le immagini che forniscono un contesto al contenuto.'
     AppCategoryArchive: Archivio
-    AppCategoryAudio: Audio
     AppCategoryDocument: Documento
     AppCategoryImage: Immagine
-    AppCategoryVideo: Video
     AttributesDescription: 'Queste modifiche influenzeranno solo questo specifico posizionamento del file.'
     CREATED: 'Caricato il'
     Caption: Didascalia
