@@ -30,6 +30,7 @@ use SilverStripe\Forms\TreeMultiselectField;
 use SilverStripe\Security\InheritedPermissions;
 use SilverStripe\Security\Member;
 use SilverStripe\VersionedAdmin\Extensions\FileArchiveExtension;
+use SilverStripe\Forms\SearchableMultiDropdownField;
 
 abstract class AssetFormFactory implements FormFactory
 {
@@ -381,16 +382,6 @@ abstract class AssetFormFactory implements FormFactory
         $editorsOptionsField = $viewersOptionsField;
         unset($editorsOptionsField[InheritedPermissions::ANYONE]);
 
-        // $membersMap is limited to 100 records specifically so that it does not crash the front-end
-        // if the website has a large number of Members, which is likely to happen if the website also
-        // uses the Member table for non-cms public users
-        // This limit should be removed if the ListboxField front-end component is switched out or
-        // modified so that it does not load all users at once and instead uses XHR to fetch a subset
-        // of users based on what the user types in
-        $membersMap = Member::get()
-            ->limit(100)
-            ->map('ID', 'Name');
-
         $tab = Tab::create(
             'Permissions',
             OptionsetField::create(
@@ -402,11 +393,13 @@ abstract class AssetFormFactory implements FormFactory
                 'ViewerGroups',
                 _t(__CLASS__ . '.VIEWERGROUPS', 'Viewer Groups')
             ),
-            ListboxField::create(
+            SearchableMultiDropdownField::create(
                 'ViewerMembers',
                 _t(__CLASS__ . '.VIEWERMEMBERS', 'Viewer Users'),
-                $membersMap
-            ),
+                Member::get()
+            )
+                ->setIsLazyLoaded(true)
+                ->setUseSearchContext(true),
             OptionsetField::create(
                 "CanEditType",
                 _t(__CLASS__ . '.EDITHEADER', 'Who can edit this file?')
@@ -416,11 +409,13 @@ abstract class AssetFormFactory implements FormFactory
                 'EditorGroups',
                 _t(__CLASS__ . '.EDITORGROUPS', 'Editor Groups')
             ),
-            ListboxField::create(
+            SearchableMultiDropdownField::create(
                 'EditorMembers',
                 _t(__CLASS__ . '.EDITORMEMBERS', 'Editor Users'),
-                $membersMap
+                Member::get()
             )
+                ->setIsLazyLoaded(true)
+                ->setUseSearchContext(true)
         );
 
         return $tab;
