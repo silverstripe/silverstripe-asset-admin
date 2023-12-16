@@ -169,7 +169,7 @@ class FolderTypeResolver
                         $field,
                         File::class
                     );
-                    $dataQuery->sort($field, $dir, false);
+                    $dataQuery->sort($normalised, $dir, false);
                 }
 
                 // respect default_sort
