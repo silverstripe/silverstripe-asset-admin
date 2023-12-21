@@ -50,28 +50,22 @@ class FileTypeCreatorTest extends SapphireTest
         $image->setFromLocalFile(__DIR__.'/../../Forms/fixtures/largeimage.png', 'TestImage.png');
         $image->write();
 
-        // Image original is unset
-        $thumbnail = $type->resolveThumbnailField($image, [], [], null);
-        $this->assertNull($thumbnail);
-
-        // Generate thumbnails by viewing this file's data
-        $assetAdmin->getObjectFromData($image, false);
-
+        // Image original is NOT unset - we generate as soon as we request information about the file.
         // protected image should have inline thumbnail
         $thumbnail = $type->resolveThumbnailField($image, [], [], null);
-        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWAAAADr', $thumbnail);
+        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWAAAAEI', $thumbnail);
 
         // public image should have url
         $image->publishSingle();
         $thumbnail = $type->resolveThumbnailField($image, [], [], null);
-        $this->assertEquals('/assets/FileTypeCreatorTest/TestImage__FitMaxWzM1MiwyNjRd.png', $thumbnail);
+        $this->assertEquals('/assets/FileTypeCreatorTest/TestImage__FillWzM1MiwyNjRd.png', $thumbnail);
 
         // Public assets can be set to inline
         ThumbnailGenerator::config()->merge('thumbnail_links', [
             AssetStore::VISIBILITY_PUBLIC => ThumbnailGenerator::INLINE,
         ]);
         $thumbnail = $type->resolveThumbnailField($image, [], [], null);
-        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWAAAADr', $thumbnail);
+        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWAAAAEI', $thumbnail);
 
         // Protected assets can be set to url
         // This uses protected asset adapter, so not direct asset link
@@ -80,6 +74,6 @@ class FileTypeCreatorTest extends SapphireTest
         ]);
         $image->doUnpublish();
         $thumbnail = $type->resolveThumbnailField($image, [], [], null);
-        $this->assertEquals('/assets/8cf6c65fa7/TestImage__FitMaxWzM1MiwyNjRd.png', $thumbnail);
+        $this->assertEquals('/assets/8cf6c65fa7/TestImage__FillWzM1MiwyNjRd.png', $thumbnail);
     }
 }

@@ -39,7 +39,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         // protected image should have inline thumbnail
         $thumbnail = $generator->generateThumbnail($image, 100, 200);
         $this->assertEquals(100, $thumbnail->getWidth());
-        $this->assertEquals(50, $thumbnail->getHeight()); // Note: Aspect ratio of original image retained
+        $this->assertEquals(200, $thumbnail->getHeight());
 
         // Build non-image
         $file = new File();
@@ -55,6 +55,20 @@ class ThumbnailGeneratorTest extends SapphireTest
         $image->write();
         $thumbnail = $generator->generateThumbnail($image, 100, 200);
         $this->assertNull($thumbnail);
+    }
+
+    public function testGenerateThumbnailFitMax()
+    {
+        ThumbnailGenerator::config()->set('method', 'FitMax');
+        $generator = new ThumbnailGenerator();
+        // Build image
+        $image = new Image();
+        $image->setFromLocalFile(__DIR__ . '/../Forms/fixtures/testimage.png', 'TestImage.png');
+        $image->write();
+
+        $thumbnail = $generator->generateThumbnail($image, 100, 200);
+        $this->assertEquals(100, $thumbnail->getWidth());
+        $this->assertEquals(50, $thumbnail->getHeight()); // Note: Aspect ratio of original image retained
     }
 
     public function testGenerateLink()
@@ -82,7 +96,7 @@ class ThumbnailGeneratorTest extends SapphireTest
 
         // protected image should have inline thumbnail
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
-        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAy', $thumbnail);
+        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAADI', $thumbnail);
 
         // but not if it's too big
         Config::nest();
@@ -92,20 +106,20 @@ class ThumbnailGeneratorTest extends SapphireTest
         $this->assertNull($thumbnail);
         // With graceful thumbnails, it should come back as a URL
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200, true);
-        $this->assertMatchesRegularExpression('#/assets/[A-Za-z0-9]+/TestImage__FitMaxWzEwMCwyMDBd\.png$#', $thumbnail);
+        $this->assertMatchesRegularExpression('#/assets/[A-Za-z0-9]+/TestImage__FillWzEwMCwyMDBd\.png$#', $thumbnail);
         Config::unnest();
 
         // public image should have url
         $image->publishSingle();
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
-        $this->assertEquals('/assets/ThumbnailGeneratorTest/TestImage__FitMaxWzEwMCwyMDBd.png', $thumbnail);
+        $this->assertEquals('/assets/ThumbnailGeneratorTest/TestImage__FillWzEwMCwyMDBd.png', $thumbnail);
 
         // Public assets can be set to inline
         ThumbnailGenerator::config()->merge('thumbnail_links', [
             AssetStore::VISIBILITY_PUBLIC => ThumbnailGenerator::INLINE,
         ]);
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
-        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAy', $thumbnail);
+        $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAADI', $thumbnail);
 
         // Protected assets can be set to url
         // This uses protected asset adapter, so not direct asset link
@@ -114,6 +128,6 @@ class ThumbnailGeneratorTest extends SapphireTest
         ]);
         $image->doUnpublish();
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
-        $this->assertEquals('/assets/906835357d/TestImage__FitMaxWzEwMCwyMDBd.png', $thumbnail);
+        $this->assertEquals('/assets/906835357d/TestImage__FillWzEwMCwyMDBd.png', $thumbnail);
     }
 }
