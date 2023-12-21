@@ -52,4 +52,4 @@ SilverStripe\Core\Injector\Injector:
   SilverStripe\AssetAdmin\Model\ThumbnailGenerator.graphql:
     class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
     properties:
-      Generates: false
+      Generates: true
