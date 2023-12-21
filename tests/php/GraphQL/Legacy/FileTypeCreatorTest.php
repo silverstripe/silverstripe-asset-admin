@@ -49,8 +49,13 @@ class FileTypeCreatorTest extends SapphireTest
         $image = new Image();
         $image->setFromLocalFile(__DIR__.'/../../Forms/fixtures/largeimage.png', 'TestImage.png');
         $image->write();
+        // Image original is unset
+        $thumbnail = $type->resolveThumbnailField($image, [], [], null);
+        $this->assertNull($thumbnail);
 
-        // Image original is NOT unset - we generate as soon as we request information about the file.
+        // Generate thumbnails by viewing this file's data
+        $assetAdmin->getObjectFromData($image, false);
+
         // protected image should have inline thumbnail
         $thumbnail = $type->resolveThumbnailField($image, [], [], null);
         $this->assertStringStartsWith('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWAAAAEI', $thumbnail);

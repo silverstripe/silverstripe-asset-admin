@@ -18,10 +18,20 @@ use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
 use Exception;
 use Closure;
+use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\ORM\DataQuery;
 
 class FolderTypeResolver
 {
+    /**
+     * Any IDs of files which we're allowed to generate thumbnails for.
+     * The intention is to (as much as is feasible) only allow generating thumbnails
+     * during asset admin graphQL requests and not for requests that could be performed
+     * by an attacker.
+     * @internal
+     */
+    private static array $idsAllowedToGenerateThumbnails = [];
+
     /**
      * @param Folder $object
      * @param array $args
@@ -73,6 +83,17 @@ class FolderTypeResolver
         // IDs we need.
         $canViewList = $list->filter('ID', $canViewIDs ?: 0)
             ->limit(null);
+
+        // If we haven't already marked IDs as being okay to generate thumbnails,
+        // and we have a safe limit for the number of children,
+        // mark these children as being okay to generate thumbnails for.
+        if (empty(self::$idsAllowedToGenerateThumbnails)
+            && !empty($args['limit'])
+            && is_numeric($args['limit'])
+            && (int)$args['limit'] <= AssetAdmin::config()->get('page_length')
+        ) {
+            self::$idsAllowedToGenerateThumbnails = $canViewIDs;
+        }
 
         return $canViewList;
     }
@@ -181,5 +202,10 @@ class FolderTypeResolver
             });
             return $list;
         };
+    }
+
+    public static function getIdsAllowedToGenerateThumbnails(): array
+    {
+        return self::$idsAllowedToGenerateThumbnails;
     }
 }
