@@ -1280,9 +1280,10 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             // filter out '' since this would be a regex problem on JS end
             array_filter(File::getAllowedExtensions() ?? [])
         );
-        $upload->getValidator()->setAllowedMaxFileSize(
-            $this->config()->max_upload_size
-        );
+        $maxFileSize = $this->config()->get('max_upload_size');
+        if ($maxFileSize !== null) {
+            $upload->getValidator()->setAllowedMaxFileSize($maxFileSize);
+        }
 
         return $upload;
     }
