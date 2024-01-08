@@ -2,12 +2,15 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Forms;
 
+use ReflectionMethod;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Forms\UploadField;
 use SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest\FileOwner;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Image;
 use Silverstripe\Assets\Dev\TestAssetStore;
+use SilverStripe\Assets\Upload;
+use SilverStripe\Assets\Upload_Validator;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
@@ -42,6 +45,35 @@ class UploadFieldTest extends SapphireTest
     {
         TestAssetStore::reset();
         parent::tearDown();
+    }
+
+    public function provideGetUploadMaxFileSize(): array
+    {
+        return [
+            [
+                'adminMaxFileSize' => null,
+                'expected' => 100,
+            ],
+            [
+                'adminMaxFileSize' => 200,
+                'expected' => 200,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideGetUploadMaxFileSize
+     */
+    public function testGetUploadMaxFileSize(?int $adminMaxFileSize, int $expected): void
+    {
+        Upload_Validator::config()->set('default_max_file_size', ['*' => 100]);
+        AssetAdmin::config()->set('max_upload_size', $adminMaxFileSize);
+        $admin = new AssetAdmin();
+        $reflectionGetUpload = new ReflectionMethod($admin, 'getUpload');
+        $reflectionGetUpload->setAccessible(true);
+        /** @var Upload $upload */
+        $upload = $reflectionGetUpload->invoke($admin);
+        $this->assertSame($expected, $upload->getValidator()->getAllowedMaxFileSize());
     }
 
     public function testGetAttributes()
