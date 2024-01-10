@@ -112,7 +112,6 @@ class AssetAdminResolver
         }
         $idList = $args['ids'];
 
-        /** @var DataList $file */
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($idList);
         if ($files->count() < count($idList ?? [])) {
             // Find out which files count not be found
@@ -142,7 +141,6 @@ class AssetAdminResolver
         $member = UserContextProvider::get($context);
 
         if ($folderId) {
-            /** @var Folder $folder */
             $folder = Versioned::get_by_stage(Folder::class, Versioned::DRAFT)
                 ->byID($folderId);
             if (!$folder) {
@@ -164,7 +162,6 @@ class AssetAdminResolver
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)
             ->byIDs($args['fileIds']);
         $errorFiles = [];
-        /** @var File $file */
         foreach ($files as $file) {
             if ($file->canEdit($member)) {
                 $file->ParentID = $folderId;
@@ -225,7 +222,6 @@ class AssetAdminResolver
         }
         $ids = $args['ids'];
 
-        /** @var DataList|File[] $files */
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($ids);
         if ($files->count() < count($ids ?? [])) {
             $class = File::class;
@@ -253,7 +249,6 @@ class AssetAdminResolver
         }
         $idList = $args['ids'];
 
-        /** @var DataList|File[] $files */
         $files = Versioned::get_by_stage(File::class, Versioned::DRAFT)->byIDs($idList);
         if ($files->count() < count($idList ?? [])) {
             // Find out which files count not be found
@@ -285,7 +280,7 @@ class AssetAdminResolver
      * @param array $args
      * @param $context
      * @param $info
-     * @return DataList|Filterable
+     * @return DataList<File>
      * @throws HTTPResponse_Exception
      */
     public static function resolveReadFiles($object, array $args = [], $context = [], $info = null)

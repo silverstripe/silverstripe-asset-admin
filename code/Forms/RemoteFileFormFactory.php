@@ -235,7 +235,6 @@ class RemoteFileFormFactory implements FormFactory
         // Get embed
         $this->validateUrl($url);
 
-        /** @var Embeddable $embed */
         $embed = Injector::inst()->create(Embeddable::class, $url);
         $this->validateEmbed($embed);
 

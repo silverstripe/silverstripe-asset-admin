@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Extensions;
 
+use SilverStripe\AssetAdmin\Forms\FileFormFactory;
 use SilverStripe\Assets\File;
 use SilverStripe\Core\Extension;
 use SilverStripe\Forms\FormAction;
@@ -10,7 +11,8 @@ use SilverStripe\Security\Permission;
 /**
  * Extension that updates the Popover menu of `FileFormFactory`.
  * This extension will only be applied if the `campaign-admin` module is installed.
- * @package SilverStripe\AssetAdmin\Extensions
+ *
+ * @extends Extension<FileFormFactory>
  */
 class CampaignAdminExtension extends Extension
 {

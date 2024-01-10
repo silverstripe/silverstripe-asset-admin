@@ -20,7 +20,8 @@ use SilverStripe\ORM\ValidationResult;
 
 /**
  * Decorates ModalController with an insert-oembed modal
- * @see ModalController
+ *
+ * @extends Extension<ModalController>
  */
 class RemoteFileModalExtension extends Extension
 {
@@ -29,16 +30,6 @@ class RemoteFileModalExtension extends Extension
         'remoteEditForm',
         'remoteEditFormSchema',
     );
-
-    /**
-     * @return ModalController
-     */
-    public function getOwner()
-    {
-        /** @var ModalController $owner */
-        $owner = $this->owner;
-        return $owner;
-    }
 
     /**
      * @return HTTPRequest
