@@ -295,7 +295,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Check parent record
-        /** @var Folder $parentRecord */
         $parentRecord = null;
         if (!empty($data['ParentID']) && is_numeric($data['ParentID'])) {
             $parentRecord = Folder::get()->byID($data['ParentID']);
@@ -377,7 +376,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         // Check parent record
-        /** @var File $file */
         $file = File::get()->byID($data['ID']);
         if (!$file) {
             $this->jsonError(404, _t(__CLASS__.'.FILE_NOT_FOUND', 'File not found'));
@@ -530,7 +528,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function legacyRedirectForEditView(HTTPRequest $request): HTTPResponse
     {
         $fileID = $request->param('FileID');
-        /** @var File $file */
         $file = File::get()->byID($fileID);
         $link = $this->getFileEditLink($file) ?: $this->Link();
         return $this->redirect($link);
@@ -569,14 +566,12 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     }
 
     /**
-     * @param bool $unlinked
-     * @return ArrayList
+     * @return null
      */
     public function breadcrumbs($unlinked = false)
     {
         return null;
     }
-
 
     /**
      * Don't include class namespace in auto-generated CSS class
@@ -738,7 +733,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     protected function getAbstractFileForm($id, $name, $context = [])
     {
-        /** @var File $file */
         $file = File::get()->byID($id);
 
         if (!$file) {
@@ -849,7 +843,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             return null;
         }
 
-        /** @var File $file */
         $file = Versioned::get_version(File::class, $id, $versionId);
         if (!$file) {
             $this->jsonError(404);
@@ -866,7 +859,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $effectiveContext = array_merge($context, ['Record' => $file]);
-        /** @var FormFactory $scaffolder */
         $scaffolder = Injector::inst()->get(FileHistoryFormFactory::class);
         $form = $scaffolder->getForm($this, 'fileHistoryForm', $effectiveContext);
 
@@ -996,7 +988,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $id = (int) $data['ID'];
-        /** @var File $record */
         $record = DataObject::get_by_id(File::class, $id);
 
         if (!$record) {
@@ -1050,7 +1041,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         }
 
         $id = (int) $data['ID'];
-        /** @var File $record */
         $record = DataObject::get_by_id(File::class, $id);
 
         if (!$record) {
@@ -1093,7 +1083,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $object['canEdit'] = $file->canEdit();
         $object['canDelete'] = ($file->hasMethod('canArchive')) ? $file->canArchive() : $file->canDelete();
 
-        /** @var Member $owner */
         $owner = $file->Owner();
 
         if ($owner) {
@@ -1134,7 +1123,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             'visibility' => $file->getVisibility()
         );
 
-        /** @var Folder $parent */
         $parent = $file->Parent();
 
         if ($parent) {
@@ -1145,7 +1133,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
             );
         }
 
-        /** @var File $file */
         if ($file->getIsImage()) {
             $thumbnails = $this->generateThumbnails($file, $thumbnailLinks);
 
@@ -1328,7 +1315,6 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
      */
     public function getFolderCreateForm($parentId = 0)
     {
-        /** @var FolderCreateFormFactory $factory */
         $factory = Injector::inst()->get(FolderCreateFormFactory::class);
         $form = $factory->getForm($this, 'folderCreateForm', [ 'ParentID' => $parentId ]);
 

@@ -77,7 +77,6 @@ class ImageThumbnailHelper
      */
     public function run()
     {
-        /** @var File[]|SS_List $files */
         $files = File::get();
         $totalCount = $files->count();
         if (!$totalCount) {

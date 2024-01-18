@@ -37,7 +37,6 @@ class ImageFormFactory extends FileFormFactory
 
     protected function getFormFieldAttributesTab($record, $context = [])
     {
-        /** @var Tab $tab */
         $tab = parent::getFormFieldAttributesTab($record, $context);
 
         $alignments = [
@@ -149,7 +148,6 @@ class ImageFormFactory extends FileFormFactory
             if (!$record) {
                 return;
             }
-            /** @var FieldList $fields */
             $fields = $form->Fields();
 
             $dimensions = $fields->fieldByName('Editor.Placement.Dimensions');

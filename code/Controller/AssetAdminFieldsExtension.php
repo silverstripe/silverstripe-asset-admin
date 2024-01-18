@@ -2,9 +2,13 @@
 
 namespace SilverStripe\AssetAdmin\Controller;
 
+use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Core\Extension;
 use SilverStripe\View\Requirements;
 
+/**
+ * @extends Extension<LeftAndMain>
+ */
 class AssetAdminFieldsExtension extends Extension
 {
     public function init()

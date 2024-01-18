@@ -15,7 +15,7 @@ use SilverStripe\Versioned\DataDifferencer;
 /**
  * Update File dataobjects to be editable in this asset admin
  *
- * @property File $owner
+ * @extends DataExtension<File>
  */
 class AssetAdminFile extends DataExtension
 {
@@ -176,7 +176,7 @@ class AssetAdminFile extends DataExtension
     /**
      * Get the list of all nested files in use
      *
-     * @return SS_List
+     * @return SS_List<File>
      */
     public function getFilesInUse()
     {

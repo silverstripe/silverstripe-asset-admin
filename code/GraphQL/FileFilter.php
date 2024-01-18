@@ -97,7 +97,6 @@ class FileFilter
 
         // Filter unknown id by known child if search is not applied
         if (!$search && isset($filter['anyChildId'])) {
-            /** @var File $child */
             $child = File::get()->byID($filter['anyChildId']);
             $id = $child ? ($child->ParentID ?: 0) : 0;
             if ($id) {

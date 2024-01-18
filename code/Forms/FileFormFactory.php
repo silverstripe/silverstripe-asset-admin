@@ -242,7 +242,6 @@ class FileFormFactory extends AssetFormFactory
 
         // Build action
         $publishText = _t('SilverStripe\\AssetAdmin\\Controller\\AssetAdmin.PUBLISH_BUTTON', 'Publish');
-        /** @var FormAction $action */
         $action = FormAction::create('publish', $publishText)
             ->setIcon('rocket')
             ->setSchemaState([
@@ -469,7 +468,6 @@ class FileFormFactory extends AssetFormFactory
     {
         $action = null;
         if ($record && $record->isInDB() && $record->canView()) {
-            /** @var FormAction $action */
             $action = FormAction::create('insert', 'Insert')
                 ->setIcon('plus-circled')
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
@@ -485,7 +483,6 @@ class FileFormFactory extends AssetFormFactory
     {
         $action = null;
         if ($record && $record->isInDB() && $record->canView()) {
-            /** @var FormAction $action */
             $action = FormAction::create('insert', _t(__CLASS__ . '.INSERT_LINK', 'Link to file'))
                 ->setSchemaData(['data' => ['buttonStyle' => 'primary']]);
         }

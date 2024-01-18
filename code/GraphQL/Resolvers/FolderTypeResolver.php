@@ -51,7 +51,6 @@ class FolderTypeResolver
             ));
         }
 
-        /** @var DataList $list */
         $list = Versioned::get_by_stage(File::class, 'Stage');
         $filter['parentId'] = $object->ID;
         $list = FileFilter::filterList($list, $filter);

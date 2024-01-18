@@ -153,7 +153,6 @@ abstract class AssetFormFactory implements FormFactory
     protected function getSaveAction($record)
     {
         if ($record && $record->isInDB() && $record->canEdit()) {
-            /** @var FormAction $action */
             $action = FormAction::create('save', _t(__CLASS__ . '.SAVE', 'Save'))
                 ->setIcon('save')
                 ->setSchemaState([
@@ -227,10 +226,10 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function getFormFields(RequestHandler $controller = null, $formName, $context = [])
     {
+        /** @var File $record */
         $record = isset($context['Record']) ? $context['Record'] : null;
 
         // Build standard fields for all folders / files
-        /** @var File $record */
         $fields = new FieldList(
             FieldGroup::create(
                 HeaderField::create('TitleHeader', $record ? $record->Title : null, 1)
@@ -302,7 +301,6 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function getFormFieldDetailsTab($record, $context = [])
     {
-        /** @var Tab $tab */
         $tab = Tab::create(
             'Details',
             TextField::create('Name', _t(__CLASS__ . '.FILENAME', 'Filename')),
@@ -351,7 +349,6 @@ abstract class AssetFormFactory implements FormFactory
             if ($context['ParentID'] === 0) {
                 return '/';
             }
-            /** @var File $file */
             $file = File::get()->byID($context['ParentID']);
             if ($file) {
                 return $file->getFilename();

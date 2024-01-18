@@ -2,6 +2,7 @@
 
 namespace SilverStripe\AssetAdmin\Extensions;
 
+use SilverStripe\Admin\Forms\UsedOnTable;
 use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Shortcodes\FileLink;
 use SilverStripe\Core\Extension;
@@ -10,6 +11,8 @@ use SilverStripe\Security\Member;
 
 /**
  * Hides several types of DataObjects on the "Used On" tab when viewing files
+ *
+ * @extends Extension<UsedOnTable>
  */
 class UsedOnTableExtension extends Extension
 {

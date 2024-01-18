@@ -38,7 +38,6 @@ class PreviewImageField extends FormField
     {
         $defaults = parent::getSchemaStateDefaults();
 
-        /** @var File $record */
         if ($record = $this->getRecord()) {
             $parent = $record->Parent();
 
@@ -69,7 +68,7 @@ class PreviewImageField extends FormField
     }
 
     /**
-     * @return DataObject
+     * @return File|null
      */
     public function getRecord()
     {
