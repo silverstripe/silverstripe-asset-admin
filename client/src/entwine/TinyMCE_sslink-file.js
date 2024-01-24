@@ -1,4 +1,4 @@
-/* global tinymce, editorIdentifier, ss */
+/* global tinymce, ss */
 import i18n from 'i18n';
 import TinyMCEActionRegistrar from 'lib/TinyMCEActionRegistrar';
 import React from 'react';
@@ -11,20 +11,21 @@ import * as modalActions from 'state/modal/ModalActions';
 
 const commandName = 'sslinkfile';
 
-// Link to external url
-TinyMCEActionRegistrar.addAction(
-  'sslink',
-  {
-    text: i18n._t('AssetAdmin.LINKLABEL_FILE', 'Link to a file'),
-    // eslint-disable-next-line no-console
-    onclick: (activeEditor) => activeEditor.execCommand(commandName),
-    priority: 80
-  },
-  editorIdentifier,
-).addCommandWithUrlTest(commandName, /^\[file_link/);
-
 const plugin = {
   init(editor) {
+    // Add "Link to external url" to link menu for this editor
+    TinyMCEActionRegistrar.addAction(
+      'sslink',
+      {
+        text: i18n._t('AssetAdmin.LINKLABEL_FILE', 'Link to a file'),
+        // eslint-disable-next-line no-console
+        onclick: (activeEditor) => activeEditor.execCommand(commandName),
+        priority: 80
+      },
+      editor.settings.editorIdentifier,
+    ).addCommandWithUrlTest(commandName, /^\[file_link/);
+
+    // Add a command that corresponds with the above menu item
     editor.addCommand(commandName, () => {
       const field = jQuery(`#${editor.id}`).entwine('ss');
 
