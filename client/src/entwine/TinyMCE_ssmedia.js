@@ -435,7 +435,7 @@ jQuery.entwine('ss', ($) => {
         properties: { id: data.ID },
       }, true);
 
-      const selectionContent = this.getElement().getSelection();
+      const selectionContent = editor.getSelection();
       let linkText = selectionContent || data.Text || data.filename;
 
       // if link was highlighted, then we don't want to place more text inside that text
@@ -553,7 +553,7 @@ jQuery.entwine('ss', ($) => {
      */
     statusMessage(text, type) {
       const content = $('<div/>').text(text).html(); // Escape HTML entities in text
-      $.noticeAdd({
+      jQuery.noticeAdd({
         text: content,
         type,
         stayTime: 5000,
