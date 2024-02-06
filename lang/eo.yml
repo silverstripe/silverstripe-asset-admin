@@ -65,15 +65,18 @@ eo:
     ANYONE: 'Iu ajn'
     EDITHEADER: 'Kiu povas redakti ĉi tiun dosieron?'
     EDITORGROUPS: 'Grupoj de redaktantoj'
+    EDITORMEMBERS: 'Redaktantaj uzantoj'
     FILENAME: 'Nomo de dosiero'
     FOLDERLOCATION: Loko
     INHERIT: 'Heredi el patra dosierujo'
     LOGGED_IN: 'Ensalutintaj uzantoj'
     ONLY_GROUPS: 'Nur ĉi tiuj grupoj (elektu el la listo)'
+    ONLY_MEMBERS: 'Nur ĉi tiuj grupoj (elektu el la listo)'
     ROOTNAME: '(Supra nivelo)'
     SAVE: Konservi
     SAVED: Konservita
     VIEWERGROUPS: 'Grupoj de vidantoj'
+    VIEWERMEMBERS: 'Vidantaj uzantoj'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Elŝuti dosieron'
     INSERT_LINK: 'Ligi al dosiero'
