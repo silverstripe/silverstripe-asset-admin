@@ -75,6 +75,7 @@ en:
     ROOTNAME: '(Top level)'
     SAVE: Save
     SAVED: Saved
+    SHOWINSEARRCH: 'Show in search?'
     VIEWERGROUPS: 'Viewer Groups'
     VIEWERMEMBERS: 'Viewer Users'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
