@@ -20,13 +20,17 @@ nl:
     AltText: 'Alternatieve tekst (alt)'
     AltTextTip: 'Beschrijving voor bezoekers die de afbeelding niet kunnen zien (met schermlezers of afbeeldingsblokkers). Ook goed voor SEO van de pagina.'
     AppCategoryArchive: Archief
+    AppCategoryAudio: Audio
+    AppCategoryDocument: Document
     AppCategoryImage: Afbeelding
+    AppCategoryVideo: Video
     AttributesDescription: 'Deze instellingen worden alleen gebruikt voor de plaatsing van het bestand.'
     CREATED: 'Voor het eerst opslagen op'
     Caption: Onderschrift
     CreatePermissionDenied: 'U heeft geen rechten om bestanden toe te voegen'
     CurrentFolderOnly: 'Alleen toepassen op huidige map en de onderliggende mappen?'
     DELETE_BUTTON: Verwijderen
+    Eager: Eager
     ErrorItemPermissionDenied: 'U heeft niet genoeg rechten om {ObjectTitle} aan te passen'
     ErrorNotFound: '{Type} niet gevonden'
     FILE_NOT_FOUND: 'Bestand niet gevonden'

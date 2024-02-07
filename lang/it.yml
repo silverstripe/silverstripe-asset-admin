@@ -20,8 +20,10 @@ it:
     AltText: 'Testo alternativo (alt)'
     AltTextTip: 'Descrizione per i visitatori che non possono vedere le immagini (utenti di sintesi vocali o di addon che bloccano le immagini). Consigliato per le immagini che forniscono un contesto al contenuto.'
     AppCategoryArchive: Archivio
+    AppCategoryAudio: Audio
     AppCategoryDocument: Documento
     AppCategoryImage: Immagine
+    AppCategoryVideo: Video
     AttributesDescription: 'Queste modifiche influenzeranno solo questo specifico posizionamento del file.'
     CREATED: 'Caricato il'
     Caption: Didascalia

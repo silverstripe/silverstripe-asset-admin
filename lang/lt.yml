@@ -5,7 +5,12 @@ lt:
     ARCHIVE_BUTTON: Archyvas
     AppCategoryArchive: Archyvas
     BACKLINKCOUNT: 'Naudojama:'
+    CREATED: 'First uploaded'
+    DELETE_BUTTON: Delete
+    Filetype: 'File type'
     HEIGHT: Aukštis
+    ImageSpecs: Dimensions
+    LASTEDIT: 'Last changed'
     MENUTITLE: Bylos
     PAGES: puslapis(-iai)
     PUBLISHED: Publikuota
@@ -14,6 +19,9 @@ lt:
     TYPE: 'Bylos tipas'
     URL: 'URL adresas'
     WIDTH: Plotis
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    FILENAME: Filename
+    SAVE: Save
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     PUBLISH: Publikuoti
     PUBLISHED: Publikuota
@@ -23,6 +31,8 @@ lt:
     FOLDERNAME: 'Katalogo pavadinimas'
   SilverStripe\AssetAdmin\Forms\MoveFormFactory:
     MOVE: Perkelti
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    Cancel: Cancel
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Matmenys
     EDIT: Redaguoti

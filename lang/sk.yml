@@ -1,18 +1,138 @@
 sk:
+  AssetAdmin:
+    INSERT_FILE: 'Vložte súbor'
+    UPDATE_FILE: 'Upravte súbor'
+  SilverStripe\Admin\FileStatusIcon:
+    ACCESS_RESTRICTED: 'Obmedzený prístup'
+    TRACKED_FORM_UPLOAD_RESTRICTED: 'Odoslanie formulára'
+    TRACKED_FORM_UPLOAD_UNRESTRICTED: 'Odoslanie formulára, neobmedzený prístup'
+  SilverStripe\AssetAdmin\BatchAction\DeleteAssets:
+    TITLE: 'Odstráňte priečinky'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
+    ADDTOCAMPAIGN: 'Pridať do kampane'
+    ARCHIVE_BUTTON: Archivovať
+    Alignment: Zarovnať
+    AlignmentCenter: Stred
+    AlignmentLeft: 'Obaliť vľavo'
+    AlignmentLeftAlone: Vľavo
+    AlignmentRight: 'Obaliť vpravo'
+    AlignmentRightAlone: Vpravo
+    AltText: 'Alternatívny text (alt)'
+    AltTextTip: 'Popis pre návštevníkov, ktorí si nemôžu zobraziť obrázok (používajúci čítačku obrazovky alebo blokovačov obrázkov). Odporúča sa pre obrázky, ktoré poskytujú obsahu jedinečný kontext.'
+    AppCategoryArchive: Archivovať
+    AppCategoryAudio: Zvuk
+    AppCategoryDocument: Dokument
+    AppCategoryImage: Obrázok
+    AppCategoryVideo: Video
+    AttributesDescription: 'Tieto zmeny ovplyvnia iba toto konkrétne umiestnenie súboru.'
     BACKLINKCOUNT: 'Použité na:'
+    CREATED: 'Prvýkrát nahrané'
+    Caption: Popis
+    CreatePermissionDenied: 'Nemáte oprávnenie na pridávanie súborov'
+    CurrentFolderOnly: 'Obmedziť na aktuálny priečinok a jeho podpriečinky?'
+    DELETE_BUTTON: Odstrániť
+    Eager: Nenásytný
+    ErrorItemPermissionDenied: 'Nemáte potrebné oprávnenia na úpravu {ObjectTitle}'
+    ErrorNotFound: 'Tento {Type} sa nepodarilo nájsť'
+    FILE_NOT_FOUND: 'Súbor nenájdený'
+    Filetype: 'Typ súboru'
     HEIGHT: Výška
+    INVALID_REQUEST: 'Neplatná požiadavka'
+    ImageHeight: Výška
+    ImageSpecs: Rozmery
+    ImageWidth: Šírka
+    LASTEDIT: 'Naposledy zmenené'
+    LazyDefault: 'Lenivé (predvolené)'
+    LoadIntoFileFailed: 'Nepodarilo sa načítať súbor'
+    Loading: Načítavanie
     MENUTITLE: Súbory
+    NOSUMMARY: 'Nie je k dispozícii žiadny súhrn'
+    NewFile: 'Nový {file}'
     PAGES: stránka(y)
+    PATH: Cesta
+    PUBLISHED: Publikovaný
+    PUBLISH_BUTTON: Publikovať
+    Placement: Umiestnenie
+    SAVEDFILE: 'Uložený súbor'
     SIZE: Veľkosť
     TYPE: Typ
+    TitleTooltip: 'Text nadpisu (popis)'
+    TitleTooltipTip: 'V prípade potreby poskytuje vysvetlenie v dlhej forme. Zobrazuje sa pri umiestnení kurzora myši.'
+    UNKNOWN: Neznámy
+    UNPUBLISH_BUTTON: 'Zrušiť zverejnenie'
+    UPLOADEDFILE: 'Nahraný súbor'
     URL: URL
     WIDTH: Šírka
+  SilverStripe\AssetAdmin\Controller\AssetAdminFile:
+    MOVEDFOLDER: 'Presunutý súbor'
+    RENAMEDFILE: 'Nahradený súbor'
+    RENAMEDTITLE: 'Názov aktualizovaný na'
+  SilverStripe\AssetAdmin\Forms\AssetFormFactory:
+    ACCESSHEADER: 'Kto si môže zobraziť tento súbor?'
+    ANYONE: Ktokoľvek
+    EDITHEADER: 'Kto môže upravovať tento súbor?'
+    EDITORGROUPS: 'Skupiny upravovateľov'
+    EDITORMEMBERS: Upravovatelia
+    FILENAME: 'Názov súboru'
+    FOLDERLOCATION: Poloha
+    INHERIT: 'Zdediť z nadradeného priečinka'
+    LOGGED_IN: 'Prihlásení používatelia'
+    ONLY_GROUPS: 'Iba tieto skupiny (vyberte zo zoznamu)'
+    ONLY_MEMBERS: 'Iba títo používatelia (vyberte zo zoznamu)'
+    ROOTNAME: '(Najvyššia úroveň)'
+    SAVE: Uložiť
+    SAVED: Uložené
+    VIEWERGROUPS: 'Skupiny prezeračov'
+    VIEWERMEMBERS: Prezerači
+  SilverStripe\AssetAdmin\Forms\FileFormFactory:
+    DOWNLOAD_FILE: 'Stiahnuť súbor'
+    INSERT_LINK: 'Odkaz na súbor'
+    LINKDESCR: 'Popis odkazu'
+    LINKOPENNEWWIN: 'Otvoriť v novom okne/karte'
+    LINKOPTIONS: 'Možnosti odkazov'
+    LINKTEXT: 'Text odkazu'
+    OTHER_ACTIONS: 'Iné akcie'
+    PUBLISH: Publikovať
+    PUBLISHED: Publikovaný
+    REPLACE_FILE: 'Nahradiť súbor'
+    UNEMEDABLE_MESSAGE: '<p class="alert alert-info alert--no-border editor__top-message">Tento typ súboru je možné vložiť iba ako odkaz. Po vložení odkazu ho môžete upraviť.</p>'
+    USAGE: 'Používa sa na'
+  SilverStripe\AssetAdmin\Forms\FileHistoryFormFactory:
+    PUBLISHED: Publikovaný
+    SAVED: Uložené
+  SilverStripe\AssetAdmin\Forms\FolderCreateFormFactory:
+    CREATE: Vytvoriť
   SilverStripe\AssetAdmin\Forms\FolderFormFactory:
-    FOLDERNAME: 'Názov složky'
+    FOLDERNAME: 'Názov priečinku'
+  SilverStripe\AssetAdmin\Forms\MoveFormFactory:
+    CHOOSEFOLDER: 'Vyberte priečinok'
+    MOVE: Presunúť
+  SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
+    AddMedia: 'Pridať médiá'
+    Cancel: Zrušiť
+    ERROR_ABSOLUTE: 'Vložiť možno iba kompletné adresy URL'
+    ERROR_EMBED: 'Na tejto adrese URL momentálne nie sú dostupné žiadne médiá na vloženie'
+    ERROR_HOSTNAME: 'Tento názov hostiteľa súboru nie je povolený'
+    ERROR_PORT: 'Tento port súboru nie je povolený'
+    ERROR_SCHEME: 'Táto schéma súboru nie je povolená'
+    InsertMedia: 'Vložte médiá'
+    UrlDescription: 'Vložte videá, obrázky a ďalšie médiá z Youtube a Vimeo priamo z webu.'
   SilverStripe\AssetAdmin\Forms\UploadField:
     Dimensions: Rozmery
     EDIT: Editovať
     EDITINFO: 'Editovať súbor'
+    ErrorMaxFilesReached:
+      few: 'Môžete nahrať iba {count} súbory.'
+      many: 'Môžete nahrať iba {count} súborov.'
+      one: 'Môžete nahrať iba {count} súbor.'
+      other: 'Môžete nahrať iba {count} súborov.'
     FIELDNOTSET: 'Žiadna informácia o súbore'
     REMOVE: Odstrániť
+  SilverStripe\AssetAdmin\GraphQL\FileFilter:
+    FileNotFound: 'Súbor alebo priečinok sa nepodarilo nájsť'
+  SilverStripe\AssetAdmin\GraphQL\Resolvers\PublicationResolver:
+    OWNER_WARNING:
+      few: 'Súbor "{file}" sa používa na {count} miestach.'
+      many: 'Súbor "{file}" sa používa na {count} miestach.'
+      one: 'Súbor "{file}" sa používa na {count} mieste'
+      other: 'Súbor "{file}" sa používa na {count} miestach.'
