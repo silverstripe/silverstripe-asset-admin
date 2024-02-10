@@ -7,6 +7,18 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('sl', {
     "AssetAdmin.BACK_DESCRIPTION": "Nivo višje",
-    "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Arhiviraj"
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Arhiviraj",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_FOLDERS_CONFIRM": "Ste prepričani, da bi radi arhivirali te mape?",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_FOLDER_CONFIRM": "Ste prepričani, da bi radi arhivirali to mapo?",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_ITEMS_CONFIRM": "Arhivirali boste %s datotek, ki so lahko že uporabljene na vašem spletnem mestu. Preden jih boste arhivirali, preverite, kje se uporabljajo.",
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE_WARNING": "Preden boste datoteke arhivirali, jih odstranite iz objavljene vsebine, ker bodo sicer prikazane kot nedelujoče povezave.",
+    "AssetAdmin.BULK_ACTIONS_DELETE_FAIL_02": "%s map/datotek smo uspešno izbrisali, %s pa nam jih ni uspelo.",
+    "AssetAdmin.BULK_ACTIONS_DELETE_FOLDERS_CONFIRM": "Ste prepričani, da bi radi izbrisali te mape?",
+    "AssetAdmin.BULK_ACTIONS_DELETE_FOLDER_CONFIRM": "Ste prepričani, da bi radi izbrisali to mapo?",
+    "AssetAdmin.BULK_ACTIONS_DELETE_ITEMS_CONFIRM": "Izbrisali boste %s datotek, ki so lahko že uporabljene na vašem spletnem mestu. Preden jih boste izbrisali, preverite, kje se uporabljajo.",
+    "AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS_02": "%s map/datotek smo uspešno izbrisali.",
+    "AssetAdmin.BULK_ACTIONS_DELETE_WARNING": "Preden boste datoteke izbrisali, jih odstranite iz objavljene vsebine, ker bodo sicer prikazane kot nedelujoče povezave.",
+    "AssetAdmin.CONFIRM_FILE_ARCHIVE": "Potrjujem arhiviranje",
+    "AssetAdmin.CONFIRM_FILE_DELETION": "Potrjujem brisanje"
 });
 }
