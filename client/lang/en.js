@@ -6,6 +6,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('en', {
+    'AssetAdmin.DETAILS': 'Edit',
     "AssetAdmin.ADD_FILES": "Add from files",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Add folder",
     "AssetAdmin.BACK": "Back",
