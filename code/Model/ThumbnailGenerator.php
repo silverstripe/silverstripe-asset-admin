@@ -60,10 +60,15 @@ class ThumbnailGenerator
     ];
 
     /**
-     * @var string
-     * @config
+     * @var string The default method to use for generating thumbnails if a specific method hasn't been
+     * set for a given generator instance.
      */
     private static $method = 'FitMax';
+
+    /**
+     * The method that this generator instance will use to generate thumbnails.
+     */
+    private string $thumbnailMethod = '';
 
     /**
      * Generate thumbnail and return the "src" property for this thumbnail
@@ -108,7 +113,7 @@ class ThumbnailGenerator
         }
 
         // Make large thumbnail
-        $method = $this->config()->get('method');
+        $method = $this->getThumbnailMethod();
         return $file->$method($width, $height);
     }
 
@@ -171,6 +176,27 @@ class ThumbnailGenerator
     public function setGenerates($generates)
     {
         $this->generates = $generates;
+        return $this;
+    }
+
+    /**
+     * Get the method which will be used to generate thumbnails.
+     */
+    public function getThumbnailMethod(): string
+    {
+        if ($this->thumbnailMethod) {
+            return $this->thumbnailMethod;
+        }
+        return static::config()->get('method');
+    }
+
+    /**
+     * Set the method which will be used to generate thumbnails.
+     * Pass an empty string to reset to the default method.
+     */
+    public function setThumbnailMethod(string $method): static
+    {
+        $this->thumbnailMethod = $method;
         return $this;
     }
 }

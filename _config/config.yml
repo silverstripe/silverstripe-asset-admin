@@ -18,6 +18,7 @@ SilverStripe\Core\Injector\Injector:
     class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
     properties:
       Generates: true
+      thumbnailMethod: 'Fill'
   SilverStripe\AssetAdmin\Controller\AssetAdmin:
     properties:
       ThumbnailGenerator: '%$SilverStripe\AssetAdmin\Model\ThumbnailGenerator.assetadmin'
@@ -53,3 +54,4 @@ SilverStripe\Core\Injector\Injector:
     class: SilverStripe\AssetAdmin\Model\ThumbnailGenerator
     properties:
       Generates: false
+      thumbnailMethod: 'Fill'

@@ -90,12 +90,27 @@ class FileTypeResolver
      */
     public static function resolveFileThumbnail($object)
     {
+        // If we're allowed to generate thumbnails for this file, tell the generator it's allowed to do it.
+        $generator = static::singleton()->getThumbnailGenerator();
+        $idsAllowed = FolderTypeResolver::getIdsAllowedToGenerateThumbnails();
+        $shouldGenerateThumbnail = !empty($idsAllowed) && in_array($object->ID, $idsAllowed);
+        if ($shouldGenerateThumbnail) {
+            $origGenerates = $generator->getGenerates();
+            $generator->setGenerates(true);
+        }
+
         // Make large thumbnail
         $width = AssetAdmin::config()->uninherited('thumbnail_width');
         $height = AssetAdmin::config()->uninherited('thumbnail_height');
-        return static::singleton()
-            ->getThumbnailGenerator()
-            ->generateThumbnailLink($object, $width, $height);
+
+        try {
+            return $generator->generateThumbnailLink($object, $width, $height);
+        } finally {
+            // Make sure to set the generates value back to what it was, regardless of what happens
+            if ($shouldGenerateThumbnail) {
+                $generator->setGenerates($origGenerates);
+            }
+        }
     }
 
     /**

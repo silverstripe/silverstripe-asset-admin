@@ -42,13 +42,13 @@ class UploadField extends FormField implements FileHandleField
      * @config
      * @var int
      */
-    private static $thumbnail_width = 60;
+    private static $thumbnail_width = 120;
 
     /**
      * @config
      * @var int
      */
-    private static $thumbnail_height = 60;
+    private static $thumbnail_height = 120;
 
     /**
      * Set if uploading new files is enabled.
