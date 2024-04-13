@@ -1,3 +1,4 @@
+@retry
 Feature: File details
   As a cms author
   I want to see file details
