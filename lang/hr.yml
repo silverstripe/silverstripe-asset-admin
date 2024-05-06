@@ -15,6 +15,7 @@ hr:
     AppCategoryAudio: Zvuk
     AppCategoryDocument: Dokument
     AppCategoryImage: Slika
+    AppCategoryVideo: Video
     AttributesDescription: 'Ove promjene će utjecati samo na specifičan smještan ove datoteke.'
     CREATED: 'Prvi prijenos'
     Caption: Natpis

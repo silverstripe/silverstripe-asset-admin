@@ -23,6 +23,7 @@ sk:
     AppCategoryAudio: Zvuk
     AppCategoryDocument: Dokument
     AppCategoryImage: Obrázok
+    AppCategoryVideo: Video
     AttributesDescription: 'Tieto zmeny ovplyvnia iba toto konkrétne umiestnenie súboru.'
     BACKLINKCOUNT: 'Použité na:'
     CREATED: 'Prvýkrát nahrané'
@@ -81,6 +82,7 @@ sk:
     ROOTNAME: '(Najvyššia úroveň)'
     SAVE: Uložiť
     SAVED: Uložené
+    SHOWINSEARRCH: 'Zobraziť vo vyhľadávaní?'
     VIEWERGROUPS: 'Skupiny prezeračov'
     VIEWERMEMBERS: Prezerači
   SilverStripe\AssetAdmin\Forms\FileFormFactory:

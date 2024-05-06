@@ -15,6 +15,7 @@ da:
     AppCategoryAudio: Lyd
     AppCategoryDocument: Dokument
     AppCategoryImage: Billede
+    AppCategoryVideo: Video
     AttributesDescription: 'Disse ændringer har kun effekt på denne specifikke placering af filen.'
     CREATED: 'Først uploadet'
     Caption: Billedtekst

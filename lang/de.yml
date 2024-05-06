@@ -20,8 +20,10 @@ de:
     AltText: 'Alternativtext (alt)'
     AltTextTip: 'Beschreibung für Besucher, die das Bild nicht sehen können (mit Screenreadern oder Bildblockern). Empfohlen für Bilder, die einen einzigartigen Kontext zum Inhalt bieten.'
     AppCategoryArchive: Archiv
+    AppCategoryAudio: Audio
     AppCategoryDocument: Dokument
     AppCategoryImage: Bild
+    AppCategoryVideo: Video
     AttributesDescription: 'Diese Änderungen wirken sich nur auf diese bestimmte Platzierung der Datei aus.'
     CREATED: 'Zuerst hochgeladen'
     Caption: Bildunterschrift

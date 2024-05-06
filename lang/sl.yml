@@ -23,6 +23,7 @@ sl:
     AppCategoryAudio: Avdio
     AppCategoryDocument: Dokument
     AppCategoryImage: Slika
+    AppCategoryVideo: Video
     AttributesDescription: 'Spremembe bodo vplivale samo na to specifično umestitev datoteke.'
     CREATED: 'Prvič preneseno'
     Caption: 'Naslov slike'
@@ -50,7 +51,7 @@ sl:
     PUBLISH_BUTTON: Objavi
     Placement: Umestitev
     SAVEDFILE: 'Datoteka shranjena'
-    TitleTooltip: 'Besedilo za oznako ''TITLE'' (namig)'
+    TitleTooltip: "Besedilo za oznako 'TITLE' (namig)"
     TitleTooltipTip: 'Ponudi podrobnejšo razlago, če je potrebno. Razlaga se izpiše ob prehodu z miško nad besedilom.'
     UNKNOWN: Neznano
     UNPUBLISH_BUTTON: 'Umakni iz objave'
