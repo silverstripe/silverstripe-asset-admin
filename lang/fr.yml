@@ -13,13 +13,13 @@ fr:
     AltText: 'Texte alternatif (alt)'
     AppCategoryArchive: Archiver
     AppCategoryVideo: Vidéo
-    AttributesDescription: 'Ces modifications n''affecteront que cet emplacement spécifique du fichier.'
+    AttributesDescription: "Ces modifications n'affecteront que cet emplacement spécifique du fichier."
     CREATED: 'Premier téléversement'
     Caption: Légende
-    CreatePermissionDenied: 'Vous n''avez pas l''autorisation d''ajouter des fichiers'
+    CreatePermissionDenied: "Vous n'avez pas l'autorisation d'ajouter des fichiers"
     CurrentFolderOnly: 'Limiter au dossier actuel et ses sous-dossiers ?'
     DELETE_BUTTON: Supprimer
-    ErrorItemPermissionDenied: 'Vous n''avez pas les autorisations requises pour modifier {ObjectTitle}'
+    ErrorItemPermissionDenied: "Vous n'avez pas les autorisations requises pour modifier {ObjectTitle}"
     ErrorNotFound: '{Type} introuvable'
     FILE_NOT_FOUND: 'Fichier introuvable'
     Filetype: 'Type de fichier'
@@ -31,7 +31,7 @@ fr:
     MENUTITLE: Fichiers
     NOSUMMARY: 'Aucun résumé disponible'
     NewFile: 'Nouveau {file}'
-    PATH: 'Chemin d''accès'
+    PATH: "Chemin d'accès"
     PUBLISHED: Publié
     PUBLISH_BUTTON: Publier
     Placement: Emplacement
@@ -48,7 +48,7 @@ fr:
     ACCESSHEADER: 'Qui peut visualiser ce fichier ?'
     ANYONE: 'Tout le monde'
     EDITHEADER: 'Qui peut modifier ce fichier ?'
-    EDITORGROUPS: 'Groupes d''édition'
+    EDITORGROUPS: "Groupes d'édition"
     FILENAME: 'Nom de fichier'
     FOLDERLOCATION: Emplacement
     INHERIT: 'Hérite du dossier parent'
@@ -83,7 +83,7 @@ fr:
     Cancel: Annuler
     ERROR_ABSOLUTE: 'Seules des url absolues peuvent être intégrées'
     InsertMedia: 'Insérer le média'
-    UrlDescription: 'Insérer des vidéos Youtube ou Vimeo, des images et d''autres médias directement à partir du web.'
+    UrlDescription: "Insérer des vidéos Youtube ou Vimeo, des images et d'autres médias directement à partir du web."
   SilverStripe\AssetAdmin\Forms\UploadField:
     ErrorMaxFilesReached:
       many: 'Vous ne pouvez pas téléverser plus de {count} fichiers.'
