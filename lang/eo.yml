@@ -75,6 +75,7 @@ eo:
     ROOTNAME: '(Supra nivelo)'
     SAVE: Konservi
     SAVED: Konservita
+    SHOWINSEARRCH: 'Vidigi en serĉo?'
     VIEWERGROUPS: 'Grupoj de vidantoj'
     VIEWERMEMBERS: 'Vidantaj uzantoj'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:

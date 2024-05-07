@@ -96,7 +96,7 @@ nl:
   SilverStripe\AssetAdmin\Forms\RemoteFileFormFactory:
     AddMedia: 'Media toevoegen'
     Cancel: Annuleren
-    ERROR_ABSOLUTE: 'Alleen volledige URL''s kunnen worden gebruikt'
+    ERROR_ABSOLUTE: "Alleen volledige URL's kunnen worden gebruikt"
     ERROR_EMBED: 'Met deze URL is geen embed te genereren'
     ERROR_HOSTNAME: 'Deze hostnaam is niet toegestaan'
     ERROR_PORT: 'Deze poort is niet toegestaan'

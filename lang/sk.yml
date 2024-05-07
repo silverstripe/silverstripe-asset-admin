@@ -81,6 +81,7 @@ sk:
     ROOTNAME: '(Najvyššia úroveň)'
     SAVE: Uložiť
     SAVED: Uložené
+    SHOWINSEARRCH: 'Zobraziť vo vyhľadávaní?'
     VIEWERGROUPS: 'Skupiny prezeračov'
     VIEWERMEMBERS: Prezerači
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
