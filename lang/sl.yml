@@ -50,7 +50,7 @@ sl:
     PUBLISH_BUTTON: Objavi
     Placement: Umestitev
     SAVEDFILE: 'Datoteka shranjena'
-    TitleTooltip: 'Besedilo za oznako ''TITLE'' (namig)'
+    TitleTooltip: "Besedilo za oznako 'TITLE' (namig)"
     TitleTooltipTip: 'Ponudi podrobnejšo razlago, če je potrebno. Razlaga se izpiše ob prehodu z miško nad besedilom.'
     UNKNOWN: Neznano
     UNPUBLISH_BUTTON: 'Umakni iz objave'
