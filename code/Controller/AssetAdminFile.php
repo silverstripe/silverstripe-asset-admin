@@ -35,7 +35,7 @@ class AssetAdminFile extends DataExtension
      */
     private static $insert_height = 400;
 
-    public function updateCMSEditLink(&$link)
+    protected function updateCMSEditLink(&$link)
     {
         // Update edit link for this file to point to the new asset admin
         $controller = AssetAdmin::singleton();
