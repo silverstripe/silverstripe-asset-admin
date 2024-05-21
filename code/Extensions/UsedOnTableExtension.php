@@ -19,7 +19,7 @@ class UsedOnTableExtension extends Extension
     /**
      * @var array $excludedClasses
      */
-    public function updateUsageExcludedClasses(array &$excludedClasses)
+    protected function updateUsageExcludedClasses(array &$excludedClasses)
     {
         $excludedClasses[] = FileLink::class;
         $excludedClasses[] = Member::class;
@@ -28,7 +28,7 @@ class UsedOnTableExtension extends Extension
     /**
      * @param DataObject $dataObject|null
      */
-    public function updateUsageDataObject(?DataObject &$dataObject)
+    protected function updateUsageDataObject(?DataObject &$dataObject)
     {
         if ($dataObject instanceof Folder) {
             $dataObject = null;

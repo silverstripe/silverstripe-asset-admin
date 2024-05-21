@@ -22,7 +22,7 @@ class CampaignAdminExtension extends Extension
      * @param array $actions
      * @param File $record
      */
-    public function updatePopoverActions(&$actions, $record)
+    protected function updatePopoverActions(&$actions, $record)
     {
         if (!Permission::check('CMS_ACCESS_CampaignAdmin')) {
             return;
