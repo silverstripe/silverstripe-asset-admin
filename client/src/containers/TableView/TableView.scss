@@ -1,3 +1,7 @@
+th.sort--disabled>span:after {
+  content: "";
+}
+
 .gallery__table {
   margin-bottom: -$panel-padding-y;
 
@@ -215,8 +219,4 @@ $gallery-list-thumb-height: 68px;
   display: inline;
   font-family: "silverstripe", sans-serif;
   content: "I";
-}
-
-th.sort--disabled>span:after {
-  content: "";
 }

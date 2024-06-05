@@ -54,8 +54,19 @@
   margin-bottom: 2px;
 }
 
-.editor-header__field {
+.editor__status-flag {
+  color: #f46b00;
+  background-color: #fff7f2;
+  border-color: #f46b00;
+  clear: both;
+  text-transform: uppercase;
+  display: inline-block;
+  position: relative;
+  line-height: 1rem;
+  margin-left: 3px;
+}
 
+.editor-header__field {
   .file-status-icon {
     margin-left: 6px;
 
@@ -83,18 +94,6 @@
   }
 }
 
-.editor__status-flag {
-  color: #f46b00;
-  background-color: #fff7f2;
-  border-color: #f46b00;
-  clear: both;
-  text-transform: uppercase;
-  display: inline-block;
-  position: relative;
-  line-height: 1rem;
-  margin-left: 3px;
-}
-
 .editor__specs {
   color: $text-muted;
   font-size: $font-size-xxs;
@@ -104,6 +103,16 @@
 
 .editor__top-message {
     margin: #{-(calc($panel-padding-x / 2))} #{-$panel-padding-x} $spacer;
+}
+
+.editor__thumbnail {
+  display: block;
+  max-width: 100%;
+  max-height: $cms-panel-md * .75;
+  min-height: 80px;
+  margin: auto;
+  transform: scale(1);
+  transition: all .5s;
 }
 
 .editor__file-preview {
@@ -159,16 +168,6 @@
   }
 }
 
-.editor__thumbnail {
-  display: block;
-  max-width: 100%;
-  max-height: $cms-panel-md * .75;
-  min-height: 80px;
-  margin: auto;
-  transform: scale(1);
-  transition: all .5s;
-}
-
 .editor__file-preview-message--file-missing {
   margin: #{$spacer * 2} 0 $spacer ;
   font-size: $font-size-lg;
@@ -191,7 +190,7 @@
   flex-wrap: wrap;
   margin-top: -10px;
 
-  & > div {
+  > div {
     width: 100%;
   }
 

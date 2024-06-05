@@ -99,18 +99,20 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item__thumbnail--loading {
-  background: white url("../../images/spinner.gif") center center no-repeat;
+  background: #fff url("../../images/spinner.gif") center center no-repeat;
 }
 
+/* stylelint-disable media-feature-name-no-unknown */
 @media
   only screen and (min-device-pixel-ratio: 2),
   only screen and (resolution >= 192dpi),
   only screen and (resolution >= 2dppx) {
     .gallery-item__thumbnail--loading {
-      background: white url("../../images/spinner@2x.gif") center center no-repeat;
+      background: #fff url("../../images/spinner@2x.gif") center center no-repeat;
       background-size: 43px 43px;
     }
   }
+  /* stylelint-enable media-feature-name-no-unknown */
 
 .gallery-item__thumbnail--small {
   background-size: auto;

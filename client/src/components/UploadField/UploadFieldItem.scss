@@ -43,13 +43,6 @@ $uploadfield-item-label-height: 40px;
   border-top-right-radius: $border-radius-sm;
 }
 
-.uploadfield-item--folder {
-  .uploadfield-item__thumbnail {
-    background: url("../../images/folder.png") 12px 14px no-repeat;
-    background-size: 27px 24px;
-  }
-}
-
 .uploadfield-item__thumbnail {
   height: $file-item-thumb-height;
   width: $file-item-thumb-width;
@@ -58,6 +51,13 @@ $uploadfield-item-label-height: 40px;
   background-position: center center;
   background-size: cover;
   border-radius: $border-radius-sm $border-radius-sm 0 0;
+}
+
+.uploadfield-item--folder {
+  .uploadfield-item__thumbnail {
+    background: url("../../images/folder.png") 12px 14px no-repeat;
+    background-size: 27px 24px;
+  }
 }
 
 .uploadfield-item__thumbnail--small {
@@ -147,7 +147,7 @@ $uploadfield-item-label-height: 40px;
   height: 28px;
   margin: 16px 5px;
   padding: 0 10px;
-  color: white;
+  color: #fff;
   background: $brand-danger;
   border-radius: 14px;
   max-width: 50%;

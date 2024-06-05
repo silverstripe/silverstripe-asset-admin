@@ -61,7 +61,6 @@
 
 .gallery__back--droppable-hover {
   background-color: $btn-secondary-bg;
-  border-color: transparent;
   transform: scale(1.3);
   border: 1px solid $brand-primary;
 }
@@ -122,23 +121,8 @@
   // Override chosen inline width to fit to icon
   .chosen-container {
     @include media-breakpoint-down(sm) {
-      width: auto !important; // sass-lint:disable-line no-important
+      width: auto !important;
     }
-  }
-
-  .chosen-container-active {
-    .chosen-single {
-      outline: 5px auto -webkit-focus-ring-color;
-    }
-  }
-
-  .gallery & .chosen-single {
-    border: 0;
-    filter: none; //IE9
-    background: none;
-    box-shadow: none;
-    color: inherit;
-    margin-top: -1px;
   }
 
   .chosen-single {
@@ -172,6 +156,21 @@
         font-size: $font-size-lg;
       }
     }
+  }
+
+  .chosen-container-active {
+    .chosen-single {
+      outline: 5px auto -webkit-focus-ring-color;
+    }
+  }
+
+  .gallery & .chosen-single {
+    border: 0;
+    filter: none; //IE9
+    background: none;
+    box-shadow: none;
+    color: inherit;
+    margin-top: -1px;
   }
 
   .chosen-drop {
@@ -256,6 +255,14 @@
 $griddle-button-width: 36px;
 $griddle-button-height: 30px;
 
+.griddle-previous button:before {
+  content: "'";
+}
+
+.griddle-next button:before {
+  content: "&";
+}
+
 .griddle-previous,
 .griddle-next {
   width: $griddle-button-width; // hold space so pagination doesn't move around
@@ -269,15 +276,6 @@ $griddle-button-height: 30px;
     position: relative;
     border-radius: $btn-border-radius;
     overflow: hidden;
-
-    &:hover {
-      background-color: $gray-200;
-      border-color: transparent;
-
-      &:before {
-        background-color: $gray-200;
-      }
-    }
 
     &:before {
       font-family: "silverstripe";
@@ -294,15 +292,16 @@ $griddle-button-height: 30px;
       -webkit-font-smoothing: antialiased;
       line-height: $line-height-base;
     }
+
+    &:hover {
+      background-color: $gray-200;
+      border-color: transparent;
+
+      &:before {
+        background-color: $gray-200;
+      }
+    }
   }
-}
-
-.griddle-previous button:before {
-  content: "'";
-}
-
-.griddle-next button:before {
-  content: "&";
 }
 // Pagination end
 

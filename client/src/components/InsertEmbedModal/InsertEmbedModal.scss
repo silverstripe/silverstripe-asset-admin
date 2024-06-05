@@ -90,7 +90,7 @@
     $placement-image-width: 40px;
     $placement-image-height: 36px;
 
-    &-label {
+    .form-check-label {
       display: block;
       cursor: pointer;
 
@@ -122,7 +122,7 @@
       }
     }
 
-    &-input {
+    .form-check-input {
       position: absolute;
       left: -9999px;
 
@@ -137,55 +137,53 @@
       }
     }
 
-    .option-val {
-      &--leftAlone { // sass-lint:disable-line class-name-format
-        + span:before {
-          background-position-y: -$placement-image-height;
-        }
-
-        &.checked + span:before {
-          background-position-y: 0;
-        }
+    .option-val--leftAlone {
+      + span:before {
+        background-position-y: -$placement-image-height;
       }
 
-      &--center {
-        + span:before {
-          background-position-y: 3 * -$placement-image-height;
-        }
+      &.checked + span:before {
+        background-position-y: 0;
+      }
+    }
 
-        &.checked + span:before {
-          background-position-y: 2 * -$placement-image-height;
-        }
+    .option-val--center {
+      + span:before {
+        background-position-y: 3 * -$placement-image-height;
       }
 
-      &--rightAlone { // sass-lint:disable-line class-name-format
-        + span:before {
-          background-position-y: 5 * -$placement-image-height;
-        }
+      &.checked + span:before {
+        background-position-y: 2 * -$placement-image-height;
+      }
+    }
 
-        &.checked + span:before {
-          background-position-y: 4 * -$placement-image-height;
-        }
+    .option-val--rightAlone {
+      + span:before {
+        background-position-y: 5 * -$placement-image-height;
       }
 
-      &--left {
-        + span:before {
-          background-position-y: 7 * -$placement-image-height;
-        }
+      &.checked + span:before {
+        background-position-y: 4 * -$placement-image-height;
+      }
+    }
 
-        &.checked + span:before {
-          background-position-y: 6 * -$placement-image-height;
-        }
+    .option-val--left {
+      + span:before {
+        background-position-y: 7 * -$placement-image-height;
       }
 
-      &--right {
-        + span:before {
-          background-position-y: 9 * -$placement-image-height;
-        }
+      &.checked + span:before {
+        background-position-y: 6 * -$placement-image-height;
+      }
+    }
 
-        &.checked + span:before {
-          background-position-y: 8 * -$placement-image-height;
-        }
+    .option-val--right {
+      + span:before {
+        background-position-y: 9 * -$placement-image-height;
+      }
+
+      &.checked + span:before {
+        background-position-y: 8 * -$placement-image-height;
       }
     }
   }
