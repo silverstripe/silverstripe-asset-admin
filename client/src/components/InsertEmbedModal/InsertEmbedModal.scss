@@ -96,13 +96,11 @@
 
       span {
         display: block;
-
         color: rgba($body-color, 0);
         font-size: 0.9rem;
         letter-spacing: 1px;
         text-align: center;
         text-transform: uppercase;
-
         transition: color .1s ease-out;
 
         &:before {

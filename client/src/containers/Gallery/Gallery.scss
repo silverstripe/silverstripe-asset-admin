@@ -9,7 +9,9 @@
     // Avoid using mixin so we can pass custom focus shadow properly
     @if $enable-shadows {
       box-shadow: $input-box-shadow, $input-focus-box-shadow;
-    } @else {
+    }
+
+ @else {
       box-shadow: $input-focus-box-shadow;
     }
   }
@@ -44,7 +46,7 @@
 .gallery__back {
   position: relative;
 
-  &.ss-ui-button::before {
+  &.ss-ui-button:before {
     font-size: 23px;
   }
 
@@ -126,7 +128,6 @@
 
   .chosen-container-active {
     .chosen-single {
-      outline: 1px dotted $component-active-border-color;
       outline: 5px auto -webkit-focus-ring-color;
     }
   }
@@ -158,9 +159,9 @@
       }
     }
 
-    > span::before {
+    > span:before {
       content: "\e003";
-      font-family: silverstripe;
+      font-family: "silverstripe";
       color: $btn-secondary-color;
       margin-right: 5px;
       position: relative;
@@ -242,6 +243,7 @@
     background-image: none;
     text-align: center;
     display: inline;
+
     @include gridle-select-focus();
   }
 }
@@ -272,13 +274,13 @@ $griddle-button-height: 30px;
       background-color: $gray-200;
       border-color: transparent;
 
-      &::before {
+      &:before {
         background-color: $gray-200;
       }
     }
 
-    &::before {
-      font-family: silverstripe;
+    &:before {
+      font-family: "silverstripe";
       color: $text-muted;
       width: $griddle-button-width;
       height: $griddle-button-height;
@@ -295,11 +297,11 @@ $griddle-button-height: 30px;
   }
 }
 
-.griddle-previous button::before {
+.griddle-previous button:before {
   content: "'";
 }
 
-.griddle-next button::before {
+.griddle-next button:before {
   content: "&";
 }
 // Pagination end

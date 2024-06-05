@@ -1,5 +1,4 @@
 .editor-header {
-
   display: flex;
   flex-wrap: nowrap;
   justify-content: flex-start;
@@ -13,6 +12,7 @@
 
     &--md-below {
       display: none;
+
       @include media-breakpoint-down(md) {
         display: block;
         margin-left: 0;
@@ -42,6 +42,7 @@
 
     &--lg-above {
       display: none;
+
       @include media-breakpoint-up(lg) {
         display: block;
       }

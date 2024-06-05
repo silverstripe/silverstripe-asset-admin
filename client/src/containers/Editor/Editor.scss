@@ -130,7 +130,7 @@
 
 .editor__file-preview-link {
 
-  &::before {
+  &:before {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -145,15 +145,15 @@
     font-size: 22px;
     opacity: 0;
     content: "=";
-    font-family: silverstripe;
+    font-family: "silverstripe";
     line-height: 27px;
     z-index: 1;
     transition: all .5s;
   }
 
   &:hover,
-  &:hover::before,
-  &:active::before {
+  &:hover:before,
+  &:active:before {
     text-decoration: none;
     opacity: 1;
   }
