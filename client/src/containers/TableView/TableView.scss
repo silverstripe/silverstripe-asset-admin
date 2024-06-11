@@ -1,3 +1,7 @@
+th.sort--disabled>span:after {
+  content: "";
+}
+
 .gallery__table {
   margin-bottom: -$panel-padding-y;
 
@@ -23,11 +27,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
 
-      &::after {
+      &:after {
         color: lighten($text-muted, 20%);
         content: ")";
         display: inline-block;
-        font-family: silverstripe;
+        font-family: "silverstripe";
         margin-left: 4px;
       }
     }
@@ -70,16 +74,16 @@
   .sort-ascending {
     border-bottom: 1px solid $component-active-border-color;
 
-    > span::after {
+    > span:after {
       color: $component-active-border-color;
     }
   }
 
-  .sort-descending > span::after {
+  .sort-descending > span:after {
     content: "*";
   }
 
-  .sort-ascending > span::after {
+  .sort-ascending > span:after {
     content: "(";
   }
 
@@ -114,7 +118,7 @@
   width: 1%;
 
   // Increase size of checkbox slightly
-  input[type=checkbox] {
+  input[type="checkbox"] {
     width: 14px;
     height: 14px;
   }
@@ -182,12 +186,12 @@ $gallery-list-thumb-height: 68px;
   height: $gallery-list-thumb-height;
   width: $gallery-list-thumb-width;
 
-  &::after {
+  &:after {
     content: "<";
     line-height: $gallery-list-thumb-height;
     font-size: 30px;
     display: inline;
-    font-family: silverstripe, sans-serif;
+    font-family: "silverstripe", sans-serif;
     color: $white;
     opacity: .8;
   }
@@ -209,14 +213,10 @@ $gallery-list-thumb-height: 68px;
   overflow: hidden;
 }
 
-.gallery__progress-bar--complete::after {
+.gallery__progress-bar--complete:after {
   color: $brand-success;
   font-size: 20px;
   display: inline;
-  font-family: silverstripe, sans-serif;
+  font-family: "silverstripe", sans-serif;
   content: "I";
-}
-
-th.sort--disabled>span:after {
-  content: "";
 }

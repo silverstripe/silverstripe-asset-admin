@@ -32,7 +32,7 @@ $uploadfield-item-label-height: 40px;
     border-bottom-right-radius: $border-radius-sm;
   }
 
-  &:not(.uploadfield-item--error):not(.uploadfield-item--folder):hover .uploadfield-item--overlay {
+  &:not(.uploadfield-item--error, .uploadfield-item--folder):hover .uploadfield-item--overlay {
     opacity: 1;
     display: block;
   }
@@ -43,13 +43,6 @@ $uploadfield-item-label-height: 40px;
   border-top-right-radius: $border-radius-sm;
 }
 
-.uploadfield-item--folder {
-  .uploadfield-item__thumbnail {
-    background: url("../../images/folder.png") 12px 14px no-repeat;
-    background-size: 27px 24px;
-  }
-}
-
 .uploadfield-item__thumbnail {
   height: $file-item-thumb-height;
   width: $file-item-thumb-width;
@@ -58,6 +51,13 @@ $uploadfield-item-label-height: 40px;
   background-position: center center;
   background-size: cover;
   border-radius: $border-radius-sm $border-radius-sm 0 0;
+}
+
+.uploadfield-item--folder {
+  .uploadfield-item__thumbnail {
+    background: url("../../images/folder.png") 12px 14px no-repeat;
+    background-size: 27px 24px;
+  }
 }
 
 .uploadfield-item__thumbnail--small {
@@ -130,7 +130,7 @@ $uploadfield-item-label-height: 40px;
   border-radius: 10px;
   overflow: hidden;
 
-  + .uploadfield-item__title .uploadfield-item__checkbox-label::before {
+  + .uploadfield-item__title .uploadfield-item__checkbox-label:before {
     color: $body-color;
   }
 }
@@ -147,7 +147,7 @@ $uploadfield-item-label-height: 40px;
   height: 28px;
   margin: 16px 5px;
   padding: 0 10px;
-  color: white;
+  color: #fff;
   background: $brand-danger;
   border-radius: 14px;
   max-width: 50%;
@@ -160,11 +160,11 @@ $uploadfield-item-label-height: 40px;
   line-height: 38px;
   padding: 11px 5px;
 
-  &::after {
+  &:after {
     color: $brand-success;
     font-size: 30px;
     display: inline;
-    font-family: silverstripe, sans-serif;
+    font-family: "silverstripe", sans-serif;
     content: "I";
   }
 }
