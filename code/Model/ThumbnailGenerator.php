@@ -55,8 +55,8 @@ class ThumbnailGenerator
      * @var array
      */
     private static $thumbnail_links = [
-        AssetStore::VISIBILITY_PROTECTED => self::INLINE,
-        AssetStore::VISIBILITY_PUBLIC => self::URL,
+        AssetStore::VISIBILITY_PROTECTED => ThumbnailGenerator::INLINE,
+        AssetStore::VISIBILITY_PUBLIC => ThumbnailGenerator::URL,
     ];
 
     /**
@@ -141,9 +141,9 @@ class ThumbnailGenerator
 
         // Build thumbnail
         switch ($urlRule) {
-            case self::URL:
+            case ThumbnailGenerator::URL:
                 return $thumbnail->getURL();
-            case self::INLINE:
+            case ThumbnailGenerator::INLINE:
                 // Generate inline content
                 $base64 = base64_encode($thumbnail->getString() ?? '');
                 return sprintf(

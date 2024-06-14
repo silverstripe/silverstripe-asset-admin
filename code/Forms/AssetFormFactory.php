@@ -92,7 +92,7 @@ abstract class AssetFormFactory implements FormFactory
             $form->loadDataFrom($record);
 
             // Mark as readonly for some types
-            if ($this->getFormType($context) === self::TYPE_ADMIN && !$record->canEdit()) {
+            if ($this->getFormType($context) === AssetFormFactory::TYPE_ADMIN && !$record->canEdit()) {
                 $form->makeReadonly();
             }
         }
@@ -242,7 +242,7 @@ abstract class AssetFormFactory implements FormFactory
                 ->setRecordID($record->ID)
                 ->addExtraClass('editor__file-preview');
 
-            if ($this->getFormType($context) !== self::TYPE_ADMIN) {
+            if ($this->getFormType($context) !== AssetFormFactory::TYPE_ADMIN) {
                 $previewField->performReadonlyTransformation();
             }
 

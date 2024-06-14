@@ -19,21 +19,21 @@ class FileExtension extends DataExtension implements TestOnly
 
     public function canDelete($member)
     {
-        return self::$canDelete;
+        return FileExtension::$canDelete;
     }
 
     public function canPublish($member = null)
     {
-        return self::$canPublish;
+        return FileExtension::$canPublish;
     }
 
     public function canUnpublish($member = null)
     {
-        return self::$canUnpublish;
+        return FileExtension::$canUnpublish;
     }
 
     public function canEdit($member = null)
     {
-        return self::$canEdit;
+        return FileExtension::$canEdit;
     }
 }
