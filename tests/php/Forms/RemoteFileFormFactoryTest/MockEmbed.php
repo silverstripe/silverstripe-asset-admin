@@ -69,7 +69,7 @@ class MockEmbed implements Embeddable, TestOnly
 
     /**
      * @param array $options
-     * @return self
+     * @return MockEmbed
      */
     public function setOptions(array $options)
     {
