@@ -92,7 +92,7 @@ class RemoteFileFormFactory implements FormFactory
      * @param array $context
      * @return Form
      */
-    public function getForm(RequestHandler $controller = null, $name = self::DEFAULT_NAME, $context = [])
+    public function getForm(RequestHandler $controller = null, $name = RemoteFileFormFactory::DEFAULT_NAME, $context = [])
     {
         // Allow form to be disabled
         if (!static::config()->get('enabled')) {
@@ -316,8 +316,8 @@ class RemoteFileFormFactory implements FormFactory
     protected function validateURLScheme($url)
     {
         $scheme = strtolower(parse_url($url ?? '', PHP_URL_SCHEME) ?? '');
-        $allowedSchemes = self::config()->get('fileurl_scheme_whitelist');
-        $disallowedSchemes = self::config()->get('fileurl_scheme_blacklist');
+        $allowedSchemes = static::config()->get('fileurl_scheme_whitelist');
+        $disallowedSchemes = static::config()->get('fileurl_scheme_blacklist');
         if (!$scheme
             || ($allowedSchemes && !in_array($scheme, $allowedSchemes ?? []))
             || ($disallowedSchemes && in_array($scheme, $disallowedSchemes ?? []))
@@ -336,8 +336,8 @@ class RemoteFileFormFactory implements FormFactory
     protected function validateURLHost($url)
     {
         $domain = strtolower(parse_url($url ?? '', PHP_URL_HOST) ?? '');
-        $allowedDomains = self::config()->get('fileurl_domain_whitelist');
-        $disallowedDomains = self::config()->get('fileurl_domain_blacklist');
+        $allowedDomains = static::config()->get('fileurl_domain_whitelist');
+        $disallowedDomains = static::config()->get('fileurl_domain_blacklist');
         if (!$domain
             || ($allowedDomains && !in_array($domain, $allowedDomains ?? []))
             || ($disallowedDomains && in_array($domain, $disallowedDomains ?? []))
@@ -359,8 +359,8 @@ class RemoteFileFormFactory implements FormFactory
         if (!$port) {
             return;
         }
-        $allowedPorts = self::config()->get('fileurl_port_whitelist');
-        $disallowedPorts = self::config()->get('fileurl_port_blacklist');
+        $allowedPorts = static::config()->get('fileurl_port_whitelist');
+        $disallowedPorts = static::config()->get('fileurl_port_blacklist');
         if (($allowedPorts && !in_array($port, $allowedPorts ?? []))
             || ($disallowedPorts && in_array($port, $disallowedPorts ?? []))
         ) {

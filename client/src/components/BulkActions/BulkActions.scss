@@ -67,7 +67,7 @@ $bulk-actions-width: 300px;
     margin-bottom: 0;
     height: 32px;
 
-    &[class*="font-icon-"]::before {
+    &[class*="font-icon-"]:before {
       font-size: 20px;
       line-height: 18px;
       position: relative;
@@ -114,16 +114,16 @@ $bulk-actions-width: 300px;
     padding-left: 22px;
     position: relative;
 
-    &::before {
+    &:before {
       position: absolute;
-      font-family: silverstripe;
+      font-family: "silverstripe";
       left: 4px;
       font-size: 14px;
       vertical-align: middle;
       margin-right: 4px;
     }
 
-    &:nth-child(1)::before {
+    &:nth-child(1):before {
       content: "g";
     }
   }
