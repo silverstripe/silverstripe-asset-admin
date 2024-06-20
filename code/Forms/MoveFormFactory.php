@@ -15,7 +15,7 @@ class MoveFormFactory implements FormFactory
 {
     use Extensible;
 
-    public function getForm(RequestHandler $controller = null, $name = self::DEFAULT_NAME, $context = [])
+    public function getForm(RequestHandler $controller = null, $name = MoveFormFactory::DEFAULT_NAME, $context = [])
     {
         $form = Form::create(
             $controller,

@@ -8,7 +8,6 @@ $gallery-item-label-height: 40px;
   border-color: $border-color-light $border-color $border-color-dark;
   width: $gallery-item-width;
   border-radius: $border-radius-sm;
-  transition: box-shadow $transition-speed-fast;
   height: $gallery-item-height;
   transition: opacity 250ms linear;
 
@@ -17,7 +16,7 @@ $gallery-item-label-height: 40px;
     cursor: pointer;
   }
 
-  &:not(.gallery-item--error):not(.gallery-item--folder):hover .gallery-item--overlay {
+  &:not(.gallery-item--error, .gallery-item--folder):hover .gallery-item--overlay {
     opacity: 1;
     display: block;
   }
@@ -72,7 +71,7 @@ $gallery-item-label-height: 40px;
     margin: 20px 0 0 17px;
   }
 
-  .file-status-icon__icon::before {
+  .file-status-icon__icon:before {
     color: $blue;
     font-size: 16px;
   }
@@ -100,18 +99,20 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item__thumbnail--loading {
-  background: white url("../../images/spinner.gif") center center no-repeat;
+  background: #fff url("../../images/spinner.gif") center center no-repeat;
 }
 
+/* stylelint-disable media-feature-name-no-unknown */
 @media
   only screen and (min-device-pixel-ratio: 2),
-  only screen and (min-resolution: 192dpi),
-  only screen and (min-resolution: 2dppx) {
+  only screen and (resolution >= 192dpi),
+  only screen and (resolution >= 2dppx) {
     .gallery-item__thumbnail--loading {
-      background: white url("../../images/spinner@2x.gif") center center no-repeat;
+      background: #fff url("../../images/spinner@2x.gif") center center no-repeat;
       background-size: 43px 43px;
     }
   }
+  /* stylelint-enable media-feature-name-no-unknown */
 
 .gallery-item__thumbnail--small {
   background-size: auto;
@@ -159,7 +160,7 @@ $gallery-item-label-height: 40px;
       display: none;
     }
 
-    &::before {
+    &:before {
       cursor: pointer;
       top: 0;
       bottom: 0;
@@ -179,7 +180,7 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled) {
-  .gallery-item--selectable &:hover::before {
+  .gallery-item--selectable &:hover:before {
     border: 1px solid $component-active-border-color;
   }
 }
@@ -188,14 +189,14 @@ $gallery-item-label-height: 40px;
 .gallery-item--error .gallery-item__checkbox-label,
 .gallery-item__upload-progress + .gallery-item__title .gallery-item__checkbox-label {
 
-  &::before {
+  &:before {
     font-size: 19px;
     border: 0;
     border-radius: 0;
     padding: 0;
   }
 
-  &:hover::before {
+  &:hover:before {
     border: 0;
   }
 }
@@ -209,7 +210,7 @@ $gallery-item-label-height: 40px;
     cursor: not-allowed;
   }
 
-  .gallery-item__checkbox-label::before {
+  .gallery-item__checkbox-label:before {
     color: $brand-danger;
   }
 }
@@ -232,19 +233,16 @@ $gallery-item-label-height: 40px;
   .gallery-item__thumbnail {
     position: relative;
 
-    &::after {
+    &:after {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       background: mix($white, $brand-danger, 20%);
       border-radius: 2px 2px 0 0;
     }
   }
 
-  &:hover .gallery-item__thumbnail::after,
+  &:hover .gallery-item__thumbnail:after,
   &:hover .gallery-item__error-message {
     background: mix($white, $brand-danger, 10%);
   }
@@ -267,7 +265,7 @@ $gallery-item-label-height: 40px;
   padding-top: 56px;
   text-align: center;
 
-  &::before {
+  &:before {
     margin-right: .385rem;
     position: relative;
     top: .2rem;
@@ -277,7 +275,7 @@ $gallery-item-label-height: 40px;
 .gallery-item--selected {
   border-color: $component-active-border-color;
 
-  .gallery-item__checkbox-label::before {
+  .gallery-item__checkbox-label:before {
     border-color: $component-active-border-color;
     background-color: $component-active-border-color;
     color: $white;
@@ -331,7 +329,7 @@ $gallery-item-label-height: 40px;
   overflow: hidden;
   background-color: $gray-300;
 
-  + .gallery-item__title .gallery-item__checkbox-label::before {
+  + .gallery-item__title .gallery-item__checkbox-label:before {
     color: $body-color;
   }
 }
@@ -376,7 +374,7 @@ $gallery-item-label-height: 40px;
   z-index: 1;
   margin: 5px 0 0 5px;
 
-  &:hover::after {
+  &:hover:after {
     font-size: $font-size-xxs;
     font-weight: 200;
     position: absolute;
@@ -391,7 +389,7 @@ $gallery-item-label-height: 40px;
   background-color: $state-draft-bg;
   border: 1px solid $state-draft;
 
-  &:hover::after {
+  &:hover:after {
     content: "DRAFT";
   }
 }
@@ -400,7 +398,7 @@ $gallery-item-label-height: 40px;
   background-color: $state-modified-bg;
   border: 1px solid $state-modified;
 
-  &:hover::after {
+  &:hover:after {
     content: "MODIFIED";
   }
 }
@@ -427,12 +425,10 @@ $gallery-item-label-height: 40px;
     opacity: 1;
   }
 }
+
 .gallery-item__drag-layer {
   position: fixed;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   pointer-events: none;
   z-index: 100;
 }
@@ -483,10 +479,7 @@ $gallery-item-label-height: 40px;
 .gallery-item__drag-shadow {
   display: inline-block;
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   transform: translate(0.75rem, -0.75rem);
   z-index: 103;
   border: 2px solid $component-active-border-color;
