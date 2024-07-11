@@ -116,4 +116,29 @@ class ThumbnailGeneratorTest extends SapphireTest
         $thumbnail = $generator->generateThumbnailLink($image, 100, 200);
         $this->assertEquals('/assets/906835357d/TestImage__FitMaxWzEwMCwyMDBd.png', $thumbnail);
     }
+
+    public function provideAnimatedThumbnail(): array
+    {
+        return [
+            [true],
+            [false],
+        ];
+    }
+
+    /**
+     * @dataProvider provideAnimatedThumbnail
+     */
+    public function testAnimatedThumbnail(bool $allowAnimation): void
+    {
+        $image = new Image();
+        $image->setFromLocalFile(__DIR__ . '/../Forms/fixtures/animated.gif', 'animated.gif');
+        $image->write();
+
+        ThumbnailGenerator::config()->set('method', 'Fit');
+        $generator = new ThumbnailGenerator();
+        $generator->setAllowsAnimation($allowAnimation);
+        $thumbnail = $generator->generateThumbnail($image, 100, 100);
+
+        $this->assertSame($allowAnimation, $thumbnail->getIsAnimated());
+    }
 }
