@@ -1,4 +1,4 @@
-@assets @retry @in-modal
+@assets @retry @in-modal @job1
 Feature: Insert an image into a page
   As a cms author
   I want to insert an image into a page
