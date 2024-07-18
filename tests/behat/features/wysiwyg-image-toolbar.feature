@@ -1,4 +1,4 @@
-@assets @retry
+@assets @retry @job3
 Feature: Use the WYSIWYG image toolbar
   As a cms author
   I want to edit and delete images using the context toolbar

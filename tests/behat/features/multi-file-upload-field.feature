@@ -1,4 +1,4 @@
-@assets @retry
+@assets @retry @job2
 Feature: Multi file Upload field
   As a cms author
   I want to interact with the upload field to select files

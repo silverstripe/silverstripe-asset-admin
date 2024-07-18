@@ -1,4 +1,4 @@
-@javascript @assets @retry
+@javascript @assets @retry @job2
 Feature: Manage file permissions
   As a cms author
   I want to set permissions on files
