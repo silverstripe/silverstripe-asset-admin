@@ -1,4 +1,4 @@
-@assets @retry
+@assets @retry @job1
 Feature: View File History
   As a cms author
   I want to view the history of a file

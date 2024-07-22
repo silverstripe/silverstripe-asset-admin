@@ -1,4 +1,4 @@
-@assets @retry
+@assets @retry @job3
 Feature: Single file Upload field
   As a cms author
   I want to interact with the upload field to select a file
