@@ -1,4 +1,4 @@
-@assets @retry
+@assets @retry @job1
 Feature: Change view for asset admin
   As a cms author
   I want to change the way I'm viewing files

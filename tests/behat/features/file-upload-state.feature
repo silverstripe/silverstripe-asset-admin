@@ -1,4 +1,4 @@
-@javascript @assets @retry
+@javascript @assets @retry @job1
 Feature: Upload file state
   As a cms author
   I want the file state to work correctly

@@ -1,4 +1,4 @@
-@assets @retry
+@assets @retry @job3
 Feature: Replace a file with a new file
   As a cms author
   I want to upload a new file that will replace an existing file
