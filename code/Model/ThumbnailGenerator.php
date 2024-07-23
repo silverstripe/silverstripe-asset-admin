@@ -4,9 +4,11 @@ namespace SilverStripe\AssetAdmin\Model;
 
 use LogicException;
 use SilverStripe\Assets\File;
+use SilverStripe\Assets\Image_Backend;
 use SilverStripe\Assets\Storage\AssetContainer;
 use SilverStripe\Assets\Storage\AssetStore;
 use SilverStripe\Assets\Storage\DBFile;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Config\Configurable;
 
 /**
@@ -65,6 +67,8 @@ class ThumbnailGenerator
      */
     private static $method = 'FitMax';
 
+    private bool $allowsAnimation = false;
+
     /**
      * Generate thumbnail and return the "src" property for this thumbnail
      *
@@ -107,9 +111,33 @@ class ThumbnailGenerator
             $file = $file->existingOnly();
         }
 
-        // Make large thumbnail
-        $method = $this->config()->get('method');
-        return $file->$method($width, $height);
+        // Disable animation while generating thumbnail
+        $origAllowAnimation = null;
+        if (!$this->getAllowsAnimation()) {
+            if (ClassInfo::hasMethod($file, 'getImageBackend')) {
+                /** @var Image_Backend $backend */
+                $backend = $file->getImageBackend();
+                $origAllowAnimation = $backend->getAllowsAnimationInManipulations();
+                $backend->setAllowsAnimationInManipulations(false);
+            } elseif ($file->getIsAnimated() && ClassInfo::hasMethod($file, 'RemoveAnimation')) {
+                $noAnimation = $file->RemoveAnimation();
+                if ($noAnimation) {
+                    $file = $noAnimation;
+                }
+            }
+        }
+
+        try {
+            // Make large thumbnail
+            $method = $this->config()->get('method');
+            $thumbnail = $file->$method($width, $height);
+        } finally {
+            if ($origAllowAnimation !== null) {
+                $backend->setAllowsAnimationInManipulations($origAllowAnimation);
+            }
+        }
+
+        return $thumbnail;
     }
 
     /**
@@ -171,6 +199,17 @@ class ThumbnailGenerator
     public function setGenerates($generates)
     {
         $this->generates = $generates;
+        return $this;
+    }
+
+    public function getAllowsAnimation(): bool
+    {
+        return $this->allowsAnimation;
+    }
+
+    public function setAllowsAnimation(bool $allows): static
+    {
+        $this->allowsAnimation = $allows;
         return $this;
     }
 }
