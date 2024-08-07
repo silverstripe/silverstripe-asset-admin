@@ -69,6 +69,7 @@ de:
     ROOTNAME: (Hauptebene)
     SAVE: Speichern
     SAVED: Gespeichert
+    SHOWINSEARRCH: 'In Suche anzeigen?'
     VIEWERGROUPS: Betrachtergruppen
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Datei herunterladen'
