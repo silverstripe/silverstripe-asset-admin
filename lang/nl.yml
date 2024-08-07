@@ -61,15 +61,19 @@ nl:
     ANYONE: Iedereen
     EDITHEADER: 'Wie kan het bestand bewerken?'
     EDITORGROUPS: 'Groepen met bewerkrechten'
+    EDITORMEMBERS: Bewerkers
     FILENAME: Bestandsnaam
     FOLDERLOCATION: Locatie
     INHERIT: 'Overnemen van bovenliggende map'
     LOGGED_IN: 'Ingelogde bezoekers'
     ONLY_GROUPS: 'Alleen deze groepen (selecteer)'
+    ONLY_MEMBERS: 'Alleen deze gebruikers (selecteer)'
     ROOTNAME: '(Bovenste niveau)'
     SAVE: Opslaan
     SAVED: Opgeslagen
+    SHOWINSEARRCH: 'Tonen in zoeken?'
     VIEWERGROUPS: 'Groepen met bekijkrechten'
+    VIEWERMEMBERS: Bekijkers
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download bestand'
     INSERT_LINK: 'Link naar bestand'
