@@ -28,7 +28,6 @@ use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Dev\Deprecation;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FormFactory;
 use SilverStripe\ORM\ArrayList;
@@ -1082,9 +1081,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $object['filename'] = $file->Filename;
         $object['url'] = $file->AbsoluteURL;
         $object['canEdit'] = $file->canEdit();
-        $object['canDelete'] = ($file->hasMethod('canArchive'))
-            ? Deprecation::withNoReplacement(fn() => $file->canArchive())
-            : $file->canDelete();
+        $object['canDelete'] = $file->canDelete();
 
         $owner = $file->Owner();
 
