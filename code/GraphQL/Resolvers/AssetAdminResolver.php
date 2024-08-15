@@ -16,6 +16,7 @@ use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\Filterable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
+use SilverStripe\Dev\Deprecation;
 
 class AssetAdminResolver
 {
@@ -126,7 +127,8 @@ class AssetAdminResolver
         $deletedIDs = [];
         $member = UserContextProvider::get($context);
         foreach ($files as $file) {
-            if ($file->canArchive($member)) {
+            $canArchive = Deprecation::withNoReplacement(fn() => $file->canArchive($member));
+            if ($canArchive) {
                 $file->doArchive();
                 $deletedIDs[] = $file->ID;
             }
