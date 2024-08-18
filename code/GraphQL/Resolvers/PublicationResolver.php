@@ -11,11 +11,22 @@ use SilverStripe\GraphQL\QueryHandler\UserContextProvider;
 use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\Versioned\Versioned;
 use InvalidArgumentException;
+use SilverStripe\Dev\Deprecation;
 
+/**
+ * @deprecated 5.3.0 Will be moved to the silverstripe/graphql module
+ */
 class PublicationResolver
 {
     const ACTION_PUBLISH = 'publish';
     const ACTION_UNPUBLISH = 'unpublish';
+
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('5.3.0', 'Will be moved to the silverstripe/graphql module', Deprecation::SCOPE_CLASS);
+        });
+    }
 
     public static function resolvePublishFiles(...$params)
     {
