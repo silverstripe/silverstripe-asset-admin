@@ -120,7 +120,7 @@ class FileFormBuilderTest extends SapphireTest
         // Add extension to simulate different permissions
         File::add_extension(FileExtension::class);
 
-        $this->logInWithPermission('ADMIN');
+        $this->logInWithPermission('CMS_ACCESS_CampaignAdmin');
 
         /** @var File $file */
         $file = $this->objFromFixture(File::class, 'file1');
