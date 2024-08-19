@@ -10,9 +10,20 @@ use SilverStripe\Control\HTTPResponse_Exception;
 use SilverStripe\Forms\DateField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\Filterable;
+use SilverStripe\Dev\Deprecation;
 
+/**
+ * @deprecated 5.3.0 Will be moved to the silverstripe/graphql module
+ */
 class FileFilter
 {
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('5.3.0', 'Will be moved to the silverstripe/graphql module', Deprecation::SCOPE_CLASS);
+        });
+    }
+
     /**
      * Caution: Does NOT enforce canView permissions
      *

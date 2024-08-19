@@ -19,9 +19,20 @@ use InvalidArgumentException;
 use Exception;
 use Closure;
 use SilverStripe\ORM\DataQuery;
+use SilverStripe\Dev\Deprecation;
 
+/**
+ * @deprecated 5.3.0 Will be moved to the silverstripe/graphql module
+ */
 class FolderTypeResolver
 {
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('5.3.0', 'Will be moved to the silverstripe/graphql module', Deprecation::SCOPE_CLASS);
+        });
+    }
+
     /**
      * @param Folder $object
      * @param array $args

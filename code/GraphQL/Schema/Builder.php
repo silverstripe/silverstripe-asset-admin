@@ -8,13 +8,24 @@ use SilverStripe\GraphQL\Schema\Interfaces\SchemaUpdater;
 use SilverStripe\GraphQL\Schema\Schema;
 use SilverStripe\GraphQL\Schema\Type\Enum;
 use SilverStripe\ORM\ArrayLib;
+use SilverStripe\Dev\Deprecation;
 
 if (!interface_exists(SchemaUpdater::class)) {
     return;
 }
 
+/**
+ * @deprecated 5.3.0 Will be moved to the silverstripe/graphql module
+ */
 class Builder implements SchemaUpdater
 {
+    public function __construct()
+    {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('5.3.0', 'Will be moved to the silverstripe/graphql module', Deprecation::SCOPE_CLASS);
+        });
+    }
+
     public static function updateSchema(Schema $schema): void
     {
         $categoryValues = array_map(function ($category) {
