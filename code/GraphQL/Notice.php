@@ -2,9 +2,13 @@
 
 namespace SilverStripe\AssetAdmin\GraphQL;
 
+use SilverStripe\Dev\Deprecation;
+
 /**
  * Represents a notice related to a graphql Action. This could be a failure,
  * warning, or recoverable query (e.g. "are you sure you want to publish this item?")
+ *
+ * @deprecated 5.3.0 Will be moved to the silverstripe/graphql module
  */
 class Notice
 {
@@ -34,6 +38,9 @@ class Notice
      */
     public function __construct($message, $noticeType, $ids = [])
     {
+        Deprecation::withNoReplacement(function () {
+            Deprecation::notice('5.3.0', 'Will be moved to the silverstripe/graphql module', Deprecation::SCOPE_CLASS);
+        });
         $this->message = $message;
         $this->noticeType = $noticeType;
         $this->ids = $ids;
