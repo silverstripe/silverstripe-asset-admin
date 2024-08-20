@@ -3,9 +3,9 @@
 namespace SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest;
 
 use SilverStripe\Dev\TestOnly;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
-class FileExtension extends DataExtension implements TestOnly
+class FileExtension extends Extension implements TestOnly
 {
     protected function canView($member = null)
     {

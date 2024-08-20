@@ -7,17 +7,17 @@ use SilverStripe\Assets\Folder;
 use SilverStripe\Assets\Shortcodes\FileLink;
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Versioned\DataDifferencer;
+use SilverStripe\Core\Extension;
 
 /**
  * Update File dataobjects to be editable in this asset admin
  *
- * @extends DataExtension<File>
+ * @extends Extension<File>
  */
-class AssetAdminFile extends DataExtension
+class AssetAdminFile extends Extension
 {
     /**
      * Max width for inserted images

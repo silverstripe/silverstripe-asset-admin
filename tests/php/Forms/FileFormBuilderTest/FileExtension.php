@@ -3,13 +3,13 @@
 namespace SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest;
 
 use SilverStripe\Dev\TestOnly;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\Core\Extension;
 
 /**
  * An extension to test file permissions
  * @package SilverStripe\AssetAdmin\Tests\Forms\FileFormBuilderTest
  */
-class FileExtension extends DataExtension implements TestOnly
+class FileExtension extends Extension implements TestOnly
 {
     // public flags to toggle permissions during tests
     public static $canDelete = false;
