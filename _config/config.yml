@@ -5,8 +5,12 @@ SilverStripe\Assets\File:
   extensions:
     - SilverStripe\AssetAdmin\Controller\AssetAdminFile
 SilverStripe\Admin\LeftAndMain:
-  extensions:
-    - SilverStripe\AssetAdmin\Controller\AssetAdminFieldsExtension
+  extra_requirements_i18n:
+    - 'silverstripe/asset-admin:client/lang'
+  extra_requirements_javascript:
+    - 'silverstripe/asset-admin:client/dist/js/bundle.js'
+  extra_requirements_css:
+    - 'silverstripe/asset-admin:client/dist/styles/bundle.css'
 SilverStripe\Admin\Forms\UsedOnTable:
   extensions:
   - SilverStripe\AssetAdmin\Extensions\UsedOnTableExtension
