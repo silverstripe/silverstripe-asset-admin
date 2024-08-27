@@ -7,29 +7,28 @@ use SilverStripe\ORM\DataExtension;
 
 class FileExtension extends DataExtension implements TestOnly
 {
-    public function canView($member = null)
+    protected function canView($member = null)
     {
         if ($this->owner->Name === 'disallowCanView.txt') {
             return false;
         }
     }
 
-    public function canEdit($member = null)
+    protected function canEdit($member = null)
     {
         if ($this->owner->Name === 'disallowCanEdit.txt') {
             return false;
         }
     }
 
-    public function canDelete($member = null)
+    protected function canDelete($member = null)
     {
         if ($this->owner->Name === 'disallowCanDelete.txt') {
             return false;
         }
     }
 
-
-    public function canCreate($member = null, $context = [])
+    protected function canCreate($member = null, $context = [])
     {
         if (isset($context['Parent']) && $context['Parent']->Name === 'disallowCanAddChildren') {
             return false;
