@@ -7,9 +7,10 @@ import CONSTANTS from 'constants/index';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
-import fileShape from 'lib/fileShape';
 import PropTypes from 'prop-types';
-import { inject, injectGraphql } from 'lib/Injector';
+import { inject } from 'lib/Injector';
+import Config from 'lib/Config';
+import backend from 'lib/Backend';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import * as modalActions from 'state/modal/ModalActions';
 import classnames from 'classnames';
@@ -40,7 +41,30 @@ class Editor extends Component {
       openModal: false,
       loadingForm: false,
       loadingError: null,
+      file: null,
     };
+  }
+
+  componentDidMount() {
+    this.refetchFile();
+  }
+
+  componentDidUpdate(prevProps) {
+    if ((prevProps.fileId !== this.props.fileId) && prevProps.fileId !== null) {
+      this.refetchFile();
+    }
+  }
+
+  refetchFile() {
+    const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdminOpen');
+    const endpointUrl = `${sectionConfig.endpoints.read.url}/${this.props.fileId}`;
+    backend.get(endpointUrl)
+      .then(response => response.json())
+      .then(responseJson => {
+        this.setState({
+          file: responseJson,
+        });
+      });
   }
 
   /**
@@ -65,6 +89,7 @@ class Editor extends Component {
   }
 
   handleAction(event) {
+    const file = this.state.file;
     switch (event.currentTarget.name) {
       // intercept the Add to Campaign submit and open the modal dialog instead
       case 'action_addtocampaign':
@@ -83,7 +108,7 @@ class Editor extends Component {
 
         break;
       case 'action_delete':
-        this.props.actions.confirmDeletion.confirm([this.props.file]);
+        this.props.actions.confirmDeletion.confirm([file]);
         event.preventDefault();
 
         break;
@@ -172,7 +197,8 @@ class Editor extends Component {
       document.body.removeChild(link);
     }
 
-    downloadURI(this.props.file.url, this.props.file.name);
+    const file = this.state.file;
+    downloadURI(file.url, file.name);
     document.getElementById('Form_fileEditForm_PopoverActions').focus();
   }
 
@@ -202,8 +228,9 @@ class Editor extends Component {
    * @param {Object} fieldProps
    */
   editorHeader({ SchemaComponent, ...fieldProps }) {
-    const { dialog, nextType, showingSubForm, actions, file, EditorHeaderComponent } = this.props;
+    const { dialog, nextType, showingSubForm, actions, EditorHeaderComponent } = this.props;
     const schemaUrl = this.getFormSchemaUrl();
+    const file = this.state.file;
 
     let showButton = buttonStates.SWITCH;
 
@@ -259,6 +286,9 @@ class Editor extends Component {
   }
 
   render() {
+    if (!this.state.file) {
+      return null;
+    }
     const { FormBuilderLoaderComponent, FormBuilderModalComponent } = this.props;
     const formSchemaUrl = this.getFormSchemaUrl();
     const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
@@ -268,7 +298,6 @@ class Editor extends Component {
       },
       this.props.className
     );
-
     let error = null;
     if (this.state.loadingError) {
       let message = this.state.loadingError.value;
@@ -285,13 +314,6 @@ class Editor extends Component {
     const campaignTitle = i18n._t('Admin.ADD_TO_CAMPAIGN', 'Add to campaign');
     const Loading = this.props.loadingComponent;
 
-    // Most of the the time, the GraphQL data comes back first and the selected file data gets
-    // passed down to the Editor in time for the EditorHeader to be rendered correctly.
-    // Occasionnaly the FormSchema comes back first and the EditorHeader gets rendered without the
-    // necessary file data. Passing `file` to FormBuilderLoader will force a re-render when the
-    // GraphQL file data is filled in later on, which will cause a re-render of the EditorHeader.
-    const { file } = this.props;
-
     return (<div className={editorClasses}>
       <div className="editor__details fill-height">
         <FormBuilderLoaderComponent
@@ -303,7 +325,7 @@ class Editor extends Component {
           onLoadingError={this.handleLoadingError}
           onFetchingSchema={this.handleFetchingSchema}
           createFn={this.createFn}
-          file={file}
+          file={this.state.file}
         />
         {error}
         <FormBuilderModalComponent
@@ -323,7 +345,6 @@ class Editor extends Component {
 }
 
 Editor.propTypes = {
-  file: fileShape,
   className: PropTypes.string,
   fileId: PropTypes.number.isRequired,
   enableDropzone: PropTypes.bool,
@@ -347,7 +368,7 @@ Editor.propTypes = {
 Editor.defaultProps = {
   EditorHeaderComponent: EditorHeader,
   FormBuilderLoaderComponent: FormBuilderLoader,
-  FormBuilderModalComponent: FormBuilderModal
+  FormBuilderModalComponent: FormBuilderModal,
 };
 
 function mapDispatchToProps(dispatch) {
@@ -379,5 +400,4 @@ export default compose(
     () => 'AssetAdmin.Editor',
   ),
   connect(mapStateToProps, mapDispatchToProps),
-  injectGraphql('ReadOneFileQuery')
 )(Editor);

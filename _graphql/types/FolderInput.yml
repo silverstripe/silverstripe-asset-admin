@@ -1,7 +1,0 @@
-FolderInput:
-  input: true
-  description: Input type for folders
-  fields:
-    parentId: Int!
-    title: String
-    name: String

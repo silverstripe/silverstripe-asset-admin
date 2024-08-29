@@ -108,7 +108,7 @@ class UploadField extends FormField implements FileHandleField
     {
         $defaults = parent::getSchemaDataDefaults();
         $uploadLink = $this->Link('upload');
-        $defaults['data']['createFileEndpoint'] = [
+        $defaults['data']['endpoints']['createFile'] = [
             'url' => $uploadLink,
             'method' => 'post',
             'payloadFormat' => 'urlencoded',

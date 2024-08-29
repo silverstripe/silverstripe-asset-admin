@@ -13,7 +13,7 @@ export function confirm(files) {
 }
 
 /**
- * The GraphQL request for deleting files has started.
+ * The request for deleting files has started.
  *
  */
 export function deleting() {

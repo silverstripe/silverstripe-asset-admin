@@ -37,7 +37,7 @@ class HistoryList extends Component {
 
     this.timer = null;
 
-    this.api = createEndpoint(props.sectionConfig.historyEndpoint);
+    this.api = createEndpoint(props.sectionConfig.endpoints.history);
   }
 
   componentDidMount() {

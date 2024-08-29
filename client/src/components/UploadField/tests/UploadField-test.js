@@ -63,10 +63,12 @@ function makeProps(obj = {}) {
       multi: true,
       maxFiles: null,
       maxFilesize: null,
-      createFileEndpoint: {
-        url: 'test',
-        method: 'POST',
-        payloadFormat: 'json',
+      endpoints: {
+        createFile: {
+          url: 'test',
+          method: 'POST',
+          payloadFormat: 'json',
+        },
       },
       parentid: 0,
       files,
@@ -176,6 +178,7 @@ test('UploadField getFolderId() should match 0 for file in root', async () => {
   render(
     <UploadField {...makeProps({
       data: {
+        ...makeProps().data,
         parentid: 23
       }
     })}
@@ -268,7 +271,9 @@ test('UploadField renderDropzone() should not render the dropzone when there is 
     <UploadField {...makeProps({
       data: {
         ...makeProps().data,
-        createFileEndpoint: null,
+        endpoints: {
+          createFile: null
+        }
       }
     })}
     />

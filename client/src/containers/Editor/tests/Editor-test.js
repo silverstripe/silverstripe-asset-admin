@@ -5,6 +5,23 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Component as Editor } from '../Editor';
 import { buttonStates } from '../EditorHeader';
 
+let resolveBackendGet;
+
+jest.mock('lib/Backend', () => ({
+  get: () => new Promise(resolve => {
+    resolveBackendGet = resolve;
+  })
+}));
+
+function makeReadFileResponse() {
+  return {
+    json: () => ({
+      id: 1,
+      type: 'file',
+    })
+  };
+}
+
 let consoleErrorFn;
 let nextAction;
 let nextParams;
@@ -20,6 +37,19 @@ afterEach(() => {
   consoleErrorFn.mockRestore();
 });
 
+const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdminOpen';
+window.ss.config = {
+  SecurityID: 1234567890,
+  sections: [
+    {
+      name: sectionConfigKey,
+      endpoints: {
+        read: 'test/endpoint/read',
+      }
+    },
+  ],
+};
+
 function makeProps(obj = {}) {
   return {
     schemaUrlQueries: [],
@@ -33,9 +63,6 @@ function makeProps(obj = {}) {
         pushFormStackEntry: () => null,
         stashFormValues: () => null,
       }
-    },
-    file: {
-      type: 'image'
     },
     EditorHeaderComponent: ({ onCancel, onDetails, showButton }) => <div
       data-testid="test-editor-header"
@@ -89,6 +116,7 @@ test('Editor handleClose Closing editor', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   openModal();
   let modal = await screen.findByTestId('test-form-builder-modal');
   expect(modal.getAttribute('data-is-open')).toBe('true');
@@ -118,6 +146,7 @@ test('Editor handleClose Closing sub form', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   openModal();
   let modal = await screen.findByTestId('test-form-builder-modal');
   expect(modal.getAttribute('data-is-open')).toBe('true');
@@ -136,6 +165,7 @@ test('Editor editorHeader Top Form without detail', async () => {
   render(
     <Editor {...makeProps()}/>
   );
+  resolveBackendGet(makeReadFileResponse());
   const loader = await screen.findByTestId('test-form-builder-loader');
   expect(loader.querySelectorAll('div[formid="myFormName"]').length).toBe(1);
 });
@@ -158,6 +188,7 @@ test('Editor editorHeader Top Form with detail in dialog', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   openModal();
   const header = await screen.findByTestId('test-editor-header');
   nextAction = 'details';
@@ -176,6 +207,7 @@ test('Editor editorHeader Sub form in dialog', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   openModal();
   const header = await screen.findByTestId('test-editor-header');
   expect(header.getAttribute('data-show-button')).toBe(buttonStates.ALWAYS_BACK);
@@ -187,10 +219,15 @@ test('Editor editorHeader Form for folder', async () => {
     <Editor {...makeProps({
       nextType: 'subform',
       dialog: true,
-      file: { type: 'folder' }
     })}
     />
   );
+  resolveBackendGet({
+    json: () => ({
+      id: 1,
+      type: 'folder',
+    })
+  });
   openModal();
   const header = await screen.findByTestId('test-editor-header');
   expect(header.getAttribute('data-show-button')).toBe(buttonStates.SWITCH);
@@ -204,6 +241,7 @@ test('Editor getFormSchemaUrl Plain URL', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   openModal();
   const loader = await screen.findByTestId('test-form-builder-loader');
   expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123');
@@ -217,6 +255,7 @@ test('Editor getFormSchemaUrl Plain URL', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   openModal();
   const loader = await screen.findByTestId('test-form-builder-loader');
   expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123?q=search');
@@ -233,6 +272,7 @@ test('Editor getFormSchemaUrl Plain URL', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   openModal();
   const loader = await screen.findByTestId('test-form-builder-loader');
   expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123?q=search&foo=bar');

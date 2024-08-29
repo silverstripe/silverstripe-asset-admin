@@ -33,7 +33,9 @@ test('BulkActions canApply() shows an action button when canApply returns true',
           callback: () => true,
         },
       ],
-      items: [{ applies: true }]
+      items: [{ applies: true }],
+      onClearSelection: () => {},
+      onSelectAll: () => {},
     }}
     />
   );
@@ -59,7 +61,9 @@ test('BulkActions canApply() shows an action button when canApply returns false'
           callback: () => true,
         },
       ],
-      items: [{ applies: false }]
+      items: [{ applies: false }],
+      onClearSelection: () => {},
+      onSelectAll: () => {},
     }}
     />
   );
@@ -83,6 +87,8 @@ test('BulkActions getOptionsByValue() should return the option which matches the
         },
       ],
       items: [{ applies: true }],
+      onClearSelection: () => {},
+      onSelectAll: () => {},
     }}
     />
   );

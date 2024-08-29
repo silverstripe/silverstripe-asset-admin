@@ -6,7 +6,7 @@ import Breadcrumb from '../AssetAdminBreadcrumb';
 const folder = {
   id: 3,
   title: 'Three',
-  parents: [
+  ancestors: [
     { id: 1, title: 'One' },
     { id: 2, title: 'Two' },
   ]
@@ -77,7 +77,7 @@ test('AssetAdminBreadcrumb With top folder', async () => {
   const onBrowse = jest.fn();
   render(
     <Breadcrumb {...makeProps({
-      folder: { ...folder, parents: undefined },
+      folder: { ...folder, ancestors: undefined },
       onBrowse
     })}
     />

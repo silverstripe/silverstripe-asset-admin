@@ -412,7 +412,7 @@ class UploadField extends Component {
    */
   renderDropzone() {
     const { AssetDropzone } = this.props;
-    if (!this.props.data.createFileEndpoint) {
+    if (!this.props.data.endpoints.createFile) {
       return null;
     }
     const dimensions = {
@@ -423,8 +423,8 @@ class UploadField extends Component {
     const maxFilesize = this.getMaxFilesize();
 
     const dropzoneOptions = {
-      url: this.props.data.createFileEndpoint.url,
-      method: this.props.data.createFileEndpoint.method,
+      url: this.props.data.endpoints.createFile.url,
+      method: this.props.data.endpoints.createFile.method,
       paramName: 'Upload',
       maxFiles,
       maxFilesize,
@@ -575,16 +575,12 @@ UploadField.propTypes = {
   disabled: PropTypes.bool,
   data: PropTypes.shape({
     files: PropTypes.arrayOf(fileShape),
-    createFileEndpoint: PropTypes.shape({
-      url: PropTypes.string.isRequired,
-      method: PropTypes.string.isRequired,
-      payloadFormat: PropTypes.string.isRequired,
-    }),
     multi: PropTypes.bool,
     parentid: PropTypes.number,
     canUpload: PropTypes.bool,
     canAttach: PropTypes.bool,
     maxFiles: PropTypes.number,
+    endpoints: PropTypes.object,
   }),
   UploadFieldItem: PropTypes.elementType,
   AssetDropzone: PropTypes.elementType,

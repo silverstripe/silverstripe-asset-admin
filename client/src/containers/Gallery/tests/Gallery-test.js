@@ -61,10 +61,6 @@ function makeProps(obj = {}) {
         removeQueuedFile: () => null,
         succeedUpload: () => null,
       },
-      mutate: {
-        moveFiles: () => ({}),
-        createFolder: () => ({}),
-      },
       toasts: {
         display: jest.fn(),
         success: jest.fn(),

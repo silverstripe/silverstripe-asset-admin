@@ -11,7 +11,8 @@ import {
 import { display as displayToast } from 'state/toasts/ToastsActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import configShape from 'lib/configShape';
-import moveFilesMutation from 'state/files/moveFilesMutation';
+import Config from 'lib/Config';
+import backend from 'lib/Backend';
 
 class MoveModal extends React.Component {
   constructor(props) {
@@ -21,28 +22,35 @@ class MoveModal extends React.Component {
   }
 
   handleSubmit({ FolderID }) {
-    const { moveFiles } = this.props.actions.files;
     const { selectedFiles, onSuccess, onClosed, setNotice, setError, setBadge } = this.props;
-    return moveFiles(FolderID || 0, selectedFiles)
-      .then(({ data: { moveFiles: { id, filename } } }) => {
+    let url = this.props.sectionConfig.endpoints.move.url;
+    return backend.post(url, {
+      ids: selectedFiles,
+      folderID: FolderID,
+    }, {
+      'X-SecurityID': Config.get('SecurityID')
+    })
+      .then(() => {
+        url = `${this.props.sectionConfig.endpoints.read.url}/${FolderID}`;
+        return backend.get(url);
+      })
+      .then(response => response.json())
+      .then(responseJson => {
         if (typeof onSuccess === 'function') {
-          onSuccess(FolderID, selectedFiles);
+          onSuccess(responseJson.id, selectedFiles);
         }
-
-        setBadge(id, `${selectedFiles.length}`, 'success', CONSTANTS.MOVE_SUCCESS_DURATION);
-
+        setBadge(responseJson.id, `${selectedFiles.length}`, 'success', CONSTANTS.MOVE_SUCCESS_DURATION);
         setNotice(
           i18n.sprintf(
             i18n._t('AssetAdmin.MOVED_ITEMS_TO', 'Moved %s item(s) to %s'),
             selectedFiles.length,
-            filename
+            responseJson.name
           ),
           [{
             label: i18n._t('AssetAdmin.GO_TO_FOLDER', 'Go to folder'),
-            onClick: () => this.props.onOpenFolder(id)
+            onClick: () => this.props.onOpenFolder(responseJson.id)
           }]
         );
-
         onClosed();
       })
       .catch(() => {
@@ -78,11 +86,6 @@ MoveModal.propTypes = {
   onSuccess: PropTypes.func,
   onOpenFolder: PropTypes.func.isRequired,
   selectedFiles: PropTypes.array.isRequired,
-  actions: PropTypes.shape({
-    files: PropTypes.shape({
-      moveFiles: PropTypes.func,
-    }),
-  }).isRequired,
 };
 
 MoveModal.defaultProps = {
@@ -120,5 +123,4 @@ function mapDispatchToProps(dispatch) {
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  moveFilesMutation
 )(MoveModal);

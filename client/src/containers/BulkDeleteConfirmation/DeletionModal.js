@@ -3,10 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 
-const DeletionModal = ({ isOpen, body, onCancel, actions, archiveFiles }) => {
+const DeletionModal = ({ isOpen, body, onCancel, actions, filesAreVersioned, archiveFiles }) => {
   let transKey = 'AssetAdmin.CONFIRM_FILE_DELETION';
   let transDefault = 'Confirm deletion';
-  if (archiveFiles) {
+  if (filesAreVersioned && archiveFiles) {
     transKey = 'AssetAdmin.CONFIRM_FILE_ARCHIVE';
     transDefault = 'Confirm archive';
   }
@@ -34,6 +34,7 @@ DeletionModal.propTypes = {
     handler: PropTypes.func,
     color: PropTypes.string
   })),
+  filesAreVersioned: PropTypes.bool.isRequired,
   archiveFiles: PropTypes.bool.isRequired,
 };
 

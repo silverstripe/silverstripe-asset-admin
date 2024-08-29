@@ -6,6 +6,8 @@ use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Controller\AssetAdmin;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FileExtension;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FolderExtension;
+use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestFile;
+use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestObject;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
 use Silverstripe\Assets\Dev\TestAssetStore;
@@ -17,12 +19,17 @@ use SilverStripe\Subsites\Extensions\FolderFormFactoryExtension;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FilesInUseFileExtension;
 
 /**
  * Tests {@see AssetAdmin}
  */
 class AssetAdminTest extends FunctionalTest
 {
+    protected static $extra_dataobjects = [
+        TestFile::class,
+        TestObject::class,
+    ];
 
     protected static $fixture_file = '../fixtures.yml';
 
@@ -52,11 +59,12 @@ class AssetAdminTest extends FunctionalTest
             $folder->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         }
 
-        // Create a test files for each of the fixture references
-        $content = str_repeat('x', 1000000);
-        foreach (File::get()->exclude('ClassName', Folder::class) as $file) {
+        // Create a test files for each of the fixture references, excluding Folders the TestFile class
+        $content = str_repeat('x', 100);
+        foreach (File::get()->exclude('ClassName', [Folder::class, TestFile::class]) as $file) {
             /** @var File $file */
             $file->setFromString($content, $file->generateFilename());
+            $file->write();
             $file->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         }
 
@@ -463,5 +471,691 @@ class AssetAdminTest extends FunctionalTest
                 'Extension that have been manually disallowed should be not be allowed by asset admin'
             );
         });
+    }
+
+    public function provideApiReadDescendantCounts(): array
+    {
+        return [
+            'Valid' => [
+                'idsType' => 'existing',
+                'fail' => '',
+                'expectedCode' => 200,
+            ],
+            'Reject fail canView()' => [
+                'idsType' => 'existing',
+                'fail' => 'can-view',
+                'expectedCode' => 403,
+            ],
+            'Reject ids not passed' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-passed',
+                'expectedCode' => 404,
+            ],
+            'Reject ids is not array' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-array',
+                'expectedCode' => 404,
+            ],
+            'Reject invalid ID' => [
+                'idsType' => 'second-is-invalid',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+            'Reject non-numeric ID' => [
+                'idsType' => 'second-is-non-numeric',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+            'Reject new record ID' => [
+                'idsType' => 'second-is-new-record',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideApiReadDescendantCounts
+     */
+    public function testApiReadDescendantCounts(
+        string $idsType,
+        string $fail,
+        int $expectedCode
+    ): void {
+        TestFile::$fail = $fail;
+        $ids = $this->getIDs($idsType);
+        // swap out the first ID with a Folder fixture that contains a nested folder
+        // which contains a file
+        $ids[0] = $this->idFromFixture(Folder::class, 'ApiFolder02');
+        $url = '/admin/assets/api/readDescendantCounts';
+        if ($fail !== 'ids-not-passed') {
+            if ($fail === 'ids-not-array') {
+                $url .= '?ids=' . implode(',', $ids);
+            } else {
+                $qsa = array_map(fn($id) => "ids[]=$id", $ids);
+                $url .= '?' . implode('&', $qsa);
+            }
+        }
+        $response = $this->mainSession->sendRequest('GET', $url, []);
+        $this->assertSame('application/json', $response->getHeader('Content-type'));
+        $this->assertSame($expectedCode, $response->getStatusCode());
+        if ($expectedCode === 200) {
+            $data = json_decode($response->getBody(), true);
+            $this->assertSame([
+                [
+                    'id' => $ids[0],
+                    'type' => 'folder',
+                    'count' => 1,
+                ],
+                [
+                    'id' => $ids[1],
+                    'type' => 'file',
+                    'count' => 0,
+                ]
+            ], $data);
+        }
+    }
+
+    public function provideApiReadLiveOwnerCounts(): array
+    {
+        return [
+            'Valid' => [
+                'idsType' => 'existing',
+                'fail' => '',
+                'expectedCode' => 200,
+            ],
+            'Reject fail canView()' => [
+                'idsType' => 'existing',
+                'fail' => 'can-view',
+                'expectedCode' => 403,
+            ],
+            'Reject ids not passed' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-passed',
+                'expectedCode' => 404,
+            ],
+            'Reject ids is not array' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-array',
+                'expectedCode' => 404,
+            ],
+            'Reject invalid ID' => [
+                'idsType' => 'second-is-invalid',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+            'Reject non-numeric ID' => [
+                'idsType' => 'second-is-non-numeric',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+            'Reject new record ID' => [
+                'idsType' => 'second-is-new-record',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideApiReadLiveOwnerCounts
+     */
+    public function testApiReadLiveOwnerCounts(
+        string $idsType,
+        string $fail,
+        int $expectedCode
+    ): void {
+        foreach (TestFile::get() as $file) {
+            $file->publishSingle();
+        }
+        foreach (TestObject::get() as $file) {
+            $file->publishSingle();
+        }
+        try {
+            TestFile::$fail = $fail;
+            $ids = $this->getIDs($idsType);
+            $url = '/admin/assets/api/readLiveOwnerCounts';
+            if ($fail !== 'ids-not-passed') {
+                if ($fail === 'ids-not-array') {
+                    $url .= '?ids=' . implode(',', $ids);
+                } else {
+                    $qsa = array_map(fn($id) => "ids[]=$id", $ids);
+                    $url .= '?' . implode('&', $qsa);
+                }
+            }
+            $response = $this->mainSession->sendRequest('GET', $url, []);
+            $this->assertSame('application/json', $response->getHeader('Content-type'));
+            $this->assertSame($expectedCode, $response->getStatusCode());
+            if ($expectedCode === 200) {
+                $data = json_decode($response->getBody(), true);
+                $this->assertSame([
+                    [
+                        'id' => $ids[0],
+                        'count' => 2,
+                        'message' => 'File "ApiTestFile01" is used in 2 places.'
+                    ],
+                    [
+                        'id' => $ids[1],
+                        'count' => 1,
+                        'message' => 'File "ApiTestFile02" is used in 1 place'
+                    ]
+                ], $data);
+            }
+        } finally {
+            foreach (TestFile::get() as $file) {
+                $file->doUnpublish();
+            }
+            foreach (TestObject::get() as $file) {
+                $file->doUnpublish();
+            }
+        }
+    }
+
+    public function provideApiReadUsage(): array
+    {
+        return [
+            'Valid' => [
+                'idType' => 'existing',
+                'fail' => '',
+                'expectedCode' => 200,
+            ],
+            'Reject fail canView()' => [
+                'idType' => 'existing',
+                'fail' => 'can-view',
+                'expectedCode' => 403,
+            ],
+            'Reject invalid ID' => [
+                'idType' => 'invalid',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+            'Reject non-numeric ID' => [
+                'idType' => 'non-numeric',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+            'Reject new record ID' => [
+                'idType' => 'new-record',
+                'fail' => '',
+                'expectedCode' => 404,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideApiReadUsage
+     */
+    public function testApiReadUsage(
+        string $idType,
+        string $fail,
+        int $expectedCode
+    ): void {
+        File::add_extension(FilesInUseFileExtension::class);
+        try {
+            TestFile::$fail = $fail;
+            $id = $this->getID($idType);
+            $url = "/admin/assets/api/readUsage/$id";
+            $response = $this->mainSession->sendRequest('GET', $url, []);
+            $this->assertSame('application/json', $response->getHeader('Content-type'));
+            $this->assertSame($expectedCode, $response->getStatusCode());
+            if ($expectedCode === 200) {
+                // data is defined in FilesInUseFileExtension
+                $data = json_decode($response->getBody(), true);
+                $this->assertSame(['count' => 5], $data);
+            }
+        } finally {
+            File::remove_extension(FilesInUseFileExtension::class);
+        }
+    }
+
+    public function provideApiDelete(): array
+    {
+        return [
+            'Valid' => [
+                'idsType' => 'existing',
+                'fail' => '',
+                'expectedCode' => 204,
+            ],
+            'Reject fail canDelete()' => [
+                'idsType' => 'existing',
+                'fail' => 'can-delete',
+                'expectedCode' => 403,
+            ],
+            'Reject fail csrf-token' => [
+                'idsType' => 'existing',
+                'fail' => 'csrf-token',
+                'expectedCode' => 400,
+            ],
+            'Reject ids not passed' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-passed',
+                'expectedCode' => 400,
+            ],
+            'Reject ids is not array' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-array',
+                'expectedCode' => 400,
+            ],
+            'Reject ids is empty' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-is-empty',
+                'expectedCode' => 400,
+            ],
+            'Reject invalid ID' => [
+                'idsType' => 'second-is-invalid',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject non-numeric ID' => [
+                'idsType' => 'second-is-non-numeric',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject new record ID' => [
+                'idsType' => 'second-is-new-record',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideApiDelete
+     */
+    public function testApiDelete(
+        string $idsType,
+        string $fail,
+        int $expectedCode
+    ): void {
+        $ids = $this->getIDs($idsType);
+        $existingIDs = $this->getIDs('existing');
+        TestFile::$fail = $fail;
+        $url = '/admin/assets/api/delete';
+        $headers = [];
+        if ($fail !== 'csrf-token') {
+            $headers = array_merge($headers, $this->getCsrfTokenheader());
+        }
+        $data = [];
+        if ($fail !== 'ids-not-passed') {
+            $data['ids'] = $ids;
+        }
+        if ($fail === 'ids-not-array') {
+            $data['ids'] = implode(',', $ids);
+        } elseif ($fail === 'ids-is-empty') {
+            $data['ids'] = [];
+        }
+        $body = json_encode($data);
+        $response = $this->mainSession->sendRequest('POST', $url, [], $headers, null, $body);
+        $this->assertSame('application/json', $response->getHeader('Content-type'));
+        $this->assertSame($expectedCode, $response->getStatusCode());
+        if ($expectedCode >= 400) {
+            $count = TestFile::get()->filter('ID', $existingIDs)->count();
+            $this->assertSame(count($existingIDs), $count);
+        } else {
+            $count = TestFile::get()->filter('ID', $existingIDs)->count();
+            $this->assertSame(0, $count);
+        }
+    }
+
+    public function provideApiMove(): array
+    {
+        return [
+            'Valid' => [
+                'idsType' => 'existing',
+                'fail' => '',
+                'expectedCode' => 204,
+            ],
+            'Reject fail canEdit()' => [
+                'idsType' => 'existing',
+                'fail' => 'can-edit',
+                'expectedCode' => 403,
+            ],
+            'Reject fail csrf-token' => [
+                'idsType' => 'existing',
+                'fail' => 'csrf-token',
+                'expectedCode' => 400,
+            ],
+            'Reject ids not passed' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-passed',
+                'expectedCode' => 400,
+            ],
+            'Reject ids is not array' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-array',
+                'expectedCode' => 400,
+            ],
+            'Reject ids is empty' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-is-empty',
+                'expectedCode' => 400,
+            ],
+            'Reject invalid ID' => [
+                'idsType' => 'second-is-invalid',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject non-numeric ID' => [
+                'idsType' => 'second-is-non-numeric',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject new record ID' => [
+                'idsType' => 'second-is-new-record',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject folderID not passed' => [
+                'idsType' => 'existing',
+                'fail' => 'folder-id-not-passed',
+                'expectedCode' => 400,
+            ],
+            'Reject folder does not exist' => [
+                'idsType' => 'existing',
+                'fail' => 'folder-not-exist',
+                'expectedCode' => 400,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideApiMove
+     */
+    public function testApiMove(
+        string $idsType,
+        string $fail,
+        int $expectedCode
+    ): void {
+        $ids = $this->getIDs($idsType);
+        $folderIDs = [
+            $this->idFromFixture(Folder::class, 'ApiFolder01'),
+            $this->idFromFixture(Folder::class, 'ApiFolder02'),
+        ];
+        $existingIDs = $this->getIDs('existing');
+        TestFile::$fail = $fail;
+        $url = '/admin/assets/api/move';
+        $headers = [];
+        if ($fail !== 'csrf-token') {
+            $headers = array_merge($headers, $this->getCsrfTokenheader());
+        }
+        $data = [];
+        if ($fail !== 'folder-id-not-passed') {
+            $data['folderID'] = $folderIDs[1];
+        }
+        if ($fail === 'folder-not-exist') {
+            $data['folderID'] = Folder::get()->max('ID') + 1;
+        }
+        if ($fail !== 'ids-not-passed') {
+            $data['ids'] = $ids;
+        }
+        if ($fail === 'ids-not-array') {
+            $data['ids'] = implode(',', $ids);
+        } elseif ($fail === 'ids-is-empty') {
+            $data['ids'] = [];
+        }
+        $body = json_encode($data);
+        $response = $this->mainSession->sendRequest('POST', $url, [], $headers, null, $body);
+        $this->assertSame('application/json', $response->getHeader('Content-type'));
+        $this->assertSame($expectedCode, $response->getStatusCode());
+        if ($expectedCode >= 400) {
+            foreach ($existingIDs as $id) {
+                $file = TestFile::get()->byID($id);
+                $this->assertSame($folderIDs[0], $file->ParentID);
+            }
+        } else {
+            foreach ($existingIDs as $id) {
+                $file = TestFile::get()->byID($id);
+                $this->assertSame($folderIDs[1], $file->ParentID);
+            }
+        }
+    }
+
+    public function provideApiPublish(): array
+    {
+        return [
+            'Valid' => [
+                'idsType' => 'existing',
+                'fail' => '',
+                'expectedCode' => 204,
+            ],
+            'Reject fail canPublish()' => [
+                'idsType' => 'existing',
+                'fail' => 'can-publish',
+                'expectedCode' => 403,
+            ],
+            'Reject fail csrf-token' => [
+                'idsType' => 'existing',
+                'fail' => 'csrf-token',
+                'expectedCode' => 400,
+            ],
+            'Reject ids not passed' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-passed',
+                'expectedCode' => 400,
+            ],
+            'Reject ids is not array' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-array',
+                'expectedCode' => 400,
+            ],
+            'Reject ids is empty' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-is-empty',
+                'expectedCode' => 400,
+            ],
+            'Reject invalid ID' => [
+                'idsType' => 'second-is-invalid',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject non-numeric ID' => [
+                'idsType' => 'second-is-non-numeric',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject new record ID' => [
+                'idsType' => 'second-is-new-record',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideApiPublish
+     */
+    public function testApiPublish(
+        string $idsType,
+        string $fail,
+        int $expectedCode
+    ): void {
+        $ids = $this->getIDs($idsType);
+        $existingIDs = $this->getIDs('existing');
+        try {
+            TestFile::$fail = $fail;
+            $url = '/admin/assets/api/publish';
+            $headers = [];
+            if ($fail !== 'csrf-token') {
+                $headers = array_merge($headers, $this->getCsrfTokenheader());
+            }
+            $data = [];
+            if ($fail !== 'ids-not-passed') {
+                $data['ids'] = $ids;
+            }
+            if ($fail === 'ids-not-array') {
+                $data['ids'] = implode(',', $ids);
+            } elseif ($fail === 'ids-is-empty') {
+                $data['ids'] = [];
+            }
+            $body = json_encode($data);
+            $response = $this->mainSession->sendRequest('POST', $url, [], $headers, null, $body);
+            $this->assertSame('application/json', $response->getHeader('Content-type'));
+            $this->assertSame($expectedCode, $response->getStatusCode());
+            if ($expectedCode >= 400) {
+                foreach ($existingIDs as $id) {
+                    $file = TestFile::get()->byID($id);
+                    $this->assertFalse($file->isPublished());
+                }
+            } else {
+                foreach ($existingIDs as $id) {
+                    $file = TestFile::get()->byID($id);
+                    $this->assertTrue($file->isPublished());
+                }
+            }
+        } finally {
+            // fixtures will remain published between tests, fixtures are normally unpublished
+            foreach ($existingIDs as $id) {
+                $file = TestFile::get()->byID($id);
+                if ($file->isPublished()) {
+                    $file->doUnpublish();
+                }
+            }
+        }
+    }
+
+    public function provideApiUnpublish(): array
+    {
+        return [
+            'Valid' => [
+                'idsType' => 'existing',
+                'fail' => '',
+                'expectedCode' => 204,
+            ],
+            'Reject fail canUnpublish()' => [
+                'idsType' => 'existing',
+                'fail' => 'can-unpublish',
+                'expectedCode' => 403,
+            ],
+            'Reject fail csrf-token' => [
+                'idsType' => 'existing',
+                'fail' => 'csrf-token',
+                'expectedCode' => 400,
+            ],
+            'Reject ids not passed' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-passed',
+                'expectedCode' => 400,
+            ],
+            'Reject ids is not array' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-not-array',
+                'expectedCode' => 400,
+            ],
+            'Reject ids is empty' => [
+                'idsType' => 'existing',
+                'fail' => 'ids-is-empty',
+                'expectedCode' => 400,
+            ],
+            'Reject invalid ID' => [
+                'idsType' => 'second-is-invalid',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject non-numeric ID' => [
+                'idsType' => 'second-is-non-numeric',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+            'Reject new record ID' => [
+                'idsType' => 'second-is-new-record',
+                'fail' => '',
+                'expectedCode' => 400,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideApiUnpublish
+     */
+    public function testApiUnpublish(
+        string $idsType,
+        string $fail,
+        int $expectedCode
+    ): void {
+        $ids = $this->getIDs($idsType);
+        $existingIDs = $this->getIDs('existing');
+        foreach ($existingIDs as $id) {
+            $file = TestFile::get()->byID($id);
+            $file->publishSingle();
+        }
+        try {
+            TestFile::$fail = $fail;
+            $url = '/admin/assets/api/unpublish';
+            $headers = [];
+            if ($fail !== 'csrf-token') {
+                $headers = array_merge($headers, $this->getCsrfTokenheader());
+            }
+            $data = [];
+            if ($fail !== 'ids-not-passed') {
+                $data['ids'] = $ids;
+            }
+            if ($fail === 'ids-not-array') {
+                $data['ids'] = implode(',', $ids);
+            } elseif ($fail === 'ids-is-empty') {
+                $data['ids'] = [];
+            }
+            $body = json_encode($data);
+            $response = $this->mainSession->sendRequest('POST', $url, [], $headers, null, $body);
+            $this->assertSame('application/json', $response->getHeader('Content-type'));
+            $this->assertSame($expectedCode, $response->getStatusCode());
+            if ($expectedCode >= 400) {
+                foreach ($existingIDs as $id) {
+                    $file = TestFile::get()->byID($id);
+                    $this->assertTrue($file->isPublished());
+                }
+            } else {
+                foreach ($existingIDs as $id) {
+                    $file = TestFile::get()->byID($id);
+                    $this->assertFalse($file->isPublished());
+                }
+            }
+        } finally {
+            // fixtures will remain published between tests, fixtures are normally unpublished
+            foreach ($existingIDs as $id) {
+                $file = TestFile::get()->byID($id);
+                if ($file->isPublished()) {
+                    $file->doUnpublish();
+                }
+            }
+        }
+    }
+
+    private function getFileFixtures(): array
+    {
+        return [
+            $this->objFromFixture(TestFile::class, 'ApiTestFile01'),
+            $this->objFromFixture(TestFile::class, 'ApiTestFile02'),
+        ];
+    }
+
+    private function getID(string $idType): mixed
+    {
+        $objs = $this->getFileFixtures();
+        return match ($idType) {
+            'existing' => $objs[0]->ID,
+            'invalid' => $objs[0]->ID + 99999,
+            'non-numeric' => 'fish',
+            'new-record' => 0,
+        };
+    }
+
+    private function getIDs(string $idsType): mixed
+    {
+        $objs = $this->getFileFixtures();
+        return match ($idsType) {
+            'existing' => [$objs[0]->ID, $objs[1]->ID],
+            'second-is-invalid' => [$objs[0]->ID, $objs[1]->ID + 99999],
+            'second-is-non-numeric' => [$objs[0]->ID, 'fish'],
+            'second-is-new-record' => [$objs[0]->ID, 0],
+            'ids-is-not-passed' => [],
+        };
+    }
+
+    private function getCsrfTokenheader(): array
+    {
+        $securityToken = SecurityToken::inst();
+        return [
+            'X-' . $securityToken->getName() => $securityToken->getSecurityID()
+        ];
     }
 }

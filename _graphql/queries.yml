@@ -1,4 +1,0 @@
-'readFileUsage(ids: [ID]!)': '[FileUsage]'
-'readDescendantFileCounts(ids: [ID]!)': '[DescendantFileCount]'
-'readFiles(filter: FileFilterInput)':
-  type: '[FileResult]'

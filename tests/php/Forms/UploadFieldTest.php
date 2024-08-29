@@ -108,10 +108,12 @@ class UploadFieldTest extends SapphireTest
             'validation' => [],
             'attributes' => [],
             'data' => [
-                'createFileEndpoint' => [
-                    'url' => 'admin/assets/MyForm/field/MyField/upload',
-                    'method' => 'post',
-                    'payloadFormat' => 'urlencoded',
+                'endpoints' => [
+                    'createFile' =>  [
+                        'url' => 'admin/assets/MyForm/field/MyField/upload',
+                        'method' => 'post',
+                        'payloadFormat' => 'urlencoded',
+                    ],
                 ],
                 'multi' => false,
                 'parentid' => 0,
