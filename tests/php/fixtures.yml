@@ -15,6 +15,13 @@ SilverStripe\Assets\Folder:
     Parent: =>SilverStripe\Assets\Folder.folder1
   disallowCanAddChildren:
     Title: disallowCanAddChildren
+  ApiFolder01:
+    Title: ApiFolder01
+  ApiFolder02:
+    Title: ApiFolder02
+  ApiFolder03:
+    Title: ApiFolder03
+    ParentID: =>SilverStripe\Assets\Folder.ApiFolder02
 SilverStripe\Assets\File:
   rootfile:
     Name: rootfile.jpg
@@ -58,3 +65,24 @@ SilverStripe\Assets\Shortcodes\FileLink:
     Linked: =>SilverStripe\Assets\File.file1
   usingreadonlyfile:
     Linked: =>SilverStripe\Assets\File.disallowCanView
+SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestFile:
+  ApiTestFile01:
+    Title: ApiTestFile01
+    Parent: =>SilverStripe\Assets\Folder.ApiFolder01
+  ApiTestFile02:
+    Title: ApiTestFile02
+    Parent: =>SilverStripe\Assets\Folder.ApiFolder01
+  ApiTestFile03:
+    Title: ApiTestFile03
+    Parent: =>SilverStripe\Assets\Folder.ApiFolder03
+SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestObject:
+  ApiTestObject01:
+    Title: ApiTestObject01
+    TestFileID: =>SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestFile.ApiTestFile01
+  ApiTestObject02:
+    Title: ApiTestObject02
+    TestFileID: =>SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestFile.ApiTestFile01
+  ApiTestObject03:
+    Title: ApiTestObject03
+    TestFileID: =>SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestFile.ApiTestFile02
+

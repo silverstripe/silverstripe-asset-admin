@@ -13,17 +13,14 @@ import * as displaySearchActions from 'state/displaySearch/DisplaySearchActions'
 import Editor from 'containers/Editor/Editor';
 import Gallery from 'containers/Gallery/Gallery';
 import Toolbar from 'components/Toolbar/Toolbar';
-import { withApollo } from '@apollo/client/react/hoc';
 import Search, { hasFilters } from 'components/Search/Search';
 import SearchToggle from 'components/Search/SearchToggle';
-import deleteFilesMutation from 'state/files/deleteFilesMutation';
-import unpublishFilesMutation from 'state/files/unpublishFilesMutation';
-import publishFilesMutation from 'state/files/publishFilesMutation';
 import CONSTANTS from 'constants/index';
 import configShape from 'lib/configShape';
-import { injectGraphql } from 'lib/Injector';
+import Config from 'lib/Config';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import getFormSchema from 'lib/getFormSchema';
+import getJsonErrorMessage from 'lib/getJsonErrorMessage';
 import BulkDeleteConfirmation from '../BulkDeleteConfirmation/BulkDeleteConfirmation';
 import AssetAdminBreadcrumb from './AssetAdminBreadcrumb';
 
@@ -52,11 +49,32 @@ class AssetAdmin extends Component {
     this.handleUploadQueue = this.handleUploadQueue.bind(this);
     this.handleCreateFolder = this.handleCreateFolder.bind(this);
     this.handleMoveFilesSuccess = this.handleMoveFilesSuccess.bind(this);
+    this.refetchFolder = this.refetchFolder.bind(this);
+
+    this.state = {
+      loading: false,
+      folder: null,
+      files: [],
+      totalCount: 0,
+      forceRefetch: false,
+    };
   }
 
-  componentDidUpdate() {
-    if ((typeof this.props.onReplaceUrl === 'function') && !this.props.loading && this.props.folder && this.props.folderId !== this.props.folder.id) {
-      this.props.onReplaceUrl(this.props.folder.id, this.props.fileId, this.props.query, this.props.viewAction);
+  componentDidMount() {
+    this.refetchFolder();
+  }
+
+  componentDidUpdate(prevProps) {
+    if ((this.props.folderId !== prevProps.folderId)
+      || ((this.props.fileId !== prevProps.fileId) && this.props.fileId !== 0)
+      || this.state.forceRefetch
+    ) {
+      this.refetchFolder();
+    }
+    if (this.state.forceRefetch) {
+      this.setState({
+        forceRefetch: false
+      });
     }
   }
 
@@ -67,21 +85,65 @@ class AssetAdmin extends Component {
     if (this.props.folderId !== null) {
       return this.props.folderId;
     }
-    if (this.props.folder) {
-      return this.props.folder.id;
+    if (this.state.folder) {
+      return this.state.folder.id;
     }
     return 0;
   }
 
+  refetchFolder() {
+    const folderId = this.getFolderId();
+    // Fetch child files in the folder
+    const urlParams = new URLSearchParams(window.location.search);
+    const qsParams = [];
+    urlParams.forEach((value, key) => {
+      // "page" is pagination
+      // "filter" is for search
+      // "sort" is for sort e.g. "title,desc"
+      if (key === 'page' || key.substring(0, 6) === 'filter' || key.substring(0, 4) === 'sort') {
+        qsParams.push(`${key}=${value}`);
+      }
+    });
+    let qs = '';
+    if (qsParams.length) {
+      qs = `?${qsParams.join('&')}`;
+    }
+    // do not set loading state to true here, because it will cause an ugly flicker
+    const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdminOpen');
+    const url = `${sectionConfig.endpoints.read.url}/${folderId}${qs}`;
+
+    backend.get(url)
+      .then(async (response) => {
+        const responseJson = await response.json();
+        this.setState({
+          loading: false,
+          folder: responseJson,
+          files: responseJson.children.nodes,
+          totalCount: responseJson.children.pageInfo.totalCount,
+        });
+      })
+      .catch(async (err) => {
+        this.setState({
+          loading: false,
+          folder: null,
+          files: [],
+          totalCount: 0,
+        });
+        const message = await getJsonErrorMessage(err);
+        this.props.actions.toasts.error(message);
+      });
+  }
+
   getFiles() {
     const {
-      files,
       queuedFiles,
       folderId
     } = this.props;
 
+    const files = this.state.files;
+
     const combinedFilesList = [
-      // Exclude uploaded files that have been reloaded via graphql
+      // Exclude uploaded files that have been reloaded from the server
       ...queuedFiles
         .items
         .filter(item =>
@@ -108,6 +170,9 @@ class AssetAdmin extends Component {
     if (typeof this.props.onBrowse === 'function') {
       // for Higher-order component with a router handler
       this.props.onBrowse(folderId, fileId, query);
+      this.setState({
+        forceRefetch: true,
+      });
     }
     if (folderId !== this.getFolderId()) {
       this.props.actions.gallery.deselectFiles();
@@ -125,6 +190,9 @@ class AssetAdmin extends Component {
       this.props.fileId,
       Object.assign({}, this.props.query, { page })
     );
+    this.setState({
+      forceRefetch: true,
+    });
   }
 
   /**
@@ -135,7 +203,6 @@ class AssetAdmin extends Component {
   handleDoSearch(data) {
     this.props.actions.gallery.deselectFiles();
     this.props.actions.queuedFiles.purgeUploadQueue();
-    this.props.actions.files.readFiles();
     this.handleBrowse(
       data.currentFolderOnly ? this.getFolderId() : 0,
       null,
@@ -153,8 +220,9 @@ class AssetAdmin extends Component {
     this.props.actions.displaySearch.closeSearch();
     this.props.actions.gallery.deselectFiles();
     this.props.actions.queuedFiles.purgeUploadQueue();
-    this.props.actions.files.readFiles();
-    this.handleOpenFolder(event, this.props.folder);
+    this.refetchFolder();
+    const folder = this.state.folder;
+    this.handleOpenFolder(event, folder);
   }
 
   /**
@@ -174,6 +242,9 @@ class AssetAdmin extends Component {
         page: undefined,
       }
     );
+    this.setState({
+      forceRefetch: true
+    });
   }
 
   /**
@@ -212,8 +283,9 @@ class AssetAdmin extends Component {
   handleBackButtonClick(event) {
     event.preventDefault();
     this.props.actions.gallery.deselectFiles();
-    if (this.props.folder) {
-      this.handleOpenFolder(this.props.folder.parentId || 0);
+    const folder = this.state.folder;
+    if (folder) {
+      this.handleOpenFolder(folder.parentId || 0);
     } else {
       this.handleOpenFolder(0);
     }
@@ -262,6 +334,9 @@ class AssetAdmin extends Component {
       const file = files.find(item => item.id === parseInt(data.ID, 10));
 
       this.props.onInsertMany(null, [file]);
+      this.setState({
+        forceRefetch: true
+      });
       return Promise.resolve();
     }
 
@@ -276,21 +351,25 @@ class AssetAdmin extends Component {
     if (!promise) {
       throw new Error('Promise was not returned for submitting');
     }
+    this.setState({
+      forceRefetch: true
+    });
     return promise
       .then((response) => {
-        if (action === 'action_createfolder' && this.props.type === 'admin') {
-          // open the new folder in edit mode after save completes
-          this.handleOpenFile(response.record.id);
-        }
-
-        return this.props.actions.files.readFiles()
-          .then(() => {
+        if (action === 'action_createfolder') {
+          if (this.props.type === 'admin') {
+            // open the new folder in edit mode after save completes
+            this.handleOpenFile(response.record.id);
+          } else {
             // open the containing folder, since folder edit mode isn't desired
-            if (action === 'action_createfolder' && this.props.type !== 'admin') {
-              this.handleOpenFolder(this.getFolderId());
-            }
-            return response;
-          });
+            this.handleOpenFolder(this.getFolderId());
+          }
+        } else if ((action === 'action_save' || action === 'action_publish')
+          && this.getFolderId() !== response.record.parent.id) {
+          // If the file was moved, open the folder containing the file was moved to
+          this.handleBrowse(response.record.parent.id, response.record.id, null);
+        }
+        return response;
       });
   }
 
@@ -332,72 +411,54 @@ class AssetAdmin extends Component {
     });
 
     const fileIDs = files.map(file => file.id);
-    const parentId = this.props.folder ? this.props.folder.id : 0;
+    const folder = this.state.folder;
+    const parentId = folder ? folder.id : 0;
 
-    return this.props.actions.files.deleteFiles(fileIDs, parentId)
-      .then(({ data: { deleteFiles } }) => {
+    const url = this.props.sectionConfig.endpoints.delete.url;
+    return backend.post(url, {
+      ids: fileIDs,
+    }, {
+      'X-SecurityID': Config.get('SecurityID')
+    })
+      .then(() => {
         this.handleBrowse(parentId, null, this.props.query);
-
         const queuedFiles = this.props.queuedFiles.items.filter((file) => (
           fileIDs.includes(file.id)
         ));
-
         queuedFiles.forEach((file) => {
           if (file.queuedId) {
             this.props.actions.queuedFiles.removeQueuedFile(file.queuedId);
           }
         });
-
-        this.props.actions.files.readFiles();
-
-        return deleteFiles;
-      })
-      .then((resultItems) => {
-        const successes = resultItems.filter((result) => result).length;
-        const { archiveFiles } = this.props.sectionConfig;
-        if (successes !== ids.length) {
-          let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_FAIL_02';
-          let transDefault = '%s folders/files were successfully deleted, but %s files were not able to be deleted.';
-          if (archiveFiles) {
-            transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_FAIL_02';
-            transDefault = '%s folders/files were successfully archived, but %s files were not able to be archived.';
-          }
-          this.props.actions.toasts.error(
-            i18n.sprintf(
-              i18n._t(transKey, transDefault),
-              successes,
-              ids.length - successes
-            )
-          );
-        } else {
-          let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS_02';
-          let transDefault = '%s folders/files were successfully deleted.';
-          if (archiveFiles) {
-            transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_SUCCESS_02';
-            transDefault = '%s folders/files were successfully archived.';
-          }
-          this.props.actions.toasts.success(
-            i18n.sprintf(
-              i18n._t(transKey, transDefault),
-              successes
-            )
-          );
-          this.props.actions.gallery.deselectFiles();
+        let transKey = 'AssetAdmin.BULK_ACTIONS_DELETE_SUCCESS_02';
+        let transDefault = '%s folders/files were successfully deleted.';
+        if (this.props.sectionConfig.filesAreVersioned && this.props.sectionConfig.archiveFiles) {
+          transKey = 'AssetAdmin.BULK_ACTIONS_ARCHIVE_SUCCESS_02';
+          transDefault = '%s folders/files were successfully archived.';
         }
-
-        return resultItems;
+        this.props.actions.toasts.success(
+          i18n.sprintf(
+            i18n._t(transKey, transDefault),
+            fileIDs.length
+          )
+        );
+        this.props.actions.gallery.deselectFiles();
+        this.refetchFolder();
       })
-      .finally(this.props.actions.confirmDeletion.reset);
+      .catch(async (err) => {
+        const message = await getJsonErrorMessage(err);
+        this.props.actions.toasts.error(message);
+      })
+      .finally(() => this.props.actions.confirmDeletion.reset());
   }
 
   /**
    * Unpublish files
    *
    * @param {array} ids
-   * @param {boolean} force
    * @return {Promise}
    */
-  doUnpublish(ids, force = false) {
+  doUnpublish(ids) {
     const files = ids.map(id => {
       const result = this.findFile(id);
       if (!result) {
@@ -408,63 +469,73 @@ class AssetAdmin extends Component {
 
       return result;
     });
-
     const fileIDs = files.map(file => file.id);
-    return this.props.actions.files.unpublishFiles(fileIDs, force)
-
-      .then(({ data: { unpublishFiles } }) => {
-        const successes = unpublishFiles.filter(result => result.__typename === 'File');
-        const confirmationRequired = unpublishFiles.filter(result => (
-          result.__typename === 'PublicationNotice' && result.noticeType === 'HAS_OWNERS'
-        ));
-        const successful = successes.map(file => {
-          this.resetFile(file);
-          return file;
-        });
-        const displayedMessages = confirmationRequired.slice(0, 4);
-        const rest = confirmationRequired.slice(5);
-        const body = displayedMessages.map(warning => warning.message);
-        if (rest.length) {
-          body.push(
-            i18n.inject(
-              i18n._t(
-                'AssetAdmin.BULK_OWNED_WARNING_REMAINING',
-                'And {count} other file(s)'
-              ),
-              { count: rest.length },
-            )
+    // First make a call to api/readLiveOwnerCounts to check if any of the files are being used by other published content
+    // If they are, display a confirmation to the user
+    // If the user confirms, make a second call to api/unpublish to actually unpublish the files
+    const qs = fileIDs.map(id => `ids[]=${id}`).join('&');
+    let url = `${this.props.sectionConfig.endpoints.readLiveOwnerCounts.url}?${qs}`;
+    return backend.get(url)
+      .then(async (response) => {
+        const responseJson = await response.json();
+        // Display a maximum of 4 messages about individual file usage, any beyond that are 'the rest'
+        // Note that if there are no live owners then this logic will be largely skipped
+        const filesWithLiveUsage = responseJson.filter(fileObj => fileObj.count > 0);
+        const displayedMessages = filesWithLiveUsage.slice(0, 4).map(fileObj => fileObj.message);
+        const theRestLength = filesWithLiveUsage.slice(5).length;
+        let theRestMessage = '';
+        if (theRestLength > 0) {
+          theRestMessage = i18n.inject(
+            i18n._t(
+              'AssetAdmin.BULK_OWNED_WARNING_REMAINING',
+              'And {count} other file(s)'
+            ),
+            { count: theRestLength },
           );
         }
         if (displayedMessages.length) {
-          const alertMessage = [
+          const confirmationMessage = [
             i18n.inject(
               i18n._t(
                 'AssetAdmin.BULK_OWNED_WARNING_HEADING',
                 '{count} file(s) are being used by other published content.'
               ),
-              { count: confirmationRequired.length },
+              { count: displayedMessages.length },
             ),
-
-            body.join('\n'),
-
+            ...displayedMessages,
+            theRestMessage,
             i18n._t(
               'AssetAdmin.BULK_OWNED_WARNING_FOOTER',
               'Unpublishing will only remove files from the published version of the content. They will remain on the draft version. Unpublish anyway?'
             )
-          ];
-
+          ].filter(s => s).join('\n\n');
           // eslint-disable-next-line no-alert
-          if (confirm(alertMessage.join('\n\n'))) {
-            const secondPassIDs = confirmationRequired.reduce(
-              (acc, curr) => acc.concat(curr.ids),
-              []
-            );
-            return this.doUnpublish(secondPassIDs, true)
-              .then(next => successful.concat(next));
+          if (!confirm(confirmationMessage)) {
+            return Promise.reject();
           }
         }
-
-        return successful;
+        return Promise.resolve();
+      })
+      .then(() => {
+        url = this.props.sectionConfig.endpoints.unpublish.url;
+        return backend.post(url, {
+          ids: fileIDs,
+        }, {
+          'X-SecurityID': Config.get('SecurityID')
+        })
+          .catch(async (err) => {
+            const message = await getJsonErrorMessage(err);
+            this.props.actions.toasts.error(message);
+          });
+      })
+      .then(() => {
+        this.refetchFolder();
+        return files;
+      })
+      .catch(async (err) => {
+        const message = await getJsonErrorMessage(err);
+        this.props.actions.toasts.error(message);
+        return [];
       });
   }
 
@@ -474,11 +545,11 @@ class AssetAdmin extends Component {
    * @param {array} fileIds
    */
   handleUnpublish(fileIds) {
-    return this.doUnpublish(fileIds).then((response) => {
+    return this.doUnpublish(fileIds).then((files) => {
       const { fileId } = this.props;
-      this.props.actions.files.readFiles()
+      this.refetchFolder()
         .then(() => {
-          if (fileId && response.find(file => file.id === fileId)) {
+          if (fileId && files.find(file => file.id === fileId)) {
             this.props.resetFileDetails(this.getFolderId(), fileId, this.props.query);
           }
         });
@@ -504,17 +575,20 @@ class AssetAdmin extends Component {
     });
 
     const fileIDs = files.map(file => file.id);
-
-    return this.props.actions.files.publishFiles(fileIDs)
-      .then(({ data: { publishFiles } }) => {
-        const successes = publishFiles.filter(result => result.__typename === 'File');
-
-        const successful = successes.map(file => {
-          this.resetFile(file);
-          return file;
-        });
-
-        return successful;
+    const url = this.props.sectionConfig.endpoints.publish.url;
+    return backend.post(url, {
+      ids: fileIDs,
+    }, {
+      'X-SecurityID': Config.get('SecurityID')
+    })
+      .then(() => {
+        files.forEach(file => this.resetFile(file));
+        this.refetchFolder();
+        return files;
+      })
+      .catch(async (err) => {
+        const message = await getJsonErrorMessage(err);
+        this.props.actions.toasts.error(message);
       });
   }
 
@@ -538,7 +612,7 @@ class AssetAdmin extends Component {
     // A bit of coupling. If the editor isn't open, the gallery will automatically
     // open a file and force a refresh, so we have to guard against a double refresh.
     if (this.props.fileId) {
-      this.props.actions.files.readFiles();
+      this.refetchFolder();
     }
   }
 
@@ -563,7 +637,7 @@ class AssetAdmin extends Component {
     });
 
     this.props.actions.gallery.deselectFiles();
-    this.props.actions.files.readFiles();
+    this.refetchFolder();
   }
 
   /**
@@ -574,8 +648,8 @@ class AssetAdmin extends Component {
   renderGallery() {
     const { GalleryComponent } = this.props;
     const config = this.props.sectionConfig;
-    const createFileApiUrl = config.createFileEndpoint.url;
-    const createFileApiMethod = config.createFileEndpoint.method;
+    const createFileApiUrl = config.endpoints.createFile.url;
+    const createFileApiMethod = config.endpoints.createFile.method;
 
     const limit = this.props.query && parseInt(this.props.query.limit || config.limit, 10);
     const page = this.props.query && parseInt(this.props.query.page || 1, 10);
@@ -584,19 +658,21 @@ class AssetAdmin extends Component {
     const view = this.props.query && this.props.query.view;
     const filters = this.props.query.filter || {};
 
+    const folder = this.state.folder;
+    const loading = this.state.loading;
+
     return (
       <GalleryComponent
         files={this.getFiles()}
         fileId={this.props.fileId}
         folderId={this.getFolderId()}
-        folder={this.props.folder}
+        folder={folder}
         type={this.props.type}
         limit={limit}
         page={page}
-        totalCount={this.props.filesTotalCount}
+        totalCount={this.state.totalCount}
         view={view}
         filters={filters}
-        graphQLErrors={this.props.graphQLErrors}
         createFileApiUrl={createFileApiUrl}
         createFileApiMethod={createFileApiMethod}
         onInsertMany={this.props.onInsertMany}
@@ -614,7 +690,7 @@ class AssetAdmin extends Component {
         onViewChange={this.handleViewChange}
         sort={sort}
         sectionConfig={config}
-        loading={this.props.loading}
+        loading={loading}
         maxFilesSelect={this.props.maxFiles}
         dialog={this.props.dialog}
       />
@@ -673,7 +749,11 @@ class AssetAdmin extends Component {
   }
 
   render() {
-    const { folder, folderId, query, getUrl, type, maxFiles, toolbarChildren, SearchComponent, BulkDeleteConfirmationComponent } = this.props;
+    const { folderId, query, getUrl, type, maxFiles, toolbarChildren, SearchComponent, BulkDeleteConfirmationComponent } = this.props;
+
+    if (this.state.folder === null) {
+      return null;
+    }
 
     const showBackButton = Boolean(folderId || hasFilters(query.filter));
     const searchFormSchemaUrl = this.props.sectionConfig.form.fileSearchForm.schemaUrl;
@@ -690,6 +770,8 @@ class AssetAdmin extends Component {
       this.props.actions.displaySearch.toggleSearch :
       undefined;
 
+    const folder = this.state.folder;
+
     const breadcrumbProps = {
       folder,
       query,
@@ -704,7 +786,7 @@ class AssetAdmin extends Component {
           showBackButton={showBackButton}
           onBackButtonClick={this.handleBackButtonClick}
         >
-          <AssetAdminBreadcrumb {...breadcrumbProps} />
+          {folder && <AssetAdminBreadcrumb {...breadcrumbProps} />}
           <div className="asset-admin__toolbar-extra pull-xs-right fill-width vertical-align-items">
             <SearchToggle toggled={showSearch} onToggle={onSearchToggle} />
             {toolbarChildren}
@@ -723,7 +805,11 @@ class AssetAdmin extends Component {
           {this.renderGallery()}
           {this.renderEditor()}
         </div>
-        <BulkDeleteConfirmationComponent onConfirm={this.handleDelete} />
+        <BulkDeleteConfirmationComponent
+          onConfirm={this.handleDelete}
+          filesAreVersioned={this.props.sectionConfig.filesAreVersioned}
+          archiveFiles={this.props.sectionConfig.archiveFiles}
+        />
       </div>
     );
   }
@@ -738,7 +824,6 @@ AssetAdmin.propTypes = {
   onBrowse: PropTypes.func,
   onReplaceUrl: PropTypes.func,
   onInsertMany: PropTypes.func,
-  graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   getUrl: PropTypes.func,
   query: PropTypes.shape({
     sort: PropTypes.string,
@@ -748,19 +833,10 @@ AssetAdmin.propTypes = {
   }),
   onSubmitEditor: PropTypes.func,
   type: PropTypes.oneOf(['insert-media', 'insert-link', 'select', 'admin']),
-  files: PropTypes.array,
   queuedFiles: PropTypes.shape({
     items: PropTypes.array.isRequired,
   }),
   filesTotalCount: PropTypes.number,
-  folder: PropTypes.shape({
-    id: PropTypes.number,
-    title: PropTypes.string,
-    parents: PropTypes.array,
-    parentId: PropTypes.number,
-    canView: PropTypes.bool,
-    canEdit: PropTypes.bool,
-  }),
   loading: PropTypes.bool,
   actions: PropTypes.object,
   maxFiles: PropTypes.number,
@@ -783,7 +859,7 @@ AssetAdmin.defaultProps = {
   EditorComponent: Editor,
   GalleryComponent: Gallery,
   SearchComponent: Search,
-  BulkDeleteConfirmationComponent: BulkDeleteConfirmation
+  BulkDeleteConfirmationComponent: BulkDeleteConfirmation,
 };
 
 function mapStateToProps(state, ownProps) {
@@ -812,9 +888,4 @@ export { AssetAdmin as Component };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
-  injectGraphql('ReadFilesQuery'),
-  deleteFilesMutation,
-  unpublishFilesMutation,
-  publishFilesMutation,
-  withApollo
 )(AssetAdmin);

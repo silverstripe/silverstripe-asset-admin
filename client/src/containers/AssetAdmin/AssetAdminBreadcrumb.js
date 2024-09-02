@@ -32,9 +32,9 @@ const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon, P
   }];
 
   if (folder && folder.id) {
-    // Add parent folders
-    if (folder.parents) {
-      folder.parents.forEach((parent) => {
+    // Add ancestor folders
+    if (folder.ancestors) {
+      folder.ancestors.forEach((parent) => {
         breadcrumbs.push({
           text: parent.title,
           href: hrefBuilder(parent.id, null, query),
@@ -70,6 +70,7 @@ const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon, P
       icons
     });
   }
+
   // Search leaf if there was a search entered
   if (hasFilters(query.filter)) {
     breadcrumbs.push({
@@ -94,7 +95,7 @@ AssetAdminBreadcrumb.propTypes = {
   folder: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,
-    parents: PropTypes.array,
+    ancestors: PropTypes.array,
     parentId: PropTypes.number,
     canView: PropTypes.bool,
     canEdit: PropTypes.bool,

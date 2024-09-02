@@ -166,7 +166,7 @@ test('GalleryItem getThumbnailStyles() should return backgroundImage with the co
   expect(thumbnail.classList).toContain('gallery-item__thumbnail--small');
 });
 
-test('GalleryItem getThumbnailStyles() should return backgroundImage with the correct data-url when thumbnail is included in graphql body', () => {
+test('GalleryItem getThumbnailStyles() should return backgroundImage with the correct data-url when thumbnail is included in json response', () => {
   const { container } = render(
     <GalleryItem {...makeProps({
       item: {

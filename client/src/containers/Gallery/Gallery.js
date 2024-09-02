@@ -14,13 +14,13 @@ import * as galleryActions from 'state/gallery/GalleryActions';
 import * as toastsActions from 'state/toasts/ToastsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
-import moveFilesMutation from 'state/files/moveFilesMutation';
-import { withApollo } from '@apollo/client/react/hoc';
 import { SelectableGroup } from 'react-selectable';
 import configShape from 'lib/configShape';
+import Config from 'lib/Config';
 import getStatusCodeMessage from 'lib/getStatusCodeMessage';
 import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
+import backend from 'lib/Backend';
 import MoveModal from '../MoveModal/MoveModal';
 import GalleryDND from './GalleryDND';
 
@@ -654,7 +654,13 @@ class Gallery extends Component {
   }
 
   handleMoveFiles(folderId, fileIds) {
-    this.props.actions.files.moveFiles(folderId, fileIds)
+    const url = this.props.sectionConfig.endpoints.move.url;
+    return backend.post(url, {
+      ids: fileIds,
+      folderID: folderId,
+    }, {
+      'X-SecurityID': Config.get('SecurityID')
+    })
       .then(() => {
         const duration = CONSTANTS.MOVE_SUCCESS_DURATION;
         const message = `+${fileIds.length}`;
@@ -709,7 +715,7 @@ class Gallery extends Component {
       : action => action.value !== ACTION_TYPES.INSERT;
 
     // Used to choose whether the text should be "Delete" or "Archive"
-    const deleteButtonFilter = (sectionConfig.archiveFiles)
+    const deleteButtonFilter = (sectionConfig.filesAreVersioned && sectionConfig.archiveFiles)
       ? action => action.value !== ACTION_TYPES.DELETE
       : action => action.value !== ACTION_TYPES.ARCHIVE;
 
@@ -870,12 +876,11 @@ class Gallery extends Component {
   }
 
   render() {
-    const { folder, loading, errorMessage, graphQLErrors, noticeMessage } = this.props;
+    const { folder, loading, errorMessage, noticeMessage } = this.props;
     const Loading = this.props.LoadingComponent;
-    const hasGraphQLErrors = graphQLErrors && graphQLErrors.length > 0;
 
     if (!folder) {
-      if (errorMessage || hasGraphQLErrors) {
+      if (errorMessage) {
         return (
           <div className="gallery__error flexbox-area-grow">
             <div className="gallery__error-message">
@@ -883,10 +888,6 @@ class Gallery extends Component {
                 {i18n._t('AssetAdmin.DROPZONE_RESPONSE_ERROR', 'Server responded with an error.')}
               </h3>
               {errorMessage && <p>{errorMessage}</p>}
-              {hasGraphQLErrors && graphQLErrors.map((error, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <p key={index}>{error}</p>
-              ))}
             </div>
           </div>
         );
@@ -1071,7 +1072,6 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   // Combined queuedFiles + files
   files: PropTypes.array,
   errorMessage: PropTypes.string,
-  graphQLErrors: PropTypes.arrayOf(PropTypes.string),
   actions: PropTypes.object,
   securityId: PropTypes.string,
   onViewChange: PropTypes.func.isRequired,
@@ -1151,6 +1151,4 @@ export default compose(
     () => 'AssetAdmin.Gallery',
   ),
   connect(mapStateToProps, mapDispatchToProps),
-  moveFilesMutation,
-  (component) => withApollo(component)
 )(Gallery);

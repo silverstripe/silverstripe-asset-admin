@@ -7,40 +7,40 @@ import BulkDeleteMessage from '../BulkDeleteMessage';
 const unlinkFileWarning = 'Ensure files are removed from content areas prior to deleting them, otherwise they will appear as broken links.';
 
 const noFoldersProps = {
-  folderCount: 0,
-  folderDescendantFileTotals: { totalItems: 0, totalCount: 0 },
+  topLevelFolderCount: 0,
+  descendantFileCount: 0,
 };
 
 const oneEmptyFolder = {
-  folderCount: 1,
-  folderDescendantFileTotals: { totalItems: 0, totalCount: 0 },
+  topLevelFolderCount: 1,
+  descendantFileCount: 0,
 };
 
 const manyEmptyFolders = {
-  folderCount: 2,
-  folderDescendantFileTotals: { totalItems: 0, totalCount: 0 },
+  topLevelFolderCount: 2,
+  descendantFileCount: 0,
 };
 
 const oneFolderProps = {
-  folderCount: 1,
-  folderDescendantFileTotals: { totalItems: 1, totalCount: 5 },
+  topLevelFolderCount: 1,
+  descendantFileCount: 5,
 };
 
 const manyfolderProps = {
-  folderCount: 2,
-  folderDescendantFileTotals: { totalItems: 2, totalCount: 10 },
+  topLevelFolderCount: 2,
+  descendantFileCount: 10,
 };
 
 const noFilesProps = {
-  fileTotalItems: 0,
+  topLevelFileCount: 0,
 };
 
 const oneFileProps = {
-  fileTotalItems: 1,
+  topLevelFileCount: 1,
 };
 
 const manyFilesProps = {
-  fileTotalItems: 2,
+  topLevelFileCount: 2,
 };
 
 const getMessage = (count) => [
@@ -63,7 +63,7 @@ function makeProps(obj = {}) {
   };
 }
 
-test('BulkDeleteMessage Deleting a file and a folder file in use', () => {
+test('BulkDeleteMessage Deleting a file and a folder file in use', async () => {
   const { container } = render(
     <BulkDeleteMessage {...makeProps({
       ...noFoldersProps,

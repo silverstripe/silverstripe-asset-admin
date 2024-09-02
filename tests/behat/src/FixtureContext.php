@@ -380,15 +380,26 @@ EOS
     }
 
     /**
-     * @Then I should see a modal titled :title
+     * @Then /^I should (not |)see a modal titled "([^"]*)"$/
      * @param string $title
      */
-    public function iShouldSeeAModalTitled($title)
+    public function iShouldSeeAModalTitled($not, $title)
     {
         $page = $this->getMainContext()->getSession()->getPage();
         $modalTitle = $page->find('css', '[role=dialog] .modal-header > .modal-title');
-        Assert::assertNotNull($modalTitle, 'No modal on the page');
-        Assert::assertTrue($modalTitle->getText() == $title);
+        if ($not) {
+            if ($modalTitle && $modalTitle->getText() == $title) {
+                // Modal found, but should not be visible
+                Assert::assertFalse($modalTitle->isVisible());
+            } else {
+                // Modal not found, which is also a pass
+                Assert::assertTrue(true);
+            }
+        } else {
+            // Modal should be visible and have the correct title
+            Assert::assertTrue($modalTitle->getText() == $title);
+            Assert::assertTrue($modalTitle->isVisible());
+        }
     }
 
     /**

@@ -101,6 +101,30 @@ Feature: Manage files
       And I press the Delete button inside the modal
     Then I should not see the file named "file1" in the gallery
 
+  Scenario: I can cancel deleting a file
+    When I click on the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
+    Then I should see the "Form_fileEditForm" form
+    When I press the "Other actions" button
+      And I press the "Delete" button
+    Then I should see a modal titled "Confirm deletion"
+      And I press the Cancel button inside the modal
+      And I wait for 1 second
+    Then I should not see a modal titled "Confirm deletion"
+      And I should see the file named "file1" in the gallery
+
+  Scenario: I can close the file deletion modal
+    When I click on the file named "folder1" in the gallery
+      And I click on the file named "file1" in the gallery
+    Then I should see the "Form_fileEditForm" form
+    When I press the "Other actions" button
+      And I press the "Delete" button
+    Then I should see a modal titled "Confirm deletion"
+      And I click on the ".modal-header .close" element
+      And I wait for 1 second
+    Then I should not see a modal titled "Confirm deletion"
+      And I should see the file named "file1" in the gallery
+
   Scenario: I can delete multiple files
     Given a "image" "assets/folder1/file2.jpg" was created "2012-01-02 12:00:00"
     When I click on the file named "folder1" in the gallery
@@ -142,7 +166,7 @@ Feature: Manage files
     Then I should not see the file named "file1" in the gallery
       And I should not see the file named "file2" in the gallery
       And I should not see the file named "testfile" in the gallery
-      And I should see a "Moved 3 item(s) to folder2/" success toast with these actions: Go to folder
+      And I should see a "Moved 3 item(s) to folder2" success toast with these actions: Go to folder
     When I click the "Go to folder" toast action
     Then I should see the file named "file1" in the gallery
       And I should see the file named "file2" in the gallery

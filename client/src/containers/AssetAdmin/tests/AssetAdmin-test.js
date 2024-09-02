@@ -15,12 +15,71 @@ jest.mock('lib/getFormSchema', () => ({
   })
 }));
 
+let resolveBackendGet;
+let rejectBackendGet;
+let resolveBackendPost;
+let rejectBackendPost;
+let lastBackendGetEndpoint;
+let lastBackendPostEndpoint;
+let lastBackendPostData;
+
+jest.mock('lib/Backend', () => ({
+  get: (endpoint) => new Promise((resolve, reject) => {
+    resolveBackendGet = resolve;
+    rejectBackendGet = reject;
+    lastBackendGetEndpoint = endpoint;
+  }),
+  post: (endpoint, data) => new Promise((resolve, reject) => {
+    resolveBackendPost = resolve;
+    rejectBackendPost = reject;
+    lastBackendPostEndpoint = endpoint;
+    lastBackendPostData = data;
+  }),
+}));
+
+window.ss.config = {
+  SecurityID: 1234567890,
+  sections: [
+    {
+      name: 'SilverStripe\\AssetAdmin\\Controller\\AssetAdminOpen',
+      endpoints: {
+        read: 'test/endpoint/read',
+      }
+    },
+  ],
+};
+
+function makeReadFileResponse() {
+  return {
+    json: () => ({
+      children: {
+        pageInfo: {
+          totalCount: 2,
+        },
+        nodes: [
+          {
+            id: 1,
+          },
+          {
+            id: 2,
+          },
+        ],
+      },
+    }),
+  };
+}
+
 let lastReturn;
 let nextAction;
 let nextParams;
+let lastToastErrorMessage;
 
 let consoleErrorFn;
 beforeEach(() => {
+  lastBackendGetEndpoint = undefined;
+  lastBackendPostEndpoint = undefined;
+  lastBackendPostData = undefined;
+  lastToastErrorMessage = undefined;
   lastReturn = undefined;
   nextAction = undefined;
   nextParams = [];
@@ -32,10 +91,17 @@ afterEach(() => {
   consoleErrorFn.mockRestore();
 });
 
-function getMockFile(id) {
+function createJsonError(message) {
   return {
-    id,
-    __typename: 'File',
+    response: {
+      json: () => Promise.resolve({
+        errors: [
+          {
+            value: message
+          }
+        ],
+      }),
+    },
   };
 }
 
@@ -43,14 +109,31 @@ function makeProps(obj = {}) {
   return {
     client: {
       dataId: () => null
-        .mockReturnValue(getMockFile(1)),
+        .mockReturnValue({ id: 1 }),
     },
     dialog: true,
     sectionConfig: {
       url: '',
       limit: 10,
-      createFileEndpoint: {
-        url: '',
+      endpoints: {
+        createFile: {
+          url: '',
+        },
+        read: {
+          url: 'test/endpoint/read',
+        },
+        delete: {
+          url: 'test/endpoint/delete',
+        },
+        publish: {
+          url: 'test/endpoint/publish',
+        },
+        unpublish: {
+          url: 'test/endpoint/unpublish',
+        },
+        readLiveOwnerCounts: {
+          url: 'test/endpoint/readLiveOwnerCounts',
+        },
       },
       form: {
         fileEditForm: {
@@ -81,7 +164,7 @@ function makeProps(obj = {}) {
     folder: {
       id: 0,
       title: '',
-      parents: [],
+      ancestors: [],
       parentId: 0,
       canView: true,
       canEdit: true,
@@ -99,18 +182,21 @@ function makeProps(obj = {}) {
       },
       files: {
         deleteFiles: () => Promise.resolve({ data: { deleteFiles: [] } }),
-        readFiles: () => Promise.resolve(),
-        publishFiles: () => Promise.resolve({ data: { publishFiles: [] } }),
-        unpublishFiles: () => Promise.resolve({ data: { unpublishFiles: [] } }),
+        read: () => Promise.resolve(),
+        publish: () => Promise.resolve({ data: { publish: [] } }),
+        unpublish: () => Promise.resolve({ data: { unpublish: [] } }),
       },
       confirmDeletion: {
         deleting: () => null,
+        reset: () => null,
       },
       toasts: {
         display: () => null,
         success: () => null,
-        error: () => null,
-      }
+        error: (message) => {
+          lastToastErrorMessage = message;
+        },
+      },
     },
     showSearch: true,
     EditorComponent: ({ onSubmit }) => <div data-testid="test-editor" onClick={() => onSubmit(...nextParams)}/>,
@@ -134,6 +220,26 @@ function makeProps(obj = {}) {
   };
 }
 
+test('AssetAdmin refetchFolder reject known error', async () => {
+  render(
+    <AssetAdmin {...makeProps()} />
+  );
+  rejectBackendGet(createJsonError('Cannot read files'));
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('Cannot read files');
+});
+
+test('AssetAdmin refetchFolder reject unknown error', async () => {
+  render(
+    <AssetAdmin {...makeProps()} />
+  );
+  rejectBackendGet();
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('An unknown error has occurred.');
+});
+
 test('AssetAdmin handleSubmitEditor should call the onSubmitEditor property when that is supplied', async () => {
   const onSubmitEditor = jest.fn(() => Promise.resolve(null));
   const paramSubmit = jest.fn(() => Promise.resolve(null));
@@ -143,6 +249,7 @@ test('AssetAdmin handleSubmitEditor should call the onSubmitEditor property when
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const editor = await screen.findByTestId('test-editor');
   nextParams = [{}, 'action_test', paramSubmit];
   fireEvent.click(editor);
@@ -155,6 +262,7 @@ test('AssetAdmin handleSubmitEditor should call the paramSubmit given when no on
   render(
     <AssetAdmin {...makeProps()}/>
   );
+  resolveBackendGet(makeReadFileResponse());
   const editor = await screen.findByTestId('test-editor');
   nextParams = [{}, 'action_test', paramSubmit];
   fireEvent.click(editor);
@@ -175,6 +283,7 @@ test('AssetAdmin handleBrowse should clear selected files when folder changes', 
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const search = await screen.findByTestId('test-search');
   nextParams = [{
     currentFolderOnly: false
@@ -197,6 +306,7 @@ test('AssetAdmin handleBrowse should not clear selected', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const search = await screen.findByTestId('test-search');
   nextParams = [{
     currentFolderOnly: true
@@ -205,51 +315,47 @@ test('AssetAdmin handleBrowse should not clear selected', async () => {
   expect(deselectFiles.mock.calls.length).toBe(1);
 });
 
-test('AssetAdmin handleDelete should delete a file', async () => {
-  const deleteFiles = jest.fn(() => Promise.resolve({ data: { deleteFiles: [] } }));
-  const files = [
-    getMockFile(1)
-  ];
+const setupHandleDeleteTest = async () => {
   render(
-    <AssetAdmin {...makeProps({
-      files,
-      queuedFiles: {
-        items: [
-          {
-            ...getMockFile(2),
-            queuedId: 2
-          },
-        ]
-      },
-      actions: {
-        ...makeProps().actions,
-        files: {
-          ...makeProps().actions.files,
-          deleteFiles
-        }
-      }
-    })}
-    />
+    <AssetAdmin {...makeProps()}/>
   );
+  resolveBackendGet(makeReadFileResponse());
   const confirmation = await screen.findByTestId('test-bulk-delete-confirmation');
-  nextParams = [[files[0].id]];
+  nextParams = [[1]];
   fireEvent.click(confirmation);
-  expect(deleteFiles.mock.calls.length).toBe(1);
-  expect(deleteFiles.mock.calls[0][0]).toEqual([files[0].id]);
+};
+
+test('AssetAdmin handleDelete should delete a file', async () => {
+  await setupHandleDeleteTest();
+  resolveBackendPost();
+  expect(lastBackendPostEndpoint).toBe('test/endpoint/delete');
+  expect(lastBackendPostData).toEqual({ ids: [1] });
+});
+
+test('AssetAdmin handleDelete reject known error', async () => {
+  await setupHandleDeleteTest();
+  rejectBackendPost(createJsonError('Cannot delete files'));
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('Cannot delete files');
+});
+
+test('AssetAdmin handleDelete reject unknown error', async () => {
+  await setupHandleDeleteTest();
+  rejectBackendPost();
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('An unknown error has occurred.');
 });
 
 test('AssetAdmin handleDelete should remove the file from the queued files list', async () => {
   const removeQueuedFile = jest.fn();
-  const files = [
-    getMockFile(1)
-  ];
   render(
     <AssetAdmin {...makeProps({
-      files,
       queuedFiles: {
         items: [
           {
-            ...getMockFile(2),
+            id: 2,
             queuedId: 2
           },
         ]
@@ -264,83 +370,127 @@ test('AssetAdmin handleDelete should remove the file from the queued files list'
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const confirmation = await screen.findByTestId('test-bulk-delete-confirmation');
   nextParams = [[2]];
   fireEvent.click(confirmation);
+  resolveBackendPost();
+  // wait for the next tick to ensure that the post request has completed
+  await new Promise(resolve => setTimeout(resolve, 0));
   expect(removeQueuedFile.mock.calls.length).toBe(1);
   expect(removeQueuedFile.mock.calls[0][0]).toEqual(2);
 });
 
-test('AssetAdmin doPublish should publish a file', async () => {
-  const publishFiles = jest.fn(() => Promise.resolve({ data: { publishFiles: [] } }));
-  const files = [
-    getMockFile(1)
-  ];
+const setupDoPublishTest = async () => {
   render(
-    <AssetAdmin {...makeProps({
-      files,
-      queuedFiles: {
-        items: [
-          {
-            ...getMockFile(2),
-            queuedId: 2
-          },
-        ]
-      },
-      actions: {
-        ...makeProps().actions,
-        files: {
-          ...makeProps().actions.files,
-          publishFiles
-        }
-      },
-    })}
-    />
+    <AssetAdmin {...makeProps()}/>
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'publish';
-  nextParams = [[files[0].id]];
+  nextParams = [[1]];
   fireEvent.click(gallery);
-  expect(publishFiles.mock.calls.length).toBe(1);
-  expect(publishFiles.mock.calls[0][0]).toEqual([files[0].id]);
+};
+
+test('AssetAdmin doPublish should publish a file', async () => {
+  await setupDoPublishTest();
+  resolveBackendPost();
+  expect(lastBackendPostEndpoint).toBe('test/endpoint/publish');
+  expect(lastBackendPostData).toEqual({ ids: [1] });
 });
 
-test('AssetAdmin doUnpublish should unpublish a file', async () => {
-  const unpublishFiles = jest.fn(() => Promise.resolve({ data: { unpublishFiles: [] } }));
-  const files = [
-    getMockFile(1)
-  ];
+test('AssetAdmin doPublish reject known error', async () => {
+  await setupDoPublishTest();
+  rejectBackendPost(createJsonError('Cannot publish files'));
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('Cannot publish files');
+});
+
+test('AssetAdmin doPublish reject unknown error', async () => {
+  await setupDoPublishTest();
+  rejectBackendPost();
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('An unknown error has occurred.');
+});
+
+const setupReadLiveOwnerCountsTest = async () => {
+  // simulate confirming window.confirm() dialog
+  global.confirm = jest.fn(() => true);
   render(
-    <AssetAdmin {...makeProps({
-      files,
-      queuedFiles: {
-        items: [
-          {
-            ...getMockFile(2),
-            queuedId: 2
-          },
-        ]
-      },
-      actions: {
-        ...makeProps().actions,
-        files: {
-          ...makeProps().actions.files,
-          unpublishFiles
-        }
-      },
-    })}
-    />
+    <AssetAdmin {...makeProps()}/>
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'unpublish';
-  nextParams = [[files[0].id]];
+  nextParams = [[1, 2]];
   fireEvent.click(gallery);
-  expect(unpublishFiles.mock.calls.length).toBe(1);
-  expect(unpublishFiles.mock.calls[0][0]).toEqual([files[0].id]);
+};
+
+test('AssetAdmin readLiveOwnerCounts reject known error', async () => {
+  await setupReadLiveOwnerCountsTest();
+  rejectBackendGet(createJsonError('Cannot read live owner counts'));
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('Cannot read live owner counts');
+});
+
+test('AssetAdmin readLiveOwnerCounts reject unknown error', async () => {
+  await setupReadLiveOwnerCountsTest();
+  rejectBackendGet();
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('An unknown error has occurred.');
+});
+
+// This also doubles as testing readLiveOwnerCounts success
+const setupDoUnpublishTest = async () => {
+  await setupReadLiveOwnerCountsTest();
+  resolveBackendGet({
+    json: () => [
+      {
+        id: 1,
+        count: 1,
+        message: 'lorem',
+      },
+      {
+        id: 2,
+        count: 1,
+        message: 'ipsum',
+      }
+    ]
+  });
+  expect(lastBackendGetEndpoint).toBe('test/endpoint/readLiveOwnerCounts?ids[]=1&ids[]=2');
+  // wait for the next tick to ensure that the post request has fired
+  await new Promise(resolve => setTimeout(resolve, 0));
+};
+
+test('AssetAdmin doUnpublish should unpublish a file', async () => {
+  await setupDoUnpublishTest();
+  resolveBackendPost();
+  expect(lastBackendPostEndpoint).toBe('test/endpoint/unpublish');
+  expect(lastBackendPostData).toEqual({ ids: [1, 2] });
+});
+
+test('AssetAdmin doUnpublish reject known error', async () => {
+  await setupDoUnpublishTest();
+  rejectBackendPost(createJsonError('Cannot unpublish files'));
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('Cannot unpublish files');
+});
+
+test('AssetAdmin doUnpublish reject unknown error', async () => {
+  await setupDoUnpublishTest();
+  rejectBackendPost();
+  // sleep for 0 seconds to get the next tick
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(lastToastErrorMessage).toBe('An unknown error has occurred.');
 });
 
 test('AssetAdmin handleUploadQueue should not refresh if no file is open', async () => {
-  const readFiles = jest.fn();
+  const read = jest.fn();
   render(
     <AssetAdmin {...makeProps({
       fileId: 0,
@@ -348,22 +498,22 @@ test('AssetAdmin handleUploadQueue should not refresh if no file is open', async
         ...makeProps().actions,
         files: {
           ...makeProps().actions.files,
-          readFiles
+          read
         }
       },
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'successfulupload';
   fireEvent.click(gallery);
-  expect(readFiles.mock.calls.length).toBe(0);
+  expect(read.mock.calls.length).toBe(0);
 });
 
 test('AssetAdmin getFiles no files provided', async () => {
   render(
     <AssetAdmin {...makeProps({
-      files: [],
       queuedFiles: {
         items: []
       },
@@ -371,6 +521,16 @@ test('AssetAdmin getFiles no files provided', async () => {
     })}
     />
   );
+  resolveBackendGet({
+    json: () => ({
+      children: {
+        pageInfo: {
+          totalCount: 0,
+        },
+        nodes: [],
+      },
+    }),
+  });
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'files';
   fireEvent.click(gallery);
@@ -391,6 +551,7 @@ test('AssetAdmin getFiles some files in a folder', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'files';
   fireEvent.click(gallery);
@@ -400,10 +561,6 @@ test('AssetAdmin getFiles some files in a folder', async () => {
 test('AssetAdmin getFiles some files in a folder', async () => {
   render(
     <AssetAdmin {...makeProps({
-      files: [
-        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-        { id: 2, name: 'file two', type: 'image/jpeg', parent: { id: 99 } }
-      ],
       queuedFiles: {
         items: [
           { id: 3, name: 'file three', type: 'image/jpeg', parent: { id: 99 } },
@@ -414,6 +571,7 @@ test('AssetAdmin getFiles some files in a folder', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'files';
   fireEvent.click(gallery);
@@ -423,9 +581,6 @@ test('AssetAdmin getFiles some files in a folder', async () => {
 test('AssetAdmin getFiles upload error e.g. invalid file extension', async () => {
   render(
     <AssetAdmin {...makeProps({
-      files: [
-        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-      ],
       queuedFiles: {
         items: [
           {
@@ -442,18 +597,16 @@ test('AssetAdmin getFiles upload error e.g. invalid file extension', async () =>
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'files';
   fireEvent.click(gallery);
-  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1]);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1, 2]);
 });
 
 test('AssetAdmin getFiles upload in progress', async () => {
   render(
     <AssetAdmin {...makeProps({
-      files: [
-        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-      ],
       queuedFiles: {
         items: [
           {
@@ -469,18 +622,16 @@ test('AssetAdmin getFiles upload in progress', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'files';
   fireEvent.click(gallery);
-  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1]);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1, 2]);
 });
 
 test('AssetAdmin getFiles upload in progress to root folder', async () => {
   render(
     <AssetAdmin {...makeProps({
-      files: [
-        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-      ],
       queuedFiles: {
         items: [
           {
@@ -496,18 +647,16 @@ test('AssetAdmin getFiles upload in progress to root folder', async () => {
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'files';
   fireEvent.click(gallery);
-  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1]);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([0, 1, 2]);
 });
 
 test('AssetAdmin viewing a folder after uploading to a different folder', async () => {
   render(
     <AssetAdmin {...makeProps({
-      files: [
-        { id: 1, name: 'file one', type: 'image/jpeg', parent: { id: 99 } },
-      ],
       queuedFiles: {
         items: [
           {
@@ -522,8 +671,9 @@ test('AssetAdmin viewing a folder after uploading to a different folder', async 
     })}
     />
   );
+  resolveBackendGet(makeReadFileResponse());
   const gallery = await screen.findByTestId('test-gallery');
   nextAction = 'files';
   fireEvent.click(gallery);
-  expect(lastReturn.map(f => f.id)).toStrictEqual([1]);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([1, 2]);
 });
