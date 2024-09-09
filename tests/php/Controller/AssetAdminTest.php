@@ -20,6 +20,7 @@ use SilverStripe\Versioned\Versioned;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\FilesInUseFileExtension;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * Tests {@see AssetAdmin}
@@ -473,7 +474,7 @@ class AssetAdminTest extends FunctionalTest
         });
     }
 
-    public function provideApiReadDescendantCounts(): array
+    public static function provideApiReadDescendantCounts(): array
     {
         return [
             'Valid' => [
@@ -514,9 +515,7 @@ class AssetAdminTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideApiReadDescendantCounts
-     */
+    #[DataProvider('provideApiReadDescendantCounts')]
     public function testApiReadDescendantCounts(
         string $idsType,
         string $fail,
@@ -556,7 +555,7 @@ class AssetAdminTest extends FunctionalTest
         }
     }
 
-    public function provideApiReadLiveOwnerCounts(): array
+    public static function provideApiReadLiveOwnerCounts(): array
     {
         return [
             'Valid' => [
@@ -597,9 +596,7 @@ class AssetAdminTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideApiReadLiveOwnerCounts
-     */
+    #[DataProvider('provideApiReadLiveOwnerCounts')]
     public function testApiReadLiveOwnerCounts(
         string $idsType,
         string $fail,
@@ -651,7 +648,7 @@ class AssetAdminTest extends FunctionalTest
         }
     }
 
-    public function provideApiReadUsage(): array
+    public static function provideApiReadUsage(): array
     {
         return [
             'Valid' => [
@@ -682,9 +679,7 @@ class AssetAdminTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideApiReadUsage
-     */
+    #[DataProvider('provideApiReadUsage')]
     public function testApiReadUsage(
         string $idType,
         string $fail,
@@ -708,7 +703,7 @@ class AssetAdminTest extends FunctionalTest
         }
     }
 
-    public function provideApiDelete(): array
+    public static function provideApiDelete(): array
     {
         return [
             'Valid' => [
@@ -759,9 +754,7 @@ class AssetAdminTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideApiDelete
-     */
+    #[DataProvider('provideApiDelete')]
     public function testApiDelete(
         string $idsType,
         string $fail,
@@ -797,7 +790,7 @@ class AssetAdminTest extends FunctionalTest
         }
     }
 
-    public function provideApiMove(): array
+    public static function provideApiMove(): array
     {
         return [
             'Valid' => [
@@ -858,9 +851,7 @@ class AssetAdminTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideApiMove
-     */
+    #[DataProvider('provideApiMove')]
     public function testApiMove(
         string $idsType,
         string $fail,
@@ -910,7 +901,7 @@ class AssetAdminTest extends FunctionalTest
         }
     }
 
-    public function provideApiPublish(): array
+    public static function provideApiPublish(): array
     {
         return [
             'Valid' => [
@@ -961,9 +952,7 @@ class AssetAdminTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideApiPublish
-     */
+    #[DataProvider('provideApiPublish')]
     public function testApiPublish(
         string $idsType,
         string $fail,
@@ -1013,7 +1002,7 @@ class AssetAdminTest extends FunctionalTest
         }
     }
 
-    public function provideApiUnpublish(): array
+    public static function provideApiUnpublish(): array
     {
         return [
             'Valid' => [
@@ -1064,9 +1053,7 @@ class AssetAdminTest extends FunctionalTest
         ];
     }
 
-    /**
-     * @dataProvider provideApiUnpublish
-     */
+    #[DataProvider('provideApiUnpublish')]
     public function testApiUnpublish(
         string $idsType,
         string $fail,
