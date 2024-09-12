@@ -14,7 +14,7 @@ use SilverStripe\Assets\Upload_Validator;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class UploadFieldTest extends SapphireTest
