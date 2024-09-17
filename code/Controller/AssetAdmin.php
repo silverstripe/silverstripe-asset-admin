@@ -1083,7 +1083,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
         $object['url'] = $file->AbsoluteURL;
         $object['canEdit'] = $file->canEdit();
         $object['canDelete'] = ($file->hasMethod('canArchive'))
-            ? Deprecation::withNoReplacement(fn() => $file->canArchive())
+            ? Deprecation::withSuppressedNotice(fn() => $file->canArchive())
             : $file->canDelete();
 
         $owner = $file->Owner();
