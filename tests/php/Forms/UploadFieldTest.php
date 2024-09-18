@@ -15,6 +15,7 @@ use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\ORM\ArrayList;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class UploadFieldTest extends SapphireTest
 {
@@ -47,7 +48,7 @@ class UploadFieldTest extends SapphireTest
         parent::tearDown();
     }
 
-    public function provideGetUploadMaxFileSize(): array
+    public static function provideGetUploadMaxFileSize(): array
     {
         return [
             [
@@ -61,9 +62,7 @@ class UploadFieldTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideGetUploadMaxFileSize
-     */
+    #[DataProvider('provideGetUploadMaxFileSize')]
     public function testGetUploadMaxFileSize(?int $adminMaxFileSize, int $expected): void
     {
         Upload_Validator::config()->set('default_max_file_size', ['*' => 100]);

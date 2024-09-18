@@ -9,6 +9,7 @@ use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\Form;
 use SilverStripe\View\Embed\Embeddable;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class RemoteFileFormFactoryTest extends SapphireTest
 {
@@ -33,7 +34,7 @@ class RemoteFileFormFactoryTest extends SapphireTest
         ]);
     }
 
-    public function providerTestAcceptedURLs()
+    public static function providerTestAcceptedURLs()
     {
         return [
             [
@@ -74,10 +75,10 @@ class RemoteFileFormFactoryTest extends SapphireTest
     }
 
     /**
-     * @dataProvider providerTestAcceptedURLs
      * @param array $config Config to merge
      * @param string $acceptedURL OK url
      */
+    #[DataProvider('providerTestAcceptedURLs')]
     public function testAcceptedURLs($config, $acceptedURL)
     {
         foreach ($config as $key => $value) {
@@ -93,7 +94,7 @@ class RemoteFileFormFactoryTest extends SapphireTest
         $this->assertInstanceOf(Form::class, $fields);
     }
 
-    public function providerTestRejectedURLs()
+    public static function providerTestRejectedURLs()
     {
         return [
             [
@@ -140,11 +141,11 @@ class RemoteFileFormFactoryTest extends SapphireTest
     }
 
     /**
-     * @dataProvider providerTestRejectedURLs
      * @param array $config Config to merge
      * @param string $rejectedURL rejected url
      * @param string $rejectedMessage
      */
+    #[DataProvider('providerTestRejectedURLs')]
     public function testRejectedURLS($config, $rejectedURL)
     {
         $this->expectException(InvalidRemoteUrlException::class);

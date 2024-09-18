@@ -9,6 +9,7 @@ use SilverStripe\Assets\Storage\AssetStore;
 use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ThumbnailGeneratorTest extends SapphireTest
 {
@@ -117,7 +118,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         $this->assertEquals('/assets/906835357d/TestImage__FitMaxWzEwMCwyMDBd.png', $thumbnail);
     }
 
-    public function provideAnimatedThumbnail(): array
+    public static function provideAnimatedThumbnail(): array
     {
         return [
             [true],
@@ -125,9 +126,7 @@ class ThumbnailGeneratorTest extends SapphireTest
         ];
     }
 
-    /**
-     * @dataProvider provideAnimatedThumbnail
-     */
+    #[DataProvider('provideAnimatedThumbnail')]
     public function testAnimatedThumbnail(bool $allowAnimation): void
     {
         $image = new Image();
