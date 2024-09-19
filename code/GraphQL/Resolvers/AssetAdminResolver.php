@@ -25,7 +25,7 @@ class AssetAdminResolver
 {
     public function __construct()
     {
-        Deprecation::withNoReplacement(function () {
+        Deprecation::withSuppressedNotice(function () {
             Deprecation::notice('2.3.0', 'Will be moved to the silverstripe/graphql module', Deprecation::SCOPE_CLASS);
         });
     }
@@ -137,7 +137,7 @@ class AssetAdminResolver
         $deletedIDs = [];
         $member = UserContextProvider::get($context);
         foreach ($files as $file) {
-            $canArchive = Deprecation::withNoReplacement(fn() => $file->canArchive($member));
+            $canArchive = Deprecation::withSuppressedNotice(fn() => $file->canArchive($member));
             if ($canArchive) {
                 $file->doArchive();
                 $deletedIDs[] = $file->ID;

@@ -28,7 +28,7 @@ class FolderTypeResolver
 {
     public function __construct()
     {
-        Deprecation::withNoReplacement(function () {
+        Deprecation::withSuppressedNotice(function () {
             Deprecation::notice('2.3.0', 'Will be moved to the silverstripe/graphql module', Deprecation::SCOPE_CLASS);
         });
     }
