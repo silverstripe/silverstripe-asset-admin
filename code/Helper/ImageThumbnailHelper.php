@@ -10,7 +10,7 @@ use SilverStripe\Core\Convert;
 use SilverStripe\Core\Injector\Injectable;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DB;
-use SilverStripe\ORM\SS_List;
+use SilverStripe\Model\List\SS_List;
 
 class ImageThumbnailHelper
 {

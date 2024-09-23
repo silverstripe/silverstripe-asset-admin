@@ -10,7 +10,7 @@ use SilverStripe\Assets\Folder;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\Versioned\Versioned;
 use SilverStripe\AssetAdmin\Controller\AssetAdminFile;
 use stdClass;

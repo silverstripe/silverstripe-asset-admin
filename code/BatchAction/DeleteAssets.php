@@ -5,7 +5,7 @@ namespace SilverStripe\AssetAdmin\BatchAction;
 use SilverStripe\Admin\CMSBatchAction;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Convert;
-use SilverStripe\ORM\SS_List;
+use SilverStripe\Model\List\SS_List;
 
 /**
  * Delete multiple {@link Folder} records (and the associated filesystem nodes).

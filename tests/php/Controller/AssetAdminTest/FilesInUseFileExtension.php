@@ -3,7 +3,7 @@
 namespace SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest;
 
 use SilverStripe\Core\Extension;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\Model\List\ArrayList;
 use SilverStripe\Dev\TestOnly;
 
 class FilesInUseFileExtension extends Extension implements TestOnly

@@ -12,7 +12,7 @@ use SilverStripe\Forms\FileUploadReceiver;
 use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\Validator;
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\SS_List;
+use SilverStripe\Model\List\SS_List;
 
 /**
  * Represents a file upload field with ReactJS based frontend.
