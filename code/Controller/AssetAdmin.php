@@ -1387,7 +1387,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     public function PreviewPanel()
     {
         $templates = SSViewer::get_templates_by_class(get_class($this), '_PreviewPanel', __CLASS__);
-        $template = SSViewer::chooseTemplate($templates);
+        $template = Deprecation::withSuppressedNotice(fn() => SSViewer::chooseTemplate($templates));
         // Only render preview panel if a template specifically for the asset admin has been provided
         if ($template) {
             return $this->renderWith($template);
