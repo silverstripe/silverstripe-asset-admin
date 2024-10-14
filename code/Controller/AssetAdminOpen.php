@@ -81,7 +81,7 @@ class AssetAdminOpen extends LeftAndMain
     /**
      * Returns configuration required by the client app
      */
-    public function getClientConfig()
+    public function getClientConfig(): array
     {
         return array_merge(parent::getClientConfig(), [
             'reactRouter' => true,
