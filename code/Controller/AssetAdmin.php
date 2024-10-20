@@ -206,7 +206,7 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
     /**
      * Returns configuration required by the client app
      */
-    public function getClientConfig()
+    public function getClientConfig(): array
     {
         $baseLink = $this->Link();
         $validator = $this->getUpload()->getValidator();
