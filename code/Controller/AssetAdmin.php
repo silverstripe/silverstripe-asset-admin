@@ -710,8 +710,8 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
 
                 $output[] = array(
                     'versionid' => (int) $version->Version,
-                    'date_ago' => $version->dbObject('LastEdited')->Ago(),
-                    'date_formatted' => $version->dbObject('LastEdited')->Nice(),
+                    'date_ago' => $version->dbObject('LastEdited')?->Ago(),
+                    'date_formatted' => $version->dbObject('LastEdited')?->Nice(),
                     'status' => ($version->WasPublished) ? _t(__CLASS__.'.PUBLISHED', 'Published') : '',
                     'author' => ($author)
                         ? $author->Name
@@ -1604,10 +1604,9 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
     public function PreviewPanel()
     {
         $templates = SSViewer::get_templates_by_class(get_class($this), '_PreviewPanel', __CLASS__);
-        $template = SSViewer::chooseTemplate($templates);
         // Only render preview panel if a template specifically for the asset admin has been provided
-        if ($template) {
-            return $this->renderWith($template);
+        if ($this->getTemplateEngine()->hasTemplate($templates)) {
+            return $this->renderWith($templates);
         }
         return null;
     }

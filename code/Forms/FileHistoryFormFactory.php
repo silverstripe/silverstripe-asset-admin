@@ -36,7 +36,7 @@ class FileHistoryFormFactory extends FileFormFactory
                 ? _t(__CLASS__ . '.PUBLISHED', 'Published')
                 : _t(__CLASS__ . '.SAVED', 'Saved'),
             Convert::raw2att($record->LastEdited),
-            Convert::raw2xml($record->dbObject('LastEdited')->Ago())
+            Convert::raw2xml($record->dbObject('LastEdited')?->Ago())
         );
         return sprintf(
             '<div class="editor__specs">%s %s, %s %s</div>',
