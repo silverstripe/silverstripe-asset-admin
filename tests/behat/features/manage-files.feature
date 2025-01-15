@@ -120,7 +120,7 @@ Feature: Manage files
     When I press the "Other actions" button
       And I press the "Delete" button
     Then I should see a modal titled "Confirm deletion"
-      And I click on the ".modal-header .close" element
+      And I click on the ".modal-header .btn-close" element
       And I wait for 1 second
     Then I should not see a modal titled "Confirm deletion"
       And I should see the file named "file1" in the gallery

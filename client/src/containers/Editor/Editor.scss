@@ -175,7 +175,7 @@
   text-align: center;
 }
 
-@include media-breakpoint-down(md) {
+@include media-breakpoint-down(lg) {
   .editor__heading,
   .editor__specs {
     text-align: center;

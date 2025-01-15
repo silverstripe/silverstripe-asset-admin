@@ -23,11 +23,11 @@ test('ImageSizePresetList render() presets are displayed', () => {
     <ImageSizePresetList {...makeProps()}/>
   );
   const buttons = container.querySelectorAll('button');
-  expect(buttons[0].querySelector('span.sr-only').textContent).toBe('Set image size to "default"');
+  expect(buttons[0].querySelector('span.visually-hidden').textContent).toBe('Set image size to "default"');
   expect(buttons[0].querySelector('span[aria-hidden="true"]').textContent).toBe('default');
-  expect(buttons[1].querySelector('span.sr-only').textContent).toBe('Set image size to "super large"');
+  expect(buttons[1].querySelector('span.visually-hidden').textContent).toBe('Set image size to "super large"');
   expect(buttons[1].querySelector('span[aria-hidden="true"]').textContent).toBe('super large');
-  expect(buttons[2].querySelector('span.sr-only').textContent).toBe('Set image size to "super small"');
+  expect(buttons[2].querySelector('span.visually-hidden').textContent).toBe('Set image size to "super small"');
   expect(buttons[2].querySelector('span[aria-hidden="true"]').textContent).toBe('super small');
 });
 
