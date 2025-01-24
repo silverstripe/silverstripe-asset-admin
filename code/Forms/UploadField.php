@@ -198,7 +198,7 @@ class UploadField extends FormField implements FileHandleField
     {
         $state = parent::getSchemaStateDefaults();
         $state['data']['files'] = $this->getEncodedItems();
-        $state['value'] = $this->Value() ?: ['Files' => []];
+        $state['value'] = $this->getFormattedValue() ?: ['Files' => []];
         return $state;
     }
 
