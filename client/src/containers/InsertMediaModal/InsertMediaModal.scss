@@ -30,7 +30,7 @@
 
   // If the editor is in the dialog
   .editor__details {
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(xl) {
       height: 100%;
     }
   }
@@ -60,7 +60,7 @@
     }
   }
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(lg) {
     .asset-admin--multi-select [name="action_insert"] {
       display: block;
     }

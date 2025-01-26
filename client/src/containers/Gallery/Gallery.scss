@@ -31,7 +31,7 @@
   position: relative; //testing
 
   &.gallery__main--has-opened-item {
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(lg) {
       display: none;
     }
   }
@@ -87,7 +87,7 @@
 
 
 // leave space at bottom for bulk-actions on smaller screens
-@include media-breakpoint-down(md) {
+@include media-breakpoint-down(lg) {
   .gallery__files {
     margin-bottom: $toolbar-total-height;
   }
@@ -120,7 +120,7 @@
 
   // Override chosen inline width to fit to icon
   .chosen-container {
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-down(md) {
       width: auto !important;
     }
   }
@@ -138,7 +138,7 @@
       text-align: right;
       color: inherit;
 
-      @include media-breakpoint-down(sm) {
+      @include media-breakpoint-down(md) {
         font-size: 0;
       }
     }
@@ -152,7 +152,7 @@
       top: 1px;
       font-size: $font-size-sm;
 
-      @include media-breakpoint-down(sm) {
+      @include media-breakpoint-down(md) {
         font-size: $font-size-lg;
       }
     }

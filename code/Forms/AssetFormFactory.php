@@ -430,17 +430,14 @@ abstract class AssetFormFactory implements FormFactory
      */
     protected function buildFileStatusIcon(string $title, string $fontClass): string
     {
-        // https://getbootstrap.com/docs/4.4/components/tooltips/
-        // Specifying data-delay as an html attribute means that show and hide must be the same value unfortunately
-        // Cannot data-delay="{show: 300, hide: 0}" as it will be interpreted as a string, not (number|object)
         return <<<EOT
             <div class="file-status-icon">
                 <span title="$title"
                       class="icon file-status-icon__icon $fontClass"
-                      data-toggle="tooltip"
-                      data-placement="top"
-                      data-delay="150"
-                      data-animation="false">
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="top"
+                      data-bs-delay="150"
+                      data-bs-animation="false">
                 </span>
             </div>
 EOT;

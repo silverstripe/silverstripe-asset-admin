@@ -28,7 +28,7 @@ const PresetButton = ({ onSelect, currentWidth, originalWidth, width, text }) =>
     onClick={() => onSelect(width || originalWidth)}
     disabled={(originalWidth < width) || currentWidth === (width || originalWidth)}
   >
-    <span className="sr-only">{srText(text)}</span>
+    <span className="visually-hidden">{srText(text)}</span>
     <span aria-hidden="true">{text}</span>
   </Button>
 );
