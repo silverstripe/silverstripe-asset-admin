@@ -42,7 +42,7 @@ th.sort--disabled>span:after {
     padding-bottom: $table-cell-padding-lg;
 
     // hide details for smaller screens
-    @include media-breakpoint-down(sm) {
+    @include media-breakpoint-down(md) {
       &:nth-child(n+4) {
         display: none;
       }
@@ -61,7 +61,7 @@ th.sort--disabled>span:after {
       }
 
       // hide details for smaller screens
-      @include media-breakpoint-down(sm) {
+      @include media-breakpoint-down(md) {
         &:nth-child(n+4) {
           display: none;
         }

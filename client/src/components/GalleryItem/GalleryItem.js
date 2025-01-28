@@ -482,6 +482,7 @@ class GalleryItem extends Component {
     };
     const inputLabelClasses = [
       'gallery-item__checkbox-label',
+      'form-label',
       actionIcon,
     ];
     if (!this.canBatchSelect()) {

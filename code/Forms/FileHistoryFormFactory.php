@@ -27,7 +27,7 @@ class FileHistoryFormFactory extends FileFormFactory
         }
 
         $versionTag = sprintf(
-            '<span class="badge badge-info">v.%s</span>',
+            '<span class="badge badge-info text-bg-info">v.%s</span>',
             $record->Version
         );
         $agoTag = sprintf(
