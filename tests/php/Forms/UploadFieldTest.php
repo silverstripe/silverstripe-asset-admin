@@ -119,6 +119,7 @@ class UploadFieldTest extends SapphireTest
                 'maxFiles' => null,
                 'canUpload' => true,
                 'canAttach' => true,
+                'maxParallelUploads' => 2
             ],
             'schemaType' => 'Custom'
         ];
