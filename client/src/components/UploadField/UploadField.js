@@ -426,6 +426,7 @@ class UploadField extends Component {
       url: this.props.data.endpoints.createFile.url,
       method: this.props.data.endpoints.createFile.method,
       paramName: 'Upload',
+      parallelUploads: this.props.data.maxParallelUploads,
       maxFiles,
       maxFilesize,
       thumbnailWidth: CONSTANTS.SMALL_THUMBNAIL_WIDTH,

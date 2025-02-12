@@ -74,6 +74,11 @@ class UploadField extends FormField implements FileHandleField
      */
     protected $allowedMaxFileNumber = null;
 
+    /**
+     * Set the max amount of parallel uploads
+     */
+    protected int $maxParallelUploads = 2;
+
     protected $inputType = 'file';
 
     protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_CUSTOM;
@@ -117,6 +122,7 @@ class UploadField extends FormField implements FileHandleField
 
         $defaults['data']['maxFilesize'] = $this->getAllowedMaxFileSize() / 1024 / 1024;
         $defaults['data']['maxFiles'] = $this->getAllowedMaxFileNumber();
+        $defaults['data']['maxParallelUploads'] = $this->getMaxParallelUploads();
         $defaults['data']['multi'] = $this->getIsMultiUpload();
         $defaults['data']['parentid'] = $this->getFolderID();
         $defaults['data']['canUpload'] = $this->getUploadEnabled();
@@ -358,6 +364,23 @@ class UploadField extends FormField implements FileHandleField
     public function setUploadEnabled($uploadEnabled)
     {
         $this->uploadEnabled = $uploadEnabled;
+        return $this;
+    }
+
+    /**
+     * Get the amount of max parallel uploads
+     */
+    public function getMaxParallelUploads(): int
+    {
+        return $this->maxParallelUploads;
+    }
+
+    /**
+     * Set amount of max parallel uploads
+     */
+    public function setMaxParallelUploads(int $maxParallelUploads): static
+    {
+        $this->maxParallelUploads = $maxParallelUploads;
         return $this;
     }
 
