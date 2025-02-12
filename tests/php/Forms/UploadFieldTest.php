@@ -142,6 +142,7 @@ class UploadFieldTest extends SapphireTest
                 'parentid' => 0,
                 'canUpload' => true,
                 'canAttach' => true,
+                'maxParallelUploads' => 2
             ],
         ];
         $state = [
