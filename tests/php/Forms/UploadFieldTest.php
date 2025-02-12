@@ -138,11 +138,11 @@ class UploadFieldTest extends SapphireTest
                 ],
                 'maxFilesize' => $field->getAllowedMaxFileSize() / 1024 / 1024,
                 'maxFiles' => null,
+                'maxParallelUploads' => 2,
                 'multi' => false,
                 'parentid' => 0,
                 'canUpload' => true,
                 'canAttach' => true,
-                'maxParallelUploads' => 2
             ],
         ];
         $state = [
