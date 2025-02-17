@@ -63,15 +63,19 @@ it:
     ANYONE: Chiunque
     EDITHEADER: 'Chi può modificare questo file?'
     EDITORGROUPS: 'Gruppi di editori'
+    EDITORMEMBERS: 'Utenti Editori'
     FILENAME: 'Nome file'
     FOLDERLOCATION: Posizione
     INHERIT: 'Eredita dalla cartella madre'
     LOGGED_IN: 'Utenti autenticati'
     ONLY_GROUPS: 'Solo questi gruppi (scegliere dalla lista)'
+    ONLY_MEMBERS: 'Solo questi utenti (scegliere dalla lista)'
     ROOTNAME: '(Primo Livello)'
     SAVE: Salva
     SAVED: Salvato
+    SHOWINSEARRCH: 'Visualizzare in ricerca?'
     VIEWERGROUPS: 'Gruppi di visualizzatori'
+    VIEWERMEMBERS: 'Utenti Visualizzatori'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Scaricamento file'
     INSERT_LINK: 'Collegamento al file'
