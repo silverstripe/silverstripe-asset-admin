@@ -44,6 +44,7 @@ en:
     LazyDefault: 'Lazy (default)'
     LoadIntoFileFailed: 'Failed to load file'
     Loading: Loading
+    LoadingTitleTip: 'Lazy loading can increase perceived page performance by slightly delaying media loading. Eager loading will load files as soon as possible and can be used if the image is in view as the page loads (above or near the fold).'
     MENUTITLE: Files
     NOSUMMARY: 'No summary available'
     NewFile: 'New {file}'
