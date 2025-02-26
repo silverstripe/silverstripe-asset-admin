@@ -126,7 +126,7 @@ class RemoteFileModalExtension extends Extension
     protected function getSchemaResponse($schemaID, $form = null, ValidationResult $errors = null, $extraData = [])
     {
         Deprecation::noticeWithNoReplacment('2.4.0', 'Will be replaced with $this->getOwner()->getSchemaResponse() instead.');
-        $parts = $this->getOwner()->getRequest()->getHeader(LeftAndMain::SCHEMA_HEADER);
+        $parts = $this->getOwner()->getRequest()->getHeader(FormSchema::SCHEMA_HEADER);
         $data = $this
             ->getFormSchema()
             ->getMultipartSchema($parts, $schemaID, $form, $errors);
