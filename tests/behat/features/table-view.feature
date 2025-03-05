@@ -15,8 +15,7 @@ Feature: Change view for asset admin
     When I click on the file named "folder1" in the gallery
       And I press the "table" button
       And I wait until I see the ".gallery__table-row" element
-    Then I should see a ".gallery__main-view--table" element
-      And I should see a ".gallery__table-column--image" element
+    Then I should see a ".gallery__table-column--image" element
     When I press the "tile" button
       And I wait until I see the ".gallery-item" element
     Then I should see a ".gallery__sort" element

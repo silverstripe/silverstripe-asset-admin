@@ -3,7 +3,7 @@ import i18n from 'i18n';
 import React, { Component } from 'react';
 import { inject } from 'lib/Injector';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
-import Griddle from 'griddle-react';
+import Paginator from 'components/Paginator/Paginator';
 import PropTypes from 'prop-types';
 
 class ThumbnailView extends Component {
@@ -12,40 +12,13 @@ class ThumbnailView extends Component {
 
     this.renderItem = this.renderItem.bind(this);
     this.handleSetPage = this.handleSetPage.bind(this);
-    this.handlePrevPage = this.handlePrevPage.bind(this);
-    this.handleNextPage = this.handleNextPage.bind(this);
   }
 
   /**
    * Handles setting the pagination page number
-   *
-   * @param {number} page
    */
   handleSetPage(page) {
-    // +1 to cater for the 0-indexed page that is returned from Griddle
-    this.props.onSetPage(page + 1);
-  }
-
-  /**
-   * Handler for incrementing the set page
-   */
-  handleNextPage() {
-    // (page -1) to cater for the 0-indexed page that is returned from Griddle
-    const currentPage = this.props.page - 1;
-    this.handleSetPage(currentPage + 1);
-  }
-
-  /**
-   * Handler for decrementing the set page
-   */
-  handlePrevPage() {
-    // (page -1) to cater for the 0-indexed page that is returned from Griddle
-    const currentPage = this.props.page - 1;
-    if (currentPage === 0) {
-      this.handleSetPage(currentPage);
-      return;
-    }
-    this.handleSetPage(currentPage - 1);
+    this.props.onSetPage(page);
   }
 
   /**
@@ -70,7 +43,6 @@ class ThumbnailView extends Component {
 
   /**
    * Renders the react component for pagination.
-   * Current borrows the pagination from Griddle, to keep styling consistent between the two views
    *
    * @returns {XML|null}
    */
@@ -79,20 +51,12 @@ class ThumbnailView extends Component {
       return null;
     }
     const props = {
-      setPage: this.handleSetPage,
-      maxPage: Math.ceil(this.props.totalCount / this.props.limit),
-      next: this.handleNextPage,
-      nextText: i18n._t('AssetAdmin.NEXT', 'Next'),
-      previous: this.handlePrevPage,
-      previousText: i18n._t('AssetAdmin.PREVIOUS', 'Previous'),
-      currentPage: this.props.page - 1,
-      useGriddleStyles: false,
+      totalItems: this.props.totalCount,
+      maxItemsPerPage: this.props.limit,
+      currentPage: this.props.page,
+      onChangePage: this.handleSetPage,
     };
-    return (
-      <div className="griddle-footer">
-        <Griddle.GridPagination {...props} />
-      </div>
-    );
+    return <Paginator {...props} />;
   }
 
   /**
