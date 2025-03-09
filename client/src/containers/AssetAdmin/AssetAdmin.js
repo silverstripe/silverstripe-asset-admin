@@ -742,6 +742,7 @@ class AssetAdmin extends Component {
       onClose: this.handleCloseFile,
       onSubmit: this.handleSubmitEditor,
       onUnpublish: this.handleUnpublish,
+      addToCampaignSchemaUrl: config.form.addToCampaignForm.schemaUrl
     };
 
     return <EditorComponent {...editorProps} />;
