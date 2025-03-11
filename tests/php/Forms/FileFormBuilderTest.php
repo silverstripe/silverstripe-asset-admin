@@ -51,6 +51,9 @@ class FileFormBuilderTest extends SapphireTest
 
     public function testEditFileForm()
     {
+        // Ensure no external extensions have been applied
+        Config::modify()->remove(FileFormFactory::class, 'extensions');
+
         $this->logInWithPermission('ADMIN');
 
         $file = $this->objFromFixture(File::class, 'file1');
@@ -112,7 +115,6 @@ class FileFormBuilderTest extends SapphireTest
         $this->assertNull($form->Actions()->fieldByName('PopoverActions'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_delete'));
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_replacefile'));
-
         $this->assertNull($form->Actions()->fieldByName('PopoverActions.action_unpublish'));
 
         FileExtension::$canDelete = false;

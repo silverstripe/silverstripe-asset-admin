@@ -142,6 +142,9 @@ function makeProps(obj = {}) {
         fileSearchForm: {
           schemaUrl: '',
         },
+        addToCampaignForm: {
+          schemaUrl: '',
+        },
       },
     },
     fileId: null,

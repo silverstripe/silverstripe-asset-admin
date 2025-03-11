@@ -13,6 +13,9 @@ class FolderCreateFormFactoryTest extends SapphireTest
 {
     public function testEditFileForm()
     {
+        // Ensure no external extensions have been applied
+        Config::modify()->remove(FileFormFactory::class, 'extensions');
+
         $this->logInWithPermission('ADMIN');
 
         $controller = new AssetAdmin();

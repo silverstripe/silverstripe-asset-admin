@@ -47,6 +47,7 @@ use stdClass;
 use SilverStripe\ORM\DataList;
 use SilverStripe\Forms\DateField;
 use SilverStripe\ORM\DataQuery;
+use SilverStripe\Core\ArrayLib;
 
 /**
  * AssetAdmin is the 'file store' section of the CMS.
@@ -212,7 +213,7 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
 
         $parentClientConfig = parent::getClientConfig();
         $modalController = ModalController::singleton();
-        return array_merge($parentClientConfig, [
+        return ArrayLib::array_merge_recursive($parentClientConfig, [
             'reactRouter' => true,
             'bustCache' => static::config()->get('bust_cache'),
             'endpoints' => array_merge($parentClientConfig['endpoints'], [
