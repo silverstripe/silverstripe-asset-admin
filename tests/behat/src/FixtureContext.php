@@ -2,11 +2,13 @@
 
 namespace SilverStripe\AssetAdmin\Tests\Behat\Context;
 
+use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
 use Page;
 use PHPUnit\Framework\Assert;
 use SilverStripe\Assets\Image;
+use SilverStripe\BehatExtension\Context\BasicContext;
 use SilverStripe\BehatExtension\Context\FixtureContext as BaseFixtureContext;
 use SilverStripe\BehatExtension\Utility\StepHelper;
 
@@ -16,6 +18,15 @@ use SilverStripe\BehatExtension\Utility\StepHelper;
 class FixtureContext extends BaseFixtureContext
 {
     use StepHelper;
+
+    private ?BasicContext $basicContext = null;
+
+
+    /** @BeforeScenario */
+    public function gatherContexts(BeforeScenarioScope $scope)
+    {
+        $this->basicContext = $scope->getEnvironment()->getContext(BasicContext::class);
+    }
 
     /**
      * Select a gallery item by type and name
@@ -412,11 +423,10 @@ EOS
         $modal = $page->find('css', '[role=dialog] .modal-dialog');
         Assert::assertNotNull($modal, 'No modal on the page');
 
-        // Check if the popover is open for the block
-        $button = $modal->find('xpath', "//button[contains(text(), '$buttonName')]");
-
-        Assert::assertNotNull($button, sprintf('Could not find button labelled "%s"', $buttonName));
-
+        $button = $this->basicContext->findNamedButton($buttonName, $modal);
+        if (!$button) {
+            Assert::assertNotNull($button, sprintf('Could not find button labelled "%s"', $buttonName));
+        }
         $button->click();
     }
 
