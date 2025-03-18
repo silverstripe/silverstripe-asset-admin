@@ -559,7 +559,7 @@ class Gallery extends Component {
     let node = e.target;
     // Loop the nodes until we find the root of the pagination or the root of the selectable area
     while (node) {
-      if (node.classList.contains('griddle-footer')) {
+      if (node.classList.contains('paginator-footer')) {
         return false;
       }
       if (node.classList.contains('gallery__main--selectable')) {

@@ -1,276 +1,114 @@
 /* eslint-disable import/no-cycle */
-/* global moment */
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import Griddle from 'griddle-react';
 import i18n from 'i18n';
+import moment from 'moment';
+import Paginator from 'components/Paginator/Paginator';
 import FileStatusIcon from 'components/FileStatusIcon/FileStatusIcon';
+import VersionedBadge from 'components/VersionedBadge/VersionedBadge';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import { fileSize } from 'lib/DataFormat';
-import { inject } from 'lib/Injector';
-import { compose } from 'redux';
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 
-class TableView extends Component {
-  constructor(props) {
-    super(props);
+function TableView(_props) {
+  const props = { ...galleryViewDefaultProps, ..._props };
 
-    this.getColumns = this.getColumns.bind(this);
-    this.handleSort = this.handleSort.bind(this);
-    this.handleSetPage = this.handleSetPage.bind(this);
-    this.handleRowClick = this.handleRowClick.bind(this);
-    this.renderSelect = this.renderSelect.bind(this);
-    this.renderTitle = this.renderTitle.bind(this);
-    this.renderStatus = this.renderStatus.bind(this);
-    this.renderNoItemsNotice = this.renderNoItemsNotice.bind(this);
+  function columnIsSortable(columnId) {
+    return ['title', 'lastEdited'].includes(columnId);
   }
 
   /**
-   * Get the columns to display for this table view, could be stored in state in future
-   *
-   * @returns {Array} columns
-   */
-  getColumns() {
-    const columns = [
-      'thumbnail',
-      'title',
-      'status',
-      'size',
-      'lastEdited',
-    ];
-
-    if (this.props.selectableItems) {
-      columns.unshift('selected');
-    }
-
-    return columns;
-  }
-
-  /**
-   * Configuration for columns, handles formatting and whether they're sortable
-   *
-   * @returns {array} configItems
-   */
-  getColumnConfig() {
-    return [
-      {
-        columnName: 'selected',
-        sortable: false,
-        displayName: '',
-        cssClassName: 'gallery__table-column--select',
-        customComponent: this.renderSelect,
-      },
-      {
-        columnName: 'thumbnail',
-        sortable: false,
-        displayName: '',
-        cssClassName: 'gallery__table-column--image',
-        customComponent: this.renderThumbnail,
-      },
-      {
-        columnName: 'title',
-        customCompareFn: () => (0), // Suppress griddle re-sorting
-        displayName: i18n._t('File.TITLE', 'Title'),
-        cssClassName: 'gallery__table-column--title',
-        customComponent: this.renderTitle,
-      },
-      {
-        columnName: 'status',
-        sortable: false,
-        cssClassName: 'sort--disabled',
-        customComponent: this.renderStatus,
-        displayName: i18n._t('File.STATUS', 'Status'),
-      },
-      {
-        columnName: 'lastEdited',
-        displayName: i18n._t('File.MODIFIED', 'Modified'),
-        customComponent: this.renderDate,
-      },
-      {
-        columnName: 'size',
-        sortable: false,
-        displayName: i18n._t('File.SIZE', 'Size'),
-        cssClassName: 'sort--disabled',
-        customComponent: this.renderSize,
-      },
-    ];
-  }
-
-  getRowMetadata(rowData) {
-    return `gallery__table-row ${rowData.highlighted ? 'gallery__table-row--highlighted' : ''}`;
-  }
-
-  /**
-   * Returns the properties for the table view
-   *
-   * @returns {object}
-   */
-  getTableProps() {
-    const [sortColumn, sortDirection] = this.props.sort.split(',');
-
-    return {
-      tableClassName: 'gallery__table table table-hover',
-      gridClassName: 'gallery__main-view--table',
-      rowMetadata: {
-        bodyCssClassName: this.getRowMetadata,
-        key: 'key'
-      },
-      sortAscendingComponent: '',
-      sortDescendingComponent: '',
-      useExternal: true,
-      externalSetPage: this.handleSetPage,
-      externalChangeSort: this.handleSort,
-      // noops for now as they aren't needed yet
-      externalSetFilter: () => null,
-      externalSetPageSize: () => null,
-      externalCurrentPage: this.props.page - 1,
-      externalMaxPage: Math.ceil(this.props.totalCount / this.props.limit),
-      externalSortColumn: sortColumn,
-      externalSortAscending: sortDirection === 'asc',
-      initialSort: sortColumn,
-      columns: this.getColumns(),
-      columnMetadata: this.getColumnConfig(),
-      useGriddleStyles: false,
-      onRowClick: this.handleRowClick,
-      results: this.props.files,
-      customNoDataComponent: this.renderNoItemsNotice,
-    };
-  }
-
-  /**
-   * Handles activating either the folder or file, depending on type
-   *
-   * @param {Event} event
-   * @param {object} item
-   */
-  handleActivate(event, item) {
-    if (item.type === 'folder') {
-      this.props.onOpenFolder(event, item);
-    } else {
-      this.props.onOpenFile(event, item);
-    }
-  }
-
-  /**
-   * Handles when a row (really, a column) is clicked and determines what action to take.
+   * Handles when a cell is clicked and determines what action to take.
    * By default it'll active the item for the row
-   *
-   * @param {object} row
-   * @param {Event} event
    */
-  handleRowClick(row, event) {
-    const item = row.props.data;
-
+  function handleCellClick(row, cell, evt) {
+    const rowData = row.original;
     // if this column is for selecting, then it'll be better experience to select than activate
-    if (event.currentTarget.classList.contains('gallery__table-column--select')) {
-      event.stopPropagation();
-      event.preventDefault();
-      if (typeof this.props.onSelect === 'function') {
-        this.props.onSelect(event, item);
+    if (cell.column.id === 'selected') {
+      evt.stopPropagation();
+      evt.preventDefault();
+      if (typeof props.onSelect === 'function') {
+        props.onSelect(evt, rowData);
         return;
       }
     }
-
-    this.handleActivate(event, item);
+    if (rowData.type === 'folder') {
+      props.onOpenFolder(evt, rowData);
+    } else {
+      props.onOpenFile(evt, rowData);
+    }
   }
 
   /**
    * Handles setting the sorted column and direction that sorting is happening
-   *
-   * @param {string} column
-   * @param {boolean} ascending
    */
-  handleSort(column, ascending) {
-    const direction = (ascending) ? 'asc' : 'desc';
-
-    this.props.onSort(`${column},${direction}`);
+  function handleSort(header) {
+    const columnId = header.column.id;
+    if (!columnIsSortable(columnId)) {
+      return;
+    }
+    const ascending = props.sort !== `${columnId},asc`;
+    const direction = ascending ? 'asc' : 'desc';
+    props.onSort(`${columnId},${direction}`);
   }
 
   /**
    * Handles setting the pagination to a different page
-   *
-   * @param {number} page
    */
-  handleSetPage(page) {
+  function handleSetPage(page) {
     // Convert 0-based to 1-based
-    this.props.onSetPage(page + 1);
+    props.onSetPage(page);
   }
 
   /**
    * Avoids the browser's default focus state when selecting an item.
-   *
-   * @param {Event} event Event object.
    */
-  preventFocus(event) {
-    event.preventDefault();
-  }
-
-  /**
-   * Show a "no items" warning, unless the data is still loading.
-   *
-   * @returns {XML}
-   */
-  renderNoItemsNotice() {
-    if (this.props.files.length === 0 && !this.props.loading) {
-      return <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>;
-    }
-
-    return null;
+  function preventFocus(evt) {
+    evt.preventDefault();
   }
 
   /**
    * Renders the content for size, formatting the raw size value to look nicer
-   *
-   * @param {object} props
-   * @returns {Component|null}
    */
-  renderSize(props) {
-    if (props.rowData.type === 'folder') {
+  function renderSize(rowData) {
+    if (rowData.type === 'folder') {
       return null;
     }
-    const description = fileSize(props.data);
-
-    return (
-      <span>{description}</span>
-    );
+    const description = fileSize(rowData.size);
+    return <span>{description}</span>;
   }
 
   /**
    * Renders the content for the status column
-   *
-   * @param {object} props
-   * @returns {Component|null}
    */
-  renderStatus(props) {
+  function renderStatus(rowData) {
     let flags = [];
-    const item = props.rowData;
-    const { VersionedBadge } = this.props;
-
-    if (item.type !== 'folder') {
-      if (item.draft) {
+    if (rowData.type !== 'folder') {
+      if (rowData.draft) {
         flags.push({
           key: 'status-draft',
           status: 'draft'
         });
-      } else if (item.modified) {
+      } else if (rowData.modified) {
         flags.push({
           key: 'status-modified',
           status: 'modified'
         });
       }
     }
-
     flags = flags.map(({ ...attributes }) => <VersionedBadge {...attributes} />);
-
     return flags ? <span>{flags}</span> : null;
   }
 
   /**
    * Renders the progressbar for a given row
-   *
-   * @param rowData
-   * @returns {XML|null}
    */
-  renderProgressBar(rowData) {
+  function renderProgressBar(rowData) {
     if (!rowData.queuedId || (rowData.message && rowData.message.type === 'error')) {
       return null;
     }
@@ -285,7 +123,6 @@ class TableView extends Component {
         width: `${rowData.progress}%`,
       },
     };
-
     return (
       <div className="gallery__progress-bar">
         <div {...progressBarProps} />
@@ -293,11 +130,7 @@ class TableView extends Component {
     );
   }
 
-  /**
-   * @param {Object} rowData
-   * @returns {*}
-   */
-  renderRestrictedAccess(rowData) {
+  function renderRestrictedAccess(rowData) {
     const { hasRestrictedAccess } = rowData;
     const attrs = {
       fileID: rowData.id,
@@ -307,11 +140,7 @@ class TableView extends Component {
     return <FileStatusIcon {...attrs} />;
   }
 
-  /**
-   * @param {Object} rowData
-   * @returns {*}
-   */
-  renderTrackedFormUpload(rowData) {
+  function renderTrackedFormUpload(rowData) {
     const { isTrackedFormUpload, hasRestrictedAccess } = rowData;
     const attrs = {
       fileID: rowData.id,
@@ -324,50 +153,38 @@ class TableView extends Component {
 
   /**
    * Renders the title for the row/item, includes a progress bar if appropriate for uploading
-   *
-   * @param {object} props
-   * @returns {XML}
    */
-  renderTitle(props) {
-    const progress = this.renderProgressBar(props.rowData);
-
-    return (
-      <div className="fill-width">
-        <div className="flexbox-area-grow">
-          <span>{props.data}</span>
-          {props.rowData.hasRestrictedAccess && this.renderRestrictedAccess(props.rowData)}
-          {props.rowData.isTrackedFormUpload && this.renderTrackedFormUpload(props.rowData)}
-        </div>
-        {progress}
+  function renderTitle(rowData) {
+    const progress = renderProgressBar(rowData);
+    return <div className="fill-width">
+      <div className="flexbox-area-grow">
+        <span>{rowData.title}</span>
+        {rowData.hasRestrictedAccess && renderRestrictedAccess(rowData)}
+        {rowData.isTrackedFormUpload && renderTrackedFormUpload(rowData)}
       </div>
-    );
+      {progress}
+    </div>;
   }
 
   /**
    * Renders the checkbox for selecting the row/item in the table view
-   *
-   * @param {object} props
-   * @returns {XML}
    */
-  renderSelect(props) {
-    if (this.props.selectableItems && (this.props.selectableFolders || props.rowData.type !== 'folder')) {
+  function renderSelect(rowData) {
+    if (props.selectableItems && (props.selectableFolders || rowData.type !== 'folder')) {
       const checkboxProps = {
         type: 'checkbox',
         title: i18n._t('AssetAdmin.SELECT'),
-        defaultChecked: props.data,
+        defaultChecked: rowData.selected,
         tabIndex: -1,
-        onMouseDown: this.preventFocus,
+        onMouseDown: (evt) => preventFocus(evt),
       };
-
       const maxSelected = (
-        ![null, 1].includes(this.props.maxFilesSelect) &&
-        this.props.selectedFiles.length >= this.props.maxFilesSelect
+        ![null, 1].includes(props.maxFilesSelect) &&
+        props.selectedFiles.length >= props.maxFilesSelect
       );
-
-      if (maxSelected && !props.data) {
+      if (maxSelected && !rowData.selected) {
         checkboxProps.disabled = true;
       }
-
       return <input {...checkboxProps} />;
     }
     return null;
@@ -376,69 +193,194 @@ class TableView extends Component {
   /**
    * Renders the dates for the row/item in the table view.
    * Hides the column if it is for a folder
-   *
-   * @param {object} props
-   * @returns {Component|null}
    */
-  renderDate(props) {
-    if (props.rowData.type === 'folder') {
+  function renderLastEdited(rowData) {
+    if (rowData.type === 'folder') {
       return null;
     }
-
     moment.locale(i18n.detectLocale());
-    return <span>{ moment(props.data).format('L LT') }</span>;
+    return <span>{ moment(rowData.lastEdited).format('L LT') }</span>;
   }
 
   /**
    * Renders the thumbnail for the row/item in the table view.
    * Shows an error box if no url was defined.
-   *
-   * @param {object} props
-   * @returns {Component}
    */
-  renderThumbnail(props) {
-    const url = props.data || props.rowData.url;
-    const uploading = props.rowData.queuedId && !props.rowData.id;
-    const category = props.rowData.category || 'false';
+  function renderThumbnail(rowData) {
+    const url = rowData.url;
+    const uploading = rowData.queuedId && !rowData.id;
+    const category = rowData.category || 'false';
     const baseClass = 'gallery__table-image';
     const classNames = [baseClass];
     const styles = {};
-
     classNames.push(`${baseClass}--${category}`);
-
     if (category === 'image' && url) {
       styles.backgroundImage = `url("${url}")`;
     }
-
     // If the url is falsey then show error on the thumbnail. The exception is
     // folder since it doesn't have to physically exist on the file system
     if (!uploading && !url && category !== 'folder') {
       classNames.push(`${baseClass}--error`);
     }
-
-    return (
-      <div className={classNames.join(' ')} style={styles} />
-    );
+    return <div className={classNames.join(' ')} style={styles} />;
   }
 
-  render() {
-    return <Griddle {...this.getTableProps()} />;
+  /**
+   * Returns the CSS class for a row, based on the rowData
+   */
+  function getTrClassName(row) {
+    const rowData = row.original;
+    return `gallery__table-row ${rowData.highlighted ? 'gallery__table-row--highlighted' : ''}`;
+  }
+
+  /**
+   * Returns the CSS class for a cell, for both header and body cells
+   */
+  function getCellClassName(cell, isHeader) {
+    const ret = [];
+    const columnId = cell.column.id;
+    if (isHeader) {
+      const [sortColumn, sortDirection] = props.sort.split(',');
+      if (sortColumn === columnId) {
+        ret.push(sortDirection === 'asc' ? 'sort-ascending' : 'sort-descending');
+      }
+    }
+    if (columnId === 'selected') {
+      ret.push('gallery__table-column--select');
+    } else if (columnId === 'thumbnail') {
+      ret.push('gallery__table-column--image');
+    } else if (columnId === 'title') {
+      ret.push('gallery__table-column--title');
+    }
+    return ret.join(' ');
+  }
+
+  /**
+   * Renders the content for a th table header
+   */
+  function renderHeaderContent(header) {
+    const label = header.column.columnDef.header;
+    if (columnIsSortable(header.column.id)) {
+      return <span>{label}</span>;
+    }
+    return label;
+  }
+
+  /**
+   * Renders the content for a td table cell
+   */
+  function renderCellContent(cell) {
+    return flexRender(cell.column.columnDef.cell, cell.getContext());
+  }
+
+  function renderPaginator() {
+    return <Paginator
+      totalItems={props.totalCount}
+      maxItemsPerPage={props.limit}
+      currentPage={props.page}
+      onChangePage={(page) => handleSetPage(page)}
+    />;
+  }
+
+  // Column configuration for react-table
+  const columnConfig = [
+    {
+      id: 'thumbnail',
+      header: '',
+      cell: (info) => renderThumbnail(info.getValue()),
+    },
+    {
+      id: 'title',
+      header: i18n._t('File.TITLE', 'Title'),
+      cell: (info) => renderTitle(info.getValue()),
+    },
+    {
+      id: 'status',
+      header: i18n._t('File.STATUS', 'Status'),
+      cell: (info) => renderStatus(info.getValue()),
+    },
+    {
+      id: 'size',
+      header: i18n._t('File.SIZE', 'Size'),
+      cell: (info) => renderSize(info.getValue()),
+    },
+    {
+      id: 'lastEdited',
+      header: i18n._t('File.MODIFIED', 'Modified'),
+      cell: (info) => renderLastEdited(info.getValue()),
+    },
+  ];
+  if (props.selectableItems) {
+    columnConfig.unshift({
+      id: 'selected',
+      header: '',
+      cell: (info) => renderSelect(info.getValue()),
+    });
+  }
+
+  const columnHelper = createColumnHelper();
+
+  const table = useReactTable({
+    data: props.files,
+    columns: columnConfig.map(config => columnHelper.accessor(row => row, config)),
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  // render
+  if (props.files.length === 0) {
+    if (!props.loading) {
+      // Show a "no items" notice if there are no items to display
+      return <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>;
+    }
+  } else {
+    return <table className="gallery__table table table-hover">
+      <thead>
+        {table.getHeaderGroups().map(headerGroup => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map(header => (
+              <th
+                key={header.id}
+                onClick={() => handleSort(header)}
+                className={getCellClassName(header, true)}
+              >
+                {renderHeaderContent(header)}
+              </th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.map(row => (
+          <tr
+            key={row.id}
+            className={getTrClassName(row)}
+          >
+            {row.getVisibleCells().map(cell => (
+              <td
+                key={cell.id}
+                onClick={(evt) => handleCellClick(row, cell, evt)}
+                className={getCellClassName(cell, false)}
+              >
+                {renderCellContent(cell)}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colSpan={columnConfig.length}>{renderPaginator()}</td>
+        </tr>
+      </tfoot>
+    </table>;
   }
 }
-
-TableView.defaultProps = galleryViewDefaultProps;
 
 TableView.propTypes = {
   ...galleryViewPropTypes,
   sort: PropTypes.string.isRequired,
-  VersionedBadge: PropTypes.elementType
 };
 
 export { TableView as Component };
 
-export default compose(
-  inject(
-    ['VersionedBadge'],
-    VersionedBadge => ({ VersionedBadge })
-  )
-)(TableView);
+export default TableView;

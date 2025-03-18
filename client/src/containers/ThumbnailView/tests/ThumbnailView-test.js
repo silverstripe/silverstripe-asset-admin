@@ -65,7 +65,7 @@ test('ThumbnailView handleSetPage()', async () => {
   expect(onSetPage.mock.calls[0][0]).toBe(5);
 });
 
-test('ThumbnailView handleNextPage()', async () => {
+test('ThumbnailView next button should go to the next page', async () => {
   const onSetPage = jest.fn();
   render(
     <ThumbnailView {...makeProps({
@@ -80,7 +80,7 @@ test('ThumbnailView handleNextPage()', async () => {
   expect(onSetPage.mock.calls[0][0]).toBe(4);
 });
 
-test('ThumbnailView handlePrevPage() should decrement from the current page', async () => {
+test('ThumbnailView previous button should go the previous page', async () => {
   const onSetPage = jest.fn();
   render(
     <ThumbnailView {...makeProps({
@@ -95,7 +95,7 @@ test('ThumbnailView handlePrevPage() should decrement from the current page', as
   expect(onSetPage.mock.calls[0][0]).toBe(2);
 });
 
-test('ThumbnailView handlePrevPage() should not be available from the first page', async () => {
+test('ThumbnailView previous button should not be available from the first page', async () => {
   const onSetPage = jest.fn();
   render(
     <ThumbnailView {...makeProps({

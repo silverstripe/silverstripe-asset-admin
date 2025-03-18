@@ -78,12 +78,20 @@ function makeProps(obj = {}) {
     FormBuilderLoaderComponent: ({ createFn, onAction, schemaUrl }) => (
       <div data-testid="test-form-builder-loader" onClick={() => onAction(...nextParams)} data-schema-url={schemaUrl}>{createFn(...createFnParams)}</div>
     ),
+    FormBuilderModalComponent: ({ isOpen }) => <div data-testid="test-form-builder-modal" data-is-open={isOpen}/>,
     ...obj
   };
 }
 
-async function awaitLoader() {
-  await screen.findByTestId('test-form-builder-loader');
+async function openModal() {
+  const loader = await screen.findByTestId('test-form-builder-loader');
+  nextParams = [{
+    preventDefault: () => null,
+    currentTarget: {
+      name: 'action_addtocampaign'
+    }
+  }];
+  fireEvent.click(loader);
   nextParams = [{
     preventDefault: () => null,
     currentTarget: {
@@ -109,12 +117,16 @@ test('Editor handleClose Closing editor', async () => {
     />
   );
   resolveBackendGet(makeReadFileResponse());
-  awaitLoader();
+  openModal();
+  let modal = await screen.findByTestId('test-form-builder-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('true');
   const header = await screen.findByTestId('test-editor-header');
   nextAction = 'cancel';
   fireEvent.click(header);
   expect(popFormStackEntry).not.toHaveBeenCalled();
   expect(onClose).toHaveBeenCalled();
+  modal = await screen.findByTestId('test-form-builder-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('false');
   expect(header.getAttribute('data-show-button')).toBe(buttonStates.SWITCH);
 });
 
@@ -135,12 +147,16 @@ test('Editor handleClose Closing sub form', async () => {
     />
   );
   resolveBackendGet(makeReadFileResponse());
-  awaitLoader();
+  openModal();
+  let modal = await screen.findByTestId('test-form-builder-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('true');
   const header = await screen.findByTestId('test-editor-header');
   nextAction = 'cancel';
   fireEvent.click(header);
   expect(popFormStackEntry).toHaveBeenCalled();
   expect(onClose).not.toHaveBeenCalled();
+  modal = await screen.findByTestId('test-form-builder-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('true');
   expect(header.getAttribute('data-show-button')).toBe(buttonStates.SWITCH);
 });
 
@@ -173,7 +189,7 @@ test('Editor editorHeader Top Form with detail in dialog', async () => {
     />
   );
   resolveBackendGet(makeReadFileResponse());
-  awaitLoader();
+  openModal();
   const header = await screen.findByTestId('test-editor-header');
   nextAction = 'details';
   fireEvent.click(header);
@@ -192,7 +208,7 @@ test('Editor editorHeader Sub form in dialog', async () => {
     />
   );
   resolveBackendGet(makeReadFileResponse());
-  awaitLoader();
+  openModal();
   const header = await screen.findByTestId('test-editor-header');
   expect(header.getAttribute('data-show-button')).toBe(buttonStates.ALWAYS_BACK);
 });
@@ -212,7 +228,7 @@ test('Editor editorHeader Form for folder', async () => {
       type: 'folder',
     })
   });
-  awaitLoader();
+  openModal();
   const header = await screen.findByTestId('test-editor-header');
   expect(header.getAttribute('data-show-button')).toBe(buttonStates.SWITCH);
 });
@@ -226,7 +242,7 @@ test('Editor getFormSchemaUrl Plain URL', async () => {
     />
   );
   resolveBackendGet(makeReadFileResponse());
-  awaitLoader();
+  openModal();
   const loader = await screen.findByTestId('test-form-builder-loader');
   expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123');
 });
@@ -240,7 +256,7 @@ test('Editor getFormSchemaUrl Plain URL', async () => {
     />
   );
   resolveBackendGet(makeReadFileResponse());
-  awaitLoader();
+  openModal();
   const loader = await screen.findByTestId('test-form-builder-loader');
   expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123?q=search');
 });
@@ -257,7 +273,7 @@ test('Editor getFormSchemaUrl Plain URL', async () => {
     />
   );
   resolveBackendGet(makeReadFileResponse());
-  awaitLoader();
+  openModal();
   const loader = await screen.findByTestId('test-form-builder-loader');
   expect(loader.getAttribute('data-schema-url')).toBe('edit/file/123?q=search&foo=bar');
 });

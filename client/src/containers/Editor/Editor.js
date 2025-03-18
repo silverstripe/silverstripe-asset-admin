@@ -5,6 +5,7 @@ import { bindActionCreators, compose } from 'redux';
 import React, { Component } from 'react';
 import CONSTANTS from 'constants/index';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
+import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
 import PropTypes from 'prop-types';
 import { inject } from 'lib/Injector';
@@ -31,10 +32,13 @@ class Editor extends Component {
     this.handleLoadingSuccess = this.handleLoadingSuccess.bind(this);
     this.handleLoadingError = this.handleLoadingError.bind(this);
     this.handleFetchingSchema = this.handleFetchingSchema.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.openModal = this.openModal.bind(this);
     this.createFn = this.createFn.bind(this);
     this.editorHeader = this.editorHeader.bind(this);
 
     this.state = {
+      openModal: false,
       loadingForm: false,
       loadingError: null,
       file: null,
@@ -87,6 +91,12 @@ class Editor extends Component {
   handleAction(event) {
     const file = this.state.file;
     switch (event.currentTarget.name) {
+      // intercept the Add to Campaign submit and open the modal dialog instead
+      case 'action_addtocampaign':
+        this.openModal();
+        event.preventDefault();
+
+        break;
       case 'action_replacefile':
         this.replaceFile();
         event.preventDefault();
@@ -152,11 +162,20 @@ class Editor extends Component {
     } else {
       // If we're already at the top of the form stack, close the editor form
       onClose();
+      this.closeModal();
     }
 
     if (event) {
       event.preventDefault();
     }
+  }
+
+  openModal() {
+    this.setState({ openModal: true });
+  }
+
+  closeModal() {
+    this.setState({ openModal: false });
   }
 
   replaceFile() {
@@ -270,8 +289,9 @@ class Editor extends Component {
     if (!this.state.file) {
       return null;
     }
-    const { FormBuilderLoaderComponent } = this.props;
+    const { FormBuilderLoaderComponent, FormBuilderModalComponent } = this.props;
     const formSchemaUrl = this.getFormSchemaUrl();
+    const modalSchemaUrl = `${this.props.addToCampaignSchemaUrl}/${this.props.fileId}`;
     const editorClasses = classnames(
       'panel', 'form--no-dividers', 'editor', {
         'editor--asset-dropzone--disable': !this.props.enableDropzone
@@ -291,6 +311,7 @@ class Editor extends Component {
         <div className="editor__file-preview-message--file-missing">{message}</div>
       );
     }
+    const campaignTitle = i18n._t('Admin.ADD_TO_CAMPAIGN', 'Add to campaign');
     const Loading = this.props.loadingComponent;
 
     return (<div className={editorClasses}>
@@ -307,6 +328,16 @@ class Editor extends Component {
           file={this.state.file}
         />
         {error}
+        <FormBuilderModalComponent
+          title={campaignTitle}
+          identifier="AssetAdmin.AddToCampaign"
+          isOpen={this.state.openModal}
+          onClosed={this.closeModal}
+          schemaUrl={modalSchemaUrl}
+          bodyClassName="modal__dialog"
+          responseClassBad="modal__response modal__response--error"
+          responseClassGood="modal__response modal__response--good"
+        />
         { this.state.loadingForm && <Loading />}
       </div>
     </div>);
@@ -325,16 +356,19 @@ Editor.propTypes = {
     name: PropTypes.string,
     value: PropTypes.any,
   })),
+  addToCampaignSchemaUrl: PropTypes.string,
   actions: PropTypes.object,
   showingSubForm: PropTypes.bool,
   nextType: PropTypes.string,
   EditorHeaderComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   FormBuilderLoaderComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  FormBuilderModalComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 };
 
 Editor.defaultProps = {
   EditorHeaderComponent: EditorHeader,
   FormBuilderLoaderComponent: FormBuilderLoader,
+  FormBuilderModalComponent: FormBuilderModal,
 };
 
 function mapDispatchToProps(dispatch) {

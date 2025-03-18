@@ -5,6 +5,7 @@
  */
 require('expose-loader?exposes=InsertMediaModal!containers/InsertMediaModal/InsertMediaModal');
 require('expose-loader?exposes=InsertEmbedModal!components/InsertEmbedModal/InsertEmbedModal');
+require('expose-loader?exposes=AssetAdminModalActions!state/modal/ModalActions');
 
 require('boot');
 require('entwine/UploadField/UploadFieldEntwine');

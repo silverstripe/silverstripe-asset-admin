@@ -1660,10 +1660,10 @@
     stylelint-config-standard "^36.0.0"
     stylelint-scss "^6.2.1"
 
-"@silverstripe/webpack-config@^3.0.0-alpha2":
-  version "3.0.0-alpha2"
-  resolved "https://registry.yarnpkg.com/@silverstripe/webpack-config/-/webpack-config-3.0.0-alpha2.tgz#ea2c50a953e5de4e53dacfc42501c9b3c88835f2"
-  integrity sha512-KsqwAxKLvutDnYf755Z16gUO4EeRH6GnAgl1qaejFRN+6bRI2wTnPuiGZz0OLKvH8Fz+/zEmL1WFLmm5iQIk5A==
+"@silverstripe/webpack-config@^3.0.0-alpha4":
+  version "3.0.0-alpha4"
+  resolved "https://registry.yarnpkg.com/@silverstripe/webpack-config/-/webpack-config-3.0.0-alpha4.tgz#6c0a68f7bbb61481b877c168407653d84e4b7754"
+  integrity sha512-z9fSnzHiSqPn0uZxbnSfEXT9+OHfbr7edQQ6Mf+RdcgNXE0F3vl5HzdUP9jIt74g3lQTcisyD1v81Vp1dia7sg==
   dependencies:
     "@babel/core" "^7.19.6"
     "@babel/preset-env" "^7.19.4"
@@ -1740,6 +1740,18 @@
   integrity sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==
   dependencies:
     tslib "^2.8.0"
+
+"@tanstack/react-table@^8.21.2":
+  version "8.21.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-table/-/react-table-8.21.2.tgz#6a7fce828b64547e33f4606ada8114db496007cc"
+  integrity sha512-11tNlEDTdIhMJba2RBH+ecJ9l1zgS2kjmexDPAraulc8jeNA4xocSNeyzextT0XJyASil4XsCYlJmf5jEWAtYg==
+  dependencies:
+    "@tanstack/table-core" "8.21.2"
+
+"@tanstack/table-core@8.21.2":
+  version "8.21.2"
+  resolved "https://registry.yarnpkg.com/@tanstack/table-core/-/table-core-8.21.2.tgz#dd57595a1773652bb6fb437e90a5f5386a49fd7e"
+  integrity sha512-uvXk/U4cBiFMxt+p9/G7yUWI/UbHYbyghLCjlpWZ3mLeIZiUBSKcUnw9UnKkdRz7Z/N4UBuFLWQdJCjUe7HjvA==
 
 "@testing-library/dom@^10.4.0":
   version "10.4.0"
@@ -4297,13 +4309,6 @@ graphemer@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/graphemer/-/graphemer-1.4.0.tgz#fb2f1d55e0e3a1849aeffc90c4fa0dd53a0e66c6"
   integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
-
-griddle-react@^0.8.2:
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/griddle-react/-/griddle-react-0.8.2.tgz#5bfe00b6680c571229916557c2f48ebc0798217a"
-  integrity sha512-3Va7bpyyDTl3gM2L9wJbUVLq9xLrwp1CMlaR4CEYCRJphwCQhmJLZkmdbOcr+I4XT3pBD4M9d8fp5jTgvz6umg==
-  dependencies:
-    lodash "^4.17.4"
 
 gzip-size@^6.0.0:
   version "6.0.0"
