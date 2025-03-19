@@ -68,7 +68,6 @@
   flex-flow: row wrap;
 }
 
-
 // leave space at bottom for bulk-actions on smaller screens
 @include media-breakpoint-down(lg) {
   .gallery__files {

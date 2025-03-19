@@ -10,8 +10,9 @@ export default function draggable(Item) {
 
     return <div
       className="gallery-item__draggable"
-      // The `draggable` attribute is needed to tell react-selectable to not start selecting on mousedown
-      draggable
+      // The `data-draggable` attribute is used to denote to that as this is a "draggable" element
+      // you should not start selecting on mousedown in Selectable.shouldStartSelecting()
+      data-draggable="true"
       ref={setNodeRef}
       {...listeners}
       {...attributes}
