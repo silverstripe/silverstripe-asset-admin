@@ -14,13 +14,13 @@ import * as galleryActions from 'state/gallery/GalleryActions';
 import * as toastsActions from 'state/toasts/ToastsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
-import { SelectableGroup } from 'react-selectable';
 import configShape from 'lib/configShape';
 import Config from 'lib/Config';
 import getStatusCodeMessage from 'lib/getStatusCodeMessage';
 import { inject } from 'lib/Injector';
 import PropTypes from 'prop-types';
 import backend from 'lib/Backend';
+import Selectable from 'containers/Selectable/Selectable';
 import MoveModal from '../MoveModal/MoveModal';
 import GalleryDND from './GalleryDND';
 
@@ -65,7 +65,6 @@ class Gallery extends Component {
     this.handleBulkUnpublish = this.handleBulkUnpublish.bind(this);
     this.handleBulkMove = this.handleBulkMove.bind(this);
     this.handleBulkInsert = this.handleBulkInsert.bind(this);
-    this.handleBeginSelection = this.handleBeginSelection.bind(this);
     this.handleGroupSelect = this.handleGroupSelect.bind(this);
     this.handleClearSelection = this.handleClearSelection.bind(this);
     this.handleSelectAll = this.handleSelectAll.bind(this);
@@ -551,14 +550,14 @@ class Gallery extends Component {
   /**
    * Pick if the selection started from inside the pagination. If it started from inside the
    * pagination, cancel it to prevent inteference with the normal pagination.
-   * @param Event e
+   * @param Element target
    * @returns {boolean}
    */
-  handleBeginSelection(e) {
+  handleShouldStartSelecting(target) {
     /** @type Node */
-    let node = e.target;
+    let node = target;
     // Loop the nodes until we find the root of the pagination or the root of the selectable area
-    while (node) {
+    while (node && (node instanceof Element)) {
       if (node.classList.contains('paginator-footer')) {
         return false;
       }
@@ -944,28 +943,27 @@ class Gallery extends Component {
       cssClasses.push('gallery__main--has-opened-item');
     }
 
+    const canSelect = this.props.view === 'tile' && this.props.type === ACTION_TYPES.ADMIN;
+
     return (
       <div
         className="flexbox-area-grow gallery__outer"
         ref={gallery => { this.gallery = gallery; }}
       >
         {this.renderTransitionBulkActions()}
-        <GalleryDND
-          onDragStartEnd={(dragging) => this.handleEnableDropzone(!dragging)}
-          onDropFiles={this.handleMoveFiles}
-          selectedFiles={this.props.selectedFiles}
-          className={galleryClasses.join(' ')}
+        <Selectable
+          isEnabled={canSelect}
+          onMouseDownOverNonDraggable={this.handleClearSelection}
+          onSelectionChange={this.handleGroupSelect}
+          onShouldStartSelecting={this.handleShouldStartSelecting}
         >
-          {this.renderToolbar()}
-          <SelectableGroup
-            enabled={this.props.view === 'tile' && this.props.type === ACTION_TYPES.ADMIN}
-            className="flexbox-area-grow fill-height gallery__main--selectable"
-            onSelection={this.handleGroupSelect}
-            onNonItemClick={this.handleClearSelection}
-            onBeginSelection={this.handleBeginSelection}
-            preventDefault={false}
-            fixedPosition
+          <GalleryDND
+            onDragStartEnd={(dragging) => this.handleEnableDropzone(!dragging)}
+            onDropFiles={this.handleMoveFiles}
+            selectedFiles={this.props.selectedFiles}
+            className={galleryClasses.join(' ')}
           >
+            {this.renderToolbar()}
             <AssetDropzone
               name="gallery-container"
               className="flexbox-area-grow"
@@ -986,15 +984,15 @@ class Gallery extends Component {
               {messages}
               {this.renderGalleryView()}
             </AssetDropzone>
-          </SelectableGroup>
-        </GalleryDND>
-        {this.props.loading && <Loading />}
-        <MoveModal
-          sectionConfig={this.props.sectionConfig}
-          folderId={this.props.folderId}
-          onSuccess={this.props.onMoveFilesSuccess}
-          onOpenFolder={this.props.onOpenFolder}
-        />
+          </GalleryDND>
+          {this.props.loading && <Loading />}
+          <MoveModal
+            sectionConfig={this.props.sectionConfig}
+            folderId={this.props.folderId}
+            onSuccess={this.props.onMoveFilesSuccess}
+            onOpenFolder={this.props.onOpenFolder}
+          />
+        </Selectable>
       </div>
     );
   }
