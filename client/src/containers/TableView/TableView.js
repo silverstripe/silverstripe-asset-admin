@@ -7,7 +7,6 @@ import Paginator from 'components/Paginator/Paginator';
 import FileStatusIcon from 'components/FileStatusIcon/FileStatusIcon';
 import VersionedBadge from 'components/VersionedBadge/VersionedBadge';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
-import { fileSize } from 'lib/DataFormat';
 import {
   createColumnHelper,
   flexRender,
@@ -79,8 +78,7 @@ function TableView(_props) {
     if (rowData.type === 'folder') {
       return null;
     }
-    const description = fileSize(rowData.size);
-    return <span>{description}</span>;
+    return <span>{rowData.size}</span>;
   }
 
   /**
@@ -92,12 +90,14 @@ function TableView(_props) {
       if (rowData.draft) {
         flags.push({
           key: 'status-draft',
-          status: 'draft'
+          status: 'draft',
+          className: 'status-addedtodraft',
         });
       } else if (rowData.modified) {
         flags.push({
           key: 'status-modified',
-          status: 'modified'
+          status: 'modified',
+          className: 'status-modified',
         });
       }
     }

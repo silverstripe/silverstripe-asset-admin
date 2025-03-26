@@ -96,6 +96,10 @@ th.sort--disabled>span:after {
 
 .gallery__table-row {
   cursor: pointer;
+
+  .badge {
+    padding: 2px 3px 2px 4px;
+  }
 }
 
 .gallery__table-column--title {
