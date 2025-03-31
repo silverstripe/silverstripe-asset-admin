@@ -395,8 +395,7 @@ abstract class AssetFormFactory implements FormFactory
                 _t(__CLASS__ . '.VIEWERMEMBERS', 'Viewer Users'),
                 Member::get()
             )
-                ->setIsLazyLoaded(true)
-                ->setUseSearchContext(true),
+                ->setIsLazyLoaded(true),
             OptionsetField::create(
                 "CanEditType",
                 _t(__CLASS__ . '.EDITHEADER', 'Who can edit this file?')
@@ -412,7 +411,6 @@ abstract class AssetFormFactory implements FormFactory
                 Member::get()
             )
                 ->setIsLazyLoaded(true)
-                ->setUseSearchContext(true)
         );
 
         return $tab;
