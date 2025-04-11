@@ -10,7 +10,6 @@ import FileStatusIcon from 'components/FileStatusIcon/FileStatusIcon';
 import configShape from 'lib/configShape';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createSelectable } from 'react-selectable';
 import * as imageLoadActions from 'state/imageLoad/ImageLoadActions';
 import IMAGE_STATUS from 'state/imageLoad/ImageLoadStatus';
 import PropTypes from 'prop-types';
@@ -526,6 +525,7 @@ class GalleryItem extends Component {
         {this.props.children}
         <div
           className="gallery-item__title"
+          data-draggable="true"
           ref={(title) => { this.title = title; }}
         >
           <label {...inputLabelProps} htmlFor={htmlID}>
@@ -609,8 +609,8 @@ function mapDispatchToProps(dispatch) {
 
 const ConnectedGalleryItem = connect(mapStateToProps, mapDispatchToProps)(GalleryItem);
 
-const File = createSelectable(draggable(ConnectedGalleryItem));
-const Folder = createSelectable(droppable(File));
+const File = draggable(ConnectedGalleryItem);
+const Folder = droppable(File);
 export {
   GalleryItem as Component,
   Folder,
