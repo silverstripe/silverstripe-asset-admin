@@ -8,7 +8,7 @@ use SilverStripe\Dev\Deprecation;
  * Represents a notice related to a graphql Action. This could be a failure,
  * warning, or recoverable query (e.g. "are you sure you want to publish this item?")
  *
- * @deprecated 5.3.0 Will be moved to the silverstripe/graphql module
+ * @deprecated 5.3.0 Will be moved to the silverstripe/graphql module in a future major release
  */
 class Notice
 {

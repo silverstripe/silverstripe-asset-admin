@@ -1201,7 +1201,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         Deprecation::noticeWithNoReplacment(
             '2.4.0',
-            'Will moved to SilverStripe\CampaignAdmin\Extensions\AddToCampaignExtension'
+            'Will moved to SilverStripe\CampaignAdmin\Extensions\AddToCampaignExtension in a future major release'
         );
         $id = $data['ID'];
         $record = File::get()->byID($id);
@@ -1230,7 +1230,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         Deprecation::noticeWithNoReplacment(
             '2.4.0',
-            'Will moved to SilverStripe\CampaignAdmin\Extensions\AddToCampaignExtension'
+            'Will moved to SilverStripe\CampaignAdmin\Extensions\AddToCampaignExtension in a future major release'
         );
         // Get ID either from posted back value, or url parameter
         $id = $request->param('ID') ?: $request->postVar('ID');
@@ -1246,7 +1246,7 @@ class AssetAdmin extends LeftAndMain implements PermissionProvider
     {
         Deprecation::noticeWithNoReplacment(
             '2.4.0',
-            'Will moved to SilverStripe\CampaignAdmin\Extensions\AddToCampaignExtension'
+            'Will moved to SilverStripe\CampaignAdmin\Extensions\AddToCampaignExtension in a future major release'
         );
         // Get record-specific fields
         $record = File::get()->byID($id);
