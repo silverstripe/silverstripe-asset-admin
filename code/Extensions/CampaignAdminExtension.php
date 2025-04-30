@@ -14,7 +14,7 @@ use SilverStripe\Dev\Deprecation;
  * This extension will only be applied if the `campaign-admin` module is installed.
  *
  * @extends Extension<FileFormFactory>
- * @deprecated 2.4.0 Will be replaced by SilverStripe\CampaignAdmin\Extensions\FileFormFactoryExtension
+ * @deprecated 2.4.0 Will be replaced by SilverStripe\CampaignAdmin\Extensions\FileFormFactoryExtension in a future major release
  */
 class CampaignAdminExtension extends Extension
 {
@@ -22,7 +22,7 @@ class CampaignAdminExtension extends Extension
     {
         Deprecation::noticeWithNoReplacment(
             '2.4.0',
-            'Will be replaced by SilverStripe\CampaignAdmin\Extensions\FileFormFactoryExtension',
+            'Will be replaced by SilverStripe\CampaignAdmin\Extensions\FileFormFactoryExtension in a future major release',
             Deprecation::SCOPE_CLASS
         );
         parent::__construct();
