@@ -351,9 +351,6 @@ class AssetAdmin extends Component {
     if (!promise) {
       throw new Error('Promise was not returned for submitting');
     }
-    this.setState({
-      forceRefetch: true
-    });
     return promise
       .then((response) => {
         if (action === 'action_createfolder') {
@@ -370,6 +367,10 @@ class AssetAdmin extends Component {
           this.handleBrowse(response.record.parent.id, response.record.id, null);
         }
         return response;
+      }).then(() => {
+        this.setState({
+          forceRefetch: true
+        });
       });
   }
 
