@@ -44,7 +44,7 @@ class RemoteFileModalExtension extends Extension
 
     /**
      * @return FormSchema
-     * @deprecated 2.4.0 Will be removed without equivalent functionality to replace it.
+     * @deprecated 2.4.0 Will be removed without equivalent functionality to replace it in a future major release.
      */
     protected function getFormSchema()
     {
@@ -121,11 +121,11 @@ class RemoteFileModalExtension extends Extension
      * @param ValidationResult $errors Required for 'error' response
      * @param array $extraData Any extra data to be merged with the schema response
      * @return HTTPResponse
-     * @deprecated 2.4.0 Will be replaced with $this->getOwner()->getSchemaResponse() instead.
+     * @deprecated 2.4.0 Will be replaced with $this->getOwner()->getSchemaResponse() instead in a future major release.
      */
     protected function getSchemaResponse($schemaID, $form = null, ValidationResult $errors = null, $extraData = [])
     {
-        Deprecation::noticeWithNoReplacment('2.4.0', 'Will be replaced with $this->getOwner()->getSchemaResponse() instead.');
+        Deprecation::noticeWithNoReplacment('2.4.0', 'Will be replaced with $this->getOwner()->getSchemaResponse() instead in a future major release.');
         $parts = $this->getOwner()->getRequest()->getHeader(FormSchema::SCHEMA_HEADER);
         $data = $this
             ->getFormSchema()
