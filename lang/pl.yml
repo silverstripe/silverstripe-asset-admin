@@ -46,6 +46,11 @@ pl:
     MENUTITLE: Pliki
     NOSUMMARY: 'Brak dostępnych podsumowań'
     NewFile: 'Nowy {file}'
+    OWNER_WARNING:
+      few: 'Plik "{file}" jest używany w kilku {count} miejscach.'
+      many: 'Plik "{file}" jest używany w wielu {count} miejscach.'
+      one: 'Plik "{file}" jest używany w jednym {count} miejscu.'
+      other: 'Plik "{file}" jest używany w {count} miejscach.'
     PATH: Ścieżka
     PUBLISHED: Opublikowany
     PUBLISH_BUTTON: Opublikuj

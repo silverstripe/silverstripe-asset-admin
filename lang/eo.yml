@@ -46,6 +46,9 @@ eo:
     MENUTITLE: Dosieroj
     NOSUMMARY: 'Neniu resumo disponeblas'
     NewFile: 'Nova {file}'
+    OWNER_WARNING:
+      one: 'Dosiero "{file}" estas uzita en 1 loko.'
+      other: 'Dosiero "{file}" estas uzita en {count} lokoj.'
     PATH: Vojprefikso
     PUBLISHED: Publikigita
     PUBLISH_BUTTON: Publikigi

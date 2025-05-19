@@ -45,6 +45,11 @@ sl:
     MENUTITLE: Datoteke
     NOSUMMARY: 'Povzetek ni na voljo'
     NewFile: 'Dodaj {file}'
+    OWNER_WARNING:
+      few: 'Datoteka "{file}" je uporabljena {count}-krat.'
+      one: 'Datoteka "{file}" je uporabljena enkrat.'
+      other: 'Datoteka "{file}" je uporabljena {count}-krat.'
+      two: 'Datoteka "{file}" je uporabljena {count}-krat.'
     PATH: Pot
     PUBLISHED: Objavljeno
     PUBLISH_BUTTON: Objavi
