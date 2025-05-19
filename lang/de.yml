@@ -42,6 +42,9 @@ de:
     MENUTITLE: Dateien
     NOSUMMARY: 'Keine Zusammenfassung verfügbar'
     NewFile: 'Neu {file}'
+    OWNER_WARNING:
+      one: 'Die Datei "{file}" wird an {count} Stelle verwendet.'
+      other: 'Die Datei "{file}" wird an {count} Stellen verwendet.'
     PATH: Pfad
     PUBLISHED: Veröffentlicht
     PUBLISH_BUTTON: Veröffentlichen
