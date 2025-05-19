@@ -39,9 +39,13 @@ nl:
     LazyDefault: 'Lazy (standaard)'
     LoadIntoFileFailed: 'Laden mislukt'
     Loading: Laden...
+    LoadingTitleTip: 'Lazy loading kan de ervaring van laad-snelheid op de webpagina verbeteren, door het laden van media enigszins te vertragen. Eager loading laadt bestanden zo snel mogelijk en kan worden gebruikt als de afbeelding in beeld is terwijl de pagina laadt (bovenaan de pagina).'
     MENUTITLE: Bestanden
     NOSUMMARY: 'Geen samenvatting beschikbaar'
     NewFile: 'Nieuw {file}'
+    OWNER_WARNING:
+      one: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
+      other: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
     PATH: Pad
     PUBLISHED: Gepubliceerd
     PUBLISH_BUTTON: Publiceer
