@@ -1,6 +1,7 @@
 en:
   AssetAdmin:
     INSERT_FILE: 'Insert file'
+    OWNER_WARNING: 'File "{file}" is used in {count} place|File "{file}" is used in {count} places'
     UPDATE_FILE: 'Update file'
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Restricted access'
@@ -47,6 +48,9 @@ en:
     MENUTITLE: Files
     NOSUMMARY: 'No summary available'
     NewFile: 'New {file}'
+    OWNER_WARNING:
+      one: 'File "{file}" is used in {count} place'
+      other: 'File "{file}" is used in {count} places.'
     PATH: Path
     PUBLISHED: Published
     PUBLISH_BUTTON: Publish
@@ -61,6 +65,8 @@ en:
     MOVEDFOLDER: 'Moved file'
     RENAMEDFILE: 'Replaced file'
     RENAMEDTITLE: 'Updated title to '
+  SilverStripe\AssetAdmin\Controller\AssetAdminOpen:
+    MENUTITLE: 'Files open'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     ACCESSHEADER: 'Who can view this file?'
     ANYONE: Anyone
@@ -122,3 +128,6 @@ en:
     OWNER_WARNING:
       one: 'File "{file}" is used in {count} place'
       other: 'File "{file}" is used in {count} places.'
+  SilverStripe\CMS\Search\SearchForm:
+    FILTERDATEFROM: From
+    FILTERDATETO: To

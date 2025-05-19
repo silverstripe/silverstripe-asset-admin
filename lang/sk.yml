@@ -47,6 +47,11 @@ sk:
     MENUTITLE: Súbory
     NOSUMMARY: 'Nie je k dispozícii žiadny súhrn'
     NewFile: 'Nový {file}'
+    OWNER_WARNING:
+      few: 'Súbor "{file}" sa používa na {count} miestach.'
+      many: 'Súbor "{file}" sa používa na {count} miestach.'
+      one: 'Súbor "{file}" sa používa na {count} mieste'
+      other: 'Súbor "{file}" sa používa na {count} miestach.'
     PAGES: stránka(y)
     PATH: Cesta
     PUBLISHED: Publikovaný
