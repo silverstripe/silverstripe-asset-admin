@@ -4,9 +4,11 @@ Feature: Multi file Upload field
   I want to interact with the upload field to select files
 
   Background:
+    Given I add an extension "SilverStripe\FrameworkTest\Extension\CompanyGroupPhotoJpgOnlyExtension" to the "SilverStripe\FrameworkTest\Model\Company" class
     Given a "page" "About Us" has the "Content" "<p>My awesome content</p>"
       And a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
+      And a "image" "folder1/file4.png"
       And a "company" "ACME inc"
       And the "group" "EDITOR" has permissions "VIEW_DRAFT_CONTENT" and "Access to 'Test ModelAdmin' section" and "TEST_DATAOBJECT_EDIT" and "Access to 'Files' section" and "FILE_EDIT_ALL" 
       And I am logged in as a member of "EDITOR" group
@@ -65,3 +67,16 @@ Feature: Multi file Upload field
       Then I should see "file2" in the ".uploadfield-item__title" element
     # Required to avoid "unsaved changed" browser dialog
     Then I press the "Save" button
+
+  Scenario: I can select mulitple files and invalid extension validation works
+    When I click "Choose existing" in the ".uploadfield" element
+    And I press the "Back" HTML field button
+    And I select the file named "folder1" in the gallery
+    And I check the file named "file1" in the gallery
+    And I check the file named "file4" in the gallery
+    And I press the "Insert" button
+    And I wait for 1 seconds
+    Then I press the "Save" button
+    And I wait for 3 seconds
+    Then I should see "Extension 'png' is not allowed"
+    And I should not see "Extension 'jpg' is not allowed"
