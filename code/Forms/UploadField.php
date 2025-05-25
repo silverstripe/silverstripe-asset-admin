@@ -119,6 +119,7 @@ class UploadField extends FormField implements FileHandleField
             'payloadFormat' => 'urlencoded',
         ];
 
+        // use array_values to ensure 0-based so does not get coverted to a JS object
         $defaults['data']['maxFilesize'] = $this->getAllowedMaxFileSize() / 1024 / 1024;
         $defaults['data']['maxFiles'] = $this->getAllowedMaxFileNumber();
         $defaults['data']['maxParallelUploads'] = $this->getMaxParallelUploads();
@@ -326,6 +327,9 @@ class UploadField extends FormField implements FileHandleField
 
     /**
      * Checks if the number of files attached adheres to the $allowedMaxFileNumber defined
+     * Also checks that extensions are valid, which is intended primarily for selecting
+     * existing files rather than newly uploaded files, as those will be checked by
+     * Upload_Validator which is used on the UploadReciever trait
      *
      * @param Validator $validator
      * @return bool
@@ -333,21 +337,42 @@ class UploadField extends FormField implements FileHandleField
     public function validate($validator)
     {
         $maxFiles = $this->getAllowedMaxFileNumber();
-        $count = count($this->getItems() ?? []);
-
-        if ($maxFiles < 1 || $count <= $maxFiles) {
-            return $this->extendValidationResult(true, $validator);
+        /** @var SS_List<File> $items */
+        $items = $this->getItems();
+        $count = $items->count();
+        $result = true;
+        // Validate file count
+        if ($maxFiles && $count > $maxFiles) {
+            $result = false;
+            $validator->validationError($this->getName(), _t(
+                __CLASS__ . '.ErrorMaxFilesReached',
+                'You can only upload {count} file.|You can only upload {count} files.',
+                [
+                    'count' => $maxFiles,
+                ]
+            ));
         }
-
-        $validator->validationError($this->getName(), _t(
-            __CLASS__ . '.ErrorMaxFilesReached',
-            'You can only upload {count} file.|You can only upload {count} files.',
-            [
-                'count' => $maxFiles,
-            ]
-        ));
-
-        return $this->extendValidationResult(false, $validator);
+        // Validate file extensions
+        $validExts = $this->getAllowedExtensions();
+        $invalidExts = [];
+        foreach ($items as $item) {
+            $ext = strtolower($item->getExtension());
+            if (!in_array($ext, $validExts)) {
+                $invalidExts[] = $ext;
+            }
+        }
+        $invalidExts = array_values(array_unique($invalidExts));
+        foreach ($invalidExts as $ext) {
+            $result = false;
+            $validator->validationError($this->getName(), _t(
+                File::class . '.INVALIDEXTENSION_SHORT_EXT',
+                'Extension \'{extension}\' is not allowed',
+                [
+                    'extension' => $ext,
+                ]
+            ));
+        }
+        return $this->extendValidationResult($result, $validator);
     }
 
     /**
