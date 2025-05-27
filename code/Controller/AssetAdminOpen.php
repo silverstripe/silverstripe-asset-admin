@@ -165,6 +165,10 @@ class AssetAdminOpen extends LeftAndMain
                 $query->sort('"IsFolderTmp" DESC', null, true);
             });
             $childFiles = $childFiles->limit($limit, $offset);
+            // Prepopulate the Versioned cache used by Versioned::canViewVersioned() which is called
+            // as part of the looped $childFile->canView() check below
+            // This will save a large number of individual DB queries
+            $childFiles->prepopulateCaches();
             foreach ($childFiles as $childFile) {
                 if (!$childFile->canView()) {
                     continue;
