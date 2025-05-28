@@ -15,6 +15,7 @@ use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Form;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\Forms\FieldsValidator;
 
 class UploadFieldTest extends SapphireTest
 {
@@ -119,7 +120,7 @@ class UploadFieldTest extends SapphireTest
                 'maxFiles' => null,
                 'canUpload' => true,
                 'canAttach' => true,
-                'maxParallelUploads' => 2
+                'maxParallelUploads' => 2,
             ],
             'schemaType' => 'Custom'
         ];
@@ -140,5 +141,109 @@ class UploadFieldTest extends SapphireTest
         // Check schema / state are encoded in this field
         $this->assertEquals($schema, json_decode($attributes['data-schema'] ?? '', true));
         $this->assertEquals($state, json_decode($attributes['data-state'] ?? '', true));
+    }
+
+    public static function provideValidate(): array
+    {
+        return [
+            'valid-single' => [
+                'numUploaded' => 1,
+                'maxCount' => 1,
+                'validExts' => ['png'],
+                'expectedMessages' => [],
+            ],
+            'valid-multi' => [
+                'numUploaded' => 2,
+                'maxCount' => 2,
+                'validExts' => ['png', 'txt'],
+                'expectedMessages' => [],
+            ],
+            'valid-single' => [
+                'numUploaded' => 1,
+                'maxCount' => 1,
+                'validExts' => ['png'],
+                'expectedMessages' => [],
+            ],
+            'valid-no-max-count' => [
+                'numUploaded' => 1,
+                'maxCount' => 0,
+                'validExts' => ['png'],
+                'expectedMessages' => [],
+            ],
+            'invalid-ext-single' => [
+                'numUploaded' => 1,
+                'maxCount' => 1,
+                'validExts' => ['gif'],
+                'expectedMessages' => [
+                    "Extension 'png' is not allowed"
+                ],
+            ],
+            'invalid-ext-mutli-one' => [
+                'numUploaded' => 2,
+                'maxCount' => 2,
+                'validExts' => ['gif', 'txt'],
+                'expectedMessages' => [
+                    "Extension 'png' is not allowed"
+                ],
+            ],
+            'invalid-ext-mutli-two' => [
+                'numUploaded' => 2,
+                'maxCount' => 2,
+                'validExts' => ['gif', 'doc'],
+                'expectedMessages' => [
+                    "Extension 'png' is not allowed",
+                    "Extension 'txt' is not allowed",
+                ],
+            ],
+            'invalid-count' => [
+                'numUploaded' => 2,
+                'maxCount' => 1,
+                'validExts' => ['png', 'txt'],
+                'expectedMessages' => [
+                    'You can only upload 1 file.'
+                ],
+            ],
+            'invalid-everything' => [
+                'numUploaded' => 2,
+                'maxCount' => 1,
+                'validExts' => ['gif', 'doc'],
+                'expectedMessages' => [
+                    'You can only upload 1 file.',
+                    "Extension 'png' is not allowed",
+                    "Extension 'txt' is not allowed",
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideValidate
+     */
+    public function testValidate(int $numUploaded, int $maxCount, array $validExts, array $expectedMessages): void
+    {
+        // fixtures are created in setUp()
+        $files = [
+            // testimage.png
+            $this->objFromFixture(Image::class, 'image1'),
+            // testfile.txt
+            $this->objFromFixture(File::class, 'file1'),
+        ];
+        $field = new UploadField('Test');
+        $field->setAllowedMaxFileNumber($maxCount);
+        $field->setAllowedExtensions($validExts);
+        $items = [];
+        for ($i = 0; $i < $numUploaded; $i++) {
+            $items[] = $files[$i];
+        }
+        $list = new ArrayList($items);
+        $field->setItems($list);
+        // note - using FieldsValidator rather than Upload_Validator as we are simulating
+        // selecting existing files
+        $validator = new FieldsValidator();
+        $result = $field->validate($validator);
+        $messages = array_map(fn($m) => $m['message'], $validator->getResult()->getMessages());
+        $expectedResult = count($expectedMessages) === 0;
+        $this->assertSame($expectedResult, $result);
+        $this->assertSame($expectedMessages, $messages);
     }
 }
