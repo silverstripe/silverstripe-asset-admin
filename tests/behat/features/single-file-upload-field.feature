@@ -4,9 +4,11 @@ Feature: Single file Upload field
   I want to interact with the upload field to select a file
 
   Background:
+    Given I add an extension "SilverStripe\FrameworkTest\Extension\EmployeeProfileImageJpgOnlyExtension" to the "SilverStripe\FrameworkTest\Model\Employee" class
     Given a "page" "About Us" has the "Content" "<p>My awesome content</p>"
       And a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
+      And a "image" "folder1/file4.png"
       And a "folder" "folder1/folder1-1"
       And the "Company" "ACME inc" with "Category"="Other"
       And the "Employee" "Allen" with "Company"="1"
@@ -85,3 +87,14 @@ Feature: Single file Upload field
       And I should not see the breadcrumb link "Files"
       # Validate that we haven't navigated away from the pages admin
       And I should see an ".uploadfield" element
+
+  Scenario: File extension validation prevents me from selecting files
+    When I click "Choose existing" in the ".uploadfield" element
+    And I press the "Back" HTML field button
+    And I select the file named "folder1" in the gallery
+    And I click on the file named "file4" in the gallery
+    And I press the "Insert" button
+    And I wait for 1 seconds
+    When I press the "Save" button
+    And I wait for 3 seconds
+    Then I should see "Extension 'png' is not allowed"

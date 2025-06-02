@@ -120,6 +120,7 @@ class UploadField extends FormField implements FileHandleField
             'payloadFormat' => 'urlencoded',
         ];
 
+        // use array_values to ensure 0-based so does not get coverted to a JS object
         $defaults['data']['maxFilesize'] = $this->getAllowedMaxFileSize() / 1024 / 1024;
         $defaults['data']['maxFiles'] = $this->getAllowedMaxFileNumber();
         $defaults['data']['maxParallelUploads'] = $this->getMaxParallelUploads();
@@ -330,17 +331,38 @@ class UploadField extends FormField implements FileHandleField
     {
         $this->beforeExtending('updateValidate', function (ValidationResult $result) {
             $maxFiles = $this->getAllowedMaxFileNumber();
-            $count = count($this->getItems() ?? []);
-            if ($maxFiles < 1 || $count <= $maxFiles) {
-                return;
+            /** @var SS_List<File> $items */
+            $items = $this->getItems();
+            $count = $items->count();
+            // Validate file count
+            if ($maxFiles && $count > $maxFiles) {
+                $result->addFieldError($this->getName(), _t(
+                    __CLASS__ . '.ErrorMaxFilesReached',
+                    'You can only upload {count} file.|You can only upload {count} files.',
+                    [
+                        'count' => $maxFiles,
+                    ]
+                ));
+            };
+            // Validate file extensions
+            $validExts = $this->getAllowedExtensions();
+            $invalidExts = [];
+            foreach ($items as $item) {
+                $ext = strtolower($item->getExtension());
+                if (!in_array($ext, $validExts)) {
+                    $invalidExts[] = $ext;
+                }
             }
-            $result->addFieldError($this->getName(), _t(
-                __CLASS__ . '.ErrorMaxFilesReached',
-                'You can only upload {count} file.|You can only upload {count} files.',
-                [
-                    'count' => $maxFiles,
-                ]
-            ));
+            $invalidExts = array_values(array_unique($invalidExts));
+            foreach ($invalidExts as $ext) {
+                $result->addFieldError($this->getName(), _t(
+                    File::class . '.INVALIDEXTENSION_SHORT_EXT',
+                    'Extension \'{extension}\' is not allowed',
+                    [
+                        'extension' => $ext,
+                    ]
+                ));
+            }
         });
         return parent::validate();
     }
