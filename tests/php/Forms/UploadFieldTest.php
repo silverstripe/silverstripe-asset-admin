@@ -143,6 +143,7 @@ class UploadFieldTest extends SapphireTest
                 'parentid' => 0,
                 'canUpload' => true,
                 'canAttach' => true,
+                'maxParallelUploads' => 2,
             ],
         ];
         $state = [
@@ -159,5 +160,104 @@ class UploadFieldTest extends SapphireTest
         $html = $field->Field();
         $this->assertStringContainsString(htmlspecialchars(json_encode($schema)), $html);
         $this->assertStringContainsString(htmlspecialchars(json_encode($state)), $html);
+    }
+
+    public static function provideValidate(): array
+    {
+        return [
+            'valid-single' => [
+                'numUploaded' => 1,
+                'maxCount' => 1,
+                'validExts' => ['png'],
+                'expectedMessages' => [],
+            ],
+            'valid-multi' => [
+                'numUploaded' => 2,
+                'maxCount' => 2,
+                'validExts' => ['png', 'txt'],
+                'expectedMessages' => [],
+            ],
+            'valid-single' => [
+                'numUploaded' => 1,
+                'maxCount' => 1,
+                'validExts' => ['png'],
+                'expectedMessages' => [],
+            ],
+            'valid-no-max-count' => [
+                'numUploaded' => 1,
+                'maxCount' => 0,
+                'validExts' => ['png'],
+                'expectedMessages' => [],
+            ],
+            'invalid-ext-single' => [
+                'numUploaded' => 1,
+                'maxCount' => 1,
+                'validExts' => ['gif'],
+                'expectedMessages' => [
+                    "Extension 'png' is not allowed"
+                ],
+            ],
+            'invalid-ext-mutli-one' => [
+                'numUploaded' => 2,
+                'maxCount' => 2,
+                'validExts' => ['gif', 'txt'],
+                'expectedMessages' => [
+                    "Extension 'png' is not allowed"
+                ],
+            ],
+            'invalid-ext-mutli-two' => [
+                'numUploaded' => 2,
+                'maxCount' => 2,
+                'validExts' => ['gif', 'doc'],
+                'expectedMessages' => [
+                    "Extension 'png' is not allowed",
+                    "Extension 'txt' is not allowed",
+                ],
+            ],
+            'invalid-count' => [
+                'numUploaded' => 2,
+                'maxCount' => 1,
+                'validExts' => ['png', 'txt'],
+                'expectedMessages' => [
+                    'You can only upload 1 file.'
+                ],
+            ],
+            'invalid-everything' => [
+                'numUploaded' => 2,
+                'maxCount' => 1,
+                'validExts' => ['gif', 'doc'],
+                'expectedMessages' => [
+                    'You can only upload 1 file.',
+                    "Extension 'png' is not allowed",
+                    "Extension 'txt' is not allowed",
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideValidate')]
+    public function testValidate(int $numUploaded, int $maxCount, array $validExts, array $expectedMessages): void
+    {
+        // fixtures are created in setUp()
+        $files = [
+            // testimage.png
+            $this->objFromFixture(Image::class, 'image1'),
+            // testfile.txt
+            $this->objFromFixture(File::class, 'file1'),
+        ];
+        $field = new UploadField('Test');
+        $field->setAllowedMaxFileNumber($maxCount);
+        $field->setAllowedExtensions($validExts);
+        $items = [];
+        for ($i = 0; $i < $numUploaded; $i++) {
+            $items[] = $files[$i];
+        }
+        $list = new ArrayList($items);
+        $field->setItems($list);
+        $result = $field->validate();
+        $messages = array_map(fn($m) => $m['message'], $result->getMessages());
+        $expectedIsValid = count($expectedMessages) === 0;
+        $this->assertSame($expectedIsValid, $result->isValid());
+        $this->assertSame($expectedMessages, $messages);
     }
 }
