@@ -4,7 +4,7 @@ Feature: Multi file Upload field
   I want to interact with the upload field to select files
 
   Background:
-    Given I add an extension "SilverStripe\FrameworkTest\Extension\CompanyGroupPhotoJpgOnlyExtension" to the "SilverStripe\FrameworkTest\Model\Company" class
+    Given I add an extension "SilverStripe\FrameworkTest\Extension\CompanyGroupPhotoJpgOnlyExtension" to the "SilverStripe\FrameworkTest\Model\Company" class without dev-build
     Given a "page" "About Us" has the "Content" "<p>My awesome content</p>"
       And a "image" "folder1/file1.jpg"
       And a "image" "folder1/file2.jpg"
