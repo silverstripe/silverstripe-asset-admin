@@ -438,7 +438,7 @@ EOS
     public function iShouldSeeTheGalleryItemInPosition($name, $position)
     {
         $itemByPosition = $this->getGalleryItemByRank($position);
-        Assert::assertNotNull($itemByPosition, 'Should have found a fallery item at position ' . $position);
+        Assert::assertNotNull($itemByPosition, 'Should have found a gallery item at position ' . $position);
         $title = $itemByPosition->find(
             'xpath',
             "//div[contains(text(), '{$name}')]"
@@ -446,7 +446,7 @@ EOS
             'xpath',
             "//div//span[contains(text(), '{$name}')]"
         );
-        Assert::assertNotNull($title, sprintf('File at position %s should be named %s', $position, $name));
+        Assert::assertNotNull($title, sprintf('File at position %s should be named %s, found %s', $position, $name, $itemByPosition->getText()));
     }
 
     /**

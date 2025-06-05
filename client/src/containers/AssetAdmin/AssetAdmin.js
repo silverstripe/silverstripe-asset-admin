@@ -6,6 +6,7 @@ import { bindActionCreators, compose } from 'redux';
 import backend from 'lib/Backend';
 import i18n from 'i18n';
 import classnames from 'classnames';
+import qs from 'qs';
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as toastsActions from 'state/toasts/ToastsActions';
 import * as queuedFilesActions from 'state/queuedFiles/QueuedFilesActions';
@@ -92,25 +93,17 @@ class AssetAdmin extends Component {
   }
 
   refetchFolder() {
-    const folderId = this.getFolderId();
-    // Fetch child files in the folder
-    const urlParams = new URLSearchParams(window.location.search);
-    const qsParams = [];
-    urlParams.forEach((value, key) => {
-      // "page" is pagination
-      // "filter" is for search
-      // "sort" is for sort e.g. "title,desc"
-      if (key === 'page' || key.substring(0, 6) === 'filter' || key.substring(0, 4) === 'sort') {
-        qsParams.push(`${key}=${value}`);
-      }
-    });
-    let qs = '';
-    if (qsParams.length) {
-      qs = `?${qsParams.join('&')}`;
+    const { query } = this.props;
+    let queryString = '';
+    const hasQuery = query && Object.keys(query).length > 0;
+    if (hasQuery) {
+      queryString = `?${qs.stringify(query)}`;
     }
+
+    const folderId = this.getFolderId();
     // do not set loading state to true here, because it will cause an ugly flicker
     const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdminOpen');
-    const url = `${sectionConfig.endpoints.read.url}/${folderId}${qs}`;
+    const url = `${sectionConfig.endpoints.read.url}/${folderId}${queryString}`;
 
     backend.get(url)
       .then(async (response) => {
@@ -474,8 +467,8 @@ class AssetAdmin extends Component {
     // First make a call to api/readLiveOwnerCounts to check if any of the files are being used by other published content
     // If they are, display a confirmation to the user
     // If the user confirms, make a second call to api/unpublish to actually unpublish the files
-    const qs = fileIDs.map(id => `ids[]=${id}`).join('&');
-    let url = `${this.props.sectionConfig.endpoints.readLiveOwnerCounts.url}?${qs}`;
+    const queryString = fileIDs.map(id => `ids[]=${id}`).join('&');
+    let url = `${this.props.sectionConfig.endpoints.readLiveOwnerCounts.url}?${queryString}`;
     return backend.get(url)
       .then(async (response) => {
         const responseJson = await response.json();
