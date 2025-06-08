@@ -116,14 +116,6 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
     ];
 
     /**
-     * Amount of results showing on a single page.
-     *
-     * @config
-     * @var int
-     */
-    private static $page_length = 50;
-
-    /**
      * @config
      *
      * @var int
