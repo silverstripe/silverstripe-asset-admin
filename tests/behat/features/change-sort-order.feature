@@ -62,7 +62,7 @@ Feature: Change view for asset admin
       And I am logged in as a member of "EDITOR" group
       And I go to "/admin/assets"
 
-  Scenario: I can switch the sorting order in table view
+  Scenario: I can switch the sorting order in gallery view
     When I click on the file named "folder1" in the gallery
       And I click on the ".gallery__sort a" element
       And I wait until I see the ".gallery__sort .chosen-results" element
