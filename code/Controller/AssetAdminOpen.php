@@ -411,9 +411,20 @@ class AssetAdminOpen extends LeftAndMain
             $list = $list->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
             $search = true;
         }
-        // Categories (mapped to extensions through the enum type automatically)
+        // Categories (mapped to extensions)
         if (!empty($filter['appCategory'])) {
-            $list = $list->filter('Name:EndsWith', $filter['appCategory']);
+            $category = $filter['appCategory'];
+            $categoryValues = File::config()->get('app_categories');
+            // Sanitise category names (some contain slashes) and make all upper case
+            foreach ($categoryValues as $key => $extensions) {
+                unset($categoryValues[$key]);
+                $newKey = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $key));
+                $categoryValues[$newKey] = $extensions;
+            }
+            if (!isset($categoryValues[$category])) {
+                $this->jsonError(404);
+            }
+            $list = $list->filter('Name:EndsWith', $categoryValues[$category]);
             $search = true;
         }
         // Filter unknown id by known child if search is not applied
