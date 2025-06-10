@@ -17,6 +17,7 @@ use stdClass;
 use SilverStripe\ORM\DataList;
 use SilverStripe\Forms\DateField;
 use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\DB;
 use SilverStripe\View\Requirements;
 use SilverStripe\ORM\Hierarchy\Hierarchy;
 
@@ -151,47 +152,58 @@ class AssetAdminOpen extends LeftAndMain
         $totalCount = 0;
         if ($includeChildren) {
             $childFiles = $this->getFilteredChildFiles($file, $request);
+            $totalCount = $childFiles->count();
+            // Get pagination
             $limit = static::config()->get('page_length');
             $offset = 0;
             $page = $this->getQueryStringValue($request, 'page', true);
             if ($page) {
                 $offset = $limit * ($page - 1);
             }
-            $totalCount = $childFiles->count();
-            // Folders show first in paginated results, no matter the sort order
-            // it's assumed that no one will every subclass a Folder
-            $childFiles = $childFiles->alterDataQuery(function (DataQuery $query) {
-                $query->selectField('CASE WHEN "File"."ClassName" = \'SilverStripe\\\\Assets\\\\Folder\' THEN 1 ELSE 0 END AS "IsFolderTmp"');
-                $query->sort('"IsFolderTmp" DESC', null, true);
-            });
             $childFiles = $childFiles->limit($limit, $offset);
             // Prepopulate the Versioned cache used by Versioned::canViewVersioned() which is called
             // as part of the looped $childFile->canView() check below
             // This will save a large number of individual DB queries
             $childFiles->prepopulateCaches();
+
+            // Prepare sort order (default to Title ASC to match UI)
+            $sortArgs = $this->getQueryStringValue($request, 'sort', true);
+            $sortField = 'Title';
+            $sortDir = 'ASC';
+            if ($sortArgs) {
+                [$sortField, $sortDir] = explode(',', $sortArgs);
+                if (!in_array($sortField, ['title', 'lastEdited']) || !in_array($sortDir, ['asc', 'desc'])) {
+                    $this->jsonError(404);
+                }
+            }
+
+            // Sort by folders first, then Title or LstEdited
+            $childFiles = $childFiles->alterDataQuery(static function (DataQuery $dataQuery) use ($sortField, $sortDir) {
+                // Folders always go first
+                $dataQuery->sort(
+                    sprintf(
+                        '(CASE WHEN "ClassName"=%s THEN 1 ELSE 0 END)',
+                        DB::get_conn()->quoteString(Folder::class)
+                    ),
+                    'DESC',
+                    // Clear all existing sort
+                    true
+                );
+
+                if ($sortField && $sortDir) {
+                    $dataQuery->sort($sortField, $sortDir, false);
+                }
+
+                return $dataQuery;
+            });
+
+            // Remove files we can't view and get result data
             foreach ($childFiles as $childFile) {
                 if (!$childFile->canView()) {
                     continue;
                 }
                 $children[] = $this->getFileData($childFile, $request, false, false);
             }
-            // Sorting
-            $sort = $this->getQueryStringValue($request, 'sort', true);
-            if (!$sort) {
-                $sort = 'title,asc';
-            }
-            [$field, $dir] = explode(',', $sort);
-            if (!in_array($field, ['title', 'lastEdited']) || !in_array($dir, ['asc', 'desc'])) {
-                $this->jsonError(404);
-            }
-            $d = $dir === 'asc' ? 1 : -1;
-            usort($children, function ($a, $b) use ($field, $d) {
-                if ($field === 'title') {
-                    return strcasecmp($a['title'], $b['title']) * $d;
-                } elseif ($field === 'lastEdited') {
-                    return (strtotime($a['lastEdited']) <=> strtotime($b['lastEdited'])) * $d;
-                }
-            });
         }
         $childObj = new stdClass;
         $childObj->pageInfo = new stdClass;
@@ -403,9 +415,20 @@ class AssetAdminOpen extends LeftAndMain
             $list = $list->filter("Created:LessThanOrEqual", $toDate->dataValue().' 23:59:59');
             $search = true;
         }
-        // Categories (mapped to extensions through the enum type automatically)
+        // Categories (mapped to extensions)
         if (!empty($filter['appCategory'])) {
-            $list = $list->filter('Name:EndsWith', $filter['appCategory']);
+            $category = $filter['appCategory'];
+            $categoryValues = File::config()->get('app_categories');
+            // Sanitise category names (some contain slashes) and make all upper case
+            foreach ($categoryValues as $key => $extensions) {
+                unset($categoryValues[$key]);
+                $newKey = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $key));
+                $categoryValues[$newKey] = $extensions;
+            }
+            if (!isset($categoryValues[$category])) {
+                $this->jsonError(404);
+            }
+            $list = $list->filter('Name:EndsWith', $categoryValues[$category]);
             $search = true;
         }
         // Filter unknown id by known child if search is not applied
