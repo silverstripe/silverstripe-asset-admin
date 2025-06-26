@@ -213,7 +213,6 @@ class AssetAdmin extends Component {
     this.props.actions.displaySearch.closeSearch();
     this.props.actions.gallery.deselectFiles();
     this.props.actions.queuedFiles.purgeUploadQueue();
-    this.refetchFolder();
     const folder = this.state.folder;
     this.handleOpenFolder(event, folder);
   }
