@@ -73,7 +73,7 @@ class PreviewImageField extends FormField
     public function getRecord()
     {
         if ($this->recordID) {
-            return DataObject::get_by_id(File::class, $this->recordID);
+            return DataObject::get(File::class)->setUseCache(true)->byID($this->recordID);
         }
         return null;
     }

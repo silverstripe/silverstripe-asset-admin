@@ -1218,7 +1218,7 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
         }
 
         $id = (int) $data['ID'];
-        $record = DataObject::get_by_id(File::class, $id);
+        $record = DataObject::get(File::class)->setUseCache(true)->byID($id);
 
         if (!$record) {
             $this->jsonError(404);
@@ -1271,7 +1271,7 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
         }
 
         $id = (int) $data['ID'];
-        $record = DataObject::get_by_id(File::class, $id);
+        $record = DataObject::get(File::class)->setUseCache(true)->byID($id);
 
         if (!$record) {
             $this->jsonError(404);
