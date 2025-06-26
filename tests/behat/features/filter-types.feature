@@ -48,7 +48,6 @@ Feature: Filter in asset admin
       And I should not see the file named "file001" in the gallery
       And I should not see the file named "file02" in the gallery
     When I press the "Close" button
-      And I wait for 2 seconds
       And I click on the file named "folder1" in the gallery
       And I click on the file named "xsubfolder1" in the gallery
       And I press the "Show search" button
@@ -75,7 +74,6 @@ Feature: Filter in asset admin
       And I should not see the file named "file001" in the gallery
       And I should not see the file named "file02" in the gallery
     When I press the "Close" button
-      And I wait for 2 seconds
       And I click on the file named "folder1" in the gallery
       And I click on the file named "xsubfolder1" in the gallery
       And I press the "Show search" button
@@ -104,7 +102,6 @@ Feature: Filter in asset admin
       And I should not see the file named "file001" in the gallery
       And I should not see the file named "file02" in the gallery
     When I press the "Close" button
-      And I wait for 2 seconds
       And I click on the file named "folder1" in the gallery
       And I click on the file named "xsubfolder1" in the gallery
       And I press the "Show search" button
