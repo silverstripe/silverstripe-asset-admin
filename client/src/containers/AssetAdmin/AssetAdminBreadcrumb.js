@@ -51,6 +51,8 @@ const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon, P
           e.preventDefault();
           onFolderIcon();
         },
+        'aria-label': i18n._t('AssetAdmin.EDIT_FOLDER', 'Edit folder'),
+        title: i18n._t('AssetAdmin.EDIT_FOLDER', 'Edit folder'),
       }
     ];
 
