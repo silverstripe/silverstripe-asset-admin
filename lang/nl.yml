@@ -1,6 +1,7 @@
 nl:
   AssetAdmin:
     INSERT_FILE: 'Bestand invoegen'
+    OWNER_WARNING: 'Bestand "{file}" wordt gebruikt op {count} plek|Bestand "{file}" wordt gebruikt op {count} plekken'
     UPDATE_FILE: 'Bestand aanpassen'
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Toegang beperkt'
@@ -60,6 +61,8 @@ nl:
     MOVEDFOLDER: 'Bestand verplaatst'
     RENAMEDFILE: 'Bestand is vervangen'
     RENAMEDTITLE: 'Titel is aangepast naar'
+  SilverStripe\AssetAdmin\Controller\AssetAdminOpen:
+    MENUTITLE: Bestanden
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     ACCESSHEADER: 'Wie kan het bestand bekijken?'
     ANYONE: Iedereen
@@ -121,3 +124,6 @@ nl:
     OWNER_WARNING:
       one: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
       other: 'Bestand "{file}" wordt op {count} plekken gebruikt.'
+  SilverStripe\CMS\Search\SearchForm:
+    FILTERDATEFROM: Vanaf
+    FILTERDATETO: Tot
