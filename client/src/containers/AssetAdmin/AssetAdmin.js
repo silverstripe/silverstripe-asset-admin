@@ -67,7 +67,6 @@ class AssetAdmin extends Component {
 
   componentDidUpdate(prevProps) {
     if ((this.props.folderId !== prevProps.folderId)
-      || ((this.props.fileId !== prevProps.fileId) && this.props.fileId !== 0)
       || this.state.forceRefetch
     ) {
       this.refetchFolder();
@@ -162,10 +161,13 @@ class AssetAdmin extends Component {
   handleBrowse(folderId, fileId, query) {
     if (typeof this.props.onBrowse === 'function') {
       // for Higher-order component with a router handler
+      const forceRefetch = folderId !== this.props.folderId || query !== this.props.query;
       this.props.onBrowse(folderId, fileId, query);
-      this.setState({
-        forceRefetch: true,
-      });
+      if (forceRefetch) {
+        this.setState({
+          forceRefetch: true,
+        });
+      }
     }
     if (folderId !== this.getFolderId()) {
       this.props.actions.gallery.deselectFiles();
@@ -602,11 +604,7 @@ class AssetAdmin extends Component {
   }
 
   handleUploadQueue() {
-    // A bit of coupling. If the editor isn't open, the gallery will automatically
-    // open a file and force a refresh, so we have to guard against a double refresh.
-    if (this.props.fileId) {
-      this.refetchFolder();
-    }
+    this.refetchFolder();
   }
 
   handleCreateFolder() {
