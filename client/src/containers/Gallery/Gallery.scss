@@ -24,6 +24,33 @@
 // Required for bulk-actions position
 .gallery__outer {
   position: relative;
+
+  // Drag and drop hover
+  .asset-dropzone {
+    position: relative;
+
+    &:before {
+      position: fixed;
+      top: calc(50%);
+      left: calc(50% - 75px);
+      // top: 50%;
+      // left: 50%;
+      transform: translate(-50%, -50%);
+      background-image: url("../../images/drag_drop_opt.svg");
+      background-size: contain;
+      width: 312px;
+      height: 325px;
+      z-index: 101;
+    }
+
+    &:after {
+      background-image: none;
+    }
+
+    &.dragging:before {
+      content: "";
+    }
+  }
 }
 
 .gallery__main {
