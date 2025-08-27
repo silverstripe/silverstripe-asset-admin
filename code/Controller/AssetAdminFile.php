@@ -215,6 +215,7 @@ class AssetAdminFile extends Extension
 
     /**
      * Recursively get the $ids of nested Files and Folders, including the original parent Folder
+     * Does not respect sort order
      *
      * @param array $ids
      * @param int $maxDepth Hard limit of max depth
@@ -225,7 +226,8 @@ class AssetAdminFile extends Extension
         if ($maxDepth === 0) {
             return $ids;
         }
-        $childIDs = File::get()->filter('ParentID', $ids)->column('ID');
+        // Disabling sort improves performance
+        $childIDs = File::get()->filter('ParentID', $ids)->sort(null)->column('ID');
         if (empty($childIDs)) {
             return $ids;
         }

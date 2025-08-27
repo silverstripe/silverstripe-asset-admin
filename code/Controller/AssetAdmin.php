@@ -720,10 +720,12 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
 
     /**
      * Retrieves a list of files by their IDs
+     * Does not respect default sort order
      */
     private function getFilesByIDs(array $ids, bool $includeFolders, int $missingFileErrorCode): ArrayList
     {
-        $files = File::get()->filter(['ID' => $ids]);
+        // Disabling sort improves performance
+        $files = File::get()->sort(null)->filter(['ID' => $ids]);
         if ($files->count() !== count($ids)) {
             $this->jsonError($missingFileErrorCode);
         }
