@@ -1,28 +1,16 @@
 .asset-dropzone {
-  position: relative;
-
-  &:before {
-    position: fixed;
-    top: calc(50% - 75px);
-    left: calc(50% + 100px);
-    transform: translate(-50%, -50%);
-    background-image: url("../../images/drag_drop_opt.svg");
-    background-size: 312px 325px;
-    width: 312px;
-    height: 325px;
-    z-index: 101;
-  }
-
   &:after {
     position: absolute;
-    inset: 0;
-    background-color: rgba($body-bg, .9);
+    inset: 0 #{0 - calc($grid-gutter-width / 2)} 0 #{0 - calc($grid-gutter-width / 2)};
+    background: rgba($body-bg, .9) url("../../images/drag_drop_opt.svg") center center no-repeat;
+    background-size: contain;
     z-index: 100;
   }
 
-  &.dragging:before,
-  &.dragging:after {
-    content: "";
+  &.dragging {
+    &:after {
+      content: "";
+    }
   }
 }
 
