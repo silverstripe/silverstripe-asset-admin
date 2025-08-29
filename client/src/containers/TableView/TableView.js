@@ -398,26 +398,27 @@ class TableView extends Component {
    */
   renderThumbnail(props) {
     const url = props.data || props.rowData.url;
-    const uploading = props.rowData.queuedId && !props.rowData.id;
     const category = props.rowData.category || 'false';
     const baseClass = 'gallery__table-image';
     const classNames = [baseClass];
     const styles = {};
 
-    classNames.push(`${baseClass}--${category}`);
-
-    if (category === 'image' && url) {
-      styles.backgroundImage = `url("${url}")`;
+    let errorMsg = null;
+    if (props.rowData.message?.type === 'error') {
+      errorMsg = props.rowData.message.value;
     }
 
-    // If the url is falsey then show error on the thumbnail. The exception is
-    // folder since it doesn't have to physically exist on the file system
-    if (!uploading && !url && category !== 'folder') {
+    if (errorMsg) {
       classNames.push(`${baseClass}--error`);
+    } else {
+      classNames.push(`${baseClass}--${category}`);
+      if (category === 'image' && url) {
+        styles.backgroundImage = `url("${url}")`;
+      }
     }
 
     return (
-      <div className={classNames.join(' ')} style={styles} />
+      <div title={errorMsg} aria-label={errorMsg} className={classNames.join(' ')} style={styles} />
     );
   }
 
