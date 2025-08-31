@@ -153,6 +153,7 @@
     }
 
     > span:before {
+      // equivalent of font-icon-sort
       content: "\e003";
       font-family: "silverstripe";
       color: $btn-secondary-color;

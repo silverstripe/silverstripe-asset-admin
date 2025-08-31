@@ -14,14 +14,22 @@
   overflow: hidden;
 }
 
+// This class is unused but is retained for backwards compatibility
+// in case some project is relying on it.
 .preview-image-field__toolbar-button--link:before {
+  // equivalent of font-icon-icon-enlarge
   content: "\3d";
 }
 
+// This class is unused but is retained for backwards compatibility
+// in case some project is relying on it.
 .preview-image-field__toolbar-button--replace:before {
+  // equivalent of font-icon-page-multiple
   content: "\62";
 }
 
+// This class is unused but is retained for backwards compatibility
+// in case some project is relying on it.
 .preview-image-field__toolbar-button {
   padding: $toolbar-button-padding 0;
   height: $toolbar-button-height + (2 * $toolbar-button-padding);

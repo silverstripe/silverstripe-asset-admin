@@ -114,7 +114,7 @@ function TableView(_props) {
     }
     if (rowData.id > 0) {
       return (
-        <div className="gallery__progress-bar--complete" />
+        <div className="gallery__progress-bar--complete" aria-hidden="true" />
       );
     }
     const progressBarProps = {
@@ -261,7 +261,12 @@ function TableView(_props) {
   function renderHeaderContent(header) {
     const label = header.column.columnDef.header;
     if (columnIsSortable(header.column.id)) {
-      return <span>{label}</span>;
+      // The "font-icon-" class is intentional. It adds the necessary CSS for adding an icon.
+      // The actual icon itself is added through explicit CSS depending on how the column's sorted.
+      return <>
+        <span className="gallery__table-column__label">{label}</span>
+        <span className="gallery__table-column__sort-icon font-icon-" aria-hidden="true" />
+      </>;
     }
     return label;
   }

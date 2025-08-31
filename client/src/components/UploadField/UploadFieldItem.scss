@@ -156,17 +156,14 @@ $uploadfield-item-label-height: 40px;
   white-space: nowrap;
 }
 
-.uploadfield-item__complete-icon {
-  line-height: 38px;
+.uploadfield-item__complete {
   padding: 11px 5px;
+}
 
-  &:after {
-    color: $brand-success;
-    font-size: 30px;
-    display: inline;
-    font-family: "silverstripe", sans-serif;
-    content: "I";
-  }
+.uploadfield-item__complete-icon:before {
+  line-height: 38px;
+  color: $brand-success;
+  font-size: 30px;
 }
 
 .uploadfield-item__status {

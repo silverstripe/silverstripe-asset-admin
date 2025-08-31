@@ -502,7 +502,10 @@ class UploadField extends Component {
         className={classNames.join(' ')}
       >
         <div className="uploadfield__backdrop" />
-        <span className="uploadfield__droptext">{options}</span>
+        <span className="uploadfield__droptext">
+          <span className="uploadfield__dropicon font-icon-picture" aria-hidden="true"/>
+          {options}
+        </span>
       </AssetDropzone>
     );
   }
