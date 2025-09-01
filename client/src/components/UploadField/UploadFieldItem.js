@@ -251,8 +251,11 @@ class UploadFieldItem extends Component {
 
     if (!this.hasError() && this.props.item.queuedId) {
       if (this.complete()) {
+        const successText = i18n._t('AssetAdmin.DROPZONE_SUCCESS_UPLOAD', 'File uploaded');
         return (
-          <div className="uploadfield-item__complete-icon" />
+          <div className="uploadfield-item__complete" aria-label={successText} title={successText}>
+            <span className="uploadfield-item__complete-icon font-icon-check-mark-circle" aria-hidden="true" />
+          </div>
         );
       }
       return (

@@ -21,19 +21,19 @@ th.sort--disabled>span:after {
   th {
     cursor: pointer;
 
-    > span {
+    .gallery__table-column__label {
       display: inline;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
 
-      &:after {
-        color: lighten($text-muted, 20%);
-        content: ")";
-        display: inline-block;
-        font-family: "silverstripe";
-        margin-left: 4px;
-      }
+    .gallery__table-column__sort-icon:before {
+      // equivalent of font-icon-caret-up-down
+      content: ")";
+      color: lighten($text-muted, 20%);
+      display: inline-block;
+      margin-left: 4px;
     }
   }
 
@@ -74,16 +74,18 @@ th.sort--disabled>span:after {
   .sort-ascending {
     border-bottom: 1px solid $component-active-border-color;
 
-    > span:after {
+    .gallery__table-column__sort-icon:before {
       color: $component-active-border-color;
     }
   }
 
-  .sort-descending > span:after {
+  .sort-descending .gallery__table-column__sort-icon:before {
+    // equivalent of font-icon-caret-up-two
     content: "*";
   }
 
-  .sort-ascending > span:after {
+  .sort-ascending .gallery__table-column__sort-icon:before {
+    // equivalent of font-icon-caret-down-two
     content: "(";
   }
 
@@ -191,6 +193,7 @@ $gallery-list-thumb-height: 68px;
   width: $gallery-list-thumb-width;
 
   &:after {
+    // equivalent of font-icon-block
     content: "<";
     line-height: $gallery-list-thumb-height;
     font-size: 30px;
@@ -222,5 +225,6 @@ $gallery-list-thumb-height: 68px;
   font-size: 20px;
   display: inline;
   font-family: "silverstripe", sans-serif;
+  // equivalent of font-icon-check-mark-circle
   content: "I";
 }

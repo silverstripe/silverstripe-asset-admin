@@ -124,6 +124,7 @@ $bulk-actions-width: 300px;
     }
 
     &:nth-child(1):before {
+      // equivalent of font-icon-check-mark
       content: "g";
     }
   }

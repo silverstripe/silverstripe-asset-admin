@@ -9,7 +9,6 @@ import { formValueSelector } from 'redux-form';
 import * as previewFieldActions from 'state/previewField/PreviewFieldActions';
 import { getFileExtension } from 'lib/DataFormat';
 import getFormState from 'lib/getFormState';
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import urlLib from 'url';
 import qs from 'qs';
@@ -86,13 +85,6 @@ class PreviewImageField extends Component {
       canFileUpload: this.canFileUpload,
       updateFormData: this.updateFormData,
     };
-  }
-
-  getButtonClasses(type) {
-    return classnames([
-      `preview-image-field__toolbar-button--${type}`,
-      'preview-image-field__toolbar-button'
-    ]);
   }
 
   /**
@@ -299,6 +291,7 @@ class PreviewImageField extends Component {
         target="_blank"
         rel="noopener noreferrer"
       >
+        <span className="editor__file-preview-icon font-icon-icon-enlarge" aria-hidden="true" />
         {image}
       </a>
     ) : null;
