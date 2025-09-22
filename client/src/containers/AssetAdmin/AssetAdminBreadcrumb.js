@@ -80,7 +80,7 @@ const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon, P
     });
   }
 
-  return <PlainBreadcrumbComponent multiline crumbs={breadcrumbs} />;
+  return <PlainBreadcrumbComponent multiline crumbs={breadcrumbs} autoFocus />;
 };
 
 AssetAdminBreadcrumb.propTypes = {

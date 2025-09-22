@@ -20,7 +20,9 @@ Feature: Single file Upload field
 
   Scenario: I can select an existing file
     When I click "Choose existing" in the ".uploadfield" element
-      And I press the "Back" HTML field button
+      # Check modal title is focused for accessibility
+      Then the "h2.breadcrumb__item-title" element should have focus
+    When I press the "Back" HTML field button
       And I select the file named "folder1" in the gallery
     When I click on the file named "file1" in the gallery
       Then I should see the "Form_fileSelectForm" form

@@ -76,7 +76,8 @@ class InsertMediaModal extends Component {
       ...props,
       className: classnames('insert-media-modal', className),
       size: 'lg',
-      showCloseButton: false
+      showCloseButton: false,
+      autoFocus: true,
     };
   }
 
