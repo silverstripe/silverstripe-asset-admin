@@ -31,7 +31,7 @@ class AddFolderButton extends Component {
         onClick={this.handleCreateFolder}
         disabled={!canEdit}
       >
-        <span className="btn__text btn__title">{i18n._t('AssetAdmin.ADD_FOLDER_BUTTON')}</span>
+        <span className="btn__text btn__title">{i18n._t('AssetAdmin.ADD_NEW_FOLDER_BUTTON')}</span>
       </button>
     );
   }

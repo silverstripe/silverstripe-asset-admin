@@ -8,6 +8,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   ss.i18n.addDictionary('en', {
     "AssetAdmin.ADD_FILES": "Add from files",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Add folder",
+    "AssetAdmin.ADD_NEW_FOLDER_BUTTON": "Add new folder",
     "AssetAdmin.BACK": "Back",
     "AssetAdmin.BACK_DESCRIPTION": "Navigate up a level",
     "AssetAdmin.BROWSE": "Browse",
