@@ -89,7 +89,6 @@ class GalleryToolbar extends Component {
       if (view === this.props.view) {
         return null;
       }
-      classNames.push(`font-icon-${icon}`);
       return (
         <button
           id={`button-view-${view}`}
@@ -99,7 +98,9 @@ class GalleryToolbar extends Component {
           title="Change view gallery/list"
           onClick={this.handleViewChange}
           value={view}
-        />
+        >
+          <span className={`font-icon-${icon}`} aria-hidden="true" />
+        </button>
       );
     });
   }

@@ -205,7 +205,7 @@ Feature: Manage files
       And I press the "View actions" button
     Then I should see an ".bulk-actions__action[value='publish']" element
       And I should not see an ".bulk-actions__action[value='unpublish']" element
-    When I click "Publish" in the "#BulkActions .dropdown-menu" element
+    When I press the "Publish" button
       Then I should see a "2 folders/files were successfully published" success toast
     When I check the file named "file2" in the gallery
       And I check the file named "testfile" in the gallery
@@ -223,11 +223,11 @@ Feature: Manage files
     Then I should see an ".bulk-actions__action[value='publish']" element
       And I should see an ".bulk-actions__action[value='unpublish']" element
     When I click on the file named "file2" in the gallery
-      Then I should see an ".font-icon-rocket[name='action_publish']" element
+      Then I should see a "button[name='action_publish'] .font-icon-rocket" element
     When I press the "View actions" button
-      And I click "Publish" in the "#BulkActions .dropdown-menu" element
-    Then I should not see an ".font-icon-rocket[name='action_publish']" element
-      And I should see an ".font-icon-tick[name='action_publish']" element
+      And I press the "Publish" button
+    Then I should not see a "button[name='action_publish'] .font-icon-rocket" element
+      And I should see a "button[name='action_publish'] .font-icon-tick" element
 
   @modal
   Scenario: I can delete a folder containing a file with a warning

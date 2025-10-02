@@ -26,11 +26,12 @@ class AddFolderButton extends Component {
     return (
       <button
         id="add-folder-button"
-        className="btn btn-secondary font-icon-folder-add btn--icon-xl"
+        className="btn btn-secondary btn--icon-xl"
         type="button"
         onClick={this.handleCreateFolder}
         disabled={!canEdit}
       >
+        <span className="font-icon-folder-add" aria-hidden="true" />
         <span className="btn__text btn__title">{i18n._t('AssetAdmin.ADD_NEW_FOLDER_BUTTON')}</span>
       </button>
     );

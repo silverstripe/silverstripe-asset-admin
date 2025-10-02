@@ -5,6 +5,7 @@ import Config from 'lib/Config';
 import HistoryItem from 'containers/HistoryList/HistoryItem';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import PropTypes from 'prop-types';
+import i18n from 'i18n';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
@@ -130,13 +131,15 @@ class HistoryList extends Component {
         'btn-secondary',
         'btn--icon-xl',
         'btn--no-text',
-        'font-icon-left-open-big',
         'history-list__back',
       ].join(' ');
 
+      const backButtonText = i18n._t('AssetAdmin.BACK_TO_HISTORY', 'Back to history list');
       return (
         <div className="history-list">
-          <a href="#" className={backButtonClasses} onClick={this.handleBack} />
+          <a href="#" className={backButtonClasses} onClick={this.handleBack} title={backButtonText} aria-label={backButtonText}>
+            <span className="font-icon-left-open-big" aria-hidden="true" />
+          </a>
           <FormBuilderLoader
             identifier="AssetAdmin.HistoryList"
             schemaUrl={schemaUrl}
