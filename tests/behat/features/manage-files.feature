@@ -15,7 +15,7 @@ Feature: Manage files
 
   @modal
   Scenario: I can add a new folder
-    When I press the "Add folder" button
+    When I press the "Add new folder" button
     Then I should see the "Form_folderCreateForm" form
       And I fill in "Name" with "newfolder"
       And I press the "Create" button
