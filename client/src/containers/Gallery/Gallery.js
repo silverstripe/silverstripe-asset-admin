@@ -451,6 +451,10 @@ class Gallery extends Component {
    * @param {Event} event
    */
   toggleSelectConcat(event) {
+    // Tile view doesn't use the click-to-drag selection functionality
+    if (this.props.view !== 'tile') {
+      return;
+    }
     this.props.actions.gallery.setConcatenateSelect(this.isConcat(event));
   }
 

@@ -1,5 +1,5 @@
 /* eslint-disable import/no-cycle */
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'i18n';
 import moment from 'moment';
@@ -27,19 +27,24 @@ function TableView(_props) {
    */
   function handleCellClick(row, cell, evt) {
     const rowData = row.original;
-    // if this column is for selecting, then it'll be better experience to select than activate
+    // if this column is for selecting, let the label/checkbox control it instead.
     if (cell.column.id === 'selected') {
-      evt.stopPropagation();
-      evt.preventDefault();
-      if (typeof props.onSelect === 'function') {
-        props.onSelect(evt, rowData);
-        return;
-      }
+      return;
     }
+    // Open the folder or file edit form
     if (rowData.type === 'folder') {
       props.onOpenFolder(evt, rowData);
     } else {
       props.onOpenFile(evt, rowData);
+    }
+  }
+
+  /**
+   * Handles selecting a row
+   */
+  function handleSelect(rowData, evt) {
+    if (typeof props.onSelect === 'function') {
+      props.onSelect(evt, rowData);
     }
   }
 
@@ -65,10 +70,14 @@ function TableView(_props) {
   }
 
   /**
-   * Avoids the browser's default focus state when selecting an item.
+   * Get the sort order of the current column (ascending, descending, or null)
    */
-  function preventFocus(evt) {
-    evt.preventDefault();
+  function getSortOrder(column) {
+    const [sortColumn, sortDirection] = props.sort.split(',');
+    if (sortColumn === column) {
+      return `${sortDirection}ending`;
+    }
+    return null;
   }
 
   /**
@@ -169,14 +178,13 @@ function TableView(_props) {
   /**
    * Renders the checkbox for selecting the row/item in the table view
    */
-  function renderSelect(rowData) {
+  function renderSelect(rowData, rowId) {
     if (props.selectableItems && (props.selectableFolders || rowData.type !== 'folder')) {
       const checkboxProps = {
         type: 'checkbox',
         title: i18n._t('AssetAdmin.SELECT'),
-        defaultChecked: rowData.selected,
-        tabIndex: -1,
-        onMouseDown: (evt) => preventFocus(evt),
+        checked: rowData.selected,
+        onChange: (evt) => handleSelect(rowData, evt),
       };
       const maxSelected = (
         ![null, 1].includes(props.maxFilesSelect) &&
@@ -185,7 +193,13 @@ function TableView(_props) {
       if (maxSelected && !rowData.selected) {
         checkboxProps.disabled = true;
       }
-      return <input {...checkboxProps} />;
+      // Have to disable the linting rule because for some reason the linter doesn't realise
+      // there's an input inside the label, which is perfectly valid per the linter's own docs.
+      // Label is there to allow selecting the checkbox by clicking anywhere inside the cell.
+      // eslint-disable-next-line jsx-a11y/label-has-associated-control
+      return <label>
+        <input {...checkboxProps} aria-labelledby={`row-${rowId}-title row-${rowId}-status`} />
+      </label>;
     }
     return null;
   }
@@ -206,7 +220,7 @@ function TableView(_props) {
    * Renders the thumbnail for the row/item in the table view.
    * Shows an error box if no url was defined.
    */
-  function renderThumbnail(rowData) {
+  function renderThumbnail(rowData, row, cell) {
     const url = rowData.url;
     const category = rowData.category || 'false';
     const baseClass = 'gallery__table-image';
@@ -224,7 +238,15 @@ function TableView(_props) {
         styles.backgroundImage = `url("${url}")`;
       }
     }
-    return <div title={errorMsg} aria-label={errorMsg} className={classNames.join(' ')} style={styles} />;
+    const content = <div title={errorMsg} aria-label={errorMsg} className={classNames.join(' ')} style={styles} />;
+    if (errorMsg) {
+      return content;
+    }
+    // We add a button to this element so keyboard users have a way to open the edit form
+    // without having to select the item and navigating to the actions panel.
+    return <button className="btn gallery__table-image__btn" onClick={(evt) => handleCellClick(row, cell, evt)} aria-label={i18n._t('AssetAdmin.EDIT', 'Edit')}>
+      {content}
+    </button>;
   }
 
   /**
@@ -239,12 +261,15 @@ function TableView(_props) {
    * Returns the CSS class for a cell, for both header and body cells
    */
   function getCellClassName(cell, isHeader) {
-    const ret = [];
+    const ret = ['gallery__table-column__header'];
     const columnId = cell.column.id;
     if (isHeader) {
-      const [sortColumn, sortDirection] = props.sort.split(',');
-      if (sortColumn === columnId) {
-        ret.push(sortDirection === 'asc' ? 'sort-ascending' : 'sort-descending');
+      const sortOrder = getSortOrder(columnId);
+      if (sortOrder) {
+        ret.push(`sort-${sortOrder}`);
+      }
+      if (columnIsSortable(columnId)) {
+        ret.push('gallery__table-column__header--sortable');
       }
     }
     if (columnId === 'selected') {
@@ -253,6 +278,8 @@ function TableView(_props) {
       ret.push('gallery__table-column--image');
     } else if (columnId === 'title') {
       ret.push('gallery__table-column--title');
+    } else if (columnId === 'lastEdited') {
+      ret.push('gallery__table-column--modified');
     }
     return ret.join(' ');
   }
@@ -265,10 +292,10 @@ function TableView(_props) {
     if (columnIsSortable(header.column.id)) {
       // The "font-icon-" class is intentional. It adds the necessary CSS for adding an icon.
       // The actual icon itself is added through explicit CSS depending on how the column's sorted.
-      return <>
+      return <button onClick={() => handleSort(header)} className="btn gallery__table-column__sort-button">
         <span className="gallery__table-column__label">{label}</span>
         <span className="gallery__table-column__sort-icon font-icon-" aria-hidden="true" />
-      </>;
+      </button>;
     }
     return label;
   }
@@ -294,7 +321,7 @@ function TableView(_props) {
     {
       id: 'thumbnail',
       header: '',
-      cell: (info) => renderThumbnail(info.getValue()),
+      cell: (info) => renderThumbnail(info.getValue(), info.row, info.cell),
     },
     {
       id: 'title',
@@ -321,15 +348,18 @@ function TableView(_props) {
     columnConfig.unshift({
       id: 'selected',
       header: '',
-      cell: (info) => renderSelect(info.getValue()),
+      cell: (info) => renderSelect(info.getValue(), info.row.id),
     });
   }
 
   const columnHelper = createColumnHelper();
-
+  // Memoising columns means the table doesn't get rebuilt unnecessarily.
+  // This was causing problems when selecting a checkbox with the keyboard
+  // - it would rebuild the whole table and that would cause the focus to be lost.
+  const columns = useMemo(() => columnConfig.map(config => columnHelper.accessor(row => row, config)), [props.selectableItems]);
   const table = useReactTable({
     data: props.files,
-    columns: columnConfig.map(config => columnHelper.accessor(row => row, config)),
+    columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
@@ -347,8 +377,8 @@ function TableView(_props) {
             {headerGroup.headers.map(header => (
               <th
                 key={header.id}
-                onClick={() => handleSort(header)}
                 className={getCellClassName(header, true)}
+                aria-sort={getSortOrder(header.column.id)}
               >
                 {renderHeaderContent(header)}
               </th>
@@ -360,10 +390,12 @@ function TableView(_props) {
         {table.getRowModel().rows.map(row => (
           <tr
             key={row.id}
+            id={`row-${row.id}`}
             className={getTrClassName(row)}
           >
             {row.getVisibleCells().map(cell => (
               <td
+                id={`row-${row.id}-${cell.column.columnDef.id}`}
                 key={cell.id}
                 onClick={(evt) => handleCellClick(row, cell, evt)}
                 className={getCellClassName(cell, false)}

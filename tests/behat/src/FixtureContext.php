@@ -56,6 +56,24 @@ class FixtureContext extends BaseFixtureContext
     }
 
     /**
+     * Assert that the checkbox for a given gallery item is checked
+     * @Then /^the (?:file|folder) named "([^"]+)" in the gallery should (not |)be checked$/
+     * @param string $name
+     */
+    public function theGalleryItemShouldBeChecked($name, $not)
+    {
+        $item = $this->getGalleryItem($name);
+        Assert::assertNotNull($item, "File named $name could not be found");
+        $checkbox = $item->find('css', $this->getCheckboxSelector());
+        Assert::assertNotNull($checkbox, "Could not find checkbox for file named {$name}.");
+        if ($not) {
+            Assert::assertFalse($checkbox->isChecked(), "Checkbox for file named {$name} should NOT be checked, but is");
+        } else {
+            Assert::assertTrue($checkbox->isChecked(), "Checkbox for file named {$name} should be checked but is not");
+        }
+    }
+
+    /**
      * @Then /^I should see the file named "([^"]+)" in the gallery$/
      * @param string $name
      */
@@ -283,10 +301,10 @@ EOS
         if ($cell) {
             return $cell;
         }
-        // Find by row
+        // Find by row (tr which has a child td with a descendent span with the text - the tr also has a specific class)
         $row = $page->find(
             'xpath',
-            "//tr[contains(@class, 'gallery__table-row')]//div//span[contains(text(), '{$name}')]"
+            "//tr[td//span[contains(text(),'{$name}')] and contains(@class, 'gallery__table-row')]"
         );
         if ($row) {
             return $row;
@@ -537,5 +555,19 @@ EOS
         $backButton = $page->find('css', '.gallery__back-container .gallery-item__droppable');
         Assert::assertNotNull($backButton, 'Back button could not be found');
         $file->dragTo($backButton);
+    }
+
+    /**
+     * Get the correct selector for the gallery item checkbox based on whether we're in gallery or table view.
+     */
+    private function getCheckboxSelector(): string
+    {
+        /** @var DocumentElement $page */
+        $page = $this->getMainContext()->getSession()->getPage();
+        $table = $page->find('css', '.gallery__table');
+        if ($table) {
+            return '.gallery__table-column--select input[type="checkbox"]';
+        }
+        return 'label.gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled) input[type="checkbox"]';
     }
 }

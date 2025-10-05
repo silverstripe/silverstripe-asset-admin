@@ -13,19 +13,46 @@ th.sort--disabled>span:after {
   td {
     word-break: break-all;
 
-    &.gallery__table-column-image {
+    &.gallery__table-column-image,
+    &.gallery__table-column--select {
       padding: 0;
+
+      label {
+        // Match padding that's normally added to the td itself
+        // This allows the label to expand to fill the whole cell
+        // Top and bottom are declared in this file for cells
+        // Left is td:first-child from admin's _typography.scss
+        // Right is from bootstrap
+        padding: $table-cell-padding-lg $table-cell-padding-x $table-cell-padding-lg $grid-gutter-width-half;
+      }
     }
   }
 
   th {
-    cursor: pointer;
+    &.gallery__table-column__header--sortable {
+      // Disable padding which will be added to the sort button instead
+      padding: 0;
+    }
 
     .gallery__table-column__label {
       display: inline;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .gallery__table-column__sort-button {
+      width: 100%;
+      margin: 0;
+      // Padding matches bootstrap's th padding
+      padding: $table-cell-padding-y $table-cell-padding-x;
+      // Inherit various styles from the label itself
+      white-space: inherit;
+      overflow: inherit;
+      text-overflow: inherit;
+      text-transform: inherit;
+      text-align: inherit;
+      font-size: inherit;
     }
 
     .gallery__table-column__sort-icon:before {
@@ -152,6 +179,16 @@ $gallery-list-thumb-height: 68px;
       max-width: none;
       padding-left: $panel-padding-x;
     }
+  }
+}
+
+.gallery__table-image__btn {
+  margin: 0;
+  padding: 0;
+
+  &:focus,
+  &:focus-visible {
+    outline: auto;
   }
 }
 
