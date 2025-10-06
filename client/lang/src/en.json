@@ -4,6 +4,7 @@
     "AssetAdmin.ADD_NEW_FOLDER_BUTTON": "Add new folder",
     "AssetAdmin.BACK": "Back",
     "AssetAdmin.BACK_DESCRIPTION": "Navigate up a level",
+    "AssetAdmin.BACK_TO_HISTORY": "Back to history list",
     "AssetAdmin.BROWSE": "Browse",
     "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Archive",
     "AssetAdmin.BULK_ACTIONS_ARCHIVE_FAIL_02": "%s folders/files were successfully archived, but %s files were not able to be archived.",

@@ -16,7 +16,7 @@ export default {
     {
       value: 'delete',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_DELETE', 'Delete'),
-      className: 'font-icon-trash',
+      icon: 'trash',
       destructive: true,
       callback: null, // defined in <Gallery> for now
       canApply: (items) => (
@@ -28,7 +28,7 @@ export default {
     {
       value: 'archive',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_ARCHIVE', 'Archive'),
-      className: 'font-icon-box',
+      icon: 'box',
       destructive: true,
       callback: null, // defined in <Gallery> for now
       canApply: (items) => (
@@ -38,7 +38,7 @@ export default {
     {
       value: 'edit',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_EDIT', 'Edit'),
-      className: 'font-icon-edit',
+      icon: 'edit',
       destructive: false,
       // Only allow editing if a single item (file or folder) is selected
       canApply: (items) => items.length === 1,
@@ -47,7 +47,7 @@ export default {
     {
       value: 'move',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_MOVE', 'Move'),
-      className: 'font-icon-folder-move',
+      icon: 'folder-move',
       canApply: (items) => items.every(item => item && item.canEdit),
       destructive: false,
       callback: null,
@@ -55,7 +55,7 @@ export default {
     {
       value: 'publish',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_PUBLISH', 'Publish'),
-      className: 'font-icon-rocket',
+      icon: 'rocket',
       destructive: false,
       callback: null, // defined in <Gallery> for now
       canApply: (items) => (
@@ -67,7 +67,7 @@ export default {
     {
       value: 'unpublish',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_UNPUBLISH', 'Unpublish'),
-      className: 'font-icon-cancel-circled',
+      icon: 'cancel-circled',
       destructive: false,
       callback: null, // defined in <Gallery> for now
       canApply: (items) => (
@@ -79,7 +79,8 @@ export default {
     {
       value: 'insert',
       label: i18n._t('AssetAdmin.BULK_ACTIONS_INSERT', 'Insert'),
-      className: 'font-icon-plus-circled btn-primary',
+      className: 'btn-primary',
+      icon: 'plus-circled',
       destructive: false,
       callback: null, // defined in <Gallery> for now
       canApply: (items) => items.length,

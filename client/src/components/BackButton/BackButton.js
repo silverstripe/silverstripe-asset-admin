@@ -12,7 +12,6 @@ class BackButton extends Component {
       'btn',
       'btn-secondary',
       'btn--no-text',
-      'font-icon-level-up',
       'btn--icon-large',
       'gallery__back',
     ];
@@ -38,6 +37,7 @@ class BackButton extends Component {
         title={i18n._t('AssetAdmin.BACK_DESCRIPTION', 'Navigate up a level')}
         onClick={onClick}
       >
+        <span className="font-icon-level-up" aria-hidden="true" />
         {backBadge}
       </button>
     );

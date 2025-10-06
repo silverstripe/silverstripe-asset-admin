@@ -466,7 +466,10 @@ class GalleryItem extends Component {
       actionIcon = 'font-icon-cancel';
     } else if (this.exists()) {
       const label = i18n._t('AssetAdmin.VIEW', 'View');
-      overlay = <div className="gallery-item--overlay font-icon-eye">{label}</div>;
+      overlay = <div className="gallery-item--overlay">
+        <span className="font-icon-eye" aria-hidden="true" />
+        {label}
+      </div>;
     }
 
     const badge = this.props.badge;
@@ -482,7 +485,6 @@ class GalleryItem extends Component {
     const inputLabelClasses = [
       'gallery-item__checkbox-label',
       'form-label',
-      actionIcon,
     ];
     if (!this.canBatchSelect()) {
       inputProps.disabled = true;
@@ -529,6 +531,7 @@ class GalleryItem extends Component {
           ref={(title) => { this.title = title; }}
         >
           <label {...inputLabelProps} htmlFor={htmlID}>
+            <span className={`gallery-item__checkbox-icon ${actionIcon}`} aria-hidden="true" />
             <input {...inputProps} />
           </label>
           {this.props.item.title}

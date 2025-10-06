@@ -538,7 +538,7 @@ class AssetDropzone extends Component {
     }
 
     const buttonProps = {
-      className: 'asset-dropzone__upload-button ss-ui-button font-icon-upload',
+      className: 'asset-dropzone__upload-button ss-ui-button',
       type: 'button',
     };
 
@@ -554,6 +554,7 @@ class AssetDropzone extends Component {
       <div className={className.join(' ')} ref={node => { this.dropzoneRef = node; }}>
         {this.props.uploadButton &&
         <button {...buttonProps}>
+          <span className="font-icon-upload" aria-hidden="true" />
           {i18n._t('AssetAdmin.DROPZONE_UPLOAD')}
         </button>
         }

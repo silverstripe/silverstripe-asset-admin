@@ -282,14 +282,15 @@ class UploadFieldItem extends Component {
       'uploadfield-item__remove-btn',
       'btn-secondary',
       'btn--no-text',
-      'font-icon-cancel',
       'btn--icon-md',
     ].join(' ');
     return (
       <button
         className={classes}
         onClick={this.handleRemove}
-      />
+      >
+        <span className="font-icon-cancel" aria-hidden="true" />
+      </button>
     );
   }
 
@@ -307,14 +308,15 @@ class UploadFieldItem extends Component {
       'uploadfield-item__view-btn',
       'btn-secondary',
       'btn--no-text',
-      'font-icon-eye',
       'btn--icon-md',
     ].join(' ');
     return (
       <button
         className={classes}
         onClick={this.handleView}
-      />
+      >
+        <span className="font-icon-eye" aria-hidden="true" />
+      </button>
     );
   }
 

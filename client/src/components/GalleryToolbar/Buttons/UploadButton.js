@@ -14,10 +14,11 @@ class UploadButton extends Component {
     return (
       <button
         id="upload-button"
-        className="btn btn-secondary font-icon-upload btn--icon-xl"
+        className="btn btn-secondary btn--icon-xl"
         type="button"
         disabled={!canEdit}
       >
+        <span className="font-icon-upload" aria-hidden="true" />
         <span className="btn__text btn__title">{i18n._t('AssetAdmin.DROPZONE_UPLOAD')}</span>
       </button>
     );

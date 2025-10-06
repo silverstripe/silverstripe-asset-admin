@@ -160,7 +160,7 @@ $gallery-item-label-height: 40px;
       display: none;
     }
 
-    &:before {
+    .gallery-item__checkbox-icon:before {
       cursor: pointer;
       top: 0;
       bottom: 0;
@@ -180,7 +180,7 @@ $gallery-item-label-height: 40px;
 }
 
 .gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled) {
-  .gallery-item--selectable &:hover:before {
+  .gallery-item--selectable .gallery-item__checkbox-label:hover .gallery-item__checkbox-icon:before {
     border: 1px solid $component-active-border-color;
   }
 }
@@ -189,14 +189,14 @@ $gallery-item-label-height: 40px;
 .gallery-item--error .gallery-item__checkbox-label,
 .gallery-item__upload-progress + .gallery-item__title .gallery-item__checkbox-label {
 
-  &:before {
+  .gallery-item__checkbox-icon:before {
     font-size: 19px;
     border: 0;
     border-radius: 0;
     padding: 0;
   }
 
-  &:hover:before {
+  &:hover .gallery-item__checkbox-icon:before {
     border: 0;
   }
 }
@@ -210,7 +210,7 @@ $gallery-item-label-height: 40px;
     cursor: not-allowed;
   }
 
-  .gallery-item__checkbox-label:before {
+  .gallery-item__checkbox-label .gallery-item__checkbox-icon:before {
     color: $brand-danger;
   }
 }
@@ -275,7 +275,7 @@ $gallery-item-label-height: 40px;
 .gallery-item--selected {
   border-color: $component-active-border-color;
 
-  .gallery-item__checkbox-label:before {
+  .gallery-item__checkbox-label .gallery-item__checkbox-icon:before {
     border-color: $component-active-border-color;
     background-color: $component-active-border-color;
     color: $white;
@@ -329,7 +329,7 @@ $gallery-item-label-height: 40px;
   overflow: hidden;
   background-color: $gray-300;
 
-  + .gallery-item__title .gallery-item__checkbox-label:before {
+  + .gallery-item__title .gallery-item__checkbox-label .gallery-item__checkbox-icon:before {
     color: $body-color;
   }
 }
@@ -408,7 +408,7 @@ $gallery-item-label-height: 40px;
 
   .gallery-item__checkbox-label {
 
-    &, &:before {
+    &, .gallery-item__checkbox-icon:before {
       cursor: not-allowed;
     }
   }

@@ -2,7 +2,8 @@ import i18n from 'i18n';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { inject } from 'lib/Injector';
-import { Button, DropdownItem } from 'reactstrap';
+import { DropdownItem } from 'reactstrap';
+import Button from 'components/Button/Button';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -57,16 +58,18 @@ class BulkActions extends Component {
   renderChild(action, i) {
     const className = classnames(
       'bulk-actions__action',
-      action.className || 'font-icon-info-circled',
+      action.className,
       {
         btn: (i < 2),
         'bulk-actions__action--more': (i > 2),
       }
     );
+    const icon = action.icon || 'info-circled';
     if (i < 2) {
       return (
         <Button
           className={className}
+          icon={icon}
           key={action.value}
           onClick={this.handleChangeValue}
           value={action.value}
@@ -84,6 +87,7 @@ class BulkActions extends Component {
         onClick={this.handleChangeValue}
         value={action.value}
       >
+        <span className={`font-icon-${icon}`} aria-hidden="true" />
         {action.label}
       </DropdownItem>
     );
@@ -117,9 +121,10 @@ class BulkActions extends Component {
         {showCount &&
           <>
             <Button
-              className="bulk-actions-counter font-icon-cross-mark"
+              className="bulk-actions-counter"
               onClick={this.props.onClearSelection}
               title={title}
+              icon="cross-mark"
             >
               {selected}
             </Button>
@@ -157,6 +162,7 @@ BulkActions.propTypes = {
     callback: PropTypes.func,
     canApply: PropTypes.func,
     confirm: PropTypes.func,
+    icon: PropTypes.string,
   })),
   ActionMenu: PropTypes.elementType,
   showCount: PropTypes.bool,
