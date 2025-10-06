@@ -459,6 +459,7 @@ class UploadField extends Component {
           type="button"
           onClick={this.handleUploadButton}
           className="uploadfield__upload-button"
+          tabIndex={this.props.tabIndex}
         >
           {i18n._t('AssetAdmin.UPLOADFIELD_UPLOAD_NEW', 'Upload new')}
         </button>
@@ -478,6 +479,7 @@ class UploadField extends Component {
           type="button"
           onClick={this.handleAddShow}
           className="uploadfield__add-button"
+          tabIndex={this.props.tabIndex}
         >
           {i18n._t('AssetAdmin.UPLOADFIELD_CHOOSE_EXISTING', 'Choose existing')}
         </button>
@@ -591,6 +593,7 @@ UploadField.propTypes = {
   AssetDropzone: PropTypes.elementType,
   InsertMediaModal: PropTypes.elementType,
   getItemProps: PropTypes.func,
+  tabIndex: PropTypes.number,
 };
 
 UploadField.defaultProps = {
