@@ -431,6 +431,7 @@ abstract class AssetFormFactory implements FormFactory
         return <<<EOT
             <div class="file-status-icon">
                 <span title="$title"
+                      aria-label="$title"
                       class="icon file-status-icon__icon $fontClass"
                       data-bs-toggle="tooltip"
                       data-bs-placement="top"

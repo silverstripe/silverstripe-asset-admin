@@ -30,7 +30,8 @@ class MoveFormFactory implements FormFactory
             ),
             FieldList::create(
                 FormAction::create('move', _t(__CLASS__.'.MOVE', 'Move'))
-                    ->addExtraClass('btn-primary font-icon-folder-move')
+                    ->setIcon('folder-move')
+                    ->addExtraClass('btn-primary')
             )
         );
 
