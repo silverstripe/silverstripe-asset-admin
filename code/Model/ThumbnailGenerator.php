@@ -117,8 +117,11 @@ class ThumbnailGenerator
             if (ClassInfo::hasMethod($file, 'getImageBackend')) {
                 /** @var Image_Backend $backend */
                 $backend = $file->getImageBackend();
-                $origAllowAnimation = $backend->getAllowsAnimationInManipulations();
-                $backend->setAllowsAnimationInManipulations(false);
+                $origAllowAnimation = null;
+                if ($backend) {
+                    $origAllowAnimation = $backend->getAllowsAnimationInManipulations();
+                    $backend->setAllowsAnimationInManipulations(false);
+                }
             } elseif ($file->getIsAnimated() && ClassInfo::hasMethod($file, 'RemoveAnimation')) {
                 $noAnimation = $file->RemoveAnimation();
                 if ($noAnimation) {
@@ -132,7 +135,7 @@ class ThumbnailGenerator
             $method = $this->config()->get('method');
             $thumbnail = $file->$method($width, $height);
         } finally {
-            if ($origAllowAnimation !== null) {
+            if (isset($backend) && $backend && $origAllowAnimation !== null) {
                 $backend->setAllowsAnimationInManipulations($origAllowAnimation);
             }
         }
