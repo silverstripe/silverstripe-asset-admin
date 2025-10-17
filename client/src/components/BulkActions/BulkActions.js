@@ -15,11 +15,16 @@ class BulkActions extends Component {
   }
 
   /**
-   * @param {String} value
+   * @param {Element} target
    * @returns {Object} One of props.actions.
    */
-  getOptionByValue(value) {
-    return this.props.actions.find(action => action.value === value);
+  getOptionByValue(target) {
+    let option = this.props.actions.find(action => action.value === target.value);
+    // If there's no option, make sure the actual button was the event target and not a child element
+    if (option === null || option === undefined) {
+      option = this.props.actions.find(action => action.value === target.closest('.bulk-actions__action').value);
+    }
+    return option;
   }
 
   /**
@@ -30,8 +35,8 @@ class BulkActions extends Component {
     let promise = null;
 
     // Make sure a valid option has been selected.
-    const option = this.getOptionByValue(event.target.value);
-    if (option === null) {
+    const option = this.getOptionByValue(event.target);
+    if (option === null || option === undefined) {
       return null;
     }
 

@@ -12,7 +12,7 @@ Feature: Manage file permissions
       And a page "Gallery" containing an image "assets/folder3/file1.jpg"
       And I am logged in with "ADMIN" permissions
       And I go to "/admin/assets"
-    
+
   Scenario: I can limit edit permissions to admins
     When I check the folder named "folder1" in the gallery
     Then I should see an ".bulk-actions__action[value='edit']" element
