@@ -1,4 +1,3 @@
-import i18n from 'i18n';
 import React, { Component } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
@@ -8,6 +7,7 @@ import fileSchemaModalHandler from 'containers/InsertLinkModal/fileSchemaModalHa
 import * as galleryActions from 'state/gallery/GalleryActions';
 import * as modalActions from 'state/modal/ModalActions';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
+import ModalCloseButton from 'components/Modal/ModalCloseButton';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import getFormSchema from 'lib/getFormSchema';
@@ -100,11 +100,9 @@ class InsertMediaModal extends Component {
 
   renderToolbarChildren() {
     return (
-      <button
-        type="button"
-        className="close btn-close modal__close-button insert-media-modal__close-button"
-        onClick={this.props.onClosed}
-        aria-label={i18n._t('FormBuilderModal.CLOSE', 'Close')}
+      <ModalCloseButton
+        classNames="close insert-media-modal__close-button"
+        onClosed={this.props.onClosed}
       />
     );
   }
