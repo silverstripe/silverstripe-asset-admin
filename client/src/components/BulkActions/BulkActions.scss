@@ -88,7 +88,7 @@ $bulk-actions-width: 300px;
       box-shadow: $dropdown-shadow;
     }
 
-    > span {
+    > span:not(.chosen__icon) {
       text-align: left;
       display: inline-block;
       margin-right: 0;
