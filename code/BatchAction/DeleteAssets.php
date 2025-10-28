@@ -41,6 +41,6 @@ class DeleteAssets extends CMSBatchAction
 
         return HTTPResponse::create()
             ->setBody(json_encode($status))
-            ->addHeader('Content-type', 'application/json');
+            ->addHeader('Content-Type', 'application/json');
     }
 }
