@@ -82,13 +82,24 @@ class AssetAdminStateRouter extends Component {
   }
 
   getSectionProps() {
+    // Ensure we do not pass an empty query object to AssetAdmin which would result in various errors
+    // as query.filter is expected to be present
+    let query = this.state.query;
+    if (query === null || (typeof query !== 'object') || Object.keys(query).length === 0) {
+      query = {
+        sort: '',
+        limit: null,
+        page: 0,
+        filter: {},
+      };
+    }
     const props = Object.assign({},
       this.props,
       {
         folderId: this.getFolderId(),
         fileId: this.getFileId(),
         viewAction: this.getViewAction(),
-        query: this.state.query,
+        query,
         getUrl: this.getUrl,
         onBrowse: this.handleBrowse,
       }
