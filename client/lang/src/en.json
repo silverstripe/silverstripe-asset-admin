@@ -85,5 +85,9 @@
     "AssetAdmin.SIZE": "Size",
     "AssetAdmin.TITLE": "Title",
     "AssetAdmin.TYPE": "File type",
-    "AssetAdmin.URL": "URL"
+    "AssetAdmin.URL": "URL",
+    "File.DRAFT": "Draft",
+    "File.MODIFIED": "Modified",
+    "File.REMOVE": "Remove",
+    "File.VIEW": "View"
 }
