@@ -326,6 +326,7 @@ class Editor extends Component {
           onFetchingSchema={this.handleFetchingSchema}
           createFn={this.createFn}
           file={this.state.file}
+          autoFocus
         />
         {error}
         <FormBuilderModalComponent
