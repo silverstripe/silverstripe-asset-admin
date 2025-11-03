@@ -134,3 +134,18 @@ test('TableView calls onSetPage() when using pagination', async () => {
   expect(onSetPage).toHaveBeenCalled();
   expect(newPage).toBe(2);
 });
+
+test('TableView sets aria-sort attribute correctly on headers', async () => {
+  const { rerender } = render(<TableView {...makeProps({
+    sort: 'title,asc'
+  })}
+  />);
+  expect(screen.getByText('Title').closest('th').getAttribute('aria-sort')).toBe('ascending');
+  expect(screen.getByText('Size').closest('th').hasAttribute('aria-sort')).toBe(false);
+  rerender(<TableView {...makeProps({
+    sort: 'size,desc'
+  })}
+  />);
+  expect(screen.getByText('Title').closest('th').hasAttribute('aria-sort')).toBe(false);
+  expect(screen.getByText('Size').closest('th').getAttribute('aria-sort')).toBe('descending');
+});
