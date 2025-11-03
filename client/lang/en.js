@@ -8,8 +8,10 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   ss.i18n.addDictionary('en', {
     "AssetAdmin.ADD_FILES": "Add from files",
     "AssetAdmin.ADD_FOLDER_BUTTON": "Add folder",
+    "AssetAdmin.ADD_NEW_FOLDER_BUTTON": "Add new folder",
     "AssetAdmin.BACK": "Back",
     "AssetAdmin.BACK_DESCRIPTION": "Navigate up a level",
+    "AssetAdmin.BACK_TO_HISTORY": "Back to history list",
     "AssetAdmin.BROWSE": "Browse",
     "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Archive",
     "AssetAdmin.BULK_ACTIONS_ARCHIVE_FAIL_02": "%s folders/files were successfully archived, but %s files were not able to be archived.",

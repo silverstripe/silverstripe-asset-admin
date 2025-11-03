@@ -42,6 +42,7 @@ sl:
     LazyDefault: 'Zapoznelo (privzeto)'
     LoadIntoFileFailed: 'Neuspešen prenos datoteke'
     Loading: 'Nalagam ...'
+    LoadingTitleTip: 'Zakasnjeno nalaganje (lazy loading) lahko izboljša percepcijo hitrosti nalaganja strani pri uporabnikih s tem, da sistem datotek, ki niso v vidnem polju ne naloži takoj, ampak počaka na trenutek, ko so uporabne. Takojšnje nalaganje (eager loading) pa bo datoteke naložilo takoj in je uporabno za primere, ko so datoteke uporabne takoj (npr. naslovna slika, ki se izpiše v vidnem polju takoj ob odprtju strani).'
     MENUTITLE: Datoteke
     NOSUMMARY: 'Povzetek ni na voljo'
     NewFile: 'Dodaj {file}'
@@ -64,6 +65,8 @@ sl:
     MOVEDFOLDER: 'Datoteka premaknjena'
     RENAMEDFILE: 'Datoteka zamenjana'
     RENAMEDTITLE: 'Naslov smo nadomestili z '
+  SilverStripe\AssetAdmin\Controller\AssetAdminOpen:
+    MENUTITLE: 'Odprte datoteke'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     ACCESSHEADER: 'Kdo lahko dostopa do te datoteke?'
     ANYONE: Kdorkoli
@@ -79,6 +82,7 @@ sl:
     ROOTNAME: '(Prvi nivo)'
     SAVE: Shrani
     SAVED: Shranjeno
+    SHOWINSEARRCH: 'Prikaži v iskalniku'
     VIEWERGROUPS: 'Skupine ogledovalcev'
     VIEWERMEMBERS: Ogledovalci
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
@@ -136,3 +140,6 @@ sl:
       one: 'Datoteka "{file}" se uporablja na {count} koncu.'
       other: 'Datoteka "{file}" se uporablja na {count} koncih.'
       two: 'Datoteka "{file}" se uporablja na {count} koncih.'
+  SilverStripe\CMS\Search\SearchForm:
+    FILTERDATEFROM: Od
+    FILTERDATETO: Do
