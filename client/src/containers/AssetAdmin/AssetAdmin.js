@@ -358,7 +358,7 @@ class AssetAdmin extends Component {
         } else if ((action === 'action_save' || action === 'action_publish')
           && this.getFolderId() !== response.record.parent.id) {
           // If the file was moved, open the folder containing the file was moved to
-          this.handleBrowse(response.record.parent.id, response.record.id, null);
+          this.handleBrowse(response.record.parent.id, response.record.id, {});
         }
         return response;
       }).then(() => {

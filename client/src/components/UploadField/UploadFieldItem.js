@@ -286,6 +286,8 @@ class UploadFieldItem extends Component {
       <button
         className={classes}
         onClick={this.handleRemove}
+        aria-label={i18n._t('File.REMOVE', 'Remove')}
+        title={i18n._t('File.REMOVE', 'Remove')}
       />
     );
   }
@@ -311,6 +313,8 @@ class UploadFieldItem extends Component {
       <button
         className={classes}
         onClick={this.handleView}
+        aria-label={i18n._t('File.VIEW', 'View')}
+        title={i18n._t('File.VIEW', 'View')}
       />
     );
   }
