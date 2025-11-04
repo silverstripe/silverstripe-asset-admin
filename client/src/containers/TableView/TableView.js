@@ -258,6 +258,17 @@ function TableView(_props) {
   }
 
   /**
+   * Returns the aria-sort value for a th table header
+   */
+  function getAriaSortValue(columnId) {
+    const [sortColumn, sortDirection] = props.sort.split(',');
+    if (sortColumn === columnId) {
+      return sortDirection === 'asc' ? 'ascending' : 'descending';
+    }
+    return null;
+  }
+
+  /**
    * Renders the content for a th table header
    */
   function renderHeaderContent(header) {
@@ -349,6 +360,7 @@ function TableView(_props) {
                 key={header.id}
                 onClick={() => handleSort(header)}
                 className={getCellClassName(header, true)}
+                aria-sort={getAriaSortValue(header.column.id)}
               >
                 {renderHeaderContent(header)}
               </th>
