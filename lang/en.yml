@@ -1,7 +1,9 @@
 en:
   AssetAdmin:
     INSERT_FILE: 'Insert file'
-    OWNER_WARNING: 'File "{file}" is used in {count} place|File "{file}" is used in {count} places'
+    OWNER_WARNING:
+      one: 'File "{file}" is used in {count} place'
+      other: 'File "{file}" is used in {count} places'
     UPDATE_FILE: 'Update file'
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Restricted access'
