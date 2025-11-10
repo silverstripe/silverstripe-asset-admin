@@ -297,6 +297,7 @@ function TableView(_props) {
       maxItemsPerPage={props.limit}
       currentPage={props.page}
       onChangePage={(page) => handleSetPage(page)}
+      title={i18n._t('AssetAdmin.FILES')}
     />;
   }
 
