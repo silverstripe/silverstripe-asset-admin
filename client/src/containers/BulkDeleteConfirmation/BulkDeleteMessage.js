@@ -52,9 +52,9 @@ const confirmationMessage = (
  * Display a context dependent confirmation message.
  */
 const BulkDeleteMessage = ({
-  topLevelFolderCount,
-  topLevelFileCount,
-  descendantFileCount,
+  topLevelFolderCount = 0,
+  topLevelFileCount = 0,
+  descendantFileCount = 0,
   filesAreVersioned,
   archiveFiles,
 }) => {
@@ -86,12 +86,6 @@ BulkDeleteMessage.propTypes = {
   topLevelFolderCount: PropTypes.number,
   topLevelFileCount: PropTypes.number,
   descendantFileCount: PropTypes.number,
-};
-
-BulkDeleteMessage.defaultProps = {
-  topLevelFolderCount: 0,
-  topLevelFileCount: 0,
-  descendantFileCount: 0,
 };
 
 export default BulkDeleteMessage;

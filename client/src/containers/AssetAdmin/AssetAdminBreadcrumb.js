@@ -14,7 +14,14 @@ import { hasFilters } from 'components/Search/Search';
  * @param {Function} onBrowse Callback for when the user click on one of the breadcrumb element.
  * @param {Function} onFolderIcon Callback for when the user decide to edit the info for a folder.
  */
-const AssetAdminBreadcrumb = ({ folder, query, getUrl, onBrowse, onFolderIcon, PlainBreadcrumbComponent }) => {
+const AssetAdminBreadcrumb = ({
+  folder,
+  query,
+  getUrl,
+  onBrowse,
+  onFolderIcon,
+  PlainBreadcrumbComponent = PlainBreadcrumb
+}) => {
   // Simple wrapper method around onBrowse that suppress the event
   const handleClick = (...args) => (event) => {
     event.preventDefault();
@@ -103,10 +110,6 @@ AssetAdminBreadcrumb.propTypes = {
     canEdit: PropTypes.bool,
   }),
   PlainBreadcrumbComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
-};
-
-AssetAdminBreadcrumb.defaultProps = {
-  PlainBreadcrumbComponent: PlainBreadcrumb
 };
 
 export default AssetAdminBreadcrumb;

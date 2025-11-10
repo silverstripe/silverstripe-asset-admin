@@ -5,10 +5,12 @@ Feature: File details
   So that I can do file things
 
   Background:
-    Given the "group" "EDITOR" has permissions "Access to 'Files' section" and "FILE_EDIT_ALL"
+    Given I add an extension "SilverStripe\AssetAdmin\Tests\Behat\Context\Extensions\DefaultFolderExtension" to the "SilverStripe\FrameworkTest\Model\Company" class without dev-build
     And a "image" "assets/file1.jpg"
     And a "folder" "assets/folder1"
     And a "page" "My page" has the "Content" "<p>[image id=1]</p>"
+    And a "company" "ACME inc"
+    And the "group" "EDITOR" has permissions "VIEW_DRAFT_CONTENT" and "Access to 'Test ModelAdmin' section" and "TEST_DATAOBJECT_EDIT" and "Access to 'Files' section" and "FILE_EDIT_ALL"
     And I am logged in as a member of "EDITOR" group
     And I go to "/admin/assets"
 
@@ -68,3 +70,26 @@ Feature: File details
     When I go to "/"
     When I confirm the dialog
     Then I should not see the file named "file1" in the gallery
+
+  Scenario: Save file details from different folder
+    And I go to "/admin/test/"
+    And I click "ACME inc" in the "#Form_EditForm_SilverStripe-FrameworkTest-Model-Company" element
+    And I click "Choose existing" in the ".uploadfield" element
+    Then I should see "test-folder" in the ".breadcrumb__item--last .breadcrumb__item-title" element
+    When I press the "Back" HTML field button
+    And I select the file named "file1" in the gallery
+    And I press the "Insert" button
+    And I press the "Save" button
+    Then I should see a "Saved Company "ACME inc" successfully" success toast
+    # Now open the modal again - file1 is selected but not displayed in the gallery view on the left
+    When I press the "View" button
+    Then I should see "test-folder" in the ".breadcrumb__item--last .breadcrumb__item-title" element
+    And I should not see the file named "file1" in the gallery
+    And I should see "file1" in the "#Form_fileSelectForm_TitleHeader" element
+    When I press the "Details" button
+    And I fill in "Title" with "my file"
+    And I press the "Save" button
+    # After saving, we're brought to the folder containing the selected file, which has been updated
+    Then I should see "Files" in the ".breadcrumb__item--last .breadcrumb__item-title" element
+    And I should see the file named "my file" in the gallery
+
