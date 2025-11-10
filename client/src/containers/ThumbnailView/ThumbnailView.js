@@ -55,6 +55,7 @@ class ThumbnailView extends Component {
       maxItemsPerPage: this.props.limit,
       currentPage: this.props.page,
       onChangePage: this.handleSetPage,
+      title: i18n._t('AssetAdmin.FILES')
     };
     return <Paginator {...props} />;
   }
