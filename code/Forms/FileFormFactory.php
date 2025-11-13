@@ -19,6 +19,7 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Versioned\RecursivePublishable;
 use SilverStripe\Versioned\Versioned;
+use SilverStripe\Admin\Forms\UnsavedChangesIndicator;
 
 class FileFormFactory extends AssetFormFactory
 {
@@ -309,6 +310,7 @@ class FileFormFactory extends AssetFormFactory
                 $actionItems[] = $popover;
             }
         }
+        $actionItems[] = UnsavedChangesIndicator::create('UnsavedChangesIndicator');
 
         // Build
         $actions = new FieldList($actionItems);

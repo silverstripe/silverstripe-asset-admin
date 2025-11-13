@@ -183,6 +183,39 @@
   }
 }
 
+.editor__details .unsaved-changes-indicator {
+  max-height: 34px;
+  padding-top: 6px;
+}
+
+.editor__details .unsaved-changes-indicator__short {
+  @include media-breakpoint-up(xs) {
+    display: inline;
+  }
+
+  @include media-breakpoint-up(sm) {
+    display: none;
+  }
+
+  @include media-breakpoint-up(xl) {
+    display: inline;
+  }
+}
+
+.editor__details .unsaved-changes-indicator__full {
+  @include media-breakpoint-up(xs) {
+    display: none;
+  }
+
+  @include media-breakpoint-up(sm) {
+    display: inline;
+  }
+
+  @include media-breakpoint-up(lg) {
+    display: none;
+  }
+}
+
 #Form_fileInsertForm .tab-pane .show {
   display: flex;
   flex-wrap: wrap;

@@ -6,6 +6,8 @@ Feature: File details
 
   Background:
     Given I add an extension "SilverStripe\AssetAdmin\Tests\Behat\Context\Extensions\DefaultFolderExtension" to the "SilverStripe\FrameworkTest\Model\Company" class without dev-build
+    # Config will put ~2 second delay until the unsaved changes notice shows
+    And I have a config file "unsaved-changes-indicator-asset-admin.yml"
     And a "image" "assets/file1.jpg"
     And a "folder" "assets/folder1"
     And a "page" "My page" has the "Content" "<p>[image id=1]</p>"
@@ -16,6 +18,15 @@ Feature: File details
 
   Scenario: Operate file details
     When I click on the file named "file1" in the gallery
+
+    # Unsaved change indicator
+    Then I should not see the ".unsaved-changes-indicator" element
+    When I fill in "Title" with "Hello"
+    Then I should not see the ".unsaved-changes-indicator" element
+    When I wait for 3 seconds
+    Then I should see the ".unsaved-changes-indicator" element
+    When I fill in "Title" with "file1"
+    Then I should not see the ".unsaved-changes-indicator" element
 
     # Used on table
     And I click "Used on" in the "#Editor .nav-tabs" element
