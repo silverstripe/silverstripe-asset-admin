@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import i18n from 'i18n';
 
@@ -7,36 +7,30 @@ import i18n from 'i18n';
  *
  * @returns {XML} button
  */
-class AddFolderButton extends Component {
-  constructor() {
-    super();
-    this.handleCreateFolder = this.handleCreateFolder.bind(this);
-  }
-
-  handleCreateFolder(event) {
-    const { onCreateFolder } = this.props;
+const AddFolderButton = ({
+  canEdit,
+  onCreateFolder,
+}) => {
+  const handleCreateFolder = (event) => {
     event.preventDefault();
     if (typeof onCreateFolder === 'function') {
       onCreateFolder();
     }
-  }
+  };
 
-  render() {
-    const { canEdit } = this.props;
-    return (
-      <button
-        id="add-folder-button"
-        className="btn btn-secondary btn--icon-xl"
-        type="button"
-        onClick={this.handleCreateFolder}
-        disabled={!canEdit}
-      >
-        <span className="font-icon-folder-add btn__icon" aria-hidden="true" />
-        <span className="btn__text btn__title">{i18n._t('AssetAdmin.ADD_NEW_FOLDER_BUTTON')}</span>
-      </button>
-    );
-  }
-}
+  return (
+    <button
+      id="add-folder-button"
+      className="btn btn-secondary btn--icon-xl"
+      type="button"
+      onClick={handleCreateFolder}
+      disabled={!canEdit}
+    >
+      <span className="font-icon-folder-add btn__icon" aria-hidden="true" />
+      <span className="btn__text btn__title">{i18n._t('AssetAdmin.ADD_NEW_FOLDER_BUTTON')}</span>
+    </button>
+  );
+};
 
 AddFolderButton.propTypes = {
   canEdit: PropTypes.bool.isRequired,

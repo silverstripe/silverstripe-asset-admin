@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Back from 'components/BackButton/BackButton';
 
@@ -7,43 +7,34 @@ import Back from 'components/BackButton/BackButton';
  *
  * @returns {XML|null} button
  */
-class BackButton extends Component {
-  constructor(props) {
-    super(props);
-    this.handleBackClick = this.handleBackClick.bind(this);
-  }
-
-  handleBackClick(event) {
-    const { onOpenFolder, folder } = this.props;
-
+const BackButton = ({
+  folder,
+  badges,
+  BackComponent = Back,
+  onOpenFolder,
+}) => {
+  const handleBackClick = (event) => {
     event.preventDefault();
     if (typeof onOpenFolder === 'function') {
       onOpenFolder(folder.parentId);
     }
-  }
+  };
 
-  render() {
-    const {
-      folder,
-      badges,
-      BackComponent
-    } = this.props;
-    const { parentId: itemId } = folder;
-    if (itemId === null) {
-      return null;
-    }
-    const badge = badges.find((item) => item.id === itemId);
-    return (
-      <div className="gallery__back-container">
-        <BackComponent
-          item={{ id: itemId }}
-          onClick={this.handleBackClick}
-          badge={badge}
-        />
-      </div>
-    );
+  const { parentId: itemId } = folder;
+  if (itemId === null) {
+    return null;
   }
-}
+  const badge = badges.find((item) => item.id === itemId);
+  return (
+    <div className="gallery__back-container">
+      <BackComponent
+        item={{ id: itemId }}
+        onClick={handleBackClick}
+        badge={badge}
+      />
+    </div>
+  );
+};
 
 BackButton.propTypes = {
   folder: PropTypes.shape({
@@ -60,10 +51,6 @@ BackButton.propTypes = {
   })).isRequired,
   onOpenFolder: PropTypes.func.isRequired,
   BackComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
-};
-
-BackButton.defaultProps = {
-  BackComponent: Back,
 };
 
 export default BackButton;

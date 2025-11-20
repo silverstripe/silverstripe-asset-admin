@@ -1,5 +1,5 @@
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
 import classnames from 'classnames';
 import CONSTANTS from 'constants/index';
 import fileShape from 'lib/fileShape';
@@ -38,35 +38,120 @@ const preventFocus = (event) => {
   event.preventDefault();
 };
 
-class GalleryItem extends Component {
-  constructor(props) {
-    super(props);
+const GalleryItem = (props) => {
+  const {
+    sectionConfig = {
+      imageRetry: {},
+    },
+    item = {},
+    loadState,
+    bustCache = true,
+    isDropping,
+    isDragging,
+    maxSelected,
+    selectable,
+    onActivate,
+    onSelect,
+    onCancelUpload,
+    onRemoveErroredUpload,
+    badge,
+    updateStatusFlags = (flags) => flags,
+    updateProgressBar = (progressBar) => progressBar,
+    updateErrorMessage = (msg) => msg,
+    children,
+    actions,
+  } = props;
 
-    this.handleSelect = this.handleSelect.bind(this);
-    this.handleActivate = this.handleActivate.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
-    this.handleCancelUpload = this.handleCancelUpload.bind(this);
-  }
+  const thumbnailRef = useRef(null);
+  const titleRef = useRef(null);
 
-  componentDidUpdate() {
-    if (shouldLoadImage(this.props)) {
-      // Tell backend to start loading the image
-      this.props.actions.imageLoad.loadImage(
-        this.props.item.thumbnail,
-        this.props.sectionConfig.imageRetry
+  useEffect(() => {
+    if (shouldLoadImage({
+      item,
+      sectionConfig,
+    })) {
+      actions.imageLoad.loadImage(
+        item.thumbnail,
+        sectionConfig.imageRetry
       );
     }
-  }
+  }, [item, sectionConfig, actions.imageLoad]);
+
+  /**
+   * Check if this item has been saved, either in this request or in a prior one
+   *
+   * @return {Boolean}
+   */
+  const saved = () => item.id > 0;
+
+  /**
+   * Check if this item has been successfully uploaded.
+   * Excludes items not uploaded in this request.
+   * Uploading is complete if saved with a DB id
+   *
+   * @returns {Boolean}
+   */
+  const complete = () => item.queuedId && saved();
+
+  /**
+   * Validate that the file backing this record is not missing
+   *
+   * @returns {boolean}
+   */
+  const exists = () => item.exists;
+
+  /**
+   * Check if this item should have a file, but is missing.
+   *
+   * @return {Boolean}
+   */
+  const missing = () => !exists() && saved();
+
+  /**
+   * Validate that the file is in upload progress, but not saved yet
+   *
+   * @returns {boolean}
+   */
+  const uploading = () => item.queuedId && !saved();
+
+  /**
+   * Determine if this is an image type
+   *
+   * @returns {boolean}
+   */
+  const isImage = () => item.category === 'image';
+
+  /**
+   * Determine if the item has enabled checkbox
+   *
+   * @return {Boolean}
+   */
+  const canBatchSelect = () => selectable && item.canEdit;
+
+  /**
+   * Checks if the component has an error set.
+   *
+   * @return {boolean}
+   */
+  const hasError = () => {
+    let hasErrorFlag = false;
+
+    if (item.message) {
+      hasErrorFlag = item.message.type === 'error';
+    }
+
+    return hasErrorFlag;
+  };
 
   /**
    * Gets props for thumbnail
    *
    * @returns {Object}
    */
-  getThumbnailStyles() {
-    // Don't fall back to this.props.item.url since it might be huge
-    const { item: { thumbnail, version }, bustCache } = this.props;
-    if (!this.isImage() || !thumbnail || this.missing()) {
+  const getThumbnailStyles = () => {
+    // Don't fall back to item.url since it might be huge
+    const { thumbnail, version } = item;
+    if (!isImage() || !thumbnail || missing()) {
       return {};
     }
 
@@ -76,7 +161,7 @@ class GalleryItem extends Component {
       `${thumbnail}?vid=${version}`;
 
     // Check loading status of thumbnail
-    switch (this.props.loadState) {
+    switch (loadState) {
       // Use thumbnail if successfully loaded, or preloading isn't enabled
       case IMAGE_STATUS.SUCCESS:
       case IMAGE_STATUS.DISABLED:
@@ -86,60 +171,100 @@ class GalleryItem extends Component {
       default:
         return {};
     }
-  }
+  };
+
+  /**
+   * Gets a function that may be overloaded at the item level
+   * @param {string} functionName
+   * @returns {Function}
+   */
+  const getItemFunction = (functionName) => {
+    if (typeof item[functionName] === 'function') {
+      return item[functionName];
+    }
+    // Return the default function based on the function name
+    const functionMap = {
+      updateStatusFlags,
+      updateProgressBar,
+      updateErrorMessage,
+    };
+    return functionMap[functionName] || (() => null);
+  };
 
   /**
    * Returns markup for an error message if one is set.
    *
    * @returns {Object}
    */
-  getErrorMessage() {
-    let message = null;
-    const { item, loadState } = this.props;
+  const getErrorMessage = () => {
+    let errMessage = null;
 
-    if (this.hasError()) {
-      message = item.message.value;
-    } else if (this.missing()) {
-      message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
+    if (hasError()) {
+      errMessage = item.message.value;
+    } else if (missing()) {
+      errMessage = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
     } else if (loadState === IMAGE_STATUS.FAILED) {
-      message = i18n._t('AssetAdmin.FILE_LOAD_ERROR', 'Thumbnail not available');
+      errMessage = i18n._t('AssetAdmin.FILE_LOAD_ERROR', 'Thumbnail not available');
     }
 
-    if (message !== null) {
-      const updateErrorMessage = this.getItemFunction('updateErrorMessage');
-      message = updateErrorMessage(message, this.props);
+    if (errMessage !== null) {
+      const updateErrorMessageFn = getItemFunction('updateErrorMessage');
+      const messageProps = { ...props, value: errMessage };
+      errMessage = updateErrorMessageFn(errMessage, messageProps);
       return (
         <span className="gallery-item__error-message">
-          {message}
+          {errMessage}
         </span>
       );
     }
 
     return null;
-  }
+  };
+
+  /**
+   * Determine that this record is an image, and the thumbnail is smaller than the given
+   * thumbnail area
+   *
+   * @returns {boolean}
+   */
+  const isImageSmallerThanThumbnail = () => {
+    if (!isImage() || missing()) {
+      return false;
+    }
+    const width = item.width;
+    const height = item.height;
+
+    // Note: dimensions will be null if the back-end image is lost
+    return (
+      height
+      && width
+      && height < CONSTANTS.THUMBNAIL_HEIGHT
+      && width < CONSTANTS.THUMBNAIL_WIDTH
+    );
+  };
 
   /**
    * Retrieve list of thumbnail classes
    *
    * @returns {string}
    */
-  getThumbnailClassNames() {
+  const getThumbnailClassNames = () => {
     const thumbnailClassNames = ['gallery-item__thumbnail'];
 
-    if (this.isImageSmallerThanThumbnail()) {
+    if (isImageSmallerThanThumbnail()) {
       thumbnailClassNames.push('gallery-item__thumbnail--small');
     }
 
-    if (!this.props.item.thumbnail && this.isImage()) {
+    if (!item.thumbnail && isImage()) {
       thumbnailClassNames.push('gallery-item__thumbnail--no-preview');
     }
 
-    if (this.props.item.type === 'folder') {
+    if (item.type === 'folder') {
       thumbnailClassNames.push('gallery-item__thumbnail--folder');
     }
 
     // Check loading status of thumbnail
-    switch (this.props.loadState) {
+    switch (loadState) {
       // Show loading indicator for preloading images
       case IMAGE_STATUS.LOADING: // Beginning first load
       case IMAGE_STATUS.WAITING: // Waiting for subsequent load to retry
@@ -154,52 +279,38 @@ class GalleryItem extends Component {
     }
 
     return thumbnailClassNames.join(' ');
-  }
+  };
 
   /**
    * Retrieves class names for the item
    *
    * @returns {string}
    */
-  getItemClassNames() {
-    const category = this.props.item.category || 'false';
-    const selected = this.props.selectable && (this.props.item.selected || this.props.isDragging);
+  const getItemClassNames = () => {
+    const category = item.category || 'false';
+    const isSelected = selectable && (item.selected || isDragging);
 
     return classnames({
       'gallery-item': true,
       [`gallery-item--${category}`]: true,
-      'gallery-item--max-selected': this.props.maxSelected && !selected,
-      'gallery-item--missing': this.missing(),
-      'gallery-item--selectable': this.props.selectable,
-      'gallery-item--selected': selected,
-      'gallery-item--dropping': this.props.isDropping,
-      'gallery-item--highlighted': this.props.item.highlighted,
-      'gallery-item--error': this.hasError(),
-      'gallery-item--dragging': this.props.isDragging,
+      'gallery-item--max-selected': maxSelected && !isSelected,
+      'gallery-item--missing': missing(),
+      'gallery-item--selectable': selectable,
+      'gallery-item--selected': isSelected,
+      'gallery-item--dropping': isDropping,
+      'gallery-item--highlighted': item.highlighted,
+      'gallery-item--error': hasError(),
+      'gallery-item--dragging': isDragging,
     });
-  }
-
-  /**
-   * Gets a function that may be overloaded at the item level
-   * @param {string} functionName
-   * @returns {Function}
-   */
-  getItemFunction(functionName) {
-    const { item } = this.props;
-
-    return (typeof item[functionName] === 'function')
-      ? item[functionName]
-      : this.props[functionName];
-  }
+  };
 
   /**
    * Get flags for statuses that apply to this item
    *
    * @returns {*}
    */
-  getStatusFlags() {
+  const getStatusFlags = () => {
     let flags = [];
-    const { item } = this.props;
     if (item.type !== 'folder') {
       if (item.draft) {
         flags.push({
@@ -215,22 +326,21 @@ class GalleryItem extends Component {
         });
       }
     }
-    const updateStatusFlags = this.getItemFunction('updateStatusFlags');
-    flags = updateStatusFlags(flags, this.props);
+    const updateStatusFlagsFn = getItemFunction('updateStatusFlags');
+    flags = updateStatusFlagsFn(flags, props);
     return (
       <div className="gallery-item__status-flags">
         {flags.map(attrs => <span {...attrs} />)}
       </div>
     );
-  }
+  };
 
   /**
    * Get flags for statuses that apply to this item
    *
    * @returns {*}
    */
-  getStatusIcons() {
-    const { item } = this.props;
+  const getStatusIcons = () => {
     const icons = [];
     if (item.hasRestrictedAccess) {
       icons.push({
@@ -257,16 +367,15 @@ class GalleryItem extends Component {
         {icons.map(attrs => <FileStatusIcon {...attrs} />)}
       </div>
     );
-  }
+  };
 
   /**
    * Gets upload progress bar
    *
    * @returns {Object}
    */
-  getProgressBar() {
+  const getProgressBar = () => {
     let progressBar = null;
-    const { item } = this.props;
     const progressBarProps = {
       className: 'gallery-item__progress-bar',
       style: {
@@ -274,272 +383,164 @@ class GalleryItem extends Component {
       },
     };
 
-    if (!this.hasError() && this.uploading() && !this.complete()) {
+    if (!hasError() && uploading() && !complete()) {
       progressBar = (
         <div className="gallery-item__upload-progress">
           <div {...progressBarProps} />
         </div>
       );
     }
-    const updateProgressBar = this.getItemFunction('updateProgressBar');
-    progressBar = updateProgressBar(progressBar, this.props);
+    const updateProgressBarFn = getItemFunction('updateProgressBar');
+    progressBar = updateProgressBarFn(progressBar, props);
     return progressBar;
-  }
+  };
 
   /**
-   * Determine that this record is an image, and the thumbnail is smaller than the given
-   * thumbnail area
-   *
-   * @returns {boolean}
-   */
-  isImageSmallerThanThumbnail() {
-    if (!this.isImage() || this.missing()) {
-      return false;
-    }
-    const width = this.props.item.width;
-    const height = this.props.item.height;
-
-    // Note: dimensions will be null if the back-end image is lost
-    return (
-      height
-      && width
-      && height < CONSTANTS.THUMBNAIL_HEIGHT
-      && width < CONSTANTS.THUMBNAIL_WIDTH
-    );
-  }
-
-  /**
-   * Check if this item has been successfully uploaded.
-   * Excludes items not uploaded in this request.
-   *
-   * @returns {Boolean}
-   */
-  complete() {
-    // Uploading is complete if saved with a DB id
-    return this.props.item.queuedId && this.saved();
-  }
-
-  /**
-   * Check if this item has been saved, either in this request or in a prior one
-   *
-   * @return {Boolean}
-   */
-  saved() {
-    return this.props.item.id > 0;
-  }
-
-  /**
-   * Check if this item should have a file, but is missing.
-   *
-   * @return {Boolean}
-   */
-  missing() {
-    return !this.exists() && this.saved();
-  }
-
-  /**
-   * Validate that the file is in upload progress, but not saved yet
-   *
-   * @returns {boolean}
-   */
-  uploading() {
-    return this.props.item.queuedId && !this.saved();
-  }
-
-  /**
-   * Validate that the file backing this record is not missing
-   *
-   * @returns {boolean}
-   */
-  exists() {
-    return this.props.item.exists;
-  }
-
-  /**
-   * Determine if this is an image type
-   *
-   * @returns {boolean}
-   */
-  isImage() {
-    return this.props.item.category === 'image';
-  }
-
-  /**
-   * Determine if the item has enabled checkbox
-   *
-   * @return {Boolean}
-   */
-  canBatchSelect() {
-    return this.props.selectable && this.props.item.canEdit;
-  }
-
-  /**
-   * Checks if the component has an error set.
-   *
-   * @return {boolean}
-   */
-  hasError() {
-    let hasError = false;
-
-    if (this.props.item.message) {
-      hasError = this.props.item.message.type === 'error';
-    }
-
-    return hasError;
-  }
-
-  /**
-   * Wrapper around this.props.onActivate
+   * Wrapper around onActivate prop
    *
    * @param {Object} event - Event object.
    */
-  handleActivate(event) {
+  const handleActivate = (event) => {
     event.stopPropagation();
-    if (typeof this.props.onActivate === 'function' && this.saved()) {
-      this.props.onActivate(event, this.props.item);
+    if (typeof onActivate === 'function' && saved()) {
+      onActivate(event, item);
     }
-  }
+  };
 
   /**
-   * Wrapper around this.props.onSelect
+   * Wrapper around onSelect prop
    *
    * @param {Object} event Event object.
    */
-  handleSelect(event) {
+  const handleSelect = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    if (typeof this.props.onSelect === 'function') {
-      this.props.onSelect(event, this.props.item);
+    if (typeof onSelect === 'function') {
+      onSelect(event, item);
     }
-  }
+  };
 
   /**
    * To capture keyboard actions, such as selecting or activating an item
    *
    * @param {Object} event
    */
-  handleKeyDown(event) {
+  const handleKeyDown = (event) => {
     // If space is pressed, select file
     if (CONSTANTS.SPACE_KEY_CODE === event.keyCode) {
       event.preventDefault(); // Stop page scrolling if spaceKey is pressed
-      if (this.canBatchSelect()) {
-        this.handleSelect(event);
+      if (canBatchSelect()) {
+        handleSelect(event);
       }
     }
 
     // If return is pressed, navigate folder
     if (CONSTANTS.RETURN_KEY_CODE === event.keyCode) {
-      this.handleActivate(event);
+      handleActivate(event);
     }
-  }
+  };
 
   /**
    * Callback for cancelling or removing (if failed) this item when it's still uploading.
    *
    * @param event
    */
-  handleCancelUpload(event) {
+  const handleCancelUpload = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    if (this.hasError()) {
-      this.props.onRemoveErroredUpload(this.props.item);
-    } else if (this.props.onCancelUpload) {
-      this.props.onCancelUpload(this.props.item);
+    if (hasError()) {
+      onRemoveErroredUpload(item);
+    } else if (onCancelUpload) {
+      onCancelUpload(item);
     }
+  };
+
+  let action = null;
+  let actionIcon = null;
+  let overlay = null;
+  const { id, queuedId } = item;
+  const htmlID = id ? `item-${id}` : `queued-${queuedId}`;
+  if (selectable) {
+    if (canBatchSelect()) {
+      action = handleSelect;
+    }
+    actionIcon = 'font-icon-tick';
   }
 
-  render() {
-    let action = null;
-    let actionIcon = null;
-    let overlay = null;
-    const { id, queuedId } = this.props.item;
-    const htmlID = id ? `item-${id}` : `queued-${queuedId}`;
-    if (this.props.selectable) {
-      if (this.canBatchSelect()) {
-        action = this.handleSelect;
+  if (uploading()) {
+    action = handleCancelUpload;
+    actionIcon = 'font-icon-cancel';
+  } else if (exists()) {
+    const label = i18n._t('AssetAdmin.VIEW', 'View');
+    overlay = <div className="gallery-item--overlay">
+      <span className="font-icon-eye" aria-hidden="true" />
+      {label}
+    </div>;
+  }
+
+  const inputProps = {
+    className: 'gallery-item__checkbox',
+    type: 'checkbox',
+    title: i18n._t('AssetAdmin.SELECT', 'Select'),
+    tabIndex: -1,
+    onMouseDown: preventFocus,
+    id: htmlID,
+  };
+  const inputLabelClasses = [
+    'gallery-item__checkbox-label',
+    'form-label',
+  ];
+  if (!canBatchSelect()) {
+    inputProps.disabled = true;
+    inputLabelClasses.push('gallery-item__checkbox-label--disabled');
+  }
+  const inputLabelProps = {
+    className: inputLabelClasses.join(' '),
+    onClick: action,
+  };
+
+  return (
+    <div
+      className={getItemClassNames()}
+      data-id={item.id}
+      tabIndex={0}
+      role="button"
+      onKeyDown={handleKeyDown}
+      onClick={handleActivate}
+    >
+      {!!badge &&
+      <Badge
+        className="gallery-item__badge"
+        status={badge.status}
+        message={badge.message}
+      />
       }
-      actionIcon = 'font-icon-tick';
-    }
-
-    if (this.uploading()) {
-      action = this.handleCancelUpload;
-      actionIcon = 'font-icon-cancel';
-    } else if (this.exists()) {
-      const label = i18n._t('AssetAdmin.VIEW', 'View');
-      overlay = <div className="gallery-item--overlay">
-        <span className="font-icon-eye" aria-hidden="true" />
-        {label}
-      </div>;
-    }
-
-    const badge = this.props.badge;
-
-    const inputProps = {
-      className: 'gallery-item__checkbox',
-      type: 'checkbox',
-      title: i18n._t('AssetAdmin.SELECT', 'Select'),
-      tabIndex: -1,
-      onMouseDown: preventFocus,
-      id: htmlID,
-    };
-    const inputLabelClasses = [
-      'gallery-item__checkbox-label',
-      'form-label',
-    ];
-    if (!this.canBatchSelect()) {
-      inputProps.disabled = true;
-      inputLabelClasses.push('gallery-item__checkbox-label--disabled');
-    }
-    const inputLabelProps = {
-      className: inputLabelClasses.join(' '),
-      onClick: action,
-    };
-
-    return (
       <div
-        className={this.getItemClassNames()}
-        data-id={this.props.item.id}
-        tabIndex={0}
-        role="button"
-        onKeyDown={this.handleKeyDown}
-        onClick={this.handleActivate}
+        ref={thumbnailRef}
+        className={getThumbnailClassNames()}
+        style={getThumbnailStyles()}
       >
-        {!!badge &&
-        <Badge
-          className="gallery-item__badge"
-          status={badge.status}
-          message={badge.message}
-        />
-        }
-        <div
-          ref={(thumbnail) => {
-            this.thumbnail = thumbnail;
-          }}
-          className={this.getThumbnailClassNames()}
-          style={this.getThumbnailStyles()}
-        >
-          {overlay}
-          {this.getStatusFlags()}
-          {this.getStatusIcons()}
-        </div>
-        {this.getProgressBar()}
-        {this.getErrorMessage()}
-        {this.props.children}
-        <div
-          className="gallery-item__title"
-          data-draggable="true"
-          ref={(title) => { this.title = title; }}
-        >
-          <label {...inputLabelProps} htmlFor={htmlID}>
-            <span className={`gallery-item__checkbox-icon ${actionIcon}`} aria-hidden="true" />
-            <input {...inputProps} />
-          </label>
-          {this.props.item.title}
-        </div>
+        {overlay}
+        {getStatusFlags()}
+        {getStatusIcons()}
       </div>
-    );
-  }
-}
+      {getProgressBar()}
+      {getErrorMessage()}
+      {children}
+      <div
+        className="gallery-item__title"
+        data-draggable="true"
+        ref={titleRef}
+      >
+        <label {...inputLabelProps} htmlFor={htmlID}>
+          <span className={`gallery-item__checkbox-icon ${actionIcon}`} aria-hidden="true" />
+          <input {...inputProps} />
+        </label>
+        {item.title}
+      </div>
+    </div>
+  );
+};
 
 GalleryItem.propTypes = {
   sectionConfig: configShape,
@@ -553,6 +554,7 @@ GalleryItem.propTypes = {
   // Whether the item should be enlarged for more prominence than "highlighted"
   isDropping: PropTypes.bool,
   isDragging: PropTypes.bool,
+  maxSelected: PropTypes.bool,
   message: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,
@@ -569,17 +571,6 @@ GalleryItem.propTypes = {
   updateStatusFlags: PropTypes.func,
   updateProgressBar: PropTypes.func,
   updateErrorMessage: PropTypes.func,
-};
-
-GalleryItem.defaultProps = {
-  item: {},
-  sectionConfig: {
-    imageRetry: {},
-  },
-  updateStatusFlags: flags => flags,
-  updateProgressBar: progressBar => progressBar,
-  updateErrorMessage: message => message,
-  bustCache: true,
 };
 
 function mapStateToProps(state, ownprops) {

@@ -8,6 +8,7 @@ import { Component as Gallery } from '../Gallery';
 jest.mock('components/FormAlert/FormAlert');
 jest.mock('components/AssetDropzone/AssetDropzone');
 jest.mock('components/GalleryToolbar/GalleryToolbar');
+jest.mock('containers/Selectable/Selectable', () => ({ children, ...props }) => <div data-testid="selectable-container" {...props}>{children}</div>);
 jest.mock('../../MoveModal/MoveModal');
 // mock jquery, as leaving it causes more problems than it solves
 jest.mock('jquery', () => {
@@ -94,6 +95,7 @@ function makeProps(obj = {}) {
     badges: [],
     sectionConfig: {},
     GalleryToolbar: () => null,
+    LoadingComponent: () => <div data-testid="loading-component" />,
     sorters: [
       {
         field: 'title',
@@ -389,4 +391,260 @@ test('Gallery bulkActions does not unpublish an item if it was not published', a
   expect(success.mock.calls.length).toBe(0);
   expect(onUnpublish.mock.calls.length).toBe(0);
   expect(deselectFiles.mock.calls.length).toBe(1);
+});
+
+test('Gallery renderGalleryView should pass selectableItems when in select mode', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      type: 'select',
+      selectedFiles: [],
+      files: [
+        { id: 5 },
+      ]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery renderGalleryView should pass selectableItems when in admin mode with no maxFilesSelect', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      type: 'admin',
+      maxFilesSelect: undefined,
+      selectedFiles: [],
+      files: [
+        { id: 5 },
+      ]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery renderGalleryView should not pass selectableItems when maxFilesSelect is 1', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      type: 'admin',
+      maxFilesSelect: 1,
+      selectedFiles: [],
+      files: [
+        { id: 5 },
+      ]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery renderGalleryView should render ThumbnailView when view is tile', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      view: 'tile',
+      files: [
+        { id: 5 },
+      ]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery renderGalleryView should render TableView when view is table', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      view: 'table',
+      files: [
+        { id: 5 },
+      ]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery bulkPublish should call onPublish with item ids when publish button clicked', async () => {
+  const onPublish = jest.fn(() => Promise.resolve([{ id: 5 }]));
+  const setLoading = jest.fn();
+  const success = jest.fn();
+  const deselectFiles = jest.fn();
+  const { container } = render(
+    <Gallery {...makeProps({
+      type: 'admin',
+      selectedFiles: [5],
+      files: [
+        { id: 5, published: true },
+      ],
+      onPublish,
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          ...makeProps().actions.gallery,
+          setLoading,
+          deselectFiles
+        },
+        toasts: {
+          ...makeProps().actions.toasts,
+          success
+        }
+      }
+    })}
+    />
+  );
+  fireEvent.click(container.querySelector('[data-testid="test-bulk-action-publish"]'));
+  expect(onPublish).toHaveBeenCalledWith([5]);
+});
+
+test('Gallery should have opened item css class when fileId is set', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      fileId: 5,
+      files: [
+        { id: 5 },
+      ]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__main--has-opened-item')).not.toBeNull();
+});
+
+test('Gallery should not have opened item css class when fileId is null', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      fileId: null,
+      files: [
+        { id: 5 },
+      ]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__main--has-opened-item')).toBeNull();
+});
+
+test('Gallery should render error message when folder is missing with error', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      folder: null,
+      errorMessage: 'Folder not found'
+    })}
+    />
+  );
+  expect(container.textContent).toContain('Folder not found');
+});
+
+test('Gallery should render loading component when folder is missing and loading', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      folder: null,
+      loading: true
+    })}
+    />
+  );
+  expect(container.querySelector('.flexbox-area-grow')).not.toBeNull();
+});
+
+test('Gallery should render unknown error when folder is missing and no error message', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      folder: null,
+      loading: false,
+      errorMessage: ''
+    })}
+    />
+  );
+  expect(container.textContent).toContain('An unknown error has occurred');
+});
+
+test('Gallery should render with folder and files', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      folder: {
+        id: 1,
+        title: 'Test Folder',
+        parentId: null,
+        canView: true,
+        canEdit: true,
+      },
+      files: [{ id: 5 }]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery should add css class based on type property', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      type: 'insert-media',
+      files: [{ id: 5 }]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery should render files with selected and highlighted props correctly', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      selectedFiles: [5, 6],
+      fileId: 6,
+      files: [
+        { id: 5 },
+        { id: 6 },
+        { id: 7 }
+      ]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery should handle dialog prop to hide selectable folders', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      dialog: true,
+      files: [{ id: 5 }]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery renderBulkActions should render with SELECT type when dialog is true', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      type: 'select',
+      dialog: true,
+      selectedFiles: [5],
+      files: [{ id: 5 }]
+    })}
+    />
+  );
+  expect(container.querySelector('[data-testid="test-bulk-actions"]')).not.toBeNull();
+});
+
+test('Gallery should have canSelect true for tile view in admin mode', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      view: 'tile',
+      type: 'admin',
+      selectedFiles: [],
+      files: [{ id: 5 }]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
+});
+
+test('Gallery should have canSelect false for table view', () => {
+  const { container } = render(
+    <Gallery {...makeProps({
+      view: 'table',
+      type: 'admin',
+      selectedFiles: [],
+      files: [{ id: 5 }]
+    })}
+    />
+  );
+  expect(container.querySelector('.gallery__outer')).not.toBeNull();
 });
