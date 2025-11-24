@@ -1,50 +1,50 @@
-/* eslint-disable react/prefer-stateless-function */
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import droppable from 'components/GalleryItem/droppable';
 import Badge from 'components/Badge/Badge';
 import i18n from 'i18n';
 
-class BackButton extends Component {
-  render() {
-    const { isDropping, badge, onClick } = this.props;
-    const classList = [
-      'btn',
-      'btn-secondary',
-      'btn--no-text',
-      'btn--icon-large',
-      'gallery__back',
-    ];
+const BackButton = ({
+  isDropping,
+  badge,
+  onClick,
+}) => {
+  const classList = [
+    'btn',
+    'btn-secondary',
+    'btn--no-text',
+    'btn--icon-large',
+    'gallery__back',
+  ];
 
-    if (isDropping) {
-      classList.push('z-depth-1');
-      classList.push('gallery__back--droppable-hover');
-    }
-
-    const backBadge = badge
-      ? (
-        <Badge
-          className="gallery__back-badge"
-          status={badge.status}
-          message={badge.message}
-        />
-      )
-      : null;
-
-    const button = (
-      <button
-        className={classList.join(' ')}
-        title={i18n._t('AssetAdmin.BACK_DESCRIPTION', 'Navigate up a level')}
-        onClick={onClick}
-      >
-        <span className="font-icon-level-up" aria-hidden="true" />
-        {backBadge}
-      </button>
-    );
-
-    return button;
+  if (isDropping) {
+    classList.push('z-depth-1');
+    classList.push('gallery__back--droppable-hover');
   }
-}
+
+  const backBadge = badge
+    ? (
+      <Badge
+        className="gallery__back-badge"
+        status={badge.status}
+        message={badge.message}
+      />
+    )
+    : null;
+
+  const button = (
+    <button
+      className={classList.join(' ')}
+      title={i18n._t('AssetAdmin.BACK_DESCRIPTION', 'Navigate up a level')}
+      onClick={onClick}
+    >
+      <span className="font-icon-level-up" aria-hidden="true" />
+      {backBadge}
+    </button>
+  );
+
+  return button;
+};
 
 BackButton.propTypes = {
   onClick: PropTypes.func,

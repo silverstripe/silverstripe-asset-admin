@@ -14,16 +14,21 @@ import configShape from 'lib/configShape';
 import Config from 'lib/Config';
 import backend from 'lib/Backend';
 
-class MoveModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.timeout = null;
-  }
-
-  handleSubmit({ FolderID }) {
-    const { selectedFiles, onSuccess, onClosed, setNotice, setError, setBadge } = this.props;
-    let url = this.props.sectionConfig.endpoints.move.url;
+const MoveModal = ({
+  sectionConfig,
+  folderId,
+  isOpen = false,
+  onClosed,
+  setNotice,
+  setBadge,
+  setError,
+  title,
+  onSuccess,
+  onOpenFolder,
+  selectedFiles,
+}) => {
+  const handleSubmit = ({ FolderID }) => {
+    let url = sectionConfig.endpoints.move.url;
     return backend.post(url, {
       ids: selectedFiles,
       folderID: FolderID,
@@ -31,7 +36,7 @@ class MoveModal extends React.Component {
       'X-SecurityID': Config.get('SecurityID')
     })
       .then(() => {
-        url = `${this.props.sectionConfig.endpoints.read.url}/${FolderID}`;
+        url = `${sectionConfig.endpoints.read.url}/${FolderID}`;
         return backend.get(url);
       })
       .then(response => response.json())
@@ -48,7 +53,7 @@ class MoveModal extends React.Component {
           ),
           [{
             label: i18n._t('AssetAdmin.GO_TO_FOLDER', 'Go to folder'),
-            onClick: () => this.props.onOpenFolder(responseJson.id)
+            onClick: () => onOpenFolder(responseJson.id)
           }]
         );
         onClosed();
@@ -56,23 +61,19 @@ class MoveModal extends React.Component {
       .catch(() => {
         setError(i18n._t('AssetAdmin.FAILED_MOVE', 'There was an error moving the selected items.'));
       });
-  }
-
-  render() {
-    const { isOpen, onClosed, title, folderId, sectionConfig } = this.props;
-    const { schemaUrl } = sectionConfig.form.moveForm;
-    return (
-      <FormBuilderModal
-        title={title}
-        isOpen={isOpen}
-        onClosed={onClosed}
-        onSubmit={this.handleSubmit}
-        identifier="AssetAdmin.MoveForm"
-        schemaUrl={`${schemaUrl}/${folderId}`}
-      />
-    );
-  }
-}
+  };
+  const { schemaUrl } = sectionConfig.form.moveForm;
+  return (
+    <FormBuilderModal
+      title={title}
+      isOpen={isOpen}
+      onClosed={onClosed}
+      onSubmit={handleSubmit}
+      identifier="AssetAdmin.MoveForm"
+      schemaUrl={`${schemaUrl}/${folderId}`}
+    />
+  );
+};
 
 MoveModal.propTypes = {
   sectionConfig: configShape,
@@ -120,6 +121,8 @@ function mapDispatchToProps(dispatch) {
     },
   };
 }
+
+export { MoveModal as Component };
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
