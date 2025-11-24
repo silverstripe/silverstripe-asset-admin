@@ -1,44 +1,52 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import BackButtonDefault from './Buttons/BackButton';
 import UploadButtonDefault from './Buttons/UploadButton';
 import AddFolderButtonDefault from './Buttons/AddFolderButton';
 
-class GalleryToolbar extends Component {
-  constructor(props) {
-    super(props);
-    this.handleSelectSort = this.handleSelectSort.bind(this);
-    this.handleViewChange = this.handleViewChange.bind(this);
-  }
-
+const GalleryToolbar = ({
+  badges,
+  children,
+  folder,
+  onOpenFolder,
+  onCreateFolder,
+  onSort,
+  onViewChange,
+  view = 'tile',
+  sort,
+  sorters,
+  BackButton = BackButtonDefault,
+  UploadButton = UploadButtonDefault,
+  AddFolderButton = AddFolderButtonDefault,
+}) => {
   /**
    * Handler for when the sorter dropdown value is changed
    *
    * @param {Event} event
    */
-  handleSelectSort(event) {
-    this.props.onSort(event.currentTarget.value);
-  }
+  const handleSelectSort = (event) => {
+    onSort(event.currentTarget.value);
+  };
 
   /**
    * Handles changing the view type when the view button is clicked
    *
    * @param event
    */
-  handleViewChange(event) {
-    const view = event.currentTarget.value;
+  const handleViewChange = (event) => {
+    const viewValue = event.currentTarget.value;
 
-    this.props.onViewChange(view);
-  }
+    onViewChange(viewValue);
+  };
 
   /**
    * Generates the react components needed for the Sorter part of this component
    *
    * @returns {XML}
    */
-  renderSort() {
-    if (this.props.view !== 'tile') {
+  const renderSort = () => {
+    if (view !== 'tile') {
       return null;
     }
 
@@ -48,15 +56,15 @@ class GalleryToolbar extends Component {
           className="dropdown no-change-track no-chzn"
           tabIndex="0"
           style={{ width: '160px' }}
-          defaultValue={this.props.sort}
+          defaultValue={sort}
         >
-          {this.props.sorters.map((sorter) => {
+          {sorters.map((sorter) => {
             // upper case first letter of words
             const label = sorter.label.replace(/^\w|[\s\-]+\w/g, c => c.toUpperCase());
             return (
               <option
                 key={`${sorter.field}-${sorter.direction}`}
-                onClick={this.handleSelectSort}
+                onClick={handleSelectSort}
                 data-field={sorter.field}
                 data-direction={sorter.direction}
                 value={`${sorter.field},${sorter.direction}`}
@@ -68,17 +76,17 @@ class GalleryToolbar extends Component {
         </select>
       </div>
     );
-  }
+  };
 
   /**
    * Renders the react component buttons for changing the view that is currently being used
    *
    * @returns {Array} buttons
    */
-  renderViewChangeButtons() {
+  const renderViewChangeButtons = () => {
     const views = ['tile', 'table'];
-    return views.map((view) => {
-      const icon = (view === 'table') ? 'list' : 'thumbnails';
+    return views.map((viewButton) => {
+      const icon = (viewButton === 'table') ? 'list' : 'thumbnails';
       const classNames = [
         'gallery__view-change-button',
         'btn btn-secondary',
@@ -86,72 +94,58 @@ class GalleryToolbar extends Component {
         'btn--no-text',
       ];
 
-      if (view === this.props.view) {
+      if (viewButton === view) {
         return null;
       }
       return (
         <button
-          id={`button-view-${view}`}
-          key={view}
+          id={`button-view-${viewButton}`}
+          key={viewButton}
           className={classNames.join(' ')}
           type="button"
           title="Change view gallery/list"
-          onClick={this.handleViewChange}
-          value={view}
+          onClick={handleViewChange}
+          value={viewButton}
         >
           <span className={`font-icon-${icon}`} aria-hidden="true" />
         </button>
       );
     });
-  }
+  };
 
-  render() {
-    const {
-      badges,
-      children,
-      folder,
-      onOpenFolder,
-      onCreateFolder,
-      // Button components
-      BackButton,
-      UploadButton,
-      AddFolderButton,
-    } = this.props;
+  const { canEdit } = folder;
 
-    const { canEdit } = folder;
-
-    return (
-      <div className="toolbar--content toolbar--space-save">
-        <div className="fill-width">
-          <div className="gallery__btn-toolbar flexbox-area-grow">
-            <div className="btn-toolbar">
-              <BackButton
-                folder={folder}
-                badges={badges}
-                onOpenFolder={onOpenFolder}
-              />
-              <UploadButton
-                canEdit={canEdit}
-              />
-              <AddFolderButton
-                canEdit={canEdit}
-                onCreateFolder={onCreateFolder}
-              />
-              {children}
-            </div>
+  return (
+    <div className="toolbar--content toolbar--space-save">
+      <div className="fill-width">
+        <div className="gallery__btn-toolbar flexbox-area-grow">
+          <div className="btn-toolbar">
+            <BackButton
+              folder={folder}
+              badges={badges}
+              onOpenFolder={onOpenFolder}
+            />
+            <UploadButton
+              canEdit={canEdit}
+            />
+            <AddFolderButton
+              canEdit={canEdit}
+              onCreateFolder={onCreateFolder}
+            />
+            {children}
           </div>
+        </div>
 
-          <div className="gallery__state-buttons">
-            {this.renderSort()}
-            <div className="btn-group" role="group" aria-label="View mode">
-              {this.renderViewChangeButtons()}
-            </div>
+        <div className="gallery__state-buttons">
+          {renderSort()}
+          <div className="btn-group" role="group" aria-label="View mode">
+            {renderViewChangeButtons()}
           </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 GalleryToolbar.propTypes = {
   onCreateFolder: PropTypes.func.isRequired,
@@ -175,13 +169,6 @@ GalleryToolbar.propTypes = {
   BackButton: PropTypes.elementType,
   UploadButton: PropTypes.elementType,
   AddFolderButton: PropTypes.elementType,
-};
-
-GalleryToolbar.defaultProps = {
-  view: 'tile',
-  BackButton: BackButtonDefault,
-  UploadButton: UploadButtonDefault,
-  AddFolderButton: AddFolderButtonDefault,
 };
 
 function mapStateToProps(state, ownProps) {
