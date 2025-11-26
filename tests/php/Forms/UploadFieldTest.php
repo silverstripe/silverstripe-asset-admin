@@ -69,7 +69,6 @@ class UploadFieldTest extends SapphireTest
         AssetAdmin::config()->set('max_upload_size', $adminMaxFileSize);
         $admin = new AssetAdmin();
         $reflectionGetUpload = new ReflectionMethod($admin, 'getUpload');
-        $reflectionGetUpload->setAccessible(true);
         /** @var Upload $upload */
         $upload = $reflectionGetUpload->invoke($admin);
         $this->assertSame($expected, $upload->getValidator()->getAllowedMaxFileSize());
