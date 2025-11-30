@@ -1,5 +1,5 @@
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
@@ -9,39 +9,40 @@ import { joinUrlPaths } from 'lib/urls';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
-class InsertEmbedModal extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    this.setOverrides(this.props);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.isOpen && !prevProps.isOpen) {
-      this.setOverrides(this.props);
-    }
-  }
-
-  componentWillUnmount() {
-    this.clearOverrides();
-  }
+const InsertEmbedModal = (props) => {
+  const {
+    isOpen,
+    onInsert,
+    onCreate,
+    fileAttributes = {},
+    onClosed,
+    className = '',
+    actions,
+    schemaUrl,
+    targetUrl,
+    onLoadingError,
+    FormBuilderModalComponent = FormBuilderModal
+  } = props;
 
   /**
-   * Compares the current properties with received properties and determines if overrides need to be
-   * cleared or added.
-   *
-   * @param {object} props
+   * Clear any overrides that may be in place
    */
-  setOverrides(props) {
-    if (this.props.schemaUrl !== props.schemaUrl) {
-      this.clearOverrides();
+  const clearOverrides = () => {
+    actions.schema.setSchemaStateOverrides(schemaUrl, null);
+  };
+
+  /**
+    * Compares the current properties with received properties and determines if overrides need to be
+    * cleared or added.
+    *
+    * @param {object} obj
+    */
+  const setOverrides = (obj) => {
+    if (schemaUrl !== obj.schemaUrl) {
+      clearOverrides();
     }
-    if (props.schemaUrl) {
-      const attrs = Object.assign({}, props.fileAttributes);
+    if (obj.schemaUrl) {
+      const attrs = Object.assign({}, obj.fileAttributes);
       delete attrs.ID;
 
       const overrides = {
@@ -52,78 +53,40 @@ class InsertEmbedModal extends Component {
       };
       // set overrides into redux store, so that it can be accessed by FormBuilder with the same
       // schemaUrl.
-      this.props.actions.schema.setSchemaStateOverrides(props.schemaUrl, overrides);
+      actions.schema.setSchemaStateOverrides(obj.schemaUrl, overrides);
     }
-  }
-
-  /**
-   * Generates the properties for the modal
-   *
-   * @returns {object}
-   */
-  getModalProps() {
-    const props = Object.assign(
-      {
-        onSubmit: this.handleSubmit,
-        onLoadingError: this.handleLoadingError,
-        showErrorMessage: true,
-        responseClassBad: 'alert alert-danger',
-        identifier: 'AssetAdmin.InsertEmbedModal',
-      },
-      this.props,
-      {
-        className: `insert-embed-modal ${this.props.className}`,
-        size: 'lg',
-        onClosed: this.props.onClosed,
-        title: ((this.props.targetUrl)
-          ? i18n._t('AssetAdmin.EditTitle', 'Media from the web')
-          : i18n._t('AssetAdmin.CreateTitle', 'Insert new media from the web')),
-      }
-    );
-    delete props.sectionConfig;
-    delete props.onInsert;
-    delete props.fileAttributes;
-
-    return props;
-  }
-
-  /**
-   * Clear any overrides that may be in place
-   */
-  clearOverrides() {
-    this.props.actions.schema.setSchemaStateOverrides(this.props.schemaUrl, null);
-  }
+  };
 
   /**
    * Handler for when loading the form returns an error
    *
    * @param error
    */
-  handleLoadingError(error) {
-    if (typeof this.props.onLoadingError === 'function') {
-      this.props.onLoadingError(error);
+  const handleLoadingError = (error) => {
+    if (typeof onLoadingError === 'function') {
+      onLoadingError(error);
     }
-  }
+  };
 
   /**
-   * Capture submission in the form and stop the default submit behaviour
-   *
-   * @param data
-   * @param action
-   * @returns {Promise}
-   */
-  handleSubmit(data, action) {
+    * Capture submission in the form and stop the default submit behaviour
+    *
+    * @param data
+    * @param action
+    * @returns {Promise}
+    */
+  const handleSubmit = (data, action) => {
     switch (action) {
       case 'action_addmedia': {
-        this.props.onCreate(data);
+        onCreate(data);
         break;
       }
       case 'action_insertmedia': {
-        this.props.onInsert(data);
+        onInsert(data);
         break;
       }
       case 'action_cancel': {
-        this.props.onClosed();
+        onClosed();
         break;
       }
       default: {
@@ -132,13 +95,53 @@ class InsertEmbedModal extends Component {
     }
 
     return Promise.resolve();
-  }
+  };
 
-  render() {
-    const { FormBuilderModalComponent } = this.props;
-    return <FormBuilderModalComponent {...this.getModalProps()} />;
-  }
-}
+  /**
+    * Generates the properties for the modal
+    *
+    * @returns {object}
+    */
+  const getModalProps = () => {
+    const modalProps = Object.assign(
+      {
+        onSubmit: handleSubmit,
+        onLoadingError: handleLoadingError,
+        showErrorMessage: true,
+        responseClassBad: 'alert alert-danger',
+        identifier: 'AssetAdmin.InsertEmbedModal',
+      },
+      props,
+      {
+        className: `insert-embed-modal ${className}`,
+        size: 'lg',
+        onClosed,
+        title: ((targetUrl)
+          ? i18n._t('AssetAdmin.EditTitle', 'Media from the web')
+          : i18n._t('AssetAdmin.CreateTitle', 'Insert new media from the web')),
+      }
+    );
+    delete modalProps.sectionConfig;
+    delete modalProps.onInsert;
+    delete modalProps.fileAttributes;
+
+    return modalProps;
+  };
+
+  useEffect(() => {
+    setOverrides({ schemaUrl, fileAttributes });
+    // cleanup function
+    return () => clearOverrides();
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      setOverrides({ schemaUrl, fileAttributes });
+    }
+  }, [isOpen]);
+
+  return <FormBuilderModalComponent {...getModalProps()} />;
+};
 
 InsertEmbedModal.propTypes = {
   sectionConfig: PropTypes.shape({
@@ -163,12 +166,6 @@ InsertEmbedModal.propTypes = {
   targetUrl: PropTypes.string,
   onLoadingError: PropTypes.func,
   FormBuilderModalComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
-};
-
-InsertEmbedModal.defaultProps = {
-  className: '',
-  fileAttributes: {},
-  FormBuilderModalComponent: FormBuilderModal
 };
 
 function mapStateToProps(state, ownProps) {
