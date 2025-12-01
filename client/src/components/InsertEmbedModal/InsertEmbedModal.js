@@ -9,7 +9,7 @@ import { joinUrlPaths } from 'lib/urls';
 
 const sectionConfigKey = 'SilverStripe\\AssetAdmin\\Controller\\AssetAdmin';
 
-const InsertEmbedModal = (props) => {
+const InsertEmbedModal = (_props) => {
   const {
     isOpen,
     onInsert,
@@ -22,7 +22,16 @@ const InsertEmbedModal = (props) => {
     targetUrl,
     onLoadingError,
     FormBuilderModalComponent = FormBuilderModal
-  } = props;
+  } = _props;
+
+  // Create a props object to pass to FormBuilderModal
+  const props = {
+    ..._props,
+    // Use either the passed in prop values or the default values
+    fileAttributes,
+    className,
+    FormBuilderModalComponent,
+  };
 
   /**
    * Clear any overrides that may be in place

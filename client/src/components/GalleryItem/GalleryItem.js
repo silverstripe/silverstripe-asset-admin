@@ -38,7 +38,7 @@ const preventFocus = (event) => {
   event.preventDefault();
 };
 
-const GalleryItem = (props) => {
+const GalleryItem = (_props) => {
   const {
     sectionConfig = {
       imageRetry: {},
@@ -60,7 +60,19 @@ const GalleryItem = (props) => {
     updateErrorMessage = (msg) => msg,
     children,
     actions,
-  } = props;
+  } = _props;
+
+  // Create a props object to pass child components
+  const props = {
+    ..._props,
+    // Use either the passed in prop values or the default values
+    sectionConfig,
+    item,
+    bustCache,
+    updateStatusFlags,
+    updateProgressBar,
+    updateErrorMessage,
+  };
 
   const thumbnailRef = useRef(null);
   const titleRef = useRef(null);
