@@ -4,7 +4,7 @@ Feature: Pagination for asset admin
   I want pagination to work as expected
 
   Background:
-    Given I have a config file "assets-pagination-limit.yml"
+    Given I have a config file "assets-pagination-limit-10.yml"
       And a "company" "ACME inc"
       And a "file" "file001" has "Filename"="folder1/document.pdf" and "Title"="file001"
       And a "image" "file002" has "Filename"="folder1/file1.jpg" and "Title"="file002"

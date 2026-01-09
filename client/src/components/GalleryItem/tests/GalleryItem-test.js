@@ -344,6 +344,120 @@ test('GalleryItem handleKeyDown() should trigger onActivate when the enter key i
   expect(onActivate).toHaveBeenCalled();
 });
 
+test('GalleryItem handleKeyDown() should trigger onNavigateKeyDown prop when the left arrow key is pressed', () => {
+  const onSelect = jest.fn();
+  const onActivate = jest.fn();
+  const onNavigateKeyDown = jest.fn();
+  const { container } = render(
+    <GalleryItem {...makeProps({
+      onSelect,
+      onActivate,
+      onNavigateKeyDown
+    })}
+    />
+  );
+  const item = container.querySelector('.gallery-item');
+  fireEvent.keyDown(item, { key: 'ArrowLeft' });
+  expect(onSelect).not.toHaveBeenCalled();
+  expect(onActivate).not.toHaveBeenCalled();
+  expect(onNavigateKeyDown).toHaveBeenCalled();
+});
+
+test('GalleryItem handleKeyDown() should trigger onNavigateKeyDown prop when the right arrow key is pressed', () => {
+  const onSelect = jest.fn();
+  const onActivate = jest.fn();
+  const onNavigateKeyDown = jest.fn();
+  const { container } = render(
+    <GalleryItem {...makeProps({
+      onSelect,
+      onActivate,
+      onNavigateKeyDown
+    })}
+    />
+  );
+  const item = container.querySelector('.gallery-item');
+  fireEvent.keyDown(item, { key: 'ArrowRight' });
+  expect(onSelect).not.toHaveBeenCalled();
+  expect(onActivate).not.toHaveBeenCalled();
+  expect(onNavigateKeyDown).toHaveBeenCalled();
+});
+
+test('GalleryItem handleKeyDown() should trigger onNavigateKeyDown prop when the up arrow key is pressed', () => {
+  const onSelect = jest.fn();
+  const onActivate = jest.fn();
+  const onNavigateKeyDown = jest.fn();
+  const { container } = render(
+    <GalleryItem {...makeProps({
+      onSelect,
+      onActivate,
+      onNavigateKeyDown
+    })}
+    />
+  );
+  const item = container.querySelector('.gallery-item');
+  fireEvent.keyDown(item, { key: 'ArrowUp' });
+  expect(onSelect).not.toHaveBeenCalled();
+  expect(onActivate).not.toHaveBeenCalled();
+  expect(onNavigateKeyDown).toHaveBeenCalled();
+});
+
+test('GalleryItem handleKeyDown() should trigger onNavigateKeyDown prop when the down arrow key is pressed', () => {
+  const onSelect = jest.fn();
+  const onActivate = jest.fn();
+  const onNavigateKeyDown = jest.fn();
+  const { container } = render(
+    <GalleryItem {...makeProps({
+      onSelect,
+      onActivate,
+      onNavigateKeyDown
+    })}
+    />
+  );
+  const item = container.querySelector('.gallery-item');
+  fireEvent.keyDown(item, { key: 'ArrowDown' });
+  expect(onSelect).not.toHaveBeenCalled();
+  expect(onActivate).not.toHaveBeenCalled();
+  expect(onNavigateKeyDown).toHaveBeenCalled();
+});
+
+test('GalleryItem handleKeyDown() should trigger onNavigateKeyDown prop when the home arrow key is pressed', () => {
+  const onSelect = jest.fn();
+  const onActivate = jest.fn();
+  const onNavigateKeyDown = jest.fn();
+  const { container } = render(
+    <GalleryItem {...makeProps({
+      onSelect,
+      onActivate,
+      onNavigateKeyDown
+    })}
+    />
+  );
+  const item = container.querySelector('.gallery-item');
+  fireEvent.keyDown(item, { key: 'Home' });
+  expect(onSelect).not.toHaveBeenCalled();
+  expect(onActivate).not.toHaveBeenCalled();
+  expect(onNavigateKeyDown).toHaveBeenCalled();
+});
+
+test('GalleryItem handleKeyDown() should trigger onNavigateKeyDown prop when the end arrow key is pressed', () => {
+  const onSelect = jest.fn();
+  const onActivate = jest.fn();
+  const onNavigateKeyDown = jest.fn();
+  const { container } = render(
+    <GalleryItem {...makeProps({
+      onSelect,
+      onActivate,
+      onNavigateKeyDown
+    })}
+    />
+  );
+  const item = container.querySelector('.gallery-item');
+  fireEvent.keyDown(item, { key: 'End' });
+  expect(onSelect).not.toHaveBeenCalled();
+  expect(onActivate).not.toHaveBeenCalled();
+  expect(onNavigateKeyDown).toHaveBeenCalled();
+});
+
 test('GalleryItem should render error message when item has an error', () => {
   const { container } = render(
     <GalleryItem {...makeProps({

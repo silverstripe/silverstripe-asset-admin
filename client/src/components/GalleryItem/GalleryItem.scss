@@ -16,6 +16,10 @@ $gallery-item-label-height: 40px;
     cursor: pointer;
   }
 
+  &:focus-visible {
+    border-color: transparent;
+  }
+
   &:not(.gallery-item--error, .gallery-item--folder):hover .gallery-item--overlay {
     opacity: 1;
     display: block;

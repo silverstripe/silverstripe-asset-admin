@@ -101,7 +101,7 @@ Feature: Change view for asset admin
       And I should see the gallery item "file001" in position "50"
 
   Scenario: Sort order works as expected across pages
-    Given I have a config file "assets-pagination-limit.yml"
+    Given I have a config file "assets-pagination-limit-10.yml"
       And I go to "/admin/assets"
       And I click on the file named "folder1" in the gallery
     Then I should see the file named "zsubfolder2" in the gallery

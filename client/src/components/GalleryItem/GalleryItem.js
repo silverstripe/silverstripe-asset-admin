@@ -51,6 +51,8 @@ const GalleryItem = (_props) => {
     maxSelected,
     selectable,
     onActivate,
+    onClick,
+    onNavigateKeyDown,
     onSelect,
     onCancelUpload,
     onRemoveErroredUpload,
@@ -60,6 +62,10 @@ const GalleryItem = (_props) => {
     updateErrorMessage = (msg) => msg,
     children,
     actions,
+    tabIndex,
+    colIndex,
+    rowIndex,
+    isFocused,
   } = _props;
 
   // Create a props object to pass child components
@@ -76,6 +82,7 @@ const GalleryItem = (_props) => {
 
   const thumbnailRef = useRef(null);
   const titleRef = useRef(null);
+  const itemRef = useRef(null);
 
   useEffect(() => {
     if (shouldLoadImage({
@@ -88,6 +95,14 @@ const GalleryItem = (_props) => {
       );
     }
   }, [item, sectionConfig, actions.imageLoad]);
+
+  // Give the element focus after the render cycle is complete
+  // This ensures the DOM is in the correct state before setting focus.
+  useEffect(() => {
+    if (isFocused && itemRef.current) {
+      itemRef.current.focus();
+    }
+  }, [isFocused]);
 
   /**
    * Check if this item has been saved, either in this request or in a prior one
@@ -419,6 +434,13 @@ const GalleryItem = (_props) => {
     }
   };
 
+  const handleClick = (event) => {
+    if (typeof onClick === 'function') {
+      onClick(event);
+    }
+    handleActivate(event);
+  };
+
   /**
    * Wrapper around onSelect prop
    *
@@ -438,6 +460,17 @@ const GalleryItem = (_props) => {
    * @param {Object} event
    */
   const handleKeyDown = (event) => {
+    // If navigation keys are pressed, let the grid handle it
+    if (event.key === 'ArrowRight'
+      || event.key === 'ArrowLeft'
+      || event.key === 'ArrowUp'
+      || event.key === 'ArrowDown'
+      || event.key === 'Home'
+      || event.key === 'End'
+    ) {
+      onNavigateKeyDown(event);
+    }
+
     // If space is pressed, select file
     if (event.key === ' ') {
       event.preventDefault(); // Stop page scrolling if spaceKey is pressed
@@ -446,9 +479,20 @@ const GalleryItem = (_props) => {
       }
     }
 
-    // If return is pressed, navigate folder
+    // If return is pressed, various actions are possible
     if (event.key === 'Enter') {
-      handleActivate(event);
+      if (uploading()) {
+        // If a file is being uploaded, you can cancel an upgrade in progress
+        // or remove the failed upload.
+        if (hasError()) {
+          onRemoveErroredUpload(item);
+        } else if (onCancelUpload) {
+          onCancelUpload(item);
+        }
+      } else {
+        // Navigates to a folder or opens an edit form for a file
+        handleActivate(event);
+      }
     }
   };
 
@@ -497,6 +541,10 @@ const GalleryItem = (_props) => {
     tabIndex: -1,
     onMouseDown: preventFocus,
     id: htmlID,
+    // Hide the checkbox and its label from the screen reader.
+    // To select the item with the keyboard, the user presses
+    // space on the grid-cell item directly.
+    'aria-hidden': true,
   };
   const inputLabelClasses = [
     'gallery-item__checkbox-label',
@@ -509,16 +557,43 @@ const GalleryItem = (_props) => {
   const inputLabelProps = {
     className: inputLabelClasses.join(' '),
     onClick: action,
+    'aria-hidden': true,
   };
+
+  // Text that gives context to screen reader users
+  let selectableText = canBatchSelect()
+    ? i18n._t('AssetAdmin.SELECTABLE', 'selectable')
+    : i18n._t('AssetAdmin.NOT_SELECTABLE', 'not selectable');
+  selectableText += ',';
+  let editableText = item.canEdit ? null : `${i18n._t('AssetAdmin.NOT_EDITABLE', 'not editable')},`;
+  let uploadText = null;
+  if (uploading()) {
+    selectableText = null;
+    editableText = null;
+    uploadText = hasError()
+      ? i18n._t('AssetAdmin.UPLOAD_FAILED_INSTRUCTION', 'upload failed, press enter to remove')
+      : i18n._t('AssetAdmin.UPLOADING_INSTRUCTION', 'uploading, press enter to cancel');
+    uploadText += ',';
+  }
+  const titleLabel = i18n.inject(
+    i18n._t('AssetAdmin.FILE_TITLE', 'Title: {title}'),
+    { title: item.title }
+  );
 
   return (
     <div
       className={getItemClassNames()}
       data-id={item.id}
-      tabIndex={0}
-      role="button"
+      tabIndex={tabIndex}
+      role="gridcell"
       onKeyDown={handleKeyDown}
-      onClick={handleActivate}
+      onClick={handleClick}
+      ref={itemRef}
+      // aria-selected must be explicitly ommitted if the item isn't selectable
+      aria-selected={canBatchSelect() ? item.selected : null}
+      aria-current={item.highlighted ? 'page' : null}
+      aria-rowindex={rowIndex}
+      aria-colindex={colIndex}
     >
       {!!badge &&
       <Badge
@@ -536,6 +611,12 @@ const GalleryItem = (_props) => {
         {getStatusFlags()}
         {getStatusIcons()}
       </div>
+      <span className="visually-hidden">
+        {item.category && i18n._t(`AssetAdmin.CATEGORY_${item.category.toUpperCase()}`, item.category)},&nbsp;
+        {selectableText}&nbsp;
+        {editableText}&nbsp;
+        {uploadText}&nbsp;
+      </span>
       {getProgressBar()}
       {getErrorMessage()}
       {children}
@@ -543,6 +624,7 @@ const GalleryItem = (_props) => {
         className="gallery-item__title"
         data-draggable="true"
         ref={titleRef}
+        aria-label={titleLabel}
       >
         <label {...inputLabelProps} htmlFor={htmlID}>
           <span className={`gallery-item__checkbox-icon ${actionIcon}`} aria-hidden="true" />
@@ -559,13 +641,10 @@ GalleryItem.propTypes = {
   item: fileShape,
   loadState: PropTypes.oneOf(Object.values(IMAGE_STATUS)),
   bustCache: PropTypes.bool,
-  // Can be used to highlight a currently edited file
-  highlighted: PropTypes.bool,
-  // Styles according to the checkbox selection state
-  selected: PropTypes.bool,
   // Whether the item should be enlarged for more prominence than "highlighted"
   isDropping: PropTypes.bool,
   isDragging: PropTypes.bool,
+  isFocused: PropTypes.bool,
   maxSelected: PropTypes.bool,
   message: PropTypes.shape({
     value: PropTypes.string,
@@ -573,6 +652,8 @@ GalleryItem.propTypes = {
   }),
   selectable: PropTypes.bool,
   onActivate: PropTypes.func,
+  onClick: PropTypes.func,
+  onNavigateKeyDown: PropTypes.func,
   onSelect: PropTypes.func,
   onCancelUpload: PropTypes.func,
   onRemoveErroredUpload: PropTypes.func,
@@ -580,6 +661,9 @@ GalleryItem.propTypes = {
     status: PropTypes.string,
     message: PropTypes.string,
   }),
+  tabIndex: PropTypes.number,
+  rowIndex: PropTypes.number,
+  colIndex: PropTypes.number,
   updateStatusFlags: PropTypes.func,
   updateProgressBar: PropTypes.func,
   updateErrorMessage: PropTypes.func,
@@ -615,7 +699,7 @@ function mapDispatchToProps(dispatch) {
 
 const ConnectedGalleryItem = connect(mapStateToProps, mapDispatchToProps)(GalleryItem);
 
-const File = draggable(ConnectedGalleryItem);
+const File = draggable(ConnectedGalleryItem, false);
 const Folder = droppable(File);
 export {
   GalleryItem as Component,
