@@ -323,7 +323,7 @@ test('GalleryItem handleKeyDown() should trigger onSelect when the space key is 
     />
   );
   const item = container.querySelector('.gallery-item');
-  fireEvent.keyDown(item, { keyCode: 32 });
+  fireEvent.keyDown(item, { key: ' ' });
   expect(onSelect).toHaveBeenCalled();
   expect(onActivate).not.toHaveBeenCalled();
 });
@@ -339,7 +339,7 @@ test('GalleryItem handleKeyDown() should trigger onActivate when the enter key i
     />
   );
   const item = container.querySelector('.gallery-item');
-  fireEvent.keyDown(item, { keyCode: 13 });
+  fireEvent.keyDown(item, { key: 'Enter' });
   expect(onSelect).not.toHaveBeenCalled();
   expect(onActivate).toHaveBeenCalled();
 });

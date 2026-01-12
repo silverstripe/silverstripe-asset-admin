@@ -439,7 +439,7 @@ const GalleryItem = (_props) => {
    */
   const handleKeyDown = (event) => {
     // If space is pressed, select file
-    if (CONSTANTS.SPACE_KEY_CODE === event.keyCode) {
+    if (event.key === ' ') {
       event.preventDefault(); // Stop page scrolling if spaceKey is pressed
       if (canBatchSelect()) {
         handleSelect(event);
@@ -447,7 +447,7 @@ const GalleryItem = (_props) => {
     }
 
     // If return is pressed, navigate folder
-    if (CONSTANTS.RETURN_KEY_CODE === event.keyCode) {
+    if (event.key === 'Enter') {
       handleActivate(event);
     }
   };

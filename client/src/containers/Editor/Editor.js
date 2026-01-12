@@ -3,7 +3,6 @@ import i18n from 'i18n';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import React, { Component } from 'react';
-import CONSTANTS from 'constants/index';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
@@ -122,7 +121,7 @@ class Editor extends Component {
    * @param {object} event
    */
   handleCancelKeyDown(event) {
-    if (event.keyCode === CONSTANTS.SPACE_KEY_CODE || event.keyCode === CONSTANTS.RETURN_KEY_CODE) {
+    if (event.key === ' ' || event.key === 'Enter') {
       this.handleClose(event);
     }
   }
