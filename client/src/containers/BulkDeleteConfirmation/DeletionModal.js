@@ -2,6 +2,7 @@ import i18n from 'i18n';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
+import ModalCloseButton from 'components/Modal/ModalCloseButton';
 
 const DeletionModal = ({ isOpen, body, onCancel, actions, filesAreVersioned, archiveFiles }) => {
   let transKey = 'AssetAdmin.CONFIRM_FILE_DELETION';
@@ -12,7 +13,7 @@ const DeletionModal = ({ isOpen, body, onCancel, actions, filesAreVersioned, arc
   }
   return (
     <Modal isOpen={isOpen} toggle={onCancel}>
-      <ModalHeader toggle={onCancel}>
+      <ModalHeader toggle={onCancel} close={<ModalCloseButton onClosed={onCancel} />}>
         {i18n._t(transKey, transDefault)}
       </ModalHeader>
       <ModalBody>{body}</ModalBody>
