@@ -54,8 +54,8 @@ Feature: Manage files
 
   Scenario: I am blocked from uploading invalid files
     When I click on the file named "folder1" in the gallery
-      And I attach the file "file.invalid" to dropzone "gallery-container"
-    Then I should see an error message on the file "file"
+      And I attach the file "invalid.file" to dropzone "gallery-container"
+    Then I should see an error message on the file "invalid"
 
   Scenario: I can edit a file
     When I click on the file named "folder1" in the gallery

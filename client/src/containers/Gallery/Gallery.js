@@ -761,9 +761,7 @@ const Gallery = ({
     const mappedFiles = files.map((file) => {
       const selected = itemIsSelected(file.id);
       const highlighted = itemIsHighlighted(file.id);
-      const key =
-        (file.queuedId ? `queueId${file.queuedId}` : `id${file.id}`) +
-        (selected ? '--selected' : '');
+      const key = (file.queuedId ? `queueId${file.queuedId}` : `id${file.id}`);
       return ({ ...file, selected, highlighted, key });
     });
 
@@ -779,6 +777,7 @@ const Gallery = ({
       selectableItems,
       selectableFolders: type !== ACTION_TYPES.SELECT && !dialog,
       files: mappedFiles,
+      folderId,
       loading,
       page,
       totalCount,
@@ -797,6 +796,10 @@ const Gallery = ({
       sectionConfig,
       canDrag: type === ACTION_TYPES.ADMIN,
       maxFilesSelect,
+      // If the file ID isn't in the list of files on the current page,
+      // it isn't "open" for the purposes of the gallery's logic.
+      // That includes editing the current folder.
+      openFileId: files.find((file) => file.id === fileId) ? fileId : 0,
     };
 
     return <GalleryView {...props} />;
@@ -990,6 +993,7 @@ const sharedPropTypes = {
       id: PropTypes.number,
     }),
   })).isRequired,
+  folderId: PropTypes.number.isRequired,
   selectedFiles: PropTypes.arrayOf(PropTypes.number),
   totalCount: PropTypes.number,
   page: PropTypes.number,
@@ -1016,6 +1020,7 @@ const galleryViewPropTypes = Object.assign({}, sharedPropTypes, {
   onSelect: PropTypes.func,
   onCancelUpload: PropTypes.func,
   onRemoveErroredUpload: PropTypes.func,
+  openFileId: PropTypes.number,
 });
 
 Gallery.propTypes = Object.assign({}, sharedPropTypes, {
@@ -1030,7 +1035,6 @@ Gallery.propTypes = Object.assign({}, sharedPropTypes, {
   lastSelected: PropTypes.number,
   dialog: PropTypes.bool,
   fileId: PropTypes.number,
-  folderId: PropTypes.number.isRequired,
   folder: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,

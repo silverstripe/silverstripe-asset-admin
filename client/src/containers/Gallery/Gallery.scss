@@ -47,6 +47,12 @@
   }
 }
 
+.gallery__main-view--tile:has(.gallery-item:focus-visible) {
+  outline: var(--focus-outline-width) dashed var(--focus-outline-color);
+  // Add additional room for the outline of the items inside (assuming they use the same variable values).
+  outline-offset: calc(var(--focus-outline-offset) * 2 + var(--focus-outline-width));
+}
+
 .gallery__no-item-notice {
   text-align: center;
   font-size: $font-size-lg;

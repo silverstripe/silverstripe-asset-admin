@@ -538,4 +538,31 @@ EOS
         Assert::assertNotNull($backButton, 'Back button could not be found');
         $file->dragTo($backButton);
     }
+
+    /**
+     * Example: Then the file named "file1" should have focus
+     *
+     * @Then /^the (?:file|folder) named "([^"]+)" should (not |)have focus$/
+     */
+    public function theItemShouldHaveFocus(string $name, string|bool $not): void
+    {
+        $file = $this->getGalleryItem($name)?->getParent();
+        Assert::assertNotNull($file, "File named {$name} could not be found");
+        $xpath = $file->getXpath();
+        $not = $not ? 'true' : 'false';
+
+        $script = <<<JS
+            return (function() {
+                var el = document.evaluate("$xpath", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+                if (!el) {
+                    return false;
+                }
+                return ($not) ? el !== document.activeElement : el === document.activeElement;
+            })();
+        JS;
+
+        $context = $this->getMainContext();
+        $res = $context->getSession()->evaluateScript($script);
+        Assert::assertTrue($res);
+    }
 }
