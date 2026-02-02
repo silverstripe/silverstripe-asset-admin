@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { connect } from 'react-redux';
 import backend from 'lib/Backend';
 import Config from 'lib/Config';
@@ -24,147 +24,128 @@ const createEndpoint = (endpointConfig, includeToken = true) => (
   ))
 );
 
-class HistoryList extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      history: [],
-      loadedDetails: false,
-    };
-
-    this.handleClick = this.handleClick.bind(this);
-    this.handleBack = this.handleBack.bind(this);
-
-    this.timer = null;
-
-    this.api = createEndpoint(props.sectionConfig.endpoints.history);
-  }
-
-  componentDidMount() {
-    this.refreshHistoryIfNeeded();
-  }
-
-  componentDidUpdate(prevProps) {
-    // Avoids race conditions from happening
-    this.refreshHistoryIfNeeded(prevProps);
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.timer);
-    this.timer = null;
-  }
+const HistoryList = ({
+  sectionConfig,
+  historySchemaUrl,
+  data = { fieldId: 0 }
+}) => {
+  const [history, setHistory] = useState([]);
+  const [loadedDetails, setLoadedDetails] = useState(false);
+  const [viewDetails, setViewDetails] = useState(null);
+  const timerRef = useRef(null);
+  const api = useMemo(
+    () => createEndpoint(sectionConfig.endpoints.history),
+    [sectionConfig.endpoints.history]
+  );
 
   /**
    * Determine if the history list requires a refresh
    *
    * @param {object} prevProps
    */
-  refreshHistoryIfNeeded(prevProps) {
-    if (
-      (!prevProps && !this.state.loadedDetails)
-      || (this.props.data.fileId !== prevProps.data.fileId)
-      || (this.props.data.latestVersionId !== prevProps.data.latestVersionId)
-    ) {
-      this.setState({ loadedDetails: false });
-      const fileId = (this.props) ? this.props.data.fileId : prevProps.data.fileId;
-      clearTimeout(this.timer);
+  const refreshHistoryIfNeeded = () => {
+    setLoadedDetails(false);
+    const fileId = data.fileId;
+    clearTimeout(timerRef.current);
 
-      /*
-       * This needs a delay/throttle, so this api request tries to be made last in the stack.
-       * We also use this to stop an API call happening if the component is going to
-       * unmount soon.
-       */
-      this.timer = setTimeout(() => {
-        this.api({
-          fileId,
-        }).then((history) => {
-          // check that timer wasn't nulled out by unmounting
-          if (this.timer) {
-            this.setState({ history, loadedDetails: true });
-          }
-        });
-      }, 250);
-    }
-  }
+    /*
+     * This needs a delay/throttle, so this api request tries to be made last in the stack.
+     * We also use this to stop an API call happening if the component is going to
+     * unmount soon.
+     */
+    timerRef.current = setTimeout(() => {
+      api({
+        fileId,
+      }).then((historyParam) => {
+        // check that timer wasn't nulled out by unmounting
+        if (timerRef.current) {
+          setHistory(historyParam);
+          setLoadedDetails(true);
+        }
+      });
+    }, 250);
+  };
 
   /**
    * Click into the history fades out the list and loads in the detail form.
    *
    * @param {number} versionId
    */
-  handleClick(versionId) {
-    this.setState({
-      viewDetails: versionId,
-    });
-  }
+  const handleClick = (versionId) => {
+    setViewDetails(versionId);
+  };
 
   /**
    * @param {Event} event Event object.
    */
-  handleBack(event) {
+  const handleBack = (event) => {
     event.preventDefault();
+    setViewDetails(null);
+  };
 
-    this.setState({
-      viewDetails: null,
-    });
-  }
+  // Cleanup on unmount
+  useEffect(() => () => {
+    clearTimeout(timerRef.current);
+    timerRef.current = null;
+  }, []);
 
-  render() {
-    if (!this.state.loadedDetails) {
-      return (
-        <div className="history-list history-list--loading">
-          Loading...
-        </div>
-      );
-    }
+  useEffect(() => {
+    refreshHistoryIfNeeded();
+  }, [data.fileId, data.latestVersionId]);
 
-    if (this.state.viewDetails) {
-      const schemaUrl = [
-        this.props.historySchemaUrl,
-        this.props.data.fileId,
-        this.state.viewDetails,
-      ].join('/');
-
-      const backButtonClasses = [
-        'btn',
-        'btn-secondary',
-        'btn--icon-xl',
-        'btn--no-text',
-        'history-list__back',
-      ].join(' ');
-
-      const backButtonText = i18n._t('AssetAdmin.BACK_TO_HISTORY', 'Back to history list');
-      return (
-        <div className="history-list">
-          <a href="#" className={backButtonClasses} onClick={this.handleBack} title={backButtonText} aria-label={backButtonText}>
-            <span className="font-icon-left-open-big" aria-hidden="true" />
-          </a>
-          <FormBuilderLoader
-            identifier="AssetAdmin.HistoryList"
-            schemaUrl={schemaUrl}
-            formTag="div"
-          />
-        </div>
-      );
-    }
-
-    const historyList = this.state.history || [];
+  if (!loadedDetails) {
     return (
-      <div className="history-list">
-        <ul className="list-group list-group-flush history-list__list">
-          {historyList.map((history) => (
-            <HistoryItem
-              key={history.versionid}
-              {...history}
-              onClick={this.handleClick}
-            />
-          ))}
-        </ul>
+      <div className="history-list history-list--loading">
+        Loading...
       </div>
     );
   }
-}
+
+  if (viewDetails) {
+    const schemaUrl = [
+      historySchemaUrl,
+      data.fileId,
+      viewDetails,
+    ].join('/');
+
+    const backButtonClasses = [
+      'btn',
+      'btn-secondary',
+      'btn--icon-xl',
+      'btn--no-text',
+      'history-list__back',
+    ].join(' ');
+
+    const backButtonText = i18n._t('AssetAdmin.BACK_TO_HISTORY', 'Back to history list');
+    return (
+      <div className="history-list">
+        <a href="#" className={backButtonClasses} onClick={handleBack} title={backButtonText} aria-label={backButtonText}>
+          <span className="font-icon-left-open-big" aria-hidden="true" />
+        </a>
+        <FormBuilderLoader
+          identifier="AssetAdmin.HistoryList"
+          schemaUrl={schemaUrl}
+          formTag="div"
+        />
+      </div>
+    );
+  }
+
+  const historyList = history || [];
+  return (
+    <div className="history-list">
+      <ul className="list-group list-group-flush history-list__list">
+        {historyList.map((historyParam) => (
+          <HistoryItem
+            key={historyParam.versionid}
+            {...historyParam}
+            onClick={handleClick}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 HistoryList.propTypes = {
   sectionConfig: PropTypes.shape({
@@ -177,12 +158,6 @@ HistoryList.propTypes = {
   }),
   historySchemaUrl: PropTypes.string,
   data: PropTypes.object,
-};
-
-HistoryList.defaultProps = {
-  data: {
-    fieldId: 0,
-  },
 };
 
 function mapStateToProps(state) {
