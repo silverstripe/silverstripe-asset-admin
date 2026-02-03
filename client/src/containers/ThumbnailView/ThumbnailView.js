@@ -48,6 +48,9 @@ class ThumbnailView extends Component {
     this.updateItemsPerRow();
   }
 
+  // IMPORTANT
+  // A lot of the logic here is similar to logic in TableView.
+  // If a change is needed (e.g. to resolve a bug), make sure you check both views!
   componentDidUpdate(oldProps) {
     // If we changed page or are looking at a different folder, throw away the old refs
     // and reset focus, and skip the rest of the logic in this lifecycle event.

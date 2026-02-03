@@ -440,7 +440,12 @@ const Gallery = ({
    * @param {Event} event
    */
   const toggleSelectConcat = (event) => {
-    actions.gallery.setConcatenateSelect(isConcat(event));
+    // Table view doesn't use the click-to-drag selection functionality
+    // If we didn't have this condition here, it would cause unnecessary re-rendering
+    // in that view which can confuse screen readers.
+    if (view === 'tile') {
+      actions.gallery.setConcatenateSelect(isConcat(event));
+    }
   };
 
   /**
