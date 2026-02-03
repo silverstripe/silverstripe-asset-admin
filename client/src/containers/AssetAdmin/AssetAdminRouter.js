@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import withRouter, { routerPropTypes } from 'lib/withRouter';
@@ -50,15 +50,20 @@ function buildUrl({ base, folderId, fileId, query, action }) {
   return url;
 }
 
-class AssetAdminRouter extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleBrowse = this.handleBrowse.bind(this);
-    this.handleReplaceUrl = this.handleReplaceUrl.bind(this);
-    this.handleResetDetails = this.handleResetDetails.bind(this);
-    this.getUrl = this.getUrl.bind(this);
-  }
+const AssetAdminRouter = ({
+  sectionConfig,
+  router,
+  AssetAdminComponent = AssetAdmin,
+}) => {
+  /**
+   * @return {Number} Folder ID being viewed
+   */
+  const getFolderId = () => {
+    if (router.params && router.params.folderId) {
+      return parseInt(router.params.folderId, 10);
+    }
+    return 0;
+  };
 
   /**
    * Generates the Url for a given folder and file ID.
@@ -69,81 +74,49 @@ class AssetAdminRouter extends Component {
    * @param {String} action
    * @returns {String}
    */
-  getUrl(folderId = 0, fileId = null, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE) {
+  const getUrl = (folderId = 0, fileId = null, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE) => {
     const newFolderId = parseInt(folderId || 0, 10);
     const newFileId = parseInt(fileId || 0, 10);
 
     // Remove pagination selector if already on first page, or changing folder
-    const hasFolderChanged = newFolderId !== this.getFolderId();
+    const hasFolderChanged = newFolderId !== getFolderId();
     const newQuery = Object.assign({}, query);
     if (hasFolderChanged || newQuery.page <= 1) {
       delete newQuery.page;
     }
 
     return buildUrl({
-      base: `/${this.props.sectionConfig.reactRoutePath}`,
+      base: `/${sectionConfig.reactRoutePath}`,
       folderId: newFolderId,
       fileId: newFileId,
       query: newQuery,
       action,
     });
-  }
-
-  /**
-   * @return {Number} Folder ID being viewed
-   */
-  getFolderId() {
-    if (this.props.router.params && this.props.router.params.folderId) {
-      return parseInt(this.props.router.params.folderId, 10);
-    }
-    return 0;
-  }
+  };
 
   /**
    * @return {Number} File ID being viewed
    */
-  getFileId() {
-    if (this.props.router.params && this.props.router.params.fileId) {
-      return parseInt(this.props.router.params.fileId, 10);
+  const getFileId = () => {
+    if (router.params && router.params.fileId) {
+      return parseInt(router.params.fileId, 10);
     }
     return 0;
-  }
+  };
 
-  getViewAction() {
-    if (this.props.router.params && this.props.router.params.viewAction) {
-      return this.props.router.params.viewAction;
+  const getViewAction = () => {
+    if (router.params && router.params.viewAction) {
+      return router.params.viewAction;
     }
     return CONSTANTS.ACTIONS.EDIT_FILE;
-  }
-
-  /**
-   * Generates the properties for this section
-   *
-   * @returns {object}
-   */
-  getSectionProps() {
-    return {
-      sectionConfig: this.props.sectionConfig,
-      type: 'admin',
-      folderId: this.getFolderId(),
-      viewAction: this.getViewAction(),
-      fileId: this.getFileId(),
-      query: this.getQuery(),
-      getUrl: this.getUrl,
-      onBrowse: this.handleBrowse,
-      onReplaceUrl: this.handleReplaceUrl,
-      resetFileDetails: this.handleResetDetails,
-    };
-  }
+  };
 
   /**
    * Get decoded query object
    *
    * @returns {Object}
    */
-  getQuery() {
-    return decodeQuery(this.props.router.location.search);
-  }
+  const getQuery = () => decodeQuery(router.location.search);
 
   /**
    * Handle browsing with the router.
@@ -153,11 +126,11 @@ class AssetAdminRouter extends Component {
    * @param {object} [query]
    * @param {string} [action]
    */
-  handleBrowse(folderId, fileId, query, action) {
-    const pathname = this.getUrl(folderId, fileId, query, action);
+  const handleBrowse = (folderId, fileId, query, action) => {
+    const pathname = getUrl(folderId, fileId, query, action);
 
-    this.props.router.navigate(pathname);
-  }
+    router.navigate(pathname);
+  };
 
   /**
    * Handle browsing with the router but does not add to history, useful for
@@ -168,11 +141,11 @@ class AssetAdminRouter extends Component {
    * @param {object} [query]
    * @param {string} [action]
    */
-  handleReplaceUrl(folderId, fileId, query, action) {
-    const pathname = this.getUrl(folderId, fileId, query, action);
+  const handleReplaceUrl = (folderId, fileId, query, action) => {
+    const pathname = getUrl(folderId, fileId, query, action);
 
-    this.props.router.navigate(pathname, { replace: true });
-  }
+    router.navigate(pathname, { replace: true });
+  };
 
   /**
    * Reset the details screen for a file.
@@ -183,46 +156,57 @@ class AssetAdminRouter extends Component {
    * @param {number} [fileId]
    * @param {object} [query]
    */
-  handleResetDetails(folderId, fileId, query) {
-    const currentPathname = this.getUrl(folderId, fileId, query);
-    const clearPathname = this.getUrl(folderId, null, query);
-    this.props.router.navigate(
+  const handleResetDetails = (folderId, fileId, query) => {
+    const currentPathname = getUrl(folderId, fileId, query);
+    const clearPathname = getUrl(folderId, null, query);
+    router.navigate(
       clearPathname,
       {
         replace: true,
         state: { reset: true, resetPath: currentPathname }
       }
     );
-  }
+  };
 
-  render() {
-    // If rendering during a details reset, navigate back to the appropriate location
-    const { AssetAdminComponent } = this.props;
-    const locationState = this.props.router.location.state;
-    if (locationState && locationState && locationState.reset) {
-      return (
-        <Navigate to={locationState.resetPath} replace />
-      );
-    }
-    // If there's no section config we have nothing to render
-    if (!this.props.sectionConfig) {
-      return null;
-    }
-    // Render the asset admin
+  /**
+   * Generates the properties for this section
+   *
+   * @returns {object}
+   */
+  const getSectionProps = () => ({
+    sectionConfig,
+    type: 'admin',
+    folderId: getFolderId(),
+    viewAction: getViewAction(),
+    fileId: getFileId(),
+    query: getQuery(),
+    getUrl,
+    onBrowse: handleBrowse,
+    onReplaceUrl: handleReplaceUrl,
+    resetFileDetails: handleResetDetails,
+  });
+
+  // If rendering during a details reset, navigate back to the appropriate location
+  const locationState = router.location.state;
+  if (locationState && locationState && locationState.reset) {
     return (
-      <AssetAdminComponent {...this.getSectionProps()} />
+      <Navigate to={locationState.resetPath} replace />
     );
   }
-}
+  // If there's no section config we have nothing to render
+  if (!sectionConfig) {
+    return null;
+  }
+  // Render the asset admin
+  return (
+    <AssetAdminComponent {...getSectionProps()} />
+  );
+};
 
 AssetAdminRouter.propTypes = {
   sectionConfig: configShape,
   router: routerPropTypes,
   AssetAdminComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func])
-};
-
-AssetAdminRouter.defaultProps = {
-  AssetAdminComponent: AssetAdmin
 };
 
 function mapStateToProps(state) {

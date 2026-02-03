@@ -1,52 +1,55 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class HistoryItem extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(e) {
+const HistoryItem = ({
+  versionid,
+  summary,
+  status,
+  author,
+  // eslint-disable-next-line camelcase
+  date_formatted,
+  // eslint-disable-next-line camelcase
+  date_ago,
+  onClick
+}) => {
+  const handleClick = (e) => {
     e.preventDefault();
-    if (typeof this.props.onClick === 'function') {
-      this.props.onClick(this.props.versionid);
+    if (typeof onClick === 'function') {
+      onClick(versionid);
     }
+  };
+  let publishedLine = null;
+  if (status === 'Published') {
+    publishedLine = (<p><span className="history-item__status-flag">
+      {/* eslint-disable-next-line camelcase */}
+      {status}</span> at {date_formatted}
+    </p>);
   }
-
-  render() {
-    let publishedLine = null;
-
-    if (this.props.status === 'Published') {
-      publishedLine = (<p><span className="history-item__status-flag">
-        {this.props.status}</span> at {this.props.date_formatted}
-      </p>);
-    }
-
-    return (
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-      <li
-        className="list-group-item history-item"
-        onClick={this.handleClick}
-      >
-        <p>
-          <span className="history-item__version">v.{this.props.versionid}</span>
-          <span className="history-item__date">{this.props.date_ago} {this.props.author}</span>
-          {this.props.summary}
-        </p>
-        {publishedLine}
-      </li>
-    );
-  }
-}
+  return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <li
+      className="list-group-item history-item"
+      onClick={handleClick}
+    >
+      <p>
+        <span className="history-item__version">v.{versionid}</span>
+        {/* eslint-disable-next-line camelcase */}
+        <span className="history-item__date">{date_ago} {author}</span>
+        {summary}
+      </p>
+      {publishedLine}
+    </li>
+  );
+};
 
 HistoryItem.propTypes = {
   versionid: PropTypes.number.isRequired,
   summary: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]).isRequired,
   status: PropTypes.string,
   author: PropTypes.string,
+  // eslint-disable-next-line camelcase
   date_formatted: PropTypes.string,
+  // eslint-disable-next-line camelcase
   date_ago: PropTypes.string,
   onClick: PropTypes.func,
 };

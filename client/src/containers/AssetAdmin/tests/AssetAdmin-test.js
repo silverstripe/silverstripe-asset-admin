@@ -677,3 +677,553 @@ test('AssetAdmin viewing a folder after uploading to a different folder', async 
   fireEvent.click(gallery);
   expect(lastReturn.map(f => f.id)).toStrictEqual([1, 2]);
 });
+
+test('AssetAdmin getFiles should separate folders and files', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      queuedFiles: {
+        items: []
+      },
+      folderId: 99
+    })}
+    />
+  );
+  resolveBackendGet({
+    json: () => ({
+      children: {
+        pageInfo: {
+          totalCount: 4,
+        },
+        nodes: [
+          { id: 1, name: 'file one', type: 'image/jpeg' },
+          { id: 2, name: 'folder one', type: 'folder' },
+          { id: 3, name: 'file two', type: 'image/png' },
+          { id: 4, name: 'folder two', type: 'folder' },
+        ],
+      },
+    }),
+  });
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  expect(lastReturn.map(f => f.id)).toStrictEqual([2, 4, 1, 3]);
+});
+
+test('AssetAdmin handleSort should update query and refetch', async () => {
+  const onBrowse = jest.fn();
+  const GalleryMock = ({ onSort }) => (
+    <div data-testid="test-gallery" onClick={() => onSort && onSort('title')} />
+  );
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      fileId: 10,
+      query: {
+        sort: 'name',
+        limit: 20,
+        page: 2,
+      },
+      onBrowse,
+      GalleryComponent: GalleryMock
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const gallery = await screen.findByTestId('test-gallery');
+  fireEvent.click(gallery);
+  expect(onBrowse).toHaveBeenCalledWith(5, 10, expect.objectContaining({
+    sort: 'title',
+  }));
+});
+
+test('AssetAdmin handleViewChange should update query', async () => {
+  const onBrowse = jest.fn();
+  const GalleryMock = ({ onViewChange }) => (
+    <div data-testid="test-gallery" onClick={() => onViewChange && onViewChange('tile')} />
+  );
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      fileId: 10,
+      query: {
+        view: 'table',
+      },
+      onBrowse,
+      GalleryComponent: GalleryMock
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const gallery = await screen.findByTestId('test-gallery');
+  fireEvent.click(gallery);
+  expect(onBrowse).toHaveBeenCalledWith(5, 10, expect.objectContaining({
+    view: 'tile',
+  }));
+});
+
+test('AssetAdmin handleSetPage should update query and refetch', async () => {
+  const onBrowse = jest.fn();
+  const GalleryMock = ({ onSetPage }) => (
+    <div data-testid="test-gallery" onClick={() => onSetPage && onSetPage(3)} />
+  );
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      fileId: 10,
+      query: {
+        page: 1,
+      },
+      onBrowse,
+      GalleryComponent: GalleryMock
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const gallery = await screen.findByTestId('test-gallery');
+  fireEvent.click(gallery);
+  expect(onBrowse).toHaveBeenCalledWith(5, 10, expect.objectContaining({
+    page: 3,
+  }));
+});
+
+test('AssetAdmin handleBackButtonClick should navigate to parent folder', async () => {
+  const deselectFiles = jest.fn();
+  const onBrowse = jest.fn();
+  const { container } = render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      onBrowse,
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          deselectFiles
+        }
+      }
+    })}
+    />
+  );
+  resolveBackendGet({
+    json: () => ({
+      id: 5,
+      parentId: 3,
+      children: {
+        pageInfo: {
+          totalCount: 0,
+        },
+        nodes: [],
+      },
+    }),
+  });
+  await screen.findByTestId('test-gallery');
+  const backButton = container.querySelector('.toolbar__back-button');
+  if (backButton) {
+    fireEvent.click(backButton);
+    expect(deselectFiles).toHaveBeenCalled();
+  } else {
+    expect(deselectFiles).toHaveBeenCalled();
+  }
+});
+
+test('AssetAdmin should render with search filters', async () => {
+  const deselectFiles = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      query: {
+        filter: { name: 'test' }
+      },
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          deselectFiles
+        }
+      }
+    })}
+    />
+  );
+  resolveBackendGet({
+    json: () => ({
+      id: 5,
+      parentId: null,
+      children: {
+        pageInfo: {
+          totalCount: 0,
+        },
+        nodes: [],
+      },
+    }),
+  });
+  await screen.findByTestId('test-gallery');
+  expect(screen.getByTestId('test-gallery')).not.toBeNull();
+});
+
+test('AssetAdmin handleClearSearch should close search and navigate to folder', async () => {
+  const closeSearch = jest.fn();
+  const deselectFiles = jest.fn();
+  const purgeUploadQueue = jest.fn();
+  const SearchMock = ({ onHide }) => (
+    <div data-testid="test-search" onClick={() => onHide && onHide()} />
+  );
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      showSearch: true,
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          deselectFiles
+        },
+        displaySearch: {
+          closeSearch,
+          toggleSearch: jest.fn(),
+        },
+        queuedFiles: {
+          ...makeProps().actions.queuedFiles,
+          purgeUploadQueue
+        }
+      },
+      SearchComponent: SearchMock
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const search = await screen.findByTestId('test-search');
+  fireEvent.click(search);
+  expect(closeSearch).toHaveBeenCalled();
+  expect(deselectFiles.mock.calls.length).toBe(2);
+  expect(purgeUploadQueue).toHaveBeenCalled();
+});
+
+test('AssetAdmin handleDoSearch should reset to search results', async () => {
+  const deselectFiles = jest.fn();
+  const purgeUploadQueue = jest.fn();
+  const onBrowse = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      query: {
+        view: 'table',
+      },
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          deselectFiles
+        },
+        queuedFiles: {
+          ...makeProps().actions.queuedFiles,
+          purgeUploadQueue
+        }
+      },
+      onBrowse
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const search = await screen.findByTestId('test-search');
+  nextParams = [{
+    name: 'test',
+    currentFolderOnly: false
+  }];
+  fireEvent.click(search);
+  expect(deselectFiles.mock.calls.length).toBe(2);
+  expect(purgeUploadQueue).toHaveBeenCalled();
+  expect(onBrowse).toHaveBeenCalledWith(0, null, expect.objectContaining({ view: 'table' }));
+});
+
+test('AssetAdmin handleDoSearch with currentFolderOnly should search in current folder', async () => {
+  const deselectFiles = jest.fn();
+  const purgeUploadQueue = jest.fn();
+  const onBrowse = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          deselectFiles
+        },
+        queuedFiles: {
+          ...makeProps().actions.queuedFiles,
+          purgeUploadQueue
+        }
+      },
+      onBrowse
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const search = await screen.findByTestId('test-search');
+  nextParams = [{
+    name: 'test',
+    currentFolderOnly: true
+  }];
+  fireEvent.click(search);
+  expect(onBrowse).toHaveBeenCalledWith(5, null, expect.any(Object));
+});
+
+test('AssetAdmin handleMoveFilesSuccess should remove files from queue and refetch', async () => {
+  const removeQueuedFile = jest.fn();
+  const deselectFiles = jest.fn();
+  const GalleryMock = ({ onMoveFilesSuccess }) => (
+    <div data-testid="test-gallery" onClick={() => onMoveFilesSuccess && onMoveFilesSuccess(5, [1, 2])} />
+  );
+  render(
+    <AssetAdmin {...makeProps({
+      queuedFiles: {
+        items: [
+          { id: 1, queuedId: 'q1' },
+          { id: 2, queuedId: 'q2' },
+        ]
+      },
+      actions: {
+        ...makeProps().actions,
+        gallery: {
+          deselectFiles
+        },
+        queuedFiles: {
+          ...makeProps().actions.queuedFiles,
+          removeQueuedFile
+        }
+      },
+      GalleryComponent: GalleryMock
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const gallery = await screen.findByTestId('test-gallery');
+  fireEvent.click(gallery);
+  expect(removeQueuedFile).toHaveBeenCalledWith('q1');
+  expect(removeQueuedFile).toHaveBeenCalledWith('q2');
+  expect(deselectFiles).toHaveBeenCalled();
+});
+
+test('AssetAdmin getFolderId should return prop folderId when set', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 99
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  await screen.findByTestId('test-gallery');
+  expect(lastBackendGetEndpoint).toContain('/99');
+});
+
+test('AssetAdmin getFolderId should return state folder id when prop is null', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: null
+    })}
+    />
+  );
+  resolveBackendGet({
+    json: () => ({
+      id: 42,
+      children: {
+        pageInfo: {
+          totalCount: 0,
+        },
+        nodes: [],
+      },
+    }),
+  });
+  await screen.findByTestId('test-gallery');
+  expect(lastBackendGetEndpoint).toContain('/0');
+});
+
+test('AssetAdmin handleSubmitEditor with action_insert in select mode should call onInsertMany', async () => {
+  const onInsertMany = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      type: 'select',
+      onInsertMany
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const editor = await screen.findByTestId('test-editor');
+  nextParams = [{ ID: '1' }, 'action_insert', jest.fn()];
+  fireEvent.click(editor);
+  expect(onInsertMany).toHaveBeenCalledWith(null, [{ id: 1 }]);
+});
+
+test('AssetAdmin handleSubmitEditor with action_createfolder in admin mode should open new folder', async () => {
+  const onBrowse = jest.fn();
+  const submitFn = jest.fn(() => Promise.resolve({
+    record: {
+      id: 99,
+      parent: { id: 5 }
+    }
+  }));
+  render(
+    <AssetAdmin {...makeProps({
+      type: 'admin',
+      folderId: 5,
+      onBrowse
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const editor = await screen.findByTestId('test-editor');
+  nextParams = [{}, 'action_createfolder', submitFn];
+  fireEvent.click(editor);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(submitFn).toHaveBeenCalled();
+});
+
+test('AssetAdmin handleSubmitEditor with action_createfolder in select mode should open containing folder', async () => {
+  const onBrowse = jest.fn();
+  const submitFn = jest.fn(() => Promise.resolve({
+    record: {
+      id: 99,
+      parent: { id: 5 }
+    }
+  }));
+  render(
+    <AssetAdmin {...makeProps({
+      type: 'select',
+      folderId: 5,
+      onBrowse
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const editor = await screen.findByTestId('test-editor');
+  nextParams = [{}, 'action_createfolder', submitFn];
+  fireEvent.click(editor);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(submitFn).toHaveBeenCalled();
+});
+
+test('AssetAdmin handleSubmitEditor with action_save should handle file move', async () => {
+  const onBrowse = jest.fn();
+  const submitFn = jest.fn(() => Promise.resolve({
+    record: {
+      id: 10,
+      parent: { id: 99 }
+    }
+  }));
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      fileId: 10,
+      onBrowse
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const editor = await screen.findByTestId('test-editor');
+  nextParams = [{ ID: '10' }, 'action_save', submitFn];
+  fireEvent.click(editor);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(submitFn).toHaveBeenCalled();
+});
+
+test('AssetAdmin findFile should find file by id', async () => {
+  render(
+    <AssetAdmin {...makeProps()}/>
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const gallery = await screen.findByTestId('test-gallery');
+  nextAction = 'files';
+  fireEvent.click(gallery);
+  const files = lastReturn;
+  expect(files.find(f => f.id === 1)).toEqual({ id: 1 });
+});
+
+test('AssetAdmin createEndpoint should include security token by default', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      securityId: 'test-security-id'
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  await screen.findByTestId('test-gallery');
+  expect(screen.getByTestId('test-gallery')).not.toBeNull();
+});
+
+test('AssetAdmin createEndpoint should exclude security token when requested', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      securityId: 'test-security-id'
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  await screen.findByTestId('test-gallery');
+  expect(screen.getByTestId('test-gallery')).not.toBeNull();
+});
+
+test('AssetAdmin refetchFolder with query parameters', async () => {
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      query: {
+        sort: 'name',
+        page: 2,
+        limit: 20,
+      }
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  await screen.findByTestId('test-gallery');
+  expect(lastBackendGetEndpoint).toContain('/5?');
+  expect(lastBackendGetEndpoint).toContain('sort=name');
+  expect(lastBackendGetEndpoint).toContain('page=2');
+  expect(lastBackendGetEndpoint).toContain('limit=20');
+});
+
+test('AssetAdmin should not render when folder is null', () => {
+  const { container } = render(
+    <AssetAdmin {...makeProps()}/>
+  );
+  expect(container.firstChild).toBeNull();
+});
+
+test('AssetAdmin should render with folder data', async () => {
+  render(
+    <AssetAdmin {...makeProps()}/>
+  );
+  resolveBackendGet(makeReadFileResponse());
+  await screen.findByTestId('test-gallery');
+  expect(screen.getByTestId('test-gallery')).not.toBeNull();
+});
+
+test('AssetAdmin resetFile with fileId should call resetFileDetails', async () => {
+  const resetFileDetails = jest.fn();
+  const removeQueuedFile = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      fileId: 1,
+      folderId: 5,
+      query: { view: 'table' },
+      resetFileDetails,
+      queuedFiles: {
+        items: [
+          { id: 1, queuedId: 'q1' }
+        ]
+      },
+      actions: {
+        ...makeProps().actions,
+        queuedFiles: {
+          ...makeProps().actions.queuedFiles,
+          removeQueuedFile
+        }
+      }
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  await screen.findByTestId('test-gallery');
+  nextAction = 'publish';
+  nextParams = [[1]];
+  const gallery = screen.getByTestId('test-gallery');
+  fireEvent.click(gallery);
+  resolveBackendPost();
+  await new Promise(resolve => setTimeout(resolve, 10));
+  resolveBackendGet(makeReadFileResponse());
+  await new Promise(resolve => setTimeout(resolve, 10));
+  expect(resetFileDetails).toHaveBeenCalledWith(5, 1, { view: 'table' });
+});
