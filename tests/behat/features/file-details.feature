@@ -58,7 +58,6 @@ Feature: File details
     When I click on the file named "folder1" in the gallery
     Then I see the text "Are you sure you want to navigate away from this page?" in the alert
     When I confirm the dialog
-    And I wait for 2 seconds
     Then I should not see the file named "file1" in the gallery
     # bug - the form is still marked dirty so we have to open the form again to stop unexpected alerts
     # see https://github.com/silverstripe/silverstripe-asset-admin/issues/1334
