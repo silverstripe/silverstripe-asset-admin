@@ -22,6 +22,7 @@ import Config from 'lib/Config';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import getFormSchema from 'lib/getFormSchema';
 import getJsonErrorMessage from 'lib/getJsonErrorMessage';
+import isEqual from 'lodash.isequal';
 import BulkDeleteConfirmation from '../BulkDeleteConfirmation/BulkDeleteConfirmation';
 import AssetAdminBreadcrumb from './AssetAdminBreadcrumb';
 
@@ -127,7 +128,7 @@ const AssetAdmin = ({
    */
   const handleBrowse = (browseFolderId, browseFileId, browseQuery) => {
     if (typeof onBrowse === 'function') {
-      const shouldForceRefetch = browseFolderId !== folderId || browseQuery !== query;
+      const shouldForceRefetch = !isEqual(browseQuery, query);
       onBrowse(browseFolderId, browseFileId, browseQuery);
       if (shouldForceRefetch) {
         setForceRefetch(true);
