@@ -99,18 +99,11 @@
     "AssetAdmin.SIZE": "Size",
     "AssetAdmin.TITLE": "Title",
     "AssetAdmin.TYPE": "File type",
-<<<<<<< HEAD
-=======
     "AssetAdmin.UPLOADING_INSTRUCTION": "uploading, press enter to cancel",
     "AssetAdmin.UPLOAD_FAILED_INSTRUCTION": "upload failed, press enter to remove",
->>>>>>> 2
     "AssetAdmin.URL": "URL",
     "File.DRAFT": "Draft",
     "File.MODIFIED": "Modified",
     "File.REMOVE": "Remove",
     "File.VIEW": "View"
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 2
