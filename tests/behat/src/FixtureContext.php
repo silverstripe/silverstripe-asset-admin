@@ -50,13 +50,25 @@ class FixtureContext extends BaseFixtureContext
     {
         $item = $this->getGalleryItem($name);
         Assert::assertNotNull($item, "File named $name could not be found");
-        $checkboxLabel = $item->find('css', 'label.gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled)');
-        Assert::assertNotNull($checkboxLabel, "Could not find checkbox label for file named {$name}");
-        $checkboxLabel->click();
+        $page = $this->getMainContext()->getSession()->getPage();
+        if ($page->find('css', '.gallery__table')) {
+            // On the table view we fake a checkbox, because the actual row is responsible for handling
+            // events and the screenreader doesn't need a semantic HTML checkbox.
+            $item = $item->find('xpath', "/ancestor-or-self::tr[contains(@class, 'gallery__table-row')]");
+            Assert::assertNotNull($item, "Correct ancestor element for file named {$name} not found - unexpected markup detected");
+            // One of the children should have this error class
+            $selectCell = $item->find('css', '.gallery__table-column--select');
+            Assert::assertNotNull($selectCell, "Could not find select cell for file named {$name}");
+            $selectCell->click();
+        } else {
+            $checkboxLabel = $item->find('css', 'label.gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled)');
+            Assert::assertNotNull($checkboxLabel, "Could not find checkbox label for file named {$name}");
+            $checkboxLabel->click();
+        }
     }
 
     /**
-     * @Then /^I should see the file named "([^"]+)" in the gallery$/
+     * @Then /^I should see the (?:file|folder) named "([^"]+)" in the gallery$/
      * @param string $name
      */
     public function iShouldSeeTheGalleryItem($name)
@@ -245,8 +257,18 @@ EOS
      */
     public function iShouldSeeAnErrorMessageOnTheFile($file)
     {
-        $fileNode = $this->getGalleryItem($file);
-        Assert::assertTrue($fileNode->getParent()->hasClass('gallery-item--error'));
+        $fileNode = $this->getGalleryItem($file)?->getParent();
+        $page = $this->getMainContext()->getSession()->getPage();
+        if ($page->find('css', '.gallery__table')) {
+            // In table view we're actually getting an element nested fairly low down
+            // so we need to ensure the xpath brings us back to the actual tr element
+            $fileNode = $fileNode->find('xpath', "/ancestor-or-self::tr[contains(@class, 'gallery__table-row')]");
+            // One of the children should have this error class
+            Assert::assertNotNull($fileNode->find('css', '.gallery__table-image--error'));
+        } else {
+            // In gallery view the gallery item itself should have this error class
+            Assert::assertTrue($fileNode->hasClass('gallery-item--error'));
+        }
     }
 
     /**
@@ -548,9 +570,39 @@ EOS
     {
         $file = $this->getGalleryItem($name)?->getParent();
         Assert::assertNotNull($file, "File named {$name} could not be found");
-        $xpath = $file->getXpath();
-        $not = $not ? 'true' : 'false';
+        // In table view we're actually getting an element nested fairly low down
+        // so we need to ensure the xpath brings us back to the actual tr element
+        if (!$file->hasClass('gallery-item')) {
+            $file = $file->find('xpath', "/ancestor-or-self::tr[contains(@class, 'gallery__table-row')]");
+            Assert::assertNotNull($file, "File named {$name} was found, but the markup of its parent seems to have changed");
+        }
+        $this->elementShouldHaveFocus($file, $not);
+    }
 
+    /**
+     * Check if a specific cell has focus in table/list view. Does not work in gallery/tile view.
+     * Example: Then the "Title" column for the file named "file1" should have focus
+     *
+     * @Then /^the "([^"]+)" column for the (?:file|folder) named "([^"]+)" should (not |)have focus$/
+     */
+    public function theCellShouldHaveFocus(string $column, string $name, string|bool $not): void
+    {
+        $page = $this->getMainContext()->getSession()->getPage();
+        Assert::assertNotNull($page->find('css', '.gallery__table'), 'Cannot focus on columns outside of table view');
+        $file = $this->getGalleryItem($name)?->find('xpath', "/ancestor-or-self::tr[contains(@class, 'gallery__table-row')]");
+        Assert::assertNotNull($file, "File named {$name} could not be found");
+        $cell = $file->find('css', '.gallery__table-column--' . strtolower($column));
+        Assert::assertNotNull($cell, "Column named {$column} could not be found for file named {$name}");
+        $this->elementShouldHaveFocus($cell, $not);
+    }
+
+    /**
+     * Assert that a given element should (or shouldn't) have focus.
+     */
+    private function elementShouldHaveFocus(NodeElement $element, string|bool $not): void
+    {
+        $xpath = $element->getXpath();
+        $not = $not ? 'true' : 'false';
         $script = <<<JS
             return (function() {
                 var el = document.evaluate("$xpath", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
@@ -560,7 +612,6 @@ EOS
                 return ($not) ? el !== document.activeElement : el === document.activeElement;
             })();
         JS;
-
         $context = $this->getMainContext();
         $res = $context->getSession()->evaluateScript($script);
         Assert::assertTrue($res);

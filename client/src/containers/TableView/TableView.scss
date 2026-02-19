@@ -3,6 +3,8 @@ th.sort--disabled>span:after {
 }
 
 .gallery__table {
+  --focus-outline-offset: var(--focus-outline-offset-inset);
+
   margin-bottom: -$panel-padding-y;
 
   td,
@@ -19,7 +21,10 @@ th.sort--disabled>span:after {
   }
 
   th {
-    cursor: pointer;
+    &.gallery__table-column__header--sortable {
+      // Disable padding which will be added to the sort button instead
+      padding: 0;
+    }
 
     .gallery__table-column__label {
       display: inline;
@@ -35,6 +40,26 @@ th.sort--disabled>span:after {
       display: inline-block;
       margin-left: 4px;
     }
+
+    .gallery__table-column__sort-button {
+      width: 100%;
+      margin: 0;
+      // Padding matches bootstrap's th padding
+      padding: $table-cell-padding-y $table-cell-padding-x;
+      // Inherit various styles from the label itself
+      white-space: inherit;
+      overflow: inherit;
+      text-overflow: inherit;
+      text-transform: inherit;
+      text-align: inherit;
+      font-size: inherit;
+    }
+  }
+
+  tbody:has(.gallery__table-row:focus-visible, .gallery__table-column:focus-visible) {
+    outline: var(--focus-outline-width) dashed var(--focus-outline-color);
+    // Add additional room for the outline of the items inside (assuming they use the same variable values).
+    outline-offset: calc(var(--focus-outline-offset) * 2 + var(--focus-outline-width));
   }
 
   tbody td {
@@ -67,6 +92,11 @@ th.sort--disabled>span:after {
         }
       }
     }
+  }
+
+  .paginator-footer {
+    // overrides the offset from the table
+    --focus-outline-offset: #{$focus-outline-offset};
   }
 
   // Note: Requires nesting
@@ -121,6 +151,7 @@ th.sort--disabled>span:after {
 }
 
 .gallery__table-column--select {
+  position: relative;
   width: 1%;
 
   // Increase size of checkbox slightly
@@ -227,4 +258,52 @@ $gallery-list-thumb-height: 68px;
   font-family: "silverstripe", sans-serif;
   // equivalent of font-icon-check-mark-circle
   content: "I";
+}
+
+
+.gallery__table-row__checkbox {
+  --checkbox-size: 1.25rem;
+
+  width: var(--checkbox-size);
+  height: var(--checkbox-size);
+  position: absolute;
+
+  .gallery__table-row--selectable & {
+    .asset-admin--single-select & {
+      display: none;
+    }
+
+    .gallery__table-row__checkbox-icon:before {
+      cursor: pointer;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      height: var(--checkbox-size);
+      width: var(--checkbox-size);
+      margin: auto 10px;
+      position: absolute;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-sm;
+      padding: 1px;
+      color: transparent;
+      background-color: $white;
+    }
+  }
+}
+
+.gallery__table-row--selected {
+  .gallery__table-row__checkbox .gallery__table-row__checkbox-icon:before {
+    border-color: $component-active-border-color;
+    background-color: $component-active-border-color;
+    color: $white;
+  }
+}
+
+// This is a bit of an ugly selector but it's all needed. It boils down to:
+// - Selectable rows only
+// - Hovering in the "select" column
+// - If the checkbox is not disabled
+// - select the :before pseudo-element in the checkbox icon
+.gallery__table-row--selectable .gallery__table-column--select:hover .gallery__table-row__checkbox:not(.gallery__table-row__checkbox--disabled) .gallery__table-row__checkbox-icon:before {
+  border: 1px solid $component-active-border-color;
 }

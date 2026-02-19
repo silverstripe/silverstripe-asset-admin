@@ -183,10 +183,12 @@ $gallery-item-label-height: 40px;
   }
 }
 
-.gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled) {
-  .gallery-item--selectable .gallery-item__checkbox-label:hover .gallery-item__checkbox-icon:before {
-    border: 1px solid $component-active-border-color;
-  }
+// This is a bit of an ugly selector but it's all needed. It boils down to:
+// - Selectable items only
+// - Hovering in the checkbox label (but only if it's not disabled)
+// - select the :before pseudo-element in the checkbox icon
+.gallery-item--selectable .gallery-item__checkbox-label:not(.gallery-item__checkbox-label--disabled):hover .gallery-item__checkbox-icon:before {
+  border: 1px solid $component-active-border-color;
 }
 
 // If error or currently uploading the label becomes an X to cancel upload
