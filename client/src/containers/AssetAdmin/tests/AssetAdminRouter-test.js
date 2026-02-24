@@ -17,6 +17,7 @@ function makeProps(obj = {}) {
       url: '',
       limit: 10,
       form: {},
+      reactRoutePath: '/assets',
     },
     router: {
       location: {
@@ -29,12 +30,17 @@ function makeProps(obj = {}) {
         folderId: 0
       },
     },
-    AssetAdminComponent: ({ getUrl }) => <div
-      data-testid="test-asset-admin"
-      onClick={() => {
-        lastReturn = getUrl(...nextParams);
-      }}
-    />,
+    AssetAdminComponent: ({ getUrl }) => (
+      <button
+        type="button"
+        data-testid="test-asset-admin"
+        onClick={() => {
+          lastReturn = getUrl(...nextParams);
+        }}
+      >
+        Asset admin
+      </button>
+    ),
     ...obj
   };
 }
@@ -46,6 +52,7 @@ test('AssetAdminRouter getUrl should retain page query parameter when not changi
   const admin = await screen.findByTestId('test-asset-admin');
   nextParams = [0, null, { page: 2 }];
   fireEvent.click(admin);
+  expect(lastReturn).toMatch(/^\/assets/);
   expect(lastReturn).toContain('page=2');
 });
 

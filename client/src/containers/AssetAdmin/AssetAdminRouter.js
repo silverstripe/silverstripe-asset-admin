@@ -80,8 +80,9 @@ class AssetAdminRouter extends Component {
       delete newQuery.page;
     }
 
+    const reactRoutePath = this.props.sectionConfig.reactRoutePath.replace(/^\/+/, '');
     return buildUrl({
-      base: `/${this.props.sectionConfig.reactRoutePath}`,
+      base: `/${reactRoutePath}`,
       folderId: newFolderId,
       fileId: newFileId,
       query: newQuery,
