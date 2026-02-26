@@ -133,7 +133,14 @@ class ThumbnailView extends Component {
     if (this.state.focusedItem?.queuedId && !this.state.focusedItem.id && this.props.files.length === oldProps.files.length) {
       const current = this.props.files.find((item) => this.focusItemsAreIdentical(this.state.focusedItem, item));
       if (current && current.id !== this.state.focusedItem.id) {
-        this.setState({ focusedItem: this.getFocusDataFromItem(current) });
+        const newState = { focusedItem: this.getFocusDataFromItem(current) };
+        // It is important that focus change only happens if a different file already has its form open.
+        // Otherwise, we have a race condition between moving focus into the newly opened form for the new item
+        // and keeping focus on the newly uploaded file.
+        if (!oldProps.openFileId || oldProps.openFileId === current.id) {
+          newState.allowedToSetFocus = false;
+        }
+        this.setState(newState);
       }
     }
 
