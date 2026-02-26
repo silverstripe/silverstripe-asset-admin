@@ -518,7 +518,13 @@ const GalleryItem = (_props) => {
   const htmlID = id ? `item-${id}` : `queued-${queuedId}`;
   if (selectable) {
     if (canBatchSelect()) {
-      action = handleSelect;
+      action = (event) => {
+        if (typeof onClick === 'function') {
+          // Needed to make sure clicking the checkbox updates the roving tabindex
+          onClick(event);
+        }
+        handleSelect(event);
+      };
     }
     actionIcon = 'font-icon-tick';
   }

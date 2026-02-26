@@ -40,7 +40,8 @@ class ThumbnailView extends Component {
       // is first loaded or anything rerenders.
       allowedToSetFocus: false,
       itemsPerRow: null,
-      focusedItem: this.getFocusedItemFromOpenId()
+      focusedItem: this.getFocusedItemFromOpenId(),
+      forceResetRefs: false,
     };
   }
 
@@ -54,12 +55,21 @@ class ThumbnailView extends Component {
   componentDidUpdate(oldProps) {
     // If we changed page or are looking at a different folder, throw away the old refs
     // and reset focus, and skip the rest of the logic in this lifecycle event.
-    if (oldProps.page !== this.props.page || oldProps.folderId !== this.props.folderId) {
+    if (this.state.forceResetRefs || oldProps.page !== this.props.page || oldProps.folderId !== this.props.folderId) {
+      // If the files arrays are still identical, the navigation hasn't finished yet, so defer changes for now.
+      if (this.fileArraysAreIdentical(oldProps.files, this.props.files)) {
+        if (!this.state.forceResetRefs) {
+          this.setState({ forceResetRefs: true });
+        }
+        return;
+      }
       this.gallerySizeRef.current = null;
       this.folderRefs.current = [];
       this.fileRefs.current = [];
+      // Explicitly focus on the grid itself to announce changes to page etc.
+      this.gridRef.current.focus();
       if (this.state.focusedItem) {
-        this.setState({ focusedItem: this.getFocusedItemFromOpenId() });
+        this.setState({ focusedItem: null, forceResetRefs: false });
       }
       return;
     }
@@ -221,6 +231,21 @@ class ThumbnailView extends Component {
       return item1.queuedId === item2.queuedId;
     }
     return false;
+  }
+
+  /**
+   * Checks if two arrays of file data contain the same items.
+   * This is based on the ID and QueuedID only, since these are the
+   * properties that identify unique items.
+   */
+  fileArraysAreIdentical(arrA, arrB) {
+    // First, check if the lengths are equal. If not, they are not identical.
+    if (arrA.length !== arrB.length) {
+      return false;
+    }
+    // Check if there are any files in one array which aren't present in the other.
+    // If there's no descrepencies, we return true.
+    return arrA.every(itemA => arrB.some(itemB => this.focusItemsAreIdentical(itemA, itemB)));
   }
 
   /**
