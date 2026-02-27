@@ -182,7 +182,7 @@ function TableView(_props) {
         setDoSetFocus(false);
         // It is important that focus change only happens if a different file already has its form open.
         // Otherwise, we have a race condition between moving focus into the newly opened form for the new item
-        // and moving focus with the newly uploaded file.
+        // and keeping focus on the newly uploaded file.
         if (prevProps.openFileId && prevProps.openFileId !== prevFocusedItem?.id) {
           setDoSetFocus(true);
         }
