@@ -323,7 +323,7 @@ class AssetAdminTest extends FunctionalTest
 
         $data = $assetAdmin->getMinimalistObjectFromData($file);
 
-        // Thumbnail value is hard to predit, so we'll just check that it's there before unseting it.
+        // Thumbnail value is hard to predict, so we'll just check that it's there before unsetting it.
         $this->assertNotEmpty($data['thumbnail']);
         unset($data['thumbnail']);
 
@@ -359,7 +359,7 @@ class AssetAdminTest extends FunctionalTest
 
         $data = $assetAdmin->getObjectFromData($file);
 
-        // Thumbnail value is hard to predict, so we'll just check that it's there before unseting it.
+        // Thumbnail value is hard to predict, so we'll just check that it's there before unsetting it.
         $this->assertNotEmpty($data['thumbnail']);
         unset($data['thumbnail']);
 
@@ -408,7 +408,7 @@ class AssetAdminTest extends FunctionalTest
 
         $data = $assetAdmin->getObjectFromData($file);
 
-        // Thumbnail value is hard to predit, so we'll just check that it's there before unseting it.
+        // Thumbnail value is hard to predict, so we'll just check that it's there before unsetting it.
         $this->assertNotEmpty($data['thumbnail']);
         unset($data['thumbnail']);
 

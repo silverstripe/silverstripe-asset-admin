@@ -589,7 +589,7 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
         }
         $folder = $file->ParentID ? $file->Parent()->getFilename() : '/';
 
-        // If extension is the same, attempt to re-use existing name
+        // If extension is the same, attempt to reuse existing name
         if (File::get_file_extension($tmpFile['name']) === File::get_file_extension($data['Name'])) {
             $tmpFile['name'] = $data['Name'];
         } else {
