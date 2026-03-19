@@ -68,7 +68,7 @@ Feature: Multi file Upload field
     # Required to avoid "unsaved changed" browser dialog
     Then I press the "Save" button
 
-  Scenario: I can select mulitple files and invalid extension validation works
+  Scenario: I can select multiple files and invalid extension validation works
     When I click "Choose existing" in the ".uploadfield" element
     And I press the "Back" HTML field button
     And I select the file named "folder1" in the gallery

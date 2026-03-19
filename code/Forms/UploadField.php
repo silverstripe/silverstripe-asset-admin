@@ -120,7 +120,7 @@ class UploadField extends FormField implements FileHandleField
             'payloadFormat' => 'urlencoded',
         ];
 
-        // use array_values to ensure 0-based so does not get coverted to a JS object
+        // use array_values to ensure 0-based so does not get converted to a JS object
         $defaults['data']['maxFilesize'] = $this->getAllowedMaxFileSize() / 1024 / 1024;
         $defaults['data']['maxFiles'] = $this->getAllowedMaxFileNumber();
         $defaults['data']['maxParallelUploads'] = $this->getMaxParallelUploads();
