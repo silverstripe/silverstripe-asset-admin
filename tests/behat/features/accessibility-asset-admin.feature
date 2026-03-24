@@ -214,7 +214,7 @@ Feature: Accessibility asset-admin
     When I press the "Enter" key globally
     Then I should not see the file named "invalid" in the gallery
     And the ".gallery__main-view--tile" element should have focus
-    # Navigating back to the folder doens't retain the old tabindex
+    # Navigating back to the folder doesn't retain the old tabindex
     # 9 tabs back to the breadcrumbs back button
     When I press the "Shift-Tab" key globally
     And I press the "Shift-Tab" key globally
@@ -232,8 +232,9 @@ Feature: Accessibility asset-admin
     # Clicking to select an item sets the roving tabindex to the clicked item
     When I check the file named "file03" in the gallery
     Then the file named "file03" should have focus
-    When I press the "Arrow_Right" key globally
-    Then the file named "file04" should have focus
+    When I press the "Tab" key globally
+    And I press the "Shift-Tab" key globally
+    Then the file named "file03" should have focus
     # deselect all
     Given I click on the ".bulk-actions-counter" element
 
