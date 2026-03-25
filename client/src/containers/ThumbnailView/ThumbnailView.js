@@ -68,13 +68,15 @@ class ThumbnailView extends Component {
       this.fileRefs.current = [];
       // Explicitly focus on the grid itself to announce changes to page etc.
       this.gridRef.current.focus();
+      const newState = { forceResetRefs: false };
       if (this.state.focusedItem) {
-        this.setState({ focusedItem: null, forceResetRefs: false });
+        newState.focusedItem = null;
       }
+      this.setState(newState);
       return;
     }
     // If we removed a file or folder, we have some tidy-up to do.
-    if (this.props.files.length < oldProps.files.length) {
+    if (this.props.totalCount < oldProps.totalCount || this.props.files.length < oldProps.files.length) {
       // If we have less files/folders than we used to, make sure to remove the extra refs
       // Note that all the refs are correct, there's just some extra old ones at the end of
       // the arrays.
@@ -127,20 +129,22 @@ class ThumbnailView extends Component {
     }
 
     // If we added a folder or file, move focus to the first new item
-    if (this.props.files.length > oldProps.files.length) {
+    if (this.props.totalCount > oldProps.totalCount || this.props.files.length > oldProps.files.length) {
       const newItems = this.props.files.filter((item) => !oldProps.files.find((oldItem) => this.focusItemsAreIdentical(item, oldItem)));
       const newItem = newItems[0];
-      this.setState({
-        allowedToSetFocus: true,
-        focusedItem: this.getFocusDataFromItem(newItem)
-      });
+      if (newItem) {
+        this.setState({
+          allowedToSetFocus: true,
+          focusedItem: this.getFocusDataFromItem(newItem)
+        });
+      }
     }
 
     // For successful uploads, when the file gets assigned a new ID we need to capture that.
     // There's a brief period where the file has both a queuedID and a regular ID - and then it
     // drops the queuedID. We need to make sure we catch the ID so we can retain focus on the
     // item.
-    if (this.state.focusedItem?.queuedId && !this.state.focusedItem.id && this.props.files.length === oldProps.files.length) {
+    if (this.state.focusedItem?.queuedId && !this.state.focusedItem.id && this.props.totalCount === oldProps.totalCount) {
       const current = this.props.files.find((item) => this.focusItemsAreIdentical(this.state.focusedItem, item));
       if (current && current.id !== this.state.focusedItem.id) {
         const newState = { focusedItem: this.getFocusDataFromItem(current) };
@@ -193,6 +197,9 @@ class ThumbnailView extends Component {
    * @param {object} item A file or folder from props.files
    */
   getFocusDataFromItem(item) {
+    if (!item) {
+      return null;
+    }
     const itemRefs = item.type === 'folder' ? this.folderRefs.current : this.fileRefs.current;
     const index = itemRefs.findIndex((itemRef) => this.focusItemsAreIdentical(item, itemRef));
     return { id: item.id, queuedId: item.queuedId, type: item.type, index };
