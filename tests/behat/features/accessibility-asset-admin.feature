@@ -214,7 +214,7 @@ Feature: Accessibility asset-admin
     When I press the "Enter" key globally
     Then I should not see the file named "invalid" in the gallery
     And the ".gallery__main-view--tile" element should have focus
-    # Navigating back to the folder doens't retain the old tabindex
+    # Navigating back to the folder doesn't retain the old tabindex
     # 9 tabs back to the breadcrumbs back button
     When I press the "Shift-Tab" key globally
     And I press the "Shift-Tab" key globally
@@ -229,11 +229,30 @@ Feature: Accessibility asset-admin
     Then I should not see "folder02" in the ".breadcrumb__item--last .breadcrumb__item-title" element
     And the folder named "folder01" should have focus
 
+    # Adding a folder moves roving tabindex to that folder - but does NOT move focus
+    When I press the "Shift-Tab" key globally
+    And I press the "Shift-Tab" key globally
+    And I press the "Shift-Tab" key globally
+    Then the "button#add-folder-button" element should have focus
+    When I press the "Enter" key globally
+    Then I should see the "Form_folderCreateForm" form
+    And the "input#Form_folderCreateForm_Name" element should have focus
+    When I type "new folder" in the field
+    And I press the "Enter" key globally
+    Then I should see the folder named "new-folder" in the gallery
+    And the folder named "new-folder" should have focus
+    # delete the folder so the rest of the scenario can continue,
+    # as it was originally written without this folder here
+    Given I press the "Other actions" button
+    And I press the "Delete" button
+    And I press the "Delete" button inside the modal
+
     # Clicking to select an item sets the roving tabindex to the clicked item
     When I check the file named "file03" in the gallery
     Then the file named "file03" should have focus
-    When I press the "Arrow_Right" key globally
-    Then the file named "file04" should have focus
+    When I press the "Tab" key globally
+    And I press the "Shift-Tab" key globally
+    Then the file named "file03" should have focus
     # deselect all
     Given I click on the ".bulk-actions-counter" element
 
@@ -532,7 +551,7 @@ Feature: Accessibility asset-admin
     And I press the "Tab" key globally
     Then the folder named "folder01" should have focus
 
-    # Adding a folder moved roving tabindex to that folder - but does NOT move focus
+    # Adding a folder moves roving tabindex to that folder - but does NOT move focus
     When I press the "Shift-Tab" key globally
     And I press the "Shift-Tab" key globally
     And I press the "Shift-Tab" key globally
