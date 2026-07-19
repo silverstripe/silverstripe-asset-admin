@@ -30,6 +30,7 @@ en:
     AttributesDescription: 'These changes will only affect this particular placement of the file.'
     CREATED: 'First uploaded'
     Caption: Caption
+    CreateFolderPermissionDenied: 'You do not have permission to create a folder'
     CreatePermissionDenied: 'You do not have permission to add files'
     CurrentFolderOnly: 'Limit to current folder and its sub-folders?'
     DELETE_BUTTON: Delete
@@ -37,6 +38,7 @@ en:
     ErrorItemPermissionDenied: "You don't have the necessary permissions to modify {ObjectTitle}"
     ErrorNotFound: "That {Type} couldn't be found"
     FILE_NOT_FOUND: 'File not found'
+    FOLDER_NOT_FOUND: 'Folder not found'
     Filetype: 'File type'
     INVALID_REQUEST: 'Invalid request'
     ImageHeight: Height

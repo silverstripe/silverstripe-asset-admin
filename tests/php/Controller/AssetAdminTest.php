@@ -228,6 +228,75 @@ class AssetAdminTest extends FunctionalTest
         );
     }
 
+    public function testItCreatesFolder()
+    {
+        $folder1 = $this->objFromFixture(Folder::class, 'folder1');
+        $response = Director::test(
+            'admin/assets/folderCreateForm/' . $folder1->ID,
+            [
+                'action_createfolder' => 1,
+                'Name' => 'testItCreatesFolder',
+                'ParentID' => $folder1->ID,
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ],
+            $this->session,
+            'POST'
+        );
+        $this->assertFalse($response->isError());
+        $newFolder = Folder::get()->find('Name', 'testItCreatesFolder');
+        $this->assertNotNull($newFolder);
+        $this->assertEquals($folder1->ID, $newFolder->ParentID);
+    }
+
+    public function testItRestrictsCreateFolderOnCanCreate()
+    {
+        $folder1 = $this->objFromFixture(Folder::class, 'folder1');
+        $response = Director::test(
+            'admin/assets/folderCreateForm/' . $folder1->ID,
+            [
+                'action_createfolder' => 1,
+                'Name' => 'disallowCanCreate',
+                'ParentID' => $folder1->ID,
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ],
+            $this->session,
+            'POST'
+        );
+        $this->assertTrue($response->isError());
+        $this->assertEquals(403, $response->getStatusCode());
+        $responseData = json_decode($response->getBody() ?? '', true);
+        $this->assertEquals(
+            [
+                'type' => 'error',
+                'code' => 403,
+                'value' => 'You do not have permission to create a folder',
+            ],
+            $responseData['errors'][0]
+        );
+        $this->assertNull(Folder::get()->find('Name', 'disallowCanCreate'));
+    }
+
+    public function testItRestrictsCreateFolderOnMissingParent()
+    {
+        $missingID = File::get()->max('ID') + 1000;
+        $response = Director::test(
+            'admin/assets/folderCreateForm/' . $missingID,
+            [
+                'action_createfolder' => 1,
+                'Name' => 'testMissingParent',
+                'ParentID' => $missingID,
+                'SecurityID' => SecurityToken::inst()->getValue(),
+            ],
+            $this->session,
+            'POST'
+        );
+        $this->assertTrue($response->isError());
+        $this->assertEquals(404, $response->getStatusCode());
+        $responseData = json_decode($response->getBody() ?? '', true);
+        $this->assertEquals('Folder not found', $responseData['errors'][0]['value']);
+        $this->assertNull(Folder::get()->find('Name', 'testMissingParent'));
+    }
+
     public function testItRestrictsUpdateFile()
     {
         /** @var File $allowedFile */
