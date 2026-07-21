@@ -53,3 +53,15 @@ Name: assetadminmodals
 SilverStripe\Admin\ModalController:
   extensions:
     - SilverStripe\AssetAdmin\Extensions\RemoteFileModalExtension
+---
+Name: assetadminimageeditor
+---
+SilverStripe\Core\Injector\Injector:
+  # Short-lived cache backing the duplicate in-flight submit guard for image editing.
+  # A shared (non in-memory) store is required so the lock is visible across requests.
+  Psr\SimpleCache\CacheInterface.assetAdminImageEditor:
+    factory: SilverStripe\Core\Cache\CacheFactory
+    constructor:
+      namespace: 'assetAdminImageEditor'
+      defaultLifetime: 60
+      useInMemoryCache: false

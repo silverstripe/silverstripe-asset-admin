@@ -258,6 +258,18 @@ const AssetAdmin = ({
   };
 
   /**
+   * Refresh the open file in place after an edit - the bytes were replaced, so there is nothing to
+   * navigate to.
+   */
+  const handleImageEdited = () => {
+    if (fileId) {
+      resetFileDetails(getFolderId(), fileId, query);
+    }
+    // The file URL is unchanged, so bustCache needs the bumped version these refetches return.
+    setForceRefetch(true);
+  };
+
+  /**
    * Handler for when the folder icon is clicked (to edit the folder)
    */
   const handleFolderIcon = () => {
@@ -636,6 +648,7 @@ const AssetAdmin = ({
       schemaUrlQueries,
       onClose: handleCloseFile,
       onSubmit: handleSubmitEditor,
+      onImageEdited: handleImageEdited,
       onUnpublish: handleUnpublish,
       addToCampaignSchemaUrl: config.form.addToCampaignForm?.schemaUrl
     };

@@ -396,6 +396,63 @@ test('Editor handleAction opens modal for addtocampaign', async () => {
   expect(nextParams[0].preventDefault).toHaveBeenCalled();
 });
 
+test('Editor handleAction opens the image editor for editimage', async () => {
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup' }];
+  render(
+    <Editor {...makeProps({
+      ImageEditorModalComponent: ({ isOpen }) => (
+        <div data-testid="test-image-editor-modal" data-is-open={isOpen} />
+      ),
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const loader = await screen.findByTestId('test-form-builder-loader');
+  expect(screen.queryByTestId('test-image-editor-modal')).toBeNull();
+  nextParams = [{
+    preventDefault: jest.fn(),
+    currentTarget: {
+      name: 'action_editimage'
+    }
+  }];
+  fireEvent.click(loader);
+  const modal = await screen.findByTestId('test-image-editor-modal');
+  expect(modal.getAttribute('data-is-open')).toBe('true');
+  expect(nextParams[0].preventDefault).toHaveBeenCalled();
+});
+
+test('Editor refetches the file when opening the image editor so a replaced file is not stale', async () => {
+  let getCallCount = 0;
+  const originalGet = backend.get;
+  backend.get = jest.fn((url) => {
+    getCallCount += 1;
+    return originalGet(url);
+  });
+  createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup' }];
+  render(
+    <Editor {...makeProps({
+      ImageEditorModalComponent: ({ isOpen }) => (
+        <div data-testid="test-image-editor-modal" data-is-open={isOpen} />
+      ),
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const loader = await screen.findByTestId('test-form-builder-loader');
+  expect(getCallCount).toBe(1);
+  nextParams = [{
+    preventDefault: jest.fn(),
+    currentTarget: {
+      name: 'action_editimage'
+    }
+  }];
+  fireEvent.click(loader);
+  await screen.findByTestId('test-image-editor-modal');
+  // Opening the editor refetches the record so a file replaced under the same ID is not previewed stale
+  expect(getCallCount).toBe(2);
+  backend.get = originalGet;
+});
+
 test('Editor handleAction calls confirm deletion for delete action', async () => {
   const confirm = jest.fn();
   createFnParams = [null, { name: 'AssetEditorHeaderFieldGroup' }];

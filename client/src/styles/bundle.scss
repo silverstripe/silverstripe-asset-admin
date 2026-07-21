@@ -7,6 +7,7 @@
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
+@import "~react-image-crop/dist/ReactCrop.css";
 
 // Base
 
@@ -27,5 +28,6 @@
 @import "../containers/Editor/LegacyPopoverField";
 @import "../containers/AssetAdmin/AssetAdmin";
 @import "../containers/InsertMediaModal/InsertMediaModal";
+@import "../containers/ImageEditorModal/ImageEditorModal";
 @import "../containers/HistoryList/HistoryItem";
 @import "../containers/HistoryList/HistoryList";

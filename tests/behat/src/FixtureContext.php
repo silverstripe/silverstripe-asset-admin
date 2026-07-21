@@ -88,6 +88,22 @@ class FixtureContext extends BaseFixtureContext
     }
 
     /**
+     * Select an option in the image editor's aspect ratio dropdown. The dropdown exposes only an
+     * aria-label (not a <label>), so the standard "I select ... from ..." step cannot resolve it;
+     * this step targets it by its CSS class instead.
+     *
+     * @When /^I select "([^"]*)" from the image editor aspect ratio dropdown$/
+     * @param string $value
+     */
+    public function iSelectImageEditorAspectRatio($value)
+    {
+        $page = $this->getMainContext()->getSession()->getPage();
+        $select = $page->find('css', '.image-editor-modal__aspect');
+        Assert::assertNotNull($select, 'Image editor aspect ratio dropdown could not be found');
+        $select->selectOption($value);
+    }
+
+    /**
      * @Then /^I should (not |)see the "([^"]*)" form$/
      * @param string $id HTML ID of form
      * @param integer $timeout
