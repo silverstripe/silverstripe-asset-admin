@@ -1,0 +1,202 @@
+.image-editor-modal .modal-header {
+  padding-right: 15px;
+}
+
+.image-editor-modal .modal-header .btn-close {
+  margin-right: -10px;
+}
+
+// min-height: 0 lets this flex child shrink below its content, so the canvas scrolls internally
+.image-editor-modal__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.image-editor-modal__canvas {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 240px;
+  max-height: 60vh;
+  margin-bottom: $spacer;
+  background: $gray-100;
+  overflow: hidden;
+}
+
+// Cap sits here, not on the <img>: react-image-crop's `max-height: inherit` on its child image outranks a single class
+.image-editor-modal__crop {
+  max-width: 100%;
+  max-height: 60vh;
+}
+
+.image-editor-modal__image {
+  max-width: 100%;
+  max-height: 60vh;
+}
+
+.image-editor-modal__spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba($white, 0.6);
+}
+
+.image-editor-modal__toolbar-bar {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.5;
+  margin-bottom: $spacer * 1.5;
+}
+
+.image-editor-modal__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacer * 0.5;
+  flex: 1 1 auto;
+}
+
+.image-editor-modal__toolbar .btn {
+  display: inline-flex;
+  align-items: center;
+}
+
+// The admin theme's .btn-secondary greys on :focus as well as :hover/:active, reading as stuck "selected"
+.image-editor-modal__toolbar .btn-secondary:not(:disabled, .disabled):focus:not(:hover, :active, .active) {
+  background-color: transparent;
+  border-color: transparent;
+  color: $text-muted;
+}
+
+.image-editor-modal__toolbar-separator {
+  align-self: stretch;
+  width: 1px;
+  margin: 0 $spacer * 0.25;
+  background: $border-color;
+}
+
+.image-editor-modal__aspect {
+  width: auto;
+  margin-left: $spacer * -0.375;
+}
+
+.image-editor-modal__flip-vertical {
+  margin-left: $spacer * -0.375;
+}
+
+.image-editor-modal__icon-mirror:before {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+.image-editor-modal__icon-quarter-turn:before {
+  display: inline-block;
+  transform: rotate(90deg);
+}
+
+.image-editor-modal__icon-crop {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 1.55em;
+  height: 1.17em;
+  margin-right: $btn-icon-spacing;
+  border: 1px dashed currentColor;
+  border-radius: 1px;
+  vertical-align: middle;
+}
+
+.image-editor-modal__error {
+  margin-bottom: $spacer * 0.5;
+}
+
+.image-editor-modal__footer {
+  justify-content: flex-end;
+}
+
+.image-editor-modal__reset {
+  margin-left: auto;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.image-editor-modal__readouts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: $spacer;
+  margin-bottom: $spacer * 0.5;
+  color: $text-muted;
+  font-size: $font-size-sm;
+}
+
+.image-editor-modal__resize {
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.5;
+}
+
+.image-editor-modal__resize-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: $spacer * 0.25;
+}
+
+.image-editor-modal__resize .form-label {
+  margin-bottom: 0;
+}
+
+.image-editor-modal__resize-field .form-control {
+  width: 4.75em;
+  height: 28px;
+  padding-right: $input-padding-x-sm;
+  background-image: none;
+}
+
+.image-editor-modal__field-error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  color: $red;
+  font-size: $font-size-sm;
+  white-space: nowrap;
+}
+
+.image-editor-modal__backup {
+  margin-bottom: $spacer * 0.5;
+  text-align: right;
+}
+
+.image-editor-modal__backup .form-check {
+  display: inline-block;
+  text-align: left;
+}
+
+.image-editor-modal__backup .form-check,
+.image-editor-modal__backup .form-check label {
+  margin-bottom: 0;
+}
+
+.image-editor-modal__notice {
+  margin: 0;
+  color: $text-muted;
+  text-align: right;
+}
+
+.image-editor-modal__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

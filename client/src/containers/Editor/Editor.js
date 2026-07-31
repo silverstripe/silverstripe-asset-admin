@@ -2,9 +2,10 @@
 import i18n from 'i18n';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import FormBuilderLoader from 'containers/FormBuilderLoader/FormBuilderLoader';
 import FormBuilderModal from 'components/FormBuilderModal/FormBuilderModal';
+import ImageEditorModal from 'containers/ImageEditorModal/ImageEditorModal';
 import * as UnsavedFormsActions from 'state/unsavedForms/UnsavedFormsActions';
 import PropTypes from 'prop-types';
 import { inject } from 'lib/Injector';
@@ -26,6 +27,7 @@ const Editor = ({
   dialog,
   onClose,
   onSubmit,
+  onImageEdited,
   schemaUrl,
   schemaUrlQueries,
   addToCampaignSchemaUrl,
@@ -35,23 +37,28 @@ const Editor = ({
   EditorHeaderComponent = EditorHeader,
   FormBuilderLoaderComponent = FormBuilderLoader,
   FormBuilderModalComponent = FormBuilderModal,
+  ImageEditorModalComponent = ImageEditorModal,
   loadingComponent
 }) => {
   const [openModal, setOpenModal] = useState(false);
+  const [openImageEditor, setOpenImageEditor] = useState(false);
   const [loadingForm, setLoadingForm] = useState(false);
   const [loadingError, setLoadingError] = useState(null);
   const [file, setFile] = useState(null);
 
-  // Refetch data about the file on mount and if the file ID changes
-  useEffect(() => {
+  const fetchFile = useCallback(() => {
     const sectionConfig = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdminOpen');
     const endpointUrl = `${sectionConfig.endpoints.read.url}/${fileId}`;
-    backend.get(endpointUrl)
+    return backend.get(endpointUrl)
       .then(response => response.json())
       .then(responseJson => {
         setFile(responseJson);
       });
   }, [fileId]);
+
+  useEffect(() => {
+    fetchFile();
+  }, [fetchFile]);
 
   /**
    * Build the form schema URL to pass to the Form Builder Loader
@@ -150,6 +157,14 @@ const Editor = ({
         break;
       case 'action_downloadfile':
         downloadFile();
+        event.preventDefault();
+
+        break;
+      case 'action_editimage':
+        // Replacing the file keeps the same fileId, so the file loaded on mount can be stale;
+        // refetch it so the editor previews the current image, not the one that was replaced.
+        fetchFile();
+        setOpenImageEditor(true);
         event.preventDefault();
 
         break;
@@ -289,6 +304,15 @@ const Editor = ({
         responseClassBad="modal__response modal__response--error"
         responseClassGood="modal__response modal__response--good"
       />
+      {openImageEditor && (
+        <ImageEditorModalComponent
+          fileId={fileId}
+          file={file}
+          isOpen={openImageEditor}
+          onClosed={() => setOpenImageEditor(false)}
+          onImageEdited={onImageEdited}
+        />
+      )}
       { loadingForm && <Loading />}
     </div>
   </div>);
@@ -301,6 +325,7 @@ Editor.propTypes = {
   dialog: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  onImageEdited: PropTypes.func,
   schemaUrl: PropTypes.string.isRequired,
   schemaUrlQueries: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string,
@@ -313,6 +338,7 @@ Editor.propTypes = {
   EditorHeaderComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   FormBuilderLoaderComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   FormBuilderModalComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  ImageEditorModalComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
 };
 
 function mapDispatchToProps(dispatch) {

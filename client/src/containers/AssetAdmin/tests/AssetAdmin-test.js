@@ -786,6 +786,35 @@ test('AssetAdmin handleSetPage should update query and refetch', async () => {
   }));
 });
 
+test('AssetAdmin handleImageEdited should refresh the current record rather than navigate', async () => {
+  const onBrowse = jest.fn();
+  const resetFileDetails = jest.fn();
+  const EditorMock = ({ onImageEdited }) => (
+    <div data-testid="test-editor" onClick={() => onImageEdited && onImageEdited()} />
+  );
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 5,
+      fileId: 10,
+      query: {
+        sort: 'name',
+        page: 2,
+      },
+      onBrowse,
+      resetFileDetails,
+      EditorComponent: EditorMock
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const editor = await screen.findByTestId('test-editor');
+  fireEvent.click(editor);
+  // The edited pixels are on the record already open, so its detail data is re-fetched in place -
+  // there is no new file to navigate to.
+  expect(resetFileDetails).toHaveBeenCalledWith(5, 10, { sort: 'name', page: 2 });
+  expect(onBrowse).not.toHaveBeenCalled();
+});
+
 test('AssetAdmin handleBackButtonClick should navigate to parent folder', async () => {
   const deselectFiles = jest.fn();
   const onBrowse = jest.fn();

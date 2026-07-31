@@ -4,6 +4,8 @@ namespace SilverStripe\AssetAdmin\Controller;
 
 use Exception;
 use InvalidArgumentException;
+use Psr\SimpleCache\CacheInterface;
+use RuntimeException;
 use SilverStripe\Admin\CMSBatchActionHandler;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Admin\LeftAndMainFormRequestHandler;
@@ -18,6 +20,7 @@ use SilverStripe\AssetAdmin\Forms\FolderFormFactory;
 use SilverStripe\AssetAdmin\Forms\ImageFormFactory;
 use SilverStripe\AssetAdmin\Forms\MoveFormFactory;
 use SilverStripe\AssetAdmin\Forms\UploadField;
+use SilverStripe\AssetAdmin\Model\ImageEditor;
 use SilverStripe\AssetAdmin\Model\ThumbnailGenerator;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
@@ -83,6 +86,7 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
         'GET api/readUsage/$ID!' => 'apiReadUsage',
         'POST api/delete' => 'apiDelete',
         'POST api/createFile' => 'apiCreateFile',
+        'POST api/editImage' => 'apiEditImage',
         'POST api/move' => 'apiMove',
         'POST api/publish' => 'apiPublish',
         'POST api/unpublish' => 'apiUnpublish',
@@ -105,6 +109,7 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
         'moveForm',
         'apiCreateFile',
         'apiDelete',
+        'apiEditImage',
         'apiHistory',
         'apiReadDescendantCounts',
         'apiReadLiveOwnerCounts',
@@ -155,6 +160,12 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
      * @var int
      */
     private static $image_retry_failure_expiry = 300;
+
+    /**
+     * How long (in seconds) an in-flight image edit holds its duplicate-submit lock. An edit releases
+     * the lock itself, so this only bounds a crashed or abandoned request.
+     */
+    private static int $edit_image_lock_ttl = 30;
 
     private static $required_permission_codes = 'CMS_ACCESS_AssetAdmin';
 
@@ -208,6 +219,8 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
         return ArrayLib::array_merge_recursive($parentClientConfig, [
             'reactRouter' => true,
             'bustCache' => static::config()->get('bust_cache'),
+            // Cast so a configured false crosses to the client as false, not as "not set".
+            'backupOriginalByDefault' => (bool) ImageEditor::config()->get('backup_original_by_default'),
             'endpoints' => array_merge($parentClientConfig['endpoints'], [
                 'createFile' => [
                     'url' => Controller::join_links($baseLink, 'api/createFile'),
@@ -216,6 +229,11 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
                 ],
                 'delete' => [
                     'url' => Controller::join_links($baseLink, 'api/delete'),
+                    'method' => 'post',
+                    'payloadFormat' => 'json',
+                ],
+                'editImage' => [
+                    'url' => Controller::join_links($baseLink, 'api/editImage'),
                     'method' => 'post',
                     'payloadFormat' => 'json',
                 ],
@@ -552,6 +570,89 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
     }
 
     /**
+     * JSON endpoint for a basic image edit. Delegates to ImageEditor, which replaces the source's
+     * own bytes and optionally backs the pre-edit bytes up beside it.
+     */
+    public function apiEditImage(HTTPRequest $request): HTTPResponse
+    {
+        if (!SecurityToken::inst()->checkRequest($request)) {
+            $this->jsonError(400);
+        }
+
+        $fileId = $this->getPostedJsonValue($request, 'fileId');
+        $flip = $this->getPostedJsonValue($request, 'flip');
+        $rotate = $this->getPostedJsonValue($request, 'rotate');
+        $crop = $this->getPostedJsonValue($request, 'crop');
+        // Absent means "no resize".
+        $resize = $this->getOptionalPostedJsonValue($request, 'resize');
+        // Absent falls back to ImageEditor's configured default.
+        $backupOriginal = $this->getOptionalPostedJsonValue($request, 'backupOriginal');
+        if (!is_numeric($fileId)) {
+            $this->jsonError(400);
+        }
+
+        $file = File::get()->byID((int) $fileId);
+        if (!$file) {
+            $this->jsonError(404);
+        }
+        // The edit replaces the source's own bytes, so canView() is not enough.
+        if (!$file->canEdit()) {
+            $this->jsonError(403);
+        }
+
+        $member = Security::getCurrentUser();
+        // Permission to create the backup copy in the source's folder, needed only where one is
+        // actually written - declining the backup asks nothing of the folder.
+        if (ImageEditor::singleton()->willBackupOriginal($backupOriginal)) {
+            $folder = $file->ParentID ? $file->Parent() : null;
+            if (!Image::singleton()->canCreate($member, ['Parent' => $folder])) {
+                $this->jsonError(403);
+            }
+        }
+
+        // SVG uploads are plain File records, so they are excluded by the Image check.
+        if (!($file instanceof Image) || !$file->getIsImage()) {
+            $this->jsonError(422, _t(
+                __CLASS__ . '.EDIT_IMAGE_NOT_RASTER',
+                'This file is not an editable raster image'
+            ));
+        }
+
+        // Defence-in-depth behind the frontend, which already blocks a second submit while in flight.
+        $cache = Injector::inst()->get(CacheInterface::class . '.assetAdminImageEditor');
+        $lockKey = 'edit-' . ($member ? $member->ID : 0) . '-' . $file->ID;
+        if ($cache->get($lockKey)) {
+            $this->jsonError(409, _t(
+                __CLASS__ . '.EDIT_IMAGE_IN_FLIGHT',
+                'An edit for this image is already being processed'
+            ));
+        }
+        $cache->set($lockKey, true, (int) $this->config()->get('edit_image_lock_ttl'));
+
+        try {
+            $result = ImageEditor::create()->editImage($file, [
+                'flip' => $flip,
+                'rotate' => $rotate,
+                'crop' => $crop,
+                'resize' => $resize,
+                'backupOriginal' => $backupOriginal,
+            ]);
+        } catch (InvalidArgumentException $e) {
+            $this->jsonError(400, $e->getMessage());
+        } catch (RuntimeException $e) {
+            $this->jsonError(422, $e->getMessage());
+        } finally {
+            $cache->delete($lockKey);
+        }
+
+        // backupFilename is always present, null when no backup was written.
+        $data = $this->getObjectFromData($result->getImage());
+        $data['backupFilename'] = $result->getBackupFilename();
+
+        return $this->jsonSuccess(200, $data);
+    }
+
+    /**
      * Upload a new asset for a pre-existing record. Returns the asset tuple.
      *
      * Note that conflict resolution is as follows:
@@ -752,6 +853,18 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
             }
         }
         return $value;
+    }
+
+    /**
+     * As getPostedJsonValue(), but returns null for an absent key rather than rejecting the request.
+     */
+    protected function getOptionalPostedJsonValue(HTTPRequest $request, string $key): mixed
+    {
+        $data = json_decode($request->getBody() ?? '', true);
+        if (!is_array($data) || !array_key_exists($key, $data)) {
+            return null;
+        }
+        return $data[$key];
     }
 
     /**

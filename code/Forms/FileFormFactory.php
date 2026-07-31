@@ -4,7 +4,9 @@ namespace SilverStripe\AssetAdmin\Forms;
 
 use SilverStripe\Admin\Forms\UsedOnTable;
 use SilverStripe\Assets\File;
+use SilverStripe\Assets\Image;
 use SilverStripe\Control\RequestHandler;
+use SilverStripe\Security\Security;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\FieldGroup;
@@ -426,6 +428,32 @@ class FileFormFactory extends AssetFormFactory
     }
 
     /**
+     * Get the "Edit image" action that opens the basic image editor. Gated as a convenience only;
+     * api/editImage re-enforces this server-side.
+     */
+    protected function getEditImageAction(?File $record): ?FormAction
+    {
+        if (!$record || !$record->isInDB()) {
+            return null;
+        }
+        // SVG uploads are plain File records, so they are excluded by the Image check.
+        if (!($record instanceof Image) || !$record->getIsImage()) {
+            return null;
+        }
+        if (!$record->canEdit()) {
+            return null;
+        }
+        // Create rights in the folder are needed for the backup copy.
+        $folder = $record->ParentID ? $record->Parent() : null;
+        if (!Image::singleton()->canCreate(Security::getCurrentUser(), ['Parent' => $folder])) {
+            return null;
+        }
+
+        return FormAction::create('editimage', _t(__CLASS__ . '.EDIT_IMAGE', 'Edit image'))
+            ->setIcon('edit');
+    }
+
+    /**
      * Get Download file action
      *
      * @param File $record
@@ -457,6 +485,7 @@ class FileFormFactory extends AssetFormFactory
             array_unshift($actions, $this->getUnpublishAction($record));
             array_unshift($actions, $this->getDownloadFileAction($record));
             array_unshift($actions, $this->getReplaceFileAction($record));
+            array_unshift($actions, $this->getEditImageAction($record));
         });
 
         return parent::getPopoverActions($record);
