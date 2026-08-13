@@ -91,6 +91,7 @@ en:
     VIEWERMEMBERS: 'Viewer Users'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download file'
+    EDIT_IMAGE: 'Edit image'
     INSERT_LINK: 'Link to file'
     LINKDESCR: 'Link description'
     LINKOPENNEWWIN: 'Open in new window/tab'
