@@ -81,7 +81,7 @@
     "merge": "^2.1.1",
     "modernizr": "^3.12.0",
     "prop-types": "^15.8.1",
-    "qs": "^6.14.2",
+    "qs": "^6.15.2",
     "react-dom": "^18.2.0",
     "react-image-crop": "^11.0.0",
     "react-redux": "^9.2.0",
