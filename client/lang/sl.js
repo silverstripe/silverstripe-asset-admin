@@ -22,6 +22,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.BULK_ACTIONS_SELECTED": "Izbranih: %s",
     "AssetAdmin.BULK_ACTIONS_SELECT_ALL": "Izberi vse",
     "AssetAdmin.CONFIRM_FILE_ARCHIVE": "Potrjujem arhiviranje",
-    "AssetAdmin.CONFIRM_FILE_DELETION": "Potrjujem brisanje"
+    "AssetAdmin.CONFIRM_FILE_DELETION": "Potrjujem brisanje",
+    "AssetAdmin.IMAGE_EDITOR_CANCEL": "Prekliči",
+    "AssetAdmin.IMAGE_EDITOR_RESIZE_HEIGHT": "Višina",
+    "AssetAdmin.IMAGE_EDITOR_RESIZE_WIDTH": "Širina"
 });
 }

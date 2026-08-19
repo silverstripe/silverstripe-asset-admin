@@ -7,6 +7,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('da', {
     "AssetAdmin.BACK_DESCRIPTION": "Naviger et niveau op",
-    "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Arkiv"
+    "AssetAdmin.BULK_ACTIONS_ARCHIVE": "Arkiv",
+    "AssetAdmin.IMAGE_EDITOR_CANCEL": "Annuller",
+    "AssetAdmin.IMAGE_EDITOR_RESIZE_HEIGHT": "Højde",
+    "AssetAdmin.IMAGE_EDITOR_RESIZE_WIDTH": "Bredde"
 });
 }

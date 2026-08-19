@@ -24,6 +24,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "AssetAdmin.BULK_ACTIONS_SELECTED": "%s elektita",
     "AssetAdmin.BULK_ACTIONS_SELECT_ALL": "Elekti ĉiujn",
     "AssetAdmin.CONFIRM_FILE_ARCHIVE": "Konfirmi enarkivigi",
-    "AssetAdmin.CONFIRM_FILE_DELETION": "Konfirmi forigi"
+    "AssetAdmin.CONFIRM_FILE_DELETION": "Konfirmi forigi",
+    "AssetAdmin.IMAGE_EDITOR_CANCEL": "Nuligi",
+    "AssetAdmin.IMAGE_EDITOR_RESIZE_HEIGHT": "Alto",
+    "AssetAdmin.IMAGE_EDITOR_RESIZE_WIDTH": "Larĝo"
 });
 }
