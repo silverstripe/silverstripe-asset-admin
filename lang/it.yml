@@ -1,6 +1,10 @@
 it:
   AssetAdmin:
     INSERT_FILE: 'Inserire file'
+    OWNER_WARNING:
+      many: 'Il file "{file}" è usato in {count} posti'
+      one: 'Il file "{file}" è usato in {count} posto'
+      other: 'Il file "{file}" è usato in {count} posti'
     UPDATE_FILE: 'Aggiorna file'
   SilverStripe\Admin\FileStatusIcon:
     ACCESS_RESTRICTED: 'Accesso ristretto'
@@ -28,7 +32,7 @@ it:
     CreatePermissionDenied: 'Non hai il permesso di aggiungere file'
     CurrentFolderOnly: 'Restringere alla cartella corrente e alle sue sottocartelle?'
     DELETE_BUTTON: Elimina
-    Eager: Avido
+    Eager: Classico
     ErrorItemPermissionDenied: 'Non hai il permesso di modificare {ObjectTitle}'
     ErrorNotFound: '{Type} non può essere trovato'
     FILE_NOT_FOUND: 'File non trovato'
@@ -38,9 +42,9 @@ it:
     ImageSpecs: Dimensioni
     ImageWidth: Larghezza
     LASTEDIT: 'Ultima modifica'
-    LazyDefault: 'Pigro (default)'
     LoadIntoFileFailed: 'Caricamento file fallito'
     Loading: 'In caricamento'
+    LoadingTitleTip: "Il caricamento lazy può migliorare la prestazione percepita posticipando il caricamento dei file multimediali. Il caricamento classico leggerà i file il prima possibile e può essere usato quando l'immagine è a vista mentre la pagina viene caricata (sopra o vicino la piegatura)."
     MENUTITLE: File
     NOSUMMARY: 'Riepilogo non disponibile'
     NewFile: 'Nuovo {file}'
@@ -62,6 +66,8 @@ it:
     MOVEDFOLDER: 'File spostato'
     RENAMEDFILE: 'File sostituito'
     RENAMEDTITLE: 'Titolo aggiornato a'
+  SilverStripe\AssetAdmin\Controller\AssetAdminOpen:
+    MENUTITLE: 'File aperti'
   SilverStripe\AssetAdmin\Forms\AssetFormFactory:
     ACCESSHEADER: 'Chi può vedere qesto file?'
     ANYONE: Chiunque
@@ -74,7 +80,7 @@ it:
     LOGGED_IN: 'Utenti autenticati'
     ONLY_GROUPS: 'Solo questi gruppi (scegliere dalla lista)'
     ONLY_MEMBERS: 'Solo questi utenti (scegliere dalla lista)'
-    ROOTNAME: '(Primo Livello)'
+    ROOTNAME: '(Primo livello)'
     SAVE: Salva
     SAVED: Salvato
     SHOWINSEARRCH: 'Visualizzare in ricerca?'
@@ -125,3 +131,6 @@ it:
       many: 'Il file "{file}" è usato in {count} posti.'
       one: 'Il file "{file}" è usato in {count} posto.'
       other: 'Il file "{file}" è usato in {count} posti.'
+  SilverStripe\CMS\Search\SearchForm:
+    FILTERDATEFROM: Da
+    FILTERDATETO: A

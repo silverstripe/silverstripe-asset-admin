@@ -33,6 +33,8 @@ en:
     CreatePermissionDenied: 'You do not have permission to add files'
     CurrentFolderOnly: 'Limit to current folder and its sub-folders?'
     DELETE_BUTTON: Delete
+    EDIT_IMAGE_IN_FLIGHT: 'An edit for this image is already being processed'
+    EDIT_IMAGE_NOT_RASTER: 'This file is not an editable raster image'
     Eager: Eager
     ErrorItemPermissionDenied: "You don't have the necessary permissions to modify {ObjectTitle}"
     ErrorNotFound: "That {Type} couldn't be found"
@@ -89,6 +91,7 @@ en:
     VIEWERMEMBERS: 'Viewer Users'
   SilverStripe\AssetAdmin\Forms\FileFormFactory:
     DOWNLOAD_FILE: 'Download file'
+    EDIT_IMAGE: 'Edit image'
     INSERT_LINK: 'Link to file'
     LINKDESCR: 'Link description'
     LINKOPENNEWWIN: 'Open in new window/tab'
@@ -130,6 +133,9 @@ en:
     OWNER_WARNING:
       one: 'File "{file}" is used in {count} place'
       other: 'File "{file}" is used in {count} places.'
+  SilverStripe\AssetAdmin\Model\ImageEditor:
+    RESIZE_TOO_LARGE: 'Cannot be larger than the cropped image ({width} x {height})'
+    SOURCE_TOO_LARGE: 'Exceeds {limit} megapixel (width x height) limit'
   SilverStripe\CMS\Search\SearchForm:
     FILTERDATEFROM: From
     FILTERDATETO: To
