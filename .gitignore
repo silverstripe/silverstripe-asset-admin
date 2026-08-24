@@ -8,3 +8,4 @@ coverage/
 /**/*.css.map
 artifacts/
 coverage/
+/.yarn/
