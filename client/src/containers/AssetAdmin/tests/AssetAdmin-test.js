@@ -1095,6 +1095,49 @@ test('AssetAdmin handleSubmitEditor with action_createfolder in select mode shou
   expect(submitFn).toHaveBeenCalled();
 });
 
+test('AssetAdmin handleSubmitEditor rejected submission should show an error toast', async () => {
+  const submitFn = jest.fn(() => Promise.reject(createJsonError('You do not have permission to create a folder')));
+  render(
+    <AssetAdmin {...makeProps({
+      type: 'admin',
+      folderId: 5,
+      // Swallow the rethrown rejection, which redux-form would normally receive
+      EditorComponent: ({ onSubmit }) => (
+        <div data-testid="test-editor" onClick={() => onSubmit(...nextParams).catch(() => {})}/>
+      )
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const editor = await screen.findByTestId('test-editor');
+  nextParams = [{}, 'action_createfolder', submitFn];
+  fireEvent.click(editor);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(submitFn).toHaveBeenCalled();
+  expect(lastToastErrorMessage).toBe('You do not have permission to create a folder');
+});
+
+test('AssetAdmin handleSubmitEditor rejected submission with unknown error should show generic toast', async () => {
+  const submitFn = jest.fn(() => Promise.reject(new Error('network fail')));
+  render(
+    <AssetAdmin {...makeProps({
+      type: 'admin',
+      folderId: 5,
+      EditorComponent: ({ onSubmit }) => (
+        <div data-testid="test-editor" onClick={() => onSubmit(...nextParams).catch(() => {})}/>
+      )
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  const editor = await screen.findByTestId('test-editor');
+  nextParams = [{}, 'action_createfolder', submitFn];
+  fireEvent.click(editor);
+  await new Promise(resolve => setTimeout(resolve, 0));
+  expect(submitFn).toHaveBeenCalled();
+  expect(lastToastErrorMessage).toBe('An unknown error has occurred.');
+});
+
 test('AssetAdmin handleSubmitEditor with action_save should handle file move', async () => {
   const onBrowse = jest.fn();
   const submitFn = jest.fn(() => Promise.resolve({
