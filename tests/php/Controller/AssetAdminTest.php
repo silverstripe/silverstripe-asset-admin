@@ -10,6 +10,8 @@ use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestFile;
 use SilverStripe\AssetAdmin\Tests\Controller\AssetAdminTest\TestObject;
 use SilverStripe\Assets\File;
 use SilverStripe\Assets\Folder;
+use SilverStripe\Assets\Image;
+use SilverStripe\Control\HTTPResponse;
 use Silverstripe\Assets\Dev\TestAssetStore;
 use SilverStripe\Assets\Upload_Validator;
 use SilverStripe\Control\Director;
@@ -313,6 +315,67 @@ class AssetAdminTest extends FunctionalTest
         $this->assertFalse($response->isError());
         $folder1 = Folder::get()->byID($folder1ID);
         $this->assertEquals('folder1-renamed', $folder1->Name);
+    }
+
+    /**
+     * A project's own File subclass must survive a save.
+     * @see https://github.com/silverstripe/silverstripe-asset-admin/issues/1540
+     */
+    public function testSaveKeepsFileSubclass()
+    {
+        $file = TestFile::create();
+        $file->setFromString('dummy', 'folder1/subclass-test.pdf');
+        $file->write();
+        $file->publishSingle();
+
+        $response = $this->postFileEditForm($file, 'folder1/subclass-test.pdf');
+
+        $this->assertFalse($response->isError());
+        $this->assertSame(
+            TestFile::class,
+            File::get()->byID($file->ID)->ClassName,
+            'A File subclass should not be flattened to the generic File class'
+        );
+    }
+
+    /**
+     * A class registered against specific extensions must still be replaced when the file
+     * no longer has one of those extensions.
+     */
+    public function testSaveReplacesClassWhenExtensionNoLongerMatches()
+    {
+        $file = Image::create();
+        $file->setFromString('dummy', 'folder1/was-an-image.jpg');
+        $file->write();
+        $file->publishSingle();
+
+        $response = $this->postFileEditForm($file, 'folder1/was-an-image.pdf');
+
+        $this->assertFalse($response->isError());
+        $this->assertSame(
+            File::class,
+            File::get()->byID($file->ID)->ClassName,
+            'An Image should be demoted to File once its extension is no longer an image'
+        );
+    }
+
+    private function postFileEditForm(File $file, string $filename): HTTPResponse
+    {
+        return $this->post(
+            'admin/assets/fileEditForm/' . $file->ID,
+            [
+                'ID' => $file->ID,
+                'action_save' => 1,
+                'FileFilename' => $filename,
+                'Name' => basename($filename),
+                'Title' => $file->Title,
+                'SecurityID' => SecurityToken::inst()->getValue(),
+                'CanViewType' => 'Inherit',
+                'ViewerGroups' => 'unchanged',
+                'CanEditType' => 'Inherit',
+                'EditorGroups' => 'unchanged',
+            ]
+        );
     }
 
     public function testGetMinimalistObjectFromData()

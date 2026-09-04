@@ -1236,14 +1236,8 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
             $newClass = File::get_class_for_file_extension($extension);
 
             // If the file extension has changed, change to the proper new class which represents it.
-            // The class will not change if the current class is a subclass of the new class.
-            // An exception is if new class is the generic File::class - to not change to the generic
-            // File::class make sure to register the file extension and your class to config in
-            // File::class_for_file_extension
             $currentClass = $record->getClassName();
-            if (!is_a($currentClass, $newClass ?? '', true) ||
-                ($currentClass !== $newClass && $newClass === File::class)
-            ) {
+            if ($this->shouldChangeFileClass($currentClass, $newClass, $extension)) {
                 $record = $record->newClassInstance($newClass);
 
                 // update the allowed category for the new file extension
@@ -1264,6 +1258,64 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
 
         // Note: Force return of schema / state in success result
         return $this->getRecordUpdatedResponse($record, $form);
+    }
+
+    /**
+     * Determine whether a record's class must be replaced to match its file extension.
+     *
+     * A class is kept if it can still represent the new extension. That includes subclasses
+     * of the class the extension maps to, so a project can subclass File (or Image) and have
+     * its records survive a save without having to register the subclass in
+     * File.class_for_file_extension.
+     *
+     * The exception is a class bound to a specific set of file types that no longer includes the
+     * record's extension - it cannot represent the file any more, so it is replaced. This is what
+     * demotes an Image to a File when its extension changes from .jpg to .pdf.
+     */
+    private function shouldChangeFileClass(string $currentClass, ?string $newClass, string $extension): bool
+    {
+        if (!$newClass || $currentClass === $newClass) {
+            return false;
+        }
+
+        // The current class cannot represent the new extension at all.
+        if (!is_a($currentClass, $newClass, true)) {
+            return true;
+        }
+
+        // The current class is a subclass of the new class. It is only replaced if it is bound to
+        // specific extensions and the new extension is not one of them.
+        $boundExtensions = $this->getExtensionsForClass($currentClass);
+
+        return $boundExtensions !== [] && !in_array(strtolower($extension), $boundExtensions, true);
+    }
+
+    /**
+     * Get the extensions a class can represent according to File.class_for_file_extension.
+     *
+     * An empty result means the class is not tied to any particular file type - which is the case
+     * for a project's own File subclass - so it is safe to keep for any extension its parent class can handle.
+     *
+     * @return string[]
+     */
+    private function getExtensionsForClass(string $class): array
+    {
+        $map = array_change_key_case(File::config()->get('class_for_file_extension') ?? [], CASE_LOWER);
+        $extensions = [];
+
+        foreach ($map as $mappedExtension => $mappedClass) {
+            // '*' and File::class are catch-alls that every File subclass matches, so they say
+            // nothing about whether a class is bound to specific extensions.
+            if ($mappedExtension === '*' || $mappedClass === File::class) {
+                continue;
+            }
+
+            if (is_a($class, $mappedClass, true)) {
+                $extensions[] = (string) $mappedExtension;
+            }
+        }
+
+        return $extensions;
     }
 
     public function unpublish(array $data, Form $form): HTTPResponse
