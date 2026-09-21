@@ -19,6 +19,7 @@ class AssetAdminStateRouter extends Component {
     super(props);
 
     this.handleBrowse = this.handleBrowse.bind(this);
+    this.handleResetDetails = this.handleResetDetails.bind(this);
     this.getUrl = this.getUrl.bind(this);
 
     this.state = Object.assign(
@@ -91,6 +92,7 @@ class AssetAdminStateRouter extends Component {
         query: this.state.query,
         getUrl: this.getUrl,
         onBrowse: this.handleBrowse,
+        resetFileDetails: this.handleResetDetails,
       }
     );
 
@@ -123,6 +125,22 @@ class AssetAdminStateRouter extends Component {
       fileId,
       query,
       action,
+    });
+  }
+
+  /**
+   * Reset the details screen for a file, the state-based equivalent of
+   * AssetAdminRouter.handleResetDetails, i.e. unmount the file's Editor panel and remount it so
+   * the panel refetches the file's form schema and record.
+   *
+   * @param {number} [folderId]
+   * @param {number} [fileId]
+   * @param {object} [query]
+   */
+  handleResetDetails(folderId, fileId, query = {}) {
+    // The editor unmounts on the first render, so the second setState remounts it with fresh data
+    this.setState({ folderId, fileId: null, query }, () => {
+      this.setState({ fileId });
     });
   }
 
