@@ -1171,21 +1171,20 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
         if ($parentID) {
             $parent = Folder::get()->byID($parentID);
             if (!$parent) {
-                throw new \InvalidArgumentException(sprintf(
-                    '%s#%s not found',
-                    Folder::class,
-                    $parentID
-                ));
+                $this->jsonError(
+                    404,
+                    _t(__CLASS__.'.FOLDER_NOT_FOUND', 'Folder not found')
+                );
             }
             $data['Parent'] = $parent;
         }
 
         // Check permission
         if (!Folder::singleton()->canCreate(Security::getCurrentUser(), $data)) {
-            throw new \InvalidArgumentException(sprintf(
-                '%s create not allowed',
-                Folder::class
-            ));
+            $this->jsonError(
+                403,
+                _t(__CLASS__.'.CreateFolderPermissionDenied', 'You do not have permission to create a folder')
+            );
         }
 
         $folder = Folder::create();

@@ -548,6 +548,10 @@ const AssetAdmin = ({
         return response;
       }).then(() => {
         setForceRefetch(true);
+      }).catch(async (err) => {
+        const message = await getJsonErrorMessage(err);
+        actions.toasts.error(message);
+        throw err;
       });
   };
 
