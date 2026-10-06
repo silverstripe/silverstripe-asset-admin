@@ -460,3 +460,31 @@ test('InsertMediaModal respects type prop variations', () => {
     unmount();
   });
 });
+
+test('InsertMediaModal does not pass onInsert or schemaUrl to the modal', () => {
+  render(<InsertMediaModal {...makeProps({ schemaUrl: 'x/y' })} />);
+  const modal = screen.getByTestId('form-builder-modal');
+  expect(modal.getAttribute('schemaurl')).toBeNull();
+  expect(modal.getAttribute('oninsert')).toBeNull();
+});
+
+test('InsertMediaModal calls onBrowse with folderId when closing after being open', () => {
+  const props = makeProps({ isOpen: true, folderId: 8 });
+  const { rerender } = render(<InsertMediaModal {...props} />);
+  props.onBrowse.mockClear();
+  rerender(<InsertMediaModal {...props} isOpen={false} />);
+  expect(props.onBrowse).toHaveBeenCalledWith(8);
+  expect(props.actions.gallery.deselectFiles).toHaveBeenCalled();
+});
+
+test('InsertMediaModal uses default folderId of 0 and type when not provided', () => {
+  const props = makeProps();
+  delete props.folderId;
+  render(<InsertMediaModal {...props} />);
+  expect(props.onBrowse).toHaveBeenCalledWith(0);
+});
+
+test('InsertMediaModal falls back to the default type when type is explicitly undefined', () => {
+  render(<InsertMediaModal {...makeProps({ type: undefined })} />);
+  expect(screen.getByTestId('form-builder-modal').getAttribute('type')).toBe('insert-media');
+});

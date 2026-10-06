@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { bindActionCreators, compose } from 'redux';
 import { connect } from 'react-redux';
 import AssetAdmin from 'containers/AssetAdmin/AssetAdmin';
@@ -13,18 +13,29 @@ import PropTypes from 'prop-types';
 import getFormSchema from 'lib/getFormSchema';
 import qs from 'qs';
 
-class InsertMediaModal extends Component {
-  constructor(props) {
-    super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+const InsertMediaModal = (_props) => {
+  const defaultProps = {
+    className: '',
+    fileAttributes: {},
+    type: 'insert-media',
+    folderId: 0,
+    maxFiles: 1
+  };
+  const props = {
+    ...defaultProps,
+    // React class defaultProps also apply when a prop is explicitly undefined (e.g. `type` from connect())
+    ...Object.fromEntries(Object.entries(_props).filter(([, value]) => value !== undefined)),
+  };
+  // Persist the previous props to simulate the `prevProps` argument of componentDidUpdate
+  const prevPropsRef = useRef(null);
 
-  componentDidMount() {
+  // Layout effects keep the class's lifecycle timing (componentDidMount/componentDidUpdate run before parent effects)
+  useLayoutEffect(() => {
     const {
       isOpen,
       onBrowse, setOverrides,
       fileAttributes, folderId
-    } = this.props;
+    } = props;
 
     if (!isOpen) {
       onBrowse(folderId || 0);
@@ -32,53 +43,43 @@ class InsertMediaModal extends Component {
       typeof setOverrides === 'function'
       && fileAttributes.ID
     ) {
-      setOverrides(this.props);
+      setOverrides(props);
       onBrowse(folderId, fileAttributes.ID);
     }
-  }
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (!this.props.isOpen && prevProps.isOpen) {
-      this.props.onBrowse(this.props.folderId);
-      this.props.actions.gallery.deselectFiles();
+  useLayoutEffect(() => {
+    const prevProps = prevPropsRef.current;
+    prevPropsRef.current = props;
+    if (!prevProps) {
+      return;
+    }
+    if (!props.isOpen && prevProps.isOpen) {
+      props.onBrowse(props.folderId);
+      props.actions.gallery.deselectFiles();
     }
     if (typeof prevProps.setOverrides === 'function' &&
-      this.props.isOpen &&
+      props.isOpen &&
       !prevProps.isOpen
     ) {
-      prevProps.setOverrides(this.props);
-      this.props.onBrowse(this.props.folderId, this.props.fileAttributes ? this.props.fileAttributes.ID : null);
+      prevProps.setOverrides(props);
+      props.onBrowse(props.folderId, props.fileAttributes ? props.fileAttributes.ID : null);
     }
-  }
-
-  /**
-   * Generates the properties for the section
-   *
-   * @returns {object}
-   */
-  getSectionProps() {
-    return {
-      ...this.props,
-      dialog: true,
-      toolbarChildren: this.renderToolbarChildren(),
-      onSubmitEditor: this.handleSubmit,
-      onReplaceUrl: this.props.onBrowse,
-    };
-  }
+  });
 
   /**
    * Generates the properties for the modal
    * @returns {object}
    */
-  getModalProps() {
-    const { onHide, onInsert, sectionConfig, schemaUrl, className, ...props } = this.props;
+  const getModalProps = () => {
+    const { onHide, onInsert, sectionConfig, schemaUrl, className, ...rest } = props;
     return {
-      ...props,
+      ...rest,
       className: classnames('insert-media-modal', className),
       size: 'lg',
       showCloseButton: false
     };
-  }
+  };
 
   /**
    * Handles the insert form submission, does not continue the regular form submission within the
@@ -89,37 +90,46 @@ class InsertMediaModal extends Component {
    * @param {function} submitFn
    * @param {object} file
    */
-  handleSubmit(data, action, submitFn, file) {
+  const handleSubmit = (data, action, submitFn, file) => {
     if (action === 'action_insert') {
-      return this.props.onInsert(data, file);
+      return props.onInsert(data, file);
     }
 
     // Standard form actions (e.g. publish)
     return submitFn();
-  }
+  };
 
-  renderToolbarChildren() {
-    return (
-      <ModalCloseButton
-        classNames="close insert-media-modal__close-button"
-        onClosed={this.props.onClosed}
-      />
-    );
-  }
+  const renderToolbarChildren = () => (
+    <ModalCloseButton
+      classNames="close insert-media-modal__close-button"
+      onClosed={props.onClosed}
+    />
+  );
 
-  render() {
-    const modalProps = this.getModalProps();
-    const sectionProps = this.getSectionProps();
+  /**
+   * Generates the properties for the section
+   *
+   * @returns {object}
+   */
+  const getSectionProps = () => ({
+    ...props,
+    dialog: true,
+    toolbarChildren: renderToolbarChildren(),
+    onSubmitEditor: handleSubmit,
+    onReplaceUrl: props.onBrowse,
+  });
 
-    const assetAdmin = (this.props.isOpen) ? <AssetAdmin {...sectionProps} /> : null;
+  const modalProps = getModalProps();
+  const sectionProps = getSectionProps();
 
-    return (
-      <FormBuilderModal {...modalProps} >
-        {assetAdmin}
-      </FormBuilderModal>
-    );
-  }
-}
+  const assetAdmin = (props.isOpen) ? <AssetAdmin {...sectionProps} /> : null;
+
+  return (
+    <FormBuilderModal {...modalProps} >
+      {assetAdmin}
+    </FormBuilderModal>
+  );
+};
 
 InsertMediaModal.propTypes = {
   sectionConfig: PropTypes.shape({
@@ -154,14 +164,6 @@ InsertMediaModal.propTypes = {
   actions: PropTypes.object,
   maxFiles: PropTypes.number,
   fileSelected: PropTypes.bool
-};
-
-InsertMediaModal.defaultProps = {
-  className: '',
-  fileAttributes: {},
-  type: 'insert-media',
-  folderId: 0,
-  maxFiles: 1
 };
 
 function mapStateToProps(state, ownProps) {
