@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { buildUrl } from 'containers/AssetAdmin/AssetAdminRouter';
@@ -14,143 +14,142 @@ const initialState = {
   action: CONSTANTS.ACTIONS.EDIT_FILE,
 };
 
-class AssetAdminStateRouter extends Component {
-  constructor(props) {
-    super(props);
+const AssetAdminStateRouter = (props) => {
+  const [folderId, setFolderId] = useState(props.folderId);
+  const [fileId, setFileId] = useState(initialState.fileId);
+  const [query, setQuery] = useState(initialState.query);
+  const [action, setAction] = useState(initialState.action);
+  // Holds the file ID to reopen once handleResetDetails has cleared it
+  const pendingFileId = useRef(null);
 
-    this.handleBrowse = this.handleBrowse.bind(this);
-    this.handleResetDetails = this.handleResetDetails.bind(this);
-    this.getUrl = this.getUrl.bind(this);
+  useEffect(() => {
+    if (pendingFileId.current) {
+      const { fileId: newFileId } = pendingFileId.current;
+      pendingFileId.current = null;
+      setFileId(newFileId);
+    }
+  });
 
-    this.state = Object.assign(
-      {},
-      initialState,
-      { folderId: props.folderId }
-    );
-  }
+  /**
+   * @return {*} Folder ID being viewed, or null if not known
+   */
+  const getFolderId = () => {
+    if (folderId === null) {
+      return null;
+    }
+    return parseInt(folderId || 0, 10);
+  };
 
   /**
    * Generates the Url to AssetAdmin for a given folder and file ID.
    *
    * Only used by AssetAdmin to build breadcrumbs for a particular folder / file
    *
-   * @param {Number} folderId
-   * @param {Number} fileId
-   * @param {Object} query
-   * @param {String} action
+   * @param {Number} newFolderIdArg
+   * @param {Number} newFileIdArg
+   * @param {Object} newQueryArg
+   * @param {String} newAction
    * @returns {String}
    */
-  getUrl(folderId = 0, fileId = null, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE) {
-    const newFolderId = parseInt(folderId || 0, 10);
-    const newFileId = parseInt(fileId || 0, 10);
-    const oldFolderId = this.getFolderId();
+  const getUrl = (
+    newFolderIdArg = 0,
+    newFileIdArg = null,
+    newQueryArg = {},
+    newAction = CONSTANTS.ACTIONS.EDIT_FILE
+  ) => {
+    const newFolderId = parseInt(newFolderIdArg || 0, 10);
+    const newFileId = parseInt(newFileIdArg || 0, 10);
+    const oldFolderId = getFolderId();
 
     // Remove pagination selector if already on first page, or changing folder (if folder is known)
     const hasFolderChanged = newFolderId !== oldFolderId && oldFolderId !== null;
-    const newQuery = Object.assign({}, query);
+    const newQuery = Object.assign({}, newQueryArg);
     if (hasFolderChanged || newQuery.page <= 1) {
       delete newQuery.page;
     }
 
     return buildUrl({
-      base: this.props.sectionConfig.reactRoutePath,
+      base: props.sectionConfig.reactRoutePath,
       folderId: newFolderId,
       fileId: newFileId,
       query: newQuery,
-      action,
+      action: newAction,
     });
-  }
-
-  /**
-   * @return {*} Folder ID being viewed, or null if not known
-   */
-  getFolderId() {
-    if (this.state.folderId === null) {
-      return null;
-    }
-    return parseInt(this.state.folderId || 0, 10);
-  }
+  };
 
   /**
    * @return {Number} File ID being viewed
    */
-  getFileId() {
-    return parseInt(this.state.fileId || this.props.fileId || 0, 10);
-  }
+  const getFileId = () => parseInt(fileId || props.fileId || 0, 10);
 
-  getViewAction() {
-    return this.state.action || CONSTANTS.ACTIONS.EDIT_FILE;
-  }
-
-  getSectionProps() {
-    const props = Object.assign({},
-      this.props,
-      {
-        folderId: this.getFolderId(),
-        fileId: this.getFileId(),
-        viewAction: this.getViewAction(),
-        query: this.state.query,
-        getUrl: this.getUrl,
-        onBrowse: this.handleBrowse,
-        resetFileDetails: this.handleResetDetails,
-      }
-    );
-
-    delete props.Component;
-
-    return props;
-  }
+  const getViewAction = () => action || CONSTANTS.ACTIONS.EDIT_FILE;
 
   /**
    * Handle browsing through the asset admin section.
    *
-   * @param {number} folderId
-   * @param {number} fileId
-   * @param {object} query
-   * @param {string} action
+   * @param {number} newFolderId
+   * @param {number} newFileId
+   * @param {object} newQuery
+   * @param {string} newAction
    */
-  handleBrowse(folderId, fileId, query = {}, action = CONSTANTS.ACTIONS.EDIT_FILE) {
-    if (action && Object.values(CONSTANTS.ACTIONS).indexOf(action) === -1) {
-      throw new Error(`Invalid action provided: ${action}`);
+  const handleBrowse = (newFolderId, newFileId, newQuery = {}, newAction = CONSTANTS.ACTIONS.EDIT_FILE) => {
+    if (newAction && Object.values(CONSTANTS.ACTIONS).indexOf(newAction) === -1) {
+      throw new Error(`Invalid action provided: ${newAction}`);
     }
 
-    if (this.state.fileId !== fileId) {
+    if (fileId !== newFileId) {
       // When AssetAdmin is displayed in Modal, the insert media and admin form can be displayed.
       // When a different file is selected, we should switch back to displaying the main form.
-      this.props.actions.resetFormStack();
+      props.actions.resetFormStack();
     }
 
-    this.setState({
-      folderId,
-      fileId,
-      query,
-      action,
-    });
-  }
+    setFolderId(newFolderId);
+    setFileId(newFileId);
+    setQuery(newQuery);
+    setAction(newAction);
+  };
 
   /**
    * Reset the details screen for a file, the state-based equivalent of
    * AssetAdminRouter.handleResetDetails, i.e. unmount the file's Editor panel and remount it so
    * the panel refetches the file's form schema and record.
    *
-   * @param {number} [folderId]
-   * @param {number} [fileId]
-   * @param {object} [query]
+   * @param {number} [newFolderId]
+   * @param {number} [newFileId]
+   * @param {object} [newQuery]
    */
-  handleResetDetails(folderId, fileId, query = {}) {
-    // The editor unmounts on the first render, so the second setState remounts it with fresh data
-    this.setState({ folderId, fileId: null, query }, () => {
-      this.setState({ fileId });
-    });
-  }
+  const handleResetDetails = (newFolderId, newFileId, newQuery = {}) => {
+    // The editor unmounts on the first render, so the effect above remounts it with fresh data
+    pendingFileId.current = { fileId: newFileId };
+    setFolderId(newFolderId);
+    setFileId(null);
+    setQuery(newQuery);
+  };
 
-  render() {
-    const sectionProps = this.getSectionProps();
-    const AssetAdmin = this.props.Component;
+  const getSectionProps = () => {
+    const newProps = Object.assign({},
+      props,
+      {
+        folderId: getFolderId(),
+        fileId: getFileId(),
+        viewAction: getViewAction(),
+        query,
+        getUrl,
+        onBrowse: handleBrowse,
+        resetFileDetails: handleResetDetails,
+      }
+    );
 
-    return (<AssetAdmin {...sectionProps} />);
-  }
-}
+    delete newProps.Component;
+
+    return newProps;
+  };
+
+  const sectionProps = getSectionProps();
+  const AssetAdmin = props.Component;
+
+  return (<AssetAdmin {...sectionProps} />);
+};
 
 AssetAdminStateRouter.propTypes = {
   Component: PropTypes.elementType,

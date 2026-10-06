@@ -1,5 +1,6 @@
 /* global FileReader, Image, document, FormData */
-import React, { Component } from 'react';
+/* eslint-disable no-use-before-define */
+import React, { useEffect, useRef, useState } from 'react';
 import i18n from 'i18n';
 import DropzoneLib from '@deltablot/dropzone';
 import $ from 'jquery';
@@ -8,90 +9,89 @@ import PropTypes from 'prop-types';
 
 let idCounter = 0;
 
-class AssetDropzone extends Component {
-  constructor(props) {
-    super(props);
+const AssetDropzone = (_props) => {
+  const defaultProps = {
+    uploadButton: true,
+  };
+  const props = {
+    ...defaultProps,
+    ..._props,
+  };
 
-    this.dropzone = null;
-    this.dragging = false;
+  const dropzone = useRef(null);
+  const dropzoneRef = useRef(null);
+  const [dragging, setDragging] = useState(false);
+  const prevOptions = useRef(props.options);
 
-    this.handleAccept = this.handleAccept.bind(this);
-    this.handleAddedFile = this.handleAddedFile.bind(this);
-    this.handleDragEnter = this.handleDragEnter.bind(this);
-    this.handleDragLeave = this.handleDragLeave.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
-    this.handleUploadProgress = this.handleUploadProgress.bind(this);
-    this.handleUploadComplete = this.handleUploadComplete.bind(this);
-    this.handleError = this.handleError.bind(this);
-    this.handleSending = this.handleSending.bind(this);
-    this.handleSuccess = this.handleSuccess.bind(this);
-    this.handleQueueComplete = this.handleQueueComplete.bind(this);
-    this.loadImage = this.loadImage.bind(this);
-    this.handleMaxFilesExceeded = this.handleMaxFilesExceeded.bind(this);
-  }
+  // Persist the latest props to simulate class component `this.props` behavior
+  // and prevent stale closures in the handlers passed to dropzone
+  const propsRef = useRef(props);
+  // Update current props on each render before running any effects or callbacks
+  propsRef.current = props;
 
-  componentDidMount() {
-    this.dropzone = new DropzoneLib(
-      this.dropzoneRef,
+  useEffect(() => {
+    dropzone.current = new DropzoneLib(
+      dropzoneRef.current,
       Object.assign({},
-        this.getDefaultOptions(),
-        this.props.options
+        getDefaultOptions(),
+        props.options
       ));
 
     // attach the name as a class to the hidden input for easier identification
-    const { name } = this.props;
-    if (name && this.dropzone.hiddenFileInput) {
-      this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
+    const { name } = props;
+    if (name && dropzone.current.hiddenFileInput) {
+      dropzone.current.hiddenFileInput.classList.add(`dz-input-${name}`);
     }
 
     // Set the user warning displayed when a user attempts to remove a file.
     // If the props hasn't been passed there will be no warning when removing files.
-    if (typeof this.props.promptOnRemove !== 'undefined') {
-      this.setPromptOnRemove(this.props.promptOnRemove);
+    if (typeof props.promptOnRemove !== 'undefined') {
+      setPromptOnRemove(props.promptOnRemove);
     }
-  }
 
-  componentDidUpdate(prevProps) {
+    return () => {
+      // Remove all dropzone event listeners.
+      dropzone.current.files = [];
+      dropzone.current.destroy();
+    };
+  }, []);
+
+  useEffect(() => {
     // Reattach name to hiddenFileInput as dropzone recreates this element after each upload
-    const { name } = this.props;
+    const { name } = props;
 
-    if (name && this.dropzone.hiddenFileInput) {
-      this.dropzone.hiddenFileInput.classList.add(`dz-input-${name}`);
+    if (name && dropzone.current.hiddenFileInput) {
+      dropzone.current.hiddenFileInput.classList.add(`dz-input-${name}`);
     }
     // add listeners when necessary
-    if (this.props.canUpload && prevProps.options !== this.props.options) {
-      if (this.dropzone) {
-        this.dropzone.enable();
+    if (props.canUpload && prevOptions.current !== props.options) {
+      if (dropzone.current) {
+        dropzone.current.enable();
 
-        this.dropzone.options = Object.assign({},
-          this.getDefaultOptions(),
-          this.dropzone.options,
-          this.props.options
+        dropzone.current.options = Object.assign({},
+          getDefaultOptions(),
+          dropzone.current.options,
+          props.options
         );
       }
     }
-  }
-
-  componentWillUnmount() {
-    // Remove all dropzone event listeners.
-    this.dropzone.files = [];
-    this.dropzone.destroy();
-  }
+    prevOptions.current = props.options;
+  });
 
   /**
    * Gets the default options to instantiate dropzone with.
    *
    * @return object
    */
-  getDefaultOptions() {
+  const getDefaultOptions = () => {
     let clickable = null;
-    let uploadSelector = this.props.uploadSelector;
-    if (!uploadSelector && this.props.uploadButton) {
+    let uploadSelector = propsRef.current.uploadSelector;
+    if (!uploadSelector && propsRef.current.uploadButton) {
       uploadSelector = '.asset-dropzone__upload-button';
     }
 
     if (uploadSelector) {
-      const found = $(this.dropzoneRef).find(uploadSelector);
+      const found = $(dropzoneRef.current).find(uploadSelector);
       if (found && found.length) {
         clickable = found.toArray();
       }
@@ -99,29 +99,29 @@ class AssetDropzone extends Component {
 
     return {
       // Custom validation handler
-      accept: this.handleAccept,
+      accept: handleAccept,
 
       // By default Dropzone adds markup to the DOM for displaying a thumbnail preview.
       // Here we're relpacing that default behaviour with our own React / Redux implementation.
-      addedfile: this.handleAddedFile,
+      addedfile: handleAddedFile,
 
       // When the user drags a file into the dropzone.
-      dragenter: this.handleDragEnter,
+      dragenter: handleDragEnter,
 
       // When the user's cursor leaves the dropzone while dragging a file.
-      dragleave: this.handleDragLeave,
+      dragleave: handleDragLeave,
 
       // When the user drops a file onto the dropzone.
-      drop: this.handleDrop,
+      drop: handleDrop,
 
       // When the queue size exceeds the limit
-      maxfilesexceeded: this.handleMaxFilesExceeded,
+      maxfilesexceeded: handleMaxFilesExceeded,
 
       // Whenever the file upload progress changes
-      uploadprogress: this.handleUploadProgress,
+      uploadprogress: handleUploadProgress,
 
       // When the file upload complete
-      complete: this.handleUploadComplete,
+      complete: handleUploadComplete,
 
       // The text used before any files are dropped
       dictDefaultMessage: i18n._t('AssetAdmin.DROPZONE_DEFAULT_MESSAGE', 'Drop files here to upload'),
@@ -162,15 +162,15 @@ class AssetDropzone extends Component {
       dictMaxFilesExceeded: i18n._t('AssetAdmin.DROPZONE_MAX_FILES_EXCEEDED', 'You can not upload any more files.'),
 
       // When a file upload fails.
-      error: this.handleError,
+      error: handleError,
 
       // When file file is sent to the server.
-      sending: this.handleSending,
+      sending: handleSending,
 
       // When a file upload succeeds.
-      success: this.handleSuccess,
+      success: handleSuccess,
 
-      queuecomplete: this.handleQueueComplete,
+      queuecomplete: handleQueueComplete,
 
       thumbnailHeight: 150,
 
@@ -185,7 +185,7 @@ class AssetDropzone extends Component {
 
       clickable,
     };
-  }
+  };
 
   /**
    * Gets a file's category based on its type.
@@ -194,33 +194,29 @@ class AssetDropzone extends Component {
    *
    * @return string
    */
-  getFileCategory(fileType) {
-    return fileType.split('/')[0];
-  }
+  const getFileCategory = (fileType) => fileType.split('/')[0];
 
-  getLoadPreview(file) {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
+  const getLoadPreview = (file) => new Promise((resolve) => {
+    const reader = new FileReader();
 
-      reader.onload = (event) => {
-        // If the user uploads multiple large images, we could run into memory issues
-        // by simply using the `event.target.result` data URI as the thumbnail image.
-        //
-        // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
-        // and using the canvas data URI as the thumbnail image instead.
+    reader.onload = (event) => {
+      // If the user uploads multiple large images, we could run into memory issues
+      // by simply using the `event.target.result` data URI as the thumbnail image.
+      //
+      // To get avoid this we're creating a canvas, using the dropzone thumbnail dimensions,
+      // and using the canvas data URI as the thumbnail image instead.
 
-        if (this.getFileCategory(file.type) === 'image') {
-          const img = new Image();
+      if (getFileCategory(file.type) === 'image') {
+        const img = new Image();
 
-          resolve(this.loadImage(img, event.target.result));
-        } else {
-          resolve({});
-        }
-      };
+        resolve(loadImage(img, event.target.result));
+      } else {
+        resolve({});
+      }
+    };
 
-      reader.readAsDataURL(file);
-    });
-  }
+    reader.readAsDataURL(file);
+  });
 
   /**
    * JS Synonym for File::setName()
@@ -228,48 +224,45 @@ class AssetDropzone extends Component {
    * @param {String} filename
    * @returns {String}
    */
-  getFileTitle(filename) {
-    return filename
-      .replace(/[.][^.]+$/, '')
-      .replace(/-_/, ' ');
-  }
+  const getFileTitle = (filename) => filename
+    .replace(/[.][^.]+$/, '')
+    .replace(/-_/, ' ');
 
   /**
    * Set the text displayed when a user tries to remove a file.
    *
    * @param {string} userPrompt - The message to display.
    */
-  setPromptOnRemove(userPrompt) {
-    this.dropzone.options.dictRemoveFileConfirmation = userPrompt;
-  }
+  const setPromptOnRemove = (userPrompt) => {
+    dropzone.current.options.dictRemoveFileConfirmation = userPrompt;
+  };
 
   /**
    * Event handler triggered when the user drags a file into the dropzone.
    *
    * @param {Event} event
    */
-  handleDragEnter(event) {
-    if (!this.props.canUpload) {
+  const handleDragEnter = (event) => {
+    if (!propsRef.current.canUpload) {
       return;
     }
 
-    this.dragging = true;
-    this.forceUpdate();
+    setDragging(true);
 
-    if (typeof this.props.onDragEnter === 'function') {
-      this.props.onDragEnter(event);
+    if (typeof propsRef.current.onDragEnter === 'function') {
+      propsRef.current.onDragEnter(event);
     }
-  }
+  };
 
   /**
    * Event handler triggered when a user's curser leaves the dropzone while dragging a file.
    *
    * @param {Event} event
    */
-  handleDragLeave(event) {
-    const componentNode = this.dropzoneRef;
+  const handleDragLeave = (event) => {
+    const componentNode = dropzoneRef.current;
 
-    if (!this.props.canUpload) {
+    if (!propsRef.current.canUpload) {
       return;
     }
 
@@ -280,13 +273,12 @@ class AssetDropzone extends Component {
       return;
     }
 
-    this.dragging = false;
-    this.forceUpdate();
+    setDragging(false);
 
-    if (typeof this.props.onDragLeave === 'function') {
-      this.props.onDragLeave(event, componentNode);
+    if (typeof propsRef.current.onDragLeave === 'function') {
+      propsRef.current.onDragLeave(event, componentNode);
     }
-  }
+  };
 
   /**
    * Event handler when a file's upload progress changes.
@@ -295,36 +287,35 @@ class AssetDropzone extends Component {
    * @param {number} progress - the upload progress percentage
    * @param {number} bytesSent - total bytesSent
    */
-  handleUploadProgress(file, progress, bytesSent) {
-    if (typeof this.props.onUploadProgress === 'function') {
-      this.props.onUploadProgress(file, progress, bytesSent);
+  const handleUploadProgress = (file, progress, bytesSent) => {
+    if (typeof propsRef.current.onUploadProgress === 'function') {
+      propsRef.current.onUploadProgress(file, progress, bytesSent);
     }
-  }
+  };
 
   /**
    * Event handler when a file's upload complete.
    *
    * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
-  handleUploadComplete(file) {
-    if (typeof this.props.onUploadComplete === 'function') {
-      this.props.onUploadComplete(file.status);
+  const handleUploadComplete = (file) => {
+    if (typeof propsRef.current.onUploadComplete === 'function') {
+      propsRef.current.onUploadComplete(file.status);
     }
-  }
+  };
 
   /**
    * Event handler triggered when the user drops a file on the dropzone.
    *
    * @param {Event} event
    */
-  handleDrop(event) {
-    this.dragging = false;
-    this.forceUpdate();
+  const handleDrop = (event) => {
+    setDragging(false);
 
-    if (typeof this.props.onDrop === 'function') {
-      this.props.onDrop(event);
+    if (typeof propsRef.current.onDrop === 'function') {
+      propsRef.current.onDrop(event);
     }
-  }
+  };
 
   /**
    * Called just before the file is sent. Gets the `xhr` object as second parameter,
@@ -335,47 +326,47 @@ class AssetDropzone extends Component {
    * @param {object} xhr
    * @param {FormData} formData - FormData interface. See https://developer.mozilla.org/en-US/docs/Web/API/FormData
    */
-  handleSending(file, xhr, formData) {
+  const handleSending = (file, xhr, formData) => {
     // Allow submitted data to be decorated
-    if (typeof this.props.updateFormData === 'function') {
-      this.props.updateFormData(formData);
+    if (typeof propsRef.current.updateFormData === 'function') {
+      propsRef.current.updateFormData(formData);
     }
-    formData.append('SecurityID', this.props.securityID);
-    formData.append('ParentID', this.props.folderId);
+    formData.append('SecurityID', propsRef.current.securityID);
+    formData.append('ParentID', propsRef.current.folderId);
 
     const newXhr = Object.assign({}, xhr, {
       abort: () => {
-        this.dropzone.cancelUpload(file);
+        dropzone.current.cancelUpload(file);
         xhr.abort();
       },
     });
-    if (typeof this.props.onSending === 'function') {
-      this.props.onSending(file, newXhr, formData);
+    if (typeof propsRef.current.onSending === 'function') {
+      propsRef.current.onSending(file, newXhr, formData);
     }
-  }
+  };
 
   /**
    * Invoked when validation fails for max files
    * @param file
    * @returns {boolean}
    */
-  handleMaxFilesExceeded(file) {
-    if (typeof this.props.onMaxFilesExceeded === 'function') {
-      return this.props.onMaxFilesExceeded(file);
+  const handleMaxFilesExceeded = (file) => {
+    if (typeof propsRef.current.onMaxFilesExceeded === 'function') {
+      return propsRef.current.onMaxFilesExceeded(file);
     }
 
     return true;
-  }
+  };
 
   /**
    * Generate unique ID
    *
    * @returns {number}
    */
-  generateQueuedId() {
+  const generateQueuedId = () => {
     idCounter += 1;
     return idCounter;
-  }
+  };
 
   /**
    * Custom validation hook for the Dropzone library. Invoking the done() callback
@@ -385,16 +376,16 @@ class AssetDropzone extends Component {
    * @param {function} done
    * @returns {*}
    */
-  handleAccept(file, done) {
+  const handleAccept = (file, done) => {
     // check with parent if there are other forms of validation to be done
-    if (typeof this.props.canFileUpload === 'function' && !this.props.canFileUpload(file)) {
+    if (typeof propsRef.current.canFileUpload === 'function' && !propsRef.current.canFileUpload(file)) {
       return done(i18n._t(
         'AssetAdmin.DROPZONE_CANNOT_UPLOAD',
         'Uploading not permitted.'
       ));
     }
 
-    if (!this.props.canUpload) {
+    if (!propsRef.current.canUpload) {
       return done(i18n._t(
         'AssetAdmin.DROPZONE_CANNOT_UPLOAD',
         'Uploading not permitted.'
@@ -402,31 +393,31 @@ class AssetDropzone extends Component {
     }
 
     return done();
-  }
+  };
 
   /**
    * Event handler for files being added. Called before the request is made to the server.
    *
    * @param file (object) - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
-  handleAddedFile(file) {
+  const handleAddedFile = (file) => {
     // The queuedId is used to uniquely identify file while it's in the queue.
     // eslint-disable-next-line no-param-reassign
-    file._queuedId = this.generateQueuedId();
+    file._queuedId = generateQueuedId();
     const details = {
-      category: this.getFileCategory(file.type),
+      category: getFileCategory(file.type),
       filename: file.name,
       queuedId: file._queuedId,
       size: file.size,
-      title: this.getFileTitle(file.name),
+      title: getFileTitle(file.name),
       extension: getFileExtension(file.name),
       type: file.type,
-      uploadedToFolderId: this.props.folderId,
+      uploadedToFolderId: propsRef.current.folderId,
     };
     // Add the file optimistically.
-    this.props.onAddedFile(details);
+    propsRef.current.onAddedFile(details);
 
-    const loadPreview = this.getLoadPreview(file);
+    const loadPreview = getLoadPreview(file);
 
     // JS Synonym for AssetAdmin::getObjectFromData()
     return loadPreview.then((preview) => {
@@ -437,8 +428,8 @@ class AssetDropzone extends Component {
         thumbnail: preview.thumbnailURL,
         smallThumbnail: preview.thumbnailURL,
       };
-      if (typeof this.props.onPreviewLoaded === 'function') {
-        this.props.onPreviewLoaded(details, previewDetails);
+      if (typeof propsRef.current.onPreviewLoaded === 'function') {
+        propsRef.current.onPreviewLoaded(details, previewDetails);
       }
 
       return {
@@ -446,7 +437,7 @@ class AssetDropzone extends Component {
         ...previewDetails,
       };
     });
-  }
+  };
 
   /**
    * Returns a promise for loading an image to get the dataURL for previewing.
@@ -455,46 +446,44 @@ class AssetDropzone extends Component {
    * @param newSource (string)
    * @returns {Promise}
    */
-  loadImage(img, newSource) {
-    return new Promise((resolve) => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+  const loadImage = (img, newSource) => new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
 
-      // eslint-disable-next-line no-param-reassign
-      img.onload = () => {
-        // two times for retina
-        const previewWidth = this.props.preview.width * 2;
-        const previewHeight = this.props.preview.height * 2;
-        const ratio = img.naturalWidth / img.naturalHeight;
+    // eslint-disable-next-line no-param-reassign
+    img.onload = () => {
+      // two times for retina
+      const previewWidth = propsRef.current.preview.width * 2;
+      const previewHeight = propsRef.current.preview.height * 2;
+      const ratio = img.naturalWidth / img.naturalHeight;
 
-        if (img.naturalWidth < previewWidth
-          || img.naturalHeight < previewHeight) {
-          // image is smaller than preview, do not need to scale it down
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-        } else if (ratio < 1) {
-          // width is less than height, so use width as smallest value
-          canvas.width = previewWidth;
-          canvas.height = previewWidth / ratio;
-        } else {
-          // height is less than width, so use height as smallest value
-          canvas.width = previewHeight * ratio;
-          canvas.height = previewHeight;
-        }
+      if (img.naturalWidth < previewWidth
+        || img.naturalHeight < previewHeight) {
+        // image is smaller than preview, do not need to scale it down
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+      } else if (ratio < 1) {
+        // width is less than height, so use width as smallest value
+        canvas.width = previewWidth;
+        canvas.height = previewWidth / ratio;
+      } else {
+        // height is less than width, so use height as smallest value
+        canvas.width = previewHeight * ratio;
+        canvas.height = previewHeight;
+      }
 
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        const thumbnailURL = canvas.toDataURL('image/png');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const thumbnailURL = canvas.toDataURL('image/png');
 
-        resolve({
-          width: img.naturalWidth,
-          height: img.naturalHeight,
-          thumbnailURL,
-        });
-      };
-      // eslint-disable-next-line no-param-reassign
-      img.src = newSource;
-    });
-  }
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        thumbnailURL,
+      });
+    };
+    // eslint-disable-next-line no-param-reassign
+    img.src = newSource;
+  });
 
   /**
    * Event handler for failed uploads.
@@ -502,67 +491,65 @@ class AssetDropzone extends Component {
    * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    * @param {string} message
    */
-  handleError(file, message) {
+  const handleError = (file, message) => {
     // remove files list, as they are no longer needed
-    this.dropzone.removeFile(file);
+    dropzone.current.removeFile(file);
 
-    this.props.onError(file, message);
-  }
+    propsRef.current.onError(file, message);
+  };
 
   /**
    * Event handler for successfully upload files.
    *
    * @param {object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
-  handleSuccess(file) {
+  const handleSuccess = (file) => {
     // remove files list, as they are no longer needed
-    this.dropzone.removeFile(file);
+    dropzone.current.removeFile(file);
 
-    this.props.onSuccess(file);
-  }
+    propsRef.current.onSuccess(file);
+  };
 
   /**
    * Called when the entire queue is done uploading
    */
-  handleQueueComplete() {
-    if (this.props.onQueueComplete) {
-      this.props.onQueueComplete();
+  const handleQueueComplete = () => {
+    if (propsRef.current.onQueueComplete) {
+      propsRef.current.onQueueComplete();
     }
+  };
+
+  const className = ['asset-dropzone'];
+
+  if (props.className) {
+    className.push(props.className);
   }
 
-  render() {
-    const className = ['asset-dropzone'];
+  const buttonProps = {
+    className: 'asset-dropzone__upload-button ss-ui-button',
+    type: 'button',
+  };
 
-    if (this.props.className) {
-      className.push(this.props.className);
-    }
-
-    const buttonProps = {
-      className: 'asset-dropzone__upload-button ss-ui-button',
-      type: 'button',
-    };
-
-    if (!this.props.canUpload) {
-      buttonProps.disabled = true;
-    }
-
-    if (this.dragging === true) {
-      className.push('dragging');
-    }
-
-    return (
-      <div className={className.join(' ')} ref={node => { this.dropzoneRef = node; }}>
-        {this.props.uploadButton &&
-        <button {...buttonProps}>
-          <span className="font-icon-upload" aria-hidden="true" />
-          {i18n._t('AssetAdmin.DROPZONE_UPLOAD')}
-        </button>
-        }
-        {this.props.children}
-      </div>
-    );
+  if (!props.canUpload) {
+    buttonProps.disabled = true;
   }
-}
+
+  if (dragging === true) {
+    className.push('dragging');
+  }
+
+  return (
+    <div className={className.join(' ')} ref={dropzoneRef}>
+      {props.uploadButton &&
+      <button {...buttonProps}>
+        <span className="font-icon-upload" aria-hidden="true" />
+        {i18n._t('AssetAdmin.DROPZONE_UPLOAD')}
+      </button>
+      }
+      {props.children}
+    </div>
+  );
+};
 
 AssetDropzone.propTypes = {
   folderId: PropTypes.number.isRequired,
@@ -592,10 +579,6 @@ AssetDropzone.propTypes = {
     height: PropTypes.number,
   }),
   className: PropTypes.string,
-};
-
-AssetDropzone.defaultProps = {
-  uploadButton: true,
 };
 
 export default AssetDropzone;
