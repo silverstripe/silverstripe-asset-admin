@@ -238,3 +238,87 @@ test('UploadFieldItem renderViewButton() hides view button when disabled', () =>
   const button = container.querySelector('button.uploadfield-item__view-btn');
   expect(button).toBe(null);
 });
+
+test('UploadFieldItem handleRemove() calls onRemove with the event and item', () => {
+  const onRemove = jest.fn();
+  const props = makeProps({ onRemove });
+  const { container } = render(<UploadFieldItem {...props}/>);
+  container.querySelector('button.uploadfield-item__remove-btn').click();
+  expect(onRemove).toHaveBeenCalledTimes(1);
+  expect(onRemove.mock.calls[0][1]).toBe(props.item);
+});
+
+test('UploadFieldItem handleRemove() does not throw without onRemove', () => {
+  const { container } = render(<UploadFieldItem {...makeProps()}/>);
+  container.querySelector('button.uploadfield-item__remove-btn').click();
+  expect(container.querySelector('.uploadfield-item')).not.toBe(null);
+});
+
+test('UploadFieldItem handleView() calls onView with the event and item', () => {
+  const onView = jest.fn();
+  const props = makeProps({ onView });
+  props.item.id = 25;
+  const { container } = render(<UploadFieldItem {...props}/>);
+  container.querySelector('button.uploadfield-item__view-btn').click();
+  expect(onView).toHaveBeenCalledTimes(1);
+  expect(onView.mock.calls[0][1]).toBe(props.item);
+});
+
+test('UploadFieldItem handleItemClick() calls onItemClick with the event and item', () => {
+  const onItemClick = jest.fn();
+  const props = makeProps({ onItemClick });
+  const { container } = render(<UploadFieldItem {...props}/>);
+  const thumbnail = container.querySelector('.uploadfield-item__thumbnail');
+  expect(thumbnail.getAttribute('tabindex')).toBe('0');
+  thumbnail.click();
+  expect(onItemClick).toHaveBeenCalledTimes(1);
+  expect(onItemClick.mock.calls[0][1]).toBe(props.item);
+});
+
+test('UploadFieldItem renderThumbnail() is not focusable without onItemClick', () => {
+  const { container } = render(<UploadFieldItem {...makeProps()}/>);
+  expect(container.querySelector('.uploadfield-item__thumbnail').getAttribute('tabindex')).toBe('-1');
+});
+
+test('UploadFieldItem renderErrorMessage() displays a message for missing files', () => {
+  const { container } = render(
+    <UploadFieldItem {...makeProps({ item: { exists: false, id: 3 } })}/>
+  );
+  expect(container.querySelector('.uploadfield-item__error-message').textContent).toBe('File cannot be found');
+});
+
+test('UploadFieldItem renderStatus() displays draft status', () => {
+  const { container } = render(
+    <UploadFieldItem {...makeProps({ item: { exists: true, draft: true } })}/>
+  );
+  expect(container.querySelector('.uploadfield-item__status').textContent).toBe('Draft');
+});
+
+test('UploadFieldItem renderStatus() displays modified status', () => {
+  const { container } = render(
+    <UploadFieldItem {...makeProps({ item: { exists: true, modified: true } })}/>
+  );
+  expect(container.querySelector('.uploadfield-item__status').textContent).toBe('Modified');
+});
+
+test('UploadFieldItem renderStatus() displays nothing for published files', () => {
+  const { container } = render(<UploadFieldItem {...makeProps()}/>);
+  expect(container.querySelector('.uploadfield-item__status')).toBe(null);
+});
+
+test('UploadFieldItem renderFileDetails() displays title, extension and size', () => {
+  const { container } = render(
+    <UploadFieldItem {...makeProps({ item: { exists: true, title: 'My file', extension: 'jpg', size: 2048 } })}/>
+  );
+  expect(container.querySelector('.uploadfield-item__title').textContent.trim()).toBe('My file');
+  expect(container.querySelector('.uploadfield-item__specs').textContent).toContain('jpg, ');
+});
+
+test('UploadFieldItem render() outputs the hidden input with the item id', () => {
+  const { container } = render(
+    <UploadFieldItem {...makeProps({ item: { exists: true, id: 42 } })}/>
+  );
+  const input = container.querySelector('input[type="hidden"]');
+  expect(input.getAttribute('name')).toBe('MyFileItem[Files][]');
+  expect(input.getAttribute('value')).toBe('42');
+});

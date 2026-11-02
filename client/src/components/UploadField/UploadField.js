@@ -1,5 +1,5 @@
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
 import { inject } from 'lib/Injector';
@@ -32,37 +32,23 @@ function compareValues(left, right) {
   return false;
 }
 
-class UploadField extends Component {
-  constructor(props) {
-    super(props);
-    this.getMaxFiles = this.getMaxFiles.bind(this);
-    this.getFolderId = this.getFolderId.bind(this);
-    this.renderChild = this.renderChild.bind(this);
-    this.handleAddShow = this.handleAddShow.bind(this);
-    this.handleHide = this.handleHide.bind(this);
-    this.handleAddInsert = this.handleAddInsert.bind(this);
-    this.handleInsertMany = this.handleInsertMany.bind(this);
-    this.handleAddedFile = this.handleAddedFile.bind(this);
-    this.handleSending = this.handleSending.bind(this);
-    this.handleUploadProgress = this.handleUploadProgress.bind(this);
-    this.handleFailedUpload = this.handleFailedUpload.bind(this);
-    this.handleSuccessfulUpload = this.handleSuccessfulUpload.bind(this);
-    this.handleItemRemove = this.handleItemRemove.bind(this);
-    this.handleReplaceShow = this.handleReplaceShow.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleReplace = this.handleReplace.bind(this);
-    this.canEdit = this.canEdit.bind(this);
-    this.canAttach = this.canAttach.bind(this);
-    this.canUpload = this.canUpload.bind(this);
+const UploadField = (_props) => {
+  const defaultProps = {
+    value: { Files: [] },
+    className: '',
+    getItemProps: itemProps => itemProps,
+  };
+  const props = {
+    ...defaultProps,
+    ..._props,
+  };
+  const [selecting, setSelecting] = useState(false);
+  const [selectingItem, setSelectingItem] = useState(null);
+  // Persist the previous props to simulate the `prevProps` argument of componentDidUpdate
+  const prevPropsRef = useRef(null);
 
-    this.state = {
-      selecting: false,
-      selectingItem: null,
-    };
-  }
-
-  componentDidMount() {
-    const { id, formSchemaFilesHash, data, value, actions, files } = this.props;
+  useEffect(() => {
+    const { id, formSchemaFilesHash, data, value, actions, files } = props;
 
     // This tracks changes to the underlying schema data for this field. It may be desirable in
     // future to remove this and instead reset redux state whenever a "legacy" form triggers a
@@ -80,9 +66,15 @@ class UploadField extends Component {
 
     // Otherwise, we're safe to load from redux state
     actions.uploadField.setFiles(id, files);
-  }
+  }, []);
 
-  componentDidUpdate(prevProps) {
+  useEffect(() => {
+    const prevProps = prevPropsRef.current;
+    prevPropsRef.current = props;
+    // Only runs on updates, not on the initial mount
+    if (prevProps === null) {
+      return;
+    }
     const {
       id,
       formSchemaFilesHash,
@@ -90,7 +82,7 @@ class UploadField extends Component {
       files,
       value: { Files: value },
       actions: { uploadField: { setFormSchemaFilesHash, setFiles } }
-    } = this.props;
+    } = props;
 
     // Propegate redux state changes to redux-from value for this field
     const existingFiles = prevProps.files || [];
@@ -98,7 +90,8 @@ class UploadField extends Component {
     const filesChanged = compareValues(existingFiles, newFiles);
 
     if (filesChanged) {
-      this.handleChange(null, this.props);
+      // eslint-disable-next-line no-use-before-define
+      handleChange(null, props);
     }
 
     const newFormSchemaFilesHash = md5(JSON.stringify(value.Files)).toString();
@@ -139,20 +132,20 @@ class UploadField extends Component {
 
     // Run the redux action...
     setFiles(id, data.files);
-  }
+  });
 
   /**
    * Returns the max number of files allowed for uploading
    *
    * @return {?Number}
    */
-  getMaxFiles() {
-    const maxFiles = this.props.data.multi ? this.props.data.maxFiles : 1;
+  const getMaxFiles = () => {
+    const maxFiles = props.data.multi ? props.data.maxFiles : 1;
     if (maxFiles === null || typeof maxFiles === 'undefined') {
       return null;
     }
 
-    const filesCount = this.props.files.filter(file =>
+    const filesCount = props.files.filter(file =>
       file.id > 0
       && (!file.message || file.message.type !== 'error')
     ).length;
@@ -160,37 +153,33 @@ class UploadField extends Component {
     const allowed = Math.max(maxFiles - filesCount, 0);
 
     return allowed;
-  }
+  };
 
   /**
    * Returns the max allowed filesize (if set)
    *
    * @return {?Number}
    */
-  getMaxFilesize() {
-    return this.props.data.maxFilesize || null;
-  }
+  const getMaxFilesize = () => props.data.maxFilesize || null;
 
   /**
    * Find the ID of the folder to start in.
    * @return {Number}
    */
-  getFolderId() {
-    const { selectingItem } = this.state;
-
+  const getFolderId = () => {
     if (selectingItem && typeof selectingItem === 'object') {
       // If we are viewing a specific file, return that file's parent folder.
       return selectingItem.parent.id;
     }
 
     // Otherwise return the default upload folder for the UploadField.
-    return this.props.data.parentid || 0;
-  }
+    return props.data.parentid || 0;
+  };
 
-  handleAddedFile(data) {
+  const handleAddedFile = (data) => {
     const file = { ...data, uploaded: true };
-    this.props.actions.uploadField.addFile(this.props.id, file);
-  }
+    props.actions.uploadField.addFile(props.id, file);
+  };
 
   /**
    * Triggered just before the xhr request is sent.
@@ -198,9 +187,9 @@ class UploadField extends Component {
    * @param {Object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    * @param {Object} xhr
    */
-  handleSending(file, xhr) {
-    this.props.actions.uploadField.updateQueuedFile(this.props.id, file._queuedId, { xhr });
-  }
+  const handleSending = (file, xhr) => {
+    props.actions.uploadField.updateQueuedFile(props.id, file._queuedId, { xhr });
+  };
 
   /**
    * Update upload progress status.
@@ -208,38 +197,39 @@ class UploadField extends Component {
    * @param {Object} file
    * @param {Number} progress
    */
-  handleUploadProgress(file, progress) {
-    this.props.actions.uploadField.updateQueuedFile(this.props.id, file._queuedId, { progress });
-  }
+  const handleUploadProgress = (file, progress) => {
+    props.actions.uploadField.updateQueuedFile(props.id, file._queuedId, { progress });
+  };
 
   /**
    * Handles successful file uploads.
    *
    * @param {Object} file - File interface. See https://developer.mozilla.org/en-US/docs/Web/API/File
    */
-  handleSuccessfulUpload(file) {
+  const handleSuccessfulUpload = (file) => {
     const json = JSON.parse(file.xhr.response);
 
     // SilverStripe send back a success code with an error message sometimes...
     if (typeof json[0].error !== 'undefined') {
-      this.handleFailedUpload(file);
+      // eslint-disable-next-line no-use-before-define
+      handleFailedUpload(file);
       return;
     }
 
-    this.props.actions.uploadField.succeedUpload(this.props.id, file._queuedId, json[0]);
-  }
+    props.actions.uploadField.succeedUpload(props.id, file._queuedId, json[0]);
+  };
 
-  handleFailedUpload(file, response) {
+  const handleFailedUpload = (file, response) => {
     const statusCodeMessage = file.xhr && file.xhr.status
       ? getStatusCodeMessage(file.xhr.status, file.xhr)
       : '';
-    this.props.actions.uploadField.failUpload(
-      this.props.id,
+    props.actions.uploadField.failUpload(
+      props.id,
       file._queuedId,
       response,
       statusCodeMessage
     );
-  }
+  };
 
   /**
    * Handler for removing an uploaded item
@@ -247,74 +237,68 @@ class UploadField extends Component {
    * @param {Object} event
    * @param {Object} item
    */
-  handleItemRemove(event, item) {
-    this.props.actions.uploadField.removeFile(this.props.id, item);
-  }
+  const handleItemRemove = (event, item) => {
+    props.actions.uploadField.removeFile(props.id, item);
+  };
 
   /**
    * Handler for clicking on the uploaded item
    *
    * @param {Object} event
-   * @param {Object} selectingItem
+   * @param {Object} item
    */
-  handleReplaceShow(event, selectingItem) {
-    this.props.actions.modal.initFormStack('select', 'admin');
-    this.setState({
-      selecting: true,
-      selectingItem,
-    });
-  }
+  const handleReplaceShow = (event, item) => {
+    props.actions.modal.initFormStack('select', 'admin');
+    setSelecting(true);
+    setSelectingItem(item);
+  };
 
   /**
    * Event called when selected value is updated
    *
    * @param {Event} event
-   * @param {Object} props - new props to get files from
+   * @param {Object} changeProps - new props to get files from
    */
-  handleChange(event, props = this.props) {
-    if (typeof props.onChange === 'function') {
+  const handleChange = (event, changeProps = props) => {
+    if (typeof changeProps.onChange === 'function') {
       // Write back list of files to value
-      const fileIds = props.files
+      const fileIds = changeProps.files
         .filter((file) => file.id)
         .map((file) => file.id);
       const newValue = { Files: fileIds };
-      props.onChange(event, { id: props.id, value: newValue });
+      changeProps.onChange(event, { id: changeProps.id, value: newValue });
     }
-  }
+  };
 
   /**
    * Handler for 'upload' dialog.
    *
    * @param {Object} event - Click event
    */
-  handleUploadButton(event) {
+  const handleUploadButton = (event) => {
     event.preventDefault();
-  }
+  };
 
   /**
    * Open new 'add from files' dialog
    *
    * @param {Object} event - Click event
    */
-  handleAddShow(event) {
+  const handleAddShow = (event) => {
     event.preventDefault();
-    this.props.actions.modal.initFormStack('select', 'admin');
-    this.setState({
-      selecting: true,
-      selectingItem: null,
-    });
-  }
+    props.actions.modal.initFormStack('select', 'admin');
+    setSelecting(true);
+    setSelectingItem(null);
+  };
 
   /**
    * Close 'add from files' dialog
    */
-  handleHide() {
-    this.props.actions.modal.reset();
-    this.setState({
-      selecting: false,
-      selectingItem: null,
-    });
-  }
+  const handleHide = () => {
+    props.actions.modal.reset();
+    setSelecting(false);
+    setSelectingItem(null);
+  };
 
   /**
    * Handle file being added by 'add from files' dialog
@@ -323,12 +307,12 @@ class UploadField extends Component {
    * @param {Object} data - Submitted insert form data
    * @param {Object} file - file record
    */
-  handleAddInsert(event, data, file) {
-    this.props.actions.uploadField.addFile(this.props.id, file);
-    this.handleHide();
+  const handleAddInsert = (event, data, file) => {
+    props.actions.uploadField.addFile(props.id, file);
+    handleHide();
 
     return Promise.resolve({});
-  }
+  };
 
   /**
    * Handle many files being inserted
@@ -336,16 +320,16 @@ class UploadField extends Component {
    * @param {Event} event
    * @param {Array} files
    */
-  handleInsertMany(event, files) {
-    const { selectingItem } = this.state;
+  const handleInsertMany = (event, files) => {
     if (selectingItem) {
-      this.handleReplace(event, null, files[0]);
+      // eslint-disable-next-line no-use-before-define
+      handleReplace(event, null, files[0]);
       return;
     }
     files.forEach(file => {
-      this.handleAddInsert(event, null, file);
+      handleAddInsert(event, null, file);
     });
-  }
+  };
 
   /**
    * Handle file being replaced from the modal
@@ -354,8 +338,7 @@ class UploadField extends Component {
    * @param {Object} data
    * @param {Object} file
    */
-  handleReplace(event, data, file) {
-    const { selectingItem } = this.state;
+  const handleReplace = (event, data, file) => {
     const {
       id,
       actions: {
@@ -364,69 +347,63 @@ class UploadField extends Component {
           removeFile,
         },
       },
-    } = this.props;
+    } = props;
 
     if (!selectingItem) {
       throw new Error('Tried to replace a file when none was selected.');
     }
     removeFile(id, selectingItem);
     addFile(id, file);
-    this.handleHide();
+    handleHide();
 
     return Promise.resolve({});
-  }
+  };
 
   /**
    * Check if this field can be modified
    *
    * @return {Boolean}
    */
-  canEdit() {
-    return !this.props.disabled
-      && !this.props.readOnly
-      && (this.props.data.canUpload || this.props.data.canAttach);
-  }
+  const canEdit = () => !props.disabled
+    && !props.readOnly
+    && (props.data.canUpload || props.data.canAttach);
 
   /**
    * Check if this field can upload files
    *
    * @return {Boolean}
    */
-  canUpload() {
-    return this.canEdit() && this.props.data.canUpload;
-  }
+  const canUpload = () => canEdit() && props.data.canUpload;
 
   /**
    * Check if this field can select files
    *
    * @return {Boolean}
    */
-  canAttach() {
-    return this.canEdit() && this.props.data.canAttach;
-  }
+  const canAttach = () => canEdit() && props.data.canAttach;
 
   /**
    * Render "drop file here" area
    *
    * @returns {object}
    */
-  renderDropzone() {
-    const { AssetDropzone } = this.props;
-    if (!this.props.data.endpoints.createFile) {
+  const renderDropzone = () => {
+    const { AssetDropzone } = props;
+    if (!props.data.endpoints.createFile) {
       return null;
     }
     const dimensions = {
       height: CONSTANTS.SMALL_THUMBNAIL_HEIGHT,
       width: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
     };
-    const maxFiles = this.getMaxFiles();
-    const maxFilesize = this.getMaxFilesize();
+    const maxFiles = getMaxFiles();
+    const maxFilesize = getMaxFilesize();
 
     const dropzoneOptions = {
-      url: this.props.data.endpoints.createFile.url,
-      method: this.props.data.endpoints.createFile.method,
+      url: props.data.endpoints.createFile.url,
+      method: props.data.endpoints.createFile.method,
       paramName: 'Upload',
-      parallelUploads: this.props.data.maxParallelUploads,
+      parallelUploads: props.data.maxParallelUploads,
       maxFiles,
       maxFilesize,
       thumbnailWidth: CONSTANTS.SMALL_THUMBNAIL_WIDTH,
@@ -441,8 +418,8 @@ class UploadField extends Component {
     }
 
     // Handle readonly field
-    if (!this.canEdit()) {
-      if (this.props.files.length) {
+    if (!canEdit()) {
+      if (props.files.length) {
         return null;
       }
       return (
@@ -450,21 +427,21 @@ class UploadField extends Component {
       );
     }
 
-    const securityID = this.props.securityId;
+    const securityID = props.securityId;
     const options = [];
-    if (this.canUpload()) {
+    if (canUpload()) {
       options.push(
         <button
           key="uploadbutton"
           type="button"
-          onClick={this.handleUploadButton}
+          onClick={handleUploadButton}
           className="uploadfield__upload-button"
         >
           {i18n._t('AssetAdmin.UPLOADFIELD_UPLOAD_NEW', 'Upload new')}
         </button>
       );
     }
-    if (this.canAttach()) {
+    if (canAttach()) {
       if (options.length) {
         options.push(
           <span key="uploadjoin" className="uploadfield__join">
@@ -476,7 +453,7 @@ class UploadField extends Component {
         <button
           key="attachbutton"
           type="button"
-          onClick={this.handleAddShow}
+          onClick={handleAddShow}
           className="uploadfield__add-button"
         >
           {i18n._t('AssetAdmin.UPLOADFIELD_CHOOSE_EXISTING', 'Choose existing')}
@@ -486,16 +463,16 @@ class UploadField extends Component {
 
     return (
       <AssetDropzone
-        name={this.props.name}
-        canUpload={this.canUpload()}
+        name={props.name}
+        canUpload={canUpload()}
         uploadButton={false}
         uploadSelector=".uploadfield__upload-button, .uploadfield__backdrop"
-        folderId={this.props.data.parentid}
-        onAddedFile={this.handleAddedFile}
-        onError={this.handleFailedUpload}
-        onSuccess={this.handleSuccessfulUpload}
-        onSending={this.handleSending}
-        onUploadProgress={this.handleUploadProgress}
+        folderId={props.data.parentid}
+        onAddedFile={handleAddedFile}
+        onError={handleFailedUpload}
+        onSuccess={handleSuccessfulUpload}
+        onSending={handleSending}
+        onUploadProgress={handleUploadProgress}
         preview={dimensions}
         options={dropzoneOptions}
         securityID={securityID}
@@ -508,21 +485,20 @@ class UploadField extends Component {
         </span>
       </AssetDropzone>
     );
-  }
+  };
 
-  renderModal() {
-    const { InsertMediaModal } = this.props;
-    const { selecting, selectingItem } = this.state;
-    const maxFiles = this.getMaxFiles();
-    const folderId = this.getFolderId();
+  const renderModal = () => {
+    const { InsertMediaModal } = props;
+    const maxFiles = getMaxFiles();
+    const folderId = getFolderId();
 
     return (
       <InsertMediaModal
         title={false}
         isOpen={selecting}
-        onInsert={selectingItem ? this.handleReplace : this.handleAddInsert}
-        onClosed={this.handleHide}
-        onInsertMany={this.handleInsertMany}
+        onInsert={selectingItem ? handleReplace : handleAddInsert}
+        onClosed={handleHide}
+        onInsertMany={handleInsertMany}
         maxFiles={selectingItem ? 1 : maxFiles}
         type="select"
         bodyClassName="modal__dialog"
@@ -531,7 +507,7 @@ class UploadField extends Component {
         folderId={folderId}
       />
     );
-  }
+  };
 
   /**
    *
@@ -539,32 +515,30 @@ class UploadField extends Component {
    * @param {number} index
    * @returns {object}
    */
-  renderChild(item, index) {
-    const { UploadFieldItem } = this.props;
+  const renderChild = (item, index) => {
+    const { UploadFieldItem } = props;
     const draftProps = {
       // otherwise only one error file is shown and the rest are hidden due to having the same `key`
       key: item.id ? `file-${item.id}` : `queued-${item.queuedId}`,
       item,
-      name: this.props.name,
-      onRemove: this.handleItemRemove,
-      canEdit: this.canEdit(),
-      onView: this.handleReplaceShow,
+      name: props.name,
+      onRemove: handleItemRemove,
+      canEdit: canEdit(),
+      onView: handleReplaceShow,
     };
-    const itemProps = this.props.getItemProps(draftProps, index, this.props);
+    const itemProps = props.getItemProps(draftProps, index, props);
 
     return <UploadFieldItem {...itemProps} />;
-  }
+  };
 
-  render() {
-    return (
-      <div className="uploadfield">
-        {this.renderDropzone()}
-        {this.props.files.map(this.renderChild)}
-        {this.renderModal()}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="uploadfield">
+      {renderDropzone()}
+      {props.files.map(renderChild)}
+      {renderModal()}
+    </div>
+  );
+};
 
 UploadField.propTypes = {
   id: PropTypes.string.isRequired,
@@ -590,12 +564,6 @@ UploadField.propTypes = {
   AssetDropzone: PropTypes.elementType,
   InsertMediaModal: PropTypes.elementType,
   getItemProps: PropTypes.func,
-};
-
-UploadField.defaultProps = {
-  value: { Files: [] },
-  className: '',
-  getItemProps: props => props,
 };
 
 function mapStateToProps(state, ownprops) {

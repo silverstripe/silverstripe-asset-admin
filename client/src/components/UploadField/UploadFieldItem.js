@@ -1,105 +1,94 @@
+/* eslint-disable no-use-before-define */
 import i18n from 'i18n';
-import React, { Component } from 'react';
+import React from 'react';
 import CONSTANTS from 'constants';
 import fileShape from 'lib/fileShape';
 import { fileSize } from 'lib/DataFormat';
 import PropTypes from 'prop-types';
 import FileStatusIcon from 'components/FileStatusIcon/FileStatusIcon';
 
-class UploadFieldItem extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleRemove = this.handleRemove.bind(this);
-    this.handleItemClick = this.handleItemClick.bind(this);
-    this.handleView = this.handleView.bind(this);
-  }
-
+const UploadFieldItem = (props) => {
   /**
    * Gets props for thumbnail
    *
    * @returns {Object}
    */
-  getThumbnailStyles() {
-    if (this.isImage() && (this.exists() || this.uploading())) {
-      const thumbnail = this.props.item.smallThumbnail || this.props.item.url || '';
+  const getThumbnailStyles = () => {
+    if (isImage() && (exists() || uploading())) {
+      const thumbnail = props.item.smallThumbnail || props.item.url || '';
       return {
         backgroundImage: `url(${thumbnail})`,
       };
     }
 
     return {};
-  }
+  };
 
   /**
    * Retrieve list of thumbnail classes
    *
    * @returns {string}
    */
-  getThumbnailClassNames() {
+  const getThumbnailClassNames = () => {
     const thumbnailClassNames = ['uploadfield-item__thumbnail'];
 
-    if (this.isImageSmallerThanThumbnail()) {
+    if (isImageSmallerThanThumbnail()) {
       thumbnailClassNames.push('uploadfield-item__thumbnail--small');
     }
 
     return thumbnailClassNames.join(' ');
-  }
+  };
 
   /**
    * Retrieves class names for the item
    *
    * @returns {string}
    */
-  getItemClassNames() {
-    const category = this.props.item.category || 'none';
+  const getItemClassNames = () => {
+    const category = props.item.category || 'none';
     const itemClassNames = [
       'fill-width',
       'uploadfield-item',
       `uploadfield-item--${category}`,
     ];
 
-    if (this.missing()) {
+    if (missing()) {
       itemClassNames.push('uploadfield-item--missing');
     }
 
-    if (this.hasError()) {
+    if (hasError()) {
       itemClassNames.push('uploadfield-item--error');
     }
 
     return itemClassNames.join(' ');
-  }
+  };
 
   /**
    * Checks if the component has an error set.
    *
    * @return {boolean}
    */
-  hasError() {
-    if (this.props.item.message) {
-      return this.props.item.message.type === 'error';
+  const hasError = () => {
+    if (props.item.message) {
+      return props.item.message.type === 'error';
     }
 
     return false;
-  }
+  };
 
   /**
    * Determine if this is an image type
    *
    * @returns {Boolean}
    */
-  isImage() {
-    return this.props.item.category === 'image';
-  }
+  const isImage = () => props.item.category === 'image';
 
   /**
    * Validate that the file backing this record is not missing
    *
    * @returns {Boolean}
    */
-  exists() {
-    return this.props.item.exists;
-  }
+  const exists = () => props.item.exists;
 
   /**
    * Check if this item is in the process uploaded.
@@ -107,9 +96,7 @@ class UploadFieldItem extends Component {
    *
    * @returns {boolean}
    */
-  uploading() {
-    return this.props.item.queuedId && !this.saved();
-  }
+  const uploading = () => props.item.queuedId && !saved();
 
   /**
    * Check if this item has been successfully uploaded.
@@ -117,28 +104,22 @@ class UploadFieldItem extends Component {
    *
    * @returns {Boolean}
    */
-  complete() {
-    // Uploading is complete if saved with a DB id
-    return this.props.item.queuedId && this.saved();
-  }
+  // Uploading is complete if saved with a DB id
+  const complete = () => props.item.queuedId && saved();
 
   /**
    * Check if this item has been saved, either in this request or in a prior one
    *
    * @return {Boolean}
    */
-  saved() {
-    return this.props.item.id > 0;
-  }
+  const saved = () => props.item.id > 0;
 
   /**
    * Check if this item should have a file, but is missing.
    *
    * @return {Boolean}
    */
-  missing() {
-    return !this.exists() && this.saved();
-  }
+  const missing = () => !exists() && saved();
 
   /**
    * Determine that this record is an image, and the thumbnail is smaller than the given
@@ -146,12 +127,12 @@ class UploadFieldItem extends Component {
    *
    * @returns {boolean}
    */
-  isImageSmallerThanThumbnail() {
-    if (!this.isImage() || this.missing()) {
+  const isImageSmallerThanThumbnail = () => {
+    if (!isImage() || missing()) {
       return false;
     }
-    const width = this.props.item.width;
-    const height = this.props.item.height;
+    const width = props.item.width;
+    const height = props.item.height;
 
     // Note: dimensions will be null if the back-end image is lost
     return (
@@ -160,68 +141,68 @@ class UploadFieldItem extends Component {
       && height < CONSTANTS.SMALL_THUMBNAIL_HEIGHT
       && width < CONSTANTS.SMALL_THUMBNAIL_WIDTH
     );
-  }
+  };
 
   /**
    * Handles remove (x) button click
    *
    * @param {Object} event
    */
-  handleRemove(event) {
+  const handleRemove = (event) => {
     event.preventDefault();
-    if (this.props.onRemove) {
-      this.props.onRemove(event, this.props.item);
+    if (props.onRemove) {
+      props.onRemove(event, props.item);
     }
-  }
+  };
 
   /**
    * Handles edit button click
    *
    * @param {Object} event
    */
-  handleView(event) {
+  const handleView = (event) => {
     event.preventDefault();
-    if (this.props.onView) {
-      this.props.onView(event, this.props.item);
+    if (props.onView) {
+      props.onView(event, props.item);
     }
-  }
+  };
 
   /**
    * Handles click of an item
    *
    * @param {Object} event
    */
-  handleItemClick(event) {
+  const handleItemClick = (event) => {
     event.preventDefault();
-    if (this.props.onItemClick) {
-      this.props.onItemClick(event, this.props.item);
+    if (props.onItemClick) {
+      props.onItemClick(event, props.item);
     }
-  }
+  };
 
-  renderStatus() {
-    if (this.props.item.draft) {
+  const renderStatus = () => {
+    if (props.item.draft) {
       return (
         <span className="uploadfield-item__status">{i18n._t('File.DRAFT', 'Draft')}</span>
       );
-    } else if (this.props.item.modified) {
+    } else if (props.item.modified) {
       return (
         <span className="uploadfield-item__status">{i18n._t('File.MODIFIED', 'Modified')}</span>
       );
     }
     return null;
-  }
+  };
 
   /**
    * Returns markup for an error message if one is set.
    *
    * @returns {Object}
    */
-  renderErrorMessage() {
+  const renderErrorMessage = () => {
     let message = null;
 
-    if (this.hasError()) {
-      message = this.props.item.message.value;
-    } else if (this.missing()) {
+    if (hasError()) {
+      message = props.item.message.value;
+    } else if (missing()) {
       message = i18n._t('AssetAdmin.FILE_MISSING', 'File cannot be found');
     }
 
@@ -234,23 +215,23 @@ class UploadFieldItem extends Component {
     }
 
     return null;
-  }
+  };
 
   /**
    * Gets upload progress bar
    *
    * @returns {object}
    */
-  renderProgressBar() {
+  const renderProgressBar = () => {
     const progressBarProps = {
       className: 'uploadfield-item__progress-bar',
       style: {
-        width: `${this.props.item.progress}%`,
+        width: `${props.item.progress}%`,
       },
     };
 
-    if (!this.hasError() && this.props.item.queuedId) {
-      if (this.complete()) {
+    if (!hasError() && props.item.queuedId) {
+      if (complete()) {
         const successText = i18n._t('AssetAdmin.DROPZONE_SUCCESS_UPLOAD', 'File uploaded');
         return (
           <div className="uploadfield-item__complete" aria-label={successText} title={successText}>
@@ -266,15 +247,15 @@ class UploadFieldItem extends Component {
     }
 
     return null;
-  }
+  };
 
   /**
    * Gets the remove item button
    *
    * @returns {object}
    */
-  renderRemoveButton() {
-    if (!this.props.canEdit) {
+  const renderRemoveButton = () => {
+    if (!props.canEdit) {
       return null;
     }
     const classes = [
@@ -287,22 +268,22 @@ class UploadFieldItem extends Component {
     return (
       <button
         className={classes}
-        onClick={this.handleRemove}
+        onClick={handleRemove}
         aria-label={i18n._t('File.REMOVE', 'Remove')}
         title={i18n._t('File.REMOVE', 'Remove')}
       >
         <span className="font-icon-cancel" aria-hidden="true" />
       </button>
     );
-  }
+  };
 
   /**
    * Gets the edit item button
    *
    * @returns {object}
    */
-  renderViewButton() {
-    if (!this.props.canEdit || !this.props.item.id) {
+  const renderViewButton = () => {
+    if (!props.canEdit || !props.item.id) {
       return null;
     }
     const classes = [
@@ -315,20 +296,20 @@ class UploadFieldItem extends Component {
     return (
       <button
         className={classes}
-        onClick={this.handleView}
+        onClick={handleView}
         aria-label={i18n._t('File.VIEW', 'View')}
         title={i18n._t('File.VIEW', 'View')}
       >
         <span className="font-icon-eye" aria-hidden="true" />
       </button>
     );
-  }
+  };
 
   /**
    * @param {Object} item
    * @returns {*}
    */
-  renderRestrictedAccess(item) {
+  const renderRestrictedAccess = (item) => {
     const { id, hasRestrictedAccess } = item;
     const attrs = {
       fileID: id,
@@ -336,13 +317,13 @@ class UploadFieldItem extends Component {
       hasRestrictedAccess
     };
     return <FileStatusIcon {...attrs} />;
-  }
+  };
 
   /**
    * @param {Object} item
    * @returns {*}
    */
-  renderTrackedFormUpload(item) {
+  const renderTrackedFormUpload = (item) => {
     const { id, isTrackedFormUpload, hasRestrictedAccess } = item;
     const attrs = {
       fileID: id,
@@ -351,15 +332,15 @@ class UploadFieldItem extends Component {
       hasRestrictedAccess
     };
     return <FileStatusIcon {...attrs} />;
-  }
+  };
 
   /**
    * Get file title / metadata block
    *
    * @returns {object}
    */
-  renderFileDetails() {
-    const item = this.props.item;
+  const renderFileDetails = () => {
+    const item = props.item;
     let size = '';
     if (item.size) {
       size = `, ${fileSize(item.size)}`;
@@ -375,45 +356,37 @@ class UploadFieldItem extends Component {
           <span className="uploadfield-item__specs">
             {item.extension}{size}
           </span>
-          {this.renderStatus()}
-          {item.hasRestrictedAccess && this.renderRestrictedAccess(item)}
-          {item.isTrackedFormUpload && this.renderTrackedFormUpload(item)}
+          {renderStatus()}
+          {item.hasRestrictedAccess && renderRestrictedAccess(item)}
+          {item.isTrackedFormUpload && renderTrackedFormUpload(item)}
         </div>
       </div>
     );
-  }
+  };
 
-  renderThumbnail() {
-    return (
-      <div
-        className={this.getThumbnailClassNames()}
-        style={this.getThumbnailStyles()}
-        onClick={this.handleItemClick}
-        role="button"
-        tabIndex={this.props.onItemClick ? 0 : -1}
-      />
-    );
-  }
+  const renderThumbnail = () => (
+    <div
+      className={getThumbnailClassNames()}
+      style={getThumbnailStyles()}
+      onClick={handleItemClick}
+      role="button"
+      tabIndex={props.onItemClick ? 0 : -1}
+    />
+  );
 
-  /**
-   *
-   * @returns {object}
-   */
-  render() {
-    const fieldName = `${this.props.name}[Files][]`;
-    return (
-      <div className={this.getItemClassNames()}>
-        <input type="hidden" value={this.props.item.id} name={fieldName} />
-        {this.renderThumbnail()}
-        {this.renderFileDetails()}
-        {this.renderProgressBar()}
-        {this.renderErrorMessage()}
-        {this.renderViewButton()}
-        {this.renderRemoveButton()}
-      </div>
-    );
-  }
-}
+  const fieldName = `${props.name}[Files][]`;
+  return (
+    <div className={getItemClassNames()}>
+      <input type="hidden" value={props.item.id} name={fieldName} />
+      {renderThumbnail()}
+      {renderFileDetails()}
+      {renderProgressBar()}
+      {renderErrorMessage()}
+      {renderViewButton()}
+      {renderRemoveButton()}
+    </div>
+  );
+};
 
 UploadFieldItem.propTypes = {
   canEdit: PropTypes.bool,
