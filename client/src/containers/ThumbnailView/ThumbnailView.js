@@ -1,225 +1,23 @@
 /* eslint-disable import/no-cycle */
 import i18n from 'i18n';
-import React, { Component, createRef } from 'react';
+import React, { useState, useEffect, useRef, useId } from 'react';
 import { inject } from 'lib/Injector';
 import { galleryViewPropTypes, galleryViewDefaultProps } from 'containers/Gallery/Gallery';
 import Paginator from 'components/Paginator/Paginator';
 import ResizeAware from 'components/ResizeAware/ResizeAware';
 import PropTypes from 'prop-types';
 
-// Generates a unique ID each time this function is called,
-// even between components.
-// When ThumbnailView is converted to a functional component, use
-// the useId hook instead.
-let idCounter = 0;
-const generateUniqueId = (prefix) => {
-  idCounter += 1;
-  return `${prefix}-${idCounter}`;
-};
-
-class ThumbnailView extends Component {
-  constructor(props) {
-    super(props);
-
-    this.updateItemsPerRow = this.updateItemsPerRow.bind(this);
-    this.handleNavigateKeyDown = this.handleNavigateKeyDown.bind(this);
-    this.renderItem = this.renderItem.bind(this);
-    this.handleSetPage = this.handleSetPage.bind(this);
-    // Refs for grid size, gallery item size, and file/folder element/ID pairs.
-    this.gridRef = createRef();
-    this.gallerySizeRef = createRef();
-    this.fileRefs = createRef();
-    this.folderRefs = createRef();
-    this.fileRefs.current = [];
-    this.folderRefs.current = [];
-
-    this.state = {
-      // allowedToSetFocus must be false until the user intentionally
-      // attempts to focus on a new item or we add items to the gallery.
-      // Otherwise we end up focusing on a grid item as soon as the gallery
-      // is first loaded or anything rerenders.
-      allowedToSetFocus: false,
-      itemsPerRow: null,
-      focusedItem: this.getFocusedItemFromOpenId(),
-      forceResetRefs: false,
-    };
-  }
-
-  componentDidMount() {
-    this.updateItemsPerRow();
-  }
-
-  // IMPORTANT
-  // A lot of the logic here is similar to logic in TableView.
-  // If a change is needed (e.g. to resolve a bug), make sure you check both views!
-  componentDidUpdate(oldProps) {
-    // If we changed page or are looking at a different folder, throw away the old refs
-    // and reset focus, and skip the rest of the logic in this lifecycle event.
-    if (this.state.forceResetRefs || oldProps.page !== this.props.page || oldProps.folderId !== this.props.folderId) {
-      // If the files arrays are still identical, the navigation hasn't finished yet, so defer changes for now.
-      if (this.fileArraysAreIdentical(oldProps.files, this.props.files)) {
-        if (!this.state.forceResetRefs) {
-          this.setState({ forceResetRefs: true });
-        }
-        return;
-      }
-      this.gallerySizeRef.current = null;
-      this.folderRefs.current = [];
-      this.fileRefs.current = [];
-      // Explicitly focus on the grid itself to announce changes to page etc.
-      this.gridRef.current.focus();
-      const newState = { forceResetRefs: false };
-      if (this.state.focusedItem) {
-        newState.focusedItem = null;
-      }
-      this.setState(newState);
-      return;
-    }
-    // If we removed a file or folder, we have some tidy-up to do.
-    if (this.props.totalCount < oldProps.totalCount || this.props.files.length < oldProps.files.length) {
-      // If we have less files/folders than we used to, make sure to remove the extra refs
-      // Note that all the refs are correct, there's just some extra old ones at the end of
-      // the arrays.
-      if (this.props.files.length === 0) {
-        this.gallerySizeRef.current = null;
-        this.folderRefs.current = [];
-        this.fileRefs.current = [];
-      } else {
-        const oldFolders = oldProps.files.filter(this.folderFilter);
-        const currentFolders = this.props.files.filter(this.folderFilter);
-        if (currentFolders.length < oldFolders.length) {
-          this.folderRefs.current = this.folderRefs.current.slice(0, currentFolders.length);
-        }
-        const oldFiles = oldProps.files.filter(this.fileFilter);
-        const currentFiles = this.props.files.filter(this.fileFilter);
-        if (currentFiles.length < oldFiles.length) {
-          this.fileRefs.current = this.fileRefs.current.slice(0, currentFiles.length);
-        }
-      }
-      // If we removed the focused item, we need to apply focus to a new item
-      if (this.state.focusedItem) {
-        // If there are no files or folders, move focus to the grid itself to announce "0 folders, 0 files"
-        if (this.props.files.length === 0) {
-          this.gridRef.current.focus();
-          this.setState({ focusedItem: null });
-        } else {
-          const current = this.props.files.find((item) => this.focusItemsAreIdentical(this.state.focusedItem, item));
-          if (!current) {
-            this.setState((oldState) => {
-              // This needs to be calculated within this callback to satisfy the linter, which doesn't like
-              // setting new state based on old state outside of the callback.
-              let items = oldState.focusedItem.type === 'folder' ? this.folderRefs.current : this.fileRefs.current;
-              let nextIndex = Math.min(items.length - 1, oldState.focusedItem.index);
-              if (items.length === 0) {
-                // If there are no more items in the old type, use the other type.
-                if (oldState.focusedItem.type === 'folder') {
-                  items = this.fileRefs.current;
-                  nextIndex = 0;
-                } else {
-                  items = this.folderRefs.current;
-                  nextIndex = this.folderRefs.current.length - 1;
-                }
-              }
-              const newFocusItem = items[nextIndex];
-              return { focusedItem: { ...newFocusItem, index: nextIndex, type: oldState.focusedItem.type } };
-            });
-          }
-        }
-      }
-    }
-
-    // If we added a folder or file, move focus to the first new item
-    if (this.props.totalCount > oldProps.totalCount || this.props.files.length > oldProps.files.length) {
-      const newItems = this.props.files.filter((item) => !oldProps.files.find((oldItem) => this.focusItemsAreIdentical(item, oldItem)));
-      const newItem = newItems[0];
-      if (newItem) {
-        this.setState({
-          allowedToSetFocus: true,
-          focusedItem: this.getFocusDataFromItem(newItem)
-        });
-      }
-    }
-
-    // For successful uploads, when the file gets assigned a new ID we need to capture that.
-    // There's a brief period where the file has both a queuedID and a regular ID - and then it
-    // drops the queuedID. We need to make sure we catch the ID so we can retain focus on the
-    // item.
-    if (this.state.focusedItem?.queuedId && !this.state.focusedItem.id && this.props.totalCount === oldProps.totalCount) {
-      const current = this.props.files.find((item) => this.focusItemsAreIdentical(this.state.focusedItem, item));
-      if (current && current.id !== this.state.focusedItem.id) {
-        const newState = { focusedItem: this.getFocusDataFromItem(current) };
-        // It is important that focus change only happens if a different file already has its form open.
-        // Otherwise, we have a race condition between moving focus into the newly opened form for the new item
-        // and keeping focus on the newly uploaded file.
-        if (!oldProps.openFileId || oldProps.openFileId === current.id) {
-          newState.allowedToSetFocus = false;
-        }
-        this.setState(newState);
-      }
-    }
-
-    // If a file edit form gets closed, focus back inside the grid.
-    // Note the focusedItem state isn't suitable here because either it's already
-    // set to the right thing (and therefore it won't do anything)
-    // or it's not set at all (and should therefore remain unset).
-    // Note we ignore the allowedToSetFocus state here intentionally.
-    if (oldProps.openFileId && !this.props.openFileId) {
-      let itemToFocus = null;
-      if (this.state.focusedItem) {
-        itemToFocus = this.gridRef.current.querySelector('.gallery-item[tabindex="0"]');
-      }
-      if (!itemToFocus) {
-        itemToFocus = this.gridRef.current.querySelector('.gallery-item');
-      }
-      if (!itemToFocus) {
-        itemToFocus = this.gridRef.current;
-      }
-      itemToFocus.focus();
-    }
-  }
-
-  /**
-   * Get the object for setting a focused item based on the openFileId prop.
-   * If openFileId is in the files list, it should be the focused item.
-   * Otherwise, return null so the appropriate first indexed item is used.
-   */
-  getFocusedItemFromOpenId() {
-    const openFile = this.props.files.find((item) => item.id === this.props.openFileId);
-    if (openFile) {
-      return this.getFocusDataFromItem(openFile);
-    }
-    return null;
-  }
-
-  /**
-   * Create a new object based on the passed in item which contains all the information
-   * needed for the focusedItem state.
-   * @param {object} item A file or folder from props.files
-   */
-  getFocusDataFromItem(item) {
-    if (!item) {
-      return null;
-    }
-    const itemRefs = item.type === 'folder' ? this.folderRefs.current : this.fileRefs.current;
-    const index = itemRefs.findIndex((itemRef) => this.focusItemsAreIdentical(item, itemRef));
-    return { id: item.id, queuedId: item.queuedId, type: item.type, index };
-  }
-
-  /**
-   * Calculates how many items fit in a row and sets the state
-   */
-  updateItemsPerRow() {
-    if (!this.gallerySizeRef.current || !this.gridRef.current) {
-      this.setState({ itemsPerRow: 0 });
-      return;
-    }
-    const style = window.getComputedStyle(this.gallerySizeRef.current);
-    const marginRight = parseFloat(style.marginRight);
-    const marginLeft = parseFloat(style.marginLeft);
-    const totalItemWidth = this.gallerySizeRef.current.offsetWidth + marginRight + marginLeft;
-    const itemsPerRow = Math.floor(this.gridRef.current.offsetWidth / totalItemWidth);
-    this.setState({ itemsPerRow });
-  }
+const ThumbnailView = (_props) => {
+  const defaultProps = galleryViewDefaultProps;
+  const props = {
+    ...defaultProps,
+    ..._props,
+  };
+  // Refs for grid size, gallery item size, and file/folder element/ID pairs.
+  const gridRef = useRef(null);
+  const gallerySizeRef = useRef(null);
+  const fileRefs = useRef([]);
+  const folderRefs = useRef([]);
 
   /**
    * Determines if two files or folders are identical for focus purposes.
@@ -227,7 +25,7 @@ class ThumbnailView extends Component {
    * If both items have an ID, that is used as the identifier.
    * If both items have a queued ID (e.g. uploaded files), we can fall back on that.
    */
-  focusItemsAreIdentical(item1, item2) {
+  const focusItemsAreIdentical = (item1, item2) => {
     if (!item1 || !item2) {
       return false;
     }
@@ -238,29 +36,86 @@ class ThumbnailView extends Component {
       return item1.queuedId === item2.queuedId;
     }
     return false;
-  }
+  };
+
+  /**
+   * Create a new object based on the passed in item which contains all the information
+   * needed for the focusedItem state.
+   * @param {object} item A file or folder from props.files
+   */
+  const getFocusDataFromItem = (item) => {
+    if (!item) {
+      return null;
+    }
+    const itemRefs = item.type === 'folder' ? folderRefs.current : fileRefs.current;
+    const index = itemRefs.findIndex((itemRef) => focusItemsAreIdentical(item, itemRef));
+    return { id: item.id, queuedId: item.queuedId, type: item.type, index };
+  };
+
+  /**
+   * Get the object for setting a focused item based on the openFileId prop.
+   * If openFileId is in the files list, it should be the focused item.
+   * Otherwise, return null so the appropriate first indexed item is used.
+   */
+  const getFocusedItemFromOpenId = () => {
+    const openFile = props.files.find((item) => item.id === props.openFileId);
+    if (openFile) {
+      return getFocusDataFromItem(openFile);
+    }
+    return null;
+  };
+
+  // allowedToSetFocus must be false until the user intentionally
+  // attempts to focus on a new item or we add items to the gallery.
+  // Otherwise we end up focusing on a grid item as soon as the gallery
+  // is first loaded or anything rerenders.
+  const [allowedToSetFocus, setAllowedToSetFocus] = useState(false);
+  const [itemsPerRow, setItemsPerRow] = useState(null);
+  const [focusedItem, setFocusedItem] = useState(getFocusedItemFromOpenId);
+  const [forceResetRefs, setForceResetRefs] = useState(false);
+  // Holds the props of the previous render, to simulate the oldProps argument of componentDidUpdate
+  const oldPropsRef = useRef(null);
+  // focusedItem updates from renderItem must apply after the commit, or GalleryItem misses the isFocused change
+  const pendingFocusedItemUpdates = useRef([]);
+  pendingFocusedItemUpdates.current = [];
+
+  /**
+   * Calculates how many items fit in a row and sets the state
+   */
+  const updateItemsPerRow = () => {
+    if (!gallerySizeRef.current || !gridRef.current) {
+      setItemsPerRow(0);
+      return;
+    }
+    const style = window.getComputedStyle(gallerySizeRef.current);
+    const marginRight = parseFloat(style.marginRight);
+    const marginLeft = parseFloat(style.marginLeft);
+    const totalItemWidth = gallerySizeRef.current.offsetWidth + marginRight + marginLeft;
+    const newItemsPerRow = Math.floor(gridRef.current.offsetWidth / totalItemWidth);
+    setItemsPerRow(newItemsPerRow);
+  };
 
   /**
    * Checks if two arrays of file data contain the same items.
    * This is based on the ID and QueuedID only, since these are the
    * properties that identify unique items.
    */
-  fileArraysAreIdentical(arrA, arrB) {
+  const fileArraysAreIdentical = (arrA, arrB) => {
     // First, check if the lengths are equal. If not, they are not identical.
     if (arrA.length !== arrB.length) {
       return false;
     }
     // Check if there are any files in one array which aren't present in the other.
     // If there's no descrepencies, we return true.
-    return arrA.every(itemA => arrB.some(itemB => this.focusItemsAreIdentical(itemA, itemB)));
-  }
+    return arrA.every(itemA => arrB.some(itemB => focusItemsAreIdentical(itemA, itemB)));
+  };
 
   /**
    * Handles setting the pagination page number
    */
-  handleSetPage(page) {
-    this.props.onSetPage(page);
-  }
+  const handleSetPage = (page) => {
+    props.onSetPage(page);
+  };
 
   /**
    * Filtering by folder type
@@ -268,9 +123,7 @@ class ThumbnailView extends Component {
    * @param {object} file
    * @returns {boolean}
    */
-  folderFilter(file) {
-    return file.type === 'folder';
-  }
+  const folderFilter = (file) => file.type === 'folder';
 
   /**
    * Filtering by non-folder types
@@ -278,41 +131,181 @@ class ThumbnailView extends Component {
    * @param {object} file
    * @returns {boolean}
    */
-  fileFilter(file) {
-    return file.type !== 'folder';
-  }
+  const fileFilter = (file) => file.type !== 'folder';
+
+  useEffect(() => {
+    updateItemsPerRow();
+  }, []);
+
+  // Must run before the componentDidUpdate effect, so its setFocusedItem calls apply last
+  useEffect(() => {
+    const updates = pendingFocusedItemUpdates.current;
+    pendingFocusedItemUpdates.current = [];
+    updates.forEach((update) => setFocusedItem(update));
+  });
+
+  // IMPORTANT
+  // A lot of the logic here is similar to logic in TableView.
+  // If a change is needed (e.g. to resolve a bug), make sure you check both views!
+  useEffect(() => {
+    const oldProps = oldPropsRef.current;
+    oldPropsRef.current = props;
+    // Nothing to compare against on the first render, which is the equivalent of componentDidMount
+    if (!oldProps) {
+      return;
+    }
+    // If we changed page or are looking at a different folder, throw away the old refs
+    // and reset focus, and skip the rest of the logic in this lifecycle event.
+    if (forceResetRefs || oldProps.page !== props.page || oldProps.folderId !== props.folderId) {
+      // If the files arrays are still identical, the navigation hasn't finished yet, so defer changes for now.
+      if (fileArraysAreIdentical(oldProps.files, props.files)) {
+        if (!forceResetRefs) {
+          setForceResetRefs(true);
+        }
+        return;
+      }
+      // gallerySizeRef is not reset: the first item's ref callback keeps it current, and a ResizeObserver
+      // callback before the next render would read null and set itemsPerRow to 0
+      folderRefs.current = [];
+      fileRefs.current = [];
+      // Explicitly focus on the grid itself to announce changes to page etc.
+      gridRef.current.focus();
+      setForceResetRefs(false);
+      if (focusedItem) {
+        setFocusedItem(null);
+      }
+      return;
+    }
+    // If we removed a file or folder, we have some tidy-up to do.
+    if (props.totalCount < oldProps.totalCount || props.files.length < oldProps.files.length) {
+      // If we have less files/folders than we used to, make sure to remove the extra refs
+      // Note that all the refs are correct, there's just some extra old ones at the end of
+      // the arrays.
+      if (props.files.length === 0) {
+        gallerySizeRef.current = null;
+        folderRefs.current = [];
+        fileRefs.current = [];
+      } else {
+        const oldFolders = oldProps.files.filter(folderFilter);
+        const currentFolders = props.files.filter(folderFilter);
+        if (currentFolders.length < oldFolders.length) {
+          folderRefs.current = folderRefs.current.slice(0, currentFolders.length);
+        }
+        const oldFiles = oldProps.files.filter(fileFilter);
+        const currentFiles = props.files.filter(fileFilter);
+        if (currentFiles.length < oldFiles.length) {
+          fileRefs.current = fileRefs.current.slice(0, currentFiles.length);
+        }
+      }
+      // If we removed the focused item, we need to apply focus to a new item
+      if (focusedItem) {
+        // If there are no files or folders, move focus to the grid itself to announce "0 folders, 0 files"
+        if (props.files.length === 0) {
+          gridRef.current.focus();
+          setFocusedItem(null);
+        } else {
+          const current = props.files.find((item) => focusItemsAreIdentical(focusedItem, item));
+          if (!current) {
+            setFocusedItem((oldFocusedItem) => {
+              // This needs to be calculated within this callback to satisfy the linter, which doesn't like
+              // setting new state based on old state outside of the callback.
+              let items = oldFocusedItem.type === 'folder' ? folderRefs.current : fileRefs.current;
+              let nextIndex = Math.min(items.length - 1, oldFocusedItem.index);
+              if (items.length === 0) {
+                // If there are no more items in the old type, use the other type.
+                if (oldFocusedItem.type === 'folder') {
+                  items = fileRefs.current;
+                  nextIndex = 0;
+                } else {
+                  items = folderRefs.current;
+                  nextIndex = folderRefs.current.length - 1;
+                }
+              }
+              const newFocusItem = items[nextIndex];
+              return { ...newFocusItem, index: nextIndex, type: oldFocusedItem.type };
+            });
+          }
+        }
+      }
+    }
+
+    // If we added a folder or file, move focus to the first new item
+    if (props.totalCount > oldProps.totalCount || props.files.length > oldProps.files.length) {
+      const newItems = props.files.filter((item) => !oldProps.files.find((oldItem) => focusItemsAreIdentical(item, oldItem)));
+      const newItem = newItems[0];
+      if (newItem) {
+        setAllowedToSetFocus(true);
+        setFocusedItem(getFocusDataFromItem(newItem));
+      }
+    }
+
+    // For successful uploads, when the file gets assigned a new ID we need to capture that.
+    // There's a brief period where the file has both a queuedID and a regular ID - and then it
+    // drops the queuedID. We need to make sure we catch the ID so we can retain focus on the
+    // item.
+    if (focusedItem?.queuedId && !focusedItem.id && props.totalCount === oldProps.totalCount) {
+      const current = props.files.find((item) => focusItemsAreIdentical(focusedItem, item));
+      if (current && current.id !== focusedItem.id) {
+        setFocusedItem(getFocusDataFromItem(current));
+        // It is important that focus change only happens if a different file already has its form open.
+        // Otherwise, we have a race condition between moving focus into the newly opened form for the new item
+        // and keeping focus on the newly uploaded file.
+        if (!oldProps.openFileId || oldProps.openFileId === current.id) {
+          setAllowedToSetFocus(false);
+        }
+      }
+    }
+
+    // If a file edit form gets closed, focus back inside the grid.
+    // Note the focusedItem state isn't suitable here because either it's already
+    // set to the right thing (and therefore it won't do anything)
+    // or it's not set at all (and should therefore remain unset).
+    // Note we ignore the allowedToSetFocus state here intentionally.
+    if (oldProps.openFileId && !props.openFileId) {
+      let itemToFocus = null;
+      if (focusedItem) {
+        itemToFocus = gridRef.current.querySelector('.gallery-item[tabindex="0"]');
+      }
+      if (!itemToFocus) {
+        itemToFocus = gridRef.current.querySelector('.gallery-item');
+      }
+      if (!itemToFocus) {
+        itemToFocus = gridRef.current;
+      }
+      itemToFocus.focus();
+    }
+  });
 
   /**
    * Renders the react component for pagination.
    *
    * @returns {XML|null}
    */
-  renderPagination() {
-    if (this.props.totalCount <= this.props.limit) {
+  const renderPagination = () => {
+    if (props.totalCount <= props.limit) {
       return null;
     }
-    const props = {
-      totalItems: this.props.totalCount,
-      maxItemsPerPage: this.props.limit,
-      currentPage: this.props.page,
-      onChangePage: this.handleSetPage,
+    const paginationProps = {
+      totalItems: props.totalCount,
+      maxItemsPerPage: props.limit,
+      currentPage: props.page,
+      onChangePage: handleSetPage,
       title: i18n._t('AssetAdmin.FILES')
     };
-    return <Paginator {...props} />;
-  }
+    return <Paginator {...paginationProps} />;
+  };
 
   /**
    * Handles keydown events for navigating the gallery items (e.g. arrow keys)
    */
-  handleNavigateKeyDown(event, index, itemType) {
+  const handleNavigateKeyDown = (event, index, itemType) => {
     // Get item width including margins and calculate items per row based on size
-    const itemsPerRow = this.state.itemsPerRow;
     if (!itemsPerRow) {
       return;
     }
     // Get references for folders, files, and the current grid items
-    const folders = this.folderRefs.current;
-    const files = this.fileRefs.current;
+    const folders = folderRefs.current;
+    const files = fileRefs.current;
     let items = itemType === 'folder' ? folders : files;
     let nextType = itemType;
     const currentFocusItem = items[index];
@@ -402,13 +395,11 @@ class ThumbnailView extends Component {
     if (typeof newFocusItem === 'undefined') {
       return;
     }
-    if (!this.focusItemsAreIdentical(newFocusItem, currentFocusItem)) {
-      this.setState({
-        focusedItem: { ...newFocusItem, index: nextIndex, type: nextType },
-        allowedToSetFocus: true,
-      });
+    if (!focusItemsAreIdentical(newFocusItem, currentFocusItem)) {
+      setFocusedItem({ ...newFocusItem, index: nextIndex, type: nextType });
+      setAllowedToSetFocus(true);
     }
-  }
+  };
 
   /**
    * Renders the item for the this view, assigning relevant props
@@ -417,7 +408,7 @@ class ThumbnailView extends Component {
    * @param {number} index
    * @returns {XML}
    */
-  renderItem(item, index, folders) {
+  const renderItem = (item, index, folders) => {
     const {
       File,
       Folder,
@@ -426,44 +417,41 @@ class ThumbnailView extends Component {
       selectedFiles,
       selectableItems,
       selectableFolders,
-    } = this.props;
+    } = props;
     const badge = badges.find((badgeItem) => badgeItem.id === item.id);
-    const isFocusedItem = this.focusItemsAreIdentical(this.state.focusedItem, item);
+    const isFocusedItem = focusItemsAreIdentical(focusedItem, item);
     // If we haven't set the index for the focused item yet, set it now that we know it.
     // This is important if we remove the item later e.g. deleting a file/folder.
-    // Note that setting state here instead of in the lifecycle function means we don't need to render
-    // everything twice! It will stop and restart with the new state before rendering the child components.
-    if (this.state.focusedItem?.index === undefined) {
-      this.setState((oldState) => ({ focusedItem: { ...oldState.focusedItem, index } }));
+    if (focusedItem?.index === undefined) {
+      pendingFocusedItemUpdates.current.push((oldFocusedItem) => ({ ...oldFocusedItem, index }));
     }
-    let props = {
+    let itemProps = {
       sectionConfig,
       key: item.key,
       selectableKey: item.id,
       item,
       selectedFiles,
       badge,
-      canDrag: this.props.canDrag,
-      onNavigateKeyDown: (event) => this.handleNavigateKeyDown(event, index, item.type),
+      canDrag: props.canDrag,
+      onNavigateKeyDown: (event) => handleNavigateKeyDown(event, index, item.type),
       tabIndex: isFocusedItem ? 0 : -1,
-      isFocused: this.state.allowedToSetFocus && isFocusedItem,
-      onClick: () => { this.setState({ focusedItem: this.getFocusDataFromItem(item) }); },
+      isFocused: allowedToSetFocus && isFocusedItem,
+      onClick: () => { setFocusedItem(getFocusDataFromItem(item)); },
     };
     // All gallery items are the same width, so we only need one item for size checking
     let sizeRef = null;
     if (index === 0) {
-      sizeRef = (el) => { this.gallerySizeRef.current = el; };
+      sizeRef = (el) => { gallerySizeRef.current = el; };
       // If there is an opened item or an item has already been explicitly given focus,
       // that item has focus.
       // Otherwise if there are folders, the first folder will be the tabbable item.
       // Otherwise the first file will be the tabbable item.
-      if (!this.state.focusedItem && (item.type === 'folder' || folders.length === 0)) {
-        props.tabIndex = 0;
+      if (!focusedItem && (item.type === 'folder' || folders.length === 0)) {
+        itemProps.tabIndex = 0;
       }
     }
 
     // Get the row and column indexes for accessibility
-    const itemsPerRow = this.state.itemsPerRow;
     if (itemsPerRow) {
       let realIndex = index;
       if (item.type !== 'folder') {
@@ -473,18 +461,18 @@ class ThumbnailView extends Component {
         const numMaxFolders = Math.ceil((folders.length) / itemsPerRow) * itemsPerRow;
         realIndex = index + numMaxFolders;
       }
-      props.colIndex = (realIndex % itemsPerRow) + 1;
-      props.rowIndex = Math.ceil((realIndex + 1) / itemsPerRow);
+      itemProps.colIndex = (realIndex % itemsPerRow) + 1;
+      itemProps.rowIndex = Math.ceil((realIndex + 1) / itemsPerRow);
     }
 
     // Various action handlers
     if (item.queuedId && !item.id) {
-      const { onCancelUpload, onRemoveErroredUpload } = this.props;
-      props = { ...props, onCancelUpload, onRemoveErroredUpload };
+      const { onCancelUpload, onRemoveErroredUpload } = props;
+      itemProps = { ...itemProps, onCancelUpload, onRemoveErroredUpload };
     } else {
-      const { onOpenFolder, onOpenFile } = this.props;
-      props = {
-        ...props,
+      const { onOpenFolder, onOpenFile } = props;
+      itemProps = {
+        ...itemProps,
         onActivate: (item.type === 'folder') ? onOpenFolder : onOpenFile,
       };
     }
@@ -492,113 +480,108 @@ class ThumbnailView extends Component {
     // Handlers for selecting an item
     if (selectableItems && (selectableFolders || item.type !== 'folder')) {
       const maxSelected = (
-        ![null, 1].includes(this.props.maxFilesSelect) &&
-        this.props.selectedFiles.length >= this.props.maxFilesSelect
+        ![null, 1].includes(props.maxFilesSelect) &&
+        props.selectedFiles.length >= props.maxFilesSelect
       );
-      const onSelect = (this.props.maxFilesSelect === 1) ? props.onActivate : this.props.onSelect;
-      props = { ...props, selectable: true, onSelect, maxSelected };
+      const onSelect = (props.maxFilesSelect === 1) ? itemProps.onActivate : props.onSelect;
+      itemProps = { ...itemProps, selectable: true, onSelect, maxSelected };
     }
 
     let FileComponent = null;
     if (item.type === 'folder') {
-      this.folderRefs.current[index] = { id: item.id, queuedId: item.queuedId };
+      folderRefs.current[index] = { id: item.id, queuedId: item.queuedId };
       FileComponent = Folder;
-      props.droppableSizeRef = sizeRef;
+      itemProps.droppableSizeRef = sizeRef;
     } else {
-      this.fileRefs.current[index] = { id: item.id, queuedId: item.queuedId };
+      fileRefs.current[index] = { id: item.id, queuedId: item.queuedId };
       FileComponent = File;
-      props.draggableSizeRef = sizeRef;
+      itemProps.draggableSizeRef = sizeRef;
     }
 
     // If we haven't set the focused item yet, set it now that we know it.
     // This is important if we remove the item later e.g. deleting a file/folder.
-    if (!this.state.focusedItem && props.tabIndex === 0) {
-      this.setState({ focusedItem: this.getFocusDataFromItem(item) });
+    if (!focusedItem && itemProps.tabIndex === 0) {
+      pendingFocusedItemUpdates.current.push(getFocusDataFromItem(item));
     }
 
-    return <FileComponent {...props}/>;
+    return <FileComponent {...itemProps}/>;
+  };
+
+  // filter files and folders
+  const folders = props.files.filter(folderFilter);
+  const files = props.files.filter(fileFilter);
+  const className = 'gallery__main-view--tile';
+  const totalPages = props.totalCount <= props.limit ? 1 : Math.ceil(props.totalCount / props.limit);
+  const paginationText = i18n.inject(
+    i18n._t('Admin.PAGE_OF_PAGES', 'Page {current} of {total}'),
+    {
+      current: props.page,
+      total: totalPages,
+    }
+  );
+  const thisPageText = i18n.inject(
+    i18n._t('AssetAdmin.NUM_ITEMS_THIS_PAGE', '{numFolders} folders and {numFiles} files on this page'),
+    {
+      numFiles: files.length || '0',
+      numFolders: folders.length || '0',
+    }
+  );
+  // Values of -1 tell assistive technologies we don't know yet how many rows/cols there are.
+  let numRows = -1;
+  let numCols = -1;
+  if (itemsPerRow) {
+    const numFolderRows = Math.ceil(folders.length / itemsPerRow);
+    const numFileRows = Math.ceil(files.length / itemsPerRow);
+    numRows = numFolderRows + numFileRows;
+    // The number of columns is the items per row, unless there's not enough files AND not enough folders
+    // to fill out a full row. Then it's whichever has more of files or folders.
+    numCols = itemsPerRow;
+    if (numCols > files.length && numCols > folders.length) {
+      numCols = Math.max(files.length, folders.length);
+    }
   }
+  // Since this can be used inside a modal, we should use a unique ID to prevent
+  // problems if someone manages to get two of these in the DOM at the same time.
+  const gridID = `asset-admin-grid-${useId()}`;
 
-  render() {
-    // filter files and folders
-    const folders = this.props.files.filter(this.folderFilter);
-    const files = this.props.files.filter(this.fileFilter);
-    const className = 'gallery__main-view--tile';
-    const totalPages = this.props.totalCount <= this.props.limit ? 1 : Math.ceil(this.props.totalCount / this.props.limit);
-    const paginationText = i18n.inject(
-      i18n._t('Admin.PAGE_OF_PAGES', 'Page {current} of {total}'),
-      {
-        current: this.props.page,
-        total: totalPages,
-      }
-    );
-    const thisPageText = i18n.inject(
-      i18n._t('AssetAdmin.NUM_ITEMS_THIS_PAGE', '{numFolders} folders and {numFiles} files on this page'),
-      {
-        numFiles: files.length || '0',
-        numFolders: folders.length || '0',
-      }
-    );
-    const itemsPerRow = this.state.itemsPerRow;
-    // Values of -1 tell assistive technologies we don't know yet how many rows/cols there are.
-    let numRows = -1;
-    let numCols = -1;
-    if (itemsPerRow) {
-      const numFolderRows = Math.ceil(folders.length / itemsPerRow);
-      const numFileRows = Math.ceil(files.length / itemsPerRow);
-      numRows = numFolderRows + numFileRows;
-      // The number of columns is the items per row, unless there's not enough files AND not enough folders
-      // to fill out a full row. Then it's whichever has more of files or folders.
-      numCols = itemsPerRow;
-      if (numCols > files.length && numCols > folders.length) {
-        numCols = Math.max(files.length, folders.length);
-      }
-    }
-    // Since this can be used inside a modal, we should use a unique ID to prevent
-    // problems if someone manages to get two of these in the DOM at the same time.
-    const gridID = generateUniqueId('asset-admin-grid');
-
-    // Note about the role="row" divs:
-    // Elements with role="grid-cell" must have a parent with role="row".
-    // Since this is a flex grid, we can't have proper fixed rows, so we add a single row for each cell and then use
-    // aria-rowcount and aria-colcount to tell assistive technologies how many rows/columns we actually have.
-    // We also use aria-rowIndex and aria-colIndex on the individual cells.
-    return (
-      <div
-        ref={this.gridRef}
-        className={className}
-        role="grid"
-        aria-rowcount={numRows}
-        aria-colcount={numCols}
-        aria-multiselectable="true"
-        aria-roledescription={i18n._t('AssetAdmin.FILE_GALLERY', 'File gallery')}
-        aria-describedby={gridID}
-        tabIndex={-1}
-      >
-        <span id={gridID} className="visually-hidden">{`${paginationText}, ${thisPageText}`}</span>
-        <ResizeAware onResize={this.updateItemsPerRow}>
-          <div className="gallery__folders">
-            {folders.map((item, index) => <div role="row">{this.renderItem(item, index, folders)}</div>)}
-          </div>
-
-          <div className="gallery__files">
-            {files.map((item, index) => <div role="row">{this.renderItem(item, index, folders)}</div>)}
-          </div>
-        </ResizeAware>
-
-        {this.props.files.length === 0 && !this.props.loading &&
-          <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>
-        }
-
-        <div className="gallery__load">
-          {this.renderPagination()}
+  // Note about the role="row" divs:
+  // Elements with role="grid-cell" must have a parent with role="row".
+  // Since this is a flex grid, we can't have proper fixed rows, so we add a single row for each cell and then use
+  // aria-rowcount and aria-colcount to tell assistive technologies how many rows/columns we actually have.
+  // We also use aria-rowIndex and aria-colIndex on the individual cells.
+  return (
+    <div
+      ref={gridRef}
+      className={className}
+      role="grid"
+      aria-rowcount={numRows}
+      aria-colcount={numCols}
+      aria-multiselectable="true"
+      aria-roledescription={i18n._t('AssetAdmin.FILE_GALLERY', 'File gallery')}
+      aria-describedby={gridID}
+      tabIndex={-1}
+    >
+      <span id={gridID} className="visually-hidden">{`${paginationText}, ${thisPageText}`}</span>
+      <ResizeAware onResize={updateItemsPerRow}>
+        <div className="gallery__folders">
+          {folders.map((item, index) => <div role="row">{renderItem(item, index, folders)}</div>)}
         </div>
-      </div>
-    );
-  }
-}
 
-ThumbnailView.defaultProps = galleryViewDefaultProps;
+        <div className="gallery__files">
+          {files.map((item, index) => <div role="row">{renderItem(item, index, folders)}</div>)}
+        </div>
+      </ResizeAware>
+
+      {props.files.length === 0 && !props.loading &&
+        <p className="gallery__no-item-notice">{i18n._t('AssetAdmin.NOITEMSFOUND')}</p>
+      }
+
+      <div className="gallery__load">
+        {renderPagination()}
+      </div>
+    </div>
+  );
+};
 
 ThumbnailView.propTypes = {
   ...galleryViewPropTypes,
