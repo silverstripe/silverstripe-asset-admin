@@ -1,4 +1,4 @@
-import React, { Component, Children, cloneElement } from 'react';
+import React, { Children, cloneElement, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { inject } from 'lib/Injector';
 import { formValueSelector } from 'redux-form';
@@ -11,58 +11,60 @@ import ImageSizePresetList from './ImageSizePresetList';
  * Component that displays a width and height field, syncing them up so that the ratio between
  * them remain unchanged.
  */
-class ProportionConstraintField extends Component {
-  constructor(props) {
-    super(props);
-    const childrenArray = Children.toArray(props.children);
+const ProportionConstraintField = (_props) => {
+  const defaultProps = {
+    active: true,
+  };
+  const props = {
+    ...defaultProps,
+    ..._props,
+  };
+  const childrenArray = Children.toArray(props.children);
 
-    if (childrenArray.length !== 2) {
-      throw new Error('ProportionConstraintField must be passed two children -- one field for each value');
-    }
-
-    this.handlePresetSelect = this.handlePresetSelect.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
-    this.handleFocus = this.handleFocus.bind(this);
-
-    this.state = { hasFocus: false };
+  if (childrenArray.length !== 2) {
+    throw new Error('ProportionConstraintField must be passed two children -- one field for each value');
   }
 
-  componentDidMount() {
-    this.componentDidUpdate(this.props);
-  }
+  const [hasFocus, setHasFocus] = useState(false);
 
-  componentDidUpdate(newProps) {
+  // Holds the props of the previous render, because componentDidUpdate received the previous props
+  const prevPropsRef = useRef(props);
+
+  useEffect(() => {
     // Let invalid values stand if the user is currently editing the fields
-    if (!this.state.hasFocus) {
+    if (!hasFocus) {
       // Make sure our initial dimensions are initialised to something sensible
-      const { current: { width } } = newProps;
+      const { current: { width } } = prevPropsRef.current;
       const value = parseInt(width, 10);
       if (!value || value <= 0) {
-        this.resetDimensions();
+        // eslint-disable-next-line no-use-before-define
+        resetDimensions();
       }
     }
-  }
+    prevPropsRef.current = props;
+  });
 
   /**
    * Handle change events for the fields
    * @param {Number} childIndex Index of the field that has been changed
    * @param {String} newValue
    */
-  handleChange(childIndex, e, newValue) {
+  const handleChange = (childIndex, e, newValue) => {
     // If the new value can be converted to something sensible
     const value = parseInt((newValue || (e.target && e.target.value)), 10);
     if (value && value > 0) {
-      this.syncFields(childIndex, value);
+      // eslint-disable-next-line no-use-before-define
+      syncFields(childIndex, value);
     }
-  }
+  };
 
   /**
    * Sync up the two fields
    * @param {Number} childIndex Index of the field that has been changed
    * @param {Number} newValue
    */
-  syncFields(childIndex, newValue) {
-    const { children, active, onAutofill, data: { ratio } } = this.props;
+  const syncFields = (childIndex, newValue) => {
+    const { children, active, onAutofill, data: { ratio } } = props;
 
     // value depends on whether onChange triggered on a basic input
     // or a redux form input
@@ -77,100 +79,99 @@ class ProportionConstraintField extends Component {
     if (active) {
       onAutofill(peerName, Math.round(newValue * multiplier));
     }
-  }
+  };
 
   /**
    * Handle selection of a preset image
    * @param {Number} newWidth
    */
-  handlePresetSelect(newWidth) {
-    this.syncFields(0, newWidth);
+  const handlePresetSelect = (newWidth) => {
+    syncFields(0, newWidth);
 
     // Reset the focus on the Width field
-    const { key } = this.props.children[0];
+    const { key } = props.children[0];
     const fieldEl = document.getElementById(key);
     if (fieldEl) {
       fieldEl.focus();
     }
-  }
+  };
 
   /**
    * Handle the user moving to another field
    * @param {Number} key Index of the field being blured
    * @param {Event} e
    */
-  handleBlur(key, e) {
-    this.setState({ hasFocus: false });
+  const handleBlur = (key, e) => {
+    setHasFocus(false);
 
     const newValue = parseInt(e && e.target && e.target.value, 10);
     if (!newValue || newValue <= 0) {
       // If the user leave the field in an invalid state, reset dimensions to their default
       e.preventDefault();
-      this.resetDimensions();
+      // eslint-disable-next-line no-use-before-define
+      resetDimensions();
     }
-  }
+  };
 
   /**
    * Handle the focus on a field
    */
-  handleFocus() {
-    this.setState({ hasFocus: true });
-  }
+  const handleFocus = () => {
+    setHasFocus(true);
+  };
 
   /**
    * Get the default width for images who don't have a valid one yet.
    * @returns {number}
    */
-  defaultWidth() {
-    const { imageSizePresets, data: { originalWidth } } = this.props;
+  const defaultWidth = () => {
+    const { imageSizePresets, data: { originalWidth } } = props;
 
     // Default to the default image size preset first. Then to the original width of the image.
     // If all else fail, default to 600
     const defaultPreset = imageSizePresets && imageSizePresets.find(preset => preset.default);
-    const defaultWidth = (defaultPreset && defaultPreset.width) || originalWidth || 600;
+    const defaultWidthValue = (defaultPreset && defaultPreset.width) || originalWidth || 600;
 
     // Make sure our default width isn't wider than the natural width of the image
-    return originalWidth && originalWidth < defaultWidth ? originalWidth : defaultWidth;
-  }
+    return originalWidth && originalWidth < defaultWidthValue ? originalWidth : defaultWidthValue;
+  };
 
   /**
    * Reset the dimensions to a sensible dimensions.
    */
-  resetDimensions() {
-    const defaultValue = this.defaultWidth();
-    this.syncFields(0, defaultValue);
-  }
+  const resetDimensions = () => {
+    const defaultValue = defaultWidth();
+    syncFields(0, defaultValue);
+  };
 
-  render() {
-    const {
-      FieldGroup,
-      data: { originalWidth, isRemoteFile },
-      current: { width: currentWidth },
-      imageSizePresets } = this.props;
+  const {
+    FieldGroup,
+    data: { originalWidth, isRemoteFile },
+    current: { width: currentWidth },
+    imageSizePresets } = props;
 
-    return (
-      <FieldGroup smallholder={false} {...this.props}>
-        {this.props.children.map((child, key) => (
-          cloneElement(child, {
-            // overload the children change handler
-            onChange: (e, newValue) => this.handleChange(key, e, newValue),
-            onBlur: (e) => this.handleBlur(key, e),
-            onFocus: () => this.handleFocus(),
-            // eslint-disable-next-line react/no-array-index-key
-            key,
-          }, child.props.children)
-        ))}
-        {!isRemoteFile && <ImageSizePresetList
-          originalWidth={parseInt(originalWidth, 10)}
-          currentWidth={currentWidth}
-          imageSizePresets={imageSizePresets}
-          onSelect={this.handlePresetSelect}
-        />
-          }
-      </FieldGroup>
-    );
-  }
-}
+  return (
+    <FieldGroup smallholder={false} {...props}>
+      {props.children.map((child, key) => (
+        cloneElement(child, {
+          // overload the children change handler
+          onChange: (e, newValue) => handleChange(key, e, newValue),
+          onBlur: (e) => handleBlur(key, e),
+          onFocus: () => handleFocus(),
+          // eslint-disable-next-line react/no-array-index-key
+          key,
+        }, child.props.children)
+      ))}
+      {!isRemoteFile && <ImageSizePresetList
+        originalWidth={parseInt(originalWidth, 10)}
+        currentWidth={currentWidth}
+        imageSizePresets={imageSizePresets}
+        onSelect={handlePresetSelect}
+      />
+        }
+    </FieldGroup>
+  );
+};
 
 ProportionConstraintField.propTypes = {
   children: PropTypes.array,
@@ -192,10 +193,6 @@ ProportionConstraintField.propTypes = {
     text: PropTypes.string,
     default: PropTypes.bool,
   }))
-};
-
-ProportionConstraintField.defaultProps = {
-  active: true,
 };
 
 function mapStateToProps(state, { formid }) {

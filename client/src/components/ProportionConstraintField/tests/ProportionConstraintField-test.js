@@ -247,3 +247,105 @@ test('ProportionConstraintField data.isRemoteFile has rendered <ImageSizePresetL
   );
   expect(container.querySelectorAll('.image-size-preset-list').length).toBe(0);
 });
+
+test('ProportionConstraintField handleBlur() invalid value resets dimensions to defaults', () => {
+  const onAutofill = jest.fn();
+  const { container } = render(
+    <ProportionConstraintField {...makeProps({
+      onAutofill
+    })}
+    >
+      <input name="one" type="text" value="0" />
+      <input name="two" type="text" value="0" />
+    </ProportionConstraintField>
+  );
+  const inputs = container.querySelectorAll('input');
+  fireEvent.blur(inputs[0], { target: { value: '' } });
+  expect(onAutofill.mock.calls.length).toBe(2);
+  expect(onAutofill.mock.calls[0][0]).toBe('one');
+  expect(onAutofill.mock.calls[0][1]).toBe(1234);
+  expect(onAutofill.mock.calls[1][0]).toBe('two');
+  expect(onAutofill.mock.calls[1][1]).toBe(823);
+});
+
+test('ProportionConstraintField handleBlur() valid value does not reset dimensions', () => {
+  const onAutofill = jest.fn();
+  const { container } = render(
+    <ProportionConstraintField {...makeProps({
+      onAutofill
+    })}
+    >
+      <input name="one" type="text" value="0" />
+      <input name="two" type="text" value="0" />
+    </ProportionConstraintField>
+  );
+  const inputs = container.querySelectorAll('input');
+  fireEvent.blur(inputs[0], { target: { value: '6' } });
+  expect(onAutofill.mock.calls.length).toBe(0);
+});
+
+test('ProportionConstraintField handleFocus() invalid width is left alone while a field has focus', () => {
+  const onAutofill = jest.fn();
+  const props = makeProps({ onAutofill });
+  const { container, rerender } = render(
+    <ProportionConstraintField {...props}>
+      <input name="one" type="text" value="0" />
+      <input name="two" type="text" value="0" />
+    </ProportionConstraintField>
+  );
+  const inputs = container.querySelectorAll('input');
+  fireEvent.focus(inputs[0]);
+  rerender(
+    <ProportionConstraintField {...props} current={{}}>
+      <input name="one" type="text" value="0" />
+      <input name="two" type="text" value="0" />
+    </ProportionConstraintField>
+  );
+  expect(onAutofill.mock.calls.length).toBe(0);
+});
+
+test('ProportionConstraintField handlePresetSelect() syncs fields and focuses the width field', () => {
+  const onAutofill = jest.fn();
+  const { container } = render(
+    <ProportionConstraintField {...makeProps({
+      onAutofill,
+      data: { ratio: 3 / 2, originalWidth: 1800 },
+      imageSizePresets: [{ width: 300, text: 'small' }]
+    })}
+    >
+      <input id="0" name="one" type="text" value="0" />
+      <input name="two" type="text" value="0" />
+    </ProportionConstraintField>
+  );
+  fireEvent.click(container.querySelector('button'));
+  expect(onAutofill.mock.calls.length).toBe(2);
+  expect(onAutofill.mock.calls[0][0]).toBe('one');
+  expect(onAutofill.mock.calls[0][1]).toBe(300);
+  expect(onAutofill.mock.calls[1][0]).toBe('two');
+  expect(onAutofill.mock.calls[1][1]).toBe(200);
+});
+
+test('ProportionConstraintField update checks the previous width, not the current one', () => {
+  const onAutofill = jest.fn();
+  const props = makeProps({ onAutofill });
+  const { rerender } = render(
+    <ProportionConstraintField {...props}>
+      <input name="one" type="text" value="0" />
+      <input name="two" type="text" value="0" />
+    </ProportionConstraintField>
+  );
+  rerender(
+    <ProportionConstraintField {...props} current={{}}>
+      <input name="one" type="text" value="0" />
+      <input name="two" type="text" value="0" />
+    </ProportionConstraintField>
+  );
+  expect(onAutofill.mock.calls.length).toBe(0);
+  rerender(
+    <ProportionConstraintField {...props} current={{ width: 20 }}>
+      <input name="one" type="text" value="0" />
+      <input name="two" type="text" value="0" />
+    </ProportionConstraintField>
+  );
+  expect(onAutofill.mock.calls.length).toBe(2);
+});
