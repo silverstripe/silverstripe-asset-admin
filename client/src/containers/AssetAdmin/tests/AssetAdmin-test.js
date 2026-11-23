@@ -1060,6 +1060,39 @@ test('AssetAdmin getFolderId should return state folder id when prop is null', a
   expect(lastBackendGetEndpoint).toContain('/0');
 });
 
+test('AssetAdmin opens the folder holding a file passed in from another folder', async () => {
+  const onReplaceUrl = jest.fn();
+  const props = makeProps({
+    folderId: 5,
+    fileId: 3,
+    viewAction: 'edit',
+    onReplaceUrl,
+  });
+  render(<AssetAdmin {...props} />);
+  expect(lastBackendGetEndpoint).toContain('/3');
+  resolveBackendGet({ json: () => ({ id: 3, parentId: 9 }) });
+  await new Promise(resolve => setTimeout(resolve, 10));
+  expect(onReplaceUrl).toHaveBeenCalledWith(9, 3, props.query, 'edit');
+  // The folder passed in is never read, so it is never shown
+  expect(lastBackendGetEndpoint).toContain('/3');
+});
+
+test('AssetAdmin reads the folder passed in when the file is already in it', async () => {
+  const onReplaceUrl = jest.fn();
+  render(
+    <AssetAdmin {...makeProps({
+      folderId: 9,
+      fileId: 3,
+      onReplaceUrl,
+    })}
+    />
+  );
+  resolveBackendGet({ json: () => ({ id: 3, parentId: 9 }) });
+  await new Promise(resolve => setTimeout(resolve, 10));
+  expect(onReplaceUrl).not.toHaveBeenCalled();
+  expect(lastBackendGetEndpoint).toContain('/9');
+});
+
 test('AssetAdmin handleSubmitEditor with action_insert in select mode should call onInsertMany', async () => {
   const onInsertMany = jest.fn();
   render(
