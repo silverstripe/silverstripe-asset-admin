@@ -1,5 +1,5 @@
 /* global alert, confirm */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators, compose } from 'redux';
@@ -33,6 +33,7 @@ const AssetAdmin = ({
   folderId,
   resetFileDetails,
   onBrowse,
+  onReplaceUrl,
   onInsertMany,
   getUrl,
   query = {
@@ -61,6 +62,7 @@ const AssetAdmin = ({
   const [files, setFiles] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [forceRefetch, setForceRefetch] = useState(false);
+  const checkedFileId = useRef(null);
 
   /**
    * Get logical folder ID to display
@@ -656,8 +658,28 @@ const AssetAdmin = ({
     return <EditorComponent {...editorProps} />;
   };
 
+  /**
+   * Show the folder that holds the file being opened, such as an image being edited in the
+   * WYSIWYG editor, so its siblings are shown around it rather than the field's upload folder.
+   * The folder is only read once the file's own folder is known.
+   */
   useEffect(() => {
-    refetchFolder();
+    if (!fileId || typeof onReplaceUrl !== 'function' || checkedFileId.current === fileId) {
+      refetchFolder();
+      return;
+    }
+    checkedFileId.current = fileId;
+    const sectionConfigVar = Config.getSection('SilverStripe\\AssetAdmin\\Controller\\AssetAdminOpen');
+    backend.get(`${sectionConfigVar.endpoints.read.url}/${fileId}`)
+      .then((response) => response.json())
+      .then((file) => {
+        if (file.parentId !== getFolderId()) {
+          onReplaceUrl(file.parentId, fileId, query, viewAction);
+          return;
+        }
+        refetchFolder();
+      })
+      .catch(() => refetchFolder());
   }, [folderId]);
 
   useEffect(() => {
