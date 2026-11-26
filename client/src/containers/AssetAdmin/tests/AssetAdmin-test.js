@@ -1256,3 +1256,24 @@ test('AssetAdmin resetFile with fileId should call resetFileDetails', async () =
   await new Promise(resolve => setTimeout(resolve, 10));
   expect(resetFileDetails).toHaveBeenCalledWith(5, 1, { view: 'table' });
 });
+
+test('AssetAdmin should render the toolbar actions next to the search toggle', async () => {
+  const ToolbarActionsComponent = jest.fn(() => <div data-testid="test-toolbar-actions" />);
+  render(
+    <AssetAdmin {...makeProps({
+      type: 'select',
+      folderId: 5,
+      fileId: 12,
+      ToolbarActionsComponent,
+    })}
+    />
+  );
+  resolveBackendGet(makeReadFileResponse());
+  await screen.findByTestId('test-toolbar-actions');
+  expect(ToolbarActionsComponent).toHaveBeenLastCalledWith(
+    { type: 'select', folderId: 5, fileId: 12 },
+    expect.anything()
+  );
+  const toolbarExtra = document.querySelector('.asset-admin__toolbar-extra');
+  expect(toolbarExtra.contains(screen.getByTestId('test-toolbar-actions'))).toBe(true);
+});
