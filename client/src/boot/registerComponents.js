@@ -9,6 +9,7 @@ import ProportionConstraintField from 'components/ProportionConstraintField/Prop
 import HistoryList from 'containers/HistoryList/HistoryList';
 import GalleryToolbar from 'components/GalleryToolbar/GalleryToolbar';
 import { File, Folder } from 'components/GalleryItem/GalleryItem';
+import AssetAdminToolbarActions from 'components/AssetAdminToolbarActions/AssetAdminToolbarActions';
 
 const registerComponents = () => {
   Injector.component.registerMany({
@@ -21,6 +22,7 @@ const registerComponents = () => {
     InsertMediaModal,
     ImageEditorModal,
     GalleryToolbar,
+    AssetAdminToolbarActions,
     GalleryItemFile: File,
     GalleryItemFolder: Folder,
   });

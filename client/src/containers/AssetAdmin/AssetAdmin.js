@@ -22,6 +22,8 @@ import Config from 'lib/Config';
 import * as confirmDeletionActions from 'state/confirmDeletion/ConfirmDeletionActions';
 import getFormSchema from 'lib/getFormSchema';
 import getJsonErrorMessage from 'lib/getJsonErrorMessage';
+import { inject } from 'lib/Injector';
+import AssetAdminToolbarActions from 'components/AssetAdminToolbarActions/AssetAdminToolbarActions';
 import isEqual from 'lodash.isequal';
 import BulkDeleteConfirmation from '../BulkDeleteConfirmation/BulkDeleteConfirmation';
 import AssetAdminBreadcrumb from './AssetAdminBreadcrumb';
@@ -51,6 +53,7 @@ const AssetAdmin = ({
   GalleryComponent = Gallery,
   SearchComponent = Search,
   BulkDeleteConfirmationComponent = BulkDeleteConfirmation,
+  ToolbarActionsComponent = AssetAdminToolbarActions,
   showSearch,
   toolbarChildren,
   requireLinkText,
@@ -702,6 +705,7 @@ const AssetAdmin = ({
         {folder && <AssetAdminBreadcrumb {...breadcrumbProps} />}
         <div className="asset-admin__toolbar-extra pull-xs-right fill-width vertical-align-items">
           <SearchToggle toggled={showSearchDisplay} onToggle={onSearchToggle} />
+          <ToolbarActionsComponent type={type} folderId={getFolderId()} fileId={fileId} />
           {toolbarChildren}
         </div>
       </Toolbar>
@@ -757,6 +761,7 @@ AssetAdmin.propTypes = {
   GalleryComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   SearchComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   BulkDeleteConfirmationComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
+  ToolbarActionsComponent: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
   showSearch: PropTypes.bool,
   toolbarChildren: PropTypes.node,
   requireLinkText: PropTypes.bool,
@@ -788,5 +793,10 @@ function mapDispatchToProps(dispatch) {
 export { AssetAdmin as Component };
 
 export default compose(
+  inject(
+    ['AssetAdminToolbarActions'],
+    (ToolbarActionsComponent) => ({ ToolbarActionsComponent }),
+    () => 'AssetAdmin',
+  ),
   connect(mapStateToProps, mapDispatchToProps),
 )(AssetAdmin);
