@@ -474,8 +474,9 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
         $ids = $this->getPostedJsonValue($request, 'ids');
         $files = $this->getFilesByIDs($ids, false, 400);
         foreach ($files as $file) {
-            if (!$file->canPublish()) {
-                $this->jsonError(403);
+            $validation = $file->validatePublishRecursive();
+            if (!$validation->isValid()) {
+                $this->jsonError(403, implode(' ', array_column($validation->getMessages(), 'message')));
             }
         }
         foreach ($files as $file) {
@@ -1339,8 +1340,14 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
             $this->jsonError(404);
         }
 
-        if (!$record->canEdit() || ($doPublish && !$record->canPublish())) {
+        if (!$record->canEdit()) {
             $this->jsonError(401);
+        }
+        if ($doPublish) {
+            $validation = $record->validatePublishRecursive();
+            if (!$validation->isValid()) {
+                $this->jsonError(401, implode(' ', array_column($validation->getMessages(), 'message')));
+            }
         }
 
         // check File extension
@@ -1370,6 +1377,15 @@ class AssetAdmin extends AssetAdminOpen implements PermissionProvider
 
         // Publish this record and owned objects
         if ($doPublish) {
+            // Check again now the form data is saved, as it may have added owned records
+            $validation = $record->validatePublishRecursive();
+            if (!$validation->isValid()) {
+                $this->jsonError(401, _t(
+                    __CLASS__ . '.SAVED_NOT_PUBLISHED',
+                    'Saved as a draft, but not published. {message}',
+                    ['message' => implode(' ', array_column($validation->getMessages(), 'message'))]
+                ));
+            }
             $record->publishRecursive();
         }
         // regenerate form, so that it constants/literals on the form are updated

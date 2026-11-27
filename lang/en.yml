@@ -60,6 +60,7 @@ en:
     PUBLISH_BUTTON: Publish
     Placement: Placement
     SAVEDFILE: 'Saved file'
+    SAVED_NOT_PUBLISHED: 'Saved as a draft, but not published. {message}'
     TitleTooltip: 'Title text (tooltip)'
     TitleTooltipTip: 'Provides a long form explanation if required. Shown on hover.'
     UNKNOWN: Unknown
